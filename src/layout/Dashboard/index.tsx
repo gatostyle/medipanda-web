@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -16,22 +16,26 @@ import HorizontalBar from './Drawer/HorizontalBar';
 import Loader from 'components/Loader';
 import AddCustomer from 'sections/apps/customer/AddCustomer';
 import Breadcrumbs from 'components/@extended/Breadcrumbs';
-import AuthGuard from 'utils/route-guard/AuthGuard';
 
 import { DRAWER_WIDTH, MenuOrientation } from 'config';
 import useConfig from 'hooks/useConfig';
 import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
+import { useCsoMenu } from 'hooks/cso-link/useCsoMenu';
+import { CsoAdminGuard, CsoMemberGuard } from 'utils/route-guard/cso-link';
 
 // ==============================|| MAIN LAYOUT ||============================== //
 
 export default function MainLayout() {
+  const location = useLocation();
+
   const theme = useTheme();
 
   const { menuMasterLoading } = useGetMenuMaster();
   const downXL = useMediaQuery(theme.breakpoints.down('xl'));
   const downLG = useMediaQuery(theme.breakpoints.down('lg'));
 
-  const { container, miniDrawer, menuOrientation } = useConfig();
+  const { container, miniDrawer } = useConfig();
+  const { menuOrientation } = useCsoMenu();
 
   const isHorizontal = menuOrientation === MenuOrientation.HORIZONTAL && !downLG;
 
@@ -45,8 +49,10 @@ export default function MainLayout() {
 
   if (menuMasterLoading) return <Loader />;
 
+  const RoleGuard = location.pathname.startsWith('/admin') ? CsoAdminGuard : CsoMemberGuard;
+
   return (
-    <AuthGuard>
+    <RoleGuard>
       <Box sx={{ display: 'flex', width: '100%' }}>
         <Header />
         {!isHorizontal ? <Drawer /> : <HorizontalBar />}
@@ -71,6 +77,6 @@ export default function MainLayout() {
         </Box>
         <AddCustomer />
       </Box>
-    </AuthGuard>
+    </RoleGuard>
   );
 }

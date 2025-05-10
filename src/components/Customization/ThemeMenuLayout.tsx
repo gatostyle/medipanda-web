@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 // project-imports
 import MainCard from 'components/MainCard';
 import useConfig from 'hooks/useConfig';
+import { useCsoMenu } from 'hooks/cso-link/useCsoMenu';
 
 import { MenuOrientation } from 'config';
 import { handlerDrawerOpen } from 'api/menu';
@@ -25,12 +26,14 @@ export default function ThemeMenuLayout() {
   const theme = useTheme();
   const downLG = useMediaQuery(theme.breakpoints.down('lg'));
 
-  const { menuOrientation, onChangeMenuOrientation, onChangeMiniDrawer } = useConfig();
+  const { onChangeMiniDrawer } = useConfig();
+  const { menuOrientation } = useCsoMenu();
+  const { setMenuOrientation } = useCsoMenu();
   const isHorizontal = menuOrientation === MenuOrientation.HORIZONTAL && !downLG;
 
   const handleContainerChange = (e: any) => {
     onChangeMiniDrawer(true);
-    onChangeMenuOrientation(e.target.value);
+    setMenuOrientation(e.target.value);
     handlerDrawerOpen(e.target.value !== MenuOrientation.HORIZONTAL);
   };
 

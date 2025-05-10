@@ -1,4 +1,4 @@
-import { MenuOrientation, ThemeMode, ThemeDirection } from 'config';
+import { ThemeMode, ThemeDirection } from 'config';
 
 export type FontFamily =
   | `Inter var`
@@ -36,14 +36,6 @@ export type DefaultConfigProps = {
    * 'zh'
    */
   i18n: I18n;
-
-  /**
-   * the props used for menu orientation (diffrent theme layout).
-   * we provide static below options -
-   * 'vertical' (default)
-   * 'horizontal'
-   */
-  menuOrientation: MenuOrientation;
 
   /**
    * the props used for show/hide caption drawer
@@ -114,7 +106,6 @@ export type CustomizationProps = {
   i18n: I18n;
   miniDrawer: boolean;
   container: boolean;
-  menuOrientation: MenuOrientation;
   menuCaption: boolean;
   mode: ThemeMode;
   presetColor: PresetColor;
@@ -126,7 +117,6 @@ export type CustomizationProps = {
   onChangePresetColor: (theme: PresetColor) => void;
   onChangeDirection: (direction: ThemeDirection) => void;
   onChangeMiniDrawer: (miniDrawer: boolean) => void;
-  onChangeMenuOrientation: (menuOrientation: MenuOrientation) => void;
   onChangeMenuCaption: VoidFunction;
   onChangeFontFamily: (fontFamily: FontFamily) => void;
   onChangeContrast: VoidFunction;

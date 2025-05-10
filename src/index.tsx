@@ -39,6 +39,7 @@ import '@fontsource/public-sans/700.css';
 // project-imports
 import App from './App';
 import { ConfigProvider } from 'contexts/ConfigContext';
+import { CsoMenuProvider } from 'contexts/cso-link/CsoMenuContext';
 import reportWebVitals from './reportWebVitals';
 
 const container = document.getElementById('root');
@@ -48,7 +49,9 @@ const root = createRoot(container!);
 
 root.render(
   <ConfigProvider>
-    <App />
+    <CsoMenuProvider>
+      <App />
+    </CsoMenuProvider>
   </ConfigProvider>
 );
 

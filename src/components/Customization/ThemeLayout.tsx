@@ -15,6 +15,7 @@ import MainCard from 'components/MainCard';
 
 import { MenuOrientation, ThemeDirection } from 'config';
 import useConfig from 'hooks/useConfig';
+import { useCsoMenu } from 'hooks/cso-link/useCsoMenu';
 import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
 
 // assets
@@ -28,7 +29,8 @@ export default function ThemeLayout() {
   const theme = useTheme();
   const downLG = useMediaQuery(theme.breakpoints.down('lg'));
 
-  const { miniDrawer, themeDirection, onChangeDirection, onChangeMiniDrawer, menuOrientation } = useConfig();
+  const { miniDrawer, themeDirection, onChangeDirection, onChangeMiniDrawer } = useConfig();
+  const { menuOrientation } = useCsoMenu();
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
 

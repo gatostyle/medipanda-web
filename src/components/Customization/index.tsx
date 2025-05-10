@@ -26,6 +26,7 @@ import SimpleBar from 'components/third-party/SimpleBar';
 
 import { HEADER_HEIGHT } from 'config';
 import useConfig from 'hooks/useConfig';
+import { useCsoMenu } from 'hooks/cso-link/useCsoMenu';
 
 // assets
 import { Add, Setting2 } from 'iconsax-react';
@@ -34,7 +35,8 @@ import { Add, Setting2 } from 'iconsax-react';
 
 export default function Customization() {
   const theme = useTheme();
-  const { container, mode, presetColor, miniDrawer, themeDirection, menuOrientation, menuCaption, themeContrast, fontFamily } = useConfig();
+  const { container, mode, presetColor, miniDrawer, themeDirection, menuCaption, themeContrast, fontFamily } = useConfig();
+  const { menuOrientation } = useCsoMenu();
 
   // eslint-disable-next-line
   const themeLayout = useMemo(() => <ThemeLayout />, [miniDrawer, themeDirection]);

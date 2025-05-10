@@ -1,5 +1,6 @@
 import { useEffect, useState, Dispatch, Fragment, MouseEvent, SetStateAction } from 'react';
 import { matchPath, useLocation } from 'react-router';
+import { Link } from 'react-router-dom';
 
 // material-ui
 import { useTheme, styled } from '@mui/material/styles';
@@ -33,6 +34,7 @@ import { More2 } from 'iconsax-react';
 
 // types
 import { NavItemType } from 'types/menu';
+import { useCsoMenu } from 'hooks/cso-link/useCsoMenu';
 
 interface Props {
   item: NavItemType;
@@ -92,7 +94,8 @@ export default function NavGroup({
   const theme = useTheme();
   const { pathname } = useLocation();
 
-  const { mode, menuOrientation, menuCaption } = useConfig();
+  const { mode, menuCaption } = useConfig();
+  const { menuOrientation } = useCsoMenu();
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
 
@@ -294,6 +297,8 @@ export default function NavGroup({
       ) : (
         <List>
           <ListItemButton
+            component={currentItem.type === 'item' ? (Link as any) : undefined}
+            to={currentItem.type === 'item' ? currentItem.url : undefined}
             selected={isSelected}
             sx={{
               p: 1,
@@ -305,7 +310,10 @@ export default function NavGroup({
               borderRadius: 1
             }}
             onMouseEnter={handleClick}
-            onClick={handleClick}
+            onClick={(event: any) => {
+              setSelectedID(currentItem.id);
+              handleClick(event);
+            }}
             onMouseLeave={handleClose}
             aria-describedby={popperId}
           >
@@ -322,7 +330,7 @@ export default function NavGroup({
                 </Typography>
               }
             />
-            {anchorEl && (
+            {anchorEl && currentItem.type === 'group' && (
               <PopperStyled id={popperId} open={openMini} anchorEl={anchorEl} placement="bottom-start" style={{ zIndex: 2001 }}>
                 {({ TransitionProps }) => (
                   <Transitions in={openMini} {...TransitionProps}>

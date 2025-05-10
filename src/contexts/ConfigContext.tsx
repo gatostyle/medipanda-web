@@ -1,7 +1,7 @@
 import { createContext, ReactNode } from 'react';
 
 // project-imports
-import config, { MenuOrientation, ThemeDirection, ThemeMode } from 'config';
+import config, { ThemeDirection, ThemeMode } from 'config';
 import useLocalStorage from 'hooks/useLocalStorage';
 
 // types
@@ -16,7 +16,6 @@ const initialState: CustomizationProps = {
   onChangePresetColor: () => {},
   onChangeDirection: () => {},
   onChangeMiniDrawer: () => {},
-  onChangeMenuOrientation: () => {},
   onChangeMenuCaption: () => {},
   onChangeFontFamily: () => {},
   onChangeContrast: () => {}
@@ -89,13 +88,6 @@ function ConfigProvider({ children }: ConfigProviderProps) {
     });
   };
 
-  const onChangeMenuOrientation = (layout: MenuOrientation) => {
-    setConfig({
-      ...config,
-      menuOrientation: layout
-    });
-  };
-
   const onChangeFontFamily = (fontFamily: FontFamily) => {
     setConfig({
       ...config,
@@ -113,7 +105,6 @@ function ConfigProvider({ children }: ConfigProviderProps) {
         onChangePresetColor,
         onChangeDirection,
         onChangeMiniDrawer,
-        onChangeMenuOrientation,
         onChangeMenuCaption,
         onChangeFontFamily,
         onChangeContrast

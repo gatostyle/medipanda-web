@@ -21,6 +21,7 @@ import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
 
 // types
 import { LinkTarget, NavItemType } from 'types/menu';
+import { useCsoMenu } from 'hooks/cso-link/useCsoMenu';
 
 interface Props {
   item: NavItemType;
@@ -36,7 +37,8 @@ export default function NavItem({ item, level, isParents = false }: Props) {
 
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
-  const { mode, menuOrientation } = useConfig();
+  const { mode } = useConfig();
+  const { menuOrientation } = useCsoMenu();
 
   let itemTarget: LinkTarget = '_self';
   if (item.target) {

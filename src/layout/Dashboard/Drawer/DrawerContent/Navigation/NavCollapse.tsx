@@ -32,6 +32,7 @@ import { ArrowDown2, ArrowUp2, ArrowRight2, Copy } from 'iconsax-react';
 
 // types
 import { NavItemType } from 'types/menu';
+import { useCsoMenu } from 'hooks/cso-link/useCsoMenu';
 
 type VirtualElement = {
   getBoundingClientRect: () => DOMRect;
@@ -76,7 +77,8 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
   const downLG = useMediaQuery(theme.breakpoints.down('lg'));
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
-  const { mode, menuOrientation } = useConfig();
+  const { mode } = useConfig();
+  const { menuOrientation } = useCsoMenu();
 
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<string | null | undefined>(null);

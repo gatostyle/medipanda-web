@@ -10,8 +10,8 @@ import MuiBreadcrumbs from '@mui/material/Breadcrumbs';
 
 // project-imports
 import MainCard from 'components/MainCard';
-import navigation from 'menu-items';
 import { ThemeDirection } from 'config';
+import { useCsoMenu } from 'hooks/cso-link/useCsoMenu';
 
 // assets
 import { ArrowRight2, Buildings2, Home3 } from 'iconsax-react';
@@ -69,6 +69,7 @@ export default function Breadcrumbs({
   const location = useLocation();
   const [main, setMain] = useState<NavItemType | undefined>();
   const [item, setItem] = useState<NavItemType>();
+  const { menuItems } = useCsoMenu();
 
   const iconSX = {
     marginRight: theme.direction === ThemeDirection.RTL ? 0 : theme.spacing(0.75),
@@ -86,7 +87,7 @@ export default function Breadcrumbs({
   }
 
   useEffect(() => {
-    navigation?.items?.map((menu: NavItemType) => {
+    menuItems.map((menu: NavItemType) => {
       if (menu.type && menu.type === 'group') {
         if (menu?.url && menu.url === customLocation) {
           setMain(menu);

@@ -95,7 +95,12 @@ export default function Button(theme: Theme) {
   const primaryDashed = getColorStyle({ variant: 'dashed', color: 'primary', theme });
   const primaryShadow = getColorStyle({ variant: 'shadow', color: 'primary', theme });
 
-  const disabledStyle = { '&.Mui-disabled': { backgroundColor: theme.palette.secondary[200] } };
+  const disabledStyle = {
+    '&.Mui-disabled': {
+      backgroundColor: theme.palette.secondary[200],
+      pointerEvents: 'none !important'
+    }
+  };
   const iconStyle = { '&>*:nth-of-type(1)': { fontSize: 'inherit' } };
 
   return {

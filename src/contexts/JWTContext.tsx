@@ -2,7 +2,6 @@ import React, { createContext, useEffect, useReducer } from 'react';
 
 // third-party
 import { Chance } from 'chance';
-import { jwtDecode } from 'jwt-decode';
 
 // reducer - state management
 import { LOGIN, LOGOUT } from 'contexts/auth-reducer/actions';
@@ -11,8 +10,11 @@ import authReducer from 'contexts/auth-reducer/auth';
 // project import
 import Loader from 'components/Loader';
 import axios from 'utils/axios';
-import { KeyedObject } from 'types/root';
 import { AuthProps, JWTContextType } from 'types/auth';
+import { useCsoMenu } from 'hooks/cso-link/useCsoMenu';
+import { MenuOrientation } from 'config';
+import { isAdmin } from 'api-definitions/CsoMemberRole';
+import { csoAdminMenu, csoMemberMenu } from 'menu-items/cso-link';
 
 const chance = new Chance();
 
@@ -23,54 +25,73 @@ const initialState: AuthProps = {
   user: null
 };
 
-const verifyToken: (st: string) => boolean = (serviceToken) => {
-  if (!serviceToken) {
-    return false;
-  }
-  const decoded: KeyedObject = jwtDecode(serviceToken);
-  /**
-   * Property 'exp' does not exist on type '<T = unknown>(token: string, options?: JwtDecodeOptions | undefined) => T'.
-   */
-  return decoded.exp > Date.now() / 1000;
-};
-
-const setSession = (serviceToken?: string | null) => {
-  if (serviceToken) {
-    localStorage.setItem('serviceToken', serviceToken);
-    axios.defaults.headers.common.Authorization = `Bearer ${serviceToken}`;
-  } else {
-    localStorage.removeItem('serviceToken');
-    delete axios.defaults.headers.common.Authorization;
-  }
-};
-
 // ==============================|| JWT CONTEXT & PROVIDER ||============================== //
+
+declare global {
+  interface Window {
+    sessionRefreshIntervalId: NodeJS.Timeout | null;
+  }
+}
+
+async function setSessionRefreshInterval() {
+  const clear = () => {
+    if (window.sessionRefreshIntervalId) {
+      clearInterval(window.sessionRefreshIntervalId);
+      window.sessionRefreshIntervalId = null;
+    }
+  };
+
+  const refresh = async () => {
+    const response = await axios.request({
+      url: '/v1/auth/refresh',
+      method: 'POST',
+      validateStatus: () => true
+    });
+
+    if (response.status !== 204) {
+      clear();
+      return false;
+    }
+
+    return true;
+  };
+
+  clear();
+
+  if (await refresh()) {
+    window.sessionRefreshIntervalId = setInterval(() => refresh(), 5 * 60 * 1_000);
+  }
+}
 
 const JWTContext = createContext<JWTContextType | null>(null);
 
 export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
+  const { setMenuOrientation, setMenuItems } = useCsoMenu();
 
   useEffect(() => {
     const init = async () => {
       try {
-        const serviceToken = window.localStorage.getItem('serviceToken');
-        if (serviceToken && verifyToken(serviceToken)) {
-          setSession(serviceToken);
-          const response = await axios.get('/api/account/me');
-          const { user } = response.data;
-          dispatch({
-            type: LOGIN,
-            payload: {
-              isLoggedIn: true,
-              user
-            }
-          });
+        const response = await axios.get('/v1/auth/me');
+        const user = response.data;
+
+        if (isAdmin(user)) {
+          setMenuOrientation(MenuOrientation.VERTICAL);
+          setMenuItems(csoAdminMenu);
         } else {
-          dispatch({
-            type: LOGOUT
-          });
+          setMenuOrientation(MenuOrientation.HORIZONTAL);
+          setMenuItems(csoMemberMenu);
         }
+
+        setSessionRefreshInterval();
+
+        dispatch({
+          type: LOGIN,
+          payload: {
+            isLoggedIn: true,
+            user
+          }
+        });
       } catch (err) {
         console.error(err);
         dispatch({
@@ -82,10 +103,20 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     init();
   }, []);
 
-  const login = async (email: string, password: string) => {
-    const response = await axios.post('/api/account/login', { email, password });
-    const { serviceToken, user } = response.data;
-    setSession(serviceToken);
+  const login = async (account: string, password: string) => {
+    const response = await axios.post('/v1/auth/login', { account, password });
+    const user = response.data;
+
+    if (isAdmin(user)) {
+      setMenuOrientation(MenuOrientation.VERTICAL);
+      setMenuItems(csoAdminMenu);
+    } else {
+      setMenuOrientation(MenuOrientation.HORIZONTAL);
+      setMenuItems(csoMemberMenu);
+    }
+
+    setSessionRefreshInterval();
+
     dispatch({
       type: LOGIN,
       payload: {
@@ -124,7 +155,8 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
   };
 
   const logout = () => {
-    setSession(null);
+    setMenuItems([]);
+    axios.post('/v1/auth/logout').catch();
     dispatch({ type: LOGOUT });
   };
 

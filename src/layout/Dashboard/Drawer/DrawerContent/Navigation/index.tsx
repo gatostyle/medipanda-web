@@ -10,18 +10,17 @@ import Typography from '@mui/material/Typography';
 // project-imports
 import NavItem from './NavItem';
 import NavGroup from './NavGroup';
-import menuItem from 'menu-items';
 import { MenuFromAPI } from 'menu-items/dashboard';
 
-import useConfig from 'hooks/useConfig';
 import { MenuOrientation, HORIZONTAL_MAX_ITEM } from 'config';
 import { useGetMenu, useGetMenuMaster } from 'api/menu';
 
 // types
 import { NavItemType } from 'types/menu';
+import { useCsoMenu } from 'hooks/cso-link/useCsoMenu';
 
-function isFound(arr: any, str: string) {
-  return arr.items.some((element: any) => {
+function isFound<T extends { id?: string }>(arr: T[], str: string) {
+  return arr.some((element: T) => {
     if (element.id === str) {
       return true;
     }
@@ -36,7 +35,7 @@ export default function Navigation() {
 
   const downLG = useMediaQuery(theme.breakpoints.down('lg'));
 
-  const { menuOrientation } = useConfig();
+  const { menuOrientation, menuItems: globalMenuItems } = useCsoMenu();
   const { menuLoading } = useGetMenu();
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
@@ -48,17 +47,15 @@ export default function Navigation() {
 
   let dashboardMenu = MenuFromAPI();
   useLayoutEffect(() => {
-    if (menuLoading && !isFound(menuItem, 'group-dashboard-loading')) {
-      menuItem.items.splice(0, 0, dashboardMenu);
-      setMenuItems({ items: [...menuItem.items] });
-    } else if (!menuLoading && dashboardMenu?.id !== undefined && !isFound(menuItem, 'group-dashboard')) {
-      menuItem.items.splice(0, 1, dashboardMenu);
-      setMenuItems({ items: [...menuItem.items] });
+    if (menuLoading && !isFound(globalMenuItems, 'group-dashboard-loading')) {
+      setMenuItems({ items: [...globalMenuItems] });
+    } else if (!menuLoading && dashboardMenu?.id !== undefined && !isFound(globalMenuItems, 'group-dashboard')) {
+      setMenuItems({ items: [...globalMenuItems] });
     } else {
-      setMenuItems({ items: [...menuItem.items] });
+      setMenuItems({ items: [...globalMenuItems] });
     }
     // eslint-disable-next-line
-  }, [menuLoading]);
+  }, [menuLoading, globalMenuItems]);
 
   const isHorizontal = menuOrientation === MenuOrientation.HORIZONTAL && !downLG;
 
@@ -91,6 +88,22 @@ export default function Navigation() {
             </Fragment>
           );
         }
+        return (
+          <NavGroup
+            key={item.id}
+            selectedID={selectedID}
+            setSelectedID={setSelectedID}
+            setSelectedItems={setSelectedItems}
+            setSelectedLevel={setSelectedLevel}
+            selectedLevel={selectedLevel}
+            selectedItems={selectedItems}
+            lastItem={lastItem!}
+            remItems={remItems}
+            lastItemId={lastItemId}
+            item={item}
+          />
+        );
+      case 'item':
         return (
           <NavGroup
             key={item.id}

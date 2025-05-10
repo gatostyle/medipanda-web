@@ -7,7 +7,7 @@ import DrawerHeaderStyled from './DrawerHeaderStyled';
 
 import Logo from 'components/logo';
 import { DRAWER_WIDTH, HEADER_HEIGHT, MenuOrientation } from 'config';
-import useConfig from 'hooks/useConfig';
+import { useCsoMenu } from 'hooks/cso-link/useCsoMenu';
 
 interface Props {
   open: boolean;
@@ -19,7 +19,7 @@ export default function DrawerHeader({ open }: Props) {
   const theme = useTheme();
   const downLG = useMediaQuery(theme.breakpoints.down('lg'));
 
-  const { menuOrientation } = useConfig();
+  const { menuOrientation } = useCsoMenu();
   const isHorizontal = menuOrientation === MenuOrientation.HORIZONTAL && !downLG;
 
   return (

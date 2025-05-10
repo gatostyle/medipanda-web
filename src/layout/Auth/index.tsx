@@ -1,14 +1,14 @@
 import { Outlet } from 'react-router-dom';
 
 // project import
-import GuestGuard from 'utils/route-guard/GuestGuard';
+import { CsoGuestGuard } from 'utils/route-guard/cso-link';
 
 // ==============================|| LAYOUT - AUTH ||============================== //
 
 export default function AuthLayout() {
   return (
-    <GuestGuard>
+    <CsoGuestGuard>
       <Outlet />
-    </GuestGuard>
+    </CsoGuestGuard>
   );
 }

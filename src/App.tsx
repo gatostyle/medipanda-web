@@ -7,7 +7,6 @@ import ThemeCustomization from 'themes';
 import Locales from 'components/Locales';
 import RTLLayout from 'components/RTLLayout';
 import ScrollTop from 'components/ScrollTop';
-import Customization from 'components/Customization';
 import Snackbar from 'components/@extended/Snackbar';
 import Notistack from 'components/third-party/Notistack';
 
@@ -29,7 +28,6 @@ export default function App() {
               <>
                 <Notistack>
                   <RouterProvider router={router} />
-                  <Customization />
                   <Snackbar />
                 </Notistack>
               </>

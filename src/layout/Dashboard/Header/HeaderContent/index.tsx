@@ -18,11 +18,13 @@ import FullScreen from './FullScreen';
 import { MenuOrientation } from 'config';
 import useConfig from 'hooks/useConfig';
 import DrawerHeader from 'layout/Dashboard/Drawer/DrawerHeader';
+import { useCsoMenu } from 'hooks/cso-link/useCsoMenu';
 
 // ==============================|| HEADER - CONTENT ||============================== //
 
 export default function HeaderContent() {
-  const { i18n, menuOrientation } = useConfig();
+  const { i18n } = useConfig();
+  const { menuOrientation } = useCsoMenu();
 
   const downLG = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
 

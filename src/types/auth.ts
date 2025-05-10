@@ -17,6 +17,7 @@ export type UserProfile = {
   name?: string;
   role?: string;
   tier?: string;
+  roles: string[];
 };
 
 export interface AuthProps {
