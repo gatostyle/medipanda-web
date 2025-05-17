@@ -11,7 +11,7 @@ import MuiBreadcrumbs from '@mui/material/Breadcrumbs';
 // project-imports
 import MainCard from 'components/MainCard';
 import { ThemeDirection } from 'config';
-import { useCsoMenu } from 'hooks/cso-link/useCsoMenu';
+import { useMpMenu } from 'hooks/medipanda/useMpMenu';
 
 // assets
 import { ArrowRight2, Buildings2, Home3 } from 'iconsax-react';
@@ -69,7 +69,7 @@ export default function Breadcrumbs({
   const location = useLocation();
   const [main, setMain] = useState<NavItemType | undefined>();
   const [item, setItem] = useState<NavItemType>();
-  const { menuItems } = useCsoMenu();
+  const { menuItems } = useMpMenu();
 
   const iconSX = {
     marginRight: theme.direction === ThemeDirection.RTL ? 0 : theme.spacing(0.75),

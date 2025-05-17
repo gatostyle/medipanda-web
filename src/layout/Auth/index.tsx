@@ -1,14 +1,14 @@
 import { Outlet } from 'react-router-dom';
 
 // project import
-import { CsoGuestGuard } from 'utils/route-guard/cso-link';
+import { MpGuestGuard } from 'utils/route-guard/medipanda';
 
 // ==============================|| LAYOUT - AUTH ||============================== //
 
 export default function AuthLayout() {
   return (
-    <CsoGuestGuard>
+    <MpGuestGuard>
       <Outlet />
-    </CsoGuestGuard>
+    </MpGuestGuard>
   );
 }

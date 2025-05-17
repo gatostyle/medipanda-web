@@ -18,13 +18,13 @@ import FullScreen from './FullScreen';
 import { MenuOrientation } from 'config';
 import useConfig from 'hooks/useConfig';
 import DrawerHeader from 'layout/Dashboard/Drawer/DrawerHeader';
-import { useCsoMenu } from 'hooks/cso-link/useCsoMenu';
+import { useMpMenu } from 'hooks/medipanda/useMpMenu';
 
 // ==============================|| HEADER - CONTENT ||============================== //
 
 export default function HeaderContent() {
   const { i18n } = useConfig();
-  const { menuOrientation } = useCsoMenu();
+  const { menuOrientation } = useMpMenu();
 
   const downLG = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
 

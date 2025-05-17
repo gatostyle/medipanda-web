@@ -17,7 +17,7 @@ import { DRAWER_WIDTH, MINI_DRAWER_WIDTH, MenuOrientation, ThemeMode } from 'con
 
 // assets
 import { HambergerMenu } from 'iconsax-react';
-import { useCsoMenu } from 'hooks/cso-link/useCsoMenu';
+import { useMpMenu } from 'hooks/medipanda/useMpMenu';
 
 // ==============================|| MAIN LAYOUT - HEADER ||============================== //
 
@@ -26,7 +26,7 @@ export default function Header() {
   const downLG = useMediaQuery(theme.breakpoints.down('lg'));
 
   const { mode } = useConfig();
-  const { menuOrientation } = useCsoMenu();
+  const { menuOrientation } = useMpMenu();
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
 

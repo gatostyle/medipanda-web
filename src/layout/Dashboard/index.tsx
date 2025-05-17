@@ -20,8 +20,8 @@ import Breadcrumbs from 'components/@extended/Breadcrumbs';
 import { DRAWER_WIDTH, MenuOrientation } from 'config';
 import useConfig from 'hooks/useConfig';
 import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
-import { useCsoMenu } from 'hooks/cso-link/useCsoMenu';
-import { CsoAdminGuard, CsoMemberGuard } from 'utils/route-guard/cso-link';
+import { useMpMenu } from 'hooks/medipanda/useMpMenu';
+import { MpAdminGuard, MpMemberGuard } from 'utils/route-guard/medipanda';
 
 // ==============================|| MAIN LAYOUT ||============================== //
 
@@ -35,7 +35,7 @@ export default function MainLayout() {
   const downLG = useMediaQuery(theme.breakpoints.down('lg'));
 
   const { container, miniDrawer } = useConfig();
-  const { menuOrientation } = useCsoMenu();
+  const { menuOrientation } = useMpMenu();
 
   const isHorizontal = menuOrientation === MenuOrientation.HORIZONTAL && !downLG;
 
@@ -49,7 +49,7 @@ export default function MainLayout() {
 
   if (menuMasterLoading) return <Loader />;
 
-  const RoleGuard = location.pathname.startsWith('/admin') ? CsoAdminGuard : CsoMemberGuard;
+  const RoleGuard = location.pathname.startsWith('/admin') ? MpAdminGuard : MpMemberGuard;
 
   return (
     <RoleGuard>

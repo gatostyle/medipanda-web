@@ -1,0 +1,34 @@
+import { createContext, ReactNode, useState } from 'react';
+import { NavItemType } from 'types/menu';
+import { MenuOrientation } from 'config';
+
+const initialState = {
+  menuItems: [] as NavItemType[],
+  menuOrientation: MenuOrientation.VERTICAL,
+  setMenuItems: (menuItems: NavItemType[]) => {},
+  setMenuOrientation: (menuOrientation: MenuOrientation) => {}
+};
+
+export const MpMenuContext = createContext(initialState);
+
+type MpMenuProviderProps = {
+  children: ReactNode;
+};
+
+export function MpMenuProvider({ children }: MpMenuProviderProps) {
+  const [menuItems, setMenuItems] = useState(initialState.menuItems);
+  const [menuOrientation, setMenuOrientation] = useState(initialState.menuOrientation);
+
+  return (
+    <MpMenuContext.Provider
+      value={{
+        menuItems,
+        menuOrientation,
+        setMenuItems,
+        setMenuOrientation
+      }}
+    >
+      {children}
+    </MpMenuContext.Provider>
+  );
+}

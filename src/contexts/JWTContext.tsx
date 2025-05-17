@@ -11,10 +11,10 @@ import authReducer from 'contexts/auth-reducer/auth';
 import Loader from 'components/Loader';
 import axios from 'utils/axios';
 import { AuthProps, JWTContextType } from 'types/auth';
-import { useCsoMenu } from 'hooks/cso-link/useCsoMenu';
+import { useMpMenu } from 'hooks/medipanda/useMpMenu';
 import { MenuOrientation } from 'config';
-import { isAdmin } from 'api-definitions/CsoMemberRole';
-import { csoAdminMenu, csoMemberMenu } from 'menu-items/cso-link';
+import { isAdmin } from 'api-definitions/MpMemberRole';
+import { mpAdminMenu, mpMemberMenu } from 'menu-items/medipanda';
 
 const chance = new Chance();
 
@@ -67,7 +67,7 @@ const JWTContext = createContext<JWTContextType | null>(null);
 
 export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
-  const { setMenuOrientation, setMenuItems } = useCsoMenu();
+  const { setMenuOrientation, setMenuItems } = useMpMenu();
 
   useEffect(() => {
     const init = async () => {
@@ -77,10 +77,10 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
 
         if (isAdmin(user)) {
           setMenuOrientation(MenuOrientation.VERTICAL);
-          setMenuItems(csoAdminMenu);
+          setMenuItems(mpAdminMenu);
         } else {
           setMenuOrientation(MenuOrientation.HORIZONTAL);
-          setMenuItems(csoMemberMenu);
+          setMenuItems(mpMemberMenu);
         }
 
         setSessionRefreshInterval();
@@ -109,10 +109,10 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
 
     if (isAdmin(user)) {
       setMenuOrientation(MenuOrientation.VERTICAL);
-      setMenuItems(csoAdminMenu);
+      setMenuItems(mpAdminMenu);
     } else {
       setMenuOrientation(MenuOrientation.HORIZONTAL);
-      setMenuItems(csoMemberMenu);
+      setMenuItems(mpMemberMenu);
     }
 
     setSessionRefreshInterval();

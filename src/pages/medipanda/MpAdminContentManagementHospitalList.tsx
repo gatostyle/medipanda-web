@@ -1,0 +1,13 @@
+import Grid from '@mui/material/Grid';
+
+export default function MpAdminContentManagementHospitalList() {
+  return (
+    <>
+      <Grid container>
+        <Grid item xs={12}>
+          <h2>콘텐츠관리/개업병원페이지</h2>
+        </Grid>
+      </Grid>
+    </>
+  );
+}

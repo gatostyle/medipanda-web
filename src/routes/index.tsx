@@ -1,10 +1,10 @@
 import { createBrowserRouter } from 'react-router-dom';
 
 // project-imports
-import { CsoRoutes } from './cso-link/CsoRoutes';
+import { MpRoutes } from 'routes/medipanda/MpRoutes';
 
 // ==============================|| ROUTES RENDER ||============================== //
 
-const router = createBrowserRouter([CsoRoutes], { basename: import.meta.env.VITE_APP_BASE_NAME });
+const router = createBrowserRouter([MpRoutes], { basename: import.meta.env.VITE_APP_BASE_NAME });
 
 export default router;

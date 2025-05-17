@@ -17,7 +17,7 @@ import { useGetMenu, useGetMenuMaster } from 'api/menu';
 
 // types
 import { NavItemType } from 'types/menu';
-import { useCsoMenu } from 'hooks/cso-link/useCsoMenu';
+import { useMpMenu } from 'hooks/medipanda/useMpMenu';
 
 function isFound<T extends { id?: string }>(arr: T[], str: string) {
   return arr.some((element: T) => {
@@ -35,7 +35,7 @@ export default function Navigation() {
 
   const downLG = useMediaQuery(theme.breakpoints.down('lg'));
 
-  const { menuOrientation, menuItems: globalMenuItems } = useCsoMenu();
+  const { menuOrientation, menuItems: globalMenuItems } = useMpMenu();
   const { menuLoading } = useGetMenu();
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
