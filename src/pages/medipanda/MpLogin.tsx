@@ -18,17 +18,17 @@ export default function MpLogin() {
 
   const { values, touched, errors, isSubmitting, handleChange, handleBlur, handleSubmit } = useFormik({
     initialValues: {
-      account: '',
+      userId: '',
       password: '',
       submit: null
     },
     validationSchema: Yup.object().shape({
-      account: Yup.string().email('이메일 주소를 다시 확인해 주세요.').required('아이디를 입력해 주세요.'),
+      userId: Yup.string().required('아이디를 입력해 주세요.'),
       password: Yup.string().required('비밀번호를 입력해 주세요.')
     }),
     onSubmit: async (values, { setErrors }) => {
       try {
-        await login(values.account, values.password);
+        await login(values.userId, values.password);
       } catch (e: any) {
         setErrors({ submit: `오류: ${JSON.stringify(e)}` });
       }
@@ -52,17 +52,17 @@ export default function MpLogin() {
         <Grid item xs={12}>
           <Stack spacing={1}>
             <OutlinedInput
-              type="account"
-              value={values.account}
-              name="account"
+              type="userId"
+              value={values.userId}
+              name="userId"
               onBlur={handleBlur}
               onChange={handleChange}
               placeholder="이메일"
               fullWidth
-              error={Boolean(touched.account && errors.account)}
+              error={Boolean(touched.userId && errors.userId)}
             />
           </Stack>
-          {touched.account && errors.account && <FormHelperText error>{errors.account}</FormHelperText>}
+          {touched.userId && errors.userId && <FormHelperText error>{errors.userId}</FormHelperText>}
         </Grid>
         <Grid item xs={12}>
           <Stack spacing={1}>

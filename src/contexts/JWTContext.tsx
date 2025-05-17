@@ -15,6 +15,7 @@ import { useMpMenu } from 'hooks/medipanda/useMpMenu';
 import { MenuOrientation } from 'config';
 import { isAdmin } from 'api-definitions/MpMemberRole';
 import { mpAdminMenu, mpMemberMenu } from 'menu-items/medipanda';
+import { encryptRSA } from 'utils/medipanda/rsa';
 
 const chance = new Chance();
 
@@ -103,8 +104,15 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     init();
   }, []);
 
-  const login = async (account: string, password: string) => {
-    const response = await axios.post('/v1/auth/login', { account, password });
+  const login = async (userId: string, password: string) => {
+    const response = await axios.request({
+      method: 'POST',
+      url: '/v1/auth/login',
+      data: {
+        userId,
+        password: await encryptRSA(password)
+      }
+    });
     const user = response.data;
 
     if (isAdmin(user)) {
