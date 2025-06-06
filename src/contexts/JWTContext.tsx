@@ -13,7 +13,7 @@ import axios from 'utils/axios';
 import { AuthProps, JWTContextType } from 'types/auth';
 import { useMpMenu } from 'hooks/medipanda/useMpMenu';
 import { MenuOrientation } from 'config';
-import { isAdmin } from 'api-definitions/MpMemberRole';
+import { isAdmin } from 'api-definitions';
 import { mpAdminMenu, mpMemberMenu } from 'menu-items/medipanda';
 import { encryptRSA } from 'utils/medipanda/rsa';
 
@@ -73,8 +73,23 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
   useEffect(() => {
     const init = async () => {
       try {
-        const response = await axios.get('/v1/auth/me');
-        const user = response.data;
+        let user;
+        let fullUserData;
+
+        if (import.meta.env.VITE_SKIP_LOGIN === 'true') {
+          console.log('🔧 Mock mode: Skipping login process and using mock user');
+          user = { roles: ['ADMIN'] };
+          fullUserData = {
+            roles: ['ADMIN'],
+            id: 'mock-user-id',
+            email: 'mock@example.com',
+            name: 'Mock User'
+          };
+        } else {
+          const response = await axios.get('/v1/auth/me');
+          user = response.data;
+          fullUserData = user;
+        }
 
         if (isAdmin(user)) {
           setMenuOrientation(MenuOrientation.VERTICAL);
@@ -84,13 +99,15 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
           setMenuItems(mpMemberMenu);
         }
 
-        setSessionRefreshInterval();
+        if (import.meta.env.VITE_SKIP_LOGIN !== 'true') {
+          setSessionRefreshInterval();
+        }
 
         dispatch({
           type: LOGIN,
           payload: {
             isLoggedIn: true,
-            user
+            user: fullUserData
           }
         });
       } catch (err) {
