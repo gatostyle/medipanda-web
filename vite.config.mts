@@ -40,6 +40,11 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true
         }
       }
+    },
+    esbuild: {
+      supported: {
+        'top-level-await': true
+      }
     }
   };
 });
