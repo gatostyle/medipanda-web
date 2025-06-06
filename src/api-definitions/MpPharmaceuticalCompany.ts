@@ -13,6 +13,17 @@ export interface MpPharmaceuticalCompany {
   sequence: number;
 }
 
+export interface MpPharmaceuticalCompanyDetail {
+  id: number;
+  companyName: string;
+  businessRegistrationNo: string;
+  totalQuantity: number;
+  settlementDay: string;
+  contractManager: string;
+  phoneNumber: string;
+  contractDate: string;
+}
+
 export interface MpPharmaceuticalCompanySearchRequest extends MpPagedRequest<MpPharmaceuticalCompany> {
   searchKeyword?: string;
 }
@@ -42,5 +53,25 @@ export const mpFetchPharmaceuticalCompanies = async (
     },
     totalPages: Math.ceil(filteredCompanies.length / request.size),
     totalElements: filteredCompanies.length
+  };
+};
+
+export const mpFetchPharmaceuticalCompanyDetail = async (companyId: number): Promise<MpPharmaceuticalCompanyDetail> => {
+  await delay(300);
+
+  const company = mockPharmaceuticalCompanies[companyId];
+  if (!company) {
+    throw new Error(`제약사 ID ${companyId}를 찾을 수 없습니다.`);
+  }
+
+  return {
+    id: company.id,
+    companyName: company.companyName,
+    businessRegistrationNo: `${110 + company.id}-${10200 + company.id}`,
+    totalQuantity: company.totalQuantity,
+    settlementDay: company.manager,
+    contractManager: company.managerName,
+    phoneNumber: '010-xxxx-xxxx',
+    contractDate: company.contractDate
   };
 };

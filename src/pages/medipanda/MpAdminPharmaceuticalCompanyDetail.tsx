@@ -23,6 +23,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { Edit } from 'iconsax-react';
 import { useMpNotImplementedDialog } from 'hooks/medipanda/useMpNotImplementedDialog';
 import { useMpErrorDialog } from 'hooks/medipanda/useMpErrorDialog';
+import { mpFetchPharmaceuticalCompanyDetail, MpPharmaceuticalCompanyDetail } from 'api-definitions/MpPharmaceuticalCompany';
 import {
   mpFetchPharmaceuticalCompanyFeeRanges,
   mpFetchPharmaceuticalCompanyIssues,
@@ -40,6 +41,7 @@ export default function MpAdminPharmaceuticalCompanyDetail() {
   });
   const [showIssueForm, setShowIssueForm] = useState(false);
   const [issueSearchStatus, setIssueSearchStatus] = useState('상태');
+  const [companyData, setCompanyData] = useState<MpPharmaceuticalCompanyDetail | null>(null);
   const [feeRanges, setFeeRanges] = useState<MpPharmaceuticalCompanyFeeRange[]>([]);
   const [issues, setIssues] = useState<MpPharmaceuticalCompanyIssue[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -79,12 +81,17 @@ export default function MpAdminPharmaceuticalCompanyDetail() {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!id) return;
+
       setIsLoading(true);
       try {
-        const [feeRangesData, issuesData] = await Promise.all([
-          mpFetchPharmaceuticalCompanyFeeRanges({ companyId: id ? parseInt(id) : undefined }),
-          mpFetchPharmaceuticalCompanyIssues({ companyId: id ? parseInt(id) : undefined })
+        const companyId = parseInt(id);
+        const [companyDetailData, feeRangesData, issuesData] = await Promise.all([
+          mpFetchPharmaceuticalCompanyDetail(companyId),
+          mpFetchPharmaceuticalCompanyFeeRanges({ companyId }),
+          mpFetchPharmaceuticalCompanyIssues({ companyId })
         ]);
+        setCompanyData(companyDetailData);
         setFeeRanges(feeRangesData);
         setIssues(issuesData);
       } catch (error) {
@@ -98,20 +105,21 @@ export default function MpAdminPharmaceuticalCompanyDetail() {
     fetchData();
   }, [id, showError]);
 
-  const companyData = {
-    companyName: '진일바이오팜',
-    businessRegistrationNo: '110-10202',
-    totalQuantity: 30,
-    settlementDay: '매달 15일',
-    contractManager: '홍길동',
-    phoneNumber: '010-xxxx-xxxx',
-    contractDate: '2025-04-09'
-  };
-
   if (isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
         <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (!companyData) {
+    return (
+      <Box sx={{ p: 3 }}>
+        <Typography variant="h4" sx={{ fontSize: '24px', fontWeight: 600, mb: 3 }}>
+          제약사 상세
+        </Typography>
+        <Typography>제약사 정보를 찾을 수 없습니다.</Typography>
       </Box>
     );
   }
