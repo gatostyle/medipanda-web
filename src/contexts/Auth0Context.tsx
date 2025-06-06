@@ -51,7 +51,8 @@ export const Auth0Provider = ({ children }: { children: ReactElement }) => {
               isLoggedIn: true,
               user: {
                 id: user?.sub,
-                email: user?.email
+                email: user?.email,
+                roles: []
               }
             }
           });
@@ -85,7 +86,8 @@ export const Auth0Provider = ({ children }: { children: ReactElement }) => {
             avatar: user?.picture,
             email: user?.email,
             name: user?.name,
-            tier: 'Premium'
+            tier: 'Premium',
+            roles: []
           }
         }
       });

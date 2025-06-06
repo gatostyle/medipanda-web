@@ -40,6 +40,8 @@ import '@fontsource/public-sans/700.css';
 import App from './App';
 import { ConfigProvider } from 'contexts/ConfigContext';
 import { MpMenuProvider } from 'contexts/medipanda/MpMenuContext';
+import { MpErrorDialogProvider } from './contexts/medipanda/MpErrorDialogContext';
+import { MpNotImplementedDialogProvider } from './contexts/medipanda/MpNotImplementedDialogContext';
 import reportWebVitals from './reportWebVitals';
 
 const container = document.getElementById('root');
@@ -50,7 +52,11 @@ const root = createRoot(container!);
 root.render(
   <ConfigProvider>
     <MpMenuProvider>
-      <App />
+      <MpErrorDialogProvider>
+        <MpNotImplementedDialogProvider>
+          <App />
+        </MpNotImplementedDialogProvider>
+      </MpErrorDialogProvider>
     </MpMenuProvider>
   </ConfigProvider>
 );

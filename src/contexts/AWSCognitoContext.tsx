@@ -49,7 +49,8 @@ export const AWSCognitoProvider = ({ children }: { children: ReactElement }) => 
             payload: {
               isLoggedIn: true,
               user: {
-                name: 'Betty'
+                name: 'Betty',
+                roles: []
               }
             }
           });
@@ -91,7 +92,8 @@ export const AWSCognitoProvider = ({ children }: { children: ReactElement }) => 
               isLoggedIn: true,
               user: {
                 email: authData.getUsername(),
-                name: 'John AWS'
+                name: 'John AWS',
+                roles: []
               }
             }
           });

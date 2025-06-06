@@ -13,7 +13,7 @@ import axios from 'utils/axios';
 import { AuthProps, JWTContextType } from 'types/auth';
 import { useMpMenu } from 'hooks/medipanda/useMpMenu';
 import { MenuOrientation } from 'config';
-import { isAdmin } from 'api-definitions';
+import { isAdmin } from 'api-definitions/MpMemberRole';
 import { mpAdminMenu, mpMemberMenu } from 'menu-items/medipanda';
 import { encryptRSA } from 'utils/medipanda/rsa';
 
@@ -76,7 +76,7 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
         let user;
         let fullUserData;
 
-        if (import.meta.env.VITE_SKIP_LOGIN === 'true') {
+        if (import.meta.env.VITE_MOCK_AUTH_MODE === 'true') {
           console.log('🔧 Mock mode: Skipping login process and using mock user');
           user = { roles: ['ADMIN'] };
           fullUserData = {
@@ -99,7 +99,7 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
           setMenuItems(mpMemberMenu);
         }
 
-        if (import.meta.env.VITE_SKIP_LOGIN !== 'true') {
+        if (import.meta.env.VITE_MOCK_AUTH_MODE !== 'true') {
           setSessionRefreshInterval();
         }
 

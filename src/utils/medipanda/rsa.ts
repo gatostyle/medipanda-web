@@ -13,7 +13,7 @@ WQIDAQAB
 }
 
 const pem = await (async (): Promise<string> => {
-  if (import.meta.env.VITE_SKIP_LOGIN === 'true') {
+  if (import.meta.env.VITE_MOCK_AUTH_MODE === 'true') {
     return getMockPublicKey();
   }
 

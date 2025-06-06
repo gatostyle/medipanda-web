@@ -13,15 +13,23 @@ const MpMemberAdjustmentList = Loadable(lazy(() => import('pages/medipanda/MpMem
 const MpMemberCommunity = Loadable(lazy(() => import('pages/medipanda/MpMemberCommunity')));
 
 const MpAdminMemberList = Loadable(lazy(() => import('pages/medipanda/MpAdminMemberList')));
+const MpAdminMemberEdit = Loadable(lazy(() => import('pages/medipanda/MpAdminMemberEdit')));
 const MpAdminProductList = Loadable(lazy(() => import('pages/medipanda/MpAdminProductList')));
 const MpAdminBusinessLineList = Loadable(lazy(() => import('pages/medipanda/MpAdminBusinessLineList')));
+const MpAdminBusinessLineEdit = Loadable(lazy(() => import('pages/medipanda/MpAdminBusinessLineEdit')));
 const MpAdminPharmaceuticalCompanyList = Loadable(lazy(() => import('pages/medipanda/MpAdminPharmaceuticalCompanyList')));
+const MpAdminPharmaceuticalCompanyDetail = Loadable(lazy(() => import('pages/medipanda/MpAdminPharmaceuticalCompanyDetail')));
 const MpAdminPharmaceuticalProductList = Loadable(lazy(() => import('pages/medipanda/MpAdminPharmaceuticalProductList')));
+const MpAdminPharmaceuticalProductDetail = Loadable(lazy(() => import('pages/medipanda/MpAdminPharmaceuticalProductDetail')));
 const MpAdminPrescriptionReceptionList = Loadable(lazy(() => import('pages/medipanda/MpAdminPrescriptionReceptionList')));
 const MpAdminPrescriptionFormList = Loadable(lazy(() => import('pages/medipanda/MpAdminPrescriptionFormList')));
+const MpAdminPrescriptionFormRegister = Loadable(lazy(() => import('pages/medipanda/MpAdminPrescriptionFormRegister')));
+const MpAdminPrescriptionFormProducts = Loadable(lazy(() => import('pages/medipanda/MpAdminPrescriptionFormProducts')));
 const MpAdminAdjustmentApprovedList = Loadable(lazy(() => import('pages/medipanda/MpAdminAdjustmentApprovedList')));
+const MpAdminAdjustmentApprovedDetail = Loadable(lazy(() => import('pages/medipanda/MpAdminAdjustmentApprovedDetail')));
+const MpAdminAdjustmentBusinessPartnerDetail = Loadable(lazy(() => import('pages/medipanda/MpAdminAdjustmentBusinessPartnerDetail')));
 const MpAdminAdjustmentAdjustmentList = Loadable(lazy(() => import('pages/medipanda/MpAdminAdjustmentAdjustmentList')));
-const MpAdminAdjustmentStats = Loadable(lazy(() => import('pages/medipanda/MpAdminAdjustmentStats')));
+const MpAdminStatisticsList = Loadable(lazy(() => import('pages/medipanda/MpAdminStatisticsList')));
 const MpAdminExpenditureReportList = Loadable(lazy(() => import('pages/medipanda/MpAdminExpenditureReportList')));
 const MpAdminCommunityMemberList = Loadable(lazy(() => import('pages/medipanda/MpAdminCommunityMemberList')));
 const MpAdminCommunityPostList = Loadable(lazy(() => import('pages/medipanda/MpAdminCommunityPostList')));
@@ -29,14 +37,29 @@ const MpAdminCommunityCommentList = Loadable(lazy(() => import('pages/medipanda/
 const MpAdminCommunityBlindList = Loadable(lazy(() => import('pages/medipanda/MpAdminCommunityBlindList')));
 const MpAdminContentManagementHospitalList = Loadable(lazy(() => import('pages/medipanda/MpAdminContentManagementHospitalList')));
 const MpAdminContentManagementAtoZList = Loadable(lazy(() => import('pages/medipanda/MpAdminContentManagementAtoZList')));
+const MpAdminContentManagementAtoZDetail = Loadable(lazy(() => import('pages/medipanda/MpAdminContentManagementAtoZDetail')));
+const MpAdminContentManagementAtoZEdit = Loadable(lazy(() => import('pages/medipanda/MpAdminContentManagementAtoZEdit')));
+const MpAdminCustomerCenterNoticeList = Loadable(lazy(() => import('pages/medipanda/MpAdminCustomerCenterNoticeList')));
+const MpAdminCustomerCenterFaqList = Loadable(lazy(() => import('pages/medipanda/MpAdminCustomerCenterFaqList')));
+const MpAdminCustomerCenterInquiryList = Loadable(lazy(() => import('pages/medipanda/MpAdminCustomerCenterInquiryList')));
 const MpAdminCustomerServiceNoticeList = Loadable(lazy(() => import('pages/medipanda/MpAdminCustomerServiceNoticeList')));
 const MpAdminCustomerServiceFaqList = Loadable(lazy(() => import('pages/medipanda/MpAdminCustomerServiceFaqList')));
 const MpAdminCustomerServiceInquiryList = Loadable(lazy(() => import('pages/medipanda/MpAdminCustomerServiceInquiryList')));
 const MpAdminBannerList = Loadable(lazy(() => import('pages/medipanda/MpAdminBannerList')));
+const MpAdminBannerEdit = Loadable(lazy(() => import('pages/medipanda/MpAdminBannerEdit')));
 const MpAdminPermissionAdminList = Loadable(lazy(() => import('pages/medipanda/MpAdminPermissionAdminList')));
-const MpAdminPermissionMemberList = Loadable(lazy(() => import('pages/medipanda/MpAdminPermissionMemberList')));
+const MpAdminPermissionAdminEdit = Loadable(lazy(() => import('pages/medipanda/MpAdminPermissionAdminEdit')));
+const MpAdminPermissionMember = Loadable(lazy(() => import('pages/medipanda/MpAdminPermissionMember')));
+const MpAdminProductDetail = Loadable(lazy(() => import('pages/medipanda/MpAdminProductDetail')));
 
 const MaintenanceError = Loadable(lazy(() => import('pages/maintenance/error/404')));
+
+const MpAdminSettlementList = Loadable(lazy(() => import('pages/medipanda/MpAdminSettlementList')));
+const MpAdminSettlementDetail = Loadable(lazy(() => import('pages/medipanda/MpAdminSettlementDetail')));
+const MpAdminSettlementBusinessPartnerDetail = Loadable(lazy(() => import('pages/medipanda/MpAdminSettlementBusinessPartnerDetail')));
+
+const MpAdminCommunityUserList = Loadable(lazy(() => import('pages/medipanda/MpAdminCommunityUserList')));
+const MpAdminCommunityPostDetail = Loadable(lazy(() => import('pages/medipanda/MpAdminCommunityPostDetail')));
 
 const authRoute: RouteObject = {
   path: '/',
@@ -84,20 +107,48 @@ const adminRoute: RouteObject = {
       index: true
     },
     {
+      path: 'members',
+      element: <MpAdminMemberList />
+    },
+    {
+      path: 'members/edit',
+      element: <MpAdminMemberEdit />
+    },
+    {
       path: 'products',
       element: <MpAdminProductList />
+    },
+    {
+      path: 'products/:id',
+      element: <MpAdminProductDetail />
     },
     {
       path: 'business-lines',
       element: <MpAdminBusinessLineList />
     },
     {
+      path: 'business-lines/edit',
+      element: <MpAdminBusinessLineEdit />
+    },
+    {
+      path: 'business-lines/edit/:id',
+      element: <MpAdminBusinessLineEdit />
+    },
+    {
       path: 'pharmaceutical/companies',
       element: <MpAdminPharmaceuticalCompanyList />
     },
     {
+      path: 'pharmaceutical/companies/:id',
+      element: <MpAdminPharmaceuticalCompanyDetail />
+    },
+    {
       path: 'pharmaceutical/products',
       element: <MpAdminPharmaceuticalProductList />
+    },
+    {
+      path: 'pharmaceutical/products/:id',
+      element: <MpAdminPharmaceuticalProductDetail />
     },
     {
       path: 'prescription/receptions',
@@ -108,8 +159,24 @@ const adminRoute: RouteObject = {
       element: <MpAdminPrescriptionFormList />
     },
     {
+      path: 'prescription/forms/register',
+      element: <MpAdminPrescriptionFormRegister />
+    },
+    {
+      path: 'prescription/forms/products/:id',
+      element: <MpAdminPrescriptionFormProducts />
+    },
+    {
       path: 'adjustment/approved',
       element: <MpAdminAdjustmentApprovedList />
+    },
+    {
+      path: 'adjustment/approved/:id',
+      element: <MpAdminAdjustmentApprovedDetail />
+    },
+    {
+      path: 'adjustment/business-partner/:id',
+      element: <MpAdminAdjustmentBusinessPartnerDetail />
     },
     {
       path: 'adjustment/adjustments',
@@ -117,7 +184,19 @@ const adminRoute: RouteObject = {
     },
     {
       path: 'adjustment/stats',
-      element: <MpAdminAdjustmentStats />
+      element: <MpAdminStatisticsList />
+    },
+    {
+      path: 'settlement',
+      element: <MpAdminSettlementList />
+    },
+    {
+      path: 'settlement/:id',
+      element: <MpAdminSettlementDetail />
+    },
+    {
+      path: 'settlement/business-partner/:id',
+      element: <MpAdminSettlementBusinessPartnerDetail />
     },
     {
       path: 'expenditure-reports',
@@ -128,8 +207,16 @@ const adminRoute: RouteObject = {
       element: <MpAdminCommunityMemberList />
     },
     {
+      path: 'community/users',
+      element: <MpAdminCommunityUserList />
+    },
+    {
       path: 'community/posts',
       element: <MpAdminCommunityPostList />
+    },
+    {
+      path: 'community/posts/:id',
+      element: <MpAdminCommunityPostDetail />
     },
     {
       path: 'community/comments',
@@ -148,6 +235,26 @@ const adminRoute: RouteObject = {
       element: <MpAdminContentManagementAtoZList />
     },
     {
+      path: 'content-management/atoz/:id',
+      element: <MpAdminContentManagementAtoZDetail />
+    },
+    {
+      path: 'content-management/atoz/edit',
+      element: <MpAdminContentManagementAtoZEdit />
+    },
+    {
+      path: 'customer-center/notices',
+      element: <MpAdminCustomerCenterNoticeList />
+    },
+    {
+      path: 'customer-center/faqs',
+      element: <MpAdminCustomerCenterFaqList />
+    },
+    {
+      path: 'customer-center/inquiries',
+      element: <MpAdminCustomerCenterInquiryList />
+    },
+    {
       path: 'customer-service/notices',
       element: <MpAdminCustomerServiceNoticeList />
     },
@@ -164,12 +271,20 @@ const adminRoute: RouteObject = {
       element: <MpAdminBannerList />
     },
     {
+      path: 'banners/edit',
+      element: <MpAdminBannerEdit />
+    },
+    {
       path: 'permission/admins',
       element: <MpAdminPermissionAdminList />
     },
     {
+      path: 'permission/admins/edit',
+      element: <MpAdminPermissionAdminEdit />
+    },
+    {
       path: 'permission/members',
-      element: <MpAdminPermissionMemberList />
+      element: <MpAdminPermissionMember />
     },
     { path: '*', element: <MaintenanceError /> }
   ]
