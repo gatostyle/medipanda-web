@@ -42,7 +42,7 @@ export interface MpApprovedDetailSearchRequest extends MpPagedRequest<MpApproved
   endDate?: string;
 }
 
-export interface MpProductDetail {
+export interface MpAdjustmentProductDetail {
   id: number;
   insuranceCode: string;
   productName: string;
@@ -69,7 +69,7 @@ export interface MpBusinessPartnerDetail {
   prescriptionMonth: string;
   settlementMonth: string;
   prescriptionAmount: number;
-  products: MpProductDetail[];
+  products: MpAdjustmentProductDetail[];
 }
 
 export const mpFetchApprovedList = async (request: MpApprovedSearchRequest): Promise<MpPagedResponse<MpApprovedItem>> => {

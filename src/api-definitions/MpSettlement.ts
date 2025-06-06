@@ -41,7 +41,7 @@ export interface MpSettlementDetailSearchRequest extends MpPagedRequest<MpSettle
   searchKeyword?: string;
 }
 
-export interface MpProductDetail {
+export interface MpSettlementProductDetail {
   id: number;
   insuranceCode: string;
   productName: string;
@@ -63,7 +63,7 @@ export interface MpSettlementBusinessPartnerDetail {
   prescriptionMonth: string;
   settlementMonth: string;
   prescriptionAmount: number;
-  products: MpProductDetail[];
+  products: MpSettlementProductDetail[];
 }
 
 export const mpFetchSettlementList = async (request: MpSettlementSearchRequest): Promise<MpPagedResponse<MpSettlementItem>> => {
