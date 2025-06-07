@@ -61,3 +61,14 @@ export const mpFetchPrescriptionForms = async (request: MpPrescriptionFormSearch
     totalElements: filteredForms.length
   };
 };
+
+export const mpFetchPrescriptionFormDetail = async (formId: number): Promise<MpPrescriptionForm> => {
+  await delay(300);
+
+  const form = mockPrescriptionForms[formId];
+  if (!form) {
+    throw new Error(`처방전 양식 ID ${formId}를 찾을 수 없습니다.`);
+  }
+
+  return form;
+};
