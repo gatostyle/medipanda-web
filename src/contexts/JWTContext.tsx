@@ -13,7 +13,7 @@ import axios from 'utils/axios';
 import { AuthProps, JWTContextType } from 'types/auth';
 import { useMpMenu } from 'hooks/medipanda/useMpMenu';
 import { MenuOrientation } from 'config';
-import { isAdmin } from 'api-definitions/MpMemberRole';
+import { isAdmin, MpMemberRole } from 'api-definitions/MpMemberRole';
 import { mpAdminMenu, mpMemberMenu } from 'menu-items/medipanda';
 import { encryptRSA } from 'utils/medipanda/rsa';
 
@@ -44,7 +44,7 @@ async function setSessionRefreshInterval() {
 
   const refresh = async () => {
     const response = await axios.request({
-      url: '/v1/auth/refresh',
+      url: '/v1/auth/token/refresh',
       method: 'POST',
       validateStatus: () => true
     });
@@ -78,9 +78,9 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
 
         if (import.meta.env.VITE_MOCK_AUTH_MODE === 'true') {
           console.log('🔧 Mock mode: Skipping login process and using mock user');
-          user = { roles: ['ADMIN'] };
+          user = { role: MpMemberRole.SuperAdmin };
           fullUserData = {
-            roles: ['ADMIN'],
+            role: MpMemberRole.SuperAdmin,
             id: 'mock-user-id',
             email: 'mock@example.com',
             name: 'Mock User'
@@ -122,7 +122,7 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
   }, []);
 
   const login = async (userId: string, password: string) => {
-    const response = await axios.request({
+    await axios.request({
       method: 'POST',
       url: '/v1/auth/login',
       data: {
@@ -130,6 +130,7 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
         password: await encryptRSA(password)
       }
     });
+    const response = await axios.get('/v1/auth/me');
     const user = response.data;
 
     if (isAdmin(user)) {
