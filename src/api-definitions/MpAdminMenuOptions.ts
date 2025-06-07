@@ -17,7 +17,7 @@ export async function mpFetchAdminMenuOptions(): Promise<MpAdminMenuOptionsRespo
   return mockAdminMenuOptions;
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpAdminMenuOptionsResponse>({
     url: `/v1/admin/menu-options`,
     method: 'GET'
@@ -36,7 +36,7 @@ export async function mpUpdateAdminMenuOption(id: number, updates: Partial<Omit<
   throw new Error('Menu option not found');
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   await axios.request({
     url: `/v1/admin/menu-options/${id}`,
     method: 'PUT',

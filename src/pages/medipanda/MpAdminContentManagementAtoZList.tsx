@@ -63,7 +63,18 @@ export default function MpAdminContentManagementAtoZList() {
         setTotalElements(response.totalElements);
       } catch (error) {
         console.error('Failed to fetch CSO A to Z list:', error);
-        showError('CSO A to Z 목록을 조회하는 중 오류가 발생했습니다.');
+        if (error instanceof Error && error.message === 'NOT_IMPLEMENTED') {
+          showError('검색 및 필터 기능은 아직 구현되지 않았습니다.', '기능 미구현');
+          formik.setValues({
+            ...formik.values,
+            status: '상태',
+            searchKeyword: '',
+            startDate: null,
+            endDate: null
+          });
+        } else {
+          showError('CSO A to Z 목록을 조회하는 중 오류가 발생했습니다.');
+        }
       } finally {
         setIsLoading(false);
       }

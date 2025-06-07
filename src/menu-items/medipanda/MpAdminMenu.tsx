@@ -145,7 +145,7 @@ export const mpAdminMenu: NavItemType[] = [
         ]
       },
       {
-        id: 'customer-service',
+        id: 'customer-center',
         title: '고객센터',
         type: 'collapse',
         children: [
@@ -153,19 +153,19 @@ export const mpAdminMenu: NavItemType[] = [
             id: 'notices',
             title: '공지사항',
             type: 'item',
-            url: 'customer-service/notices'
+            url: 'customer-center/notices'
           },
           {
             id: 'faqs',
             title: 'FAQ',
             type: 'item',
-            url: 'customer-service/faqs'
+            url: 'customer-center/faqs'
           },
           {
             id: 'inquiries',
             title: '1:1 문의',
             type: 'item',
-            url: 'customer-service/inquiries'
+            url: 'customer-center/inquiries'
           }
         ]
       },

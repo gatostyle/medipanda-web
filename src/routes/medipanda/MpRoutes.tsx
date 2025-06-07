@@ -40,11 +40,10 @@ const MpAdminContentManagementAtoZList = Loadable(lazy(() => import('pages/medip
 const MpAdminContentManagementAtoZDetail = Loadable(lazy(() => import('pages/medipanda/MpAdminContentManagementAtoZDetail')));
 const MpAdminContentManagementAtoZEdit = Loadable(lazy(() => import('pages/medipanda/MpAdminContentManagementAtoZEdit')));
 const MpAdminCustomerCenterNoticeList = Loadable(lazy(() => import('pages/medipanda/MpAdminCustomerCenterNoticeList')));
+const MpAdminCustomerCenterNoticeDetail = Loadable(lazy(() => import('pages/medipanda/MpAdminCustomerCenterNoticeDetail')));
 const MpAdminCustomerCenterFaqList = Loadable(lazy(() => import('pages/medipanda/MpAdminCustomerCenterFaqList')));
+const MpAdminCustomerCenterFaqDetail = Loadable(lazy(() => import('pages/medipanda/MpAdminCustomerCenterFaqDetail')));
 const MpAdminCustomerCenterInquiryList = Loadable(lazy(() => import('pages/medipanda/MpAdminCustomerCenterInquiryList')));
-const MpAdminCustomerServiceNoticeList = Loadable(lazy(() => import('pages/medipanda/MpAdminCustomerServiceNoticeList')));
-const MpAdminCustomerServiceFaqList = Loadable(lazy(() => import('pages/medipanda/MpAdminCustomerServiceFaqList')));
-const MpAdminCustomerServiceInquiryList = Loadable(lazy(() => import('pages/medipanda/MpAdminCustomerServiceInquiryList')));
 const MpAdminBannerList = Loadable(lazy(() => import('pages/medipanda/MpAdminBannerList')));
 const MpAdminBannerEdit = Loadable(lazy(() => import('pages/medipanda/MpAdminBannerEdit')));
 const MpAdminPermissionAdminList = Loadable(lazy(() => import('pages/medipanda/MpAdminPermissionAdminList')));
@@ -247,24 +246,20 @@ const adminRoute: RouteObject = {
       element: <MpAdminCustomerCenterNoticeList />
     },
     {
+      path: 'customer-center/notice/:id',
+      element: <MpAdminCustomerCenterNoticeDetail />
+    },
+    {
       path: 'customer-center/faqs',
       element: <MpAdminCustomerCenterFaqList />
     },
     {
+      path: 'customer-center/faq/:id',
+      element: <MpAdminCustomerCenterFaqDetail />
+    },
+    {
       path: 'customer-center/inquiries',
       element: <MpAdminCustomerCenterInquiryList />
-    },
-    {
-      path: 'customer-service/notices',
-      element: <MpAdminCustomerServiceNoticeList />
-    },
-    {
-      path: 'customer-service/faqs',
-      element: <MpAdminCustomerServiceFaqList />
-    },
-    {
-      path: 'customer-service/inquiries',
-      element: <MpAdminCustomerServiceInquiryList />
     },
     {
       path: 'banners',

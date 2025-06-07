@@ -1,9 +1,8 @@
+import axios from 'axios';
 import { delay } from 'utils/medipanda/delay';
 import { MpPagedRequest, MpPagedResponse, MpWithSequence } from './MpPaged';
 import {
   mockHospitals,
-  mockCsoAtoZItems,
-  mockCsoAtoZDetail,
   mockNotices,
   mockNoticeDetail,
   mockFaqs,
@@ -153,6 +152,72 @@ export interface MpInquiryDetail {
   responseDate: string;
 }
 
+export interface BoardPostResponse {
+  id: number;
+  boardType: 'ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z';
+  title: string;
+  nickname: string;
+  isBlind: boolean;
+  likesCount: number;
+  viewsCount: number;
+  commentCount: number;
+  createdAt: string;
+}
+
+export interface BoardSearchRequest {
+  page?: number;
+  size?: number;
+  boardType?: 'ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z';
+  userId?: string;
+  name?: string;
+  nickname?: string;
+  startAt?: string;
+  endAt?: string;
+  filterBlind?: boolean;
+  boardTitle?: string;
+  filterDeleted?: boolean;
+}
+
+export interface BoardReportResponse {
+  id: number;
+  userId: string;
+  memberName: string;
+  nickname: string;
+  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
+  reportContent: string;
+  reportDateTime: string;
+}
+
+export interface CommentResponse {
+  id: number;
+  content: string;
+  nickname: string;
+  likesCount: number;
+  isBlind: boolean;
+  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  parentId?: number;
+  createdAt: string;
+  modifiedAt: string;
+}
+
+export interface BoardDetailsResponse {
+  id: number;
+  boardType: string;
+  title: string;
+  content: string;
+  nickname: string;
+  isBlind: boolean;
+  likesCount: number;
+  viewsCount: number;
+  commentCount: number;
+  createdAt: string;
+  children: BoardDetailsResponse[];
+  reports: BoardReportResponse[];
+  comments: CommentResponse[];
+  attachments: string[];
+}
+
 export const mpFetchHospitalList = async (request: MpHospitalSearchRequest): Promise<MpPagedResponse<MpHospital>> => {
   await delay(500);
 
@@ -187,7 +252,7 @@ export const mpFetchHospitalList = async (request: MpHospitalSearchRequest): Pro
   };
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpPagedResponse<MpHospital>>({
     url: `/v1/content/hospitals`,
     method: 'GET',
@@ -197,153 +262,232 @@ export const mpFetchHospitalList = async (request: MpHospitalSearchRequest): Pro
   */
 };
 
-export const mpFetchCsoAtoZList = async (request: MpCsoAtoZSearchRequest): Promise<MpPagedResponse<MpCsoAtoZ>> => {
-  await delay(500);
-
-  let filteredData = mockCsoAtoZItems;
-
-  if (request.status && request.status !== '전체') {
-    filteredData = filteredData.filter((item) => item.status === request.status);
-  }
-
-  if (request.searchType && request.searchKeyword) {
-    filteredData = filteredData.filter((item) => {
-      const keyword = request.searchKeyword!.toLowerCase();
-      switch (request.searchType) {
-        case '제목':
-          return item.title.toLowerCase().includes(keyword);
-        case '작성자':
-          return item.author.toLowerCase().includes(keyword);
-        default:
-          return true;
-      }
-    });
-  }
-
-  const contentWithSequence: MpWithSequence<MpCsoAtoZ>[] = filteredData
-    .slice(request.page * request.size, (request.page + 1) * request.size)
-    .map((item, index) => ({
-      ...item,
-      sequence: filteredData.length - request.page * request.size - index
-    }));
-
+const convertBoardPostResponseToMpCsoAtoZ = (board: BoardPostResponse): MpCsoAtoZ => {
   return {
-    content: contentWithSequence,
-    pageable: { pageNumber: request.page },
-    totalPages: Math.ceil(filteredData.length / request.size),
-    totalElements: filteredData.length
+    id: board.id,
+    author: board.nickname,
+    title: board.title,
+    content: '', // FIXME Need API fix
+    status: board.isBlind ? '미노출' : '노출',
+    viewCount: board.viewsCount,
+    registrationDate: board.createdAt
+  };
+};
+
+export const mpFetchCsoAtoZListFromApi = async (request: MpCsoAtoZSearchRequest): Promise<MpPagedResponse<MpCsoAtoZ>> => {
+  const hasSearchFilters = request.status || request.searchKeyword || request.startDate || request.endDate;
+
+  if (hasSearchFilters) {
+    throw new Error('NOT_IMPLEMENTED');
+  }
+
+  const boardRequest: BoardSearchRequest = {
+    page: request.page,
+    size: request.size,
+    boardType: 'CSO_A_TO_Z',
+    filterDeleted: true
   };
 
-  /*
-  // TODO
-  const axiosResponse = await axios.request<MpPagedResponse<MpCsoAtoZ>>({
-    url: `/v1/content/cso-atoz`,
+  const axiosResponse = await axios.request<MpPagedResponse<BoardPostResponse>>({
+    url: `/v1/boards`,
     method: 'GET',
-    params: request
+    params: boardRequest
   });
-  return mpSetSequence(request, axiosResponse.data);
-  */
+
+  const convertedContent: MpWithSequence<MpCsoAtoZ>[] = axiosResponse.data.content.map((board, index) => ({
+    ...convertBoardPostResponseToMpCsoAtoZ(board),
+    sequence: axiosResponse.data.totalElements - request.page * request.size - index
+  }));
+
+  return {
+    ...axiosResponse.data,
+    content: convertedContent
+  };
+};
+
+export const mpFetchCsoAtoZList = async (request: MpCsoAtoZSearchRequest): Promise<MpPagedResponse<MpCsoAtoZ>> => {
+  return mpFetchCsoAtoZListFromApi(request);
+};
+
+const convertBoardDetailsResponseToMpCsoAtoZDetail = (board: BoardDetailsResponse): MpCsoAtoZDetail => {
+  return {
+    id: board.id,
+    author: board.nickname,
+    title: board.title,
+    content: board.content,
+    status: board.isBlind ? '미노출' : '노출',
+    registrationDate: board.createdAt
+  };
+};
+
+export const mpFetchCsoAtoZDetailFromApi = async (id: number): Promise<MpCsoAtoZDetail> => {
+  const axiosResponse = await axios.request<BoardDetailsResponse>({
+    url: `/v1/boards/${id}`,
+    method: 'GET',
+    params: {
+      filterBlind: null,
+      filterDeleted: null
+    }
+  });
+
+  return convertBoardDetailsResponseToMpCsoAtoZDetail(axiosResponse.data);
 };
 
 export const mpFetchCsoAtoZDetail = async (id: number): Promise<MpCsoAtoZDetail> => {
-  await delay(500);
+  return mpFetchCsoAtoZDetailFromApi(id);
+};
 
-  return mockCsoAtoZDetail;
+const convertBoardPostResponseToMpNotice = (board: BoardPostResponse): MpNotice => {
+  return {
+    id: board.id,
+    author: board.nickname,
+    title: board.title,
+    category: '', // FIXME Need API fix
+    status: board.isBlind ? '미노출' : '노출',
+    viewCount: board.viewsCount,
+    registrationDate: board.createdAt
+  };
+};
 
-  /*
-  // TODO
-  const axiosResponse = await axios.request<MpCsoAtoZDetail>({
-    url: `/v1/content/cso-atoz/${id}`,
-    method: 'GET'
+export const mpFetchNoticeListFromApi = async (request: MpNoticeSearchRequest): Promise<MpPagedResponse<MpNotice>> => {
+  const hasSearchFilters = request.category || request.status || request.searchKeyword || request.startDate || request.endDate;
+
+  if (hasSearchFilters) {
+    throw new Error('NOT_IMPLEMENTED');
+  }
+
+  const boardRequest: BoardSearchRequest = {
+    page: request.page,
+    size: request.size,
+    boardType: 'NOTICE',
+    filterDeleted: true
+  };
+
+  const axiosResponse = await axios.request<MpPagedResponse<BoardPostResponse>>({
+    url: `/v1/boards`,
+    method: 'GET',
+    params: boardRequest
   });
-  return axiosResponse.data;
-  */
+
+  const convertedContent: MpWithSequence<MpNotice>[] = axiosResponse.data.content.map((board, index) => ({
+    ...convertBoardPostResponseToMpNotice(board),
+    sequence: axiosResponse.data.totalElements - request.page * request.size - index
+  }));
+
+  return {
+    ...axiosResponse.data,
+    content: convertedContent
+  };
 };
 
 export const mpFetchNoticeList = async (request: MpNoticeSearchRequest): Promise<MpPagedResponse<MpNotice>> => {
-  await delay(500);
+  return mpFetchNoticeListFromApi(request);
+};
 
-  const contentWithSequence: MpWithSequence<MpNotice>[] = mockNotices
-    .slice(request.page * request.size, (request.page + 1) * request.size)
-    .map((item, index) => ({
-      ...item,
-      sequence: mockNotices.length - request.page * request.size - index
-    }));
-
+const convertBoardDetailsResponseToMpNoticeDetail = (board: BoardDetailsResponse): MpNoticeDetail => {
   return {
-    content: contentWithSequence,
-    pageable: { pageNumber: request.page },
-    totalPages: Math.ceil(mockNotices.length / request.size),
-    totalElements: mockNotices.length
+    id: board.id,
+    author: board.nickname,
+    title: board.title,
+    content: board.content,
+    category: '', // FIXME Need API fix
+    status: board.isBlind ? '미노출' : '노출',
+    registrationDate: board.createdAt
   };
+};
 
-  /*
-  // TODO
-  const axiosResponse = await axios.request<MpPagedResponse<MpNotice>>({
-    url: `/v1/content/notices`,
+export const mpFetchNoticeDetailFromApi = async (id: number): Promise<MpNoticeDetail> => {
+  const axiosResponse = await axios.request<BoardDetailsResponse>({
+    url: `/v1/boards/${id}`,
     method: 'GET',
-    params: request
+    params: {
+      filterBlind: null,
+      filterDeleted: null
+    }
   });
-  return mpSetSequence(request, axiosResponse.data);
-  */
+
+  return convertBoardDetailsResponseToMpNoticeDetail(axiosResponse.data);
 };
 
 export const mpFetchNoticeDetail = async (id: number): Promise<MpNoticeDetail> => {
-  await delay(500);
+  return mpFetchNoticeDetailFromApi(id);
+};
 
-  return mockNoticeDetail;
+const convertBoardPostResponseToMpFaq = (board: BoardPostResponse): MpFaq => {
+  return {
+    id: board.id,
+    author: board.nickname,
+    title: board.title,
+    content: '', // FIXME Need API fix
+    category: '', // FIXME Need API fix
+    status: board.isBlind ? '미노출' : '노출',
+    viewCount: board.viewsCount,
+    registrationDate: board.createdAt
+  };
+};
 
-  /*
-  // TODO
-  const axiosResponse = await axios.request<MpNoticeDetail>({
-    url: `/v1/content/notices/${id}`,
-    method: 'GET'
+export const mpFetchFaqListFromApi = async (request: MpFaqSearchRequest): Promise<MpPagedResponse<MpFaq>> => {
+  const hasSearchFilters = request.category || request.status || request.searchKeyword || request.startDate || request.endDate;
+
+  if (hasSearchFilters) {
+    throw new Error('NOT_IMPLEMENTED');
+  }
+
+  const boardRequest: BoardSearchRequest = {
+    page: request.page,
+    size: request.size,
+    boardType: 'FAQ',
+    filterDeleted: true
+  };
+
+  const axiosResponse = await axios.request<MpPagedResponse<BoardPostResponse>>({
+    url: `/v1/boards`,
+    method: 'GET',
+    params: boardRequest
   });
-  return axiosResponse.data;
-  */
+
+  const convertedContent: MpWithSequence<MpFaq>[] = axiosResponse.data.content.map((board, index) => ({
+    ...convertBoardPostResponseToMpFaq(board),
+    sequence: axiosResponse.data.totalElements - request.page * request.size - index
+  }));
+
+  return {
+    ...axiosResponse.data,
+    content: convertedContent
+  };
 };
 
 export const mpFetchFaqList = async (request: MpFaqSearchRequest): Promise<MpPagedResponse<MpFaq>> => {
-  await delay(500);
+  return mpFetchFaqListFromApi(request);
+};
 
-  const contentWithSequence: MpWithSequence<MpFaq>[] = mockFaqs
-    .slice(request.page * request.size, (request.page + 1) * request.size)
-    .map((item, index) => ({
-      ...item,
-      sequence: mockFaqs.length - request.page * request.size - index
-    }));
-
+const convertBoardDetailsResponseToMpFaqDetail = (board: BoardDetailsResponse): MpFaqDetail => {
   return {
-    content: contentWithSequence,
-    pageable: { pageNumber: request.page },
-    totalPages: Math.ceil(mockFaqs.length / request.size),
-    totalElements: mockFaqs.length
+    id: board.id,
+    author: board.nickname,
+    title: board.title,
+    content: board.content,
+    category: '', // FIXME Need API fix
+    status: board.isBlind ? '미노출' : '노출',
+    registrationDate: board.createdAt
   };
+};
 
-  /*
-  // TODO
-  const axiosResponse = await axios.request<MpPagedResponse<MpFaq>>({
-    url: `/v1/content/faqs`,
+export const mpFetchFaqDetailFromApi = async (id: number): Promise<MpFaqDetail> => {
+  const axiosResponse = await axios.request<BoardDetailsResponse>({
+    url: `/v1/boards/${id}`,
     method: 'GET',
-    params: request
+    params: {
+      filterBlind: null,
+      filterDeleted: null
+    }
   });
-  return mpSetSequence(request, axiosResponse.data);
-  */
+
+  return convertBoardDetailsResponseToMpFaqDetail(axiosResponse.data);
 };
 
 export const mpFetchFaqDetail = async (id: number): Promise<MpFaqDetail> => {
-  await delay(500);
-
-  return mockFaqDetail;
-
-  /*
-  // TODO
-  const axiosResponse = await axios.request<MpFaqDetail>({
-    url: `/v1/content/faqs/${id}`,
-    method: 'GET'
-  });
-  return axiosResponse.data;
-  */
+  return mpFetchFaqDetailFromApi(id);
 };
 
 export const mpFetchInquiryList = async (request: MpInquirySearchRequest): Promise<MpPagedResponse<MpInquiry>> => {
@@ -364,7 +508,7 @@ export const mpFetchInquiryList = async (request: MpInquirySearchRequest): Promi
   };
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpPagedResponse<MpInquiry>>({
     url: `/v1/content/inquiries`,
     method: 'GET',
@@ -380,7 +524,7 @@ export const mpFetchInquiryDetail = async (id: number): Promise<MpInquiryDetail>
   return mockInquiryDetail;
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpInquiryDetail>({
     url: `/v1/content/inquiries/${id}`,
     method: 'GET'

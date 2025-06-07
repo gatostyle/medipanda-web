@@ -92,7 +92,7 @@ export const mpFetchApprovedList = async (request: MpApprovedSearchRequest): Pro
   };
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpPagedResponse<MpApprovedItem>>({
     url: `/v1/adjustments/approved`,
     method: 'GET',
@@ -125,7 +125,7 @@ export const mpFetchApprovedDetail = async (
   };
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpPagedResponse<MpApprovedDetailItem>>({
     url: `/v1/adjustments/approved/${id}/details`,
     method: 'GET',
@@ -144,7 +144,7 @@ export const mpFetchBusinessPartnerDetail = async (id: number): Promise<MpBusine
   };
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpBusinessPartnerDetail>({
     url: `/v1/adjustments/approved/${id}/business-partner-details`,
     method: 'GET'

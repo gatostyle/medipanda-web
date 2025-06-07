@@ -105,7 +105,7 @@ export const mpFetchSettlementList = async (request: MpSettlementSearchRequest):
   };
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpPagedResponse<MpSettlementItem>>({
     url: `/v1/settlements`,
     method: 'GET',
@@ -155,7 +155,7 @@ export const mpFetchSettlementDetail = async (
   };
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpPagedResponse<MpSettlementDetailItem>>({
     url: `/v1/settlements/${id}/details`,
     method: 'GET',
@@ -174,7 +174,7 @@ export const mpFetchSettlementBusinessPartnerDetail = async (id: number): Promis
   };
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpSettlementBusinessPartnerDetail>({
     url: `/v1/settlements/${id}/business-partner-details`,
     method: 'GET'

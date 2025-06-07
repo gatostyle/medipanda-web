@@ -19,7 +19,7 @@ export async function mpFetchMemberPermissions(): Promise<MpMemberPermissionResp
   return mockMemberPermission;
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpMemberPermissionResponse>({
     url: `/v1/members/permissions`,
     method: 'GET'
@@ -34,7 +34,7 @@ export async function mpCreateMemberPermission(permission: MpMemberPermission): 
   return;
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   await axios.request({
     url: `/v1/members/permissions`,
     method: 'POST',
@@ -60,7 +60,7 @@ export async function mpUpdateMemberPermission(
   throw new Error('Permission not found');
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   await axios.request({
     url: `/v1/members/permissions/${category}/${feature}`,
     method: 'PUT',
@@ -79,7 +79,7 @@ export async function mpDeleteMemberPermission(category: string, feature: string
   throw new Error('Permission not found');
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   await axios.request({
     url: `/v1/members/permissions/${category}/${feature}`,
     method: 'DELETE'

@@ -156,7 +156,7 @@ export const mpFetchCommunityUserList = async (request: MpCommunityUserSearchReq
   };
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpPagedResponse<MpCommunityUser>>({
     url: `/v1/community/users`,
     method: 'GET',
@@ -206,7 +206,7 @@ export const mpFetchCommunityPostList = async (request: MpCommunityPostSearchReq
   };
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpPagedResponse<MpCommunityPost>>({
     url: `/v1/community/posts`,
     method: 'GET',
@@ -233,7 +233,7 @@ export const mpFetchPostDetail = async (id: number): Promise<MpCommunityPostDeta
   };
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpCommunityPostDetail>({
     url: `/v1/community/posts/${id}`,
     method: 'GET'
@@ -248,7 +248,7 @@ export const mpFetchPostReports = async (postId: number): Promise<MpPostReport[]
   return [];
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpPostReport[]>({
     url: `/v1/community/posts/${postId}/reports`,
     method: 'GET'
@@ -263,7 +263,7 @@ export const mpFetchPostComments = async (postId: number): Promise<MpCommunityCo
   return [];
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpCommunityComment[]>({
     url: `/v1/community/posts/${postId}/comments`,
     method: 'GET'
@@ -298,7 +298,7 @@ export const mpFetchCommunityCommentList = async (
   };
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpPagedResponse<MpCommunityComment>>({
     url: `/v1/community/comments`,
     method: 'GET',
@@ -326,7 +326,7 @@ export const mpFetchBlindList = async (request: MpBlindSearchRequest): Promise<M
   };
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpPagedResponse<MpBlindItem>>({
     url: `/v1/community/blind`,
     method: 'GET',

@@ -27,7 +27,7 @@ export const mockMembers: Record<number, MpMember> = {
     marketingConsent: {
       sms: true,
       email: true,
-      appPush: false
+      push: false
     },
     memo: '테스트 메모입니다.'
   },
@@ -56,7 +56,7 @@ export const mockMembers: Record<number, MpMember> = {
     marketingConsent: {
       sms: false,
       email: true,
-      appPush: true
+      push: true
     }
   }
 };

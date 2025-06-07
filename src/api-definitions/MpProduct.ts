@@ -66,7 +66,7 @@ export const mpFetchProducts = async (request: MpProductSearchRequest): Promise<
   };
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpPagedResponse<MpProduct>>({
     url: `/v1/products`,
     method: 'GET',

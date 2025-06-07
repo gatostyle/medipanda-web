@@ -65,7 +65,14 @@ export default function MpAdminCustomerCenterNoticeList() {
         setTotalElements(response.totalElements);
       } catch (error) {
         console.error('Failed to fetch notice list:', error);
-        showError('공지사항 목록을 조회하는 중 오류가 발생했습니다.');
+        if (error instanceof Error && error.message === 'NOT_IMPLEMENTED') {
+          showError('검색/필터 기능은 현재 지원되지 않습니다.');
+          formik.resetForm({
+            values: { ...formik.initialValues, page: 0 }
+          });
+        } else {
+          showError('공지사항 목록을 조회하는 중 오류가 발생했습니다.');
+        }
       } finally {
         setIsLoading(false);
       }

@@ -59,7 +59,7 @@ export const mpFetchStatisticsList = async (request: MpStatisticsSearchRequest):
   };
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpPagedResponse<MpStatisticsItem>>({
     url: `/v1/statistics`,
     method: 'GET',

@@ -12,7 +12,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { Edit2 } from 'iconsax-react';
-import { mpFetchMember, MpMember, mpUpdateMember } from 'api-definitions/MpMember';
+import { mpFetchMember, MpMember, mpUpdateMember, MarketingAgreements } from 'api-definitions/MpMember';
 import PasswordChangeDialog from 'components/medipanda/PasswordChangeDialog';
 import { useMpNotImplementedDialog } from '../../hooks/medipanda/useMpNotImplementedDialog';
 import { useMpErrorDialog } from 'hooks/medipanda/useMpErrorDialog';
@@ -30,7 +30,7 @@ interface Section {
 export default function MpAdminMemberEdit() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const memberId = Number(searchParams.get('id'));
+  const userId = searchParams.get('userId');
   const [member, setMember] = useState<MpMember | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editValues, setEditValues] = useState<Partial<MpMember>>({});
@@ -39,21 +39,21 @@ export default function MpAdminMemberEdit() {
   const { showError } = useMpErrorDialog();
 
   useEffect(() => {
-    if (!memberId) {
+    if (!userId) {
       alert('잘못된 접근입니다.');
       return;
     }
 
     (async () => {
       try {
-        const data = await mpFetchMember(memberId);
+        const data = await mpFetchMember(userId);
         setMember(data);
       } catch (e) {
         console.error(e);
         showError('회원 정보를 불러오는 중 오류가 발생했습니다.');
       }
     })();
-  }, [memberId, navigate]);
+  }, [userId, navigate]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -70,10 +70,11 @@ export default function MpAdminMemberEdit() {
   };
 
   const handleSave = async () => {
+    if (!userId) return;
     try {
-      await mpUpdateMember(memberId, editValues);
+      await mpUpdateMember(userId, editValues);
       setIsEditing(false);
-      const updatedMember = await mpFetchMember(memberId);
+      const updatedMember = await mpFetchMember(userId);
       setMember(updatedMember);
       alert('회원 정보가 수정되었습니다.');
     } catch (e) {
@@ -103,8 +104,9 @@ export default function MpAdminMemberEdit() {
   };
 
   const handlePasswordChange = async (newPassword: string) => {
+    if (!userId) return;
     try {
-      await mpUpdateMember(memberId, { password: newPassword });
+      await mpUpdateMember(userId, { password: newPassword });
       alert('비밀번호가 변경되었습니다.');
     } catch (e) {
       console.error(e);
@@ -308,7 +310,11 @@ export default function MpAdminMemberEdit() {
                 control={
                   <Checkbox
                     size="small"
-                    checked={isEditing ? editValues.marketingConsent?.sms : member.marketingConsent?.sms}
+                    checked={
+                      isEditing
+                        ? (editValues.marketingConsent as MarketingAgreements)?.sms
+                        : (member.marketingConsent as MarketingAgreements)?.sms
+                    }
                     onChange={handleChange('marketingConsent.sms')}
                     disabled={!isEditing}
                   />
@@ -319,7 +325,11 @@ export default function MpAdminMemberEdit() {
                 control={
                   <Checkbox
                     size="small"
-                    checked={isEditing ? editValues.marketingConsent?.email : member.marketingConsent?.email}
+                    checked={
+                      isEditing
+                        ? (editValues.marketingConsent as MarketingAgreements)?.email
+                        : (member.marketingConsent as MarketingAgreements)?.email
+                    }
                     onChange={handleChange('marketingConsent.email')}
                     disabled={!isEditing}
                   />
@@ -330,8 +340,12 @@ export default function MpAdminMemberEdit() {
                 control={
                   <Checkbox
                     size="small"
-                    checked={isEditing ? editValues.marketingConsent?.appPush : member.marketingConsent?.appPush}
-                    onChange={handleChange('marketingConsent.appPush')}
+                    checked={
+                      isEditing
+                        ? (editValues.marketingConsent as MarketingAgreements)?.push
+                        : (member.marketingConsent as MarketingAgreements)?.push
+                    }
+                    onChange={handleChange('marketingConsent.push')}
                     disabled={!isEditing}
                   />
                 }

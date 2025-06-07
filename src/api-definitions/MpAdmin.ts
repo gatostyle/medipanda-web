@@ -49,7 +49,7 @@ export async function mpFetchAdmins(params: MpAdminSearchParams): Promise<MpPage
   return mockPagedResponse(params, admins);
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpPagedResponse<MpAdmin>>({
     url: `/v1/admins`,
     method: 'GET',
@@ -67,7 +67,7 @@ export const mpCreateAdmin = async (admin: Omit<MpAdmin, 'id'>): Promise<MpAdmin
   return newAdmin;
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.post<MpAdmin>('/v1/admins', admin);
   return axiosResponse.data;
   */
@@ -82,7 +82,7 @@ export const mpUpdateAdmin = async (id: number, admin: Partial<MpAdmin>): Promis
   throw new Error('Admin not found');
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   await axios.put(`/v1/admins/${id}`, admin);
   */
 };
@@ -96,7 +96,7 @@ export const mpFetchAdmin = async (id: number): Promise<MpAdmin> => {
   throw new Error('Admin not found');
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.get<MpAdmin>(`/v1/admins/${id}`);
   return axiosResponse.data;
   */
@@ -111,7 +111,7 @@ export const mpDeleteAdmin = async (id: number): Promise<void> => {
   throw new Error('Admin not found');
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   await axios.delete(`/v1/admins/${id}`);
   */
 };

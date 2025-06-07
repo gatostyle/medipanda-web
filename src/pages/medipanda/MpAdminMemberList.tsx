@@ -25,6 +25,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { ko } from 'date-fns/locale';
 import { Calendar, DocumentDownload } from 'iconsax-react';
+
 import { mpFetchMembers, mpGetMemberExcelDownloadUrl, MpMember, MpMemberSearchRequest } from 'api-definitions/MpMember';
 import { MpPartnershipType } from 'api-definitions/MpPartnershipType';
 import { MpPagedResponse } from 'api-definitions/MpPaged';
@@ -73,6 +74,14 @@ export default function MpAdminMemberList() {
         const response = await mpFetchMembers(request);
         setPagedResponse(response);
       } catch (error) {
+        if (error instanceof Error && error.message === 'NOT_IMPLEMENTED') {
+          showError('검색 및 필터 기능은 아직 구현되지 않았습니다.', '기능 미구현');
+          setFieldValue('partnershipType', undefined);
+          setFieldValue('searchKeyword', '');
+          setFieldValue('startAt', null);
+          setFieldValue('endAt', null);
+          return;
+        }
         console.error('회원 목록 조회 오류:', error);
         showError('회원 목록을 조회하는 중 오류가 발생했습니다.');
       }
@@ -88,7 +97,7 @@ export default function MpAdminMemberList() {
     {
       header: '회원번호',
       accessorKey: 'memberNo',
-      cell: ({ getValue }) => getValue()
+      cell: ({ getValue }) => getValue() || '-'
     },
     {
       header: '아이디',
@@ -125,9 +134,10 @@ export default function MpAdminMemberList() {
       accessorKey: 'csoCertification',
       cell: ({ getValue }) => {
         const value = getValue();
+        if (value === null) return '-';
         if (typeof value === 'string') return value;
         if (typeof value === 'boolean') return value ? 'Y' : 'N';
-        return 'N';
+        return '-';
       }
     },
     {
@@ -135,6 +145,7 @@ export default function MpAdminMemberList() {
       accessorKey: 'state',
       cell: ({ getValue }) => {
         const state = getValue();
+        if (state === null) return '-';
         const isActive = state === true || state === 'ACTIVE';
         return <Box>{isActive ? '활성' : '비활성'}</Box>;
       }
@@ -143,11 +154,13 @@ export default function MpAdminMemberList() {
       header: '마케팅수신동의',
       accessorFn: (row) => {
         const consent = row.marketingConsent;
-        if (consent) {
-          return '동의';
-        } else {
-          return '미동의';
+        if (typeof consent === 'boolean') {
+          return consent ? '동의' : '미동의';
         }
+        if (consent && typeof consent === 'object') {
+          return '동의';
+        }
+        return '미동의';
       },
       cell: ({ getValue }) => getValue()
     },
@@ -176,7 +189,7 @@ export default function MpAdminMemberList() {
   }, []);
 
   const handleRowClick = (member: MpMember) => {
-    navigate(`/admin/members/edit?id=${member.id}`);
+    navigate(`/admin/members/edit?userId=${member.userId}`);
   };
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, page: number) => {

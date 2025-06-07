@@ -26,7 +26,7 @@ export async function mpFetchPermissionCategories(): Promise<MpPermissionCategor
   return mockPermissionCategories;
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpPermissionCategoriesResponse>({
     url: `/v1/permissions/categories`,
     method: 'GET'
@@ -40,7 +40,7 @@ export async function mpFetchPermissionFeatures(): Promise<MpPermissionFeaturesR
   return mockPermissionFeatures;
 
   /*
-  // TODO
+  // FIXME Use API Instead of mockup data
   const axiosResponse = await axios.request<MpPermissionFeaturesResponse>({
     url: `/v1/permissions/features`,
     method: 'GET'
