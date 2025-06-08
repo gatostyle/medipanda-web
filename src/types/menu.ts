@@ -36,6 +36,7 @@ export type NavItemType = {
   type?: string;
   url?: string | undefined;
   actions?: NavActionProps[];
+  permission?: string;
 };
 
 export type LinkTarget = '_blank' | '_self' | '_parent' | '_top';

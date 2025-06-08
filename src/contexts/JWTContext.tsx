@@ -2,6 +2,7 @@ import React, { createContext, useEffect, useReducer } from 'react';
 
 // third-party
 import { Chance } from 'chance';
+import { jwtDecode } from 'jwt-decode';
 
 // reducer - state management
 import { LOGIN, LOGOUT } from 'contexts/auth-reducer/actions';
@@ -10,12 +11,8 @@ import authReducer from 'contexts/auth-reducer/auth';
 // project import
 import Loader from 'components/Loader';
 import axios from 'utils/axios';
+import { KeyedObject } from 'types/root';
 import { AuthProps, JWTContextType } from 'types/auth';
-import { useMpMenu } from 'hooks/medipanda/useMpMenu';
-import { MenuOrientation } from 'config';
-import { isAdmin, MpMemberRole } from 'api-definitions/MpMemberRole';
-import { mpAdminMenu, mpMemberMenu } from 'menu-items/medipanda';
-import { encryptRSA } from 'utils/medipanda/rsa';
 
 const chance = new Chance();
 
@@ -26,90 +23,54 @@ const initialState: AuthProps = {
   user: null
 };
 
+const verifyToken: (st: string) => boolean = (serviceToken) => {
+  if (!serviceToken) {
+    return false;
+  }
+  const decoded: KeyedObject = jwtDecode(serviceToken);
+  /**
+   * Property 'exp' does not exist on type '<T = unknown>(token: string, options?: JwtDecodeOptions | undefined) => T'.
+   */
+  return decoded.exp > Date.now() / 1000;
+};
+
+const setSession = (serviceToken?: string | null) => {
+  if (serviceToken) {
+    localStorage.setItem('serviceToken', serviceToken);
+    axios.defaults.headers.common.Authorization = `Bearer ${serviceToken}`;
+  } else {
+    localStorage.removeItem('serviceToken');
+    delete axios.defaults.headers.common.Authorization;
+  }
+};
+
 // ==============================|| JWT CONTEXT & PROVIDER ||============================== //
-
-declare global {
-  interface Window {
-    sessionRefreshIntervalId: NodeJS.Timeout | null;
-  }
-}
-
-async function setSessionRefreshInterval() {
-  const clear = () => {
-    if (window.sessionRefreshIntervalId) {
-      clearInterval(window.sessionRefreshIntervalId);
-      window.sessionRefreshIntervalId = null;
-    }
-  };
-
-  const refresh = async () => {
-    const response = await axios.request({
-      url: '/v1/auth/token/refresh',
-      method: 'POST',
-      validateStatus: () => true
-    });
-
-    if (response.status !== 204) {
-      clear();
-      return false;
-    }
-
-    return true;
-  };
-
-  clear();
-
-  if (await refresh()) {
-    window.sessionRefreshIntervalId = setInterval(() => refresh(), 5 * 60 * 1_000);
-  }
-}
 
 const JWTContext = createContext<JWTContextType | null>(null);
 
 export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
-  const { setMenuOrientation, setMenuItems } = useMpMenu();
 
   useEffect(() => {
     const init = async () => {
       try {
-        let user;
-        let fullUserData;
-
-        if (import.meta.env.VITE_MOCK_AUTH_MODE === 'true') {
-          console.log('🔧 Mock mode: Skipping login process and using mock user');
-          user = { role: MpMemberRole.SuperAdmin };
-          fullUserData = {
-            role: MpMemberRole.SuperAdmin,
-            id: 'mock-user-id',
-            email: 'mock@example.com',
-            name: 'Mock User'
-          };
+        const serviceToken = window.localStorage.getItem('serviceToken');
+        if (serviceToken && verifyToken(serviceToken)) {
+          setSession(serviceToken);
+          const response = await axios.get('/api/account/me');
+          const { user } = response.data;
+          dispatch({
+            type: LOGIN,
+            payload: {
+              isLoggedIn: true,
+              user
+            }
+          });
         } else {
-          const response = await axios.get('/v1/auth/me');
-          user = response.data;
-          fullUserData = user;
+          dispatch({
+            type: LOGOUT
+          });
         }
-
-        if (isAdmin(user)) {
-          setMenuOrientation(MenuOrientation.VERTICAL);
-          setMenuItems(mpAdminMenu);
-        } else {
-          setMenuOrientation(MenuOrientation.HORIZONTAL);
-          setMenuItems(mpMemberMenu);
-        }
-
-        if (import.meta.env.VITE_MOCK_AUTH_MODE !== 'true') {
-          setSessionRefreshInterval();
-        }
-
-        dispatch({
-          type: LOGIN,
-          payload: {
-            isLoggedIn: true,
-            user: fullUserData
-          }
-        });
       } catch (err) {
         console.error(err);
         dispatch({
@@ -121,28 +82,10 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     init();
   }, []);
 
-  const login = async (userId: string, password: string) => {
-    await axios.request({
-      method: 'POST',
-      url: '/v1/auth/login',
-      data: {
-        userId,
-        password: await encryptRSA(password)
-      }
-    });
-    const response = await axios.get('/v1/auth/me');
-    const user = response.data;
-
-    if (isAdmin(user)) {
-      setMenuOrientation(MenuOrientation.VERTICAL);
-      setMenuItems(mpAdminMenu);
-    } else {
-      setMenuOrientation(MenuOrientation.HORIZONTAL);
-      setMenuItems(mpMemberMenu);
-    }
-
-    setSessionRefreshInterval();
-
+  const login = async (email: string, password: string) => {
+    const response = await axios.post('/api/account/login', { email, password });
+    const { serviceToken, user } = response.data;
+    setSession(serviceToken);
     dispatch({
       type: LOGIN,
       payload: {
@@ -181,8 +124,7 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
   };
 
   const logout = () => {
-    setMenuItems([]);
-    axios.post('/v1/auth/logout').catch();
+    setSession(null);
     dispatch({ type: LOGOUT });
   };
 

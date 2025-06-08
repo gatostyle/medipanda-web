@@ -9,9 +9,10 @@ import RTLLayout from 'components/RTLLayout';
 import ScrollTop from 'components/ScrollTop';
 import Snackbar from 'components/@extended/Snackbar';
 import Notistack from 'components/third-party/Notistack';
+import { MpSessionProvider } from 'contexts/medipanda/MpSessionContext';
 
 // auth-provider
-import { JWTProvider as AuthProvider } from 'contexts/JWTContext';
+// import { JWTProvider as AuthProvider } from 'contexts/JWTContext';
 // import { FirebaseProvider as AuthProvider } from 'contexts/FirebaseContext';
 // import { AWSCognitoProvider as AuthProvider } from 'contexts/AWSCognitoContext';
 // import { Auth0Provider as AuthProvider } from 'contexts/Auth0Context';
@@ -24,14 +25,14 @@ export default function App() {
       <RTLLayout>
         <Locales>
           <ScrollTop>
-            <AuthProvider>
+            <MpSessionProvider>
               <>
                 <Notistack>
                   <RouterProvider router={router} />
                   <Snackbar />
                 </Notistack>
               </>
-            </AuthProvider>
+            </MpSessionProvider>
           </ScrollTop>
         </Locales>
       </RTLLayout>

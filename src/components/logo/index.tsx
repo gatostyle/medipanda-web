@@ -8,8 +8,8 @@ import { SxProps } from '@mui/system';
 // project-imports
 import Logo from './LogoMain';
 import LogoIcon from './LogoIcon';
-import useAuth from 'hooks/useAuth';
 import { APP_DEFAULT_PATH } from 'config';
+import { useMpSession } from 'hooks/medipanda/useMpSession';
 
 interface Props {
   isIcon?: boolean;
@@ -20,10 +20,10 @@ interface Props {
 // ==============================|| MAIN LOGO ||============================== //
 
 export default function LogoSection({ isIcon, sx, to }: Props) {
-  const { isLoggedIn } = useAuth();
+  const { session } = useMpSession();
 
   return (
-    <ButtonBase disableRipple {...(isLoggedIn && { component: Link, to: !to ? APP_DEFAULT_PATH : to, sx })}>
+    <ButtonBase disableRipple {...(session && { component: Link, to: !to ? APP_DEFAULT_PATH : to, sx })}>
       {isIcon ? <LogoIcon /> : <Logo />}
     </ButtonBase>
   );

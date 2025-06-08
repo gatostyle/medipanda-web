@@ -1,22 +1,22 @@
 import { GuardProps } from 'types/auth';
-import useAuth from 'hooks/useAuth';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { saveRedirectTo } from 'utils/medipanda/redirectTo';
-import { isAdmin } from 'api-definitions/MpMemberRole';
+import { isMpAdmin } from 'api-definitions/MpMemberRole';
+import { useMpSession } from 'hooks/medipanda/useMpSession';
 
 export function MpMemberGuard({ children }: GuardProps) {
-  const { user, isLoggedIn } = useAuth();
+  const { session } = useMpSession();
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (!session) {
       navigate(saveRedirectTo(location));
-    } else if (isAdmin(user!!)) {
+    } else if (isMpAdmin(session)) {
       navigate('/admin');
     }
-  }, [user, isLoggedIn, navigate, location]);
+  }, [session, navigate, location]);
 
   return children;
 }

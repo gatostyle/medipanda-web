@@ -25,7 +25,7 @@ import Logo from 'components/logo';
 import IconButton from 'components/@extended/IconButton';
 import AnimateButton from 'components/@extended/AnimateButton';
 
-import useAuth from 'hooks/useAuth';
+import { useMpSession } from 'hooks/medipanda/useMpSession';
 import { ThemeDirection, APP_DEFAULT_PATH } from 'config';
 import { handlerComponentDrawer, useGetMenuMaster } from 'api/menu';
 
@@ -60,7 +60,7 @@ function ElevationScroll({ children, window }: ElevationScrollProps) {
 
 export default function Header() {
   const theme = useTheme();
-  const { isLoggedIn } = useAuth();
+  const { session } = useMpSession();
   const matchDownMd = useMediaQuery(theme.breakpoints.down('md'));
   const [drawerToggle, setDrawerToggle] = useState<boolean>(false);
 
@@ -184,10 +184,10 @@ export default function Header() {
                   variant="outlined"
                   color="warning"
                   component={RouterLink}
-                  to={isLoggedIn ? APP_DEFAULT_PATH : '/login'}
+                  to={session ? APP_DEFAULT_PATH : '/login'}
                   sx={{ mt: 0.25 }}
                 >
-                  {isLoggedIn ? 'Dashboard' : 'Login'}
+                  {session ? 'Dashboard' : 'Login'}
                 </Button>
 
                 <IconButton

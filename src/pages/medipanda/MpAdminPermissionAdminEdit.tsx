@@ -1,4 +1,5 @@
 import { Fragment, useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -15,31 +16,56 @@ import Card from '@mui/material/Card';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useMpErrorDialog } from 'hooks/medipanda/useMpErrorDialog';
 import { MpAdminMenuOption, mpFetchAdminMenuOptions } from 'api-definitions/MpAdminMenuOptions';
+import { mpFetchAdminByUserId } from 'api-definitions/MpAdmin';
 
 export default function MpAdminPermissionAdminEdit() {
+  const [searchParams] = useSearchParams();
+  const adminUserId = searchParams.get('userId');
   const [menuOptions, setMenuOptions] = useState<MpAdminMenuOption[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState('활성');
   const [phone, setPhone] = useState({ prefix: '010', mid: '', end: '' });
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
+  const [adminName, setAdminName] = useState('');
+  const [userId, setUserId] = useState('');
+  const [email, setEmail] = useState('');
   const { showError } = useMpErrorDialog();
 
   useEffect(() => {
-    const fetchMenuOptions = async () => {
+    const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await mpFetchAdminMenuOptions();
-        setMenuOptions(response.menuOptions.filter((option) => option.isActive));
+        const menuResponse = await mpFetchAdminMenuOptions();
+        setMenuOptions(menuResponse.menuOptions.filter((option) => option.isActive));
+
+        if (adminUserId) {
+          const adminResponse = await mpFetchAdminByUserId(adminUserId);
+          setAdminName(adminResponse.name);
+          setUserId(adminResponse.userId);
+          setEmail(adminResponse.email);
+          setStatus(adminResponse.state ? '활성' : '비활성');
+
+          if (adminResponse.phone) {
+            const phoneParts = adminResponse.phone.split('-');
+            if (phoneParts.length === 3) {
+              setPhone({
+                prefix: phoneParts[0],
+                mid: phoneParts[1],
+                end: phoneParts[2]
+              });
+            }
+          }
+        }
       } catch (error) {
-        console.error('관리 메뉴 옵션 조회 오류:', error);
-        showError('관리 메뉴 옵션을 조회하는 중 오류가 발생했습니다.');
+        console.error('데이터 조회 오류:', error);
+        showError('데이터를 조회하는 중 오류가 발생했습니다.');
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchMenuOptions();
-  }, [showError]);
+    fetchData();
+  }, [adminUserId, showError]);
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event.target;
@@ -78,16 +104,59 @@ export default function MpAdminPermissionAdminEdit() {
               </RadioGroup>
             </Grid>
 
-            {['관리자 명', '아이디', '패스워드', '패스워드 확인', '이메일'].map((label, index) => (
-              <Fragment key={label}>
-                <Grid item xs={12} sm={2}>
-                  <FormLabel>{label}</FormLabel>
-                </Grid>
-                <Grid item xs={12} sm={10}>
-                  <TextField fullWidth size="small" variant="outlined" type={label.includes('패스워드') ? 'password' : 'text'} />
-                </Grid>
-              </Fragment>
-            ))}
+            <Grid item xs={12} sm={2}>
+              <FormLabel>관리자 명</FormLabel>
+            </Grid>
+            <Grid item xs={12} sm={10}>
+              <TextField fullWidth size="small" variant="outlined" value={adminName} onChange={(e) => setAdminName(e.target.value)} />
+            </Grid>
+
+            <Grid item xs={12} sm={2}>
+              <FormLabel>아이디</FormLabel>
+            </Grid>
+            <Grid item xs={12} sm={10}>
+              <TextField
+                fullWidth
+                size="small"
+                variant="outlined"
+                value={userId}
+                onChange={(e) => setUserId(e.target.value)}
+                disabled={!!adminUserId}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={2}>
+              <FormLabel>패스워드</FormLabel>
+            </Grid>
+            <Grid item xs={12} sm={10}>
+              <TextField
+                fullWidth
+                size="small"
+                variant="outlined"
+                type="password"
+                placeholder={adminUserId ? '변경하려면 입력하세요' : ''}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={2}>
+              <FormLabel>패스워드 확인</FormLabel>
+            </Grid>
+            <Grid item xs={12} sm={10}>
+              <TextField
+                fullWidth
+                size="small"
+                variant="outlined"
+                type="password"
+                placeholder={adminUserId ? '변경하려면 입력하세요' : ''}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={2}>
+              <FormLabel>이메일</FormLabel>
+            </Grid>
+            <Grid item xs={12} sm={10}>
+              <TextField fullWidth size="small" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} />
+            </Grid>
 
             <Grid item xs={12} sm={2}>
               <FormLabel>연락처</FormLabel>

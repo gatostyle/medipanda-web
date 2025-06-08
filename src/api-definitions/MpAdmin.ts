@@ -1,7 +1,5 @@
-import { MpPagedRequest, MpPagedResponse } from './MpPaged';
-import { mockPagedResponse } from './mockups';
-import { mockAdmins } from 'api-mock-data/MpAdminMock';
-import { delay } from 'utils/medipanda/delay';
+import { MpPagedRequest, MpPagedResponse, MpWithSequence } from './MpPaged';
+import axios from 'axios';
 
 export interface MpAdmin {
   id: number;
@@ -22,96 +20,120 @@ export interface MpAdminSearchParams extends MpPagedRequest<MpAdmin> {
   phone?: string;
 }
 
-export async function mpFetchAdmins(params: MpAdminSearchParams): Promise<MpPagedResponse<MpAdmin>> {
-  await delay(500);
-  let admins = Object.values(mockAdmins);
-
-  if (params.userId) {
-    admins = admins.filter((admin) => admin.userId.toLowerCase().includes(params.userId!.toLowerCase()));
-  }
-  if (params.email) {
-    admins = admins.filter((admin) => admin.email.toLowerCase().includes(params.email!.toLowerCase()));
-  }
-  if (params.phone) {
-    admins = admins.filter((admin) => admin.phone.includes(params.phone!));
-  }
-  if (params.sortProperty) {
-    admins.sort((a, b) => {
-      const valueA = a[params.sortProperty!];
-      const valueB = b[params.sortProperty!];
-      if (typeof valueA === 'string' && typeof valueB === 'string') {
-        return params.descending ? valueB.localeCompare(valueA) : valueA.localeCompare(valueB);
-      }
-      return params.descending ? (valueB > valueA ? 1 : -1) : valueA > valueB ? 1 : -1;
-    });
-  }
-
-  return mockPagedResponse(params, admins);
-
-  /*
-  // FIXME Use API Instead of mockup data
-  const axiosResponse = await axios.request<MpPagedResponse<MpAdmin>>({
-    url: `/v1/admins`,
-    method: 'GET',
-    params
-  });
-  return axiosResponse.data;
-  */
+export interface AdminResponse {
+  id: number;
+  userId: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: string;
+  state: boolean;
+  createdAt: string;
 }
 
-export const mpCreateAdmin = async (admin: Omit<MpAdmin, 'id'>): Promise<MpAdmin> => {
-  await delay(500);
-  const newId = Math.max(...Object.keys(mockAdmins).map(Number)) + 1;
-  const newAdmin = { ...admin, id: newId };
-  mockAdmins[newId] = newAdmin;
-  return newAdmin;
+export interface AdminSearchRequest {
+  page: number;
+  size: number;
+  sortProperty?: keyof AdminResponse;
+  descending?: boolean;
+  userId?: string;
+  email?: string;
+  phone?: string;
+}
 
-  /*
-  // FIXME Use API Instead of mockup data
-  const axiosResponse = await axios.post<MpAdmin>('/v1/admins', admin);
-  return axiosResponse.data;
-  */
+export interface MemberResponse {
+  id: number;
+  userId: string;
+  name: string;
+  phoneNumber: string;
+  birthDate: string;
+  email: string;
+  partnerContractStatus: string;
+  marketingConsent: boolean;
+  registrationDate: string;
+  lastLoginDate: string;
+}
+
+export interface AdminPermissionsResponse {
+  role: string;
+  state: boolean;
+  permissions: string[];
+}
+
+const convertAdminResponseToMpAdmin = (admin: AdminResponse): MpAdmin => {
+  return {
+    id: admin.id,
+    userId: admin.userId,
+    name: admin.name,
+    email: admin.email,
+    phone: admin.phone,
+    role: admin.role,
+    state: admin.state,
+    createdAt: admin.createdAt
+  };
 };
 
-export const mpUpdateAdmin = async (id: number, admin: Partial<MpAdmin>): Promise<void> => {
-  await delay(500);
-  if (mockAdmins[id]) {
-    mockAdmins[id] = { ...mockAdmins[id], ...admin };
-    return;
-  }
-  throw new Error('Admin not found');
-
-  /*
-  // FIXME Use API Instead of mockup data
-  await axios.put(`/v1/admins/${id}`, admin);
-  */
+const convertMemberAndPermissionsToMpAdmin = (member: MemberResponse, permissions: AdminPermissionsResponse): MpAdmin => {
+  return {
+    id: member.id,
+    userId: member.userId,
+    name: member.name,
+    email: member.email,
+    phone: member.phoneNumber,
+    role: permissions.role,
+    state: permissions.state,
+    createdAt: member.registrationDate
+  };
 };
 
-export const mpFetchAdmin = async (id: number): Promise<MpAdmin> => {
-  await delay(500);
-  const admin = mockAdmins[id];
-  if (admin) {
-    return admin;
+export async function mpFetchAdmins(params: MpAdminSearchParams): Promise<MpPagedResponse<MpAdmin>> {
+  if (params.userId || params.email || params.phone) {
+    throw new Error('NOT_IMPLEMENTED'); // FIXME Need API Fix
   }
-  throw new Error('Admin not found');
 
-  /*
-  // FIXME Use API Instead of mockup data
-  const axiosResponse = await axios.get<MpAdmin>(`/v1/admins/${id}`);
-  return axiosResponse.data;
-  */
+  const searchRequest: AdminSearchRequest = {
+    page: params.page,
+    size: params.size,
+    sortProperty: params.sortProperty,
+    descending: params.descending,
+    userId: params.userId,
+    email: params.email,
+    phone: params.phone
+  };
+
+  const axiosResponse = await axios.request<MpPagedResponse<AdminResponse>>({
+    url: `/v1/members/admins`,
+    method: 'GET',
+    params: searchRequest
+  });
+
+  const contentWithSequence: MpWithSequence<MpAdmin>[] = axiosResponse.data.content
+    .map(convertAdminResponseToMpAdmin)
+    .map((admin, index) => ({
+      ...admin,
+      sequence: axiosResponse.data.totalElements - params.page * params.size - index
+    }));
+
+  return {
+    ...axiosResponse.data,
+    content: contentWithSequence
+  };
+}
+
+export const mpFetchAdminByUserIdFromApi = async (userId: string): Promise<MpAdmin> => {
+  const [memberResponse, permissionsResponse] = await Promise.all([
+    axios.get<MemberResponse>(`/v1/members/${userId}/details`),
+    axios.get<AdminPermissionsResponse>(`/v1/members/admins/${userId}/permissions`)
+  ]);
+
+  return convertMemberAndPermissionsToMpAdmin(memberResponse.data, permissionsResponse.data);
 };
 
-export const mpDeleteAdmin = async (id: number): Promise<void> => {
-  await delay(500);
-  if (mockAdmins[id]) {
-    delete mockAdmins[id];
-    return;
-  }
-  throw new Error('Admin not found');
+export const mpFetchAdminByUserId = async (userId: string): Promise<MpAdmin> => {
+  return await mpFetchAdminByUserIdFromApi(userId);
+};
 
-  /*
-  // FIXME Use API Instead of mockup data
-  await axios.delete(`/v1/admins/${id}`);
-  */
+export const mpFetchCurrentUserPermissions = async (userId: string): Promise<string[]> => {
+  const permissionsResponse = await axios.get<AdminPermissionsResponse>(`/v1/members/admins/${userId}/permissions`);
+  return permissionsResponse.data.permissions;
 };

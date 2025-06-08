@@ -66,11 +66,6 @@ export interface MpMember {
   memo?: string;
 }
 
-export interface MemberSearchRequest {
-  page?: number;
-  size?: number;
-}
-
 export interface MpMemberSearchRequest extends MpPagedRequest<MpMember> {
   searchType?: string;
   searchKeyword?: string;
@@ -139,7 +134,7 @@ export const mpFetchMembers = async (request: MpMemberSearchRequest): Promise<Mp
   const hasSearchFilters = request.partnershipType || request.searchKeyword || request.startAt || request.endAt;
 
   if (hasSearchFilters) {
-    throw new Error('NOT_IMPLEMENTED');
+    throw new Error('NOT_IMPLEMENTED'); // FIXME Need API Fix
   }
 
   const axiosResponse = await axios.request<MpPagedResponse<MemberResponse>>({
@@ -190,41 +185,6 @@ export const mpUpdateMember = async (userId: string, member: Partial<MpMember>):
   });
   */
 };
-
-export async function mpCreateMember(payload: Omit<MpMember, 'id'>): Promise<MpMember> {
-  await delay(500);
-  const newId = Math.max(...Object.keys(mockMembers).map(Number)) + 1;
-  const newMember = { id: newId, ...payload };
-  mockMembers[newId] = newMember;
-  return newMember;
-
-  /*
-  // FIXME Use API Instead of mockup data
-  const axiosResponse = await axios.request<MpMember>({
-    url: `/v1/members`,
-    method: 'POST',
-    data: payload
-  });
-  return axiosResponse.data;
-  */
-}
-
-export async function mpDeleteMember(id: number): Promise<void> {
-  await delay(500);
-  if (mockMembers[id]) {
-    delete mockMembers[id];
-    return;
-  }
-  throw new Error('Member not found');
-
-  /*
-  // FIXME Use API Instead of mockup data
-  await axios.request({
-    url: `/v1/members/${id}`,
-    method: 'DELETE'
-  });
-  */
-}
 
 export const mpGetMemberExcelDownloadUrl = async (request: MpMemberSearchRequest): Promise<string> => {
   await delay(500);

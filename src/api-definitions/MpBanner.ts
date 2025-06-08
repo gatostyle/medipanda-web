@@ -64,12 +64,3 @@ export async function mpCreateBanner(payload: Omit<MpBanner, 'id'>): Promise<MpB
   mockBanners[newId] = newBanner;
   return newBanner;
 }
-
-export async function mpDeleteBanner(id: number): Promise<void> {
-  await delay(500);
-  if (mockBanners[id]) {
-    delete mockBanners[id];
-    return;
-  }
-  throw new Error('Banner not found');
-}

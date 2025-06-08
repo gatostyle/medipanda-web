@@ -1,15 +1,7 @@
 import axios from 'axios';
 import { delay } from 'utils/medipanda/delay';
 import { MpPagedRequest, MpPagedResponse, MpWithSequence } from './MpPaged';
-import {
-  mockHospitals,
-  mockNotices,
-  mockNoticeDetail,
-  mockFaqs,
-  mockFaqDetail,
-  mockInquiries,
-  mockInquiryDetail
-} from 'api-mock-data/MpContentMock';
+import { mockHospitals, mockInquiries } from 'api-mock-data/MpContentMock';
 
 export interface MpHospital {
   id: number;
@@ -278,7 +270,7 @@ export const mpFetchCsoAtoZListFromApi = async (request: MpCsoAtoZSearchRequest)
   const hasSearchFilters = request.status || request.searchKeyword || request.startDate || request.endDate;
 
   if (hasSearchFilters) {
-    throw new Error('NOT_IMPLEMENTED');
+    throw new Error('NOT_IMPLEMENTED'); // FIXME Need API Fix
   }
 
   const boardRequest: BoardSearchRequest = {
@@ -353,7 +345,7 @@ export const mpFetchNoticeListFromApi = async (request: MpNoticeSearchRequest): 
   const hasSearchFilters = request.category || request.status || request.searchKeyword || request.startDate || request.endDate;
 
   if (hasSearchFilters) {
-    throw new Error('NOT_IMPLEMENTED');
+    throw new Error('NOT_IMPLEMENTED'); // FIXME Need API Fix
   }
 
   const boardRequest: BoardSearchRequest = {
@@ -430,7 +422,7 @@ export const mpFetchFaqListFromApi = async (request: MpFaqSearchRequest): Promis
   const hasSearchFilters = request.category || request.status || request.searchKeyword || request.startDate || request.endDate;
 
   if (hasSearchFilters) {
-    throw new Error('NOT_IMPLEMENTED');
+    throw new Error('NOT_IMPLEMENTED'); // FIXME Need API Fix
   }
 
   const boardRequest: BoardSearchRequest = {
@@ -515,20 +507,5 @@ export const mpFetchInquiryList = async (request: MpInquirySearchRequest): Promi
     params: request
   });
   return mpSetSequence(request, axiosResponse.data);
-  */
-};
-
-export const mpFetchInquiryDetail = async (id: number): Promise<MpInquiryDetail> => {
-  await delay(500);
-
-  return mockInquiryDetail;
-
-  /*
-  // FIXME Use API Instead of mockup data
-  const axiosResponse = await axios.request<MpInquiryDetail>({
-    url: `/v1/content/inquiries/${id}`,
-    method: 'GET'
-  });
-  return axiosResponse.data;
   */
 };

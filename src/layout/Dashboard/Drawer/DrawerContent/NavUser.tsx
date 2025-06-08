@@ -15,8 +15,8 @@ import MenuItem from '@mui/material/MenuItem';
 
 // project import
 import Avatar from 'components/@extended/Avatar';
-import useAuth from 'hooks/useAuth';
 import { useGetMenuMaster } from 'api/menu';
+import { useMpSession } from 'hooks/medipanda/useMpSession';
 
 // assets
 import { ArrowRight2 } from 'iconsax-react';
@@ -54,7 +54,7 @@ export default function UserList() {
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
 
-  const { logout, user } = useAuth();
+  const { session, logout } = useMpSession();
   const handleLogout = async () => {
     try {
       await logout();
@@ -106,7 +106,7 @@ export default function UserList() {
           <ListItemAvatar>
             <Avatar alt="Avatar" src={avatar1} sx={{ ...(drawerOpen && { width: 46, height: 46 }) }} />
           </ListItemAvatar>
-          <ListItemText primary={user?.name} sx={{ ...(!drawerOpen && { display: 'none' }) }} secondary="UI/UX Designer" />
+          <ListItemText primary={session?.name} sx={{ ...(!drawerOpen && { display: 'none' }) }} secondary="UI/UX Designer" />
         </ListItem>
       </List>
       <Menu

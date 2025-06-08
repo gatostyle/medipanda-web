@@ -3,6 +3,9 @@ import { RouteObject } from 'react-router-dom';
 import Loadable from 'components/Loadable';
 import DashboardLayout from 'layout/Dashboard';
 import AuthLayout from 'layout/Auth';
+import { MpAdminGuard } from 'utils/route-guard/medipanda/MpAdminGuard';
+import { MpMemberGuard } from 'utils/route-guard/medipanda/MpMemberGuard';
+import React from 'react';
 
 const MpLogin = Loadable(lazy(() => import('pages/medipanda/MpLogin')));
 
@@ -12,6 +15,7 @@ const MpMemberPrescriptionList = Loadable(lazy(() => import('pages/medipanda/MpM
 const MpMemberAdjustmentList = Loadable(lazy(() => import('pages/medipanda/MpMemberAdjustmentList')));
 const MpMemberCommunity = Loadable(lazy(() => import('pages/medipanda/MpMemberCommunity')));
 
+const MpAdminMain = Loadable(lazy(() => import('pages/medipanda/MpAdminMain')));
 const MpAdminMemberList = Loadable(lazy(() => import('pages/medipanda/MpAdminMemberList')));
 const MpAdminMemberEdit = Loadable(lazy(() => import('pages/medipanda/MpAdminMemberEdit')));
 const MpAdminProductList = Loadable(lazy(() => import('pages/medipanda/MpAdminProductList')));
@@ -70,9 +74,14 @@ const authRoute: RouteObject = {
     }
   ]
 };
+
 const userRoute: RouteObject = {
   path: '/',
-  element: <DashboardLayout />,
+  element: (
+    <MpMemberGuard>
+      <DashboardLayout />
+    </MpMemberGuard>
+  ),
   children: [
     {
       element: <MpMemberMain />,
@@ -102,184 +111,360 @@ const adminRoute: RouteObject = {
   element: <DashboardLayout />,
   children: [
     {
-      element: <MpAdminMemberList />,
+      element: <MpAdminMain />,
       index: true
     },
     {
       path: 'members',
-      element: <MpAdminMemberList />
+      element: (
+        <MpAdminGuard requiredPermission="MEMBER_MANAGEMENT">
+          <MpAdminMemberList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'members/edit',
-      element: <MpAdminMemberEdit />
+      element: (
+        <MpAdminGuard requiredPermission="MEMBER_MANAGEMENT">
+          <MpAdminMemberEdit />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'products',
-      element: <MpAdminProductList />
+      element: (
+        <MpAdminGuard requiredPermission="PRODUCT_MANAGEMENT">
+          <MpAdminProductList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'products/:id',
-      element: <MpAdminProductDetail />
+      element: (
+        <MpAdminGuard requiredPermission="PRODUCT_MANAGEMENT">
+          <MpAdminProductDetail />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'business-lines',
-      element: <MpAdminBusinessLineList />
+      element: (
+        <MpAdminGuard requiredPermission="BUSINESS_LINE_MANAGEMENT">
+          <MpAdminBusinessLineList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'business-lines/edit',
-      element: <MpAdminBusinessLineEdit />
+      element: (
+        <MpAdminGuard requiredPermission="BUSINESS_LINE_MANAGEMENT">
+          <MpAdminBusinessLineEdit />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'business-lines/edit/:id',
-      element: <MpAdminBusinessLineEdit />
+      element: (
+        <MpAdminGuard requiredPermission="BUSINESS_LINE_MANAGEMENT">
+          <MpAdminBusinessLineEdit />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'pharmaceutical/companies',
-      element: <MpAdminPharmaceuticalCompanyList />
+      element: (
+        <MpAdminGuard requiredPermission="PHARMACEUTICAL_MANAGEMENT">
+          <MpAdminPharmaceuticalCompanyList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'pharmaceutical/companies/:id',
-      element: <MpAdminPharmaceuticalCompanyDetail />
+      element: (
+        <MpAdminGuard requiredPermission="PHARMACEUTICAL_MANAGEMENT">
+          <MpAdminPharmaceuticalCompanyDetail />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'pharmaceutical/products',
-      element: <MpAdminPharmaceuticalProductList />
+      element: (
+        <MpAdminGuard requiredPermission="PHARMACEUTICAL_MANAGEMENT">
+          <MpAdminPharmaceuticalProductList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'pharmaceutical/products/:id',
-      element: <MpAdminPharmaceuticalProductDetail />
+      element: (
+        <MpAdminGuard requiredPermission="PHARMACEUTICAL_MANAGEMENT">
+          <MpAdminPharmaceuticalProductDetail />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'prescription/receptions',
-      element: <MpAdminPrescriptionReceptionList />
+      element: (
+        <MpAdminGuard requiredPermission="PRESCRIPTION_MANAGEMENT">
+          <MpAdminPrescriptionReceptionList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'prescription/forms',
-      element: <MpAdminPrescriptionFormList />
+      element: (
+        <MpAdminGuard requiredPermission="PRESCRIPTION_MANAGEMENT">
+          <MpAdminPrescriptionFormList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'prescription/forms/register',
-      element: <MpAdminPrescriptionFormRegister />
+      element: (
+        <MpAdminGuard requiredPermission="PRESCRIPTION_MANAGEMENT">
+          <MpAdminPrescriptionFormRegister />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'prescription/forms/products/:id',
-      element: <MpAdminPrescriptionFormProducts />
+      element: (
+        <MpAdminGuard requiredPermission="PRESCRIPTION_MANAGEMENT">
+          <MpAdminPrescriptionFormProducts />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'adjustment/approved',
-      element: <MpAdminAdjustmentApprovedList />
+      element: (
+        <MpAdminGuard requiredPermission="ADJUSTMENT_MANAGEMENT">
+          <MpAdminAdjustmentApprovedList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'adjustment/approved/:id',
-      element: <MpAdminAdjustmentApprovedDetail />
+      element: (
+        <MpAdminGuard requiredPermission="ADJUSTMENT_MANAGEMENT">
+          <MpAdminAdjustmentApprovedDetail />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'adjustment/business-partner/:id',
-      element: <MpAdminAdjustmentBusinessPartnerDetail />
+      element: (
+        <MpAdminGuard requiredPermission="ADJUSTMENT_MANAGEMENT">
+          <MpAdminAdjustmentBusinessPartnerDetail />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'adjustment/adjustments',
-      element: <MpAdminAdjustmentAdjustmentList />
+      element: (
+        <MpAdminGuard requiredPermission="ADJUSTMENT_MANAGEMENT">
+          <MpAdminAdjustmentAdjustmentList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'adjustment/stats',
-      element: <MpAdminStatisticsList />
+      element: (
+        <MpAdminGuard requiredPermission="ADJUSTMENT_MANAGEMENT">
+          <MpAdminStatisticsList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'settlement',
-      element: <MpAdminSettlementList />
+      element: (
+        <MpAdminGuard requiredPermission="SETTLEMENT_MANAGEMENT">
+          <MpAdminSettlementList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'settlement/:id',
-      element: <MpAdminSettlementDetail />
+      element: (
+        <MpAdminGuard requiredPermission="SETTLEMENT_MANAGEMENT">
+          <MpAdminSettlementDetail />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'settlement/business-partner/:id',
-      element: <MpAdminSettlementBusinessPartnerDetail />
+      element: (
+        <MpAdminGuard requiredPermission="SETTLEMENT_MANAGEMENT">
+          <MpAdminSettlementBusinessPartnerDetail />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'expenditure-reports',
-      element: <MpAdminExpenditureReportList />
+      element: (
+        <MpAdminGuard requiredPermission="EXPENDITURE_MANAGEMENT">
+          <MpAdminExpenditureReportList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'community/members',
-      element: <MpAdminCommunityMemberList />
+      element: (
+        <MpAdminGuard requiredPermission="COMMUNITY_MANAGEMENT">
+          <MpAdminCommunityMemberList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'community/users',
-      element: <MpAdminCommunityUserList />
+      element: (
+        <MpAdminGuard requiredPermission="COMMUNITY_MANAGEMENT">
+          <MpAdminCommunityUserList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'community/posts',
-      element: <MpAdminCommunityPostList />
+      element: (
+        <MpAdminGuard requiredPermission="COMMUNITY_MANAGEMENT">
+          <MpAdminCommunityPostList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'community/posts/:id',
-      element: <MpAdminCommunityPostDetail />
+      element: (
+        <MpAdminGuard requiredPermission="COMMUNITY_MANAGEMENT">
+          <MpAdminCommunityPostDetail />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'community/comments',
-      element: <MpAdminCommunityCommentList />
+      element: (
+        <MpAdminGuard requiredPermission="COMMUNITY_MANAGEMENT">
+          <MpAdminCommunityCommentList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'community/blinds',
-      element: <MpAdminCommunityBlindList />
+      element: (
+        <MpAdminGuard requiredPermission="COMMUNITY_MANAGEMENT">
+          <MpAdminCommunityBlindList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'content-management/hospitals',
-      element: <MpAdminContentManagementHospitalList />
+      element: (
+        <MpAdminGuard requiredPermission="CONTENT_MANAGEMENT">
+          <MpAdminContentManagementHospitalList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'content-management/atoz',
-      element: <MpAdminContentManagementAtoZList />
+      element: (
+        <MpAdminGuard requiredPermission="CONTENT_MANAGEMENT">
+          <MpAdminContentManagementAtoZList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'content-management/atoz/:id',
-      element: <MpAdminContentManagementAtoZDetail />
+      element: (
+        <MpAdminGuard requiredPermission="CONTENT_MANAGEMENT">
+          <MpAdminContentManagementAtoZDetail />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'content-management/atoz/edit',
-      element: <MpAdminContentManagementAtoZEdit />
+      element: (
+        <MpAdminGuard requiredPermission="CONTENT_MANAGEMENT">
+          <MpAdminContentManagementAtoZEdit />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'customer-center/notices',
-      element: <MpAdminCustomerCenterNoticeList />
+      element: (
+        <MpAdminGuard requiredPermission="CUSTOMER_CENTER_MANAGEMENT">
+          <MpAdminCustomerCenterNoticeList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'customer-center/notice/:id',
-      element: <MpAdminCustomerCenterNoticeDetail />
+      element: (
+        <MpAdminGuard requiredPermission="CUSTOMER_CENTER_MANAGEMENT">
+          <MpAdminCustomerCenterNoticeDetail />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'customer-center/faqs',
-      element: <MpAdminCustomerCenterFaqList />
+      element: (
+        <MpAdminGuard requiredPermission="CUSTOMER_CENTER_MANAGEMENT">
+          <MpAdminCustomerCenterFaqList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'customer-center/faq/:id',
-      element: <MpAdminCustomerCenterFaqDetail />
+      element: (
+        <MpAdminGuard requiredPermission="CUSTOMER_CENTER_MANAGEMENT">
+          <MpAdminCustomerCenterFaqDetail />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'customer-center/inquiries',
-      element: <MpAdminCustomerCenterInquiryList />
+      element: (
+        <MpAdminGuard requiredPermission="CUSTOMER_CENTER_MANAGEMENT">
+          <MpAdminCustomerCenterInquiryList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'banners',
-      element: <MpAdminBannerList />
+      element: (
+        <MpAdminGuard requiredPermission="BANNER_MANAGEMENT">
+          <MpAdminBannerList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'banners/edit',
-      element: <MpAdminBannerEdit />
+      element: (
+        <MpAdminGuard requiredPermission="BANNER_MANAGEMENT">
+          <MpAdminBannerEdit />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'permission/admins',
-      element: <MpAdminPermissionAdminList />
+      element: (
+        <MpAdminGuard requiredPermission="PERMISSION_ADMIN_MANAGEMENT">
+          <MpAdminPermissionAdminList />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'permission/admins/edit',
-      element: <MpAdminPermissionAdminEdit />
+      element: (
+        <MpAdminGuard requiredPermission="PERMISSION_ADMIN_MANAGEMENT">
+          <MpAdminPermissionAdminEdit />
+        </MpAdminGuard>
+      )
     },
     {
       path: 'permission/members',
-      element: <MpAdminPermissionMember />
+      element: (
+        <MpAdminGuard requiredPermission="PERMISSION_MEMBER_MANAGEMENT">
+          <MpAdminPermissionMember />
+        </MpAdminGuard>
+      )
     },
     { path: '*', element: <MaintenanceError /> }
   ]

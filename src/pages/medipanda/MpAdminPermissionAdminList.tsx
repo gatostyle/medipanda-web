@@ -53,7 +53,16 @@ export default function MpAdminPermissionAdminList() {
         setPagedResponse(response);
       } catch (e: any) {
         console.error('Failed to fetch admins', e);
-        showError('관리자 목록을 불러오는 중 오류가 발생했습니다.');
+        if (e instanceof Error && e.message === 'NOT_IMPLEMENTED') {
+          showError('검색/필터 기능은 현재 지원되지 않습니다.');
+          setValues({
+            ...values,
+            searchKeyword: '',
+            pageIndex: 0
+          });
+        } else {
+          showError('관리자 목록을 불러오는 중 오류가 발생했습니다.');
+        }
       }
     }
   });
@@ -119,7 +128,7 @@ export default function MpAdminPermissionAdminList() {
       cell: ({ row }) => (
         <Button
           component={Link}
-          to={`edit?id=${row.original.id}`}
+          to={`edit?userId=${row.original.userId}`}
           variant="contained"
           size="small"
           sx={{

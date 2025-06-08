@@ -1,3 +1,5 @@
+import { MpSession } from 'api-definitions/MpSession';
+
 export enum MpMemberRole {
   SuperAdmin = 'SUPER_ADMIN',
   Admin = 'ADMIN',
@@ -6,6 +8,10 @@ export enum MpMemberRole {
   None = 'NONE'
 }
 
-export function isAdmin(user: { role: string }): boolean {
-  return user.role === MpMemberRole.SuperAdmin || user.role === MpMemberRole.Admin;
+export function isMpAdmin(session: MpSession) {
+  return session.role === MpMemberRole.SuperAdmin || session.role === MpMemberRole.Admin;
+}
+
+export function isMpSuperAdmin(session: MpSession) {
+  return session.role === MpMemberRole.SuperAdmin;
 }

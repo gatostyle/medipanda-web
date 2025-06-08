@@ -1,5 +1,4 @@
 import Grid from '@mui/material/Grid';
-import useAuth from 'hooks/useAuth';
 import AuthWrapper from 'sections/auth/AuthWrapper';
 import { SyntheticEvent, useState } from 'react';
 import { useFormik } from 'formik';
@@ -11,9 +10,10 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from 'components/@extended/IconButton';
 import { Eye, EyeSlash } from 'iconsax-react';
 import Button from '@mui/material/Button';
+import { useMpSession } from 'hooks/medipanda/useMpSession';
 
 export default function MpLogin() {
-  const { login } = useAuth();
+  const { login } = useMpSession();
   const [showPassword, setShowPassword] = useState(false);
 
   const { values, touched, errors, isSubmitting, handleChange, handleBlur, handleSubmit } = useFormik({
