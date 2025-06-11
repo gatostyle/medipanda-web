@@ -42,6 +42,7 @@ import { ConfigProvider } from 'contexts/ConfigContext';
 import { MpMenuProvider } from 'contexts/medipanda/MpMenuContext';
 import { MpErrorDialogProvider } from './contexts/medipanda/MpErrorDialogContext';
 import { MpNotImplementedDialogProvider } from './contexts/medipanda/MpNotImplementedDialogContext';
+import { MpDeleteDialogProvider } from './contexts/medipanda/MpDeleteDialogContext';
 import reportWebVitals from './reportWebVitals';
 
 const container = document.getElementById('root');
@@ -54,7 +55,9 @@ root.render(
     <MpMenuProvider>
       <MpErrorDialogProvider>
         <MpNotImplementedDialogProvider>
-          <App />
+          <MpDeleteDialogProvider>
+            <App />
+          </MpDeleteDialogProvider>
         </MpNotImplementedDialogProvider>
       </MpErrorDialogProvider>
     </MpMenuProvider>

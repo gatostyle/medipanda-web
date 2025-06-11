@@ -45,8 +45,10 @@ const MpAdminContentManagementAtoZDetail = Loadable(lazy(() => import('pages/med
 const MpAdminContentManagementAtoZEdit = Loadable(lazy(() => import('pages/medipanda/MpAdminContentManagementAtoZEdit')));
 const MpAdminCustomerCenterNoticeList = Loadable(lazy(() => import('pages/medipanda/MpAdminCustomerCenterNoticeList')));
 const MpAdminCustomerCenterNoticeDetail = Loadable(lazy(() => import('pages/medipanda/MpAdminCustomerCenterNoticeDetail')));
+const MpAdminCustomerCenterNoticeEdit = Loadable(lazy(() => import('pages/medipanda/MpAdminCustomerCenterNoticeEdit')));
 const MpAdminCustomerCenterFaqList = Loadable(lazy(() => import('pages/medipanda/MpAdminCustomerCenterFaqList')));
 const MpAdminCustomerCenterFaqDetail = Loadable(lazy(() => import('pages/medipanda/MpAdminCustomerCenterFaqDetail')));
+const MpAdminCustomerCenterFaqEdit = Loadable(lazy(() => import('pages/medipanda/MpAdminCustomerCenterFaqEdit')));
 const MpAdminCustomerCenterInquiryList = Loadable(lazy(() => import('pages/medipanda/MpAdminCustomerCenterInquiryList')));
 const MpAdminBannerList = Loadable(lazy(() => import('pages/medipanda/MpAdminBannerList')));
 const MpAdminBannerEdit = Loadable(lazy(() => import('pages/medipanda/MpAdminBannerEdit')));
@@ -379,7 +381,15 @@ const adminRoute: RouteObject = {
       )
     },
     {
-      path: 'content-management/atoz/edit',
+      path: 'content-management/atoz/new',
+      element: (
+        <MpAdminGuard requiredPermission="CONTENT_MANAGEMENT">
+          <MpAdminContentManagementAtoZEdit />
+        </MpAdminGuard>
+      )
+    },
+    {
+      path: 'content-management/atoz/edit/:id',
       element: (
         <MpAdminGuard requiredPermission="CONTENT_MANAGEMENT">
           <MpAdminContentManagementAtoZEdit />
@@ -403,6 +413,22 @@ const adminRoute: RouteObject = {
       )
     },
     {
+      path: 'customer-center/notice/new',
+      element: (
+        <MpAdminGuard requiredPermission="CUSTOMER_CENTER_MANAGEMENT">
+          <MpAdminCustomerCenterNoticeEdit />
+        </MpAdminGuard>
+      )
+    },
+    {
+      path: 'customer-center/notice/edit/:id',
+      element: (
+        <MpAdminGuard requiredPermission="CUSTOMER_CENTER_MANAGEMENT">
+          <MpAdminCustomerCenterNoticeEdit />
+        </MpAdminGuard>
+      )
+    },
+    {
       path: 'customer-center/faqs',
       element: (
         <MpAdminGuard requiredPermission="CUSTOMER_CENTER_MANAGEMENT">
@@ -415,6 +441,22 @@ const adminRoute: RouteObject = {
       element: (
         <MpAdminGuard requiredPermission="CUSTOMER_CENTER_MANAGEMENT">
           <MpAdminCustomerCenterFaqDetail />
+        </MpAdminGuard>
+      )
+    },
+    {
+      path: 'customer-center/faq/new',
+      element: (
+        <MpAdminGuard requiredPermission="CUSTOMER_CENTER_MANAGEMENT">
+          <MpAdminCustomerCenterFaqEdit />
+        </MpAdminGuard>
+      )
+    },
+    {
+      path: 'customer-center/faq/edit/:id',
+      element: (
+        <MpAdminGuard requiredPermission="CUSTOMER_CENTER_MANAGEMENT">
+          <MpAdminCustomerCenterFaqEdit />
         </MpAdminGuard>
       )
     },

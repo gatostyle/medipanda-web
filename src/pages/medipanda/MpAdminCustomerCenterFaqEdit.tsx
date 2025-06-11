@@ -10,16 +10,25 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import Chip from '@mui/material/Chip';
 import { useSnackbar } from 'notistack';
 import MainCard from 'components/MainCard';
 import { TiptapEditor } from 'components/medipanda/TiptapEditor';
-import { mpFetchBoardDetail, mpCreateBoard, mpUpdateBoard } from 'api-definitions/MpBoard';
+import {
+  mpFetchBoardDetail,
+  mpCreateBoard,
+  mpUpdateBoard,
+  MpBoardCreateRequestExtended,
+  MpBoardUpdateRequestExtended
+} from 'api-definitions/MpBoard';
 import { useMpSession } from 'hooks/medipanda/useMpSession';
 
 interface FormData {
   title: string;
   content: string;
-  isBlind: boolean;
+  status: string;
+  files?: File[];
+  existingFiles?: string[];
 }
 
 interface FormErrors {
@@ -27,7 +36,7 @@ interface FormErrors {
   content?: string;
 }
 
-export default function MpAdminContentManagementAtoZEdit() {
+export default function MpAdminCustomerCenterFaqEdit() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -37,7 +46,9 @@ export default function MpAdminContentManagementAtoZEdit() {
   const [formData, setFormData] = useState<FormData>({
     title: '',
     content: '',
-    isBlind: false
+    status: '노출',
+    files: [],
+    existingFiles: []
   });
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -56,10 +67,11 @@ export default function MpAdminContentManagementAtoZEdit() {
       setFormData({
         title: response.title,
         content: response.content,
-        isBlind: response.isBlind
+        status: response.isBlind ? '미노출' : '노출',
+        existingFiles: response.attachments || []
       });
     } catch (error) {
-      console.error('Failed to fetch CSO A to Z detail:', error);
+      console.error('Failed to fetch FAQ detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
     } finally {
       setLoading(false);
@@ -99,36 +111,46 @@ export default function MpAdminContentManagementAtoZEdit() {
     setSubmitting(true);
     try {
       if (isNew) {
-        await mpCreateBoard({
-          boardType: 'CSO_A_TO_Z',
-          title: formData.title,
-          content: formData.content,
-          userId: session.userId,
-          nickname: session.name || session.userId
-        });
-        enqueueSnackbar('CSO A to Z가 성공적으로 등록되었습니다.', { variant: 'success' });
+        await mpCreateBoard(
+          {
+            boardType: 'FAQ',
+            title: formData.title,
+            content: formData.content,
+            userId: session.userId,
+            nickname: session.name || session.userId
+          } as MpBoardCreateRequestExtended,
+          formData.files
+        );
+        enqueueSnackbar('FAQ가 성공적으로 등록되었습니다.', { variant: 'success' });
       } else {
-        await mpUpdateBoard(parseInt(id!, 10), {
-          title: formData.title,
-          content: formData.content,
-          isBlind: formData.isBlind
-        });
-        enqueueSnackbar('CSO A to Z가 성공적으로 수정되었습니다.', { variant: 'success' });
+        await mpUpdateBoard(
+          parseInt(id!, 10),
+          {
+            title: formData.title,
+            content: formData.content,
+            isBlind: formData.status === '미노출'
+          } as MpBoardUpdateRequestExtended,
+          formData.files,
+          formData.existingFiles
+        );
+        enqueueSnackbar('FAQ가 성공적으로 수정되었습니다.', { variant: 'success' });
       }
 
       if (isNew) {
         setFormData({
           title: '',
           content: '',
-          isBlind: false
+          status: '노출',
+          files: [],
+          existingFiles: []
         });
         setErrors({});
       }
 
-      navigate('/admin/content-management/atoz');
+      navigate('/admin/customer-center/faqs');
     } catch (error) {
       console.error('Failed to submit form:', error);
-      enqueueSnackbar(isNew ? 'CSO A to Z 등록에 실패했습니다.' : 'CSO A to Z 수정에 실패했습니다.', { variant: 'error' });
+      enqueueSnackbar(isNew ? 'FAQ 등록에 실패했습니다.' : 'FAQ 수정에 실패했습니다.', { variant: 'error' });
     } finally {
       setSubmitting(false);
     }
@@ -136,9 +158,9 @@ export default function MpAdminContentManagementAtoZEdit() {
 
   const handleCancel = () => {
     if (isNew) {
-      navigate('/admin/content-management/atoz');
+      navigate('/admin/customer-center/faqs');
     } else {
-      navigate(`/admin/content-management/atoz/${id}`);
+      navigate(`/admin/customer-center/faq/${id}`);
     }
   };
 
@@ -157,6 +179,28 @@ export default function MpAdminContentManagementAtoZEdit() {
     }
   };
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    setFormData((prev) => ({
+      ...prev,
+      files: [...(prev.files || []), ...files]
+    }));
+  };
+
+  const removeFile = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      files: prev.files?.filter((_, i) => i !== index) || []
+    }));
+  };
+
+  const removeExistingFile = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      existingFiles: prev.existingFiles?.filter((_, i) => i !== index) || []
+    }));
+  };
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
@@ -169,7 +213,7 @@ export default function MpAdminContentManagementAtoZEdit() {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Typography variant="h4" gutterBottom>
-          CSO A TO Z {isNew ? '등록' : '상세'}
+          FAQ {isNew ? '등록' : '수정'}
         </Typography>
       </Grid>
 
@@ -205,12 +249,44 @@ export default function MpAdminContentManagementAtoZEdit() {
 
             <Grid item xs={12}>
               <Typography variant="body2" sx={{ mb: 1 }}>
+                첨부파일
+              </Typography>
+              <Button variant="outlined" component="label" sx={{ mb: 2 }}>
+                파일 업로드
+                <input type="file" hidden multiple onChange={handleFileChange} accept="*" />
+              </Button>
+
+              {formData.existingFiles && formData.existingFiles.length > 0 && (
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="body2" sx={{ mb: 1 }}>
+                    기존 파일:
+                  </Typography>
+                  {formData.existingFiles.map((file, index) => (
+                    <Chip key={index} label={file} onDelete={() => removeExistingFile(index)} sx={{ mr: 1, mb: 1 }} />
+                  ))}
+                </Box>
+              )}
+
+              {formData.files && formData.files.length > 0 && (
+                <Box>
+                  <Typography variant="body2" sx={{ mb: 1 }}>
+                    새 파일:
+                  </Typography>
+                  {formData.files.map((file, index) => (
+                    <Chip key={index} label={file.name} onDelete={() => removeFile(index)} sx={{ mr: 1, mb: 1 }} />
+                  ))}
+                </Box>
+              )}
+            </Grid>
+
+            <Grid item xs={12}>
+              <Typography variant="body2" sx={{ mb: 1 }}>
                 노출상태 <span style={{ color: 'red' }}>*</span>
               </Typography>
               <FormControl>
-                <RadioGroup row value={formData.isBlind} onChange={handleInputChange('isBlind')}>
-                  <FormControlLabel value={false} control={<Radio />} label="노출" />
-                  <FormControlLabel value={true} control={<Radio />} label="미노출" />
+                <RadioGroup row value={formData.status} onChange={handleInputChange('status')}>
+                  <FormControlLabel value="노출" control={<Radio />} label="노출" />
+                  <FormControlLabel value="미노출" control={<Radio />} label="미노출" />
                 </RadioGroup>
               </FormControl>
             </Grid>

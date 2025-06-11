@@ -1,349 +1,331 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useFormik } from 'formik';
-import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  Link,
-  MenuItem,
-  Paper,
-  Select,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
-  Typography,
-  Pagination
-} from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { ko } from 'date-fns/locale';
-import { MpCsoAtoZ, MpCsoAtoZSearchRequest, mpFetchCsoAtoZList } from 'api-definitions/MpContent';
-import { useMpNotImplementedDialog } from 'hooks/medipanda/useMpNotImplementedDialog';
-import { useMpErrorDialog } from 'hooks/medipanda/useMpErrorDialog';
+import { useEffect, useMemo, useState } from 'react';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
+import FormControl from '@mui/material/FormControl';
+import Grid from '@mui/material/Grid';
+import RadioGroup from '@mui/material/RadioGroup';
+import Radio from '@mui/material/Radio';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Stack from '@mui/material/Stack';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import MainCard from 'components/MainCard';
+import ScrollX from 'components/ScrollX';
+import Pagination from '@mui/material/Pagination';
+import { MpBoard, MpBoardSearchRequestExtended, mpFetchBoardList, mpDeleteBoard } from 'api-definitions/MpBoard';
+import { useMpDeleteDialog } from 'hooks/medipanda/useMpDeleteDialog';
+import { MpWithSequence } from 'api-definitions/MpPaged';
+import { Link } from 'react-router-dom';
 
 export default function MpAdminContentManagementAtoZList() {
-  const navigate = useNavigate();
-  const [data, setData] = useState<MpCsoAtoZ[]>([]);
+  const [data, setData] = useState<MpWithSequence<MpBoard>[]>([]);
+  const [, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const { open: openNotImplementedDialog } = useMpNotImplementedDialog();
-  const { showError } = useMpErrorDialog();
+  const [totalPages, setTotalPages] = useState(0);
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const deleteDialog = useMpDeleteDialog();
 
-  const formik = useFormik({
-    initialValues: {
-      page: 0,
-      size: 10,
-      status: '상태',
-      searchType: '작성자',
-      searchKeyword: '',
-      startDate: null as Date | null,
-      endDate: null as Date | null
-    },
-    onSubmit: async (values) => {
-      setIsLoading(true);
-      try {
-        const searchRequest: MpCsoAtoZSearchRequest = {
-          page: values.page,
-          size: values.size,
-          status: values.status === '상태' ? undefined : values.status,
-          searchType: values.searchType,
-          searchKeyword: values.searchKeyword || undefined,
-          startDate: values.startDate ? values.startDate.toISOString().split('T')[0] : undefined,
-          endDate: values.endDate ? values.endDate.toISOString().split('T')[0] : undefined
-        };
-        const response = await mpFetchCsoAtoZList(searchRequest);
-        setData(response.content);
-        setTotalElements(response.totalElements);
-      } catch (error) {
-        console.error('Failed to fetch CSO A to Z list:', error);
-        if (error instanceof Error && error.message === 'NOT_IMPLEMENTED') {
-          showError('검색 및 필터 기능은 아직 구현되지 않았습니다.', '기능 미구현');
-          formik.setValues({
-            ...formik.values,
-            status: '상태',
-            searchKeyword: '',
-            startDate: null,
-            endDate: null
-          });
-        } else {
-          showError('CSO A to Z 목록을 조회하는 중 오류가 발생했습니다.');
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    }
+  const [visibility, setVisibility] = useState<boolean | undefined>(undefined);
+  const [searchKeyword, setSearchKeyword] = useState<string>('');
+  const [startAt, setStartAt] = useState<string>('');
+  const [endAt, setEndAt] = useState<string>('');
+
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 20
   });
 
-  useEffect(() => {
-    formik.submitForm();
-  }, [formik.values.page]);
-
-  const handleItemClick = (id: number) => {
-    navigate(`/admin/content-management/atoz/${id}`);
-  };
-
-  const handleCreateClick = () => {
-    navigate('/admin/content-management/atoz/create');
-  };
-
-  return (
-    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
-      <Box sx={{ p: 3 }}>
-        <Typography variant="h4" sx={{ fontSize: '24px', fontWeight: 600, mb: 3 }}>
-          CSO A TO Z
-        </Typography>
-
-        <Paper sx={{ p: 3, mb: 3 }}>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} sm={2}>
-              <Typography variant="body2" sx={{ mb: 1, fontSize: '12px', color: '#6B7280' }}>
-                상태
-              </Typography>
-              <FormControl fullWidth size="small">
-                <Select
-                  name="status"
-                  value={formik.values.status}
-                  onChange={formik.handleChange}
-                  sx={{
-                    borderRadius: '20px',
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#D1D5DB'
-                    }
-                  }}
-                >
-                  <MenuItem value="상태">상태</MenuItem>
-                  <MenuItem value="노출">노출</MenuItem>
-                  <MenuItem value="미노출">미노출</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={12} sm={2}>
-              <Typography variant="body2" sx={{ mb: 1, fontSize: '12px', color: '#6B7280' }}>
-                제목
-              </Typography>
-              <FormControl fullWidth size="small">
-                <Select
-                  name="searchType"
-                  value={formik.values.searchType}
-                  onChange={formik.handleChange}
-                  sx={{
-                    borderRadius: '20px',
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#D1D5DB'
-                    }
-                  }}
-                >
-                  <MenuItem value="작성자">작성자</MenuItem>
-                  <MenuItem value="제목">제목</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={12} sm={1.5}>
-              <Typography variant="body2" sx={{ mb: 1, fontSize: '12px', color: '#6B7280' }}>
-                작성일
-              </Typography>
-              <DatePicker
-                value={formik.values.startDate}
-                onChange={(date) => formik.setFieldValue('startDate', date)}
-                slotProps={{
-                  textField: {
-                    size: 'small',
-                    fullWidth: true,
-                    sx: {
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: '20px',
-                        '& fieldset': {
-                          borderColor: '#D1D5DB'
-                        }
-                      }
-                    }
-                  }
-                }}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={1.5}>
-              <DatePicker
-                value={formik.values.endDate}
-                onChange={(date) => formik.setFieldValue('endDate', date)}
-                slotProps={{
-                  textField: {
-                    size: 'small',
-                    fullWidth: true,
-                    sx: {
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: '20px',
-                        '& fieldset': {
-                          borderColor: '#D1D5DB'
-                        }
-                      }
-                    }
-                  }
-                }}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <TextField
-                fullWidth
-                size="small"
-                name="searchKeyword"
-                value={formik.values.searchKeyword}
-                onChange={formik.handleChange}
-                placeholder=""
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '20px',
-                    '& fieldset': {
-                      borderColor: '#D1D5DB'
-                    }
-                  }
-                }}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={2}>
-              <Button
-                fullWidth
-                variant="contained"
-                onClick={() => formik.submitForm()}
-                sx={{
-                  bgcolor: '#6B7280',
-                  borderRadius: '20px',
-                  height: '40px',
-                  '&:hover': { bgcolor: '#4B5563' }
-                }}
-              >
-                검색
-              </Button>
-            </Grid>
-          </Grid>
-        </Paper>
-
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Typography variant="body1">
-            검색결과 <strong>{totalElements.toLocaleString()}</strong> 건
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button
-              variant="contained"
-              onClick={handleCreateClick}
-              sx={{
-                bgcolor: '#10B981',
-                borderRadius: '20px',
-                '&:hover': { bgcolor: '#059669' }
-              }}
-            >
-              작성
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => openNotImplementedDialog('등록하기')}
-              sx={{
-                bgcolor: '#10B981',
-                borderRadius: '20px',
-                '&:hover': { bgcolor: '#059669' }
-              }}
-            >
-              등록하기
-            </Button>
-          </Box>
-        </Box>
-
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead sx={{ bgcolor: '#F9FAFB' }}>
-              <TableRow>
-                <TableCell align="center" sx={{ fontWeight: 600, fontSize: '14px', color: '#374151' }}>
-                  No
-                </TableCell>
-                <TableCell align="center" sx={{ fontWeight: 600, fontSize: '14px', color: '#374151' }}>
-                  작성자
-                </TableCell>
-                <TableCell align="center" sx={{ fontWeight: 600, fontSize: '14px', color: '#374151' }}>
-                  제목
-                </TableCell>
-                <TableCell align="center" sx={{ fontWeight: 600, fontSize: '14px', color: '#374151' }}>
-                  상태
-                </TableCell>
-                <TableCell align="center" sx={{ fontWeight: 600, fontSize: '14px', color: '#374151' }}>
-                  조회 수
-                </TableCell>
-                <TableCell align="center" sx={{ fontWeight: 600, fontSize: '14px', color: '#374151' }}>
-                  작성일
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={6} align="center" sx={{ py: 4 }}>
-                    <Typography variant="body2" sx={{ color: '#6B7280' }}>
-                      데이터를 불러오는 중...
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              ) : data.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} align="center" sx={{ py: 4 }}>
-                    <Typography variant="body2" sx={{ color: '#6B7280' }}>
-                      데이터가 없습니다.
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              ) : (
-                data.map((item, index) => (
-                  <TableRow key={item.id} hover>
-                    <TableCell align="center">{totalElements - formik.values.page * formik.values.size - index}</TableCell>
-                    <TableCell align="center">{item.author}</TableCell>
-                    <TableCell align="center">
-                      <Link
-                        component="button"
-                        variant="body2"
-                        onClick={() => handleItemClick(item.id)}
-                        sx={{ color: '#3B82F6', textDecoration: 'none', cursor: 'pointer' }}
-                      >
-                        {item.title}
-                      </Link>
-                    </TableCell>
-                    <TableCell align="center">{item.status}</TableCell>
-                    <TableCell align="center">{item.viewCount.toLocaleString()}</TableCell>
-                    <TableCell align="center">{item.registrationDate}</TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-          <Pagination
-            count={Math.ceil(totalElements / formik.values.size)}
-            page={formik.values.page + 1}
-            onChange={(_, page) => formik.setFieldValue('page', page - 1)}
-            disabled={isLoading}
-            color="primary"
-            sx={{
-              '& .MuiPaginationItem-root': {
-                borderRadius: '4px'
-              },
-              '& .Mui-selected': {
-                bgcolor: '#6366F1 !important',
-                color: 'white'
+  const columns = useMemo<ColumnDef<MpWithSequence<MpBoard>>[]>(
+    () => [
+      {
+        id: 'select',
+        header: () => (
+          <input
+            type="checkbox"
+            checked={selectedItems.length === data.length && data.length > 0}
+            onChange={(e) => {
+              if (e.target.checked) {
+                setSelectedItems(data.map((item) => item.id));
+              } else {
+                setSelectedItems([]);
               }
             }}
           />
-        </Box>
-      </Box>
-    </LocalizationProvider>
+        ),
+        cell: ({ row }) => (
+          <input
+            type="checkbox"
+            checked={selectedItems.includes(row.original.id)}
+            onChange={(e) => {
+              if (e.target.checked) {
+                setSelectedItems((prev) => [...prev, row.original.id]);
+              } else {
+                setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
+              }
+            }}
+          />
+        ),
+        size: 50
+      },
+      {
+        header: 'No',
+        accessorKey: 'sequence',
+        size: 80
+      },
+      {
+        header: '제목',
+        accessorKey: 'title',
+        cell: ({ getValue, row }) => (
+          <Link to={`/admin/content-management/atoz/${row.original.id}`} style={{ textDecoration: 'none', color: 'primary.main' }}>
+            {getValue() as string}
+          </Link>
+        )
+      },
+      {
+        header: '상태',
+        accessorKey: 'isBlind',
+        cell: ({ getValue }) => {
+          const isBlind = getValue();
+          return <Chip label={isBlind ? '미노출' : '노출'} color={isBlind ? 'default' : 'success'} variant="light" size="small" />;
+        },
+        size: 100
+      },
+      {
+        header: '조회 수',
+        accessorKey: 'viewsCount',
+        size: 100
+      },
+      {
+        header: '작성일',
+        accessorKey: 'createdAt',
+        size: 120
+      }
+    ],
+    [data, selectedItems]
+  );
+
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    state: {
+      pagination
+    },
+    onPaginationChange: setPagination,
+    pageCount: totalPages,
+    manualPagination: true
+  });
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const request: MpBoardSearchRequestExtended = {
+        page: pagination.pageIndex,
+        size: pagination.pageSize,
+        boardType: 'CSO_A_TO_Z',
+        visibility: visibility,
+        searchKeyword: searchKeyword || undefined,
+        startAt: startAt || undefined,
+        endAt: endAt || undefined
+      };
+
+      const response = await mpFetchBoardList(request);
+      setData(response.content);
+      setTotalElements(response.totalElements);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch CSO A to Z list:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [pagination.pageIndex, pagination.pageSize]);
+
+  const handleSearch = () => {
+    setPagination({ ...pagination, pageIndex: 0 });
+    fetchData();
+  };
+
+  const handleReset = () => {
+    setVisibility(undefined);
+    setSearchKeyword('');
+    setStartAt('');
+    setEndAt('');
+    setPagination({ ...pagination, pageIndex: 0 });
+  };
+
+  const handleDelete = () => {
+    const count = selectedItems.length;
+    const message =
+      count === 1
+        ? `CSO A TO Z ${data.find((item) => item.id === selectedItems[0])?.title}를 삭제하시겠습니까?`
+        : `${count}건이 선택되었습니다. 삭제하시겠습니까?`;
+
+    deleteDialog.open({
+      message,
+      onConfirm: async () => {
+        try {
+          await Promise.all(selectedItems.map((id) => mpDeleteBoard(id)));
+          setSelectedItems([]);
+          fetchData(); // Refresh the list
+        } catch (error) {
+          console.error('Failed to delete items:', error);
+        }
+      }
+    });
+  };
+
+  return (
+    <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <Typography variant="h4" gutterBottom>
+          CSO A TO Z
+        </Typography>
+      </Grid>
+
+      <Grid item xs={12}>
+        <MainCard content={false}>
+          <Box sx={{ p: 3 }}>
+            <Grid container spacing={2} alignItems="center">
+              <Grid item xs={12} sm={3}>
+                <FormControl component="fieldset">
+                  <RadioGroup
+                    row
+                    value={visibility === undefined ? '전체' : visibility ? '노출' : '미노출'}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === '전체') {
+                        setVisibility(undefined);
+                      } else if (value === '노출') {
+                        setVisibility(true);
+                      } else {
+                        setVisibility(false);
+                      }
+                    }}
+                  >
+                    <FormControlLabel value="전체" control={<Radio size="small" />} label="전체" />
+                    <FormControlLabel value="노출" control={<Radio size="small" />} label="노출" />
+                    <FormControlLabel value="미노출" control={<Radio size="small" />} label="미노출" />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={2}>
+                <TextField
+                  size="small"
+                  type="date"
+                  label="시작일"
+                  value={startAt}
+                  onChange={(e) => setStartAt(e.target.value)}
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} sm={2}>
+                <TextField
+                  size="small"
+                  type="date"
+                  label="종료일"
+                  value={endAt}
+                  onChange={(e) => setEndAt(e.target.value)}
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  size="small"
+                  placeholder="검색어를 입력하세요"
+                  value={searchKeyword}
+                  onChange={(e) => setSearchKeyword(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} sm={2}>
+                <Stack direction="row" spacing={1}>
+                  <Button variant="contained" size="small" onClick={handleSearch}>
+                    검색
+                  </Button>
+                  <Button variant="outlined" size="small" onClick={handleReset}>
+                    초기화
+                  </Button>
+                </Stack>
+              </Grid>
+            </Grid>
+          </Box>
+        </MainCard>
+      </Grid>
+
+      <Grid item xs={12}>
+        <MainCard content={false}>
+          <Box sx={{ p: 2 }}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
+              <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              <Stack direction="row" spacing={1}>
+                <Button variant="contained" color="error" size="small" disabled={selectedItems.length === 0} onClick={handleDelete}>
+                  삭제
+                </Button>
+                <Button variant="outlined" size="small" component={Link} to="/admin/content-management/atoz/new">
+                  등록하기
+                </Button>
+              </Stack>
+            </Stack>
+
+            <ScrollX>
+              <TableContainer>
+                <Table size="small">
+                  <TableHead>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                      <TableRow key={headerGroup.id}>
+                        {headerGroup.headers.map((header) => (
+                          <TableCell key={header.id} style={{ width: header.getSize() }}>
+                            {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableHead>
+                  <TableBody>
+                    {table.getRowModel().rows.map((row) => (
+                      <TableRow key={row.id}>
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </ScrollX>
+
+            <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
+              <Pagination
+                count={totalPages}
+                page={pagination.pageIndex + 1}
+                onChange={(event, value) => {
+                  setPagination({ ...pagination, pageIndex: value - 1 });
+                }}
+                color="primary"
+                variant="outlined"
+                showFirstButton
+                showLastButton
+              />
+            </Stack>
+          </Box>
+        </MainCard>
+      </Grid>
+    </Grid>
   );
 }

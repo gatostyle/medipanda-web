@@ -1,141 +1,120 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Box, Button, Grid, Paper, Typography } from '@mui/material';
-import { MpFaqDetail, mpFetchFaqDetail } from 'api-definitions/MpContent';
-import { useMpErrorDialog } from 'hooks/medipanda/useMpErrorDialog';
+import { useParams, Link } from 'react-router-dom';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
+import Grid from '@mui/material/Grid';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableRow from '@mui/material/TableRow';
+import Typography from '@mui/material/Typography';
+import MainCard from 'components/MainCard';
+import { TiptapEditor } from 'components/medipanda/TiptapEditor';
+import { MpBoardDetail, mpFetchBoardDetail } from 'api-definitions/MpBoard';
 
 export default function MpAdminCustomerCenterFaqDetail() {
-  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const [detail, setDetail] = useState<MpFaqDetail | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const { showError } = useMpErrorDialog();
+  const [data, setData] = useState<MpBoardDetail | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchDetail = async () => {
-      if (!id) return;
-
-      setIsLoading(true);
-      try {
-        const data = await mpFetchFaqDetail(parseInt(id));
-        setDetail(data);
-      } catch (error) {
-        console.error('Failed to fetch FAQ detail:', error);
-        showError('FAQ 상세 정보를 불러오는 중 오류가 발생했습니다.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchDetail();
+    if (id) {
+      fetchData(parseInt(id, 10));
+    }
   }, [id]);
 
-  const handleBack = () => {
-    navigate('/admin/customer-center/faqs');
+  const fetchData = async (itemId: number) => {
+    setLoading(true);
+    try {
+      const response = await mpFetchBoardDetail(itemId);
+      setData(response);
+    } catch (error) {
+      console.error('Failed to fetch FAQ detail:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleEdit = () => {
-    navigate(`/admin/customer-center/faq/${id}/edit`);
-  };
+  if (loading) {
+    return <Typography>Loading...</Typography>;
+  }
 
-  if (isLoading || !detail) {
-    return (
-      <Box sx={{ p: 3 }}>
-        <Typography variant="body2" sx={{ color: '#6B7280' }}>
-          데이터를 불러오는 중...
-        </Typography>
-      </Box>
-    );
+  if (!data) {
+    return <Typography>데이터를 찾을 수 없습니다.</Typography>;
   }
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" sx={{ fontSize: '24px', fontWeight: 600, mb: 3 }}>
-        FAQ 상세
-      </Typography>
+    <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <Typography variant="h4" gutterBottom>
+          FAQ 상세
+        </Typography>
+      </Grid>
 
-      <Paper sx={{ p: 3 }}>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-              <Typography variant="body2" sx={{ fontWeight: 600, minWidth: '80px' }}>
-                작성자
-              </Typography>
-              <Typography variant="body2">{detail.author}</Typography>
-            </Box>
+      <Grid item xs={12}>
+        <MainCard>
+          <TableContainer>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell component="th" scope="row" sx={{ width: 120, fontWeight: 'bold' }}>
+                    작성일
+                  </TableCell>
+                  <TableCell>{data.createdAt}</TableCell>
+                  <TableCell component="th" scope="row" sx={{ width: 120, fontWeight: 'bold' }}>
+                    조회수
+                  </TableCell>
+                  <TableCell>{data.viewsCount.toLocaleString()}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row" sx={{ fontWeight: 'bold' }}>
+                    제목
+                  </TableCell>
+                  <TableCell colSpan={3}>{data.title}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row" sx={{ fontWeight: 'bold' }}>
+                    내용
+                  </TableCell>
+                  <TableCell colSpan={3}>
+                    <TiptapEditor content={data.content} readOnly />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row" sx={{ fontWeight: 'bold' }}>
+                    노출상태
+                  </TableCell>
+                  <TableCell>
+                    <Chip
+                      label={data.isBlind ? '미노출' : '노출'}
+                      color={data.isBlind ? 'default' : 'success'}
+                      variant="light"
+                      size="small"
+                    />
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-              <Typography variant="body2" sx={{ fontWeight: 600, minWidth: '80px' }}>
-                분류
-              </Typography>
-              <Typography variant="body2">{detail.category || '-'}</Typography>
-            </Box>
-
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-              <Typography variant="body2" sx={{ fontWeight: 600, minWidth: '80px' }}>
-                제목
-              </Typography>
-              <Typography variant="body2">{detail.title}</Typography>
-            </Box>
-
-            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, mb: 2 }}>
-              <Typography variant="body2" sx={{ fontWeight: 600, minWidth: '80px' }}>
-                내용
-              </Typography>
-              <Box
-                sx={{
-                  border: '1px solid #D1D5DB',
-                  borderRadius: '8px',
-                  p: 2,
-                  minHeight: '200px',
-                  width: '100%',
-                  whiteSpace: 'pre-wrap'
-                }}
-              >
-                {detail.content}
-              </Box>
-            </Box>
-
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Typography variant="body2" sx={{ fontWeight: 600, minWidth: '80px' }}>
-                노출상태
-              </Typography>
-              <Typography variant="body2">{detail.status}</Typography>
-            </Box>
-          </Grid>
-
-          <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 3 }}>
-            <Button
-              variant="outlined"
-              onClick={handleBack}
-              sx={{
-                borderColor: '#6B7280',
-                color: '#6B7280',
-                borderRadius: '20px',
-                px: 4,
-                '&:hover': {
-                  borderColor: '#4B5563',
-                  bgcolor: 'rgba(107, 114, 128, 0.04)'
-                }
-              }}
-            >
-              취소
+          <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', gap: 2 }}>
+            <Button variant="outlined" component={Link} to="/admin/customer-center/faqs" sx={{ minWidth: 120 }}>
+              뒤로
             </Button>
             <Button
               variant="contained"
-              onClick={handleEdit}
-              sx={{
-                bgcolor: '#10B981',
-                borderRadius: '20px',
-                px: 4,
-                '&:hover': { bgcolor: '#059669' }
-              }}
+              color="success"
+              component={Link}
+              to={`/admin/customer-center/faq/edit/${id}`}
+              sx={{ minWidth: 120 }}
             >
               수정
             </Button>
-          </Grid>
-        </Grid>
-      </Paper>
-    </Box>
+          </Box>
+        </MainCard>
+      </Grid>
+    </Grid>
   );
 }
