@@ -1,19 +1,27 @@
 import { GuardProps } from 'types/auth';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { restoreRedirectTo } from 'utils/medipanda/redirectTo';
 import { useMpSession } from 'hooks/medipanda/useMpSession';
+import { isMpAdmin } from 'api-definitions/MpMemberRole';
+import Loader from 'components/Loader';
 
 export function MpGuestGuard({ children }: GuardProps) {
-  const { session } = useMpSession();
+  const { session, isLoading } = useMpSession();
   const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
-    if (session) {
-      navigate(restoreRedirectTo(location));
+    if (!isLoading && session) {
+      if (isMpAdmin(session)) {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate('/', { replace: true });
+      }
     }
-  }, [session, navigate, location]);
+  }, [session, isLoading, navigate]);
 
-  return children;
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  return session ? <Loader /> : children;
 }

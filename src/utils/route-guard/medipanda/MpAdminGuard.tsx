@@ -12,20 +12,24 @@ interface MpAdminGuardProps extends GuardProps {
 }
 
 export function MpAdminGuard({ children, requiredPermission }: MpAdminGuardProps) {
-  const { session } = useMpSession();
+  const { session, isLoading } = useMpSession();
   const navigate = useNavigate();
   const location = useLocation();
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
 
   useEffect(() => {
     const checkPermission = async () => {
+      if (isLoading) {
+        return;
+      }
+
       if (!session) {
-        navigate(saveRedirectTo(location));
+        navigate(saveRedirectTo(location), { replace: true });
         return;
       }
 
       if (!isMpAdmin(session)) {
-        navigate('/');
+        navigate('/', { replace: true });
         return;
       }
 
@@ -41,12 +45,12 @@ export function MpAdminGuard({ children, requiredPermission }: MpAdminGuardProps
             setHasPermission(hasRequiredPermission);
 
             if (!hasRequiredPermission) {
-              navigate('/admin');
+              navigate('/admin', { replace: true });
             }
           } catch (error) {
             console.error('권한 확인 실패:', error);
             setHasPermission(false);
-            navigate('/admin');
+            navigate('/admin', { replace: true });
           }
         }
       } else {
@@ -55,13 +59,13 @@ export function MpAdminGuard({ children, requiredPermission }: MpAdminGuardProps
     };
 
     checkPermission();
-  }, [session, navigate, location, requiredPermission]);
+  }, [session, isLoading, navigate, location, requiredPermission]);
 
-  if (requiredPermission && hasPermission === null) {
+  if (isLoading || (requiredPermission && hasPermission === null)) {
     return <Loader />;
   }
 
-  if (requiredPermission && hasPermission === false) {
+  if (!session || !isMpAdmin(session) || (requiredPermission && hasPermission === false)) {
     return <Loader />;
   }
 

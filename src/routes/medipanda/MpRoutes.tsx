@@ -8,6 +8,7 @@ import { MpMemberGuard } from 'utils/route-guard/medipanda/MpMemberGuard';
 import React from 'react';
 
 const MpLogin = Loadable(lazy(() => import('pages/medipanda/MpLogin')));
+const MpLogout = Loadable(lazy(() => import('pages/medipanda/MpLogout')));
 
 const MpMemberMain = Loadable(lazy(() => import('pages/medipanda/MpMemberMain')));
 const MpMemberProductList = Loadable(lazy(() => import('pages/medipanda/MpMemberProductList')));
@@ -73,6 +74,10 @@ const authRoute: RouteObject = {
     {
       path: 'login',
       element: <MpLogin />
+    },
+    {
+      path: 'logout',
+      element: <MpLogout />
     }
   ]
 };

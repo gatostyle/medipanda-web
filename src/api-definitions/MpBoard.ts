@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'utils/axios';
 import { MpPagedRequest, MpPagedResponse, MpWithSequence } from './MpPaged';
 
 export type BoardType = 'ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z';

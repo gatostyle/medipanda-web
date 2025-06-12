@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'utils/axios';
 import { delay } from 'utils/medipanda/delay';
 import { MpPagedRequest, MpPagedResponse, MpWithSequence } from './MpPaged';
 import { mockMembers } from 'api-mock-data/MpMemberMock';

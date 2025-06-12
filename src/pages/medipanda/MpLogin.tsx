@@ -1,6 +1,6 @@
 import Grid from '@mui/material/Grid';
 import AuthWrapper from 'sections/auth/AuthWrapper';
-import { SyntheticEvent, useState } from 'react';
+import { SyntheticEvent, useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Stack from '@mui/material/Stack';
@@ -11,10 +11,28 @@ import IconButton from 'components/@extended/IconButton';
 import { Eye, EyeSlash } from 'iconsax-react';
 import Button from '@mui/material/Button';
 import { useMpSession } from 'hooks/medipanda/useMpSession';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 export default function MpLogin() {
   const { login } = useMpSession();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { enqueueSnackbar } = useSnackbar();
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const authError = params.get('authError');
+
+    if (authError === 'true') {
+      enqueueSnackbar('인증이 만료되었습니다. 다시 로그인해주세요.', {
+        variant: 'warning',
+        autoHideDuration: 5000,
+        preventDuplicate: true
+      });
+    }
+  }, [location.search, enqueueSnackbar]);
 
   const { values, touched, errors, isSubmitting, handleChange, handleBlur, handleSubmit } = useFormik({
     initialValues: {
@@ -29,6 +47,11 @@ export default function MpLogin() {
     onSubmit: async (values, { setErrors }) => {
       try {
         await login(values.userId, values.password);
+
+        const params = new URLSearchParams(location.search);
+        const redirectTo = params.get('redirectTo');
+
+        navigate(redirectTo || '/', { replace: true });
       } catch (e: any) {
         setErrors({ submit: `오류: ${JSON.stringify(e)}` });
       }

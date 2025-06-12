@@ -10,6 +10,7 @@ import { useMpMenu } from 'hooks/medipanda/useMpMenu';
 
 const initialState = {
   session: null as MpSession | null,
+  isLoading: true,
   login: (userId: string, password: string) => Promise.resolve(),
   logout: () => Promise.resolve()
 };
@@ -19,6 +20,7 @@ export const MpSessionContext = createContext(initialState);
 export function MpSessionProvider({ children }: { children: React.ReactNode }) {
   const { setMenuItems, setMenuOrientation } = useMpMenu();
   const [session, setSession] = useState(initialState.session);
+  const [isLoading, setIsLoading] = useState(true);
 
   const getSession = async () => {
     const response = await axios.request<MpSession>({
@@ -72,6 +74,8 @@ export function MpSessionProvider({ children }: { children: React.ReactNode }) {
       } catch (error) {
         console.error(error);
         setSession(null);
+      } finally {
+        setIsLoading(false);
       }
     })();
   }, []);
@@ -80,6 +84,7 @@ export function MpSessionProvider({ children }: { children: React.ReactNode }) {
     <MpSessionContext.Provider
       value={{
         session,
+        isLoading,
         login,
         logout
       }}

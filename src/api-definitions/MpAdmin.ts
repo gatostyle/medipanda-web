@@ -1,5 +1,5 @@
 import { MpPagedRequest, MpPagedResponse, MpWithSequence } from './MpPaged';
-import axios from 'axios';
+import axios from 'utils/axios';
 
 export interface MpAdmin {
   id: number;
