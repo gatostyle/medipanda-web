@@ -9,7 +9,8 @@ import RTLLayout from 'components/RTLLayout';
 import ScrollTop from 'components/ScrollTop';
 import Snackbar from 'components/@extended/Snackbar';
 import Notistack from 'components/third-party/Notistack';
-import { MpSessionProvider } from 'contexts/medipanda/MpSessionContext';
+import { MpSessionProvider } from 'medipanda/contexts/MpSessionContext';
+import { MpInfoDialogProvider } from 'medipanda/contexts/MpInfoDialogContext';
 
 // auth-provider
 // import { JWTProvider as AuthProvider } from 'contexts/JWTContext';
@@ -26,12 +27,14 @@ export default function App() {
         <Locales>
           <ScrollTop>
             <MpSessionProvider>
-              <>
-                <Notistack>
-                  <RouterProvider router={router} />
-                  <Snackbar />
-                </Notistack>
-              </>
+              <MpInfoDialogProvider>
+                <>
+                  <Notistack>
+                    <RouterProvider router={router} />
+                    <Snackbar />
+                  </Notistack>
+                </>
+              </MpInfoDialogProvider>
             </MpSessionProvider>
           </ScrollTop>
         </Locales>

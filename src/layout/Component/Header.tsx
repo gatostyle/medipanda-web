@@ -25,7 +25,7 @@ import Logo from 'components/logo';
 import IconButton from 'components/@extended/IconButton';
 import AnimateButton from 'components/@extended/AnimateButton';
 
-import { useMpSession } from 'hooks/medipanda/useMpSession';
+import { useMpSession } from 'medipanda/hooks/useMpSession';
 import { ThemeDirection, APP_DEFAULT_PATH } from 'config';
 import { handlerComponentDrawer, useGetMenuMaster } from 'api/menu';
 

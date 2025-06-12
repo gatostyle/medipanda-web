@@ -11,7 +11,7 @@ import MuiBreadcrumbs from '@mui/material/Breadcrumbs';
 // project-imports
 import MainCard from 'components/MainCard';
 import { ThemeDirection } from 'config';
-import { useMpMenu } from 'hooks/medipanda/useMpMenu';
+import { useMpMenu } from 'medipanda/hooks/useMpMenu';
 
 // assets
 import { ArrowRight2, Buildings2, Home3 } from 'iconsax-react';

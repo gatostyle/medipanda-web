@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 
 // project import
-import { MpGuestGuard } from 'utils/route-guard/medipanda';
+import { MpGuestGuard } from 'medipanda/utils/route-guard';
 
 // ==============================|| LAYOUT - AUTH ||============================== //
 

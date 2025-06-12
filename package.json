@@ -117,8 +117,8 @@
     "build": "tsc && env-cmd -f .env vite build",
     "build-stage": "env-cmd -f .env.qa vite build",
     "preview": "vite preview",
-    "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
-    "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\"",
+    "lint": "eslint --quiet \"src/**/*.{js,jsx,ts,tsx}\"",
+    "lint:fix": "eslint --quiet --fix \"src/**/*.{js,jsx,ts,tsx}\"",
     "typecheck": "tsc --noEmit",
     "prettier": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\""
   },

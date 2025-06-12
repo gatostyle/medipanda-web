@@ -1,6 +1,8 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
-const axiosServices = axios.create();
+const axiosServices = axios.create({
+  withCredentials: true // Ensure cookies are sent with requests
+});
 
 // ==============================|| AXIOS - FOR MOCK SERVICES ||============================== //
 
@@ -16,6 +18,8 @@ axiosServices.interceptors.response.use(
         error.config?.url?.includes('/v1/auth/me');
 
       if (!isAuthPage && !isAuthRequest) {
+        localStorage.removeItem('refreshToken');
+        clearInterval((window as any).tokenRefreshInterval);
         const currentUrl = window.location.pathname + window.location.search;
         window.location.replace(`/logout?authError=true&redirectTo=${encodeURIComponent(currentUrl)}`);
       }

@@ -38,6 +38,10 @@ export default defineConfig(({ mode }) => {
         '/v1': {
           target: env.VITE_APP_API_URL,
           changeOrigin: true
+        },
+        '/ocr': {
+          target: 'http://3.35.234.186:8080',
+          changeOrigin: true
         }
       }
     },

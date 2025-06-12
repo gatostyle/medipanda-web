@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 // project-imports
 import MainCard from 'components/MainCard';
 import useConfig from 'hooks/useConfig';
-import { useMpMenu } from 'hooks/medipanda/useMpMenu';
+import { useMpMenu } from 'medipanda/hooks/useMpMenu';
 
 import { MenuOrientation } from 'config';
 import { handlerDrawerOpen } from 'api/menu';

@@ -21,7 +21,7 @@ import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
 
 // types
 import { LinkTarget, NavItemType } from 'types/menu';
-import { useMpMenu } from 'hooks/medipanda/useMpMenu';
+import { useMpMenu } from 'medipanda/hooks/useMpMenu';
 
 interface Props {
   item: NavItemType;
@@ -57,7 +57,14 @@ export default function NavItem({ item, level, isParents = false }: Props) {
   );
 
   const { pathname } = useLocation();
-  const isSelected = !!matchPath({ path: item?.link ? item.link : item.url!, end: false }, pathname);
+
+  const getFullPath = (url: string) => {
+    if (!url) return url;
+    return url.startsWith('/') ? url : `/admin/${url}`;
+  };
+
+  const fullPath = getFullPath(item?.link || item.url!);
+  const isSelected = !!matchPath({ path: fullPath, end: false }, pathname);
 
   const textColor = mode === ThemeMode.DARK ? 'secondary.400' : 'secondary.main';
   const iconSelectedColor = 'primary.main';

@@ -39,10 +39,10 @@ import '@fontsource/public-sans/700.css';
 // project-imports
 import App from './App';
 import { ConfigProvider } from 'contexts/ConfigContext';
-import { MpMenuProvider } from 'contexts/medipanda/MpMenuContext';
-import { MpErrorDialogProvider } from './contexts/medipanda/MpErrorDialogContext';
-import { MpNotImplementedDialogProvider } from './contexts/medipanda/MpNotImplementedDialogContext';
-import { MpDeleteDialogProvider } from './contexts/medipanda/MpDeleteDialogContext';
+import { MpMenuProvider } from 'medipanda/contexts/MpMenuContext';
+import { MpErrorDialogProvider } from 'medipanda/contexts/MpErrorDialogContext';
+import { MpNotImplementedDialogProvider } from 'medipanda/contexts/MpNotImplementedDialogContext';
+import { MpDeleteDialogProvider } from 'medipanda/contexts/MpDeleteDialogContext';
 import reportWebVitals from './reportWebVitals';
 
 const container = document.getElementById('root');

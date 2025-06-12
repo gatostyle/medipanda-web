@@ -26,7 +26,7 @@ import SimpleBar from 'components/third-party/SimpleBar';
 
 import { HEADER_HEIGHT } from 'config';
 import useConfig from 'hooks/useConfig';
-import { useMpMenu } from 'hooks/medipanda/useMpMenu';
+import { useMpMenu } from 'medipanda/hooks/useMpMenu';
 
 // assets
 import { Add, Setting2 } from 'iconsax-react';

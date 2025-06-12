@@ -1,0 +1,350 @@
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useFormik } from 'formik';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
+import FormControl from '@mui/material/FormControl';
+import Grid from '@mui/material/Grid';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import Stack from '@mui/material/Stack';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import MainCard from 'components/MainCard';
+import ScrollX from 'components/ScrollX';
+import Pagination from '@mui/material/Pagination';
+import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
+import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
+import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
+import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
+import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { confirmPrescription, DateTimeString, downloadZippedEdiFiles, PrescriptionResponse, searchPrescriptions } from 'medipanda/backend';
+import { format } from 'date-fns';
+
+export default function MpAdminPrescriptionReceptionList() {
+  const [data, setData] = useState<Sequenced<PrescriptionResponse>[]>([]);
+  const [, setLoading] = useState(false);
+  const [totalElements, setTotalElements] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const notImplementedDialog = useMpNotImplementedDialog();
+  const errorDialog = useMpErrorDialog();
+  const infoDialog = useMpInfoDialog();
+
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 20
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      searchType: 'companyName' as 'companyName' | 'userId' | 'dealerName' | 'dealerId',
+      searchKeyword: '',
+      status: '' as 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | '',
+      startAt: null as Date | null,
+      endAt: null as Date | null
+    },
+    onSubmit: (values) => {
+      setPagination({ ...pagination, pageIndex: 0 });
+    }
+  });
+
+  const handleConfirm = useCallback(
+    async (id: number) => {
+      try {
+        await confirmPrescription(id);
+        infoDialog.showInfo('접수가 확인되었습니다.');
+        setPagination({ ...pagination, pageIndex: 0 });
+      } catch (error) {
+        if (error instanceof NotImplementedError) {
+          notImplementedDialog.open(error.message);
+        } else {
+          console.error('Failed to confirm reception:', error);
+          errorDialog.showError('접수 확인 중 오류가 발생했습니다.');
+        }
+      }
+    },
+    [notImplementedDialog, errorDialog, infoDialog, pagination]
+  );
+
+  const handleFileDownload = async (id: number) => {
+    try {
+      await downloadZippedEdiFiles(id);
+    } catch (error) {
+      if (error instanceof NotImplementedError) {
+        notImplementedDialog.open(error.message);
+      } else {
+        console.error('Failed to download file:', error);
+        errorDialog.showError('파일 다운로드 중 오류가 발생했습니다.');
+      }
+    }
+  };
+
+  const columns = useMemo<ColumnDef<Sequenced<PrescriptionResponse>>[]>(
+    () => [
+      {
+        header: 'No',
+        accessorKey: 'sequence',
+        size: 60
+      },
+      {
+        header: '딜러번호',
+        accessorKey: 'dealerId',
+        cell: ({ row }) => row.original.dealerId,
+        size: 100
+      },
+      {
+        header: '아이디',
+        accessorKey: 'userId',
+        cell: ({ row }) => row.original.userId,
+        size: 120
+      },
+      {
+        header: '회사명',
+        accessorKey: 'companyName',
+        cell: ({ row }) => row.original.companyName,
+        size: 150
+      },
+      {
+        header: '딜러명',
+        accessorKey: 'dealerName',
+        cell: ({ row }) => row.original.dealerName,
+        size: 100
+      },
+      {
+        header: '처방월',
+        accessorKey: 'prescriptionMonth',
+        cell: ({ row }) => row.original.prescriptionMonth,
+        size: 100
+      },
+      {
+        header: '정산월',
+        accessorKey: 'settlementMonth',
+        cell: ({ row }) => row.original.settlementMonth,
+        size: 100
+      },
+      {
+        header: '접수신청일',
+        accessorKey: 'submittedAt',
+        cell: ({ row }) => {
+          return format(new Date(row.original.submittedAt), 'yyyy-MM-dd');
+        },
+        size: 120
+      },
+      {
+        header: '접수파일',
+        cell: ({ row }) => (
+          <Button variant="contained" color="success" size="small" onClick={() => handleFileDownload(row.original.id)}>
+            파일 다운로드
+          </Button>
+        ),
+        size: 120
+      },
+      {
+        header: '접수상태',
+        accessorKey: 'status',
+        cell: ({ row }) => {
+          const status = row.original.status;
+
+          const labels = {
+            PENDING: '접수대기',
+            IN_PROGRESS: '처리중',
+            COMPLETED: '입력완료'
+          };
+
+          return <Chip label={labels[status]} size="small" sx={{ backgroundColor: '#4caf50', color: 'white' }} />;
+        },
+        size: 100
+      },
+      {
+        header: '관리자확인',
+        cell: ({ row }) =>
+          row.original.checkedAt ? (
+            <Typography variant="body2">{format(new Date(row.original.checkedAt), 'yyyy-MM-dd')}</Typography>
+          ) : (
+            <Button variant="contained" color="success" size="small" onClick={() => handleConfirm(row.original.id)}>
+              접수확인
+            </Button>
+          ),
+        size: 120
+      }
+    ],
+    [handleConfirm, handleFileDownload]
+  );
+
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    state: {
+      pagination
+    },
+    onPaginationChange: setPagination,
+    pageCount: totalPages,
+    manualPagination: true
+  });
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await searchPrescriptions({
+        status: formik.values.status !== '' ? formik.values.status : undefined,
+        companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
+        userId: formik.values.searchType === 'userId' ? formik.values.searchKeyword : undefined,
+        dealerName: formik.values.searchType === 'dealerName' ? formik.values.searchKeyword : undefined,
+        dealerId: formik.values.searchType === 'dealerId' ? parseInt(formik.values.searchKeyword) : undefined,
+        startAt: formik.values.startAt ? new DateTimeString(formik.values.startAt) : undefined,
+        endAt: formik.values.endAt ? new DateTimeString(formik.values.endAt) : undefined,
+        page: pagination.pageIndex,
+        size: pagination.pageSize
+      });
+
+      setData(withSequence(response).content);
+      setTotalElements(response.totalElements);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch prescription reception list:', error);
+      setData([]);
+      setTotalElements(0);
+      setTotalPages(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [pagination.pageIndex, pagination.pageSize, formik.values]);
+
+  return (
+    <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <Typography variant="h4" gutterBottom>
+          처방접수
+        </Typography>
+      </Grid>
+
+      <Grid item xs={12}>
+        <MainCard content={false}>
+          <Box sx={{ p: 3 }}>
+            <form onSubmit={formik.handleSubmit}>
+              <Grid container spacing={2} alignItems="center">
+                <Grid item xs={12} sm={2}>
+                  <FormControl fullWidth size="small">
+                    <Select
+                      name="status"
+                      value={formik.values.status}
+                      onChange={(e) => formik.setFieldValue('status', e.target.value)}
+                      displayEmpty
+                    >
+                      <MenuItem value="">접수상태</MenuItem>
+                      <MenuItem value={'PENDING'}>접수대기</MenuItem>
+                      <MenuItem value={'IN_PROGRESS'}>처리중</MenuItem>
+                      <MenuItem value={'COMPLETED'}>입력완료</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={2}>
+                  <FormControl fullWidth size="small">
+                    <Select
+                      name="searchType"
+                      value={formik.values.searchType}
+                      onChange={(e) => formik.setFieldValue('searchType', e.target.value)}
+                      displayEmpty
+                    >
+                      <MenuItem value="companyName">회사명</MenuItem>
+                      <MenuItem value="id">아이디</MenuItem>
+                      <MenuItem value="dealerName">딜러명</MenuItem>
+                      <MenuItem value="dealerId">딜러번호</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={2}>
+                  <MpFormikDatePicker name="startAt" label="시작일" formik={formik} />
+                </Grid>
+                <Grid item xs={12} sm={2}>
+                  <MpFormikDatePicker name="endAt" label="종료일" formik={formik} />
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                  <TextField
+                    name="searchKeyword"
+                    size="small"
+                    placeholder="검색어를 입력해주세요"
+                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && formik.handleSubmit()}
+                    fullWidth
+                    value={formik.values.searchKeyword}
+                    onChange={formik.handleChange}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={1}>
+                  <Button variant="contained" size="small" type="submit" fullWidth>
+                    검색
+                  </Button>
+                </Grid>
+              </Grid>
+            </form>
+          </Box>
+        </MainCard>
+      </Grid>
+
+      <Grid item xs={12}>
+        <MainCard content={false}>
+          <Box sx={{ p: 2 }}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
+              <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+            </Stack>
+
+            <ScrollX>
+              <TableContainer>
+                <Table size="small">
+                  <TableHead>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                      <TableRow key={headerGroup.id}>
+                        {headerGroup.headers.map((header) => (
+                          <TableCell key={header.id} style={{ width: header.getSize() }}>
+                            {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableHead>
+                  <TableBody>
+                    {table.getRowModel().rows.map((row) => (
+                      <TableRow key={row.id}>
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </ScrollX>
+
+            <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
+              <Pagination
+                count={totalPages}
+                page={pagination.pageIndex + 1}
+                onChange={(event, value) => {
+                  setPagination({ ...pagination, pageIndex: value - 1 });
+                }}
+                color="primary"
+                variant="outlined"
+                showFirstButton
+                showLastButton
+              />
+            </Stack>
+          </Box>
+        </MainCard>
+      </Grid>
+    </Grid>
+  );
+}

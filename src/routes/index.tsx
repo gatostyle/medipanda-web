@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 
 // project-imports
-import { MpRoutes } from 'routes/medipanda/MpRoutes';
+import { MpRoutes } from 'medipanda/routes/MpRoutes';
 
 // ==============================|| ROUTES RENDER ||============================== //
 

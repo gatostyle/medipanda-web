@@ -18,7 +18,7 @@ import FullScreen from './FullScreen';
 import { MenuOrientation } from 'config';
 import useConfig from 'hooks/useConfig';
 import DrawerHeader from 'layout/Dashboard/Drawer/DrawerHeader';
-import { useMpMenu } from 'hooks/medipanda/useMpMenu';
+import { useMpMenu } from 'medipanda/hooks/useMpMenu';
 
 // ==============================|| HEADER - CONTENT ||============================== //
 

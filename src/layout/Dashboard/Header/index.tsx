@@ -17,7 +17,7 @@ import { DRAWER_WIDTH, MINI_DRAWER_WIDTH, MenuOrientation, ThemeMode } from 'con
 
 // assets
 import { HambergerMenu } from 'iconsax-react';
-import { useMpMenu } from 'hooks/medipanda/useMpMenu';
+import { useMpMenu } from 'medipanda/hooks/useMpMenu';
 
 // ==============================|| MAIN LAYOUT - HEADER ||============================== //
 

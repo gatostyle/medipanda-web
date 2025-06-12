@@ -16,7 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 // project import
 import Avatar from 'components/@extended/Avatar';
 import { useGetMenuMaster } from 'api/menu';
-import { useMpSession } from 'hooks/medipanda/useMpSession';
+import { useMpSession } from 'medipanda/hooks/useMpSession';
 
 // assets
 import { ArrowRight2 } from 'iconsax-react';

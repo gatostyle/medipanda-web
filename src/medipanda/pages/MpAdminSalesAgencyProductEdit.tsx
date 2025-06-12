@@ -1,0 +1,529 @@
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  Pagination,
+  Radio,
+  RadioGroup,
+  Stack,
+  Tab,
+  Tabs,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+  IconButton
+} from '@mui/material';
+import { Download as ExcelIcon } from '@mui/icons-material';
+import MainCard from 'components/MainCard';
+import { TiptapEditor } from 'medipanda/components/TiptapEditor';
+import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
+import {
+  createSalesAgencyProductBoard,
+  updateSalesAgencyProductBoard,
+  uploadEditorFile,
+  SalesAgencyProductDetailsResponse,
+  SalesAgencyProductApplicantResponse,
+  getSalesAgencyProductDetails,
+  getProductApplicants,
+  updateApplicantNotes
+} from 'medipanda/backend';
+import { EXPOSURE_RANGE_LABELS } from 'medipanda/ui-labels';
+import { useMpSession } from 'medipanda/hooks/useMpSession';
+
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+      {value === index && <Box sx={{ pt: 3 }}>{children}</Box>}
+    </div>
+  );
+}
+
+const validationSchema = Yup.object({
+  clientName: Yup.string().required('위탁사명은 필수입니다'),
+  productName: Yup.string().required('상품명은 필수입니다'),
+  exposureRange: Yup.string().oneOf(['ALL', 'CONTRACTED', 'UNCONTRACTED']).required('노출범위는 필수입니다'),
+  thumbnail: Yup.string().required('썸네일은 필수입니다'),
+  content: Yup.string().required('내용은 필수입니다'),
+  contractDate: Yup.date().required('계약일은 필수입니다'),
+  startDate: Yup.date().required('게시 시작일은 필수입니다'),
+  endDate: Yup.date().required('게시 종료일은 필수입니다').min(Yup.ref('startDate'), '종료일은 시작일 이후여야 합니다')
+});
+
+export default function MpAdminSalesAgencyProductEdit() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const errorDialog = useMpErrorDialog();
+  const { session } = useMpSession();
+  const isEditMode = !!id;
+  const [tabValue, setTabValue] = useState(0);
+  const [productDetail, setProductDetail] = useState<SalesAgencyProductDetailsResponse | null>(null);
+  const [applicants, setApplicants] = useState<SalesAgencyProductApplicantResponse[]>([]);
+  const [selectedApplicants, setSelectedApplicants] = useState<number[]>([]);
+  const [applicantPage, setApplicantPage] = useState(1);
+  const [applicantSearch, setApplicantSearch] = useState('');
+
+  const formik = useFormik({
+    initialValues: {
+      clientName: '',
+      productName: '',
+      isExposed: true,
+      exposureRange: 'ALL' as 'ALL' | 'CONTRACTED' | 'UNCONTRACTED',
+      thumbnail: '',
+      content: '',
+      videoUrl: '',
+      contractDate: null as Date | null,
+      note: '',
+      startDate: null as Date | null,
+      endDate: null as Date | null,
+      viewCount: 0
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      try {
+        if (isEditMode) {
+          await updateSalesAgencyProductBoard(parseInt(id!), {
+            boardPostUpdateRequest: {
+              title: values.productName,
+              content: values.content,
+              isExposed: values.isExposed,
+              exposureRange: values.exposureRange,
+              keepFileIds: [],
+              editorFileIds: []
+            },
+            salesAgencyProductUpdateRequest: {
+              clientName: values.clientName,
+              productName: values.productName,
+              contractDate: values.contractDate ? values.contractDate.toISOString().split('T')[0] : '',
+              videoUrl: values.videoUrl,
+              note: values.note,
+              startAt: values.startDate ? values.startDate.toISOString().split('T')[0] : '',
+              endAt: values.endDate ? values.endDate.toISOString().split('T')[0] : ''
+            }
+          });
+          navigate('/admin/sales-agency-products');
+        } else {
+          const thumbnailFile = new File([values.thumbnail], 'thumbnail.jpg', { type: 'image/jpeg' });
+          await createSalesAgencyProductBoard({
+            boardPostCreateRequest: {
+              boardType: 'SALES_AGENCY',
+              userId: session!.userId,
+              nickname: session!.name,
+              title: values.productName,
+              content: values.content,
+              isExposed: values.isExposed,
+              exposureRange: values.exposureRange,
+              editorFileIds: []
+            },
+            salesAgencyProductCreateRequest: {
+              clientName: values.clientName,
+              productName: values.productName,
+              contractDate: values.contractDate ? values.contractDate.toISOString().split('T')[0] : '',
+              videoUrl: values.videoUrl,
+              note: values.note,
+              startAt: values.startDate ? values.startDate.toISOString().split('T')[0] : '',
+              endAt: values.endDate ? values.endDate.toISOString().split('T')[0] : '',
+              quantity: 1
+            },
+            thumbnail: thumbnailFile,
+            files: []
+          });
+          navigate('/admin/sales-agency-products');
+        }
+      } catch (error) {
+        console.error('Failed to save sales agency product:', error);
+      }
+    }
+  });
+
+  useEffect(() => {
+    if (isEditMode) {
+      loadProductDetail();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, isEditMode]);
+
+  const loadProductDetail = async () => {
+    try {
+      const [detail, applicantsResponse] = await Promise.all([
+        getSalesAgencyProductDetails(parseInt(id!)),
+        getProductApplicants(parseInt(id!))
+      ]);
+      setProductDetail(detail);
+
+      const mappedApplicants = applicantsResponse.content.map((applicant) => ({
+        ...applicant,
+        appliedDate: applicant.appliedDate
+      }));
+      setApplicants(mappedApplicants);
+
+      formik.setValues({
+        clientName: detail.clientName,
+        productName: detail.productName,
+        isExposed: detail.boardPostDetail.isExposed,
+        exposureRange: detail.boardPostDetail.exposureRange,
+        thumbnail: detail.thumbnailUrl ?? '',
+        content: detail.boardPostDetail.content,
+        videoUrl: detail.videoUrl ?? '',
+        contractDate: detail.contractDate ? new Date(detail.contractDate) : null,
+        note: detail.note ?? '',
+        startDate: detail.startDate ? new Date(detail.startDate) : null,
+        endDate: detail.endDate ? new Date(detail.endDate) : null,
+        viewCount: detail.boardPostDetail.viewsCount
+      });
+    } catch (error) {
+      console.error('Failed to load product detail:', error);
+    }
+  };
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
+
+  const handleCancel = () => {
+    navigate('/admin/sales-agency-products');
+  };
+
+  const handleFileUpload = async () => {
+    try {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = async (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (file) {
+          const uploadResult = await uploadEditorFile({ file });
+          formik.setFieldValue('thumbnail', uploadResult.fileUrl);
+        }
+      };
+      input.click();
+    } catch (error) {
+      console.error('Failed to upload file:', error);
+      errorDialog.showError('파일 업로드 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleExcelDownload = async () => {
+    errorDialog.showError('Excel 다운로드 기능은 준비 중입니다.');
+  };
+
+  const handleApplicantNotesUpdate = async (applicantId: number, notes: string) => {
+    if (!isEditMode) return;
+
+    try {
+      const applicant = applicants.find((a) => a.id === applicantId);
+      if (applicant) {
+        await updateApplicantNotes({
+          updates: [{ userId: applicant.userId, note: notes }]
+        });
+        setApplicants((prev) => prev.map((a) => (a.id === applicantId ? { ...a, notes } : a)));
+      }
+    } catch (error) {
+      console.error('Failed to update applicant notes:', error);
+    }
+  };
+
+  const filteredApplicants = applicants.filter(
+    (applicant) =>
+      applicant.memberName.includes(applicantSearch) ||
+      applicant.userId.includes(applicantSearch) ||
+      applicant.id.toString().includes(applicantSearch)
+  );
+
+  const paginatedApplicants = filteredApplicants.slice((applicantPage - 1) * 20, applicantPage * 20);
+
+  return (
+    <Box sx={{ p: 3 }}>
+      <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
+        영업대행상품 {isEditMode ? '상세' : '등록'}
+      </Typography>
+
+      <form onSubmit={formik.handleSubmit}>
+        <MainCard>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs value={tabValue} onChange={handleTabChange} aria-label="basic tabs">
+              <Tab label="기본정보" />
+              {isEditMode && <Tab label="신청자" />}
+            </Tabs>
+          </Box>
+
+          <TabPanel value={tabValue} index={0}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="위탁사명"
+                  name="clientName"
+                  value={formik.values.clientName}
+                  onChange={formik.handleChange}
+                  error={formik.touched.clientName && Boolean(formik.errors.clientName)}
+                  helperText={formik.touched.clientName && formik.errors.clientName}
+                  required
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="상품명"
+                  name="productName"
+                  value={formik.values.productName}
+                  onChange={formik.handleChange}
+                  error={formik.touched.productName && Boolean(formik.errors.productName)}
+                  helperText={formik.touched.productName && formik.errors.productName}
+                  required
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <Typography variant="subtitle2" gutterBottom>
+                  노출상태
+                </Typography>
+                <FormControl>
+                  <RadioGroup
+                    row
+                    name="isExposed"
+                    value={formik.values.isExposed ? 'true' : 'false'}
+                    onChange={(e) => formik.setFieldValue('isExposed', e.target.value === 'true')}
+                  >
+                    <FormControlLabel value={'true'} control={<Radio />} label={'노출'} />
+                    <FormControlLabel value={'false'} control={<Radio />} label={'미노출'} />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Typography variant="subtitle2" gutterBottom>
+                  노출범위 <span style={{ color: 'red' }}>*</span>
+                </Typography>
+                <FormControl>
+                  <RadioGroup row name="exposureRange" value={formik.values.exposureRange} onChange={formik.handleChange}>
+                    <FormControlLabel value={'ALL'} control={<Radio />} label={EXPOSURE_RANGE_LABELS['ALL']} />
+                    <FormControlLabel value={'CONTRACT'} control={<Radio />} label={EXPOSURE_RANGE_LABELS['CONTRACTED']} />
+                    <FormControlLabel value={'NON_CONTRACT'} control={<Radio />} label={EXPOSURE_RANGE_LABELS['UNCONTRACTED']} />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Typography variant="subtitle2" gutterBottom>
+                  썸네일 <span style={{ color: 'red' }}>*</span>
+                </Typography>
+                <Button variant="contained" color="success" onClick={handleFileUpload}>
+                  첨부파일
+                </Button>
+                {formik.values.thumbnail && (
+                  <Box sx={{ mt: 2 }}>
+                    <img src={formik.values.thumbnail} alt="썸네일 미리보기" style={{ maxWidth: 200, maxHeight: 200 }} />
+                  </Box>
+                )}
+              </Grid>
+
+              <Grid item xs={12}>
+                <Typography variant="subtitle2" gutterBottom>
+                  내용 <span style={{ color: 'red' }}>*</span>
+                </Typography>
+                <TiptapEditor
+                  content={formik.values.content}
+                  onChange={(content) => formik.setFieldValue('content', content)}
+                  error={formik.touched.content && Boolean(formik.errors.content)}
+                  helperText={formik.touched.content && formik.errors.content ? String(formik.errors.content) : undefined}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField fullWidth label="영상url" name="videoUrl" value={formik.values.videoUrl} onChange={formik.handleChange} />
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <MpFormikDatePicker name="contractDate" label="계약일 *" formik={formik} />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="비고"
+                  name="notes"
+                  value={formik.values.note}
+                  onChange={formik.handleChange}
+                  multiline
+                  rows={3}
+                  placeholder="비고"
+                />
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <MpFormikDatePicker name="startDate" label="게시기간 - 시작일 *" formik={formik} />
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <MpFormikDatePicker name="endDate" label="게시기간 - 종료일 *" formik={formik} />
+              </Grid>
+
+              <Grid item xs={12}>
+                <Typography variant="subtitle2" gutterBottom>
+                  조회수
+                </Typography>
+                <Typography variant="body1">{formik.values.viewCount.toLocaleString()}</Typography>
+              </Grid>
+            </Grid>
+
+            <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 4 }}>
+              <Button variant="outlined" size="large" onClick={handleCancel} sx={{ minWidth: 120 }}>
+                취소
+              </Button>
+              <Button variant="contained" color="success" size="large" type="submit" sx={{ minWidth: 120 }}>
+                저장
+              </Button>
+            </Stack>
+          </TabPanel>
+
+          <TabPanel value={tabValue} index={1}>
+            {isEditMode && productDetail && (
+              <>
+                <Box sx={{ mb: 3 }}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={6}>
+                      <Typography variant="body2" color="text.secondary">
+                        위탁사명: {productDetail.clientName}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <Typography variant="body2" color="text.secondary">
+                        상품명: {productDetail.productName}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Box>
+
+                <Box sx={{ mb: 2 }}>
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <TextField
+                      size="small"
+                      placeholder="검색어를 입력하세요"
+                      value={applicantSearch}
+                      onChange={(e) => setApplicantSearch(e.target.value)}
+                      sx={{ width: 300 }}
+                    />
+                    <Button variant="contained" size="small">
+                      검색
+                    </Button>
+                    <Box sx={{ flexGrow: 1 }} />
+                    <IconButton
+                      size="small"
+                      color="success"
+                      onClick={handleExcelDownload}
+                      sx={{
+                        backgroundColor: 'success.main',
+                        color: 'white',
+                        '&:hover': {
+                          backgroundColor: 'success.dark'
+                        }
+                      }}
+                    >
+                      <ExcelIcon fontSize="small" />
+                    </IconButton>
+                  </Stack>
+                </Box>
+
+                <TableContainer>
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            checked={selectedApplicants.length === paginatedApplicants.length && paginatedApplicants.length > 0}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedApplicants(paginatedApplicants.map((a) => a.id));
+                              } else {
+                                setSelectedApplicants([]);
+                              }
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell>No</TableCell>
+                        <TableCell>회원번호</TableCell>
+                        <TableCell>아이디</TableCell>
+                        <TableCell>회원명</TableCell>
+                        <TableCell>현대폰번호</TableCell>
+                        <TableCell>신청일</TableCell>
+                        <TableCell>파트너시 계약여부</TableCell>
+                        <TableCell>비고</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {paginatedApplicants.map((applicant, index) => (
+                        <TableRow key={applicant.id}>
+                          <TableCell padding="checkbox">
+                            <Checkbox
+                              checked={selectedApplicants.includes(applicant.id)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setSelectedApplicants((prev) => [...prev, applicant.id]);
+                                } else {
+                                  setSelectedApplicants((prev) => prev.filter((id) => id !== applicant.id));
+                                }
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell>{(applicantPage - 1) * 20 + index + 1}</TableCell>
+                          <TableCell>{applicant.id}</TableCell>
+                          <TableCell>{applicant.userId}</TableCell>
+                          <TableCell>{applicant.memberName}</TableCell>
+                          <TableCell>{applicant.phoneNumber}</TableCell>
+                          <TableCell>{applicant.appliedDate}</TableCell>
+                          <TableCell>{applicant.contractStatus === 'CONTRACT' ? 'Y' : 'N'}</TableCell>
+                          <TableCell>
+                            <TextField
+                              size="small"
+                              value={applicant.note ?? ''}
+                              onChange={(e) => handleApplicantNotesUpdate(applicant.id, e.target.value)}
+                              sx={{ width: 100 }}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+
+                <Stack direction="row" justifyContent="center" sx={{ mt: 3 }}>
+                  <Pagination
+                    count={Math.ceil(filteredApplicants.length / 20)}
+                    page={applicantPage}
+                    onChange={(event, value) => setApplicantPage(value)}
+                    color="primary"
+                    variant="outlined"
+                    showFirstButton
+                    showLastButton
+                  />
+                </Stack>
+              </>
+            )}
+          </TabPanel>
+        </MainCard>
+      </form>
+    </Box>
+  );
+}

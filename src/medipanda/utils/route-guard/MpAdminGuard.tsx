@@ -1,0 +1,86 @@
+import { GuardProps } from 'types/auth';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { saveRedirectTo } from 'medipanda/utils/redirectTo';
+import { isMpAdmin, isMpSuperAdmin } from 'medipanda/utils/MpMemberRole';
+import Loader from 'components/Loader';
+import { useMpSession } from 'medipanda/hooks/useMpSession';
+import { getPermissions } from 'medipanda/backend';
+
+interface MpAdminGuardProps extends GuardProps {
+  requiredPermission?:
+    | 'MEMBER_MANAGEMENT'
+    | 'PRODUCT_MANAGEMENT'
+    | 'TRANSACTION_MANAGEMENT'
+    | 'CONTRACT_MANAGEMENT'
+    | 'PRESCRIPTION_MANAGEMENT'
+    | 'SETTLEMENT_MANAGEMENT'
+    | 'EXPENSE_REPORT_MANAGEMENT'
+    | 'COMMUNITY_MANAGEMENT'
+    | 'CONTENT_MANAGEMENT'
+    | 'CUSTOMER_SERVICE'
+    | 'BANNER_MANAGEMENT'
+    | 'PERMISSION_MANAGEMENT'
+    | 'ALL';
+}
+
+export function MpAdminGuard({ children, requiredPermission }: MpAdminGuardProps) {
+  const { session, isLoading } = useMpSession();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkPermission = async () => {
+      if (isLoading) {
+        return;
+      }
+
+      if (!session) {
+        navigate(saveRedirectTo(location), { replace: true });
+        return;
+      }
+
+      if (!isMpAdmin(session)) {
+        navigate('/', { replace: true });
+        return;
+      }
+
+      if (requiredPermission) {
+        if (isMpSuperAdmin(session)) {
+          setHasPermission(true);
+        } else {
+          try {
+            const userId = session.userId;
+
+            const userPermissions = (await getPermissions(userId)).permissions;
+            const hasRequiredPermission = userPermissions.includes(requiredPermission);
+            setHasPermission(hasRequiredPermission);
+
+            if (!hasRequiredPermission) {
+              navigate('/admin', { replace: true });
+            }
+          } catch (error) {
+            console.error('권한 확인 실패:', error);
+            setHasPermission(false);
+            navigate('/admin', { replace: true });
+          }
+        }
+      } else {
+        setHasPermission(true);
+      }
+    };
+
+    checkPermission();
+  }, [session, isLoading, navigate, location, requiredPermission]);
+
+  if (isLoading || (requiredPermission && hasPermission === null)) {
+    return <Loader />;
+  }
+
+  if (!session || !isMpAdmin(session) || (requiredPermission && hasPermission === false)) {
+    return <Loader />;
+  }
+
+  return children;
+}

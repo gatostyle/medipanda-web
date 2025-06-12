@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, Dispatch, MouseEvent, SetStateAction } from 'react';
+import { useEffect, useState, Dispatch, MouseEvent, SetStateAction } from 'react';
 import { matchPath, useLocation, useNavigate, Link } from 'react-router-dom';
 
 // material-ui
@@ -32,7 +32,7 @@ import { ArrowDown2, ArrowUp2, ArrowRight2, Copy } from 'iconsax-react';
 
 // types
 import { NavItemType } from 'types/menu';
-import { useMpMenu } from 'hooks/medipanda/useMpMenu';
+import { useMpMenu } from 'medipanda/hooks/useMpMenu';
 
 type VirtualElement = {
   getBoundingClientRect: () => DOMRect;
@@ -138,20 +138,16 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
     setAnchorEl(null);
   };
 
-  useMemo(() => {
+  useEffect(() => {
     if (selected === selectedItems) {
       if (level === 1) {
         setOpen(true);
       }
-    } else {
-      if (level === selectedLevel) {
-        setOpen(false);
-        if ((!miniMenuOpened && !drawerOpen && !selected) || drawerOpen) {
-          setSelected(null);
-        }
-      }
+    } else if (selected && level === selectedLevel) {
+      setOpen(false);
+      setSelected(null);
     }
-  }, [selectedItems, level, selected, miniMenuOpened, drawerOpen, selectedLevel]);
+  }, [selectedItems, level, selected, selectedLevel]);
 
   const { pathname } = useLocation();
 
@@ -164,7 +160,8 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
 
   const checkOpenForParent = (child: NavItemType[], id: string) => {
     child.forEach((item: NavItemType) => {
-      if (item.url === pathname) {
+      const fullItemUrl = item.url?.startsWith('/') ? item.url : `/admin/${item.url}`;
+      if (item.url === pathname || fullItemUrl === pathname) {
         setOpen(true);
         setSelected(id);
       }
@@ -173,10 +170,37 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
 
   // menu collapse for sub-levels
   useEffect(() => {
-    setOpen(false);
-    if (!miniMenuOpened) {
-      setSelected(null);
+    const isChildPath = menu.children?.some((item: NavItemType) => {
+      const fullItemUrl = item.url?.startsWith('/') ? item.url : `/admin/${item.url}`;
+
+      if (fullItemUrl === pathname || item.url === pathname) {
+        return true;
+      }
+
+      if (item.link && !!matchPath({ path: item?.link, end: false }, pathname)) {
+        return true;
+      }
+
+      if (item.children?.length) {
+        const grandchildMatch = item.children.some((child: NavItemType) => {
+          const fullChildUrl = child.url?.startsWith('/') ? child.url : `/admin/${child.url}`;
+          return fullChildUrl === pathname || child.url === pathname;
+        });
+        if (grandchildMatch) {
+          return true;
+        }
+      }
+
+      return false;
+    });
+
+    if (!isChildPath) {
+      setOpen(false);
+      if (!miniMenuOpened) {
+        setSelected(null);
+      }
     }
+
     if (miniMenuOpened) setAnchorEl(null);
     if (menu.children) {
       menu.children.forEach((item: NavItemType) => {
@@ -189,7 +213,8 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
           setOpen(true);
         }
 
-        if (item.url === pathname) {
+        const fullItemUrl = item.url?.startsWith('/') ? item.url : `/admin/${item.url}`;
+        if (item.url === pathname || fullItemUrl === pathname) {
           setSelected(menu.id);
           setOpen(true);
         }

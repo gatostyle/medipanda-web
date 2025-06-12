@@ -7,7 +7,7 @@ import DrawerHeaderStyled from './DrawerHeaderStyled';
 
 import Logo from 'components/logo';
 import { DRAWER_WIDTH, HEADER_HEIGHT, MenuOrientation } from 'config';
-import { useMpMenu } from 'hooks/medipanda/useMpMenu';
+import { useMpMenu } from 'medipanda/hooks/useMpMenu';
 
 interface Props {
   open: boolean;

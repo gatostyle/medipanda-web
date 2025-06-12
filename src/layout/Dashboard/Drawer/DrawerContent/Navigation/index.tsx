@@ -10,23 +10,13 @@ import Typography from '@mui/material/Typography';
 // project-imports
 import NavItem from './NavItem';
 import NavGroup from './NavGroup';
-import { MenuFromAPI } from 'menu-items/dashboard';
 
 import { MenuOrientation, HORIZONTAL_MAX_ITEM } from 'config';
-import { useGetMenu, useGetMenuMaster } from 'api/menu';
+import { useGetMenuMaster } from 'api/menu';
 
 // types
 import { NavItemType } from 'types/menu';
-import { useMpMenu } from 'hooks/medipanda/useMpMenu';
-
-function isFound<T extends { id?: string }>(arr: T[], str: string) {
-  return arr.some((element: T) => {
-    if (element.id === str) {
-      return true;
-    }
-    return false;
-  });
-}
+import { useMpMenu } from 'medipanda/hooks/useMpMenu';
 
 // ==============================|| DRAWER CONTENT - NAVIGATION ||============================== //
 
@@ -36,7 +26,6 @@ export default function Navigation() {
   const downLG = useMediaQuery(theme.breakpoints.down('lg'));
 
   const { menuOrientation, menuItems: globalMenuItems } = useMpMenu();
-  const { menuLoading } = useGetMenu();
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
 
@@ -45,17 +34,10 @@ export default function Navigation() {
   const [selectedLevel, setSelectedLevel] = useState<number>(0);
   const [menuItems, setMenuItems] = useState<{ items: NavItemType[] }>({ items: [] });
 
-  let dashboardMenu = MenuFromAPI();
+  // let dashboardMenu = MenuFromAPI();
   useLayoutEffect(() => {
-    if (menuLoading && !isFound(globalMenuItems, 'group-dashboard-loading')) {
-      setMenuItems({ items: [...globalMenuItems] });
-    } else if (!menuLoading && dashboardMenu?.id !== undefined && !isFound(globalMenuItems, 'group-dashboard')) {
-      setMenuItems({ items: [...globalMenuItems] });
-    } else {
-      setMenuItems({ items: [...globalMenuItems] });
-    }
-    // eslint-disable-next-line
-  }, [menuLoading, globalMenuItems]);
+    setMenuItems({ items: [...globalMenuItems] });
+  }, [globalMenuItems]);
 
   const isHorizontal = menuOrientation === MenuOrientation.HORIZONTAL && !downLG;
 
