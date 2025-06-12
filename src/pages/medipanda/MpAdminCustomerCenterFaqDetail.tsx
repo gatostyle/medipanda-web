@@ -10,6 +10,8 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
+import MuiLink from '@mui/material/Link';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import MainCard from 'components/MainCard';
 import { TiptapEditor } from 'components/medipanda/TiptapEditor';
 import { MpBoardDetail, mpFetchBoardDetail } from 'api-definitions/MpBoard';
@@ -93,6 +95,36 @@ export default function MpAdminCustomerCenterFaqDetail() {
                       variant="light"
                       size="small"
                     />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row" sx={{ fontWeight: 'bold' }}>
+                    첨부파일
+                  </TableCell>
+                  <TableCell colSpan={3}>
+                    {data.attachments && data.attachments.length > 0 ? (
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                        {data.attachments.map((attachment, index) => {
+                          const filename = attachment.split('/').pop() || `파일_${index + 1}`;
+                          return (
+                            <MuiLink
+                              key={index}
+                              href={attachment}
+                              download
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
+                              underline="hover"
+                            >
+                              <AttachFileIcon fontSize="small" />
+                              {filename}
+                            </MuiLink>
+                          );
+                        })}
+                      </Box>
+                    ) : (
+                      '-'
+                    )}
                   </TableCell>
                 </TableRow>
               </TableBody>
