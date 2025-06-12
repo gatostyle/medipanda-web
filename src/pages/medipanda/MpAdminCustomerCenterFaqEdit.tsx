@@ -181,10 +181,29 @@ export default function MpAdminCustomerCenterFaqEdit() {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
-    setFormData((prev) => ({
-      ...prev,
-      files: [...(prev.files || []), ...files]
-    }));
+    const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+
+    const validFiles: File[] = [];
+    const oversizedFiles: string[] = [];
+
+    files.forEach((file) => {
+      if (file.size > MAX_FILE_SIZE) {
+        oversizedFiles.push(file.name);
+      } else {
+        validFiles.push(file);
+      }
+    });
+
+    if (oversizedFiles.length > 0) {
+      enqueueSnackbar(`다음 파일이 1MB를 초과합니다: ${oversizedFiles.join(', ')}`, { variant: 'error' });
+    }
+
+    if (validFiles.length > 0) {
+      setFormData((prev) => ({
+        ...prev,
+        files: [...(prev.files || []), ...validFiles]
+      }));
+    }
   };
 
   const removeFile = (index: number) => {
@@ -255,6 +274,9 @@ export default function MpAdminCustomerCenterFaqEdit() {
                 파일 업로드
                 <input type="file" hidden multiple onChange={handleFileChange} accept="*" />
               </Button>
+              <Typography variant="caption" color="text.secondary" sx={{ ml: 1 }}>
+                (파일당 최대 1MB)
+              </Typography>
 
               {formData.existingFiles && formData.existingFiles.length > 0 && (
                 <Box sx={{ mb: 2 }}>
