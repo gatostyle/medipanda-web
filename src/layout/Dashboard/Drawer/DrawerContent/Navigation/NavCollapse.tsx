@@ -3,7 +3,6 @@ import { matchPath, useLocation, useNavigate, Link } from 'react-router-dom';
 
 // material-ui
 import { styled, useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
@@ -74,7 +73,6 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
   const theme = useTheme();
   const navigation = useNavigate();
 
-  const downLG = useMediaQuery(theme.breakpoints.down('lg'));
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
   const { mode } = useConfig();
@@ -269,7 +267,7 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
 
   return (
     <>
-      {menuOrientation === MenuOrientation.VERTICAL || downLG ? (
+      {menuOrientation === MenuOrientation.VERTICAL ? (
         <>
           <ListItemButton
             id={`${menu.id}-button`}

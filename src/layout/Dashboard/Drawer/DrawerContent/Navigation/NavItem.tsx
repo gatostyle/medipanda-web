@@ -17,7 +17,7 @@ import IconButton from 'components/@extended/IconButton';
 
 import useConfig from 'hooks/useConfig';
 import { MenuOrientation, ThemeMode, NavActionType } from 'config';
-import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
+import { useGetMenuMaster } from 'api/menu';
 
 // types
 import { LinkTarget, NavItemType } from 'types/menu';
@@ -102,7 +102,6 @@ export default function NavItem({ item, level, isParents = false }: Props) {
                 '&.Mui-selected': { '&:hover': { bgcolor: 'transparent' }, bgcolor: 'transparent' }
               })
             }}
-            {...(downLG && { onClick: () => handlerDrawerOpen(false) })}
           >
             {itemIcon && (
               <ListItemIcon

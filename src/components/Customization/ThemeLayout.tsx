@@ -16,7 +16,6 @@ import MainCard from 'components/MainCard';
 import { MenuOrientation, ThemeDirection } from 'config';
 import useConfig from 'hooks/useConfig';
 import { useMpMenu } from 'medipanda/hooks/useMpMenu';
-import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
 
 // assets
 import defaultLayout from 'assets/images/customization/ltr.svg';
@@ -31,8 +30,6 @@ export default function ThemeLayout() {
 
   const { miniDrawer, themeDirection, onChangeDirection, onChangeMiniDrawer } = useConfig();
   const { menuOrientation } = useMpMenu();
-  const { menuMaster } = useGetMenuMaster();
-  const drawerOpen = menuMaster.isDashboardDrawerOpened;
 
   let initialTheme = 'default';
   if (miniDrawer === true) initialTheme = 'mini';
@@ -49,15 +46,9 @@ export default function ThemeLayout() {
       if (miniDrawer === true) {
         onChangeMiniDrawer(false);
       }
-      if (!drawerOpen) {
-        handlerDrawerOpen(true);
-      }
     }
     if (newValue === 'mini') {
       onChangeMiniDrawer(true);
-      if (drawerOpen) {
-        handlerDrawerOpen(false);
-      }
     }
     if (newValue === ThemeDirection.RTL) {
       onChangeDirection(ThemeDirection.RTL);

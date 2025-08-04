@@ -5,7 +5,7 @@ export default function MpAdminMain() {
     <>
       <Grid container>
         <Grid item xs={12}>
-          <h2>관리자 메인</h2>
+          <h2>좌측의 메뉴를 선택하세요.</h2>
         </Grid>
       </Grid>
     </>

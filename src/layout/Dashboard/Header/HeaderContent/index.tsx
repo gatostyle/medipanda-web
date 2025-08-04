@@ -1,51 +1,37 @@
-import { useMemo } from 'react';
-
 // material-ui
-import { Theme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/material/Box';
 
-// project-imports
-import Search from './Search';
-import Message from './Message';
-import Profile from './Profile';
-import Localization from './Localization';
-import Notification from './Notification';
-import MobileSection from './MobileSection';
-import MegaMenuSection from './MegaMenuSection';
-import FullScreen from './FullScreen';
-
-import { MenuOrientation } from 'config';
-import useConfig from 'hooks/useConfig';
-import DrawerHeader from 'layout/Dashboard/Drawer/DrawerHeader';
-import { useMpMenu } from 'medipanda/hooks/useMpMenu';
+import { useMpSession } from 'medipanda/hooks/useMpSession';
+import IconButton from 'components/@extended/IconButton';
+import { Logout } from 'iconsax-react';
+import { useNavigate } from 'react-router';
 
 // ==============================|| HEADER - CONTENT ||============================== //
 
 export default function HeaderContent() {
-  const { i18n } = useConfig();
-  const { menuOrientation } = useMpMenu();
+  const navigate = useNavigate();
+  const { logout } = useMpSession();
 
-  const downLG = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const localization = useMemo(() => <Localization />, [i18n]);
-
-  const megaMenu = useMemo(() => <MegaMenuSection />, []);
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate(`/login`, {
+        state: {
+          from: ''
+        }
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <>
-      {menuOrientation === MenuOrientation.HORIZONTAL && !downLG && <DrawerHeader open={true} />}
-      {!downLG && <Search />}
-      {!downLG && megaMenu}
-      {!downLG && localization}
-      {downLG && <Box sx={{ width: '100%', ml: 1 }} />}
+      <Box sx={{ width: '100%', ml: 1 }} />
 
-      <Notification />
-      <FullScreen />
-      <Message />
-      {!downLG && <Profile />}
-      {downLG && <MobileSection />}
+      <IconButton size="large" color="error" sx={{ p: 1 }} onClick={handleLogout}>
+        <Logout variant="Bulk" />
+      </IconButton>
     </>
   );
 }

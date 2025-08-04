@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 import AppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 
 // project-imports
-import { DRAWER_WIDTH, MINI_DRAWER_WIDTH } from 'config';
+import { DRAWER_WIDTH } from 'config';
 
 interface Props extends MuiAppBarProps {
   open?: boolean;
@@ -11,22 +11,13 @@ interface Props extends MuiAppBarProps {
 
 // ==============================|| HEADER - APP BAR STYLED ||============================== //
 
-const AppBarStyled = styled(AppBar, { shouldForwardProp: (prop) => prop !== 'open' })<Props>(({ theme, open }) => ({
+const AppBarStyled = styled(AppBar, { shouldForwardProp: (prop) => prop !== 'open' })<Props>(({ theme }) => ({
   zIndex: theme.zIndex.drawer + 1,
+  marginLeft: DRAWER_WIDTH,
+  width: `calc(100% - ${DRAWER_WIDTH}px)`,
   transition: theme.transitions.create(['width', 'margin'], {
     easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen
-  }),
-  ...(!open && {
-    width: `calc(100% - ${MINI_DRAWER_WIDTH})`
-  }),
-  ...(open && {
-    marginLeft: DRAWER_WIDTH,
-    width: `calc(100% - ${DRAWER_WIDTH}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
-    })
+    duration: theme.transitions.duration.enteringScreen
   })
 }));
 

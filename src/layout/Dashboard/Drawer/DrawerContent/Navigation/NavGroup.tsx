@@ -264,7 +264,7 @@ export default function NavGroup({
 
   return (
     <>
-      {menuOrientation === MenuOrientation.VERTICAL || downLG ? (
+      {menuOrientation === MenuOrientation.VERTICAL ? (
         <List
           subheader={
             <>

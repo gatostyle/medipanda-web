@@ -14,7 +14,6 @@ import useConfig from 'hooks/useConfig';
 import { useMpMenu } from 'medipanda/hooks/useMpMenu';
 
 import { MenuOrientation } from 'config';
-import { handlerDrawerOpen } from 'api/menu';
 
 // assets
 import defaultLayout from 'assets/images/customization/vertical.svg';
@@ -34,7 +33,6 @@ export default function ThemeMenuLayout() {
   const handleContainerChange = (e: any) => {
     onChangeMiniDrawer(true);
     setMenuOrientation(e.target.value);
-    handlerDrawerOpen(e.target.value !== MenuOrientation.HORIZONTAL);
   };
 
   return (

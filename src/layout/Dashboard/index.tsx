@@ -1,9 +1,6 @@
-import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Toolbar from '@mui/material/Toolbar';
@@ -15,14 +12,12 @@ import ko from 'date-fns/locale/ko';
 import Drawer from './Drawer';
 import Header from './Header';
 import Footer from './Footer';
-import HorizontalBar from './Drawer/HorizontalBar';
 import Loader from 'components/Loader';
 import Breadcrumbs from 'components/@extended/Breadcrumbs';
 
-import { DRAWER_WIDTH, MenuOrientation } from 'config';
+import { DRAWER_WIDTH } from 'config';
 import useConfig from 'hooks/useConfig';
-import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
-import { useMpMenu } from 'medipanda/hooks/useMpMenu';
+import { useGetMenuMaster } from 'api/menu';
 import { MpAdminGuard, MpMemberGuard } from 'medipanda/utils/route-guard';
 
 // ==============================|| MAIN LAYOUT ||============================== //
@@ -30,24 +25,9 @@ import { MpAdminGuard, MpMemberGuard } from 'medipanda/utils/route-guard';
 export default function MainLayout() {
   const location = useLocation();
 
-  const theme = useTheme();
-
   const { menuMasterLoading } = useGetMenuMaster();
-  const downXL = useMediaQuery(theme.breakpoints.down('xl'));
-  const downLG = useMediaQuery(theme.breakpoints.down('lg'));
 
-  const { container, miniDrawer } = useConfig();
-  const { menuOrientation } = useMpMenu();
-
-  const isHorizontal = menuOrientation === MenuOrientation.HORIZONTAL && !downLG;
-
-  // set media wise responsive drawer
-  useEffect(() => {
-    if (!miniDrawer) {
-      handlerDrawerOpen(!downXL);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [downXL]);
+  const { container } = useConfig();
 
   if (menuMasterLoading) return <Loader />;
 
@@ -58,10 +38,10 @@ export default function MainLayout() {
       <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
         <Box sx={{ display: 'flex', width: '100%' }}>
           <Header />
-          {!isHorizontal ? <Drawer /> : <HorizontalBar />}
+          <Drawer />
 
           <Box component="main" sx={{ width: `calc(100% - ${DRAWER_WIDTH}px)`, flexGrow: 1, p: { xs: 2, md: 3 } }}>
-            <Toolbar sx={{ mt: isHorizontal ? 8 : 'inherit', mb: isHorizontal ? 2 : 'inherit' }} />
+            <Toolbar sx={{ mt: 'inherit', mb: 'inherit' }} />
             <Container
               maxWidth={container ? 'xl' : false}
               sx={{

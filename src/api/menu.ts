@@ -8,7 +8,7 @@ import { fetcher } from 'utils/axios';
 import { MenuProps, NavItemType } from 'types/menu';
 
 const initialState: MenuProps = {
-  isDashboardDrawerOpened: false,
+  isDashboardDrawerOpened: true,
   isComponentDrawerOpened: true
 };
 
@@ -64,18 +64,6 @@ export function handlerComponentDrawer(isComponentDrawerOpened: boolean) {
     endpoints.key + endpoints.master,
     (currentMenuMaster: any) => {
       return { ...currentMenuMaster, isComponentDrawerOpened };
-    },
-    false
-  );
-}
-
-export function handlerDrawerOpen(isDashboardDrawerOpened: boolean) {
-  // to update local state based on key
-
-  mutate(
-    endpoints.key + endpoints.master,
-    (currentMenuMaster: any) => {
-      return { ...currentMenuMaster, isDashboardDrawerOpened };
     },
     false
   );
