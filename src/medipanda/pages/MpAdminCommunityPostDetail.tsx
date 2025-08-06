@@ -1,9 +1,11 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   Box,
   Button,
   Card,
+  CircularProgress,
+  Pagination,
   Stack,
   Tab,
   Table,
@@ -13,43 +15,15 @@ import {
   TableHead,
   TableRow,
   Tabs,
-  Typography,
-  Pagination,
-  CircularProgress
+  Typography
 } from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import ScrollX from 'components/ScrollX';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
 import { TiptapEditor } from 'medipanda/components/TiptapEditor';
-import { BoardDetailsResponse, BoardReportResponse, CommentResponse, getBoardDetails } from 'medipanda/backend';
+import { BoardReportResponse, CommentResponse, getBoardDetails } from 'medipanda/backend';
 import { useSnackbar } from 'notistack';
 import { BOARD_TYPE_LABELS } from 'medipanda/ui-labels';
-
-interface BoardDetailsResponseWithMockData extends BoardDetailsResponse {
-  userId: string;
-  memberName: string;
-}
-
-function withMock<T extends BoardDetailsResponse>(data: T): T & BoardDetailsResponseWithMockData {
-  return {
-    ...data,
-    userId: '아이디',
-    memberName: '사용자명'
-  };
-}
-
-interface CommentResponseWithMockData extends CommentResponse {
-  userId: string;
-  memberName: string;
-}
-
-function withMockComments<T extends CommentResponse>(data: T): T & CommentResponseWithMockData {
-  return {
-    ...data,
-    userId: '아이디',
-    memberName: '사용자명'
-  };
-}
 
 export default function MpAdminCommunityPostDetail() {
   const navigate = useNavigate();
@@ -79,11 +53,11 @@ export default function MpAdminCommunityPostDetail() {
 
       try {
         setLoading(true);
-        const boardDetail = withMock(await getBoardDetails(parseInt(id)));
+        const boardDetail = await getBoardDetails(parseInt(id));
 
         setPostDetail({
           boardType: BOARD_TYPE_LABELS[boardDetail.boardType],
-          memberName: boardDetail.memberName,
+          name: boardDetail.name,
           userId: boardDetail.userId,
           nickname: boardDetail.nickname,
           title: boardDetail.title,
@@ -95,7 +69,7 @@ export default function MpAdminCommunityPostDetail() {
           registrationDate: boardDetail.createdAt
         });
 
-        setComments(withSequence(boardDetail.comments).map(withMockComments));
+        setComments(withSequence(boardDetail.comments));
         setReports(withSequence(boardDetail.reports));
       } catch (error) {
         console.error('Failed to fetch post data:', error);
@@ -111,7 +85,7 @@ export default function MpAdminCommunityPostDetail() {
 
   const [postDetail, setPostDetail] = useState({
     boardType: '',
-    memberName: '',
+    name: '',
     userId: '',
     nickname: '',
     title: '',
@@ -140,7 +114,7 @@ export default function MpAdminCommunityPostDetail() {
       },
       {
         header: '회원명',
-        accessorKey: 'memberName',
+        accessorKey: 'name',
         size: 100
       },
       {
@@ -176,7 +150,7 @@ export default function MpAdminCommunityPostDetail() {
       },
       {
         header: '회원명',
-        accessorKey: 'memberName',
+        accessorKey: 'name',
         size: 100
       },
       {
@@ -193,8 +167,7 @@ export default function MpAdminCommunityPostDetail() {
         header: '신고일시',
         accessorKey: 'reportDateTime',
         cell: ({ row }) => {
-          const value = row.original.reportDateTime;
-          return value;
+          return row.original.reportDateTime;
         },
         size: 160
       }
@@ -272,7 +245,7 @@ export default function MpAdminCommunityPostDetail() {
                     회원명
                   </Typography>
                   <Typography variant="body1">
-                    {postDetail.memberName}({postDetail.userId})
+                    {postDetail.name}({postDetail.userId})
                   </Typography>
                 </Box>
                 <Box>

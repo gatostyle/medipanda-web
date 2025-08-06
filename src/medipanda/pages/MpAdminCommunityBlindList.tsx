@@ -224,9 +224,9 @@ export default function MpAdminCommunityBlindList() {
         try {
           for (const item of selectedItems) {
             if (item.type === 'BOARD') {
-              await unblindPost({ postId: item.id });
+              await unblindPost({ postId: item.id, commentId: null });
             } else {
-              await unblindPost({ commentId: item.id });
+              await unblindPost({ postId: null, commentId: item.id });
             }
           }
           await fetchData();

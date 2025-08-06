@@ -162,7 +162,8 @@ const MockPrescriptionResponse: PrescriptionResponse[] = [
     prescriptionMonth: '2024-01-01',
     settlementMonth: '2024-02-01',
     submittedAt: '2024-01-18T11:15:00Z',
-    status: 'IN_PROGRESS'
+    status: 'IN_PROGRESS',
+    checkedAt: null
   },
   {
     id: 3,
@@ -173,7 +174,8 @@ const MockPrescriptionResponse: PrescriptionResponse[] = [
     prescriptionMonth: '2024-02-01',
     settlementMonth: '2024-03-01',
     submittedAt: '2024-02-05T08:20:00Z',
-    status: 'PENDING'
+    status: 'PENDING',
+    checkedAt: null
   },
   {
     id: 4,
@@ -196,7 +198,8 @@ const MockPrescriptionResponse: PrescriptionResponse[] = [
     prescriptionMonth: '2024-03-01',
     settlementMonth: '2024-04-01',
     submittedAt: '2024-03-12T13:45:00Z',
-    status: 'IN_PROGRESS'
+    status: 'IN_PROGRESS',
+    checkedAt: null
   },
   {
     id: 6,
@@ -207,7 +210,8 @@ const MockPrescriptionResponse: PrescriptionResponse[] = [
     prescriptionMonth: '2024-03-01',
     settlementMonth: '2024-04-01',
     submittedAt: '2024-03-20T07:30:00Z',
-    status: 'PENDING'
+    status: 'PENDING',
+    checkedAt: null
   },
   {
     id: 7,
@@ -230,7 +234,8 @@ const MockPrescriptionResponse: PrescriptionResponse[] = [
     prescriptionMonth: '2024-04-01',
     settlementMonth: '2024-05-01',
     submittedAt: '2024-04-15T09:00:00Z',
-    status: 'IN_PROGRESS'
+    status: 'IN_PROGRESS',
+    checkedAt: null
   },
   {
     id: 9,
@@ -241,7 +246,8 @@ const MockPrescriptionResponse: PrescriptionResponse[] = [
     prescriptionMonth: '2024-05-01',
     settlementMonth: '2024-06-01',
     submittedAt: '2024-05-03T14:20:00Z',
-    status: 'PENDING'
+    status: 'PENDING',
+    checkedAt: null
   },
   {
     id: 10,
@@ -262,6 +268,7 @@ const MockPrescriptionPartnerResponse: PrescriptionPartnerResponse[] = [
     id: 1,
     companyName: 'MockCompany001',
     drugCompany: 'MockDrugCompany001',
+    institutionCode: 'INST001',
     prescriptionMonth: '2024-01-01',
     settlementMonth: '2024-02-01',
     inputDate: '2024-01-15',
@@ -275,6 +282,7 @@ const MockPrescriptionPartnerResponse: PrescriptionPartnerResponse[] = [
     id: 2,
     companyName: 'MockCompany002',
     drugCompany: 'MockDrugCompany002',
+    institutionCode: 'INST002',
     prescriptionMonth: '2024-01-01',
     settlementMonth: '2024-02-01',
     inputDate: '2024-01-18',
@@ -288,6 +296,7 @@ const MockPrescriptionPartnerResponse: PrescriptionPartnerResponse[] = [
     id: 3,
     companyName: 'MockCompany003',
     drugCompany: 'MockDrugCompany003',
+    institutionCode: 'INST003',
     prescriptionMonth: '2024-02-01',
     settlementMonth: '2024-03-01',
     inputDate: '2024-02-05',
@@ -301,6 +310,7 @@ const MockPrescriptionPartnerResponse: PrescriptionPartnerResponse[] = [
     id: 4,
     companyName: 'MockCompany004',
     drugCompany: 'MockDrugCompany004',
+    institutionCode: 'INST004',
     prescriptionMonth: '2024-02-01',
     settlementMonth: '2024-03-01',
     inputDate: '2024-02-10',
@@ -314,6 +324,7 @@ const MockPrescriptionPartnerResponse: PrescriptionPartnerResponse[] = [
     id: 5,
     companyName: 'MockCompany005',
     drugCompany: 'MockDrugCompany005',
+    institutionCode: 'INST005',
     prescriptionMonth: '2024-03-01',
     settlementMonth: '2024-04-01',
     inputDate: '2024-03-12',
@@ -327,6 +338,7 @@ const MockPrescriptionPartnerResponse: PrescriptionPartnerResponse[] = [
     id: 6,
     companyName: 'MockCompany006',
     drugCompany: 'MockDrugCompany006',
+    institutionCode: 'INST006',
     prescriptionMonth: '2024-03-01',
     settlementMonth: '2024-04-01',
     inputDate: '2024-03-20',
@@ -340,6 +352,7 @@ const MockPrescriptionPartnerResponse: PrescriptionPartnerResponse[] = [
     id: 7,
     companyName: 'MockCompany007',
     drugCompany: 'MockDrugCompany007',
+    institutionCode: 'INST007',
     prescriptionMonth: '2024-04-01',
     settlementMonth: '2024-05-01',
     inputDate: '2024-04-08',
@@ -353,6 +366,7 @@ const MockPrescriptionPartnerResponse: PrescriptionPartnerResponse[] = [
     id: 8,
     companyName: 'MockCompany008',
     drugCompany: 'MockDrugCompany008',
+    institutionCode: 'INST008',
     prescriptionMonth: '2024-04-01',
     settlementMonth: '2024-05-01',
     inputDate: '2024-04-15',
@@ -366,6 +380,7 @@ const MockPrescriptionPartnerResponse: PrescriptionPartnerResponse[] = [
     id: 9,
     companyName: 'MockCompany009',
     drugCompany: 'MockDrugCompany009',
+    institutionCode: 'INST009',
     prescriptionMonth: '2024-05-01',
     settlementMonth: '2024-06-01',
     inputDate: '2024-05-03',
@@ -379,6 +394,7 @@ const MockPrescriptionPartnerResponse: PrescriptionPartnerResponse[] = [
     id: 10,
     companyName: 'MockCompany010',
     drugCompany: 'MockDrugCompany010',
+    institutionCode: 'INST010',
     prescriptionMonth: '2024-05-01',
     settlementMonth: '2024-06-01',
     inputDate: '2024-05-18',
@@ -412,7 +428,8 @@ const MockPrescriptionPartnerProductResponse: PrescriptionPartnerProductResponse
     unitPrice: 1800,
     totalPrice: 135000,
     baseFeeRate: 0.12,
-    feeAmount: 16200
+    feeAmount: 16200,
+    note: null
   },
   {
     id: 3,
@@ -457,7 +474,8 @@ const MockSalesAgencyProductSummaryResponse: SalesAgencyProductSummaryResponse[]
     startAt: '2024-02-01',
     endAt: '2024-04-30',
     appliedCount: 25,
-    quantity: 100
+    quantity: 100,
+    thumbnailUrl: 'https://mock-storage.example.com/thumbnails/MockProduct001.jpg'
   },
   {
     id: 2,
@@ -469,7 +487,8 @@ const MockSalesAgencyProductSummaryResponse: SalesAgencyProductSummaryResponse[]
     startAt: '2024-02-15',
     endAt: '2024-05-15',
     appliedCount: 18,
-    quantity: 50
+    quantity: 50,
+    thumbnailUrl: null
   },
   {
     id: 3,
@@ -481,7 +500,8 @@ const MockSalesAgencyProductSummaryResponse: SalesAgencyProductSummaryResponse[]
     startAt: '2024-03-01',
     endAt: '2024-06-01',
     appliedCount: 42,
-    quantity: 200
+    quantity: 200,
+    thumbnailUrl: 'https://mock-storage.example.com/thumbnails/MockProduct003.jpg'
   },
   {
     id: 4,
@@ -493,7 +513,8 @@ const MockSalesAgencyProductSummaryResponse: SalesAgencyProductSummaryResponse[]
     startAt: '2024-03-15',
     endAt: '2024-07-15',
     appliedCount: 12,
-    quantity: 30
+    quantity: 30,
+    thumbnailUrl: 'https://mock-storage.example.com/thumbnails/MockProduct004.jpg'
   },
   {
     id: 5,
@@ -505,7 +526,8 @@ const MockSalesAgencyProductSummaryResponse: SalesAgencyProductSummaryResponse[]
     startAt: '2024-04-01',
     endAt: '2024-08-01',
     appliedCount: 33,
-    quantity: 75
+    quantity: 75,
+    thumbnailUrl: null
   }
 ];
 
@@ -524,6 +546,9 @@ const MockSalesAgencyProductDetailsResponse: SalesAgencyProductDetailsResponse[]
     price: 50000,
     boardPostDetail: {
       id: 1,
+      userId: 'MockUser001',
+      name: 'MockName001',
+      memberType: 'CSO',
       boardType: 'SALES_AGENCY',
       title: 'MockTitle001',
       content: 'MockContent001',
@@ -538,7 +563,8 @@ const MockSalesAgencyProductDetailsResponse: SalesAgencyProductDetailsResponse[]
       children: [],
       reports: [],
       comments: [],
-      attachments: []
+      attachments: [],
+      noticeProperties: null
     }
   },
   {
@@ -549,11 +575,15 @@ const MockSalesAgencyProductDetailsResponse: SalesAgencyProductDetailsResponse[]
     endDate: '2024-05-15',
     contractDate: '2024-01-20',
     thumbnailUrl: 'https://mock-storage.example.com/thumbnails/MockProduct002.jpg',
+    videoUrl: null,
     note: 'MockNote002',
     quantity: 50,
     price: 75000,
     boardPostDetail: {
       id: 2,
+      userId: 'MockUser002',
+      name: 'MockName002',
+      memberType: 'INDIVIDUAL',
       boardType: 'SALES_AGENCY',
       title: 'MockTitle002',
       content: 'MockContent002',
@@ -568,7 +598,8 @@ const MockSalesAgencyProductDetailsResponse: SalesAgencyProductDetailsResponse[]
       children: [],
       reports: [],
       comments: [],
-      attachments: []
+      attachments: [],
+      noticeProperties: null
     }
   }
 ];
@@ -589,7 +620,8 @@ const MockSalesAgencyProductApplicantResponse: SalesAgencyProductApplicantRespon
     memberName: 'MockMember002',
     phoneNumber: '010-2222-2222',
     appliedDate: '2024-02-06',
-    contractStatus: 'NON_CONTRACT'
+    contractStatus: 'NON_CONTRACT',
+    note: null
   },
   {
     id: 3,
@@ -606,7 +638,8 @@ const MockSalesAgencyProductApplicantResponse: SalesAgencyProductApplicantRespon
     memberName: 'MockMember004',
     phoneNumber: '010-4444-4444',
     appliedDate: '2024-02-08',
-    contractStatus: 'NON_CONTRACT'
+    contractStatus: 'NON_CONTRACT',
+    note: null
   },
   {
     id: 5,
@@ -685,6 +718,7 @@ const MockMemberResponse: MemberResponse[] = [
     hasCsoCert: false,
     accountStatus: 'BLOCKED',
     role: 'USER',
+    companyName: null,
     createdAt: '2024-01-04T00:00:00Z'
   },
   {
@@ -711,6 +745,7 @@ const MockMemberDetailsResponse: MemberDetailsResponse[] = [
     id: 1,
     userId: 'MockUser001',
     name: 'MockName001',
+    gender: 'MALE',
     phoneNumber: '010-1111-1111',
     birthDate: '1990-01-15',
     email: 'mock001@example.com',
@@ -731,6 +766,7 @@ const MockMemberDetailsResponse: MemberDetailsResponse[] = [
     id: 2,
     userId: 'MockUser002',
     name: 'MockName002',
+    gender: 'FEMALE',
     phoneNumber: '010-2222-2222',
     birthDate: '1985-05-22',
     email: 'mock002@example.com',
@@ -741,6 +777,7 @@ const MockMemberDetailsResponse: MemberDetailsResponse[] = [
       push: true
     },
     referralCode: 'REF002',
+    csoCertUrl: null,
     registrationDate: '2024-01-02',
     lastLoginDate: '2024-01-16',
     note: 'MockNote002',
@@ -750,6 +787,7 @@ const MockMemberDetailsResponse: MemberDetailsResponse[] = [
     id: 3,
     userId: 'MockUser003',
     name: 'MockName003',
+    gender: null,
     phoneNumber: '010-3333-3333',
     birthDate: '1992-08-10',
     email: 'mock003@example.com',
@@ -770,6 +808,7 @@ const MockMemberDetailsResponse: MemberDetailsResponse[] = [
     id: 4,
     userId: 'MockUser004',
     name: 'MockName004',
+    gender: 'MALE',
     phoneNumber: '010-4444-4444',
     birthDate: '1988-12-05',
     email: 'mock004@example.com',
@@ -779,14 +818,18 @@ const MockMemberDetailsResponse: MemberDetailsResponse[] = [
       email: false,
       push: false
     },
+    referralCode: null,
+    csoCertUrl: null,
     registrationDate: '2024-01-04',
     lastLoginDate: '2024-01-18',
+    note: null,
     role: 'USER'
   },
   {
     id: 5,
     userId: 'MockUser005',
     name: 'MockName005',
+    gender: 'FEMALE',
     phoneNumber: '010-5555-5555',
     birthDate: '1995-03-18',
     email: 'mock005@example.com',
@@ -835,6 +878,8 @@ const MockPartnerResponse: PartnerResponse[] = [
     businessNumber: '234-56-78901',
     medicalDepartment: 'MockDepartment002',
     hasPharmacy: false,
+    pharmacyName: null,
+    pharmacyAddress: null,
     pharmacyStatus: 'NONE',
     note: 'MockNote002'
   },
@@ -878,7 +923,10 @@ const MockPartnerResponse: PartnerResponse[] = [
     businessNumber: '567-89-01234',
     medicalDepartment: 'MockDepartment005',
     hasPharmacy: false,
-    pharmacyStatus: 'NONE'
+    pharmacyName: null,
+    pharmacyAddress: null,
+    pharmacyStatus: 'NONE',
+    note: null
   }
 ];
 
@@ -912,7 +960,8 @@ const MockBannerResponse: BannerResponse[] = [
     ctr: 6.8,
     startAt: '2024-01-01T00:00:00Z',
     endAt: '2024-12-31T23:59:59Z',
-    imageUrl: 'https://mock-storage.example.com/banners/banner001.jpg'
+    imageUrl: 'https://mock-storage.example.com/banners/banner001.jpg',
+    note: 'MockNote001'
   },
   {
     id: 2,
@@ -927,7 +976,8 @@ const MockBannerResponse: BannerResponse[] = [
     ctr: 7.5,
     startAt: '2024-02-01T00:00:00Z',
     endAt: '2024-11-30T23:59:59Z',
-    imageUrl: 'https://mock-storage.example.com/banners/banner002.jpg'
+    imageUrl: 'https://mock-storage.example.com/banners/banner002.jpg',
+    note: null
   },
   {
     id: 3,
@@ -942,7 +992,8 @@ const MockBannerResponse: BannerResponse[] = [
     ctr: 4.2,
     startAt: '2024-03-01T00:00:00Z',
     endAt: '2024-10-31T23:59:59Z',
-    imageUrl: 'https://mock-storage.example.com/banners/banner003.jpg'
+    imageUrl: 'https://mock-storage.example.com/banners/banner003.jpg',
+    note: 'MockNote003'
   },
   {
     id: 4,
@@ -957,7 +1008,8 @@ const MockBannerResponse: BannerResponse[] = [
     ctr: 7.1,
     startAt: '2024-04-01T00:00:00Z',
     endAt: '2024-12-31T23:59:59Z',
-    imageUrl: 'https://mock-storage.example.com/banners/banner004.jpg'
+    imageUrl: 'https://mock-storage.example.com/banners/banner004.jpg',
+    note: null
   },
   {
     id: 5,
@@ -972,13 +1024,17 @@ const MockBannerResponse: BannerResponse[] = [
     ctr: 6.2,
     startAt: '2024-05-01T00:00:00Z',
     endAt: '2024-12-31T23:59:59Z',
-    imageUrl: 'https://mock-storage.example.com/banners/banner005.jpg'
+    imageUrl: 'https://mock-storage.example.com/banners/banner005.jpg',
+    note: 'MockNote005'
   }
 ];
 
 const MockBoardPostResponse: BoardPostResponse[] = [
   {
     id: 1,
+    userId: 'MockUser001',
+    name: 'MockName001',
+    memberType: 'CSO',
     boardType: 'NOTICE',
     title: 'MockBoardTitle001',
     nickname: 'MockNickname001',
@@ -993,9 +1049,13 @@ const MockBoardPostResponse: BoardPostResponse[] = [
   },
   {
     id: 2,
+    userId: 'MockUser002',
+    name: 'MockName002',
+    memberType: 'INDIVIDUAL',
     boardType: 'ANONYMOUS',
     title: 'MockBoardTitle002',
     nickname: 'MockNickname002',
+    noticeType: null,
     isBlind: false,
     likesCount: 12,
     viewsCount: 156,
@@ -1006,9 +1066,13 @@ const MockBoardPostResponse: BoardPostResponse[] = [
   },
   {
     id: 3,
+    userId: 'MockUser003',
+    name: 'MockName003',
+    memberType: 'ORGANIZATION',
     boardType: 'PRODUCT',
     title: 'MockBoardTitle003',
     nickname: 'MockNickname003',
+    noticeType: null,
     isBlind: true,
     likesCount: 8,
     viewsCount: 89,
@@ -1019,9 +1083,13 @@ const MockBoardPostResponse: BoardPostResponse[] = [
   },
   {
     id: 4,
+    userId: 'MockUser004',
+    name: 'MockName004',
+    memberType: 'NONE',
     boardType: 'FAQ',
     title: 'MockBoardTitle004',
     nickname: 'MockNickname004',
+    noticeType: null,
     isBlind: false,
     likesCount: 35,
     viewsCount: 312,
@@ -1032,9 +1100,13 @@ const MockBoardPostResponse: BoardPostResponse[] = [
   },
   {
     id: 5,
+    userId: 'MockUser005',
+    name: 'MockName005',
+    memberType: 'CSO',
     boardType: 'EVENT',
     title: 'MockBoardTitle005',
     nickname: 'MockNickname005',
+    noticeType: null,
     isBlind: false,
     likesCount: 42,
     viewsCount: 456,
@@ -1169,16 +1241,21 @@ const MockBlindPostResponse: BlindPostResponse[] = [
 const MockCommentResponse: CommentResponse[] = [
   {
     id: 1,
+    userId: 'MockUser001',
+    name: 'MockName001',
     content: 'MockCommentContent001',
     nickname: 'MockNickname001',
     likesCount: 8,
     isBlind: false,
     contractStatus: 'CONTRACT',
+    parentId: null,
     createdAt: '2024-01-15T10:30:00Z',
     modifiedAt: '2024-01-15T10:30:00Z'
   },
   {
     id: 2,
+    userId: 'MockUser002',
+    name: 'MockName002',
     content: 'MockCommentContent002',
     nickname: 'MockNickname002',
     likesCount: 5,
@@ -1190,16 +1267,21 @@ const MockCommentResponse: CommentResponse[] = [
   },
   {
     id: 3,
+    userId: 'MockUser003',
+    name: 'MockName003',
     content: 'MockCommentContent003',
     nickname: 'MockNickname003',
     likesCount: 3,
     isBlind: true,
     contractStatus: 'CONTRACT',
+    parentId: null,
     createdAt: '2024-01-16T09:15:00Z',
     modifiedAt: '2024-01-16T09:15:00Z'
   },
   {
     id: 4,
+    userId: 'MockUser004',
+    name: 'MockName004',
     content: 'MockCommentContent004',
     nickname: 'MockNickname004',
     likesCount: 12,
@@ -1211,11 +1293,14 @@ const MockCommentResponse: CommentResponse[] = [
   },
   {
     id: 5,
+    userId: 'MockUser005',
+    name: 'MockName005',
     content: 'MockCommentContent005',
     nickname: 'MockNickname005',
     likesCount: 7,
     isBlind: false,
     contractStatus: 'NON_CONTRACT',
+    parentId: null,
     createdAt: '2024-01-17T16:45:00Z',
     modifiedAt: '2024-01-17T16:45:00Z'
   }
@@ -1352,6 +1437,9 @@ const MockEventBoardDetailsResponse: EventBoardDetailsResponse = {
   note: 'MockEventNote001',
   boardPostDetail: {
     id: 1,
+    userId: 'MockUser001',
+    name: 'MockName001',
+    memberType: 'CSO',
     boardType: 'EVENT',
     title: 'MockEventTitle001',
     content: 'MockEventContent001',
@@ -1366,7 +1454,8 @@ const MockEventBoardDetailsResponse: EventBoardDetailsResponse = {
     children: [],
     reports: [],
     comments: [],
-    attachments: []
+    attachments: [],
+    noticeProperties: null
   }
 };
 
@@ -1459,6 +1548,8 @@ const MockProductSummaryResponse: ProductSummaryResponse[] = [
     note: 'MockProductNote002',
     price: 89000,
     feeRate: 0.12,
+    changedFeeRate: null,
+    changedMonth: null,
     isAcquisition: true,
     isPromotion: false,
     isOutOfStock: false,
@@ -1486,8 +1577,11 @@ const MockProductSummaryResponse: ProductSummaryResponse[] = [
     composition: 'MockComposition004',
     productCode: 'PRD004',
     manufacturerName: 'MockManufacturer004',
+    note: null,
     price: 67000,
     feeRate: 0.1,
+    changedFeeRate: null,
+    changedMonth: null,
     isAcquisition: false,
     isPromotion: true,
     isOutOfStock: false,
@@ -1502,6 +1596,8 @@ const MockProductSummaryResponse: ProductSummaryResponse[] = [
     note: 'MockProductNote005',
     price: 203000,
     feeRate: 0.2,
+    changedFeeRate: null,
+    changedMonth: null,
     isAcquisition: true,
     isPromotion: false,
     isOutOfStock: false,
@@ -1527,6 +1623,9 @@ const MockProductDetailsResponse: ProductDetailsResponse = {
   alternativeProducts: ['PRD002', 'PRD003'],
   boardDetailsResponse: {
     id: 1,
+    userId: 'MockUser001',
+    name: 'MockName001',
+    memberType: 'CSO',
     boardType: 'PRODUCT',
     title: 'MockProductTitle001',
     content: 'MockProductContent001',
@@ -1541,7 +1640,8 @@ const MockProductDetailsResponse: ProductDetailsResponse = {
     children: [],
     reports: [],
     comments: [],
-    attachments: []
+    attachments: [],
+    noticeProperties: null
   }
 };
 
@@ -1727,7 +1827,12 @@ export const getPrescriptionPartnerList: typeof originalGetPrescriptionPartnerLi
 
 export const getPrescriptionPartner: typeof originalGetPrescriptionPartner = async (prescriptionPartnerId: number) => {
   const partner = MockPrescriptionPartnerResponse.find((p) => p.id === prescriptionPartnerId);
-  return partner || MockPrescriptionPartnerResponse[0];
+
+  if (!partner) {
+    throw new Error(`No mockup PrescriptionPartner for prescriptionPartnerId=${prescriptionPartnerId}`);
+  }
+
+  return partner;
 };
 
 export const uploadEdiZip: typeof originalUploadEdiZip = async () => {
@@ -1807,7 +1912,12 @@ export const applyProduct: typeof originalApplyProduct = async () => {
 
 export const getSalesAgencyProductDetails: typeof originalGetSalesAgencyProductDetails = async (id: number) => {
   const product = MockSalesAgencyProductDetailsResponse.find((p) => p.productId === id);
-  return product || MockSalesAgencyProductDetailsResponse[0];
+
+  if (!product) {
+    throw new Error(`No mockup SalesAgencyProductDetails for id=${id}`);
+  }
+
+  return product;
 };
 
 export const updateSalesAgencyProductBoard: typeof originalUpdateSalesAgencyProductBoard = async () => {
@@ -1886,7 +1996,12 @@ export const signup: typeof originalSignup = async () => {
 
 export const getMemberDetails: typeof originalGetMemberDetails = async (userId: string) => {
   const member = MockMemberDetailsResponse.find((m) => m.userId === userId);
-  return member || MockMemberDetailsResponse[0];
+
+  if (!member) {
+    throw new Error(`No mockup MemberDetails for userId=${userId}`);
+  }
+
+  return member;
 };
 
 export const updateMember: typeof originalUpdateMember = async () => {
@@ -2005,7 +2120,12 @@ export const createPartner: typeof originalCreatePartner = async () => {
 
 export const getPartnerDetails: typeof originalGetPartnerDetails = async (id: number) => {
   const partner = MockPartnerResponse.find((p) => p.id === id);
-  return partner || MockPartnerResponse[0];
+
+  if (!partner) {
+    throw new Error(`No mockup PartnerDetails for id=${id}`);
+  }
+
+  return partner;
 };
 
 export const updatePartner: typeof originalUpdatePartner = async () => {
@@ -2081,7 +2201,12 @@ export const createBanner: typeof originalCreateBanner = async () => {
 
 export const getBanner: typeof originalGetBanner = async (id: number) => {
   const banner = MockBannerResponse.find((b) => b.id === id);
-  return banner || MockBannerResponse[0];
+
+  if (!banner) {
+    throw new Error(`No mockup Banner for id=${id}`);
+  }
+
+  return banner;
 };
 
 export const updateBanner: typeof originalUpdateBanner = async () => {
@@ -2126,6 +2251,9 @@ export const createBoardPost: typeof originalCreateBoardPost = async () => {
 export const getBoardDetails: typeof originalGetBoardDetails = async (id: number) => {
   return {
     id: id,
+    userId: 'MockUser001',
+    name: 'MockName001',
+    memberType: 'CSO',
     boardType: 'NOTICE',
     title: 'MockBoardTitle001',
     content: 'MockBoardContent001',
@@ -2140,7 +2268,8 @@ export const getBoardDetails: typeof originalGetBoardDetails = async (id: number
     children: [],
     reports: [],
     comments: MockCommentResponse,
-    attachments: []
+    attachments: [],
+    noticeProperties: null
   };
 };
 
@@ -2411,10 +2540,48 @@ export const updateProductBriefingMultiReport: typeof originalUpdateProductBrief
   return Promise.resolve();
 };
 
-export const login = originalLogin;
-export const refreshToken = originalRefreshToken;
-export const getPublicKey = originalGetPublicKey;
-export const whoAmI = originalWhoAmI;
+export const login: typeof originalLogin = async () => {
+  return {
+    accessToken: '',
+    refreshToken: ''
+  };
+};
+
+export const refreshToken: typeof originalRefreshToken = async () => {
+  return {
+    accessToken: '',
+    refreshToken: ''
+  };
+};
+
+export const getPublicKey: typeof originalGetPublicKey = async () => {
+  return {
+    publicKey: ''
+  };
+};
+export const whoAmI: typeof originalWhoAmI = async () => {
+  return {
+    id: 1001,
+    userId: 'super',
+    name: '관리자1',
+    gender: 'MALE',
+    phoneNumber: '010-1234-5678',
+    birthDate: '2025-06-13',
+    email: 'super@example.com',
+    partnerContractStatus: 'INDIVIDUAL',
+    marketingAgreements: {
+      sms: true,
+      email: true,
+      push: true
+    },
+    referralCode: 'i95MWCDu',
+    csoCertUrl: null,
+    registrationDate: '2025-06-13T21:19:02.409834',
+    lastLoginDate: '2025-08-04T15:05:50.316059',
+    note: null,
+    role: 'SUPER_ADMIN'
+  };
+};
 
 export const verifyCode: typeof originalVerifyCode = async () => {
   return true;

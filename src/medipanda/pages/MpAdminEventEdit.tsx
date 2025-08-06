@@ -71,8 +71,11 @@ export default function MpAdminEventEdit() {
             nickname: '관리자',
             title: values.title,
             content: values.content,
+            parentId: null,
             isExposed: values.isExposed,
-            exposureRange: values.exposureRange
+            editorFileIds: null,
+            exposureRange: values.exposureRange,
+            noticeProperties: null
           };
 
           await createEventBoard({
@@ -86,9 +89,12 @@ export default function MpAdminEventEdit() {
           const boardRequest = {
             title: values.title,
             content: values.content,
+            isBlind: null,
             isExposed: values.isExposed,
+            exposureRange: values.exposureRange,
             keepFileIds: [],
-            editorFileIds: []
+            editorFileIds: [],
+            noticeProperties: null
           };
 
           await updateEventBoard(parseInt(id!), {

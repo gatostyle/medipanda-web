@@ -106,10 +106,12 @@ export default function MpAdminSalesAgencyProductEdit() {
             boardPostUpdateRequest: {
               title: values.productName,
               content: values.content,
+              isBlind: null,
               isExposed: values.isExposed,
               exposureRange: values.exposureRange,
               keepFileIds: [],
-              editorFileIds: []
+              editorFileIds: [],
+              noticeProperties: null
             },
             salesAgencyProductUpdateRequest: {
               clientName: values.clientName,
@@ -118,7 +120,8 @@ export default function MpAdminSalesAgencyProductEdit() {
               videoUrl: values.videoUrl,
               note: values.note,
               startAt: values.startDate ? values.startDate.toISOString().split('T')[0] : '',
-              endAt: values.endDate ? values.endDate.toISOString().split('T')[0] : ''
+              endAt: values.endDate ? values.endDate.toISOString().split('T')[0] : '',
+              quantity: null
             }
           });
           navigate('/admin/sales-agency-products');
@@ -131,9 +134,11 @@ export default function MpAdminSalesAgencyProductEdit() {
               nickname: session!.name,
               title: values.productName,
               content: values.content,
+              parentId: null,
               isExposed: values.isExposed,
               exposureRange: values.exposureRange,
-              editorFileIds: []
+              editorFileIds: [],
+              noticeProperties: null
             },
             salesAgencyProductCreateRequest: {
               clientName: values.clientName,
@@ -185,7 +190,7 @@ export default function MpAdminSalesAgencyProductEdit() {
         thumbnail: detail.thumbnailUrl ?? '',
         content: detail.boardPostDetail.content,
         videoUrl: detail.videoUrl ?? '',
-        contractDate: detail.contractDate ? new Date(detail.contractDate) : null,
+        contractDate: detail.contractDate ? new Date(detail.contractDate.toString()) : null,
         note: detail.note ?? '',
         startDate: detail.startDate ? new Date(detail.startDate) : null,
         endDate: detail.endDate ? new Date(detail.endDate) : null,

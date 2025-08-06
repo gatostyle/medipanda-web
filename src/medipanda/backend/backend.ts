@@ -71,26 +71,28 @@ export interface AdminPermissionResponse {
 }
 
 export interface AdminUpdateRequest {
-  name?: string;
-  userId?: string;
-  password?: string;
-  email?: string;
-  phoneNumber?: string;
-  permissions?: (
-    | 'MEMBER_MANAGEMENT'
-    | 'PRODUCT_MANAGEMENT'
-    | 'TRANSACTION_MANAGEMENT'
-    | 'CONTRACT_MANAGEMENT'
-    | 'PRESCRIPTION_MANAGEMENT'
-    | 'SETTLEMENT_MANAGEMENT'
-    | 'EXPENSE_REPORT_MANAGEMENT'
-    | 'COMMUNITY_MANAGEMENT'
-    | 'CONTENT_MANAGEMENT'
-    | 'CUSTOMER_SERVICE'
-    | 'BANNER_MANAGEMENT'
-    | 'PERMISSION_MANAGEMENT'
-    | 'ALL'
-  )[];
+  name: string | null;
+  userId: string | null;
+  password: string | null;
+  email: string | null;
+  phoneNumber: string | null;
+  permissions:
+    | (
+        | 'MEMBER_MANAGEMENT'
+        | 'PRODUCT_MANAGEMENT'
+        | 'TRANSACTION_MANAGEMENT'
+        | 'CONTRACT_MANAGEMENT'
+        | 'PRESCRIPTION_MANAGEMENT'
+        | 'SETTLEMENT_MANAGEMENT'
+        | 'EXPENSE_REPORT_MANAGEMENT'
+        | 'COMMUNITY_MANAGEMENT'
+        | 'CONTENT_MANAGEMENT'
+        | 'CUSTOMER_SERVICE'
+        | 'BANNER_MANAGEMENT'
+        | 'PERMISSION_MANAGEMENT'
+        | 'ALL'
+      )[]
+    | null;
 }
 
 export interface AttachedFileResponse {
@@ -126,20 +128,21 @@ export interface BannerResponse {
   viewCount: number;
   clickCount: number;
   ctr: number;
+  note: string | null;
   startAt: string;
   endAt: string;
   imageUrl: string;
 }
 
 export interface BannerUpdateRequest {
-  title?: string;
-  linkUrl?: string;
-  status?: 'VISIBLE' | 'HIDDEN';
-  scope?: 'ENTIRE' | 'CONTRACT' | 'NON_CONTRACT';
-  position?: string;
-  displayOrder?: number;
-  startAt?: DateTimeString;
-  endAt?: DateTimeString;
+  title: string | null;
+  linkUrl: string | null;
+  status: ('VISIBLE' | 'HIDDEN') | null;
+  scope: ('ENTIRE' | 'CONTRACT' | 'NON_CONTRACT') | null;
+  position: string | null;
+  displayOrder: number | null;
+  startAt: DateTimeString | null;
+  endAt: DateTimeString | null;
 }
 
 export interface BlindPostResponse {
@@ -150,18 +153,21 @@ export interface BlindPostResponse {
   nickname: string;
   likesCount: number;
   reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
-  postType: 'BOARD' | 'COMMENT';
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  postType: 'BOARD' | 'COMMENT';
   blindAt: string;
 }
 
 export interface BlindUpdateRequest {
-  postId?: number;
-  commentId?: number;
+  postId: number | null;
+  commentId: number | null;
 }
 
 export interface BoardDetailsResponse {
   id: number;
+  userId: string;
+  name: string;
+  memberType: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
   boardType: string;
   title: string;
   content: string;
@@ -177,7 +183,7 @@ export interface BoardDetailsResponse {
   reports: BoardReportResponse[];
   comments: CommentResponse[];
   attachments: AttachmentResponse[];
-  noticeProperties?: NoticeProperties;
+  noticeProperties: NoticeProperties | null;
 }
 
 export interface BoardMemberStatsResponse {
@@ -198,15 +204,18 @@ export interface BoardPostCreateRequest {
   nickname: string;
   title: string;
   content: string;
-  parentId?: number;
+  parentId: number | null;
   isExposed: boolean;
-  editorFileIds?: number[];
+  editorFileIds: number[] | null;
   exposureRange: 'ALL' | 'CONTRACTED' | 'UNCONTRACTED';
-  noticeProperties?: NoticeProperties;
+  noticeProperties: NoticeProperties | null;
 }
 
 export interface BoardPostResponse {
   id: number;
+  userId: string;
+  name: string;
+  memberType: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
   boardType: 'ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z' | 'EVENT' | 'SALES_AGENCY' | 'PRODUCT';
   title: string;
   nickname: string;
@@ -217,18 +226,20 @@ export interface BoardPostResponse {
   createdAt: string;
   isExposed: boolean;
   exposureRange: 'ALL' | 'CONTRACTED' | 'UNCONTRACTED';
-  noticeType?: 'PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING';
+  noticeType:
+    | ('PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING')
+    | null;
 }
 
 export interface BoardPostUpdateRequest {
-  title?: string;
-  content?: string;
-  isBlind?: boolean;
-  isExposed?: boolean;
-  exposureRange?: 'ALL' | 'CONTRACTED' | 'UNCONTRACTED';
+  title: string | null;
+  content: string | null;
+  isBlind: boolean | null;
+  isExposed: boolean | null;
+  exposureRange: ('ALL' | 'CONTRACTED' | 'UNCONTRACTED') | null;
   keepFileIds: number[];
-  editorFileIds?: number[];
-  noticeProperties?: UpdateNoticeProperties;
+  editorFileIds: number[] | null;
+  noticeProperties: UpdateNoticeProperties | null;
 }
 
 export interface BoardReportResponse {
@@ -250,7 +261,7 @@ export interface ChangePasswordRequest {
 
 export interface CommentCreateRequest {
   boardPostId: number;
-  parentId?: number;
+  parentId: number | null;
   content: string;
 }
 
@@ -259,22 +270,24 @@ export interface CommentMemberResponse {
   id: number;
   content: string;
   userId: string;
+  commentType: 'COMMENT' | 'REPLY';
   createdAt: string;
   nickname: string;
   likesCount: number;
-  commentType: 'COMMENT' | 'REPLY';
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   isBlind: boolean;
 }
 
 export interface CommentResponse {
   id: number;
+  userId: string;
+  name: string;
   content: string;
   nickname: string;
   likesCount: number;
   isBlind: boolean;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
-  parentId?: number;
+  parentId: number | null;
   createdAt: string;
   modifiedAt: string;
 }
@@ -294,8 +307,8 @@ export interface EventBoardCreateRequest {
   startAt: string;
   endAt: string;
   description: string;
-  videoUrl?: string;
-  note?: string;
+  videoUrl: string | null;
+  note: string | null;
 }
 
 export interface EventBoardDetailsResponse {
@@ -304,8 +317,8 @@ export interface EventBoardDetailsResponse {
   eventEndDate: number;
   description: string;
   thumbnailUrl: string;
-  videoUrl?: string;
-  note?: string;
+  videoUrl: string | null;
+  note: string | null;
   boardPostDetail: BoardDetailsResponse;
 }
 
@@ -322,23 +335,23 @@ export interface EventBoardSummaryResponse {
 }
 
 export interface EventBoardUpdateRequest {
-  startAt?: string;
-  endAt?: string;
-  description?: string;
-  videoUrl?: string;
-  note?: string;
+  startAt: string | null;
+  endAt: string | null;
+  description: string | null;
+  videoUrl: string | null;
+  note: string | null;
 }
 
 export interface ExpenseReportResponse {
   reportId: number;
-  userId?: string;
-  companyName?: string;
-  productName?: string;
+  userId: string | null;
+  companyName: string | null;
+  productName: string | null;
   institutionType: string;
   reportType: 'SAMPLE_PROVIDE' | 'PRODUCT_BRIEFING_MULTI' | 'PRODUCT_BRIEFING_SINGLE';
   status: 'PENDING' | 'COMPLETED';
-  eventStartAt?: string;
-  eventEndAt?: string;
+  eventStartAt: string | null;
+  eventEndAt: string | null;
   supportAmount: number;
 }
 
@@ -352,8 +365,8 @@ export interface HospitalResponse {
   sido: string;
   sigungu: string;
   address: string;
-  scheduledOpenDate?: string;
-  source?: string;
+  scheduledOpenDate: string | null;
+  source: string | null;
 }
 
 export interface InstitutionInfo {
@@ -392,16 +405,17 @@ export interface MemberDetailsResponse {
   id: number;
   userId: string;
   name: string;
+  gender: ('MALE' | 'FEMALE') | null;
   phoneNumber: string;
   birthDate: string;
   email: string;
   partnerContractStatus: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
   marketingAgreements: MarketingAgreements;
-  referralCode?: string;
-  csoCertUrl?: string;
+  referralCode: string | null;
+  csoCertUrl: string | null;
   registrationDate: string;
   lastLoginDate: string;
-  note?: string;
+  note: string | null;
   role: 'USER' | 'ADMIN' | 'SUPER_ADMIN';
 }
 
@@ -419,7 +433,7 @@ export interface MemberResponse {
   hasCsoCert: boolean;
   accountStatus: 'ACTIVATED' | 'BLOCKED' | 'DELETED';
   role: 'USER' | 'ADMIN' | 'SUPER_ADMIN';
-  companyName?: string;
+  companyName: string | null;
   createdAt: string;
 }
 
@@ -430,31 +444,31 @@ export interface MemberSignupRequest {
   birthDate: string;
   phoneNumber: string;
   email: string;
-  nickname?: string;
-  referralCode?: string;
+  nickname: string | null;
+  referralCode: string | null;
   marketingAgreement: MarketingAgreements;
 }
 
 export interface MemberUpdateRequest {
-  password?: string;
-  name?: string;
-  birthDate?: string;
-  phoneNumber?: string;
-  email?: string;
-  nickname?: string;
-  referralCode?: string;
-  note?: string;
-  marketingAgreement?: MarketingAgreements;
+  password: string | null;
+  name: string | null;
+  birthDate: string | null;
+  phoneNumber: string | null;
+  email: string | null;
+  nickname: string | null;
+  referralCode: string | null;
+  note: string | null;
+  marketingAgreement: MarketingAgreements | null;
 }
 
 export interface NoteUpdateItem {
   userId: string;
-  note?: string;
+  note: string | null;
 }
 
 export interface NoticeProperties {
   noticeType: 'PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING';
-  drugCompany?: string;
+  drugCompany: string | null;
   fixedTop: boolean;
 }
 
@@ -467,7 +481,7 @@ export interface OcrOriginalItem {
   totalPrice: number;
   baseFeeRate: number;
   feeAmount: number;
-  note?: string;
+  note: string | null;
 }
 
 export interface PageBannerResponse {
@@ -479,8 +493,8 @@ export interface PageBannerResponse {
   content: BannerResponse[];
   number: number;
   sort: SortObject;
-  pageable: PageableObject;
   numberOfElements: number;
+  pageable: PageableObject;
   empty: boolean;
 }
 
@@ -493,8 +507,8 @@ export interface PageBlindPostResponse {
   content: BlindPostResponse[];
   number: number;
   sort: SortObject;
-  pageable: PageableObject;
   numberOfElements: number;
+  pageable: PageableObject;
   empty: boolean;
 }
 
@@ -507,8 +521,8 @@ export interface PageBoardMemberStatsResponse {
   content: BoardMemberStatsResponse[];
   number: number;
   sort: SortObject;
-  pageable: PageableObject;
   numberOfElements: number;
+  pageable: PageableObject;
   empty: boolean;
 }
 
@@ -521,8 +535,8 @@ export interface PageBoardPostResponse {
   content: BoardPostResponse[];
   number: number;
   sort: SortObject;
-  pageable: PageableObject;
   numberOfElements: number;
+  pageable: PageableObject;
   empty: boolean;
 }
 
@@ -535,8 +549,8 @@ export interface PageCommentMemberResponse {
   content: CommentMemberResponse[];
   number: number;
   sort: SortObject;
-  pageable: PageableObject;
   numberOfElements: number;
+  pageable: PageableObject;
   empty: boolean;
 }
 
@@ -549,8 +563,8 @@ export interface PageEventBoardSummaryResponse {
   content: EventBoardSummaryResponse[];
   number: number;
   sort: SortObject;
-  pageable: PageableObject;
   numberOfElements: number;
+  pageable: PageableObject;
   empty: boolean;
 }
 
@@ -563,8 +577,8 @@ export interface PageExpenseReportResponse {
   content: ExpenseReportResponse[];
   number: number;
   sort: SortObject;
-  pageable: PageableObject;
   numberOfElements: number;
+  pageable: PageableObject;
   empty: boolean;
 }
 
@@ -577,8 +591,8 @@ export interface PageHospitalResponse {
   content: HospitalResponse[];
   number: number;
   sort: SortObject;
-  pageable: PageableObject;
   numberOfElements: number;
+  pageable: PageableObject;
   empty: boolean;
 }
 
@@ -591,8 +605,8 @@ export interface PageMemberResponse {
   content: MemberResponse[];
   number: number;
   sort: SortObject;
-  pageable: PageableObject;
   numberOfElements: number;
+  pageable: PageableObject;
   empty: boolean;
 }
 
@@ -605,8 +619,8 @@ export interface PagePartnerResponse {
   content: PartnerResponse[];
   number: number;
   sort: SortObject;
-  pageable: PageableObject;
   numberOfElements: number;
+  pageable: PageableObject;
   empty: boolean;
 }
 
@@ -619,8 +633,8 @@ export interface PagePrescriptionPartnerResponse {
   content: PrescriptionPartnerResponse[];
   number: number;
   sort: SortObject;
-  pageable: PageableObject;
   numberOfElements: number;
+  pageable: PageableObject;
   empty: boolean;
 }
 
@@ -633,8 +647,8 @@ export interface PagePrescriptionResponse {
   content: PrescriptionResponse[];
   number: number;
   sort: SortObject;
-  pageable: PageableObject;
   numberOfElements: number;
+  pageable: PageableObject;
   empty: boolean;
 }
 
@@ -647,8 +661,8 @@ export interface PageProductSummaryResponse {
   content: ProductSummaryResponse[];
   number: number;
   sort: SortObject;
-  pageable: PageableObject;
   numberOfElements: number;
+  pageable: PageableObject;
   empty: boolean;
 }
 
@@ -661,8 +675,8 @@ export interface PageSalesAgencyProductApplicantResponse {
   content: SalesAgencyProductApplicantResponse[];
   number: number;
   sort: SortObject;
-  pageable: PageableObject;
   numberOfElements: number;
+  pageable: PageableObject;
   empty: boolean;
 }
 
@@ -675,8 +689,8 @@ export interface PageSalesAgencyProductSummaryResponse {
   content: SalesAgencyProductSummaryResponse[];
   number: number;
   sort: SortObject;
-  pageable: PageableObject;
   numberOfElements: number;
+  pageable: PageableObject;
   empty: boolean;
 }
 
@@ -685,8 +699,8 @@ export interface PageableObject {
   sort: SortObject;
   paged: boolean;
   unpaged: boolean;
-  pageNumber: number;
   pageSize: number;
+  pageNumber: number;
 }
 
 export interface PartnerContractDetailsResponse {
@@ -711,11 +725,11 @@ export interface PartnerContractRequest {
 }
 
 export interface PartnerContractUpdateRequest {
-  contractType?: 'INDIVIDUAL' | 'ORGANIZATION';
-  companyName?: string;
-  businessNumber?: string;
-  bankName?: string;
-  accountNumber?: string;
+  contractType: ('INDIVIDUAL' | 'ORGANIZATION') | null;
+  companyName: string | null;
+  businessNumber: string | null;
+  bankName: string | null;
+  accountNumber: string | null;
 }
 
 export interface PartnerCreateRequest {
@@ -725,11 +739,11 @@ export interface PartnerCreateRequest {
   institutionCode: string;
   institutionName: string;
   businessNumber: string;
-  medicalDepartment?: string;
-  pharmacyName?: string;
-  pharmacyAddress?: string;
+  medicalDepartment: string | null;
+  pharmacyName: string | null;
+  pharmacyAddress: string | null;
   pharmacyStatus: 'NORMAL' | 'CLOSED' | 'DELETED' | 'NONE';
-  note?: string;
+  note: string | null;
 }
 
 export interface PartnerResponse {
@@ -740,26 +754,26 @@ export interface PartnerResponse {
   institutionCode: string;
   institutionName: string;
   businessNumber: string;
-  medicalDepartment?: string;
+  medicalDepartment: string | null;
   hasPharmacy: boolean;
-  pharmacyName?: string;
-  pharmacyAddress?: string;
-  pharmacyStatus?: 'NORMAL' | 'CLOSED' | 'DELETED' | 'NONE';
-  note?: string;
+  pharmacyName: string | null;
+  pharmacyAddress: string | null;
+  pharmacyStatus: ('NORMAL' | 'CLOSED' | 'DELETED' | 'NONE') | null;
+  note: string | null;
 }
 
 export interface PartnerUpdateRequest {
-  drugCompany?: string;
-  companyName?: string;
-  contractType?: 'CONTRACT' | 'NON_CONTRACT';
-  institutionCode?: string;
-  institutionName?: string;
-  businessNumber?: string;
-  medicalDepartment?: string;
-  pharmacyName?: string;
-  pharmacyAddress?: string;
-  pharmacyStatus?: 'NORMAL' | 'CLOSED' | 'DELETED' | 'NONE';
-  note?: string;
+  drugCompany: string | null;
+  companyName: string | null;
+  contractType: ('CONTRACT' | 'NON_CONTRACT') | null;
+  institutionCode: string | null;
+  institutionName: string | null;
+  businessNumber: string | null;
+  medicalDepartment: string | null;
+  pharmacyName: string | null;
+  pharmacyAddress: string | null;
+  pharmacyStatus: ('NORMAL' | 'CLOSED' | 'DELETED' | 'NONE') | null;
+  note: string | null;
 }
 
 export interface PrescriptionCreateRequest {
@@ -784,13 +798,14 @@ export interface PrescriptionPartnerProductResponse {
   totalPrice: number;
   baseFeeRate: number;
   feeAmount: number;
-  note?: string;
+  note: string | null;
 }
 
 export interface PrescriptionPartnerResponse {
   id: number;
   companyName: string;
   drugCompany: string;
+  institutionCode: string;
   prescriptionMonth: string;
   settlementMonth: string;
   inputDate: string;
@@ -809,8 +824,8 @@ export interface PrescriptionProductItem {
   totalPrice: number;
   baseFeeRate: number;
   feeAmount: number;
-  note?: string;
-  ocrItem?: OcrOriginalItem;
+  note: string | null;
+  ocrItem: OcrOriginalItem | null;
 }
 
 export interface PrescriptionResponse {
@@ -823,7 +838,7 @@ export interface PrescriptionResponse {
   settlementMonth: string;
   submittedAt: string;
   status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
-  checkedAt?: string;
+  checkedAt: string | null;
 }
 
 export interface ProductBriefingMultiCreateRequest {
@@ -858,15 +873,15 @@ export interface ProductBriefingMultiDetailResponse {
 }
 
 export interface ProductBriefingMultiUpdateRequest {
-  location?: string;
-  startedAt?: DateTimeString;
-  endedAt?: DateTimeString;
-  isJoint?: boolean;
-  transportationFee?: number;
-  giftFee?: number;
-  accommodationFee?: number;
-  mealFee?: number;
-  institutions?: InstitutionInfo[];
+  location: string | null;
+  startedAt: DateTimeString | null;
+  endedAt: DateTimeString | null;
+  isJoint: boolean | null;
+  transportationFee: number | null;
+  giftFee: number | null;
+  accommodationFee: number | null;
+  mealFee: number | null;
+  institutions: InstitutionInfo[] | null;
   existFileIds: number[];
 }
 
@@ -897,68 +912,68 @@ export interface ProductBriefingSingleDetailResponse {
 }
 
 export interface ProductBriefingSingleUpdateRequest {
-  institutionName?: string;
-  institutionCode?: string;
-  supportAmount?: number;
-  location?: string;
-  eventAt?: DateTimeString;
-  isJoint?: boolean;
-  medicalPersons?: MedicalPersonInfo[];
+  institutionName: string | null;
+  institutionCode: string | null;
+  supportAmount: number | null;
+  location: string | null;
+  eventAt: DateTimeString | null;
+  isJoint: boolean | null;
+  medicalPersons: MedicalPersonInfo[] | null;
   existFileIds: number[];
 }
 
 export interface ProductDetailsResponse {
-  manufacturer?: string;
-  productName?: string;
-  composition?: string;
-  price?: number;
+  manufacturer: string | null;
+  productName: string | null;
+  composition: string | null;
+  price: number | null;
   priceUnit: 'KRW' | 'USD' | 'EUR';
-  feeRate?: number;
-  changedFeeRate?: number;
-  changedMonth?: string;
-  productCode?: string;
-  isPromotion?: boolean;
-  isOutOfStock?: boolean;
-  isStopSelling?: boolean;
-  isAcquisition?: boolean;
-  note?: string;
+  feeRate: number | null;
+  changedFeeRate: number | null;
+  changedMonth: string | null;
+  productCode: string | null;
+  isPromotion: boolean | null;
+  isOutOfStock: boolean | null;
+  isStopSelling: boolean | null;
+  isAcquisition: boolean | null;
+  note: string | null;
   alternativeProducts: string[];
   boardDetailsResponse: BoardDetailsResponse;
 }
 
 export interface ProductExtraInfoRequest {
-  manufacturer?: string;
-  productName?: string;
-  composition?: string;
+  manufacturer: string | null;
+  productName: string | null;
+  composition: string | null;
   productCode: string;
-  changedFeeRate?: string;
-  changedMonth?: string;
+  changedFeeRate: string | null;
+  changedMonth: string | null;
   priceUnit: 'KRW' | 'USD' | 'EUR';
-  feeRate?: string;
-  price?: number;
-  note?: string;
-  detailInfo?: string;
-  isPromotion?: boolean;
-  isOutOfStock?: boolean;
-  isStopSelling?: boolean;
-  isAcquisition?: boolean;
+  feeRate: string | null;
+  price: number | null;
+  note: string | null;
+  detailInfo: string | null;
+  isPromotion: boolean | null;
+  isOutOfStock: boolean | null;
+  isStopSelling: boolean | null;
+  isAcquisition: boolean | null;
 }
 
 export interface ProductSummaryResponse {
   id: number;
-  productName?: string;
-  composition?: string;
+  productName: string | null;
+  composition: string | null;
   productCode: string;
-  manufacturerName?: string;
-  note?: string;
-  price?: number;
-  feeRate?: number;
-  changedFeeRate?: number;
-  changedMonth?: string;
-  isAcquisition?: boolean;
-  isPromotion?: boolean;
-  isOutOfStock?: boolean;
-  isStopSelling?: boolean;
+  manufacturerName: string | null;
+  note: string | null;
+  price: number | null;
+  feeRate: number | null;
+  changedFeeRate: number | null;
+  changedMonth: string | null;
+  isAcquisition: boolean | null;
+  isPromotion: boolean | null;
+  isOutOfStock: boolean | null;
+  isStopSelling: boolean | null;
 }
 
 export interface RefreshTokenRequest {
@@ -967,8 +982,8 @@ export interface RefreshTokenRequest {
 }
 
 export interface ReportCreateRequest {
-  postId?: number;
-  commentId?: number;
+  postId: number | null;
+  commentId: number | null;
   reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
   reportContent: string;
 }
@@ -980,7 +995,7 @@ export interface SalesAgencyProductApplicantResponse {
   phoneNumber: string;
   appliedDate: string;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
-  note?: string;
+  note: string | null;
 }
 
 export interface SalesAgencyProductCreateRequest {
@@ -990,8 +1005,8 @@ export interface SalesAgencyProductCreateRequest {
   clientName: string;
   contractDate: string;
   quantity: number;
-  videoUrl?: string;
-  note?: string;
+  videoUrl: string | null;
+  note: string | null;
 }
 
 export interface SalesAgencyProductDetailsResponse {
@@ -1002,8 +1017,8 @@ export interface SalesAgencyProductDetailsResponse {
   endDate: string;
   contractDate: string;
   thumbnailUrl: string;
-  videoUrl?: string;
-  note?: string;
+  videoUrl: string | null;
+  note: string | null;
   quantity: number;
   price: number;
   boardPostDetail: BoardDetailsResponse;
@@ -1024,17 +1039,18 @@ export interface SalesAgencyProductSummaryResponse {
   endAt: string;
   appliedCount: number;
   quantity: number;
+  thumbnailUrl: string | null;
 }
 
 export interface SalesAgencyProductUpdateRequest {
-  startAt?: string;
-  endAt?: string;
-  productName?: string;
-  clientName?: string;
-  contractDate?: string;
-  videoUrl?: string;
-  quantity?: number;
-  note?: string;
+  startAt: string | null;
+  endAt: string | null;
+  productName: string | null;
+  clientName: string | null;
+  contractDate: string | null;
+  videoUrl: string | null;
+  quantity: number | null;
+  note: string | null;
 }
 
 export interface SampleProvideReportCreateRequest {
@@ -1061,24 +1077,26 @@ export interface SampleProvideReportDetailResponse {
 }
 
 export interface SampleProvideReportUpdateRequest {
-  packCount?: number;
-  provideCount?: number;
-  institutionName?: string;
-  institutionCode?: string;
-  providedAt?: DateTimeString;
+  packCount: number | null;
+  provideCount: number | null;
+  institutionName: string | null;
+  institutionCode: string | null;
+  providedAt: DateTimeString | null;
   existFileIds: number[];
 }
 
 export interface SortObject {
   empty: boolean;
-  unsorted: boolean;
   sorted: boolean;
+  unsorted: boolean;
 }
 
 export interface UpdateNoticeProperties {
-  noticeType?: 'PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING';
-  drugCompany?: string;
-  fixedTop?: boolean;
+  noticeType:
+    | ('PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING')
+    | null;
+  drugCompany: string | null;
+  fixedTop: boolean | null;
 }
 
 /**

@@ -150,10 +150,10 @@ export default function MpAdminProductDetail() {
               </Grid>
               <Grid item xs={10}>
                 <Box>
-                  <FormControlLabel control={<Checkbox checked={productDetail.isAcquisition} disabled />} label="취급품목" />
-                  <FormControlLabel control={<Checkbox checked={productDetail.isPromotion} disabled />} label="프로모션" />
-                  <FormControlLabel control={<Checkbox checked={productDetail.isOutOfStock} disabled />} label="품절" />
-                  <FormControlLabel control={<Checkbox checked={productDetail.isStopSelling} disabled />} label="판매중단" />
+                  <FormControlLabel control={<Checkbox checked={productDetail.isAcquisition ?? undefined} disabled />} label="취급품목" />
+                  <FormControlLabel control={<Checkbox checked={productDetail.isPromotion ?? undefined} disabled />} label="프로모션" />
+                  <FormControlLabel control={<Checkbox checked={productDetail.isOutOfStock ?? undefined} disabled />} label="품절" />
+                  <FormControlLabel control={<Checkbox checked={productDetail.isStopSelling ?? undefined} disabled />} label="판매중단" />
                 </Box>
               </Grid>
 

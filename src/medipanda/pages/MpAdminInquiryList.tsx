@@ -27,8 +27,6 @@ import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
 import { BoardPostResponse, getBoards } from 'medipanda/backend';
 
 interface BoardPostResponseWithMockData extends BoardPostResponse {
-  userId: string;
-  memberName: string;
   drugCompany: string;
   responseCreatedAt?: string;
   responseStatus: 'PENDING' | 'COMPLETED';
@@ -38,7 +36,7 @@ function withMock<T extends BoardPostResponse>(data: T): T & BoardPostResponseWi
   return {
     ...data,
     userId: '아이디',
-    memberName: '사용자명',
+    name: '사용자명',
     drugCompany: '제약사명',
     responseCreatedAt: '답변 내용',
     responseStatus: Math.random() > 0.5 ? 'PENDING' : 'COMPLETED'
@@ -92,10 +90,10 @@ export default function MpAdminCustomerCenterInquiryList() {
       },
       {
         header: '회원명',
-        accessorKey: 'memberName',
+        accessorKey: 'name',
         size: 100,
         cell: ({ row }) => {
-          return row.original.memberName;
+          return row.original.name;
         }
       },
       {

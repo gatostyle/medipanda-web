@@ -128,7 +128,7 @@ export default function MpAdminAdminEdit() {
           await updateByAdmin(userId!, {
             name: values.name,
             userId: values.userId,
-            password: values.password !== '' ? values.password : undefined,
+            password: values.password !== '' ? values.password : null,
             email: values.email,
             phoneNumber,
             permissions: values.permissions

@@ -71,15 +71,18 @@ export default function MpAdminProductEdit() {
             nickname: session!.name,
             title: values.productName,
             content: values.detailContent,
+            parentId: null,
             isExposed: true,
-            exposureRange: 'ALL' as const
+            editorFileIds: null,
+            exposureRange: 'ALL' as const,
+            noticeProperties: null
           };
           const productExtraInfoRequest = {
             manufacturer: values.manufacturer,
             productName: values.productName,
             composition: values.composition,
             productCode: values.productCode,
-            changedFeeRate: values.changedFeeRate?.toString(),
+            changedFeeRate: values.changedFeeRate?.toString() ?? null,
             changedMonth: values.changedMonth,
             priceUnit: 'KRW' as const,
             feeRate: values.feeRate.toString(),
@@ -101,14 +104,19 @@ export default function MpAdminProductEdit() {
           const boardPostUpdateRequest = {
             title: values.productName,
             content: values.detailContent,
-            keepFileIds: [] // Empty array for now
+            isBlind: null,
+            isExposed: true,
+            exposureRange: 'ALL' as const,
+            keepFileIds: [], // Empty array for now
+            editorFileIds: null,
+            noticeProperties: null
           };
           const productExtraInfoRequest = {
             manufacturer: values.manufacturer,
             productName: values.productName,
             composition: values.composition,
             productCode: values.productCode,
-            changedFeeRate: values.changedFeeRate?.toString(),
+            changedFeeRate: values.changedFeeRate?.toString() ?? null,
             changedMonth: values.changedMonth,
             priceUnit: 'KRW' as const,
             feeRate: values.feeRate.toString(),
@@ -158,7 +166,7 @@ export default function MpAdminProductEdit() {
         productCode: response.productCode ?? '',
         price: response.price ?? 0,
         feeRate: response.feeRate ?? 0,
-        changedFeeRate: response.changedFeeRate,
+        changedFeeRate: response.changedFeeRate ?? undefined,
         changedMonth: response.changedMonth ?? '',
         isAcquisition: response.isAcquisition ?? false,
         isPromotion: response.isPromotion ?? false,

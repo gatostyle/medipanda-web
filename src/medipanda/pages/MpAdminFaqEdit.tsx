@@ -57,8 +57,11 @@ export default function MpAdminCustomerCenterFaqEdit() {
               content: values.content,
               userId: session.userId,
               nickname: session.name,
+              parentId: null,
               isExposed: values.isExposed,
-              exposureRange: 'ALL'
+              editorFileIds: null,
+              exposureRange: 'ALL',
+              noticeProperties: null
             },
             files: values.files && values.files.length > 0 ? values.files : undefined
           });
@@ -68,9 +71,12 @@ export default function MpAdminCustomerCenterFaqEdit() {
             updateRequest: {
               title: values.title,
               content: values.content,
+              isBlind: null,
               isExposed: values.isExposed,
+              exposureRange: 'ALL',
               keepFileIds: values.existingFileIds,
-              editorFileIds: []
+              editorFileIds: [],
+              noticeProperties: null
             },
             newFiles: values.files ? values.files : undefined
           });

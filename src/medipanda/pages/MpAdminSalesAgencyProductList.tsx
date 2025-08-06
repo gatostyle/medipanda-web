@@ -31,19 +31,14 @@ import {
   downloadSalesAgencyProductsExcel,
   DateString
 } from 'medipanda/backend';
-import { mockString } from 'medipanda/mockup';
 import { Link } from 'react-router-dom';
 import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
 
-interface SalesAgencyProductSummaryResponseWithMockData extends SalesAgencyProductSummaryResponse {
-  thumbnail: string;
-}
-
 export default function MpAdminSalesAgencyProductList() {
-  const [data, setData] = useState<Sequenced<SalesAgencyProductSummaryResponseWithMockData>[]>([]);
+  const [data, setData] = useState<Sequenced<SalesAgencyProductSummaryResponse>[]>([]);
   const [, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -68,7 +63,7 @@ export default function MpAdminSalesAgencyProductList() {
     }
   });
 
-  const columns = useMemo<ColumnDef<Sequenced<SalesAgencyProductSummaryResponseWithMockData>>[]>(
+  const columns = useMemo<ColumnDef<Sequenced<SalesAgencyProductSummaryResponse>>[]>(
     () => [
       {
         id: 'select',
@@ -105,10 +100,14 @@ export default function MpAdminSalesAgencyProductList() {
       },
       {
         header: '썸네일',
-        accessorKey: 'thumbnail',
+        accessorKey: 'thumbnailUrl',
         cell: ({ row }) => (
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <img src={row.original.thumbnail} alt="썸네일" style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 4 }} />
+            <img
+              src={row.original.thumbnailUrl ?? ''}
+              alt="썸네일"
+              style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 4 }}
+            />
           </Box>
         ),
         size: 80
@@ -204,11 +203,7 @@ export default function MpAdminSalesAgencyProductList() {
         size: pagination.pageSize
       });
 
-      const mappedData = withSequence(response).content.map((item, index) => ({
-        ...item,
-        thumbnail: mockString('thumb')
-      }));
-      setData(mappedData);
+      setData(withSequence(response).content);
       setTotalElements(response.totalElements);
       setTotalPages(response.totalPages);
     } catch (error) {

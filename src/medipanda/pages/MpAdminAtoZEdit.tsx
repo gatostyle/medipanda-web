@@ -56,8 +56,11 @@ export default function MpAdminContentManagementAtoZEdit() {
               content: values.content,
               userId: session.userId,
               nickname: session.name,
+              parentId: null,
               isExposed: values.isExposed,
-              exposureRange: 'ALL'
+              editorFileIds: null,
+              exposureRange: 'ALL',
+              noticeProperties: null
             },
             files: values.attachmentFile ? [values.attachmentFile] : undefined
           });
@@ -67,9 +70,12 @@ export default function MpAdminContentManagementAtoZEdit() {
             updateRequest: {
               title: values.title,
               content: values.content,
+              isBlind: null,
               isExposed: values.isExposed,
+              exposureRange: 'ALL',
               keepFileIds: [],
-              editorFileIds: []
+              editorFileIds: [],
+              noticeProperties: null
             },
             newFiles: values.attachmentFile ? [values.attachmentFile] : undefined
           });

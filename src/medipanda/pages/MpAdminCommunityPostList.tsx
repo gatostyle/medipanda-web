@@ -33,23 +33,8 @@ import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
 import { BOARD_TYPE_LABELS } from 'medipanda/ui-labels';
 import { withSequence } from 'medipanda/utils/withSequence';
 
-interface BoardPostResponseWithMockData extends BoardPostResponse {
-  userId: string;
-  memberName: string;
-  partnerContractStatus: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
-}
-
-function withMock<T extends BoardPostResponse>(data: T): T & BoardPostResponseWithMockData {
-  return {
-    ...data,
-    userId: '아이디',
-    memberName: '사용자명',
-    partnerContractStatus: Math.random() > 0.5 ? 'CSO' : 'NONE'
-  };
-}
-
 export default function MpAdminCommunityPostList() {
-  const [data, setData] = useState<Sequenced<BoardPostResponseWithMockData>[]>([]);
+  const [data, setData] = useState<Sequenced<BoardPostResponse>[]>([]);
   const [, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -76,7 +61,7 @@ export default function MpAdminCommunityPostList() {
         | 'EVENT'
         | 'SALES_AGENCY'
         | 'PRODUCT',
-      searchType: 'title' as 'title' | 'userId' | 'memberName' | 'nickname',
+      searchType: 'title' as 'title' | 'userId' | 'name' | 'nickname',
       searchKeyword: '',
       startAt: null as Date | null,
       endAt: null as Date | null
@@ -86,7 +71,7 @@ export default function MpAdminCommunityPostList() {
     }
   });
 
-  const columns = useMemo<ColumnDef<Sequenced<BoardPostResponseWithMockData>>[]>(
+  const columns = useMemo<ColumnDef<Sequenced<BoardPostResponse>>[]>(
     () => [
       {
         id: 'select',
@@ -140,10 +125,10 @@ export default function MpAdminCommunityPostList() {
       },
       {
         header: '회원명',
-        accessorKey: 'memberName',
+        accessorKey: 'name',
         size: 100,
         cell: ({ row }) => {
-          return row.original.memberName;
+          return row.original.name;
         }
       },
       {
@@ -153,9 +138,9 @@ export default function MpAdminCommunityPostList() {
       },
       {
         header: '파트너사 계약여부',
-        accessorKey: 'partnerContractStatus',
+        accessorKey: 'memberType',
         cell: ({ row }) => {
-          return row.original.partnerContractStatus !== 'NONE' ? 'Y' : 'N';
+          return row.original.memberType !== 'NONE' ? 'Y' : 'N';
         },
         size: 120
       },
@@ -235,7 +220,7 @@ export default function MpAdminCommunityPostList() {
       const response = await getBoards({
         boardType: formik.values.boardType === 'all' ? undefined : formik.values.boardType,
         userId: formik.values.searchType === 'userId' ? formik.values.searchKeyword : undefined,
-        name: formik.values.searchType === 'memberName' ? formik.values.searchKeyword : undefined,
+        name: formik.values.searchType === 'name' ? formik.values.searchKeyword : undefined,
         nickname: formik.values.searchType === 'nickname' ? formik.values.searchKeyword : undefined,
         startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
         endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
@@ -245,7 +230,7 @@ export default function MpAdminCommunityPostList() {
         boardTitle: formik.values.searchType === 'title' ? formik.values.searchKeyword : undefined
       });
 
-      setData(withSequence(response).content.map(withMock));
+      setData(withSequence(response).content);
       setTotalElements(response.totalElements);
       setTotalPages(response.totalPages);
     } catch (error) {
@@ -336,7 +321,7 @@ export default function MpAdminCommunityPostList() {
                     >
                       <MenuItem value="title">제목</MenuItem>
                       <MenuItem value="userId">아이디</MenuItem>
-                      <MenuItem value="memberName">회원명</MenuItem>
+                      <MenuItem value="name">회원명</MenuItem>
                       <MenuItem value="nickname">닉네임</MenuItem>
                     </Select>
                   </FormControl>

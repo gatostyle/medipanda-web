@@ -22,17 +22,6 @@ import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
 import { format } from 'date-fns';
 
-interface BannerResponseWithMockData extends BannerResponse {
-  notes: string;
-}
-
-function withMock<T extends BannerResponse>(data: T): T & BannerResponseWithMockData {
-  return {
-    ...data,
-    notes: '비고 내용'
-  };
-}
-
 export default function MpAdminBannerEdit() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -57,7 +46,7 @@ export default function MpAdminBannerEdit() {
       endHour: '0',
       endMinute: '0',
       displayOrder: 1,
-      notes: ''
+      note: ''
     },
     onSubmit: async (values) => {
       try {
@@ -115,7 +104,7 @@ export default function MpAdminBannerEdit() {
 
       setLoading(true);
       try {
-        const data = withMock(await getBanner(parseInt(id)));
+        const data = await getBanner(parseInt(id));
 
         const startDate = new Date(data.startAt);
         const endDate = new Date(data.endAt);
@@ -133,7 +122,7 @@ export default function MpAdminBannerEdit() {
           endHour: endDate.getHours().toString(),
           endMinute: endDate.getMinutes().toString(),
           displayOrder: data.displayOrder,
-          notes: data.notes
+          note: data.note ?? ''
         });
 
         if (data.imageUrl) {
@@ -343,12 +332,12 @@ export default function MpAdminBannerEdit() {
                     비고
                   </Typography>
                   <TextField
-                    name="notes"
+                    name="note"
                     fullWidth
                     multiline
                     rows={3}
                     size="small"
-                    value={formik.values.notes}
+                    value={formik.values.note}
                     onChange={formik.handleChange}
                   />
                 </Stack>

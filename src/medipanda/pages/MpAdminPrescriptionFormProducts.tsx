@@ -36,21 +36,9 @@ import {
   getPrescriptionPartner,
   getProductSummaries,
   PartnerResponse,
-  PrescriptionPartnerProductResponse,
-  PrescriptionPartnerResponse
+  PrescriptionPartnerProductResponse
 } from 'medipanda/backend';
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-
-interface PrescriptionPartnerResponseWithMockData extends PrescriptionPartnerResponse {
-  institutionCode: string;
-}
-
-function withMock<T extends PrescriptionPartnerResponse>(data: T): PrescriptionPartnerResponseWithMockData {
-  return {
-    ...data,
-    institutionCode: '1234567890'
-  };
-}
 
 export default function MpAdminPrescriptionFormProducts() {
   const navigate = useNavigate();
@@ -294,10 +282,7 @@ export default function MpAdminPrescriptionFormProducts() {
 
       try {
         setLoading(true);
-        const [formDetail, products] = await Promise.all([
-          withMock(await getPrescriptionPartner(parseInt(id))),
-          getPartnerProducts(parseInt(id))
-        ]);
+        const [formDetail, products] = await Promise.all([await getPrescriptionPartner(parseInt(id)), getPartnerProducts(parseInt(id))]);
 
         formik.setValues({
           drugCompany: formDetail.drugCompany,

@@ -27,16 +27,11 @@ import { useSnackbar } from 'notistack';
 import { approveOrRejectCso, getContractDetails, getMemberDetails, MemberDetailsResponse } from 'medipanda/backend';
 import { mockString } from 'medipanda/mockup';
 
-interface MemberDetailsResponseWithMockData extends MemberDetailsResponse {
-  id: number;
-  gender: 'M' | 'F';
-}
-
-function withMock<T extends MemberDetailsResponse>(data: T): T & MemberDetailsResponseWithMockData {
+function withMock<T extends MemberDetailsResponse>(data: T): T {
   return {
     ...data,
     id: -1,
-    gender: Math.random() > 0.5 ? 'M' : 'F'
+    gender: Math.random() > 0.5 ? 'MALE' : 'FEMALE'
   };
 }
 
@@ -108,7 +103,7 @@ export default function MpAdminMemberEdit() {
           name: memberData.name,
           phoneNumber: memberData.phoneNumber,
           birthDate: memberData.birthDate,
-          gender: memberData.gender,
+          gender: memberData.gender ?? '',
           email: memberData.email,
           referralCode: memberData.referralCode ?? '',
           registrationDate: memberData.registrationDate,
@@ -199,6 +194,14 @@ export default function MpAdminMemberEdit() {
       await mpUpdateMemberFile(
         userId!,
         {
+          password: null,
+          name: formik.values.name,
+          nickname: null,
+          birthDate: formik.values.birthDate,
+          phoneNumber: formik.values.phoneNumber,
+          email: formik.values.email,
+          referralCode: formik.values.referralCode || null,
+          marketingAgreement: formik.values.marketingAgreements,
           note: mockString(`${field} 파일 업데이트`)
         },
         file

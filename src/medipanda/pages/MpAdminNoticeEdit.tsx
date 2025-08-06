@@ -105,7 +105,9 @@ export default function MpAdminCustomerCenterNoticeEdit() {
               content: values.content,
               userId: session.userId,
               nickname: session.name || session.userId,
+              parentId: null,
               isExposed: values.isExposed,
+              editorFileIds: null,
               exposureRange: values.exposureRange,
               noticeProperties: {
                 noticeType: values.noticeCategory,
@@ -121,9 +123,16 @@ export default function MpAdminCustomerCenterNoticeEdit() {
             updateRequest: {
               title: values.title,
               content: values.content,
+              isBlind: null,
               isExposed: values.isExposed,
+              exposureRange: values.exposureRange,
               keepFileIds: values.existingFiles.map((att) => mockNumber()).filter(Boolean),
-              editorFileIds: []
+              editorFileIds: [],
+              noticeProperties: {
+                noticeType: values.noticeCategory,
+                drugCompany: values.manufacturerName ?? '',
+                fixedTop: values.isTopFixed
+              }
             },
             newFiles: values.files
           });
