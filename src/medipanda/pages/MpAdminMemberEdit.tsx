@@ -26,6 +26,7 @@ import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedErr
 import { useSnackbar } from 'notistack';
 import { approveOrRejectCso, getContractDetails, getMemberDetails, MemberDetailsResponse } from 'medipanda/backend';
 import { mockString } from 'medipanda/mockup';
+import MuiLink from '@mui/material/Link';
 
 function withMock<T extends MemberDetailsResponse>(data: T): T {
   return {
@@ -95,9 +96,10 @@ export default function MpAdminMemberEdit() {
         setLoading(true);
 
         const memberData = withMock(await getMemberDetails(userId));
+        let formikValues = formik.values;
 
-        formik.setValues({
-          ...formik.values,
+        formikValues = {
+          ...formikValues,
           memberId: memberData.id,
           userId: memberData.userId,
           name: memberData.name,
@@ -116,15 +118,15 @@ export default function MpAdminMemberEdit() {
             email: false,
             push: false
           }
-        });
+        };
 
         try {
           const contractData = await getContractDetails(userId);
           setHasPartnerContract(true);
           setIsContractApproved(contractData.status === 'APPROVED');
 
-          formik.setValues((prev) => ({
-            ...prev,
+          formikValues = {
+            ...formikValues,
             contractType: contractData.contractType || 'ORGANIZATION',
             contractStatus: contractData.status === 'APPROVED' ? '계약' : '미계약',
             companyName: contractData.companyName ?? '',
@@ -134,11 +136,13 @@ export default function MpAdminMemberEdit() {
             educationCertificate: contractData.fileUrls?.educationCertificate ?? '',
             contractDate: contractData.contractDate?.toString() ?? '',
             commissionRate: 0
-          }));
+          };
         } catch (contractError) {
           setHasPartnerContract(false);
           console.log('No partner contract found for member:', userId);
         }
+
+        formik.setValues(formikValues);
       } catch (error) {
         console.error('Failed to fetch member data:', error);
         enqueueSnackbar('회원 정보를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -349,22 +353,25 @@ export default function MpAdminMemberEdit() {
                       </FormControl>
                     </Grid>
 
-                    <Grid item xs={12}>
-                      <Stack direction="row" spacing={2} alignItems="center">
-                        <Typography variant="subtitle2" color="text.secondary">
-                          CSO 신고증
-                        </Typography>
-                        <Button variant="text" color="primary" size="small">
-                          {formik.values.csoLicenseFile}
-                        </Button>
-                        <Button variant="outlined" color="error" size="small" onClick={handleCsoReject}>
-                          반려
-                        </Button>
-                        <Button variant="contained" color="success" size="small" onClick={handleCsoApprove}>
-                          승인
-                        </Button>
-                      </Stack>
-                    </Grid>
+                    {formik.values.csoLicenseFile !== '' && (
+                      <Grid item xs={12}>
+                        <Stack direction="row" spacing={2} alignItems="center">
+                          <Typography variant="subtitle2" color="text.secondary">
+                            CSO 신고증
+                          </Typography>
+                          <MuiLink href={formik.values.csoLicenseFile} download target="_blank" rel="noopener noreferrer" underline="hover">
+                            {new URL(formik.values.csoLicenseFile).pathname.split('/').pop()}
+                          </MuiLink>
+                          <Button variant="text" color="primary" size="small"></Button>
+                          <Button variant="outlined" color="error" size="small" onClick={handleCsoReject}>
+                            반려
+                          </Button>
+                          <Button variant="contained" color="success" size="small" onClick={handleCsoApprove}>
+                            승인
+                          </Button>
+                        </Stack>
+                      </Grid>
+                    )}
                   </Grid>
                 </Card>
               </Grid>

@@ -449,17 +449,17 @@ const MockAttachedFileResponse: AttachedFileResponse[] = [
   {
     fileId: 1,
     fileName: 'MockFile001.edi',
-    fileUrl: 'https://mock-storage.example.com/files/MockFile001.edi'
+    fileUrl: '/edi-example.jpeg'
   },
   {
     fileId: 2,
     fileName: 'MockFile002.edi',
-    fileUrl: 'https://mock-storage.example.com/files/MockFile002.edi'
+    fileUrl: '/edi-example.jpeg'
   },
   {
     fileId: 3,
     fileName: 'MockFile003.zip',
-    fileUrl: 'https://mock-storage.example.com/files/MockFile003.zip'
+    fileUrl: '/edi-example.jpeg'
   }
 ];
 

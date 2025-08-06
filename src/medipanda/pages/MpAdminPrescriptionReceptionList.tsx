@@ -26,8 +26,22 @@ import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
 import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { confirmPrescription, DateTimeString, downloadZippedEdiFiles, PrescriptionResponse, searchPrescriptions } from 'medipanda/backend';
+import {
+  confirmPrescription,
+  DateString,
+  DateTimeString,
+  downloadZippedEdiFiles,
+  PrescriptionResponse,
+  searchPrescriptions
+} from 'medipanda/backend';
 import { format } from 'date-fns';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import { uploadEdiZip } from 'medipanda/backend/backend';
+import MpDatePicker from 'medipanda/components/MpDatePicker';
 
 export default function MpAdminPrescriptionReceptionList() {
   const [data, setData] = useState<Sequenced<PrescriptionResponse>[]>([]);
@@ -37,6 +51,10 @@ export default function MpAdminPrescriptionReceptionList() {
   const notImplementedDialog = useMpNotImplementedDialog();
   const errorDialog = useMpErrorDialog();
   const infoDialog = useMpInfoDialog();
+  const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
+  const [prescriptionMonth, setPrescriptionMonth] = useState<Date | null>(null);
+  const [settlementMonth, setSettlementMonth] = useState<Date | null>(null);
+  const [ediZipFile, setEdiZipFile] = useState<File | null>(null);
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -141,7 +159,13 @@ export default function MpAdminPrescriptionReceptionList() {
       {
         header: '접수파일',
         cell: ({ row }) => (
-          <Button variant="contained" color="success" size="small" onClick={() => handleFileDownload(row.original.id)}>
+          <Button
+            variant="contained"
+            color="success"
+            size="small"
+            href={`/v1/prescriptions/partners/${row.original.id}/edi-files/download`}
+            target="_blank"
+          >
             파일 다운로드
           </Button>
         ),
@@ -224,6 +248,27 @@ export default function MpAdminPrescriptionReceptionList() {
     fetchData();
   }, [pagination.pageIndex, pagination.pageSize, formik.values]);
 
+  const handleFileUpload = async () => {
+    if (!ediZipFile) return;
+
+    try {
+      await uploadEdiZip({
+        prescriptionMonth: new DateString(prescriptionMonth!).toString(),
+        settlementMonth: new DateString(settlementMonth!).toString(),
+        file: ediZipFile
+      });
+
+      infoDialog.showInfo('EDI를 업로드했습니다.');
+    } catch (error) {
+      if (error instanceof NotImplementedError) {
+        notImplementedDialog.open(error.message);
+      } else {
+        console.error('Failed to upload rate table:', error);
+        errorDialog.showError('EDI 업로드 중 오류가 발생했습니다.');
+      }
+    }
+  };
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -300,6 +345,11 @@ export default function MpAdminPrescriptionReceptionList() {
           <Box sx={{ p: 2 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
               <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              <Stack direction="row" spacing={1}>
+                <Button variant="contained" color="success" size="small" onClick={() => setRegisterDialogOpen(true)}>
+                  EDI 등록
+                </Button>
+              </Stack>
             </Stack>
 
             <ScrollX>
@@ -345,6 +395,73 @@ export default function MpAdminPrescriptionReceptionList() {
           </Box>
         </MainCard>
       </Grid>
+
+      <Dialog open={registerDialogOpen} onClose={() => setRegisterDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}>EDI 등록</DialogTitle>
+        <DialogContent sx={{ textAlign: 'center', py: 4 }}>
+          <Stack direction="row" spacing={2} justifyContent="center" alignItems="center" sx={{ mb: 3 }}>
+            <Typography variant="body1">처방월 선택</Typography>
+            <Box>
+              <MpDatePicker
+                value={prescriptionMonth}
+                onChange={(value) => {
+                  setPrescriptionMonth(value);
+                }}
+                placeholder="월 선택"
+                format="yyyy-MM"
+                views={['year', 'month']}
+              />
+            </Box>
+            <Typography variant="body1">정산월 선택</Typography>
+            <Box>
+              <MpDatePicker
+                value={settlementMonth}
+                onChange={(value) => {
+                  setSettlementMonth(value);
+                }}
+                placeholder="월 선택"
+                format="yyyy-MM"
+                views={['year', 'month']}
+              />
+            </Box>
+          </Stack>
+          <Button variant="contained" color="success" component="label" startIcon={<AttachFileIcon />}>
+            .zip 파일 선택
+            <input
+              type="file"
+              hidden
+              accept=".zip"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setEdiZipFile(file);
+                }
+              }}
+            />
+          </Button>
+          {ediZipFile && (
+            <Typography variant="body2" sx={{ mt: 2 }}>
+              선택된 파일: {ediZipFile.name}
+            </Typography>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: 'center', pb: 3 }}>
+          <Button
+            variant="contained"
+            color="inherit"
+            onClick={() => {
+              setRegisterDialogOpen(false);
+              setEdiZipFile(null);
+            }}
+            sx={{ px: 4 }}
+          >
+            취소
+          </Button>
+          <Button variant="contained" color="success" onClick={handleFileUpload} disabled={!ediZipFile} sx={{ px: 4 }}>
+            업데이트
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 }

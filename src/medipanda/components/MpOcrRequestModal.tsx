@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Typography, LinearProgress, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { OcrResponse } from 'medipanda/api-definitions/MpOcr';
 
 interface Point {
@@ -12,38 +14,60 @@ interface OcrRequestModalProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (response: OcrResponse) => void;
-  imageUrl?: string;
+  imageUrls: string[];
 }
 
-export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrl }: OcrRequestModalProps) {
+export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrRequestModalProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const transformedCanvasRef = useRef<HTMLCanvasElement>(null);
-  const [points, setPoints] = useState<Point[]>([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [allPoints, setAllPoints] = useState<Point[][]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [draggedPointIndex, setDraggedPointIndex] = useState(-1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [backgroundImage, setBackgroundImage] = useState<HTMLImageElement | null>(null);
   const [lastDragTime, setLastDragTime] = useState<number>(0);
 
+  const currentPoints = allPoints[currentImageIndex] || [];
+  const hasImages = imageUrls.length > 0;
+  const currentImageUrl = hasImages ? imageUrls[currentImageIndex] : undefined;
+
   useEffect(() => {
-    if (open && imageUrl) {
+    if (open) {
+      // Initialize points array for all images
+      const initialPoints = imageUrls.map(() => []);
+      setAllPoints(initialPoints);
+      setCurrentImageIndex(0);
+
+      if (hasImages) {
+        const img = new Image();
+        img.onload = () => {
+          setBackgroundImage(img);
+          redraw();
+        };
+        img.src = currentImageUrl!;
+      } else {
+        setBackgroundImage(null);
+        loadSampleImage();
+      }
+    }
+  }, [open, imageUrls.length]);
+
+  // Load current image when index changes
+  useEffect(() => {
+    if (open && currentImageUrl) {
       const img = new Image();
       img.onload = () => {
         setBackgroundImage(img);
-        setPoints([]);
         redraw();
       };
-      img.src = imageUrl;
-    } else if (open && !imageUrl) {
-      setBackgroundImage(null);
-      setPoints([]);
-      loadSampleImage();
+      img.src = currentImageUrl;
     }
-  }, [open, imageUrl]);
+  }, [currentImageIndex, currentImageUrl, open]);
 
   const getPointAtPosition = (x: number, y: number): number => {
-    for (let i = 0; i < points.length; i++) {
-      const distance = Math.sqrt(Math.pow(x - points[i].x, 2) + Math.pow(y - points[i].y, 2));
+    for (let i = 0; i < currentPoints.length; i++) {
+      const distance = Math.sqrt(Math.pow(x - currentPoints[i].x, 2) + Math.pow(y - currentPoints[i].y, 2));
       if (distance <= 15) {
         return i;
       }
@@ -51,8 +75,14 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrl }: OcrRequ
     return -1;
   };
 
+  const updateCurrentImagePoints = (newPoints: Point[]) => {
+    const updatedAllPoints = [...allPoints];
+    updatedAllPoints[currentImageIndex] = newPoints;
+    setAllPoints(updatedAllPoints);
+  };
+
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (points.length >= 4 && draggedPointIndex === -1) return;
+    if (currentPoints.length >= 4 && draggedPointIndex === -1) return;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -64,8 +94,8 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrl }: OcrRequ
     const clickedPointIndex = getPointAtPosition(x, y);
     if (clickedPointIndex !== -1) return;
 
-    if (points.length < 4) {
-      setPoints([...points, { x, y }]);
+    if (currentPoints.length < 4) {
+      updateCurrentImagePoints([...currentPoints, { x, y }]);
     }
   };
 
@@ -95,9 +125,9 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrl }: OcrRequ
     if (isDragging && draggedPointIndex !== -1) {
       const currentTime = Date.now();
       if (currentTime - lastDragTime >= 1000) {
-        const newPoints = [...points];
+        const newPoints = [...currentPoints];
         newPoints[draggedPointIndex] = { x, y };
-        setPoints(newPoints);
+        updateCurrentImagePoints(newPoints);
         setLastDragTime(currentTime);
       }
     } else {
@@ -184,11 +214,11 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrl }: OcrRequ
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    if (points.length === 4) {
+    if (currentPoints.length === 4) {
       ctx.beginPath();
-      ctx.moveTo(points[0].x, points[0].y);
-      for (let i = 1; i < points.length; i++) {
-        ctx.lineTo(points[i].x, points[i].y);
+      ctx.moveTo(currentPoints[0].x, currentPoints[0].y);
+      for (let i = 1; i < currentPoints.length; i++) {
+        ctx.lineTo(currentPoints[i].x, currentPoints[i].y);
       }
       ctx.closePath();
       ctx.fillStyle = 'rgba(0, 123, 255, 0.2)';
@@ -200,20 +230,20 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrl }: OcrRequ
       ctx.setLineDash([]);
     }
 
-    if (points.length > 1) {
+    if (currentPoints.length > 1) {
       ctx.strokeStyle = '#ff6b35';
       ctx.lineWidth = 2;
       ctx.setLineDash([12, 6]);
-      for (let i = 0; i < points.length - 1; i++) {
+      for (let i = 0; i < currentPoints.length - 1; i++) {
         ctx.beginPath();
-        ctx.moveTo(points[i].x, points[i].y);
-        ctx.lineTo(points[i + 1].x, points[i + 1].y);
+        ctx.moveTo(currentPoints[i].x, currentPoints[i].y);
+        ctx.lineTo(currentPoints[i + 1].x, currentPoints[i + 1].y);
         ctx.stroke();
       }
-      if (points.length === 4) {
+      if (currentPoints.length === 4) {
         ctx.beginPath();
-        ctx.moveTo(points[3].x, points[3].y);
-        ctx.lineTo(points[0].x, points[0].y);
+        ctx.moveTo(currentPoints[3].x, currentPoints[3].y);
+        ctx.lineTo(currentPoints[0].x, currentPoints[0].y);
         ctx.stroke();
       }
       ctx.setLineDash([]);
@@ -221,7 +251,7 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrl }: OcrRequ
 
     const colors = ['#ff4757', '#2ed573', '#3742fa', '#ffa502'];
     const labels = ['1', '2', '3', '4'];
-    points.forEach((point, index) => {
+    currentPoints.forEach((point, index) => {
       ctx.beginPath();
       ctx.arc(point.x, point.y, 10, 0, 2 * Math.PI);
       ctx.fillStyle = colors[index];
@@ -241,24 +271,24 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrl }: OcrRequ
       ctx.fillText(labels[index], point.x, point.y + 4);
     });
 
-    if (points.length === 4) {
+    if (currentPoints.length === 4) {
       updateTransformedPreview();
     }
-  }, [backgroundImage, points]);
+  }, [backgroundImage, currentPoints]);
 
   const updateTransformedPreview = () => {
     const srcCanvas = canvasRef.current;
     const dstCanvas = transformedCanvasRef.current;
-    if (!srcCanvas || !dstCanvas || points.length !== 4) return;
+    if (!srcCanvas || !dstCanvas || currentPoints.length !== 4) return;
 
     const srcCtx = srcCanvas.getContext('2d');
     const dstCtx = dstCanvas.getContext('2d');
     if (!srcCtx || !dstCtx) return;
 
-    const width1 = Math.sqrt(Math.pow(points[1].x - points[0].x, 2) + Math.pow(points[1].y - points[0].y, 2));
-    const width2 = Math.sqrt(Math.pow(points[2].x - points[3].x, 2) + Math.pow(points[2].y - points[3].y, 2));
-    const height1 = Math.sqrt(Math.pow(points[3].x - points[0].x, 2) + Math.pow(points[3].y - points[0].y, 2));
-    const height2 = Math.sqrt(Math.pow(points[2].x - points[1].x, 2) + Math.pow(points[2].y - points[1].y, 2));
+    const width1 = Math.sqrt(Math.pow(currentPoints[1].x - currentPoints[0].x, 2) + Math.pow(currentPoints[1].y - currentPoints[0].y, 2));
+    const width2 = Math.sqrt(Math.pow(currentPoints[2].x - currentPoints[3].x, 2) + Math.pow(currentPoints[2].y - currentPoints[3].y, 2));
+    const height1 = Math.sqrt(Math.pow(currentPoints[3].x - currentPoints[0].x, 2) + Math.pow(currentPoints[3].y - currentPoints[0].y, 2));
+    const height2 = Math.sqrt(Math.pow(currentPoints[2].x - currentPoints[1].x, 2) + Math.pow(currentPoints[2].y - currentPoints[1].y, 2));
 
     const avgWidth = (width1 + width2) / 2;
     const avgHeight = (height1 + height2) / 2;
@@ -278,7 +308,7 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrl }: OcrRequ
       { x: 0, y: outputHeight }
     ];
 
-    const H = calculateHomographyMatrix(points, dstPoints);
+    const H = calculateHomographyMatrix(currentPoints, dstPoints);
     const invH = invertMatrix3x3(H);
 
     const srcImageData = srcCtx.getImageData(0, 0, srcCanvas.width, srcCanvas.height);
@@ -434,16 +464,16 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrl }: OcrRequ
 
   useEffect(() => {
     redraw();
-  }, [points, redraw]);
+  }, [allPoints, redraw]);
 
   useEffect(() => {
-    if (points.length === 4) {
+    if (currentPoints.length === 4) {
       updateTransformedPreview();
     }
-  }, [points]);
+  }, [currentPoints]);
 
   const handleSubmit = async () => {
-    if (points.length !== 4) return;
+    if (currentPoints.length !== 4) return;
 
     setIsProcessing(true);
 
@@ -470,8 +500,8 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrl }: OcrRequ
       const formData = new FormData();
       formData.append('file', blob, 'scanned.jpg');
 
-      if (backgroundImage && imageUrl) {
-        const originalResponse = await fetch(imageUrl);
+      if (backgroundImage && currentImageUrl) {
+        const originalResponse = await fetch(currentImageUrl);
         const originalBlob = await originalResponse.blob();
         formData.append('original-file', originalBlob, 'original.jpg');
 
@@ -486,7 +516,7 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrl }: OcrRequ
         const imageOffsetY = (canvas.height - h) / 2;
         const imageScale = 1 / scale;
 
-        const originalPoints = points.map((point) => ({
+        const originalPoints = currentPoints.map((point) => ({
           x: (point.x - imageOffsetX) * imageScale,
           y: (point.y - imageOffsetY) * imageScale
         }));
@@ -527,9 +557,42 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrl }: OcrRequ
   };
 
   const handleClose = () => {
-    setPoints([]);
+    setAllPoints([]);
+    setCurrentImageIndex(0);
     setIsProcessing(false);
     onClose();
+  };
+
+  const clearTransformedCanvas = () => {
+    const transformedCanvas = transformedCanvasRef.current;
+    if (transformedCanvas) {
+      const ctx = transformedCanvas.getContext('2d');
+      if (ctx) {
+        ctx.clearRect(0, 0, transformedCanvas.width, transformedCanvas.height);
+      }
+    }
+  };
+
+  const handlePreviousImage = () => {
+    if (currentImageIndex > 0) {
+      const newIndex = currentImageIndex - 1;
+      setCurrentImageIndex(newIndex);
+      const updatedAllPoints = [...allPoints];
+      updatedAllPoints[newIndex] = [];
+      setAllPoints(updatedAllPoints);
+      clearTransformedCanvas();
+    }
+  };
+
+  const handleNextImage = () => {
+    if (currentImageIndex < imageUrls.length - 1) {
+      const newIndex = currentImageIndex + 1;
+      setCurrentImageIndex(newIndex);
+      const updatedAllPoints = [...allPoints];
+      updatedAllPoints[newIndex] = [];
+      setAllPoints(updatedAllPoints);
+      clearTransformedCanvas();
+    }
   };
 
   return (
@@ -553,6 +616,19 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrl }: OcrRequ
                 하단 캔버스: 변환된 이미지 - 선택한 영역이 자동으로 변환됩니다
               </Typography>
             </Box>
+            {hasImages && imageUrls.length > 1 && (
+              <Box display="flex" alignItems="center" gap={1}>
+                <IconButton onClick={handlePreviousImage} disabled={currentImageIndex === 0} size="small">
+                  <ArrowBackIcon />
+                </IconButton>
+                <Typography variant="body2" color="text.primary">
+                  {currentImageIndex + 1} / {imageUrls.length}
+                </Typography>
+                <IconButton onClick={handleNextImage} disabled={currentImageIndex === imageUrls.length - 1} size="small">
+                  <ArrowForwardIcon />
+                </IconButton>
+              </Box>
+            )}
           </Box>
         </Box>
 
@@ -597,11 +673,16 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrl }: OcrRequ
         </Box>
 
         <Box sx={{ mt: 2, textAlign: 'center' }}>
-          <Typography variant="body1" color={points.length === 4 ? 'success.main' : 'text.secondary'} fontWeight="bold">
-            {points.length === 4
+          <Typography variant="body1" color={currentPoints.length === 4 ? 'success.main' : 'text.secondary'} fontWeight="bold">
+            {currentPoints.length === 4
               ? '문서 모서리가 모두 선택되었습니다!'
-              : `4개 점을 클릭해서 문서 모서리를 선택해주세요 (${points.length}/4)`}
+              : `4개 점을 클릭해서 문서 모서리를 선택해주세요 (${currentPoints.length}/4)`}
           </Typography>
+          {hasImages && imageUrls.length > 1 && (
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              현재 이미지: {currentImageIndex + 1} / {imageUrls.length}
+            </Typography>
+          )}
         </Box>
 
         {isProcessing && (
@@ -617,7 +698,7 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrl }: OcrRequ
         <Button onClick={handleClose} color="inherit">
           취소
         </Button>
-        <Button onClick={handleSubmit} variant="contained" color="success" disabled={points.length !== 4 || isProcessing}>
+        <Button onClick={handleSubmit} variant="contained" color="success" disabled={currentPoints.length !== 4 || isProcessing}>
           제출
         </Button>
       </DialogActions>

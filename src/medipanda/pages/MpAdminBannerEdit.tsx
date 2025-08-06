@@ -15,7 +15,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import MainCard from 'components/MainCard';
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import { BannerResponse, createBanner, DateTimeString, getBanner, updateBanner } from 'medipanda/backend';
+import { createBanner, DateTimeString, getBanner, updateBanner } from 'medipanda/backend';
 import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
 import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
 import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';

@@ -32,6 +32,8 @@ import { Sequenced } from 'medipanda/utils/withSequence';
 import { MpOcrRequestModal } from 'medipanda/components/MpOcrRequestModal';
 import { OcrResponse } from 'medipanda/api-definitions/MpOcr';
 import {
+  AttachedFileResponse,
+  getAttachedEdiFiles,
   getPartnerProducts,
   getPrescriptionPartner,
   getProductSummaries,
@@ -52,6 +54,7 @@ export default function MpAdminPrescriptionFormProducts() {
   const [partnerSearchModalOpen, setPartnerSearchModalOpen] = useState(false);
 
   const [products, setProducts] = useState<Sequenced<PrescriptionPartnerProductResponse>[]>([]);
+  const [attachedFiles, setAttachedFiles] = useState<AttachedFileResponse[]>([]);
 
   const [sendOcrReport, setSendOcrReport] = useState(false);
   const [ocrReportContent, setOcrReportContent] = useState('');
@@ -64,8 +67,8 @@ export default function MpAdminPrescriptionFormProducts() {
       institutionCode: '',
       businessNumber: '',
       dealerName: '',
-      prescriptionMonth: '',
-      settlementMonth: '',
+      prescriptionMonth: null as Date | null,
+      settlementMonth: null as Date | null,
       prescriptionAmount: ''
     },
     onSubmit: async (values) => {
@@ -282,7 +285,11 @@ export default function MpAdminPrescriptionFormProducts() {
 
       try {
         setLoading(true);
-        const [formDetail, products] = await Promise.all([await getPrescriptionPartner(parseInt(id)), getPartnerProducts(parseInt(id))]);
+        const [formDetail, products, attachedFiles] = await Promise.all([
+          getPrescriptionPartner(parseInt(id)),
+          getPartnerProducts(parseInt(id)),
+          getAttachedEdiFiles(parseInt(id))
+        ]);
 
         formik.setValues({
           drugCompany: formDetail.drugCompany,
@@ -291,8 +298,8 @@ export default function MpAdminPrescriptionFormProducts() {
           institutionCode: formDetail.institutionCode,
           businessNumber: formDetail.businessNumber,
           dealerName: formDetail.dealerName,
-          prescriptionMonth: formDetail.prescriptionMonth,
-          settlementMonth: formDetail.settlementMonth,
+          prescriptionMonth: new Date(formDetail.prescriptionMonth),
+          settlementMonth: new Date(formDetail.settlementMonth),
           prescriptionAmount: formDetail.amount.toLocaleString()
         });
 
@@ -302,6 +309,8 @@ export default function MpAdminPrescriptionFormProducts() {
             sequence: index + 1
           }))
         );
+
+        setAttachedFiles(attachedFiles);
       } catch (error) {
         console.error('Failed to fetch prescription form data:', error);
         enqueueSnackbar('처방입력 정보를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -518,7 +527,7 @@ export default function MpAdminPrescriptionFormProducts() {
         open={ocrModalOpen}
         onClose={() => setOcrModalOpen(false)}
         onSubmit={handleOcrSubmit}
-        imageUrl="/edi-example.jpeg"
+        imageUrls={attachedFiles.map((it) => it.fileUrl)}
       />
       <MpPartnerSearchModal open={partnerSearchModalOpen} onClose={() => setPartnerSearchModalOpen(false)} onSelect={handlePartnerSelect} />
     </Box>

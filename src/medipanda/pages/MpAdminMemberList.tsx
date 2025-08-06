@@ -23,12 +23,8 @@ import Pagination from '@mui/material/Pagination';
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
 import { SearchFilterBar, SearchFilterItem, SearchFilterActions } from 'medipanda/components/SearchFilterBar';
 import { format } from 'date-fns';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
-import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
-import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
 import { DocumentDownload } from 'iconsax-react';
-import { DateString, downloadUserMembersExcel, getUserMembers, MemberResponse } from 'medipanda/backend';
+import { DateString, getUserMembers, MemberResponse } from 'medipanda/backend';
 import { PARTNER_CONTRACT_STATUS_LABELS, CONSENT_LABELS, MEMBER_ACCOUNT_STATUS_LABELS } from 'medipanda/ui-labels';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
 
@@ -37,9 +33,6 @@ export default function MpAdminMemberList() {
   const [, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const notImplementedDialog = useMpNotImplementedDialog();
-  const infoDialog = useMpInfoDialog();
-  const errorDialog = useMpErrorDialog();
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -215,34 +208,6 @@ export default function MpAdminMemberList() {
     setPagination({ ...pagination, pageIndex: 0 });
   };
 
-  const handleExcelDownload = async () => {
-    try {
-      await downloadUserMembersExcel({
-        contractStatus: formik.values.contractStatus !== '' ? formik.values.contractStatus : undefined,
-        name: formik.values.searchField === 'name' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
-        userId: formik.values.searchField === 'userId' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
-        phoneNumber:
-          formik.values.searchField === 'phoneNumber' && formik.values.searchKeyword
-            ? formik.values.searchKeyword.replace(/-/g, '')
-            : undefined,
-        email: formik.values.searchField === 'email' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
-        companyName: formik.values.searchField === 'companyName' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
-        startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
-        endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
-        page: pagination.pageIndex,
-        size: pagination.pageSize
-      });
-      infoDialog.showInfo('Excel 파일이 다운로드되었습니다.');
-    } catch (error) {
-      if (error instanceof NotImplementedError) {
-        notImplementedDialog.open(error.message);
-      } else {
-        console.error('Failed to download Excel:', error);
-        errorDialog.showError('Excel 다운로드 중 오류가 발생했습니다.');
-      }
-    }
-  };
-
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -324,7 +289,51 @@ export default function MpAdminMemberList() {
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
               <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
               <Stack direction="row" spacing={1}>
-                <Button variant="contained" color="success" onClick={handleExcelDownload}>
+                <Button
+                  variant="contained"
+                  color="success"
+                  target="_blank"
+                  href={((): string => {
+                    const params = new URLSearchParams();
+
+                    if (formik.values.contractStatus !== '') {
+                      params.append('contractStatus', formik.values.contractStatus);
+                    }
+
+                    if (formik.values.searchField === 'name' && formik.values.searchKeyword) {
+                      params.append('name', formik.values.searchKeyword);
+                    }
+
+                    if (formik.values.searchField === 'userId' && formik.values.searchKeyword) {
+                      params.append('userId', formik.values.searchKeyword);
+                    }
+
+                    if (formik.values.searchField === 'phoneNumber' && formik.values.searchKeyword) {
+                      params.append('phoneNumber', formik.values.searchKeyword.replace(/-/g, ''));
+                    }
+
+                    if (formik.values.searchField === 'email' && formik.values.searchKeyword) {
+                      params.append('email', formik.values.searchKeyword);
+                    }
+
+                    if (formik.values.searchField === 'companyName' && formik.values.searchKeyword) {
+                      params.append('companyName', formik.values.searchKeyword);
+                    }
+
+                    if (formik.values.startAt) {
+                      params.append('startAt', new DateString(formik.values.startAt).toString());
+                    }
+
+                    if (formik.values.endAt) {
+                      params.append('endAt', new DateString(formik.values.endAt).toString());
+                    }
+
+                    params.append('page', String(pagination.pageIndex));
+                    params.append('size', String(pagination.pageSize));
+
+                    return `/v1/members/excel-download?${params.toString()}`;
+                  })()}
+                >
                   <DocumentDownload />
                 </Button>
               </Stack>
