@@ -32,8 +32,7 @@ import {
   SalesAgencyProductApplicantResponse,
   SalesAgencyProductDetailsResponse,
   updateApplicantNotes,
-  updateSalesAgencyProductBoard,
-  uploadEditorFile
+  updateSalesAgencyProductBoard
 } from 'medipanda/backend';
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
 import { TiptapEditor } from 'medipanda/components/TiptapEditor';
@@ -84,7 +83,8 @@ export default function MpAdminSalesAgencyProductEdit() {
       productName: '',
       isExposed: true,
       exposureRange: 'ALL' as 'ALL' | 'CONTRACTED' | 'UNCONTRACTED',
-      thumbnail: '',
+      thumbnail: null as File | null,
+      thumbnailUrl: '',
       content: '',
       videoUrl: '',
       contractDate: null as Date | null,
@@ -97,7 +97,7 @@ export default function MpAdminSalesAgencyProductEdit() {
       clientName: Yup.string().required('위탁사명은 필수입니다'),
       productName: Yup.string().required('상품명은 필수입니다'),
       exposureRange: Yup.string().oneOf(['ALL', 'CONTRACTED', 'UNCONTRACTED']).required('노출범위는 필수입니다'),
-      thumbnail: Yup.string().required('썸네일은 필수입니다'),
+      thumbnailUrl: Yup.string().required('썸네일은 필수입니다'),
       content: Yup.string().required('내용은 필수입니다'),
       contractDate: Yup.date().required('계약일은 필수입니다'),
       startDate: Yup.date().required('게시 시작일은 필수입니다'),
@@ -126,11 +126,11 @@ export default function MpAdminSalesAgencyProductEdit() {
               startAt: formatYyyyMmDd(values.startDate!),
               endAt: formatYyyyMmDd(values.endDate!),
               quantity: null
-            }
+            },
+            thumbnail: values.thumbnail ?? undefined
           });
           navigate('/admin/sales-agency-products');
         } else {
-          const thumbnailFile = new File([values.thumbnail], 'thumbnail.jpg', { type: 'image/jpeg' });
           await createSalesAgencyProductBoard({
             boardPostCreateRequest: {
               boardType: 'SALES_AGENCY',
@@ -154,7 +154,7 @@ export default function MpAdminSalesAgencyProductEdit() {
               endAt: formatYyyyMmDd(values.endDate!),
               quantity: 1
             },
-            thumbnail: thumbnailFile,
+            thumbnail: values.thumbnail!,
             files: []
           });
           navigate('/admin/sales-agency-products');
@@ -192,7 +192,8 @@ export default function MpAdminSalesAgencyProductEdit() {
         productName: detail.productName,
         isExposed: detail.boardPostDetail.isExposed,
         exposureRange: detail.boardPostDetail.exposureRange,
-        thumbnail: detail.thumbnailUrl ?? '',
+        thumbnail: null,
+        thumbnailUrl: detail.thumbnailUrl,
         content: detail.boardPostDetail.content,
         videoUrl: detail.videoUrl ?? '',
         contractDate: DateFix(detail.contractDate),
@@ -225,8 +226,18 @@ export default function MpAdminSalesAgencyProductEdit() {
       input.onchange = async (e) => {
         const file = (e.target as HTMLInputElement).files?.[0];
         if (file) {
-          const uploadResult = await uploadEditorFile({ file });
-          formik.setFieldValue('thumbnail', uploadResult.fileUrl);
+          const fileReader = new FileReader();
+          fileReader.onload = () => {
+            if (!fileReader.result) {
+              errorDialog.showError('파일을 읽는 데 실패했습니다.');
+              return;
+            }
+
+            formik.setFieldValue('thumbnail', file);
+            formik.setFieldValue('thumbnailUrl', fileReader.result as string);
+          };
+
+          fileReader.readAsDataURL(file);
         }
       };
       input.click();
@@ -353,9 +364,16 @@ export default function MpAdminSalesAgencyProductEdit() {
                 <Button variant="contained" color="success" onClick={handleFileUpload}>
                   첨부파일
                 </Button>
-                {formik.values.thumbnail && (
+                {formik.values.thumbnailUrl && (
                   <Box sx={{ mt: 2 }}>
-                    <img src={formik.values.thumbnail} alt="썸네일 미리보기" style={{ maxWidth: 200, maxHeight: 200 }} />
+                    <img src={formik.values.thumbnailUrl} alt="썸네일 미리보기" style={{ maxWidth: 200, maxHeight: 200 }} />
+                  </Box>
+                )}
+                {formik.touched.thumbnailUrl && formik.errors.thumbnailUrl && (
+                  <Box>
+                    <Typography variant="caption" color="error" sx={{ mt: 1 }}>
+                      {formik.errors.thumbnailUrl}
+                    </Typography>
                   </Box>
                 )}
               </Grid>

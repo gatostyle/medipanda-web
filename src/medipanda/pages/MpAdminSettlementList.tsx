@@ -35,20 +35,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useMpInfoDialog } from '../hooks/useMpInfoDialog';
 
-interface SettlementResponseWithMockData extends SettlementResponse {
-  drugCompany: string;
-}
-
-function withMock<T extends SettlementResponse>(data: T): T & SettlementResponseWithMockData {
-  return {
-    ...data,
-    drugCompany: '제약사'
-  };
-}
-
 export default function MpAdminSettlementList() {
-  const [data, setData] = useState<Sequenced<SettlementResponseWithMockData>[]>([]);
-  const [, setLoading] = useState(false);
+  const [data, setData] = useState<Sequenced<SettlementResponse>[]>([]);
+  const [loading, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
@@ -59,23 +48,23 @@ export default function MpAdminSettlementList() {
   const formik = useFormik({
     initialValues: {
       userConfirmation: '' as boolean | '',
-      searchType: 'dealerId' as 'dealerId' | 'drugCompany' | 'companyName',
+      searchType: '' as 'dealerId' | 'companyName' | '',
       startAt: null as Date | null,
       endAt: null as Date | null,
       searchKeyword: '',
       pageIndex: 0,
       pageSize: 20
     },
-    onSubmit: () => {
+    onSubmit: async () => {
       if (formik.values.pageIndex !== 0) {
-        formik.setFieldValue('pageIndex', 0);
+        await formik.setFieldValue('pageIndex', 0);
       } else {
-        fetchData();
+        await fetchData();
       }
     }
   });
 
-  const columns = useMemo<ColumnDef<Sequenced<SettlementResponseWithMockData>>[]>(
+  const columns = useMemo<ColumnDef<Sequenced<SettlementResponse>>[]>(
     () => [
       {
         id: 'select',
@@ -122,12 +111,6 @@ export default function MpAdminSettlementList() {
         accessorKey: 'settlementMonth',
         cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
         size: 100
-      },
-      {
-        header: '제약사명',
-        accessorKey: 'drugCompany',
-        cell: ({ row }) => row.original.drugCompany,
-        size: 150
       },
       {
         header: '회사명',
@@ -212,15 +195,14 @@ export default function MpAdminSettlementList() {
         dealerName: undefined,
         dealerId: formik.values.searchType === 'dealerId' ? parseInt(formik.values.searchKeyword) : undefined,
         companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
-        drugCompany: formik.values.searchType === 'drugCompany' ? formik.values.searchKeyword : undefined,
-        status: formik.values.userConfirmation !== undefined ? (formik.values.userConfirmation ? 'REQUEST' : 'OBJECTION') : undefined,
+        status: formik.values.userConfirmation !== '' ? (formik.values.userConfirmation ? 'REQUEST' : 'OBJECTION') : undefined,
         startMonth: formik.values.startAt ? mockNumber() : undefined,
         endMonth: formik.values.endAt ? mockNumber() : undefined,
         page: formik.values.pageIndex,
         size: formik.values.pageSize
       });
 
-      setData(withSequence(response).content.map(withMock));
+      setData(withSequence(response).content);
       setTotalElements(response.totalElements);
       setTotalPages(response.totalPages);
     } catch (error) {
@@ -245,6 +227,7 @@ export default function MpAdminSettlementList() {
       try {
         await uploadSettlementExcel({ file: (e.target as HTMLInputElement).files![0] });
         infoDialog.showInfo('정산 파일을 업로드했습니다.');
+        await fetchData();
       } catch (error) {
         console.error('Failed to upload file:', error);
         errorDialog.showError('파일 업로드 중 오류가 발생했습니다.');
@@ -316,7 +299,6 @@ export default function MpAdminSettlementList() {
                       displayEmpty
                     >
                       <MenuItem value="dealerId">딜러번호</MenuItem>
-                      <MenuItem value="drugCompany">제약사명</MenuItem>
                       <MenuItem value="companyName">회사명</MenuItem>
                     </Select>
                   </FormControl>
@@ -363,9 +345,7 @@ export default function MpAdminSettlementList() {
                     dealerName: undefined,
                     dealerId: formik.values.searchType === 'dealerId' ? parseInt(formik.values.searchKeyword) : undefined,
                     companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
-                    drugCompany: formik.values.searchType === 'drugCompany' ? formik.values.searchKeyword : undefined,
-                    status:
-                      formik.values.userConfirmation !== undefined ? (formik.values.userConfirmation ? 'REQUEST' : 'OBJECTION') : undefined,
+                    status: formik.values.userConfirmation !== '' ? (formik.values.userConfirmation ? 'REQUEST' : 'OBJECTION') : undefined,
                     startMonth: formik.values.startAt ? mockNumber() : undefined,
                     endMonth: formik.values.endAt ? mockNumber() : undefined,
                     page: formik.values.pageIndex,
@@ -403,13 +383,31 @@ export default function MpAdminSettlementList() {
                     ))}
                   </TableHead>
                   <TableBody>
-                    {table.getRowModel().rows.map((row) => (
-                      <TableRow key={row.id}>
-                        {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                        ))}
+                    {loading ? (
+                      <TableRow>
+                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
+                          <Typography variant="body2" color="text.secondary">
+                            데이터를 로드하는 중입니다.
+                          </Typography>
+                        </TableCell>
                       </TableRow>
-                    ))}
+                    ) : table.getRowModel().rows.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
+                          <Typography variant="body2" color="text.secondary">
+                            검색 결과가 없습니다.
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      table.getRowModel().rows.map((row) => (
+                        <TableRow key={row.id}>
+                          {row.getVisibleCells().map((cell) => (
+                            <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                          ))}
+                        </TableRow>
+                      ))
+                    )}
                   </TableBody>
                 </Table>
               </TableContainer>

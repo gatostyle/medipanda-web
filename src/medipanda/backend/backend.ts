@@ -149,13 +149,13 @@ export interface BlindPostResponse {
   id: number;
   memberName: string;
   content: string;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
-  postType: 'BOARD' | 'COMMENT';
+  reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
   nickname: string;
   likesCount: number;
-  reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
   userId: string;
+  postType: 'BOARD' | 'COMMENT';
   blindAt: string;
+  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
 }
 
 export interface BlindUpdateRequest {
@@ -189,13 +189,13 @@ export interface BoardDetailsResponse {
 export interface BoardMemberStatsResponse {
   name: string;
   id: number;
+  userId: string;
+  phoneNumber: string;
+  commentCount: number;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   postCount: number;
   totalLikes: number;
   blindPostCount: number;
-  phoneNumber: string;
-  commentCount: number;
-  userId: string;
 }
 
 export interface BoardPostCreateRequest {
@@ -269,12 +269,12 @@ export interface CommentMemberResponse {
   name: string;
   id: number;
   content: string;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
-  nickname: string;
-  createdAt: string;
-  likesCount: number;
   commentType: 'COMMENT' | 'REPLY';
+  nickname: string;
+  likesCount: number;
   userId: string;
+  createdAt: string;
+  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   isBlind: boolean;
 }
 
@@ -489,13 +489,13 @@ export interface OcrOriginalItem {
 export interface PageBannerResponse {
   totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
   size: number;
   content: BannerResponse[];
   number: number;
   sort: SortObject;
   pageable: PageableObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
   empty: boolean;
 }
@@ -503,13 +503,13 @@ export interface PageBannerResponse {
 export interface PageBlindPostResponse {
   totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
   size: number;
   content: BlindPostResponse[];
   number: number;
   sort: SortObject;
   pageable: PageableObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
   empty: boolean;
 }
@@ -517,13 +517,13 @@ export interface PageBlindPostResponse {
 export interface PageBoardMemberStatsResponse {
   totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
   size: number;
   content: BoardMemberStatsResponse[];
   number: number;
   sort: SortObject;
   pageable: PageableObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
   empty: boolean;
 }
@@ -531,13 +531,13 @@ export interface PageBoardMemberStatsResponse {
 export interface PageBoardPostResponse {
   totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
   size: number;
   content: BoardPostResponse[];
   number: number;
   sort: SortObject;
   pageable: PageableObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
   empty: boolean;
 }
@@ -545,13 +545,13 @@ export interface PageBoardPostResponse {
 export interface PageCommentMemberResponse {
   totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
   size: number;
   content: CommentMemberResponse[];
   number: number;
   sort: SortObject;
   pageable: PageableObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
   empty: boolean;
 }
@@ -559,13 +559,13 @@ export interface PageCommentMemberResponse {
 export interface PageEventBoardSummaryResponse {
   totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
   size: number;
   content: EventBoardSummaryResponse[];
   number: number;
   sort: SortObject;
   pageable: PageableObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
   empty: boolean;
 }
@@ -573,13 +573,13 @@ export interface PageEventBoardSummaryResponse {
 export interface PageExpenseReportResponse {
   totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
   size: number;
   content: ExpenseReportResponse[];
   number: number;
   sort: SortObject;
   pageable: PageableObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
   empty: boolean;
 }
@@ -587,13 +587,13 @@ export interface PageExpenseReportResponse {
 export interface PageHospitalResponse {
   totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
   size: number;
   content: HospitalResponse[];
   number: number;
   sort: SortObject;
   pageable: PageableObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
   empty: boolean;
 }
@@ -601,13 +601,13 @@ export interface PageHospitalResponse {
 export interface PageMemberResponse {
   totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
   size: number;
   content: MemberResponse[];
   number: number;
   sort: SortObject;
   pageable: PageableObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
   empty: boolean;
 }
@@ -615,13 +615,13 @@ export interface PageMemberResponse {
 export interface PagePartnerResponse {
   totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
   size: number;
   content: PartnerResponse[];
   number: number;
   sort: SortObject;
   pageable: PageableObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
   empty: boolean;
 }
@@ -629,13 +629,13 @@ export interface PagePartnerResponse {
 export interface PagePerformanceStatsResponse {
   totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
   size: number;
   content: PerformanceStatsResponse[];
   number: number;
   sort: SortObject;
   pageable: PageableObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
   empty: boolean;
 }
@@ -643,13 +643,13 @@ export interface PagePerformanceStatsResponse {
 export interface PagePrescriptionPartnerResponse {
   totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
   size: number;
   content: PrescriptionPartnerResponse[];
   number: number;
   sort: SortObject;
   pageable: PageableObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
   empty: boolean;
 }
@@ -657,13 +657,13 @@ export interface PagePrescriptionPartnerResponse {
 export interface PagePrescriptionResponse {
   totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
   size: number;
   content: PrescriptionResponse[];
   number: number;
   sort: SortObject;
   pageable: PageableObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
   empty: boolean;
 }
@@ -671,13 +671,13 @@ export interface PagePrescriptionResponse {
 export interface PageProductSummaryResponse {
   totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
   size: number;
   content: ProductSummaryResponse[];
   number: number;
   sort: SortObject;
   pageable: PageableObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
   empty: boolean;
 }
@@ -685,13 +685,13 @@ export interface PageProductSummaryResponse {
 export interface PageSalesAgencyProductApplicantResponse {
   totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
   size: number;
   content: SalesAgencyProductApplicantResponse[];
   number: number;
   sort: SortObject;
   pageable: PageableObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
   empty: boolean;
 }
@@ -699,13 +699,13 @@ export interface PageSalesAgencyProductApplicantResponse {
 export interface PageSalesAgencyProductSummaryResponse {
   totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
   size: number;
   content: SalesAgencyProductSummaryResponse[];
   number: number;
   sort: SortObject;
   pageable: PageableObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
   empty: boolean;
 }
@@ -713,13 +713,13 @@ export interface PageSalesAgencyProductSummaryResponse {
 export interface PageSettlementPartnerResponse {
   totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
   size: number;
   content: SettlementPartnerResponse[];
   number: number;
   sort: SortObject;
   pageable: PageableObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
   empty: boolean;
 }
@@ -727,13 +727,13 @@ export interface PageSettlementPartnerResponse {
 export interface PageSettlementResponse {
   totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
   size: number;
   content: SettlementResponse[];
   number: number;
   sort: SortObject;
   pageable: PageableObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
   empty: boolean;
 }
@@ -1126,7 +1126,7 @@ export interface SampleProvideReportDetailResponse {
   provideCount: number;
   institutionName: string;
   institutionCode: string;
-  providedAt: string;
+  providedAt: DateString;
   attachedFiles: AttachedFileResponse[];
   status: 'PENDING' | 'COMPLETED';
 }
@@ -2589,7 +2589,6 @@ export async function getSettlements(options?: {
   dealerName?: string;
   dealerId?: number;
   companyName?: string;
-  drugCompany?: string;
   status?: 'REQUEST' | 'OBJECTION';
   startMonth?: number;
   endMonth?: number;
@@ -2600,6 +2599,18 @@ export async function getSettlements(options?: {
     method: 'GET',
     url: '/v1/settlements',
     params: options
+  });
+  return response.data;
+}
+
+/**
+ * 정산내역 단건 조회
+ * GET /v1/settlements/{id}
+ */
+export async function getSettlement(id: number): Promise<SettlementResponse> {
+  const response = await axios.request<SettlementResponse>({
+    method: 'GET',
+    url: `/v1/settlements/${id}`
   });
   return response.data;
 }
@@ -2708,7 +2719,6 @@ export function getDownloadSettlementListExcel(options?: {
   dealerName?: string;
   dealerId?: number;
   companyName?: string;
-  drugCompany?: string;
   status?: 'REQUEST' | 'OBJECTION';
   startMonth?: number;
   endMonth?: number;
@@ -2947,9 +2957,11 @@ export async function getAttachedEdiFiles(prescriptionPartnerId: number): Promis
  * 처방접수 EDI 파일 다운로드
  * GET /v1/prescriptions/partners/{prescriptionId}/edi-files/download
  */
-export function getDownloadZippedEdiFiles(prescriptionId: number): string {
-  const baseUrl = `/v1/prescriptions/partners/${prescriptionId}/edi-files/download`;
-  return baseUrl;
+export async function downloadZippedEdiFiles(prescriptionId: number): Promise<void> {
+  await axios.request({
+    method: 'GET',
+    url: `/v1/prescriptions/partners/${prescriptionId}/edi-files/download`
+  });
 }
 
 /**
@@ -3208,6 +3220,17 @@ export async function whoAmI(): Promise<MemberDetailsResponse> {
     url: '/v1/auth/me'
   });
   return response.data;
+}
+
+/**
+ * 로그아웃
+ * GET /v1/auth/logout
+ */
+export async function logout(): Promise<void> {
+  await axios.request({
+    method: 'GET',
+    url: '/v1/auth/logout'
+  });
 }
 
 /**

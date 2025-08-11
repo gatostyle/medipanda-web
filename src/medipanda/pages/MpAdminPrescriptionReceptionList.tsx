@@ -29,7 +29,6 @@ import {
   confirmPrescription,
   DateString,
   DateTimeString,
-  getDownloadZippedEdiFiles,
   PrescriptionResponse,
   searchPrescriptions,
   uploadEdiZip
@@ -45,7 +44,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export default function MpAdminPrescriptionReceptionList() {
   const [data, setData] = useState<Sequenced<PrescriptionResponse>[]>([]);
-  const [, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const notImplementedDialog = useMpNotImplementedDialog();
@@ -66,11 +65,11 @@ export default function MpAdminPrescriptionReceptionList() {
       pageIndex: 0,
       pageSize: 20
     },
-    onSubmit: () => {
+    onSubmit: async () => {
       if (formik.values.pageIndex !== 0) {
-        formik.setFieldValue('pageIndex', 0);
+        await formik.setFieldValue('pageIndex', 0);
       } else {
-        fetchData();
+        await fetchData();
       }
     }
   });
@@ -146,8 +145,14 @@ export default function MpAdminPrescriptionReceptionList() {
       {
         header: '접수파일',
         cell: ({ row }) => (
-          <Button variant="contained" color="success" size="small" href={getDownloadZippedEdiFiles(row.original.id)} target="_blank">
-            파일 다운로드
+          <Button
+            variant="contained"
+            color="success"
+            size="small"
+            href={`/v1/prescriptions/partners/${row.original.id}/edi-files/download`}
+            target="_blank"
+          >
+            다운로드
           </Button>
         ),
         size: 120
@@ -171,12 +176,12 @@ export default function MpAdminPrescriptionReceptionList() {
       {
         header: '관리자확인',
         cell: ({ row }) =>
-          row.original.checkedAt ? (
-            <Typography variant="body2">{formatYyyyMmDd(row.original.checkedAt)}</Typography>
-          ) : (
+          row.original.status === 'PENDING' ? (
             <Button variant="contained" color="success" size="small" onClick={() => handleConfirm(row.original.id)}>
               접수확인
             </Button>
+          ) : (
+            <Typography variant="body2">{row.original.checkedAt ? formatYyyyMmDd(row.original.checkedAt) : '-'}</Typography>
           ),
         size: 120
       }
@@ -350,13 +355,31 @@ export default function MpAdminPrescriptionReceptionList() {
                     ))}
                   </TableHead>
                   <TableBody>
-                    {table.getRowModel().rows.map((row) => (
-                      <TableRow key={row.id}>
-                        {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                        ))}
+                    {loading ? (
+                      <TableRow>
+                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
+                          <Typography variant="body2" color="text.secondary">
+                            데이터를 로드하는 중입니다.
+                          </Typography>
+                        </TableCell>
                       </TableRow>
-                    ))}
+                    ) : table.getRowModel().rows.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
+                          <Typography variant="body2" color="text.secondary">
+                            검색 결과가 없습니다.
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      table.getRowModel().rows.map((row) => (
+                        <TableRow key={row.id}>
+                          {row.getVisibleCells().map((cell) => (
+                            <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                          ))}
+                        </TableRow>
+                      ))
+                    )}
                   </TableBody>
                 </Table>
               </TableContainer>

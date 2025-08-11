@@ -46,7 +46,7 @@ import { Link } from 'react-router-dom';
 
 export default function MpAdminProductList() {
   const [data, setData] = useState<Sequenced<ProductSummaryResponse>[]>([]);
-  const [, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
@@ -57,11 +57,6 @@ export default function MpAdminProductList() {
   const errorDialog = useMpErrorDialog();
   const infoDialog = useMpInfoDialog();
 
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 20
-  });
-
   const formik = useFormik({
     initialValues: {
       searchType: 'productName' as 'productName' | 'productCode' | 'manufacturerName' | 'composition' | 'note',
@@ -69,10 +64,16 @@ export default function MpAdminProductList() {
       isAcquisition: false,
       isPromotion: false,
       isOutOfStock: false,
-      isStopSelling: false
+      isStopSelling: false,
+      pageIndex: 0,
+      pageSize: 20
     },
-    onSubmit: (values) => {
-      setPagination({ ...pagination, pageIndex: 0 });
+    onSubmit: async () => {
+      if (formik.values.pageIndex !== 0) {
+        await formik.setFieldValue('pageIndex', 0);
+      } else {
+        await fetchData();
+      }
     }
   });
 
@@ -200,9 +201,11 @@ export default function MpAdminProductList() {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      pagination
+      pagination: {
+        pageIndex: formik.values.pageIndex,
+        pageSize: formik.values.pageSize
+      }
     },
-    onPaginationChange: setPagination,
     pageCount: totalPages,
     manualPagination: true
   });
@@ -220,8 +223,8 @@ export default function MpAdminProductList() {
         isPromotion: formik.values.isPromotion || undefined,
         isOutOfStock: formik.values.isOutOfStock || undefined,
         isStopSelling: formik.values.isStopSelling || undefined,
-        page: pagination.pageIndex,
-        size: pagination.pageSize
+        page: formik.values.pageIndex,
+        size: formik.values.pageSize
       });
 
       setData(withSequence(response).content);
@@ -239,7 +242,7 @@ export default function MpAdminProductList() {
 
   useEffect(() => {
     fetchData();
-  }, [pagination.pageIndex, pagination.pageSize, formik.values]);
+  }, [formik.values.pageIndex, formik.values.pageSize]);
 
   const handleDelete = () => {
     const count = selectedItems.length;
@@ -268,6 +271,7 @@ export default function MpAdminProductList() {
     try {
       await uploadProductExtraInfo({ file: rateTableFile });
       infoDialog.showInfo('요율표를 성공적으로 업로드했습니다.');
+      await fetchData();
     } catch (error) {
       if (error instanceof NotImplementedError) {
         notImplementedDialog.open(error.message);
@@ -393,8 +397,8 @@ export default function MpAdminProductList() {
                     isPromotion: formik.values.isPromotion || undefined,
                     isOutOfStock: formik.values.isOutOfStock || undefined,
                     isStopSelling: formik.values.isStopSelling || undefined,
-                    page: pagination.pageIndex,
-                    size: pagination.pageSize
+                    page: formik.values.pageIndex,
+                    size: formik.values.pageSize
                   })}
                   target="_blank"
                   sx={{
@@ -432,13 +436,31 @@ export default function MpAdminProductList() {
                     ))}
                   </TableHead>
                   <TableBody>
-                    {table.getRowModel().rows.map((row) => (
-                      <TableRow key={row.id}>
-                        {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                        ))}
+                    {loading ? (
+                      <TableRow>
+                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
+                          <Typography variant="body2" color="text.secondary">
+                            데이터를 로드하는 중입니다.
+                          </Typography>
+                        </TableCell>
                       </TableRow>
-                    ))}
+                    ) : table.getRowModel().rows.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
+                          <Typography variant="body2" color="text.secondary">
+                            검색 결과가 없습니다.
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      table.getRowModel().rows.map((row) => (
+                        <TableRow key={row.id}>
+                          {row.getVisibleCells().map((cell) => (
+                            <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                          ))}
+                        </TableRow>
+                      ))
+                    )}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -447,9 +469,9 @@ export default function MpAdminProductList() {
             <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={pagination.pageIndex + 1}
-                onChange={(event, value) => {
-                  setPagination({ ...pagination, pageIndex: value - 1 });
+                page={formik.values.pageIndex + 1}
+                onChange={(_, value) => {
+                  formik.setFieldValue('pageIndex', value - 1);
                 }}
                 color="primary"
                 variant="outlined"

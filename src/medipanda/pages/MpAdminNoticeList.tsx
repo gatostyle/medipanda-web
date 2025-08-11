@@ -43,7 +43,7 @@ function withMock<T extends BoardPostResponse>(data: T): T & BoardPostResponseWi
 
 export default function MpAdminNoticeList() {
   const [data, setData] = useState<Sequenced<BoardPostResponseWithMockData>[]>([]);
-  const [, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
@@ -60,11 +60,11 @@ export default function MpAdminNoticeList() {
       pageIndex: 0,
       pageSize: 20
     },
-    onSubmit: () => {
+    onSubmit: async () => {
       if (formik.values.pageIndex !== 0) {
-        formik.setFieldValue('pageIndex', 0);
+        await formik.setFieldValue('pageIndex', 0);
       } else {
-        fetchData();
+        await fetchData();
       }
     }
   });
@@ -352,13 +352,31 @@ export default function MpAdminNoticeList() {
                     ))}
                   </TableHead>
                   <TableBody>
-                    {table.getRowModel().rows.map((row) => (
-                      <TableRow key={row.id}>
-                        {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                        ))}
+                    {loading ? (
+                      <TableRow>
+                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
+                          <Typography variant="body2" color="text.secondary">
+                            데이터를 로드하는 중입니다.
+                          </Typography>
+                        </TableCell>
                       </TableRow>
-                    ))}
+                    ) : table.getRowModel().rows.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
+                          <Typography variant="body2" color="text.secondary">
+                            검색 결과가 없습니다.
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      table.getRowModel().rows.map((row) => (
+                        <TableRow key={row.id}>
+                          {row.getVisibleCells().map((cell) => (
+                            <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                          ))}
+                        </TableRow>
+                      ))
+                    )}
                   </TableBody>
                 </Table>
               </TableContainer>

@@ -1,13 +1,12 @@
 import Loader from 'components/Loader';
-import { useMpSession } from 'medipanda/hooks/useMpSession';
 import { useSnackbar } from 'notistack';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { logout } from '../backend';
 
 export default function MpLogout() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { logout } = useMpSession();
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
@@ -35,7 +34,7 @@ export default function MpLogout() {
     };
 
     performLogout();
-  }, [logout, navigate, location, enqueueSnackbar]);
+  }, [navigate, location, enqueueSnackbar]);
 
   return <Loader />;
 }

@@ -62,20 +62,22 @@ const MaintenanceError = Loadable(lazy(() => import('pages/maintenance/error/404
 const MpAdminCommunityUserList = Loadable(lazy(() => import('medipanda/pages/MpAdminCommunityUserList')));
 const MpAdminCommunityPostDetail = Loadable(lazy(() => import('medipanda/pages/MpAdminCommunityPostDetail')));
 
-const authRoute: RouteObject = {
-  path: '/',
-  element: <AuthLayout />,
-  children: [
-    {
-      path: 'login',
-      element: <MpLogin />
-    },
-    {
-      path: 'logout',
-      element: <MpLogout />
-    }
-  ]
-};
+const authRoutes: RouteObject[] = [
+  {
+    path: '/',
+    element: <AuthLayout />,
+    children: [
+      {
+        path: 'login',
+        element: <MpLogin />
+      }
+    ]
+  },
+  {
+    path: 'logout',
+    element: <MpLogout />
+  }
+];
 
 const userRoute: RouteObject = {
   path: '/',
@@ -554,5 +556,5 @@ const adminRoute: RouteObject = {
 
 export const MpRoutes: RouteObject = {
   path: '/',
-  children: [authRoute, userRoute, adminRoute, { path: '*', element: <MaintenanceError /> }]
+  children: [...authRoutes, userRoute, adminRoute, { path: '*', element: <MaintenanceError /> }]
 };

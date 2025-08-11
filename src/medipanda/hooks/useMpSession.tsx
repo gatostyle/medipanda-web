@@ -3,14 +3,18 @@ import { getPermissions, login as apiLogin, MemberDetailsResponse, refreshToken 
 import { filterMenuByPermissions, mpAdminMenu, mpMemberMenu } from 'medipanda/menu-items';
 import { encryptRSA } from 'medipanda/utils/rsa';
 import { createContext, useContext, useEffect, useState } from 'react';
-import axios from 'utils/axios';
 import { useMpMenu } from './useMpMenu';
+
+declare global {
+  interface Window {
+    refreshTokenRotateInterval: ReturnType<typeof setInterval>;
+  }
+}
 
 const initialState = {
   session: null as MemberDetailsResponse | null,
   isLoading: true,
-  login: (userId: string, password: string) => Promise.resolve(),
-  logout: () => Promise.resolve()
+  login: (userId: string, password: string) => Promise.resolve()
 };
 
 export const MpSessionContext = createContext(initialState);
@@ -19,18 +23,6 @@ export function MpSessionProvider({ children }: { children: React.ReactNode }) {
   const { setMenuItems, setMenuOrientation } = useMpMenu();
   const [session, setSession] = useState(initialState.session);
   const [isLoading, setIsLoading] = useState(true);
-
-  const rotateRefreshToken = async (userId: string) => {
-    const savedRefreshToken = localStorage.getItem('refreshToken');
-    console.log(`Using refresh token ends with: ${savedRefreshToken?.slice(-4)}`);
-
-    const { refreshToken } = await apiRefreshToken({
-      userId: userId,
-      refreshToken: savedRefreshToken ?? ''
-    });
-    localStorage.setItem('refreshToken', refreshToken);
-    console.log(`Saved refresh token ends with: ${refreshToken?.slice(-4)}`);
-  };
 
   const getSession = async () => {
     const member = await whoAmI();
@@ -51,7 +43,32 @@ export function MpSessionProvider({ children }: { children: React.ReactNode }) {
       setMenuOrientation(MenuOrientation.VERTICAL);
     }
 
-    (window as any).refreshTokenRotateInterval = setInterval(() => rotateRefreshToken(member.userId), 60 * 1000);
+    window.refreshTokenRotateInterval = setInterval(
+      async () => {
+        const savedRefreshToken = localStorage.getItem('refreshToken');
+        console.log(`Using refresh token ends with: ${savedRefreshToken?.slice(-4)}`);
+
+        try {
+          const { refreshToken } = await apiRefreshToken({
+            userId: member.userId,
+            refreshToken: savedRefreshToken ?? ''
+          });
+          localStorage.setItem('refreshToken', refreshToken);
+          console.log(`Saved refresh token ends with: ${refreshToken?.slice(-4)}`);
+        } catch (e) {
+          if ((e as any)?.response?.status === 401) {
+            clearInterval(window.refreshTokenRotateInterval);
+            localStorage.removeItem('refreshToken');
+            console.log(`Deleting refresh token`);
+            const currentUrl = window.location.pathname + window.location.search;
+            window.location.replace(`/logout?authError=true&redirectTo=${encodeURIComponent(currentUrl)}`);
+          } else {
+            console.error(e);
+          }
+        }
+      },
+      import.meta.env.VITE_APP_TOKEN_ROTATE_INTERVAL
+    );
 
     return member;
   };
@@ -66,16 +83,6 @@ export function MpSessionProvider({ children }: { children: React.ReactNode }) {
     console.log(`Saved refresh token ends with: ${refreshToken?.slice(-4)}`);
 
     setSession(await getSession());
-  };
-
-  const logout = async () => {
-    try {
-      await axios.get('/v1/auth/logout');
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setSession(null);
-    }
   };
 
   useEffect(() => {
@@ -96,8 +103,7 @@ export function MpSessionProvider({ children }: { children: React.ReactNode }) {
       value={{
         session,
         isLoading,
-        login,
-        logout
+        login
       }}
     >
       {children}

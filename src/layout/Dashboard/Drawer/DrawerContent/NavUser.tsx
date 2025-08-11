@@ -1,5 +1,4 @@
 import { useState, MouseEvent } from 'react';
-import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
 // material-ui
@@ -49,24 +48,11 @@ const ExpandMore = styled(IconButton, { shouldForwardProp: (prop) => prop !== 't
 
 export default function UserList() {
   const theme = useTheme();
-  const navigate = useNavigate();
 
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
 
-  const { session, logout } = useMpSession();
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate(`/login`, {
-        state: {
-          from: ''
-        }
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const { session } = useMpSession();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -118,7 +104,9 @@ export default function UserList() {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
-        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        <MenuItem component={Link} to="/logout">
+          Logout
+        </MenuItem>
         <MenuItem component={Link} to="/apps/profiles/user/personal" onClick={handleClose}>
           Profile
         </MenuItem>

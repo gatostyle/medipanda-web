@@ -1,7 +1,6 @@
 // material-ui
 import Box from '@mui/material/Box';
 
-import { useMpSession } from 'medipanda/hooks/useMpSession';
 import IconButton from 'components/@extended/IconButton';
 import { Logout } from 'iconsax-react';
 import { useNavigate } from 'react-router';
@@ -10,19 +9,9 @@ import { useNavigate } from 'react-router';
 
 export default function HeaderContent() {
   const navigate = useNavigate();
-  const { logout } = useMpSession();
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate(`/login`, {
-        state: {
-          from: ''
-        }
-      });
-    } catch (err) {
-      console.error(err);
-    }
+  const handleLogout = () => {
+    navigate('/logout');
   };
 
   return (

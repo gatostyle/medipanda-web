@@ -20,41 +20,45 @@ import {
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { Add, Minus, SearchNormal1 } from 'iconsax-react';
-import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
 import {
   AttachedFileResponse,
+  createPartnerProducts,
   getAttachedEdiFiles,
   getPartnerProducts,
   getPrescriptionPartner,
-  getProductSummaries,
   OcrResponse,
   PartnerResponse,
-  PrescriptionPartnerProductResponse
+  PrescriptionPartnerProductResponse,
+  PrescriptionProductItem,
+  ProductSummaryResponse
 } from 'medipanda/backend';
 import { MpChangeHistoryDialog } from 'medipanda/components/MpChangeHistoryDialog';
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
 import { MpOcrRequestModal } from 'medipanda/components/MpOcrRequestModal';
 import { MpPartnerSearchModal } from 'medipanda/components/MpPartnerSearchModal';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
 import { Sequenced } from 'medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { MpPartnerProductSelectModal } from '../components/MpPartnerProductSelectModal';
 import { DateFix } from '../utils/dateFormat';
 
 export default function MpAdminPrescriptionFormProducts() {
   const navigate = useNavigate();
   const { id } = useParams();
   const notImplementedDialog = useMpNotImplementedDialog();
-  const errorDialog = useMpErrorDialog();
   const { enqueueSnackbar } = useSnackbar();
   const [changeHistoryOpen, setChangeHistoryOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [ocrModalOpen, setOcrModalOpen] = useState(false);
   const [partnerSearchModalOpen, setPartnerSearchModalOpen] = useState(false);
+  const [partnerProductSelectModalOpen, setPartnerProductSelectModalOpen] = useState(false);
+  const [currentProductItemIndex, setCurrentProductItemIndex] = useState<number>(0);
 
-  const [products, setProducts] = useState<Sequenced<PrescriptionPartnerProductResponse>[]>([]);
+  const [partnerProducts, setPartnerProducts] = useState<
+    Sequenced<PrescriptionPartnerProductResponse & Pick<PrescriptionProductItem, 'ocrItem'>>[]
+  >([]);
   const [attachedFiles, setAttachedFiles] = useState<AttachedFileResponse[]>([]);
 
   const [sendOcrReport, setSendOcrReport] = useState(false);
@@ -73,15 +77,26 @@ export default function MpAdminPrescriptionFormProducts() {
       prescriptionAmount: ''
     },
     onSubmit: async (values) => {
-      console.log('Form submitted:', values, products);
-      navigate('/admin/prescription-forms');
+      try {
+        await createPartnerProducts({
+          prescriptionPartnerId: parseInt(id!),
+          items: partnerProducts
+        });
+
+        alert('거래처별 제품 목록이 저장되었습니다.');
+
+        navigate('/admin/prescription-forms');
+      } catch (e) {
+        console.error('Failed to submit form:', e);
+        enqueueSnackbar('거래처별 제품상세 저장에 실패했습니다.', { variant: 'error' });
+      }
     }
   });
 
-  const handleProductChange = useCallback((id: number, field: keyof PrescriptionPartnerProductResponse, value: any) => {
-    setProducts((prev) =>
-      prev.map((p) => {
-        if (p.id === id) {
+  const handleProductChange = useCallback((index: number, field: keyof PrescriptionPartnerProductResponse, value: any) => {
+    setPartnerProducts((prev) =>
+      prev.map((p, i) => {
+        if (index === i) {
           const updatedProduct = { ...p, [field]: value };
           if (field === 'quantity') {
             updatedProduct.totalPrice = Number(value) * updatedProduct.unitPrice;
@@ -114,14 +129,14 @@ export default function MpAdminPrescriptionFormProducts() {
         size: 200,
         cell: ({ row }) => (
           <Stack direction="row" spacing={1} alignItems="center">
-            <TextField
+            <TextField size="small" fullWidth value={row.original.productName} placeholder="제품명 검색" disabled />
+            <IconButton
               size="small"
-              fullWidth
-              value={row.original.productName}
-              onChange={(e) => handleProductChange(row.original.id, 'productName', e.target.value)}
-              placeholder="제품명 검색"
-            />
-            <IconButton size="small" onClick={() => handleProductSearch(row.original.id)}>
+              onClick={() => {
+                setCurrentProductItemIndex(row.index);
+                setPartnerProductSelectModalOpen(true);
+              }}
+            >
               <SearchNormal1 size={16} />
             </IconButton>
           </Stack>
@@ -141,7 +156,7 @@ export default function MpAdminPrescriptionFormProducts() {
             size="small"
             type="number"
             value={row.original.quantity}
-            onChange={(e) => handleProductChange(row.original.id, 'quantity', e.target.value)}
+            onChange={(e) => handleProductChange(row.index, 'quantity', e.target.value)}
             sx={{ width: 80 }}
           />
         ),
@@ -178,8 +193,9 @@ export default function MpAdminPrescriptionFormProducts() {
           <TextField
             size="small"
             fullWidth
+            name="note"
             value={row.original.note}
-            onChange={(e) => handleProductChange(row.original.id, 'note', e.target.value)}
+            onChange={(e) => handleProductChange(row.index, 'note', e.target.value)}
           />
         ),
         size: 150
@@ -189,35 +205,36 @@ export default function MpAdminPrescriptionFormProducts() {
   );
 
   const table = useReactTable({
-    data: products,
+    data: partnerProducts,
     columns,
     getCoreRowModel: getCoreRowModel()
   });
 
   const handleAddProduct = () => {
-    const maxSequence = Math.max(...products.map((p) => p.sequence || 0));
-    const newId = Math.max(...products.map((p) => p.id)) + 1;
-    setProducts([
-      ...products,
+    const maxSequence = Math.max(...partnerProducts.map((p) => p.sequence || 0), 0);
+
+    setPartnerProducts([
+      ...partnerProducts,
       {
         sequence: maxSequence + 1,
-        id: newId,
+        id: -1,
         productCode: '',
         productName: '',
         unit: '',
         quantity: 0,
         unitPrice: 0,
         totalPrice: 0,
-        baseFeeRate: 0.1,
+        baseFeeRate: 0,
         feeAmount: 0,
-        note: ''
+        note: '',
+        ocrItem: null
       }
     ]);
   };
 
   const handleRemoveProduct = () => {
-    if (products.length > 1) {
-      setProducts(products.slice(0, -1));
+    if (partnerProducts.length > 1) {
+      setPartnerProducts(partnerProducts.slice(0, -1));
     }
   };
 
@@ -232,6 +249,24 @@ export default function MpAdminPrescriptionFormProducts() {
     formik.setFieldValue('companyName', partner.companyName);
   };
 
+  const handleProductSelect = (product: ProductSummaryResponse) => {
+    const currentPartnerProduct = partnerProducts[currentProductItemIndex];
+
+    setPartnerProducts([
+      ...partnerProducts.slice(0, currentProductItemIndex),
+      {
+        ...currentPartnerProduct,
+        productCode: product.productCode,
+        productName: product.productName ?? '',
+        unitPrice: product.price ?? 0,
+        totalPrice: currentPartnerProduct.quantity * (product.price ?? 0),
+        baseFeeRate: product.feeRate ?? 0,
+        feeAmount: currentPartnerProduct.quantity * (product.price ?? 0) * (product.feeRate ?? 0)
+      },
+      ...partnerProducts.slice(currentProductItemIndex + 1)
+    ]);
+  };
+
   const handleEdiFileView = async () => {
     setOcrModalOpen(true);
   };
@@ -241,39 +276,37 @@ export default function MpAdminPrescriptionFormProducts() {
   };
 
   const handleOcrSubmit = (response: OcrResponse[]) => {
-    const updatedProducts = products.map((product, index) => {
-      if (index < response.length) {
-        const data = response[index];
+    const maxSequence = Math.max(...partnerProducts.map((p) => p.sequence || 0));
+
+    setPartnerProducts([
+      ...partnerProducts,
+      ...response.map((ocrItem, index) => {
         return {
-          ...product,
-          insuranceCode: data.code,
-          productName: data.name,
-          unit: '',
-          quantity: data.volume,
-          unitPrice: data.price,
-          totalPrice: data.totalAmount,
-          commissionRate: data.rate,
-          feeAmount: data.feeAmount
+          sequence: maxSequence + index + 1,
+          id: -1,
+          productCode: ocrItem.code,
+          productName: ocrItem.name,
+          unit: ocrItem.unit,
+          quantity: ocrItem.volume,
+          unitPrice: ocrItem.price,
+          totalPrice: ocrItem.totalAmount,
+          baseFeeRate: ocrItem.rate,
+          feeAmount: ocrItem.feeAmount,
+          note: '',
+          ocrItem: {
+            productCode: ocrItem.code,
+            productName: ocrItem.name,
+            unit: ocrItem.unit,
+            quantity: ocrItem.volume,
+            unitPrice: ocrItem.price,
+            totalPrice: ocrItem.totalAmount,
+            baseFeeRate: ocrItem.rate,
+            feeAmount: ocrItem.feeAmount,
+            note: ''
+          }
         };
-      }
-      return product;
-    });
-
-    setProducts(updatedProducts);
-  };
-
-  const handleProductSearch = async (productId: number) => {
-    try {
-      const productName = products.find((p) => p.id === productId)?.productName ?? '';
-      await getProductSummaries({ productName });
-    } catch (error) {
-      if (error instanceof NotImplementedError) {
-        notImplementedDialog.open(error.message);
-      } else {
-        console.error('Failed to search products:', error);
-        errorDialog.showError('제품 검색 중 오류가 발생했습니다.');
-      }
-    }
+      })
+    ]);
   };
 
   const handleCancel = () => {
@@ -307,10 +340,11 @@ export default function MpAdminPrescriptionFormProducts() {
           prescriptionAmount: formDetail.amount.toLocaleString()
         });
 
-        setProducts(
+        setPartnerProducts(
           products.map((product, index) => ({
             ...product,
-            sequence: index + 1
+            sequence: index + 1,
+            ocrItem: null
           }))
         );
 
@@ -484,7 +518,7 @@ export default function MpAdminPrescriptionFormProducts() {
               color="error"
               size="small"
               onClick={handleRemoveProduct}
-              disabled={products.length <= 1}
+              disabled={partnerProducts.length <= 1}
               startIcon={<Minus size={16} />}
             >
               내역삭제
@@ -534,6 +568,11 @@ export default function MpAdminPrescriptionFormProducts() {
         imageUrls={attachedFiles.map((it) => it.fileUrl)}
       />
       <MpPartnerSearchModal open={partnerSearchModalOpen} onClose={() => setPartnerSearchModalOpen(false)} onSelect={handlePartnerSelect} />
+      <MpPartnerProductSelectModal
+        open={partnerProductSelectModalOpen}
+        onClose={() => setPartnerProductSelectModalOpen(false)}
+        onSelect={handleProductSelect}
+      />
     </Box>
   );
 }

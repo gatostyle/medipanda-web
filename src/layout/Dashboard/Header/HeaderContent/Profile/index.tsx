@@ -68,18 +68,9 @@ export default function ProfilePage() {
   const theme = useTheme();
   const navigate = useNavigate();
 
-  const { session, logout } = useMpSession();
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate(`/login`, {
-        state: {
-          from: ''
-        }
-      });
-    } catch (err) {
-      console.error(err);
-    }
+  const { session } = useMpSession();
+  const handleLogout = () => {
+    navigate('/logout');
   };
 
   const anchorRef = useRef<any>(null);

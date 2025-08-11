@@ -15,12 +15,10 @@ axiosServices.interceptors.response.use(
       const isAuthRequest =
         error.config?.url?.includes('/v1/auth/login') ||
         error.config?.url?.includes('/v1/auth/logout') ||
+        error.config?.url?.includes('/v1/auth/token/refresh') ||
         error.config?.url?.includes('/v1/auth/me');
 
       if (!isAuthPage && !isAuthRequest) {
-        localStorage.removeItem('refreshToken');
-        console.log(`Deleting refresh token`);
-        clearInterval((window as any).tokenRefreshInterval);
         const currentUrl = window.location.pathname + window.location.search;
         window.location.replace(`/logout?authError=true&redirectTo=${encodeURIComponent(currentUrl)}`);
       }

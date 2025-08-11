@@ -49,7 +49,6 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
         img.src = currentImageUrl!;
       } else {
         setBackgroundImage(null);
-        loadSampleImage();
       }
     }
   }, [open, imageUrls.length]);
@@ -143,61 +142,13 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
     setDraggedPointIndex(-1);
   };
 
-  const loadSampleImage = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-    gradient.addColorStop(0, '#f8f9fa');
-    gradient.addColorStop(1, '#e9ecef');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.strokeStyle = '#dee2e6';
-    ctx.lineWidth = 1;
-    for (let i = 0; i < canvas.width; i += 20) {
-      ctx.beginPath();
-      ctx.moveTo(i, 0);
-      ctx.lineTo(i, canvas.height);
-      ctx.stroke();
-    }
-    for (let i = 0; i < canvas.height; i += 20) {
-      ctx.beginPath();
-      ctx.moveTo(0, i);
-      ctx.lineTo(canvas.width, i);
-      ctx.stroke();
-    }
-
-    ctx.fillStyle = 'white';
-    ctx.strokeStyle = '#333';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(100, 75);
-    ctx.lineTo(400, 60);
-    ctx.lineTo(425, 300);
-    ctx.lineTo(75, 325);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = '#333';
-    ctx.font = 'bold 16px Arial';
-    ctx.fillText('Sample Prescription', 150, 120);
-    ctx.font = '12px Arial';
-    ctx.fillText('Patient: John Doe', 150, 150);
-    ctx.fillText('Medicine: Sample Med 100mg', 150, 170);
-    ctx.fillText('Quantity: 30 tablets', 150, 190);
-    ctx.fillText('Instructions: 1 tablet daily', 150, 210);
-  };
-
   const redraw = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    const computedRect = canvas.getBoundingClientRect();
+    canvas.width = computedRect.width * window.devicePixelRatio;
+    canvas.height = computedRect.width * (window.innerHeight / window.innerWidth) * window.devicePixelRatio;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -506,6 +457,10 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
       const height = backgroundImage!.height;
 
       const canvas = canvasRef.current!;
+      const computedRect = canvas.getBoundingClientRect();
+      canvas.width = computedRect.width * window.devicePixelRatio;
+      canvas.height = computedRect.width * (window.innerHeight / window.innerWidth) * window.devicePixelRatio;
+
       const scale = Math.min(canvas.width / width, canvas.height / height);
       const w = width * scale;
       const h = height * scale;
@@ -515,9 +470,8 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
 
       const ocrData = await requestOcr({
         file: blob,
-        fileName: 'scanned.jpg',
         originalFile: originalBlob,
-        originalFileName: 'original.jpg',
+        originalFileName: new URL(currentImageUrl!).pathname.split('/').pop()!,
         width,
         height,
         points: currentPoints.map((point) => ({
@@ -558,7 +512,6 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
       const newIndex = currentImageIndex - 1;
       setCurrentImageIndex(newIndex);
       const updatedAllPoints = [...allPoints];
-      updatedAllPoints[newIndex] = [];
       setAllPoints(updatedAllPoints);
       clearTransformedCanvas();
     }
@@ -569,14 +522,13 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
       const newIndex = currentImageIndex + 1;
       setCurrentImageIndex(newIndex);
       const updatedAllPoints = [...allPoints];
-      updatedAllPoints[newIndex] = [];
       setAllPoints(updatedAllPoints);
       clearTransformedCanvas();
     }
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="xl" fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth="xl" fullScreen disableEscapeKeyDown>
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h6">OCR 요청</Typography>
@@ -590,7 +542,7 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Box>
               <Typography variant="body2" color="text.secondary">
-                상단 캔버스: 원본 이미지 - 4개의 모서리 점을 클릭하여 문서 영역을 선택하세요
+                상단 캔버스: 원본 이미지 - 좌측 상단부터 시계 방향으로 4개의 모서리 점을 클릭하여 문서 영역을 선택하세요
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 하단 캔버스: 변환된 이미지 - 선택한 영역이 자동으로 변환됩니다
@@ -616,15 +568,13 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
           <Box>
             <canvas
               ref={canvasRef}
-              width={800}
-              height={600}
               style={{
                 border: '2px solid #333',
                 cursor: 'crosshair',
                 display: 'block',
                 margin: '0 auto',
                 backgroundColor: 'white',
-                maxWidth: '100%',
+                width: '100%',
                 height: 'auto'
               }}
               onClick={handleCanvasClick}
@@ -636,7 +586,7 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
           </Box>
 
           <Box
-            sx={{ overflow: 'auto', maxHeight: '400px', border: '1px solid #e0e0e0', borderRadius: 1, p: 1, backgroundColor: '#f5f5f5' }}
+            sx={{ overflow: 'visible', maxHeight: '400px', border: '1px solid #e0e0e0', borderRadius: 1, p: 1, backgroundColor: '#f5f5f5' }}
           >
             <canvas
               ref={transformedCanvasRef}
@@ -645,7 +595,7 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
                 display: 'block',
                 margin: '0 auto',
                 backgroundColor: '#f0f0f0',
-                maxWidth: '100%',
+                width: '100%',
                 height: 'auto'
               }}
             />

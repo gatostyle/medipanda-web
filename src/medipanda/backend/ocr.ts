@@ -6,13 +6,13 @@ export interface OcrResponse {
   volume: number;
   price: number;
   rate: number;
+  unit: string;
   totalAmount: number;
   feeAmount: number;
 }
 
 export async function requestOcr(data: {
   file: Blob;
-  fileName: string;
   originalFile: Blob;
   originalFileName: string;
   width: number;
@@ -20,8 +20,8 @@ export async function requestOcr(data: {
   points: { x: number; y: number }[];
 }): Promise<OcrResponse[]> {
   const form = new FormData();
-  form.append('file', data.file, data.fileName);
-  form.append('original-file', data.originalFile, data.originalFileName);
+  form.append('cropped-image', data.file, `${data.originalFileName}_scanned.jpg`);
+  form.append('original-image', data.originalFile, data.originalFileName);
 
   form.append('width', data.width.toString());
   form.append('height', data.height.toString());
