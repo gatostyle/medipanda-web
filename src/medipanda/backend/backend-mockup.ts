@@ -1,143 +1,157 @@
 import {
-  PrescriptionResponse,
-  PrescriptionPartnerResponse,
-  PrescriptionPartnerProductResponse,
-  AttachedFileResponse,
-  SalesAgencyProductSummaryResponse,
-  SalesAgencyProductDetailsResponse,
-  SalesAgencyProductApplicantResponse,
-  MemberResponse,
-  MemberDetailsResponse,
   AdminPermissionResponse,
-  PartnerResponse,
-  PartnerContractDetailsResponse,
-  BannerResponse,
-  BoardPostResponse,
-  BoardMemberStatsResponse,
-  BlindPostResponse,
-  CommentResponse,
-  CommentMemberResponse,
-  EventBoardSummaryResponse,
-  EventBoardDetailsResponse,
-  ExpenseReportResponse,
-  ProductSummaryResponse,
-  ProductDetailsResponse,
-  SampleProvideReportDetailResponse,
-  ProductBriefingSingleDetailResponse,
-  ProductBriefingMultiDetailResponse,
-  HospitalResponse,
-  EditorUploadResponse,
-  searchPrescriptions as originalSearchPrescriptions,
-  getPrescriptionPartnerList as originalGetPrescriptionPartnerList,
-  getPrescriptionPartner as originalGetPrescriptionPartner,
-  uploadEdiZip as originalUploadEdiZip,
-  createPartnerProducts as originalCreatePartnerProducts,
-  uploadPartnerEdiFiles as originalUploadPartnerEdiFiles,
-  confirmPrescription as originalConfirmPrescription,
-  completePrescriptionPartner as originalCompletePrescriptionPartner,
-  getPartnerProducts as originalGetPartnerProducts,
-  getAttachedEdiFiles as originalGetAttachedEdiFiles,
-  downloadZippedEdiFiles as originalDownloadZippedEdiFiles,
-  deletePrescriptionPartner as originalDeletePrescriptionPartner,
-  getSalesAgencyProducts as originalGetSalesAgencyProducts,
-  createSalesAgencyProductBoard as originalCreateSalesAgencyProductBoard,
-  applyProduct as originalApplyProduct,
-  getSalesAgencyProductDetails as originalGetSalesAgencyProductDetails,
-  updateSalesAgencyProductBoard as originalUpdateSalesAgencyProductBoard,
-  updateApplicantNotes as originalUpdateApplicantNotes,
-  getProductApplicants as originalGetProductApplicants,
-  getUserMembers as originalGetUserMembers,
-  signup as originalSignup,
-  getMemberDetails as originalGetMemberDetails,
-  updateMember as originalUpdateMember,
-  deleteMember as originalDeleteMember,
-  changePassword as originalChangePassword,
-  updateNickname as originalUpdateNickname,
-  approveOrRejectCso as originalApproveOrRejectCso,
-  updateByAdmin as originalUpdateByAdmin,
-  isUserIdAvailable as originalIsUserIdAvailable,
-  downloadUserMembersExcel as originalDownloadUserMembersExcel,
-  isAvailableNickname as originalIsAvailableNickname,
-  getAdminMembers as originalGetAdminMembers,
-  signupByAdmin as originalSignupByAdmin,
-  getPermissions as originalGetPermissions,
-  registerFcmToken as originalRegisterFcmToken,
-  getPartners as originalGetPartners,
-  createPartner as originalCreatePartner,
-  getPartnerDetails as originalGetPartnerDetails,
-  updatePartner as originalUpdatePartner,
-  deletePartner as originalDeletePartner,
-  uploadPartnersExcel as originalUploadPartnersExcel,
-  getDrugCompanies as originalGetDrugCompanies,
   applyContract as originalApplyContract,
-  rejectContract as originalRejectContract,
+  applyProduct as originalApplyProduct,
   approveContract as originalApproveContract,
-  updateContract as originalUpdateContract,
-  getContractDetails as originalGetContractDetails,
-  getBanners as originalGetBanners,
+  approveOrRejectCso as originalApproveOrRejectCso,
+  AttachedFileResponse,
+  BannerResponse,
+  BlindPostResponse,
+  BoardMemberStatsResponse,
+  BoardPostResponse,
+  changePassword as originalChangePassword,
+  CommentMemberResponse,
+  CommentResponse,
+  completePrescriptionPartner as originalCompletePrescriptionPartner,
+  confirmPrescription as originalConfirmPrescription,
   createBanner as originalCreateBanner,
-  getBanner as originalGetBanner,
-  updateBanner as originalUpdateBanner,
-  getBoards as originalGetBoards,
   createBoardPost as originalCreateBoardPost,
-  getBoardDetails as originalGetBoardDetails,
-  updateBoardPost as originalUpdateBoardPost,
-  deleteBoardPost as originalDeleteBoardPost,
-  toggleBlindStatus_1 as originalToggleBlindStatus1,
-  unblindPost as originalUnblindPost,
-  uploadEditorFile as originalUploadEditorFile,
-  getBoardMembers as originalGetBoardMembers,
-  getBlindPosts as originalGetBlindPosts,
-  toggleLike_1 as originalToggleLike1,
-  getEventBoards as originalGetEventBoards,
-  createEventBoard as originalCreateEventBoard,
-  getEventBoardDetails as originalGetEventBoardDetails,
-  updateEventBoard as originalUpdateEventBoard,
-  softDeleteEventBoard as originalSoftDeleteEventBoard,
-  getProductSummaries as originalGetProductSummaries,
-  getProductDetails as originalGetProductDetails,
-  downloadProductSummariesExcel as originalDownloadProductSummariesExcel,
-  exportAll as originalExportAll,
-  uploadFromS3 as originalUploadFromS3,
-  uploadProductExtraInfo as originalUploadProductExtraInfo,
-  createProductExtraInfo as originalCreateProductExtraInfo,
-  updateProductExtraInfo as originalUpdateProductExtraInfo,
-  updateProductExtraInfo_1 as originalUpdateProductExtraInfo1,
-  getExpenseReportList as originalGetExpenseReportList,
-  downloadExpenseReportListExcel as originalDownloadExpenseReportListExcel,
-  createSampleProvideReport as originalCreateSampleProvideReport,
-  getSampleProvideReport as originalGetSampleProvideReport,
-  updateSampleProvideReport as originalUpdateSampleProvideReport,
-  createProductBriefingSingleReport as originalCreateProductBriefingSingleReport,
-  getProductBriefingSingleReport as originalGetProductBriefingSingleReport,
-  updateProductBriefingSingleReport as originalUpdateProductBriefingSingleReport,
-  createProductBriefingMultiReport as originalCreateProductBriefingMultiReport,
-  getProductBriefingMultiReport as originalGetProductBriefingMultiReport,
-  updateProductBriefingMultiReport as originalUpdateProductBriefingMultiReport,
-  login as originalLogin,
-  refreshToken as originalRefreshToken,
-  getPublicKey as originalGetPublicKey,
-  whoAmI as originalWhoAmI,
-  verifyCode as originalVerifyCode,
-  sendVerificationCode as originalSendVerificationCode,
-  getHospitals as originalGetHospitals,
-  uploadHospitalExcel as originalUploadHospitalExcel,
-  softDeleteHospital as originalSoftDeleteHospital,
-  getCommentMembers as originalGetCommentMembers,
-  updateComment as originalUpdateComment,
-  toggleBlindStatus as originalToggleBlindStatus,
   createComment as originalCreateComment,
-  toggleLike as originalToggleLike,
-  deleteComment as originalDeleteComment,
+  createEventBoard as originalCreateEventBoard,
+  createPartner as originalCreatePartner,
+  createPartnerProducts as originalCreatePartnerProducts,
+  createProductBriefingMultiReport as originalCreateProductBriefingMultiReport,
+  createProductBriefingSingleReport as originalCreateProductBriefingSingleReport,
+  createProductExtraInfo as originalCreateProductExtraInfo,
   createReport as originalCreateReport,
-  testPush as originalTestPush,
-  testEmail as originalTestEmail,
-  getTermsByVersion as originalGetTermsByVersion,
-  getPrivacyPolicyByVersion as originalGetPrivacyPolicyByVersion,
+  createSalesAgencyProductBoard as originalCreateSalesAgencyProductBoard,
+  createSampleProvideReport as originalCreateSampleProvideReport,
+  deleteBoardPost as originalDeleteBoardPost,
+  deleteComment as originalDeleteComment,
+  deleteMember as originalDeleteMember,
+  deletePartner as originalDeletePartner,
+  deletePrescriptionPartner as originalDeletePrescriptionPartner,
+  getDownloadZippedEdiFiles as originalGetDownloadZippedEdiFiles,
+  EditorUploadResponse,
+  EventBoardDetailsResponse,
+  EventBoardSummaryResponse,
+  ExpenseReportResponse,
+  exportAll as originalExportAll,
+  getAdminMembers as originalGetAdminMembers,
+  getAttachedEdiFiles as originalGetAttachedEdiFiles,
+  getBanner as originalGetBanner,
+  getBanners as originalGetBanners,
+  getBlindPosts as originalGetBlindPosts,
+  getBoardDetails as originalGetBoardDetails,
+  getBoardMembers as originalGetBoardMembers,
+  getBoards as originalGetBoards,
+  getCommentMembers as originalGetCommentMembers,
+  getContractDetails as originalGetContractDetails,
+  getDealerIdByUserId as originalGetDealerIdByUserId,
+  getDownloadExpenseReportListExcel as originalGetDownloadExpenseReportListExcel,
+  getDownloadPerformanceExcel as originalGetDownloadPerformanceExcel,
+  getDownloadProductApplicantsExcel as originalGetDownloadProductApplicantsExcel,
+  getDownloadProductSummariesExcel as originalGetDownloadProductSummariesExcel,
+  getDownloadSalesAgencyProductsExcel as originalGetDownloadSalesAgencyProductsExcel,
+  getDownloadSettlementListExcel as originalGetDownloadSettlementListExcel,
+  getDownloadSettlementPartnerSummaryExcel as originalGetDownloadSettlementPartnerSummaryExcel,
+  getDownloadUserMembersExcel as originalGetDownloadUserMembersExcel,
+  getDrugCompanies as originalGetDrugCompanies,
+  getEventBoardDetails as originalGetEventBoardDetails,
+  getEventBoards as originalGetEventBoards,
+  getExpenseReportList as originalGetExpenseReportList,
+  getHospitals as originalGetHospitals,
   getLatestPrivacyPolicy as originalGetLatestPrivacyPolicy,
   getLatestTerms as originalGetLatestTerms,
-  downloadProductApplicantsExcel as originalDownloadProductApplicantsExcel,
-  downloadSalesAgencyProductsExcel as originalDownloadSalesAgencyProductsExcel
+  getMemberDetails as originalGetMemberDetails,
+  getPartnerDetails as originalGetPartnerDetails,
+  getPartnerIdsByUserId as originalGetPartnerIdsByUserId,
+  getPartnerProducts as originalGetPartnerProducts,
+  getPartners as originalGetPartners,
+  getPerformanceStats as originalGetPerformanceStats,
+  getPermissions as originalGetPermissions,
+  getPrescriptionPartner as originalGetPrescriptionPartner,
+  getPrescriptionPartnerList as originalGetPrescriptionPartnerList,
+  getPrivacyPolicyByVersion as originalGetPrivacyPolicyByVersion,
+  getProductApplicants as originalGetProductApplicants,
+  getProductBriefingMultiReport as originalGetProductBriefingMultiReport,
+  getProductBriefingSingleReport as originalGetProductBriefingSingleReport,
+  getProductDetails as originalGetProductDetails,
+  getProductSummaries as originalGetProductSummaries,
+  getPublicKey as originalGetPublicKey,
+  getSalesAgencyProductDetails as originalGetSalesAgencyProductDetails,
+  getSalesAgencyProducts as originalGetSalesAgencyProducts,
+  getSampleProvideReport as originalGetSampleProvideReport,
+  getSettlementPartnerProducts as originalGetSettlementPartnerProducts,
+  getSettlementPartnerSummary as originalGetSettlementPartnerSummary,
+  getSettlements as originalGetSettlements,
+  getTermsByVersion as originalGetTermsByVersion,
+  getUserMembers as originalGetUserMembers,
+  HospitalResponse,
+  isAvailableNickname as originalIsAvailableNickname,
+  isUserIdAvailable as originalIsUserIdAvailable,
+  login as originalLogin,
+  MemberDetailsResponse,
+  MemberResponse,
+  PartnerContractDetailsResponse,
+  PartnerResponse,
+  PerformanceStatsResponse,
+  PrescriptionPartnerProductResponse,
+  PrescriptionPartnerResponse,
+  PrescriptionResponse,
+  ProductBriefingMultiDetailResponse,
+  ProductBriefingSingleDetailResponse,
+  ProductDetailsResponse,
+  ProductSummaryResponse,
+  refreshToken as originalRefreshToken,
+  registerFcmToken as originalRegisterFcmToken,
+  rejectContract as originalRejectContract,
+  SalesAgencyProductApplicantResponse,
+  SalesAgencyProductDetailsResponse,
+  SalesAgencyProductSummaryResponse,
+  SampleProvideReportDetailResponse,
+  searchPrescriptions as originalSearchPrescriptions,
+  sendVerificationCode as originalSendVerificationCode,
+  SettlementPartnerProductResponse,
+  SettlementPartnerResponse,
+  SettlementResponse,
+  signup as originalSignup,
+  signupByAdmin as originalSignupByAdmin,
+  softDeleteEventBoard as originalSoftDeleteEventBoard,
+  softDeleteHospital as originalSoftDeleteHospital,
+  testEmail as originalTestEmail,
+  testPush as originalTestPush,
+  toggleBlindStatus as originalToggleBlindStatus,
+  toggleBlindStatus_1 as originalToggleBlindStatus1,
+  toggleLike as originalToggleLike,
+  toggleLike_1 as originalToggleLike1,
+  unblindPost as originalUnblindPost,
+  updateApplicantNotes as originalUpdateApplicantNotes,
+  updateBanner as originalUpdateBanner,
+  updateBoardPost as originalUpdateBoardPost,
+  updateByAdmin as originalUpdateByAdmin,
+  updateComment as originalUpdateComment,
+  updateContract as originalUpdateContract,
+  updateEventBoard as originalUpdateEventBoard,
+  updateMember as originalUpdateMember,
+  updateNickname as originalUpdateNickname,
+  updatePartner as originalUpdatePartner,
+  updateProductBriefingMultiReport as originalUpdateProductBriefingMultiReport,
+  updateProductBriefingSingleReport as originalUpdateProductBriefingSingleReport,
+  updateProductExtraInfo as originalUpdateProductExtraInfo,
+  updateProductExtraInfo_1 as originalUpdateProductExtraInfo1,
+  updateSalesAgencyProductBoard as originalUpdateSalesAgencyProductBoard,
+  updateSampleProvideReport as originalUpdateSampleProvideReport,
+  uploadEditorFile as originalUploadEditorFile,
+  uploadEdiZip as originalUploadEdiZip,
+  uploadFromS3 as originalUploadFromS3,
+  uploadHospitalExcel as originalUploadHospitalExcel,
+  uploadPartnerEdiFiles as originalUploadPartnerEdiFiles,
+  uploadPartnersExcel as originalUploadPartnersExcel,
+  uploadProductExtraInfo as originalUploadProductExtraInfo,
+  uploadSettlementExcel as originalUploadSettlementExcel,
+  verifyCode as originalVerifyCode,
+  whoAmI as originalWhoAmI
 } from './backend';
 
 const MockPrescriptionResponse: PrescriptionResponse[] = [
@@ -668,7 +682,8 @@ const MockMemberResponse: MemberResponse[] = [
     accountStatus: 'ACTIVATED',
     role: 'USER',
     companyName: 'MockCompany001',
-    createdAt: '2024-01-01T00:00:00Z'
+    createdAt: '2024-01-01T00:00:00Z',
+    nicknameHidden: true
   },
   {
     id: 2,
@@ -685,7 +700,8 @@ const MockMemberResponse: MemberResponse[] = [
     accountStatus: 'ACTIVATED',
     role: 'USER',
     companyName: 'MockCompany002',
-    createdAt: '2024-01-02T00:00:00Z'
+    createdAt: '2024-01-02T00:00:00Z',
+    nicknameHidden: false
   },
   {
     id: 3,
@@ -702,7 +718,8 @@ const MockMemberResponse: MemberResponse[] = [
     accountStatus: 'ACTIVATED',
     role: 'USER',
     companyName: 'MockCompany003',
-    createdAt: '2024-01-03T00:00:00Z'
+    createdAt: '2024-01-03T00:00:00Z',
+    nicknameHidden: true
   },
   {
     id: 4,
@@ -719,7 +736,8 @@ const MockMemberResponse: MemberResponse[] = [
     accountStatus: 'BLOCKED',
     role: 'USER',
     companyName: null,
-    createdAt: '2024-01-04T00:00:00Z'
+    createdAt: '2024-01-04T00:00:00Z',
+    nicknameHidden: false
   },
   {
     id: 5,
@@ -736,7 +754,8 @@ const MockMemberResponse: MemberResponse[] = [
     accountStatus: 'ACTIVATED',
     role: 'ADMIN',
     companyName: 'MockCompany005',
-    createdAt: '2024-01-05T00:00:00Z'
+    createdAt: '2024-01-05T00:00:00Z',
+    nicknameHidden: true
   }
 ];
 
@@ -760,7 +779,8 @@ const MockMemberDetailsResponse: MemberDetailsResponse[] = [
     registrationDate: '2024-01-01',
     lastLoginDate: '2024-01-15',
     note: 'MockNote001',
-    role: 'USER'
+    role: 'USER',
+    nicknameHidden: true
   },
   {
     id: 2,
@@ -781,7 +801,8 @@ const MockMemberDetailsResponse: MemberDetailsResponse[] = [
     registrationDate: '2024-01-02',
     lastLoginDate: '2024-01-16',
     note: 'MockNote002',
-    role: 'USER'
+    role: 'USER',
+    nicknameHidden: false
   },
   {
     id: 3,
@@ -802,7 +823,8 @@ const MockMemberDetailsResponse: MemberDetailsResponse[] = [
     registrationDate: '2024-01-03',
     lastLoginDate: '2024-01-17',
     note: 'MockNote003',
-    role: 'USER'
+    role: 'USER',
+    nicknameHidden: true
   },
   {
     id: 4,
@@ -823,7 +845,8 @@ const MockMemberDetailsResponse: MemberDetailsResponse[] = [
     registrationDate: '2024-01-04',
     lastLoginDate: '2024-01-18',
     note: null,
-    role: 'USER'
+    role: 'USER',
+    nicknameHidden: false
   },
   {
     id: 5,
@@ -844,7 +867,8 @@ const MockMemberDetailsResponse: MemberDetailsResponse[] = [
     registrationDate: '2024-01-05',
     lastLoginDate: '2024-01-19',
     note: 'MockNote005',
-    role: 'ADMIN'
+    role: 'ADMIN',
+    nicknameHidden: true
   }
 ];
 
@@ -1429,8 +1453,8 @@ const MockEventBoardSummaryResponse: EventBoardSummaryResponse[] = [
 
 const MockEventBoardDetailsResponse: EventBoardDetailsResponse = {
   eventId: 1,
-  eventStartDate: 20240201,
-  eventEndDate: 20240203,
+  eventStartDate: '2024-02-01',
+  eventEndDate: '2024-02-03',
   description: 'MockEventDescription001',
   thumbnailUrl: 'https://mock-storage.example.com/events/thumb001.jpg',
   videoUrl: 'https://mock-storage.example.com/events/video001.mp4',
@@ -1763,6 +1787,258 @@ const MockDrugCompanies: string[] = [
   'MockDrugCompany005'
 ];
 
+const MockSettlementResponse: SettlementResponse[] = [
+  {
+    id: 1,
+    settlementMonth: '2024-01',
+    dealerId: 101,
+    dealerName: 'MockDealer001',
+    companyName: 'MockCompany001',
+    status: 'REQUEST',
+    totalAmount: 5500000,
+    supplyAmount: 5000000,
+    taxAmount: 500000,
+    prescriptionAmount: 4800000
+  },
+  {
+    id: 2,
+    settlementMonth: '2024-01',
+    dealerId: 102,
+    dealerName: 'MockDealer002',
+    companyName: 'MockCompany002',
+    status: 'OBJECTION',
+    totalAmount: 3300000,
+    supplyAmount: 3000000,
+    taxAmount: 300000,
+    prescriptionAmount: 2900000
+  },
+  {
+    id: 3,
+    settlementMonth: '2024-02',
+    dealerId: 103,
+    dealerName: 'MockDealer003',
+    companyName: 'MockCompany003',
+    status: 'REQUEST',
+    totalAmount: 7700000,
+    supplyAmount: 7000000,
+    taxAmount: 700000,
+    prescriptionAmount: 6800000
+  },
+  {
+    id: 4,
+    settlementMonth: '2024-02',
+    dealerId: 104,
+    dealerName: 'MockDealer004',
+    companyName: 'MockCompany004',
+    status: null,
+    totalAmount: 2200000,
+    supplyAmount: 2000000,
+    taxAmount: 200000,
+    prescriptionAmount: 1900000
+  },
+  {
+    id: 5,
+    settlementMonth: '2024-03',
+    dealerId: 105,
+    dealerName: 'MockDealer005',
+    companyName: null,
+    status: 'REQUEST',
+    totalAmount: 9900000,
+    supplyAmount: 9000000,
+    taxAmount: 900000,
+    prescriptionAmount: 8700000
+  }
+];
+
+const MockPerformanceStatsResponse: PerformanceStatsResponse[] = [
+  {
+    drugCompany: 'MockDrugCompany001',
+    companyName: 'MockCompany001',
+    dealerName: 'MockDealer001',
+    institutionCode: 'INST001',
+    institutionName: 'MockInstitution001',
+    settlementMonth: '2024-01',
+    prescriptionAmount: 1250000,
+    totalAmount: 1375000,
+    feeAmount: 125000
+  },
+  {
+    drugCompany: 'MockDrugCompany002',
+    companyName: 'MockCompany002',
+    dealerName: 'MockDealer002',
+    institutionCode: 'INST002',
+    institutionName: 'MockInstitution002',
+    settlementMonth: '2024-01',
+    prescriptionAmount: 895000,
+    totalAmount: 984500,
+    feeAmount: 89500
+  },
+  {
+    drugCompany: 'MockDrugCompany003',
+    companyName: 'MockCompany003',
+    dealerName: 'MockDealer003',
+    institutionCode: 'INST003',
+    institutionName: 'MockInstitution003',
+    settlementMonth: '2024-02',
+    prescriptionAmount: 1567500,
+    totalAmount: 1724250,
+    feeAmount: 156750
+  },
+  {
+    drugCompany: null,
+    companyName: 'MockCompany004',
+    dealerName: 'MockDealer004',
+    institutionCode: 'INST004',
+    institutionName: 'MockInstitution004',
+    settlementMonth: '2024-02',
+    prescriptionAmount: 2034000,
+    totalAmount: 2237400,
+    feeAmount: 203400
+  },
+  {
+    drugCompany: 'MockDrugCompany005',
+    companyName: null,
+    dealerName: 'MockDealer005',
+    institutionCode: null,
+    institutionName: 'MockInstitution005',
+    settlementMonth: '2024-03',
+    prescriptionAmount: 782000,
+    totalAmount: 860200,
+    feeAmount: 78200
+  }
+];
+
+const MockSettlementPartnerResponse: SettlementPartnerResponse[] = [
+  {
+    settlementPartnerId: 1,
+    companyName: 'MockCompany001',
+    dealerName: 'MockDealer001',
+    institutionCode: 'INST001',
+    institutionName: 'MockInstitution001',
+    businessNumber: '123-45-67890',
+    supplyAmount: 1250000,
+    taxAmount: 125000,
+    totalAmount: 1375000
+  },
+  {
+    settlementPartnerId: 2,
+    companyName: 'MockCompany002',
+    dealerName: 'MockDealer002',
+    institutionCode: 'INST002',
+    institutionName: 'MockInstitution002',
+    businessNumber: '234-56-78901',
+    supplyAmount: 895000,
+    taxAmount: 89500,
+    totalAmount: 984500
+  },
+  {
+    settlementPartnerId: 3,
+    companyName: 'MockCompany003',
+    dealerName: 'MockDealer003',
+    institutionCode: 'INST003',
+    institutionName: 'MockInstitution003',
+    businessNumber: '345-67-89012',
+    supplyAmount: 1567500,
+    taxAmount: 156750,
+    totalAmount: 1724250
+  },
+  {
+    settlementPartnerId: 4,
+    companyName: 'MockCompany004',
+    dealerName: 'MockDealer004',
+    institutionCode: 'INST004',
+    institutionName: 'MockInstitution004',
+    businessNumber: '456-78-90123',
+    supplyAmount: 2034000,
+    taxAmount: 203400,
+    totalAmount: 2237400
+  },
+  {
+    settlementPartnerId: 5,
+    companyName: 'MockCompany005',
+    dealerName: 'MockDealer005',
+    institutionCode: 'INST005',
+    institutionName: 'MockInstitution005',
+    businessNumber: '567-89-01234',
+    supplyAmount: 782000,
+    taxAmount: 78200,
+    totalAmount: 860200
+  }
+];
+
+const MockSettlementPartnerProductResponse: SettlementPartnerProductResponse[] = [
+  {
+    id: 1,
+    productCode: 'PRD001',
+    productName: 'MockProduct001',
+    seq: 1,
+    quantity: 100,
+    unitPrice: 12500,
+    prescriptionAmount: 1250000,
+    feeRate: 0.15,
+    extraFeeRate: 0.02,
+    feeAmount: 187500,
+    extraFeeAmount: 25000,
+    note: 'MockNote001'
+  },
+  {
+    id: 2,
+    productCode: 'PRD002',
+    productName: 'MockProduct002',
+    seq: 2,
+    quantity: 75,
+    unitPrice: 18000,
+    prescriptionAmount: 1350000,
+    feeRate: 0.12,
+    extraFeeRate: null,
+    feeAmount: 162000,
+    extraFeeAmount: null,
+    note: null
+  },
+  {
+    id: 3,
+    productCode: 'PRD003',
+    productName: 'MockProduct003',
+    seq: 3,
+    quantity: 200,
+    unitPrice: 9500,
+    prescriptionAmount: 1900000,
+    feeRate: 0.18,
+    extraFeeRate: 0.03,
+    feeAmount: 342000,
+    extraFeeAmount: 57000,
+    note: 'MockNote003'
+  },
+  {
+    id: 4,
+    productCode: null,
+    productName: 'MockProduct004',
+    seq: 4,
+    quantity: 150,
+    unitPrice: 6700,
+    prescriptionAmount: 1005000,
+    feeRate: 0.1,
+    extraFeeRate: null,
+    feeAmount: 100500,
+    extraFeeAmount: null,
+    note: null
+  },
+  {
+    id: 5,
+    productCode: 'PRD005',
+    productName: null,
+    seq: null,
+    quantity: 50,
+    unitPrice: 40600,
+    prescriptionAmount: 2030000,
+    feeRate: 0.2,
+    extraFeeRate: 0.05,
+    feeAmount: 406000,
+    extraFeeAmount: 101500,
+    note: 'MockNote005'
+  }
+];
+
 export const searchPrescriptions: typeof originalSearchPrescriptions = async () => {
   return {
     totalElements: MockPrescriptionResponse.length,
@@ -1863,8 +2139,12 @@ export const getAttachedEdiFiles: typeof originalGetAttachedEdiFiles = async () 
   return MockAttachedFileResponse;
 };
 
-export const downloadZippedEdiFiles: typeof originalDownloadZippedEdiFiles = async () => {
-  return Promise.resolve();
+export const getDownloadZippedEdiFiles = originalGetDownloadZippedEdiFiles;
+
+export const getPartnerIdsByUserId: typeof originalGetPartnerIdsByUserId = async (userId: string) => {
+  const partners = MockPartnerResponse.slice(1, 3);
+
+  return partners.map((p) => p.id);
 };
 
 export const deletePrescriptionPartner: typeof originalDeletePrescriptionPartner = async () => {
@@ -2032,9 +2312,7 @@ export const isUserIdAvailable: typeof originalIsUserIdAvailable = async () => {
   return true;
 };
 
-export const downloadUserMembersExcel: typeof originalDownloadUserMembersExcel = async () => {
-  return new Blob(['mock excel data'], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-};
+export const getDownloadUserMembersExcel = originalGetDownloadUserMembersExcel;
 
 export const isAvailableNickname: typeof originalIsAvailableNickname = async () => {
   return true;
@@ -2293,6 +2571,10 @@ export const uploadEditorFile: typeof originalUploadEditorFile = async () => {
   return MockEditorUploadResponse;
 };
 
+export const getDealerIdByUserId: typeof originalGetDealerIdByUserId = async () => {
+  return 101;
+};
+
 export const getBoardMembers: typeof originalGetBoardMembers = async () => {
   return {
     totalElements: MockBoardMemberStatsResponse.length,
@@ -2441,9 +2723,7 @@ export const getProductDetails: typeof originalGetProductDetails = async (id: nu
   return MockProductDetailsResponse;
 };
 
-export const downloadProductSummariesExcel: typeof originalDownloadProductSummariesExcel = async () => {
-  return new Blob(['mock excel data'], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-};
+export const getDownloadProductSummariesExcel = originalGetDownloadProductSummariesExcel;
 
 export const exportAll: typeof originalExportAll = async () => {
   return 'Export completed successfully';
@@ -2500,9 +2780,7 @@ export const getExpenseReportList: typeof originalGetExpenseReportList = async (
   };
 };
 
-export const downloadExpenseReportListExcel: typeof originalDownloadExpenseReportListExcel = async () => {
-  return new Blob(['mock excel data'], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-};
+export const getDownloadExpenseReportListExcel = originalGetDownloadExpenseReportListExcel;
 
 export const createSampleProvideReport: typeof originalCreateSampleProvideReport = async () => {
   return Promise.resolve();
@@ -2579,7 +2857,8 @@ export const whoAmI: typeof originalWhoAmI = async () => {
     registrationDate: '2025-06-13T21:19:02.409834',
     lastLoginDate: '2025-08-04T15:05:50.316059',
     note: null,
-    role: 'SUPER_ADMIN'
+    role: 'SUPER_ADMIN',
+    nicknameHidden: false
   };
 };
 
@@ -2709,10 +2988,113 @@ export const getLatestTerms: typeof originalGetLatestTerms = async () => {
   return 'Mock Latest Terms Content';
 };
 
-export const downloadProductApplicantsExcel: typeof originalDownloadProductApplicantsExcel = async () => {
-  return new Blob(['mock excel data'], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+export const getDownloadProductApplicantsExcel = originalGetDownloadProductApplicantsExcel;
+
+export const getDownloadSalesAgencyProductsExcel = originalGetDownloadSalesAgencyProductsExcel;
+
+export const uploadSettlementExcel: typeof originalUploadSettlementExcel = async () => {
+  return Promise.resolve();
 };
 
-export const downloadSalesAgencyProductsExcel: typeof originalDownloadSalesAgencyProductsExcel = async () => {
-  return new Blob(['mock excel data'], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+export const getSettlements: typeof originalGetSettlements = async () => {
+  return {
+    totalElements: MockSettlementResponse.length,
+    totalPages: Math.ceil(MockSettlementResponse.length / 10),
+    first: true,
+    last: false,
+    size: 10,
+    content: MockSettlementResponse.slice(0, 10),
+    number: 0,
+    sort: {
+      empty: false,
+      unsorted: false,
+      sorted: true
+    },
+    numberOfElements: 10,
+    pageable: {
+      offset: 0,
+      sort: {
+        empty: false,
+        unsorted: false,
+        sorted: true
+      },
+      pageSize: 10,
+      pageNumber: 0,
+      paged: true,
+      unpaged: false
+    },
+    empty: false
+  };
 };
+
+export const getPerformanceStats: typeof originalGetPerformanceStats = async () => {
+  return {
+    totalElements: MockPerformanceStatsResponse.length,
+    totalPages: Math.ceil(MockPerformanceStatsResponse.length / 10),
+    first: true,
+    last: false,
+    size: 10,
+    content: MockPerformanceStatsResponse.slice(0, 10),
+    number: 0,
+    sort: {
+      empty: false,
+      unsorted: false,
+      sorted: true
+    },
+    numberOfElements: 10,
+    pageable: {
+      offset: 0,
+      sort: {
+        empty: false,
+        unsorted: false,
+        sorted: true
+      },
+      pageSize: 10,
+      pageNumber: 0,
+      paged: true,
+      unpaged: false
+    },
+    empty: false
+  };
+};
+
+export const getDownloadPerformanceExcel = originalGetDownloadPerformanceExcel;
+
+export const getSettlementPartnerSummary: typeof originalGetSettlementPartnerSummary = async () => {
+  return {
+    totalElements: MockSettlementPartnerResponse.length,
+    totalPages: Math.ceil(MockSettlementPartnerResponse.length / 10),
+    first: true,
+    last: false,
+    size: 10,
+    content: MockSettlementPartnerResponse.slice(0, 10),
+    number: 0,
+    sort: {
+      empty: false,
+      unsorted: false,
+      sorted: true
+    },
+    numberOfElements: 10,
+    pageable: {
+      offset: 0,
+      sort: {
+        empty: false,
+        unsorted: false,
+        sorted: true
+      },
+      pageSize: 10,
+      pageNumber: 0,
+      paged: true,
+      unpaged: false
+    },
+    empty: false
+  };
+};
+
+export const getSettlementPartnerProducts: typeof originalGetSettlementPartnerProducts = async () => {
+  return MockSettlementPartnerProductResponse;
+};
+
+export const getDownloadSettlementPartnerSummaryExcel = originalGetDownloadSettlementPartnerSummaryExcel;
+
+export const getDownloadSettlementListExcel = originalGetDownloadSettlementListExcel;

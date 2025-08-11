@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Typography, LinearProgress, IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { OcrResponse } from 'medipanda/api-definitions/MpOcr';
+import CloseIcon from '@mui/icons-material/Close';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, LinearProgress, Typography } from '@mui/material';
+import { OcrResponse, requestOcr } from 'medipanda/backend';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 interface Point {
   x: number;
@@ -13,7 +13,7 @@ interface Point {
 interface OcrRequestModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (response: OcrResponse) => void;
+  onSubmit: (response: OcrResponse[]) => void;
   imageUrls: string[];
 }
 
@@ -41,6 +41,7 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
 
       if (hasImages) {
         const img = new Image();
+        img.crossOrigin = 'anonymous';
         img.onload = () => {
           setBackgroundImage(img);
           redraw();
@@ -57,6 +58,7 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
   useEffect(() => {
     if (open && currentImageUrl) {
       const img = new Image();
+      img.crossOrigin = 'anonymous';
       img.onload = () => {
         setBackgroundImage(img);
         redraw();
@@ -497,54 +499,32 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
         );
       });
 
-      const formData = new FormData();
-      formData.append('file', blob, 'scanned.jpg');
+      const originalResponse = await fetch(currentImageUrl!);
+      const originalBlob = await originalResponse.blob();
 
-      if (backgroundImage && currentImageUrl) {
-        const originalResponse = await fetch(currentImageUrl);
-        const originalBlob = await originalResponse.blob();
-        formData.append('original-file', originalBlob, 'original.jpg');
+      const width = backgroundImage!.width;
+      const height = backgroundImage!.height;
 
-        formData.append('width', backgroundImage.width.toString());
-        formData.append('height', backgroundImage.height.toString());
+      const canvas = canvasRef.current!;
+      const scale = Math.min(canvas.width / width, canvas.height / height);
+      const w = width * scale;
+      const h = height * scale;
+      const imageOffsetX = (canvas.width - w) / 2;
+      const imageOffsetY = (canvas.height - h) / 2;
+      const imageScale = 1 / scale;
 
-        const canvas = canvasRef.current!;
-        const scale = Math.min(canvas.width / backgroundImage.width, canvas.height / backgroundImage.height);
-        const w = backgroundImage.width * scale;
-        const h = backgroundImage.height * scale;
-        const imageOffsetX = (canvas.width - w) / 2;
-        const imageOffsetY = (canvas.height - h) / 2;
-        const imageScale = 1 / scale;
-
-        const originalPoints = currentPoints.map((point) => ({
+      const ocrData = await requestOcr({
+        file: blob,
+        fileName: 'scanned.jpg',
+        originalFile: originalBlob,
+        originalFileName: 'original.jpg',
+        width,
+        height,
+        points: currentPoints.map((point) => ({
           x: (point.x - imageOffsetX) * imageScale,
           y: (point.y - imageOffsetY) * imageScale
-        }));
-
-        formData.append('x1', originalPoints[0].x.toString());
-        formData.append('y1', originalPoints[0].y.toString());
-        formData.append('x2', originalPoints[1].x.toString());
-        formData.append('y2', originalPoints[1].y.toString());
-        formData.append('x3', originalPoints[2].x.toString());
-        formData.append('y3', originalPoints[2].y.toString());
-        formData.append('x4', originalPoints[3].x.toString());
-        formData.append('y4', originalPoints[3].y.toString());
-      }
-
-      const response = await fetch('/ocr', {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-          Accept: 'application/json'
-        },
-        body: formData
+        }))
       });
-
-      if (!response.ok) {
-        throw new Error(`OCR API error: ${response.status}`);
-      }
-
-      const ocrData = await response.json();
 
       onSubmit(ocrData);
       onClose();

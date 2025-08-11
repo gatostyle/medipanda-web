@@ -1,6 +1,6 @@
-import { createContext, ReactNode, useState } from 'react';
-import { NavItemType } from 'types/menu';
 import { MenuOrientation } from 'config';
+import { createContext, ReactNode, useContext, useState } from 'react';
+import { NavItemType } from 'types/menu';
 
 const initialState = {
   menuItems: [] as NavItemType[],
@@ -31,4 +31,8 @@ export function MpMenuProvider({ children }: MpMenuProviderProps) {
       {children}
     </MpMenuContext.Provider>
   );
+}
+
+export function useMpMenu() {
+  return useContext(MpMenuContext);
 }

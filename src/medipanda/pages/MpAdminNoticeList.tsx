@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useFormik } from 'formik';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
+import Pagination from '@mui/material/Pagination';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -19,15 +19,16 @@ import Typography from '@mui/material/Typography';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
-import Pagination from '@mui/material/Pagination';
-import { SearchFilterBar, SearchFilterItem, SearchFilterActions } from 'medipanda/components/SearchFilterBar';
-import Checkbox from '@mui/material/Checkbox';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
-import { Link } from 'react-router-dom';
-import { BOARD_TYPE_LABELS, EXPOSURE_RANGE_LABELS, NOTICE_TYPE_LABELS } from 'medipanda/ui-labels';
+import { useFormik } from 'formik';
 import { BoardPostResponse, DateString, deleteBoardPost, getBoards, getDrugCompanies } from 'medipanda/backend';
+import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
+import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
+import { BOARD_TYPE_LABELS, EXPOSURE_RANGE_LABELS, NOTICE_TYPE_LABELS } from 'medipanda/ui-labels';
+import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 interface BoardPostResponseWithMockData extends BoardPostResponse {
   drugCompany: string;
@@ -40,7 +41,7 @@ function withMock<T extends BoardPostResponse>(data: T): T & BoardPostResponseWi
   };
 }
 
-export default function MpAdminCustomerCenterNoticeList() {
+export default function MpAdminNoticeList() {
   const [data, setData] = useState<Sequenced<BoardPostResponseWithMockData>[]>([]);
   const [, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
@@ -49,21 +50,22 @@ export default function MpAdminCustomerCenterNoticeList() {
   const [manufacturerOptions, setManufacturerOptions] = useState<string[]>([]);
   const deleteDialog = useMpDeleteDialog();
 
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 20
-  });
-
   const formik = useFormik({
     initialValues: {
       isExposed: '' as boolean | '',
       drugCompany: '',
       searchKeyword: '',
       startAt: null as Date | null,
-      endAt: null as Date | null
+      endAt: null as Date | null,
+      pageIndex: 0,
+      pageSize: 20
     },
-    onSubmit: (values) => {
-      setPagination({ ...pagination, pageIndex: 0 });
+    onSubmit: () => {
+      if (formik.values.pageIndex !== 0) {
+        formik.setFieldValue('pageIndex', 0);
+      } else {
+        fetchData();
+      }
     }
   });
 
@@ -100,15 +102,13 @@ export default function MpAdminCustomerCenterNoticeList() {
       {
         header: 'No',
         accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
         size: 60
       },
       {
         header: '게시판',
         accessorKey: 'boardType',
-        cell: ({ row }) => {
-          const boardType = row.original.boardType;
-          return BOARD_TYPE_LABELS[boardType];
-        },
+        cell: ({ row }) => BOARD_TYPE_LABELS[row.original.boardType],
         size: 100
       },
       {
@@ -124,9 +124,7 @@ export default function MpAdminCustomerCenterNoticeList() {
       {
         header: '제약사명',
         accessorKey: 'drugCompany',
-        cell: ({ row }) => {
-          return row.original.drugCompany;
-        },
+        cell: ({ row }) => row.original.drugCompany,
         size: 120
       },
       {
@@ -141,19 +139,13 @@ export default function MpAdminCustomerCenterNoticeList() {
       {
         header: '상태',
         accessorKey: 'isExposed',
-        cell: ({ row }) => {
-          const isExposed = row.original.isExposed;
-          return isExposed ? '노출' : '미노출';
-        },
+        cell: ({ row }) => (row.original.isExposed ? '노출' : '미노출'),
         size: 80
       },
       {
         header: '노출범위',
         accessorKey: 'exposureRange',
-        cell: ({ row }) => {
-          const exposureRange = row.original.exposureRange;
-          return EXPOSURE_RANGE_LABELS[exposureRange];
-        },
+        cell: ({ row }) => EXPOSURE_RANGE_LABELS[row.original.exposureRange],
         size: 80
       },
       {
@@ -165,16 +157,7 @@ export default function MpAdminCustomerCenterNoticeList() {
       {
         header: '작성일',
         accessorKey: 'createdAt',
-        cell: ({ row }) => {
-          const value = row.original.createdAt;
-          try {
-            const date = new Date(value);
-            if (isNaN(date.getTime())) return value;
-            return date.toISOString().split('T')[0];
-          } catch {
-            return value;
-          }
-        },
+        cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
         size: 100
       }
     ],
@@ -187,9 +170,11 @@ export default function MpAdminCustomerCenterNoticeList() {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      pagination
+      pagination: {
+        pageIndex: formik.values.pageIndex,
+        pageSize: formik.values.pageSize
+      }
     },
-    onPaginationChange: setPagination,
     pageCount: totalPages,
     manualPagination: true
   });
@@ -204,8 +189,8 @@ export default function MpAdminCustomerCenterNoticeList() {
         nickname: undefined,
         startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
         endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
-        page: pagination.pageIndex,
-        size: pagination.pageSize,
+        page: formik.values.pageIndex,
+        size: formik.values.pageSize,
         filterBlind: undefined,
         boardTitle: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
         filterDeleted: undefined,
@@ -225,7 +210,7 @@ export default function MpAdminCustomerCenterNoticeList() {
 
   useEffect(() => {
     fetchData();
-  }, [pagination.pageIndex, pagination.pageSize, formik.values]);
+  }, [formik.values.pageIndex, formik.values.pageSize]);
 
   useEffect(() => {
     const fetchManufacturers = async () => {
@@ -382,10 +367,8 @@ export default function MpAdminCustomerCenterNoticeList() {
             <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={pagination.pageIndex + 1}
-                onChange={(event, value) => {
-                  setPagination({ ...pagination, pageIndex: value - 1 });
-                }}
+                page={formik.values.pageIndex + 1}
+                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
                 color="primary"
                 variant="outlined"
                 showFirstButton

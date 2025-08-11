@@ -1,12 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useFormik } from 'formik';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
 import Chip from '@mui/material/Chip';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
+import Pagination from '@mui/material/Pagination';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -20,18 +20,18 @@ import Typography from '@mui/material/Typography';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
-import Pagination from '@mui/material/Pagination';
-import Checkbox from '@mui/material/Checkbox';
-import { SearchFilterBar, SearchFilterItem, SearchFilterActions } from 'medipanda/components/SearchFilterBar';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { useFormik } from 'formik';
 import { BoardPostResponse, DateString, getBoards, toggleBlindStatus_1 } from 'medipanda/backend';
+import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
-import { Sequenced } from 'medipanda/utils/withSequence';
-import { Link } from 'react-router-dom';
 import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
 import { BOARD_TYPE_LABELS } from 'medipanda/ui-labels';
-import { withSequence } from 'medipanda/utils/withSequence';
+import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { formatYyyyMmDdHhMm } from '../utils/dateFormat';
 
 export default function MpAdminCommunityPostList() {
   const [data, setData] = useState<Sequenced<BoardPostResponse>[]>([]);
@@ -42,11 +42,6 @@ export default function MpAdminCommunityPostList() {
   const deleteDialog = useMpDeleteDialog();
   const errorDialog = useMpErrorDialog();
   const infoDialog = useMpInfoDialog();
-
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 20
-  });
 
   const formik = useFormik({
     initialValues: {
@@ -64,10 +59,16 @@ export default function MpAdminCommunityPostList() {
       searchType: 'title' as 'title' | 'userId' | 'name' | 'nickname',
       searchKeyword: '',
       startAt: null as Date | null,
-      endAt: null as Date | null
+      endAt: null as Date | null,
+      pageIndex: 0,
+      pageSize: 20
     },
-    onSubmit: (values) => {
-      setPagination({ ...pagination, pageIndex: 0 });
+    onSubmit: () => {
+      if (formik.values.pageIndex !== 0) {
+        formik.setFieldValue('pageIndex', 0);
+      } else {
+        fetchData();
+      }
     }
   });
 
@@ -104,6 +105,7 @@ export default function MpAdminCommunityPostList() {
       {
         header: 'No',
         accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
         size: 60
       },
       {
@@ -118,30 +120,25 @@ export default function MpAdminCommunityPostList() {
       {
         header: '아이디',
         accessorKey: 'userId',
-        size: 100,
-        cell: ({ row }) => {
-          return row.original.userId;
-        }
+        cell: ({ row }) => row.original.userId,
+        size: 100
       },
       {
         header: '회원명',
         accessorKey: 'name',
-        size: 100,
-        cell: ({ row }) => {
-          return row.original.name;
-        }
+        cell: ({ row }) => row.original.name,
+        size: 100
       },
       {
         header: '닉네임',
         accessorKey: 'nickname',
+        cell: ({ row }) => row.original.nickname,
         size: 100
       },
       {
         header: '파트너사 계약여부',
         accessorKey: 'memberType',
-        cell: ({ row }) => {
-          return row.original.memberType !== 'NONE' ? 'Y' : 'N';
-        },
+        cell: ({ row }) => (row.original.memberType !== 'NONE' ? 'Y' : 'N'),
         size: 120
       },
       {
@@ -156,45 +153,31 @@ export default function MpAdminCommunityPostList() {
       {
         header: '좋아요 수',
         accessorKey: 'likesCount',
+        cell: ({ row }) => row.original.likesCount,
         size: 100
       },
       {
         header: '댓글 수',
         accessorKey: 'commentCount',
+        cell: ({ row }) => row.original.commentCount,
         size: 100
       },
       {
         header: '조회수',
         accessorKey: 'viewsCount',
+        cell: ({ row }) => row.original.viewsCount,
         size: 100
       },
       {
         header: '블라인드 여부',
         accessorKey: 'isBlind',
-        cell: ({ row }) => {
-          const isBlind = row.original.isBlind;
-          return isBlind ? 'Y' : 'N';
-        },
+        cell: ({ row }) => (row.original.isBlind ? 'Y' : 'N'),
         size: 120
       },
       {
         header: '등록일',
         accessorKey: 'createdAt',
-        cell: ({ row }) => {
-          const value = row.original.createdAt;
-          try {
-            const date = new Date(value);
-            if (isNaN(date.getTime())) return value;
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            const hours = String(date.getHours()).padStart(2, '0');
-            const minutes = String(date.getMinutes()).padStart(2, '0');
-            return `${year}-${month}-${day} ${hours}:${minutes}`;
-          } catch {
-            return value;
-          }
-        },
+        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.createdAt),
         size: 150
       }
     ],
@@ -207,9 +190,11 @@ export default function MpAdminCommunityPostList() {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      pagination
+      pagination: {
+        pageIndex: formik.values.pageIndex,
+        pageSize: formik.values.pageSize
+      }
     },
-    onPaginationChange: setPagination,
     pageCount: totalPages,
     manualPagination: true
   });
@@ -224,8 +209,8 @@ export default function MpAdminCommunityPostList() {
         nickname: formik.values.searchType === 'nickname' ? formik.values.searchKeyword : undefined,
         startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
         endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
-        page: pagination.pageIndex,
-        size: pagination.pageSize,
+        page: formik.values.pageIndex,
+        size: formik.values.pageSize,
         filterBlind: undefined,
         boardTitle: formik.values.searchType === 'title' ? formik.values.searchKeyword : undefined
       });
@@ -245,11 +230,10 @@ export default function MpAdminCommunityPostList() {
 
   useEffect(() => {
     fetchData();
-  }, [pagination.pageIndex, pagination.pageSize, formik.values]);
+  }, [formik.values.pageIndex, formik.values.pageSize]);
 
   const handleReset = () => {
     formik.resetForm();
-    setPagination({ ...pagination, pageIndex: 0 });
   };
 
   const handleBlind = () => {
@@ -401,10 +385,8 @@ export default function MpAdminCommunityPostList() {
             <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={pagination.pageIndex + 1}
-                onChange={(event, value) => {
-                  setPagination({ ...pagination, pageIndex: value - 1 });
-                }}
+                page={formik.values.pageIndex + 1}
+                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
                 color="primary"
                 variant="outlined"
                 showFirstButton

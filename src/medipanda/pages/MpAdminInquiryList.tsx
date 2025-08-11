@@ -1,11 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useFormik } from 'formik';
-import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
 import MenuItem from '@mui/material/MenuItem';
+import Pagination from '@mui/material/Pagination';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -19,16 +18,18 @@ import Typography from '@mui/material/Typography';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
-import Pagination from '@mui/material/Pagination';
-import Link from '@mui/material/Link';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import { InquirySearchType, InquiryResponseStatusFilter } from 'medipanda/api-definitions/MpInquiry';
-import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { useFormik } from 'formik';
+import { InquiryResponseStatusFilter, InquirySearchType } from 'medipanda/api-definitions/MpInquiry';
 import { BoardPostResponse, getBoards } from 'medipanda/backend';
+import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
+import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface BoardPostResponseWithMockData extends BoardPostResponse {
   drugCompany: string;
-  responseCreatedAt?: string;
+  responseCreatedAt: string | null;
   responseStatus: 'PENDING' | 'COMPLETED';
 }
 
@@ -38,22 +39,17 @@ function withMock<T extends BoardPostResponse>(data: T): T & BoardPostResponseWi
     userId: '아이디',
     name: '사용자명',
     drugCompany: '제약사명',
-    responseCreatedAt: '답변 내용',
+    responseCreatedAt: '2025-01-01',
     responseStatus: Math.random() > 0.5 ? 'PENDING' : 'COMPLETED'
   };
 }
 
-export default function MpAdminCustomerCenterInquiryList() {
+export default function MpAdminInquiryList() {
   const navigate = useNavigate();
   const [data, setData] = useState<Sequenced<BoardPostResponseWithMockData>[]>([]);
   const [, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 20
-  });
 
   const formik = useFormik({
     initialValues: {
@@ -61,10 +57,16 @@ export default function MpAdminCustomerCenterInquiryList() {
       searchType: InquirySearchType.MEMBER_NAME,
       searchKeyword: '',
       startAt: null as Date | null,
-      endAt: null as Date | null
+      endAt: null as Date | null,
+      pageIndex: 0,
+      pageSize: 20
     },
-    onSubmit: (values) => {
-      setPagination({ ...pagination, pageIndex: 0 });
+    onSubmit: () => {
+      if (formik.values.pageIndex !== 0) {
+        formik.setFieldValue('pageIndex', 0);
+      } else {
+        fetchData();
+      }
     }
   });
 
@@ -73,36 +75,32 @@ export default function MpAdminCustomerCenterInquiryList() {
       {
         header: 'No',
         accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
         size: 60
       },
       {
         header: '회원번호',
         accessorKey: 'id',
+        cell: ({ row }) => row.original.id,
         size: 100
       },
       {
         header: '아이디',
         accessorKey: 'userId',
-        size: 120,
-        cell: ({ row }) => {
-          return row.original.userId;
-        }
+        cell: ({ row }) => row.original.userId,
+        size: 120
       },
       {
         header: '회원명',
         accessorKey: 'name',
-        size: 100,
-        cell: ({ row }) => {
-          return row.original.name;
-        }
+        cell: ({ row }) => row.original.name,
+        size: 100
       },
       {
         header: '회사명',
         accessorKey: 'drugCompany',
-        size: 150,
-        cell: ({ row }) => {
-          return row.original.drugCompany;
-        }
+        cell: ({ row }) => row.original.drugCompany,
+        size: 150
       },
       {
         header: '제목',
@@ -122,23 +120,16 @@ export default function MpAdminCustomerCenterInquiryList() {
       {
         header: '문의일',
         accessorKey: 'createdAt',
-        cell: ({ row }) => {
-          const value = row.original.createdAt;
-          try {
-            const date = new Date(value);
-            if (isNaN(date.getTime())) return value;
-            return date.toISOString().split('T')[0];
-          } catch {
-            return value;
-          }
-        },
+        cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
         size: 100
       },
       {
         header: '답변일',
         accessorKey: 'responseCreatedAt',
         cell: ({ row }) => {
-          return new Date(row.original.responseCreatedAt!).toISOString().split('T')[0];
+          const value = row.original.responseCreatedAt;
+
+          return value !== null ? formatYyyyMmDd(value) : '-';
         },
         size: 100
       },
@@ -146,7 +137,12 @@ export default function MpAdminCustomerCenterInquiryList() {
         header: '처리상태',
         accessorKey: 'responseStatus',
         cell: ({ row }) => {
-          return row.original.responseStatus;
+          switch (row.original.responseStatus) {
+            case 'PENDING':
+              return '처리중';
+            case 'COMPLETED':
+              return '처리완료';
+          }
         },
         size: 100
       }
@@ -160,9 +156,11 @@ export default function MpAdminCustomerCenterInquiryList() {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      pagination
+      pagination: {
+        pageIndex: formik.values.pageIndex,
+        pageSize: formik.values.pageSize
+      }
     },
-    onPaginationChange: setPagination,
     pageCount: totalPages,
     manualPagination: true
   });
@@ -172,8 +170,8 @@ export default function MpAdminCustomerCenterInquiryList() {
     try {
       const response = await getBoards({
         boardType: 'INQUIRY',
-        page: pagination.pageIndex,
-        size: pagination.pageSize,
+        page: formik.values.pageIndex,
+        size: formik.values.pageSize,
         // responseStatusFilter: formik.values.responseStatusFilter,
         name: formik.values.searchType === InquirySearchType.MEMBER_NAME ? formik.values.searchKeyword : undefined,
         drugCompany: formik.values.searchType === InquirySearchType.COMPANY_NAME ? formik.values.searchKeyword : undefined,
@@ -196,7 +194,7 @@ export default function MpAdminCustomerCenterInquiryList() {
 
   useEffect(() => {
     fetchData();
-  }, [pagination.pageIndex, pagination.pageSize, formik.values]);
+  }, [formik.values.pageIndex, formik.values.pageSize]);
 
   return (
     <Grid container spacing={3}>
@@ -303,10 +301,8 @@ export default function MpAdminCustomerCenterInquiryList() {
             <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={pagination.pageIndex + 1}
-                onChange={(event, value) => {
-                  setPagination({ ...pagination, pageIndex: value - 1 });
-                }}
+                page={formik.values.pageIndex + 1}
+                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
                 color="primary"
                 variant="outlined"
                 showFirstButton

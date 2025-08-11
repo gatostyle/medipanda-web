@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
+import MuiLink from '@mui/material/Link';
 import Switch from '@mui/material/Switch';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -10,16 +12,18 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import MuiLink from '@mui/material/Link';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
 import MainCard from 'components/MainCard';
+import { BoardDetailsResponse, getBoardDetails } from 'medipanda/backend';
 import { TiptapEditor } from 'medipanda/components/TiptapEditor';
 import { EXPOSURE_RANGE_LABELS, NOTICE_TYPE_LABELS } from 'medipanda/ui-labels';
-import { BoardDetailsResponse, getBoardDetails } from 'medipanda/backend';
+import { useSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { formatYyyyMmDd } from '../utils/dateFormat';
 
-export default function MpAdminCustomerCenterNoticeDetail() {
-  const { id } = useParams<{ id: string }>();
+export default function MpAdminNoticeDetail() {
+  const { id } = useParams();
+  const { enqueueSnackbar } = useSnackbar();
   const [data, setData] = useState<BoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -36,17 +40,22 @@ export default function MpAdminCustomerCenterNoticeDetail() {
       setData(response);
     } catch (error) {
       console.error('Failed to fetch notice detail:', error);
+      enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
     } finally {
       setLoading(false);
     }
   };
 
   if (loading) {
-    return <Typography>Loading...</Typography>;
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+        <CircularProgress />
+      </Box>
+    );
   }
 
   if (!data) {
-    return <Typography>데이터를 찾을 수 없습니다.</Typography>;
+    return null;
   }
 
   return (
@@ -165,7 +174,7 @@ export default function MpAdminCustomerCenterNoticeDetail() {
               </Grid>
               <Grid item xs={6} textAlign="right">
                 <Typography variant="body2" color="text.secondary">
-                  작성일: {data.createdAt ? new Date(data.createdAt).toISOString().split('T')[0] : '-'}
+                  작성일: {formatYyyyMmDd(data.createdAt)}
                 </Typography>
               </Grid>
             </Grid>

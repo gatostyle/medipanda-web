@@ -39,11 +39,8 @@ import '@fontsource/public-sans/700.css';
 // project-imports
 import App from './App';
 import { ConfigProvider } from 'contexts/ConfigContext';
-import { MpMenuProvider } from 'medipanda/contexts/MpMenuContext';
-import { MpErrorDialogProvider } from 'medipanda/contexts/MpErrorDialogContext';
-import { MpNotImplementedDialogProvider } from 'medipanda/contexts/MpNotImplementedDialogContext';
-import { MpDeleteDialogProvider } from 'medipanda/contexts/MpDeleteDialogContext';
 import reportWebVitals from './reportWebVitals';
+import { MpProviders } from 'medipanda/providers';
 
 const container = document.getElementById('root');
 const root = createRoot(container!);
@@ -52,15 +49,9 @@ const root = createRoot(container!);
 
 root.render(
   <ConfigProvider>
-    <MpMenuProvider>
-      <MpErrorDialogProvider>
-        <MpNotImplementedDialogProvider>
-          <MpDeleteDialogProvider>
-            <App />
-          </MpDeleteDialogProvider>
-        </MpNotImplementedDialogProvider>
-      </MpErrorDialogProvider>
-    </MpMenuProvider>
+    <MpProviders>
+      <App />
+    </MpProviders>
   </ConfigProvider>
 );
 

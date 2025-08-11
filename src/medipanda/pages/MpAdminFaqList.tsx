@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useFormik } from 'formik';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
 import Chip from '@mui/material/Chip';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
+import Pagination from '@mui/material/Pagination';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -19,16 +19,16 @@ import Typography from '@mui/material/Typography';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
-import Pagination from '@mui/material/Pagination';
-import Checkbox from '@mui/material/Checkbox';
+import { useFormik } from 'formik';
+import { BoardPostResponse, DateString, deleteBoardPost, getBoards } from 'medipanda/backend';
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
 import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
-import { Sequenced } from 'medipanda/utils/withSequence';
+import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BoardPostResponse, DateString, deleteBoardPost, getBoards } from 'medipanda/backend';
-import { withSequence } from 'medipanda/utils/withSequence';
+import { formatYyyyMmDd } from '../utils/dateFormat';
 
-export default function MpAdminCustomerCenterFaqList() {
+export default function MpAdminFaqList() {
   const [data, setData] = useState<Sequenced<BoardPostResponse>[]>([]);
   const [, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
@@ -36,20 +36,21 @@ export default function MpAdminCustomerCenterFaqList() {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const deleteDialog = useMpDeleteDialog();
 
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 20
-  });
-
   const formik = useFormik({
     initialValues: {
       visible: 'all' as 'all' | 'visible' | 'hidden',
       searchKeyword: '',
       startAt: null as Date | null,
-      endAt: null as Date | null
+      endAt: null as Date | null,
+      pageIndex: 0,
+      pageSize: 20
     },
-    onSubmit: (values) => {
-      setPagination({ ...pagination, pageIndex: 0 });
+    onSubmit: () => {
+      if (formik.values.pageIndex !== 0) {
+        formik.setFieldValue('pageIndex', 0);
+      } else {
+        fetchData();
+      }
     }
   });
 
@@ -86,6 +87,7 @@ export default function MpAdminCustomerCenterFaqList() {
       {
         header: 'No',
         accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
         size: 80
       },
       {
@@ -109,32 +111,14 @@ export default function MpAdminCustomerCenterFaqList() {
       {
         header: '조회수',
         accessorKey: 'viewsCount',
-        cell: ({ row }) => {
-          const value = row.original.viewsCount;
-          return value.toLocaleString();
-        },
+        cell: ({ row }) => row.original.viewsCount.toLocaleString(),
         size: 100
       },
       {
         header: '작성일',
         accessorKey: 'createdAt',
         cell: ({ row }) => {
-          const value = row.original.createdAt;
-          if (!value) return '-';
-          try {
-            const date = new Date(value);
-            if (isNaN(date.getTime())) return value;
-            return date
-              .toLocaleDateString('ko-KR', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-              })
-              .replace(/\. /g, '-')
-              .replace('.', '');
-          } catch {
-            return value;
-          }
+          return formatYyyyMmDd(row.original.createdAt);
         },
         size: 120
       }
@@ -148,9 +132,11 @@ export default function MpAdminCustomerCenterFaqList() {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      pagination
+      pagination: {
+        pageIndex: formik.values.pageIndex,
+        pageSize: formik.values.pageSize
+      }
     },
-    onPaginationChange: setPagination,
     pageCount: totalPages,
     manualPagination: true
   });
@@ -165,8 +151,8 @@ export default function MpAdminCustomerCenterFaqList() {
         nickname: undefined,
         startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
         endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
-        page: pagination.pageIndex,
-        size: pagination.pageSize,
+        page: formik.values.pageIndex,
+        size: formik.values.pageSize,
         filterBlind: undefined,
         boardTitle: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
         filterDeleted: undefined,
@@ -185,7 +171,7 @@ export default function MpAdminCustomerCenterFaqList() {
 
   useEffect(() => {
     fetchData();
-  }, [pagination.pageIndex, pagination.pageSize, formik.values]);
+  }, [formik.values.pageIndex, formik.values.pageSize]);
 
   const handleDelete = () => {
     const count = selectedItems.length;
@@ -297,10 +283,8 @@ export default function MpAdminCustomerCenterFaqList() {
             <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={pagination.pageIndex + 1}
-                onChange={(event, value) => {
-                  setPagination({ ...pagination, pageIndex: value - 1 });
-                }}
+                page={formik.values.pageIndex + 1}
+                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
                 color="primary"
                 variant="outlined"
                 showFirstButton

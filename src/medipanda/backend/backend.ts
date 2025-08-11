@@ -149,12 +149,12 @@ export interface BlindPostResponse {
   id: number;
   memberName: string;
   content: string;
-  userId: string;
+  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  postType: 'BOARD' | 'COMMENT';
   nickname: string;
   likesCount: number;
   reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
-  postType: 'BOARD' | 'COMMENT';
+  userId: string;
   blindAt: string;
 }
 
@@ -189,13 +189,13 @@ export interface BoardDetailsResponse {
 export interface BoardMemberStatsResponse {
   name: string;
   id: number;
-  userId: string;
-  commentCount: number;
-  phoneNumber: string;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   postCount: number;
   totalLikes: number;
   blindPostCount: number;
+  phoneNumber: string;
+  commentCount: number;
+  userId: string;
 }
 
 export interface BoardPostCreateRequest {
@@ -269,12 +269,12 @@ export interface CommentMemberResponse {
   name: string;
   id: number;
   content: string;
-  userId: string;
-  commentType: 'COMMENT' | 'REPLY';
-  createdAt: string;
-  nickname: string;
-  likesCount: number;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  nickname: string;
+  createdAt: string;
+  likesCount: number;
+  commentType: 'COMMENT' | 'REPLY';
+  userId: string;
   isBlind: boolean;
 }
 
@@ -313,8 +313,8 @@ export interface EventBoardCreateRequest {
 
 export interface EventBoardDetailsResponse {
   eventId: number;
-  eventStartDate: number;
-  eventEndDate: number;
+  eventStartDate: string;
+  eventEndDate: string;
   description: string;
   thumbnailUrl: string;
   videoUrl: string | null;
@@ -417,6 +417,7 @@ export interface MemberDetailsResponse {
   lastLoginDate: string;
   note: string | null;
   role: 'USER' | 'ADMIN' | 'SUPER_ADMIN';
+  nicknameHidden: boolean;
 }
 
 export interface MemberResponse {
@@ -434,6 +435,7 @@ export interface MemberResponse {
   accountStatus: 'ACTIVATED' | 'BLOCKED' | 'DELETED';
   role: 'USER' | 'ADMIN' | 'SUPER_ADMIN';
   companyName: string | null;
+  nicknameHidden: boolean;
   createdAt: string;
 }
 
@@ -493,8 +495,8 @@ export interface PageBannerResponse {
   content: BannerResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   pageable: PageableObject;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -507,8 +509,8 @@ export interface PageBlindPostResponse {
   content: BlindPostResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   pageable: PageableObject;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -521,8 +523,8 @@ export interface PageBoardMemberStatsResponse {
   content: BoardMemberStatsResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   pageable: PageableObject;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -535,8 +537,8 @@ export interface PageBoardPostResponse {
   content: BoardPostResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   pageable: PageableObject;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -549,8 +551,8 @@ export interface PageCommentMemberResponse {
   content: CommentMemberResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   pageable: PageableObject;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -563,8 +565,8 @@ export interface PageEventBoardSummaryResponse {
   content: EventBoardSummaryResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   pageable: PageableObject;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -577,8 +579,8 @@ export interface PageExpenseReportResponse {
   content: ExpenseReportResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   pageable: PageableObject;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -591,8 +593,8 @@ export interface PageHospitalResponse {
   content: HospitalResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   pageable: PageableObject;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -605,8 +607,8 @@ export interface PageMemberResponse {
   content: MemberResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   pageable: PageableObject;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -619,8 +621,22 @@ export interface PagePartnerResponse {
   content: PartnerResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   pageable: PageableObject;
+  numberOfElements: number;
+  empty: boolean;
+}
+
+export interface PagePerformanceStatsResponse {
+  totalPages: number;
+  totalElements: number;
+  first: boolean;
+  last: boolean;
+  size: number;
+  content: PerformanceStatsResponse[];
+  number: number;
+  sort: SortObject;
+  pageable: PageableObject;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -633,8 +649,8 @@ export interface PagePrescriptionPartnerResponse {
   content: PrescriptionPartnerResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   pageable: PageableObject;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -647,8 +663,8 @@ export interface PagePrescriptionResponse {
   content: PrescriptionResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   pageable: PageableObject;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -661,8 +677,8 @@ export interface PageProductSummaryResponse {
   content: ProductSummaryResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   pageable: PageableObject;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -675,8 +691,8 @@ export interface PageSalesAgencyProductApplicantResponse {
   content: SalesAgencyProductApplicantResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   pageable: PageableObject;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -689,18 +705,46 @@ export interface PageSalesAgencyProductSummaryResponse {
   content: SalesAgencyProductSummaryResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   pageable: PageableObject;
+  numberOfElements: number;
+  empty: boolean;
+}
+
+export interface PageSettlementPartnerResponse {
+  totalPages: number;
+  totalElements: number;
+  first: boolean;
+  last: boolean;
+  size: number;
+  content: SettlementPartnerResponse[];
+  number: number;
+  sort: SortObject;
+  pageable: PageableObject;
+  numberOfElements: number;
+  empty: boolean;
+}
+
+export interface PageSettlementResponse {
+  totalPages: number;
+  totalElements: number;
+  first: boolean;
+  last: boolean;
+  size: number;
+  content: SettlementResponse[];
+  number: number;
+  sort: SortObject;
+  pageable: PageableObject;
+  numberOfElements: number;
   empty: boolean;
 }
 
 export interface PageableObject {
   offset: number;
   sort: SortObject;
+  pageNumber: number;
+  pageSize: number;
   paged: boolean;
   unpaged: boolean;
-  pageSize: number;
-  pageNumber: number;
 }
 
 export interface PartnerContractDetailsResponse {
@@ -711,9 +755,7 @@ export interface PartnerContractDetailsResponse {
   accountNumber: string;
   contractDate: string;
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
-  fileUrls: {
-    [key: string]: string;
-  };
+  fileUrls: Record<string, string>;
 }
 
 export interface PartnerContractRequest {
@@ -733,6 +775,7 @@ export interface PartnerContractUpdateRequest {
 }
 
 export interface PartnerCreateRequest {
+  userId: string;
   drugCompany: string;
   companyName: string;
   contractType: 'CONTRACT' | 'NON_CONTRACT';
@@ -774,6 +817,18 @@ export interface PartnerUpdateRequest {
   pharmacyAddress: string | null;
   pharmacyStatus: ('NORMAL' | 'CLOSED' | 'DELETED' | 'NONE') | null;
   note: string | null;
+}
+
+export interface PerformanceStatsResponse {
+  drugCompany: string | null;
+  companyName: string | null;
+  dealerName: string | null;
+  institutionCode: string | null;
+  institutionName: string | null;
+  settlementMonth: string;
+  prescriptionAmount: number;
+  totalAmount: number;
+  feeAmount: number;
 }
 
 export interface PrescriptionCreateRequest {
@@ -1085,6 +1140,46 @@ export interface SampleProvideReportUpdateRequest {
   existFileIds: number[];
 }
 
+export interface SettlementPartnerProductResponse {
+  id: number;
+  productCode: string | null;
+  productName: string | null;
+  seq: number | null;
+  quantity: number | null;
+  unitPrice: number | null;
+  prescriptionAmount: number | null;
+  feeRate: number | null;
+  extraFeeRate: number | null;
+  feeAmount: number | null;
+  extraFeeAmount: number | null;
+  note: string | null;
+}
+
+export interface SettlementPartnerResponse {
+  settlementPartnerId: number;
+  companyName: string;
+  dealerName: string;
+  institutionCode: string;
+  institutionName: string;
+  businessNumber: string;
+  supplyAmount: number;
+  taxAmount: number;
+  totalAmount: number;
+}
+
+export interface SettlementResponse {
+  id: number;
+  settlementMonth: string;
+  dealerId: number;
+  dealerName: string;
+  companyName: string | null;
+  status: ('REQUEST' | 'OBJECTION') | null;
+  totalAmount: number;
+  supplyAmount: number;
+  taxAmount: number;
+  prescriptionAmount: number;
+}
+
 export interface SortObject {
   empty: boolean;
   sorted: boolean;
@@ -1222,10 +1317,17 @@ export async function updateBoardPost(
     newFiles?: File[];
   }
 ): Promise<string> {
+  const form = new FormData();
+  form.append('updateRequest', new Blob([JSON.stringify(data.updateRequest)], { type: 'application/json' }));
+  if (data.newFiles !== undefined) {
+    for (const v of data.newFiles) {
+      form.append('newFiles', v);
+    }
+  }
   const response = await axios.request<string>({
     method: 'PUT',
     url: `/v1/boards/${id}`,
-    data
+    data: form
   });
   return response.data;
 }
@@ -1266,6 +1368,18 @@ export async function unblindPost(data: BlindUpdateRequest): Promise<void> {
 }
 
 /**
+ * 정산 엑셀 업로드
+ * POST /v1/settlements/upload
+ */
+export async function uploadSettlementExcel(data: { file: File }): Promise<void> {
+  await axios.request({
+    method: 'POST',
+    url: '/v1/settlements/upload',
+    data
+  });
+}
+
+/**
  * 영업대행 상품 목록 조회
  * GET /v1/sales-agency-products
  */
@@ -1296,19 +1410,13 @@ export async function createSalesAgencyProductBoard(data: {
   files?: File[];
 }): Promise<string> {
   const form = new FormData();
-  if (data.boardPostCreateRequest !== undefined && data.boardPostCreateRequest !== null) {
-    form.append('boardPostCreateRequest', new Blob([JSON.stringify(data.boardPostCreateRequest)], { type: 'application/json' }));
-  }
-  if (data.salesAgencyProductCreateRequest !== undefined && data.salesAgencyProductCreateRequest !== null) {
-    form.append(
-      'salesAgencyProductCreateRequest',
-      new Blob([JSON.stringify(data.salesAgencyProductCreateRequest)], { type: 'application/json' })
-    );
-  }
-  if (data.thumbnail !== undefined && data.thumbnail !== null) {
-    form.append('thumbnail', data.thumbnail);
-  }
-  if (data.files !== undefined && data.files !== null) {
+  form.append('boardPostCreateRequest', new Blob([JSON.stringify(data.boardPostCreateRequest)], { type: 'application/json' }));
+  form.append(
+    'salesAgencyProductCreateRequest',
+    new Blob([JSON.stringify(data.salesAgencyProductCreateRequest)], { type: 'application/json' })
+  );
+  form.append('thumbnail', data.thumbnail);
+  if (data.files !== undefined) {
     for (const v of data.files) {
       form.append('files', v);
     }
@@ -1363,9 +1471,7 @@ export async function uploadFromS3(options?: { prefix?: string }): Promise<strin
  */
 export async function uploadProductExtraInfo(data: { file: File }): Promise<void> {
   const form = new FormData();
-  if (data.file !== undefined && data.file !== null) {
-    form.append('file', data.file);
-  }
+  form.append('file', data.file);
   await axios.request({
     method: 'POST',
     url: '/v1/products/product-extra-info/upload',
@@ -1382,10 +1488,21 @@ export async function createProductExtraInfo(data: {
   productExtraInfoCreateRequest: ProductExtraInfoRequest;
   files?: File[];
 }): Promise<void> {
+  const form = new FormData();
+  form.append('boardPostCreateRequest', new Blob([JSON.stringify(data.boardPostCreateRequest)], { type: 'application/json' }));
+  form.append(
+    'productExtraInfoCreateRequest',
+    new Blob([JSON.stringify(data.productExtraInfoCreateRequest)], { type: 'application/json' })
+  );
+  if (data.files !== undefined) {
+    for (const v of data.files) {
+      form.append('files', v);
+    }
+  }
   await axios.request({
     method: 'POST',
     url: '/v1/products/extra-info',
-    data
+    data: form
   });
 }
 
@@ -1395,15 +1512,9 @@ export async function createProductExtraInfo(data: {
  */
 export async function uploadEdiZip(data: { prescriptionMonth: string; settlementMonth: string; file: File }): Promise<void> {
   const form = new FormData();
-  if (data.prescriptionMonth !== undefined && data.prescriptionMonth !== null) {
-    form.append('prescriptionMonth', data.prescriptionMonth as any);
-  }
-  if (data.settlementMonth !== undefined && data.settlementMonth !== null) {
-    form.append('settlementMonth', data.settlementMonth as any);
-  }
-  if (data.file !== undefined && data.file !== null) {
-    form.append('file', data.file);
-  }
+  form.append('prescriptionMonth', data.prescriptionMonth);
+  form.append('settlementMonth', data.settlementMonth);
+  form.append('file', data.file);
   await axios.request({
     method: 'POST',
     url: '/v1/prescriptions/zip',
@@ -1429,13 +1540,9 @@ export async function createPartnerProducts(data: PrescriptionPartnerProductCrea
  */
 export async function uploadPartnerEdiFiles(data: { request: PrescriptionCreateRequest; files: File[] }): Promise<void> {
   const form = new FormData();
-  if (data.request !== undefined && data.request !== null) {
-    form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  }
-  if (data.files !== undefined && data.files !== null) {
-    for (const v of data.files) {
-      form.append('files', v);
-    }
+  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  for (const v of data.files) {
+    form.append('files', v);
   }
   await axios.request({
     method: 'POST',
@@ -1478,16 +1585,19 @@ export async function createPartner(data: PartnerCreateRequest): Promise<void> {
 
 /**
  * 거래선 엑셀 업로드
- * POST /v1/partners/upload
+ * POST /v1/partners/upload/{userId}
  */
-export async function uploadPartnersExcel(data: { file: File }): Promise<void> {
-  const form = new FormData();
-  if (data.file !== undefined && data.file !== null) {
-    form.append('file', data.file);
+export async function uploadPartnersExcel(
+  userId: string,
+  data: {
+    file: File;
   }
+): Promise<void> {
+  const form = new FormData();
+  form.append('file', data.file);
   await axios.request({
     method: 'POST',
-    url: '/v1/partners/upload',
+    url: `/v1/partners/upload/${userId}`,
     data: form
   });
 }
@@ -1504,21 +1614,11 @@ export async function applyContract(data: {
   education_certificate: File;
 }): Promise<void> {
   const form = new FormData();
-  if (data.request !== undefined && data.request !== null) {
-    form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  }
-  if (data.business_registration !== undefined && data.business_registration !== null) {
-    form.append('business_registration', data.business_registration);
-  }
-  if (data.subcontract_agreement !== undefined && data.subcontract_agreement !== null) {
-    form.append('subcontract_agreement', data.subcontract_agreement);
-  }
-  if (data.cso_certificate !== undefined && data.cso_certificate !== null) {
-    form.append('cso_certificate', data.cso_certificate);
-  }
-  if (data.education_certificate !== undefined && data.education_certificate !== null) {
-    form.append('education_certificate', data.education_certificate);
-  }
+  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  form.append('business_registration', data.business_registration);
+  form.append('subcontract_agreement', data.subcontract_agreement);
+  form.append('cso_certificate', data.cso_certificate);
+  form.append('education_certificate', data.education_certificate);
   await axios.request({
     method: 'POST',
     url: '/v1/partner-contracts',
@@ -1560,19 +1660,17 @@ export async function updateContract(data: {
   education_certificate?: File;
 }): Promise<void> {
   const form = new FormData();
-  if (data.request !== undefined && data.request !== null) {
-    form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  }
-  if (data.business_registration !== undefined && data.business_registration !== null) {
+  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  if (data.business_registration !== undefined) {
     form.append('business_registration', data.business_registration);
   }
-  if (data.subcontract_agreement !== undefined && data.subcontract_agreement !== null) {
+  if (data.subcontract_agreement !== undefined) {
     form.append('subcontract_agreement', data.subcontract_agreement);
   }
-  if (data.cso_certificate !== undefined && data.cso_certificate !== null) {
+  if (data.cso_certificate !== undefined) {
     form.append('cso_certificate', data.cso_certificate);
   }
-  if (data.education_certificate !== undefined && data.education_certificate !== null) {
+  if (data.education_certificate !== undefined) {
     form.append('education_certificate', data.education_certificate);
   }
   await axios.request({
@@ -1614,10 +1712,8 @@ export async function getUserMembers(options?: {
  */
 export async function signup(data: { request: MemberSignupRequest; file?: File }): Promise<void> {
   const form = new FormData();
-  if (data.request !== undefined && data.request !== null) {
-    form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  }
-  if (data.file !== undefined && data.file !== null) {
+  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  if (data.file !== undefined) {
     form.append('file', data.file);
   }
   await axios.request({
@@ -1670,9 +1766,7 @@ export async function signupByAdmin(data: AdminCreateRequest): Promise<void> {
  */
 export async function uploadHospitalExcel(data: { file: File }): Promise<string> {
   const form = new FormData();
-  if (data.file !== undefined && data.file !== null) {
-    form.append('file', data.file);
-  }
+  form.append('file', data.file);
   const response = await axios.request<string>({
     method: 'POST',
     url: '/v1/hospitals/upload',
@@ -1690,10 +1784,8 @@ export async function createSampleProvideReport(data: {
   attachmentFiles?: File[];
 }): Promise<void> {
   const form = new FormData();
-  if (data.request !== undefined && data.request !== null) {
-    form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  }
-  if (data.attachmentFiles !== undefined && data.attachmentFiles !== null) {
+  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  if (data.attachmentFiles !== undefined) {
     for (const v of data.attachmentFiles) {
       form.append('attachmentFiles', v);
     }
@@ -1715,15 +1807,11 @@ export async function createProductBriefingSingleReport(data: {
   attachmentFiles?: File[];
 }): Promise<void> {
   const form = new FormData();
-  if (data.request !== undefined && data.request !== null) {
-    form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  for (const v of data.signatureFiles) {
+    form.append('signatureFiles', v);
   }
-  if (data.signatureFiles !== undefined && data.signatureFiles !== null) {
-    for (const v of data.signatureFiles) {
-      form.append('signatureFiles', v);
-    }
-  }
-  if (data.attachmentFiles !== undefined && data.attachmentFiles !== null) {
+  if (data.attachmentFiles !== undefined) {
     for (const v of data.attachmentFiles) {
       form.append('attachmentFiles', v);
     }
@@ -1744,10 +1832,8 @@ export async function createProductBriefingMultiReport(data: {
   attachmentFiles?: File[];
 }): Promise<void> {
   const form = new FormData();
-  if (data.request !== undefined && data.request !== null) {
-    form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  }
-  if (data.attachmentFiles !== undefined && data.attachmentFiles !== null) {
+  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  if (data.attachmentFiles !== undefined) {
     for (const v of data.attachmentFiles) {
       form.append('attachmentFiles', v);
     }
@@ -1790,16 +1876,10 @@ export async function createEventBoard(data: {
   files?: File[];
 }): Promise<string> {
   const form = new FormData();
-  if (data.request !== undefined && data.request !== null) {
-    form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  }
-  if (data.eventRequest !== undefined && data.eventRequest !== null) {
-    form.append('eventRequest', new Blob([JSON.stringify(data.eventRequest)], { type: 'application/json' }));
-  }
-  if (data.thumbnail !== undefined && data.thumbnail !== null) {
-    form.append('thumbnail', data.thumbnail);
-  }
-  if (data.files !== undefined && data.files !== null) {
+  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  form.append('eventRequest', new Blob([JSON.stringify(data.eventRequest)], { type: 'application/json' }));
+  form.append('thumbnail', data.thumbnail);
+  if (data.files !== undefined) {
     for (const v of data.files) {
       form.append('files', v);
     }
@@ -1870,10 +1950,8 @@ export async function getBoards(options?: {
  */
 export async function createBoardPost(data: { request: BoardPostCreateRequest; files?: File[] }): Promise<string> {
   const form = new FormData();
-  if (data.request !== undefined && data.request !== null) {
-    form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  }
-  if (data.files !== undefined && data.files !== null) {
+  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  if (data.files !== undefined) {
     for (const v of data.files) {
       form.append('files', v);
     }
@@ -1903,9 +1981,7 @@ export async function toggleLike_1(id: number): Promise<void> {
  */
 export async function uploadEditorFile(data: { file: File }): Promise<EditorUploadResponse> {
   const form = new FormData();
-  if (data.file !== undefined && data.file !== null) {
-    form.append('file', data.file);
-  }
+  form.append('file', data.file);
   const response = await axios.request<EditorUploadResponse>({
     method: 'POST',
     url: '/v1/boards/uploads',
@@ -1940,12 +2016,8 @@ export async function getBanners(options?: {
  */
 export async function createBanner(data: { request: BannerCreateRequest; imageFile: File }): Promise<string> {
   const form = new FormData();
-  if (data.request !== undefined && data.request !== null) {
-    form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  }
-  if (data.imageFile !== undefined && data.imageFile !== null) {
-    form.append('imageFile', data.imageFile);
-  }
+  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  form.append('imageFile', data.imageFile);
   const response = await axios.request<string>({
     method: 'POST',
     url: '/v1/banners',
@@ -2036,19 +2108,19 @@ export async function updateSalesAgencyProductBoard(
   }
 ): Promise<void> {
   const form = new FormData();
-  if (data.boardPostUpdateRequest !== undefined && data.boardPostUpdateRequest !== null) {
+  if (data.boardPostUpdateRequest !== undefined) {
     form.append('boardPostUpdateRequest', new Blob([JSON.stringify(data.boardPostUpdateRequest)], { type: 'application/json' }));
   }
-  if (data.salesAgencyProductUpdateRequest !== undefined && data.salesAgencyProductUpdateRequest !== null) {
+  if (data.salesAgencyProductUpdateRequest !== undefined) {
     form.append(
       'salesAgencyProductUpdateRequest',
       new Blob([JSON.stringify(data.salesAgencyProductUpdateRequest)], { type: 'application/json' })
     );
   }
-  if (data.thumbnail !== undefined && data.thumbnail !== null) {
+  if (data.thumbnail !== undefined) {
     form.append('thumbnail', data.thumbnail);
   }
-  if (data.newFiles !== undefined && data.newFiles !== null) {
+  if (data.newFiles !== undefined) {
     for (const v of data.newFiles) {
       form.append('newFiles', v);
     }
@@ -2084,10 +2156,21 @@ export async function updateProductExtraInfo(
     newFiles?: File[];
   }
 ): Promise<void> {
+  const form = new FormData();
+  form.append('boardPostUpdateRequest', new Blob([JSON.stringify(data.boardPostUpdateRequest)], { type: 'application/json' }));
+  form.append(
+    'productExtraInfoCreateRequest',
+    new Blob([JSON.stringify(data.productExtraInfoCreateRequest)], { type: 'application/json' })
+  );
+  if (data.newFiles !== undefined) {
+    for (const v of data.newFiles) {
+      form.append('newFiles', v);
+    }
+  }
   await axios.request({
     method: 'PATCH',
     url: `/v1/products/${id}/extra-info`,
-    data
+    data: form
   });
 }
 
@@ -2136,10 +2219,8 @@ export async function updateMember(
   }
 ): Promise<void> {
   const form = new FormData();
-  if (data.request !== undefined && data.request !== null) {
-    form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  }
-  if (data.file !== undefined && data.file !== null) {
+  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  if (data.file !== undefined) {
     form.append('file', data.file);
   }
   await axios.request({
@@ -2242,10 +2323,8 @@ export async function updateSampleProvideReport(
   }
 ): Promise<void> {
   const form = new FormData();
-  if (data.request !== undefined && data.request !== null) {
-    form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  }
-  if (data.newFiles !== undefined && data.newFiles !== null) {
+  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  if (data.newFiles !== undefined) {
     for (const v of data.newFiles) {
       form.append('newFiles', v);
     }
@@ -2282,15 +2361,13 @@ export async function updateProductBriefingSingleReport(
   }
 ): Promise<void> {
   const form = new FormData();
-  if (data.request !== undefined && data.request !== null) {
-    form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  }
-  if (data.signatureFiles !== undefined && data.signatureFiles !== null) {
+  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  if (data.signatureFiles !== undefined) {
     for (const v of data.signatureFiles) {
       form.append('signatureFiles', v);
     }
   }
-  if (data.newFiles !== undefined && data.newFiles !== null) {
+  if (data.newFiles !== undefined) {
     for (const v of data.newFiles) {
       form.append('newFiles', v);
     }
@@ -2326,10 +2403,8 @@ export async function updateProductBriefingMultiReport(
   }
 ): Promise<void> {
   const form = new FormData();
-  if (data.request !== undefined && data.request !== null) {
-    form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  }
-  if (data.newFiles !== undefined && data.newFiles !== null) {
+  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  if (data.newFiles !== undefined) {
     for (const v of data.newFiles) {
       form.append('newFiles', v);
     }
@@ -2367,16 +2442,16 @@ export async function updateEventBoard(
   }
 ): Promise<void> {
   const form = new FormData();
-  if (data.request !== undefined && data.request !== null) {
+  if (data.request !== undefined) {
     form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   }
-  if (data.eventRequest !== undefined && data.eventRequest !== null) {
+  if (data.eventRequest !== undefined) {
     form.append('eventRequest', new Blob([JSON.stringify(data.eventRequest)], { type: 'application/json' }));
   }
-  if (data.thumbnail !== undefined && data.thumbnail !== null) {
+  if (data.thumbnail !== undefined) {
     form.append('thumbnail', data.thumbnail);
   }
-  if (data.newFiles !== undefined && data.newFiles !== null) {
+  if (data.newFiles !== undefined) {
     for (const v of data.newFiles) {
       form.append('newFiles', v);
     }
@@ -2423,10 +2498,8 @@ export async function updateBanner(
   }
 ): Promise<void> {
   const form = new FormData();
-  if (data.request !== undefined && data.request !== null) {
-    form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  }
-  if (data.imageFile !== undefined && data.imageFile !== null) {
+  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  if (data.imageFile !== undefined) {
     form.append('imageFile', data.imageFile);
   }
   await axios.request({
@@ -2509,6 +2582,148 @@ export async function getLatestTerms(): Promise<string> {
 }
 
 /**
+ * 정산내역 목록 조회
+ * GET /v1/settlements
+ */
+export async function getSettlements(options?: {
+  dealerName?: string;
+  dealerId?: number;
+  companyName?: string;
+  drugCompany?: string;
+  status?: 'REQUEST' | 'OBJECTION';
+  startMonth?: number;
+  endMonth?: number;
+  page?: number;
+  size?: number;
+}): Promise<PageSettlementResponse> {
+  const response = await axios.request<PageSettlementResponse>({
+    method: 'GET',
+    url: '/v1/settlements',
+    params: options
+  });
+  return response.data;
+}
+
+/**
+ * 실적통계 조회
+ * GET /v1/settlements/performance
+ */
+export async function getPerformanceStats(options?: {
+  drugCompany?: string;
+  companyName?: string;
+  dealerName?: string;
+  institutionName?: string;
+  startMonth?: number;
+  endMonth?: number;
+  page?: number;
+  size?: number;
+}): Promise<PagePerformanceStatsResponse> {
+  const response = await axios.request<PagePerformanceStatsResponse>({
+    method: 'GET',
+    url: '/v1/settlements/performance',
+    params: options
+  });
+  return response.data;
+}
+
+/**
+ * 실적통계 Excel 다운로드 (현재 페이지 기준)
+ * GET /v1/settlements/performance/excel-download
+ */
+export function getDownloadPerformanceExcel(options?: {
+  drugCompany?: string;
+  companyName?: string;
+  dealerName?: string;
+  institutionName?: string;
+  startMonth?: number;
+  endMonth?: number;
+  page?: number;
+  size?: number;
+}): string {
+  const baseUrl = '/v1/settlements/performance/excel-download';
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
+}
+
+/**
+ * 정산상세내역 목록 조회 (거래처별 합계)
+ * GET /v1/settlements/partners
+ */
+export async function getSettlementPartnerSummary(options?: {
+  settlementId?: number;
+  institutionName?: string;
+  businessNumber?: string;
+  institutionCode?: string;
+  page?: number;
+  size?: number;
+}): Promise<PageSettlementPartnerResponse> {
+  const response = await axios.request<PageSettlementPartnerResponse>({
+    method: 'GET',
+    url: '/v1/settlements/partners',
+    params: options
+  });
+  return response.data;
+}
+
+/**
+ * 거래처별 제품 상세 목록 조회
+ * GET /v1/settlements/partners/{settlementPartnerId}/products
+ */
+export async function getSettlementPartnerProducts(settlementPartnerId: number): Promise<SettlementPartnerProductResponse[]> {
+  const response = await axios.request<SettlementPartnerProductResponse[]>({
+    method: 'GET',
+    url: `/v1/settlements/partners/${settlementPartnerId}/products`
+  });
+  return response.data;
+}
+
+/**
+ * 정산상세내역 (거래처별 합계) Excel 다운로드 (현재 페이지 기준)
+ * GET /v1/settlements/partners/excel-download
+ */
+export function getDownloadSettlementPartnerSummaryExcel(options?: {
+  settlementId?: number;
+  institutionName?: string;
+  businessNumber?: string;
+  institutionCode?: string;
+  page?: number;
+  size?: number;
+}): string {
+  const baseUrl = '/v1/settlements/partners/excel-download';
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
+}
+
+/**
+ * 정산내역 목록 Excel 다운로드 (현재 페이지 기준)
+ * GET /v1/settlements/excel-download
+ */
+export function getDownloadSettlementListExcel(options?: {
+  dealerName?: string;
+  dealerId?: number;
+  companyName?: string;
+  drugCompany?: string;
+  status?: 'REQUEST' | 'OBJECTION';
+  startMonth?: number;
+  endMonth?: number;
+  page?: number;
+  size?: number;
+}): string {
+  const baseUrl = '/v1/settlements/excel-download';
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
+}
+
+/**
  * 영업대행 상품 신청자 목록 조회
  * GET /v1/sales-agency-products/{id}/applicants
  */
@@ -2533,7 +2748,7 @@ export async function getProductApplicants(
  * 영업대행 상품 신청자 목록 Excel 다운로드 (현재 페이지 기준)
  * GET /v1/sales-agency-products/{id}/applicants/excel-download
  */
-export async function downloadProductApplicantsExcel(
+export function getDownloadProductApplicantsExcel(
   id: number,
   options?: {
     userId?: string;
@@ -2541,35 +2756,33 @@ export async function downloadProductApplicantsExcel(
     page?: number;
     size?: number;
   }
-): Promise<Blob> {
-  const response = await axios.request<Blob>({
-    method: 'GET',
-    url: `/v1/sales-agency-products/${id}/applicants/excel-download`,
-    params: options,
-    responseType: 'blob'
-  });
-  return response.data;
+): string {
+  const baseUrl = `/v1/sales-agency-products/${id}/applicants/excel-download`;
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
 }
 
 /**
  * 영업대행 상품 목록 Excel 다운로드 (현재 페이지 기준)
  * GET /v1/sales-agency-products/excel-download
  */
-export async function downloadSalesAgencyProductsExcel(options?: {
+export function getDownloadSalesAgencyProductsExcel(options?: {
   productName?: string;
   clientName?: string;
   startAt?: DateString;
   endAt?: DateString;
   page?: number;
   size?: number;
-}): Promise<Blob> {
-  const response = await axios.request<Blob>({
-    method: 'GET',
-    url: '/v1/sales-agency-products/excel-download',
-    params: options,
-    responseType: 'blob'
-  });
-  return response.data;
+}): string {
+  const baseUrl = '/v1/sales-agency-products/excel-download';
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
 }
 
 /**
@@ -2614,7 +2827,7 @@ export async function getProductDetails(id: number): Promise<ProductDetailsRespo
  * 제품 정보 목록 Excel 다운로드 (현재 페이지 기준)
  * GET /v1/products/excel-download
  */
-export async function downloadProductSummariesExcel(options?: {
+export function getDownloadProductSummariesExcel(options?: {
   productName?: string;
   composition?: string;
   productCode?: string;
@@ -2627,14 +2840,13 @@ export async function downloadProductSummariesExcel(options?: {
   sortType?: 'LATEST' | 'PRICE_ASC' | 'PRICE_DESC' | 'FEE_RATE_ASC' | 'FEE_RATE_DESC';
   page?: number;
   size?: number;
-}): Promise<Blob> {
-  const response = await axios.request<Blob>({
-    method: 'GET',
-    url: '/v1/products/excel-download',
-    params: options,
-    responseType: 'blob'
-  });
-  return response.data;
+}): string {
+  const baseUrl = '/v1/products/excel-download';
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
 }
 
 /**
@@ -2735,11 +2947,21 @@ export async function getAttachedEdiFiles(prescriptionPartnerId: number): Promis
  * 처방접수 EDI 파일 다운로드
  * GET /v1/prescriptions/partners/{prescriptionId}/edi-files/download
  */
-export async function downloadZippedEdiFiles(prescriptionId: number): Promise<void> {
-  await axios.request({
+export function getDownloadZippedEdiFiles(prescriptionId: number): string {
+  const baseUrl = `/v1/prescriptions/partners/${prescriptionId}/edi-files/download`;
+  return baseUrl;
+}
+
+/**
+ * member.userId로 소유 파트너 ID 목록 조회
+ * GET /v1/partners/ids/{userId}
+ */
+export async function getPartnerIdsByUserId(userId: string): Promise<number[]> {
+  const response = await axios.request<number[]>({
     method: 'GET',
-    url: `/v1/prescriptions/partners/${prescriptionId}/edi-files/download`
+    url: `/v1/partners/ids/${userId}`
   });
+  return response.data;
 }
 
 /**
@@ -2794,7 +3016,7 @@ export async function isUserIdAvailable(userId: string): Promise<boolean> {
  * 회원 목록 Excel 다운로드 (현재 페이지 기준)
  * GET /v1/members/excel-download
  */
-export async function downloadUserMembersExcel(options?: {
+export function getDownloadUserMembersExcel(options?: {
   memberId?: number;
   userId?: string;
   name?: string;
@@ -2807,14 +3029,13 @@ export async function downloadUserMembersExcel(options?: {
   endAt?: DateString;
   page?: number;
   size?: number;
-}): Promise<Blob> {
-  const response = await axios.request<Blob>({
-    method: 'GET',
-    url: '/v1/members/excel-download',
-    params: options,
-    responseType: 'blob'
-  });
-  return response.data;
+}): string {
+  const baseUrl = '/v1/members/excel-download';
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
 }
 
 /**
@@ -2889,7 +3110,7 @@ export async function getExpenseReportList(options?: {
  * 지출보고 목록 Excel 다운로드 (현재 페이지 기준)
  * GET /v1/expense-reports/excel-download
  */
-export async function downloadExpenseReportListExcel(options?: {
+export function getDownloadExpenseReportListExcel(options?: {
   status?: 'PENDING' | 'COMPLETED';
   userId?: string;
   productName?: string;
@@ -2899,12 +3120,23 @@ export async function downloadExpenseReportListExcel(options?: {
   eventDateTo?: DateTimeString;
   page?: number;
   size?: number;
-}): Promise<Blob> {
-  const response = await axios.request<Blob>({
+}): string {
+  const baseUrl = '/v1/expense-reports/excel-download';
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
+}
+
+/**
+ * member.userId로 dealer.id 조회
+ * GET /v1/dealers/id/{userId}
+ */
+export async function getDealerIdByUserId(userId: string): Promise<number> {
+  const response = await axios.request<number>({
     method: 'GET',
-    url: '/v1/expense-reports/excel-download',
-    params: options,
-    responseType: 'blob'
+    url: `/v1/dealers/id/${userId}`
   });
   return response.data;
 }
@@ -2958,12 +3190,8 @@ export async function getBlindPosts(options?: {
  * 암호화용 공개키
  * GET /v1/auth/public-key
  */
-export async function getPublicKey(): Promise<{
-  [key: string]: string;
-}> {
-  const response = await axios.request<{
-    [key: string]: string;
-  }>({
+export async function getPublicKey(): Promise<Record<string, string>> {
+  const response = await axios.request<Record<string, string>>({
     method: 'GET',
     url: '/v1/auth/public-key'
   });

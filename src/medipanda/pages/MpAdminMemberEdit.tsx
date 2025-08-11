@@ -1,12 +1,10 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useFormik } from 'formik';
 import {
   Box,
   Button,
   Card,
   Checkbox,
   Chip,
+  CircularProgress,
   FormControl,
   FormControlLabel,
   Grid,
@@ -15,18 +13,20 @@ import {
   Select,
   Stack,
   TextField,
-  Typography,
-  CircularProgress
+  Typography
 } from '@mui/material';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
-import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
+import MuiLink from '@mui/material/Link';
+import { useFormik } from 'formik';
 import { mpUpdateMemberFile } from 'medipanda/api-definitions/MpMember';
 import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
-import { useSnackbar } from 'notistack';
 import { approveOrRejectCso, getContractDetails, getMemberDetails, MemberDetailsResponse } from 'medipanda/backend';
+import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
+import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
+import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
 import { mockString } from 'medipanda/mockup';
-import MuiLink from '@mui/material/Link';
+import { useSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function withMock<T extends MemberDetailsResponse>(data: T): T {
   return {
@@ -37,7 +37,7 @@ function withMock<T extends MemberDetailsResponse>(data: T): T {
 }
 
 export default function MpAdminMemberEdit() {
-  const { userId } = useParams<{ userId: string }>();
+  const { userId } = useParams();
   const navigate = useNavigate();
   const notImplementedDialog = useMpNotImplementedDialog();
   const infoDialog = useMpInfoDialog();

@@ -1,4 +1,3 @@
-import { delay } from 'medipanda/utils/mock-helpers';
 import { NotImplementedError } from './NotImplementedError';
 
 export enum InquiryResponseStatus {
@@ -50,11 +49,9 @@ export interface MpInquiryResponseRequest {
 }
 
 export const mpCreateInquiryResponse = async (id: number, data: MpInquiryResponseRequest): Promise<MpInquiry> => {
-  await delay(300);
   throw new NotImplementedError('답변 작성');
 };
 
 export const mpUpdateInquiryResponse = async (id: number, data: MpInquiryResponseRequest): Promise<MpInquiry> => {
-  await delay(300);
   throw new NotImplementedError('답변 수정');
 };

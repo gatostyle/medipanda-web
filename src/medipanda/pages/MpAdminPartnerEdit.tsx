@@ -1,15 +1,14 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useFormik } from 'formik';
 import {
   Box,
   Button,
   Card,
+  CircularProgress,
   Dialog,
   DialogContent,
   DialogTitle,
   Grid,
   IconButton,
+  InputAdornment,
   MenuItem,
   Select,
   Stack,
@@ -20,61 +19,113 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography,
-  InputAdornment
+  Typography
 } from '@mui/material';
-import { SearchNormal1, Add, Minus } from 'iconsax-react';
-import {
-  MpPartnerPharmacyRow,
-  MpPartnerPharmaceuticalCompany,
-  MpPartnerCompanySearchResult,
-  mpGetPartnerPharmaceuticalCompanies,
-  mpGetPartnerCompanySearchResults,
-  mpGetPartnerEmptyPharmacyRow
-} from 'medipanda/api-definitions/MpPartnerEdit';
+import { useFormik } from 'formik';
+import { SearchNormal1 } from 'iconsax-react';
+import { getDrugCompanies, getPartnerDetails, getPartners, PartnerResponse, updatePartner } from 'medipanda/backend';
+import { useSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function MpAdminPartnerEdit() {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
-  const isEditMode = !!id;
-
+  const { enqueueSnackbar } = useSnackbar();
+  const { id } = useParams();
+  const [loading, setLoading] = useState(false);
   const [pharmaceuticalSearchOpen, setPharmaceuticalSearchOpen] = useState(false);
   const [companySearchOpen, setCompanySearchOpen] = useState(false);
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const [companySearchKeyword, setCompanySearchKeyword] = useState('');
-  const [searchResults, setSearchResults] = useState<MpPartnerPharmaceuticalCompany[]>([]);
-  const [companySearchResults, setCompanySearchResults] = useState<MpPartnerCompanySearchResult[]>([]);
-  const [emptyPharmacyRow, setEmptyPharmacyRow] = useState<MpPartnerPharmacyRow | null>(null);
-  const [pharmacyRows, setPharmacyRows] = useState<MpPartnerPharmacyRow[]>([]);
+  const [drugCompanies, setDrugCompanies] = useState<string[]>([]);
+  const [partnerSearchResult, setPartnerSearchResult] = useState<PartnerResponse[]>([]);
+  // const [emptyPharmacyRow, setEmptyPharmacyRow] = useState<MpPartnerPharmacyRow | null>(null);
+  // const [pharmacyRows, setPharmacyRows] = useState<MpPartnerPharmacyRow[]>([]);
+
+  const isNew = id === undefined;
 
   useEffect(() => {
-    const loadInitialData = async () => {
-      const [pharmCompanies, companyResults, emptyRow] = await Promise.all([
-        mpGetPartnerPharmaceuticalCompanies(),
-        mpGetPartnerCompanySearchResults(),
-        mpGetPartnerEmptyPharmacyRow()
-      ]);
-      setSearchResults(pharmCompanies);
-      setCompanySearchResults(companyResults);
-      setEmptyPharmacyRow(emptyRow);
-      setPharmacyRows([{ ...emptyRow, id: 1 }]);
-    };
-    loadInitialData();
-  }, []);
+    getDrugCompanies().then(setDrugCompanies);
+    if (id) {
+      fetchPartnerData(parseInt(id));
+    }
+  }, [id]);
+
+  const fetchPartnerData = async (partnerId: number) => {
+    setLoading(true);
+    try {
+      const partnerDetails = await getPartnerDetails(partnerId);
+
+      // const [emptyRow] = await Promise.all([mpGetPartnerEmptyPharmacyRow()]);
+
+      // setPharmacyRows([{ ...emptyRow, id: 1 }]);
+
+      formik.setValues({
+        drugCompany: partnerDetails.drugCompany,
+        companyName: partnerDetails.companyName,
+        contractType: partnerDetails.contractType,
+        institutionCode: partnerDetails.institutionCode,
+        institutionName: partnerDetails.institutionName,
+        businessNumber: partnerDetails.businessNumber,
+        medicalDepartment: partnerDetails.medicalDepartment ?? '',
+        pharmacyName: partnerDetails.pharmacyName ?? '',
+        pharmacyAddress: partnerDetails.pharmacyAddress ?? '',
+        pharmacyStatus: partnerDetails.pharmacyStatus,
+        note: partnerDetails.note ?? ''
+      });
+    } catch (error) {
+      console.error('Failed to fetch partner data:', error);
+      enqueueSnackbar('거래선 정보를 불러오는데 실패했습니다.', { variant: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
       drugCompany: '',
       companyName: '',
+      contractType: null as ('CONTRACT' | 'NON_CONTRACT') | null,
       institutionCode: '',
       institutionName: '',
       businessNumber: '',
       medicalDepartment: '',
-      notes: ''
+      pharmacyName: '',
+      pharmacyAddress: '',
+      pharmacyStatus: 'NONE' as ('NORMAL' | 'CLOSED' | 'DELETED' | 'NONE') | null,
+      note: ''
     },
     onSubmit: async (values) => {
-      console.log('Form submitted:', values, pharmacyRows);
+      await updatePartner(parseInt(id!), {
+        drugCompany: values.drugCompany,
+        companyName: values.companyName,
+        contractType: values.contractType,
+        institutionCode: values.institutionCode,
+        institutionName: values.institutionName,
+        businessNumber: values.businessNumber,
+        medicalDepartment: values.medicalDepartment,
+        pharmacyName: values.pharmacyName,
+        pharmacyAddress: values.pharmacyAddress,
+        pharmacyStatus: values.pharmacyStatus,
+        note: values.note
+      });
+
+      alert('거래선 정보가 저장되었습니다.');
       navigate('/admin/partners');
+    }
+  });
+
+  const partnerSearchFormik = useFormik({
+    initialValues: {
+      companyName: '',
+      pageIndex: 0,
+      pageSize: 20
+    },
+    onSubmit: async (values) => {
+      const response = await getPartners({
+        companyName: values.companyName !== '' ? values.companyName : undefined,
+        page: values.pageIndex,
+        size: values.pageSize
+      });
+      setPartnerSearchResult(response.content);
     }
   });
 
@@ -82,44 +133,53 @@ export default function MpAdminPartnerEdit() {
     setPharmaceuticalSearchOpen(true);
   };
 
-  const handlePharmaceuticalSelect = (company: MpPartnerPharmaceuticalCompany) => {
-    formik.setFieldValue('drugCompany', company.name);
+  const handlePharmaceuticalSelect = (drugCompany: string) => {
+    formik.setFieldValue('drugCompany', drugCompany);
     setPharmaceuticalSearchOpen(false);
   };
 
   const handleCompanySearch = () => {
+    partnerSearchFormik.submitForm();
     setCompanySearchOpen(true);
   };
 
-  const handleCompanySelect = (company: MpPartnerCompanySearchResult) => {
-    formik.setFieldValue('companyName', company.name);
+  const handlePartnerSelect = (partner: PartnerResponse) => {
+    formik.setFieldValue('companyName', partner.companyName);
     setCompanySearchOpen(false);
   };
 
-  const handleAddPharmacy = () => {
-    if (!emptyPharmacyRow) return;
-    const newId = Math.max(...pharmacyRows.map((r) => r.id)) + 1;
-    setPharmacyRows([...pharmacyRows, { ...emptyPharmacyRow, id: newId }]);
-  };
+  // const handleAddPharmacy = () => {
+  //   if (!emptyPharmacyRow) return;
+  //   const newId = Math.max(...pharmacyRows.map((r) => r.id)) + 1;
+  //   setPharmacyRows([...pharmacyRows, { ...emptyPharmacyRow, id: newId }]);
+  // };
 
-  const handleRemovePharmacy = (id: number) => {
-    if (pharmacyRows.length > 1) {
-      setPharmacyRows(pharmacyRows.filter((row) => row.id !== id));
-    }
-  };
+  // const handleRemovePharmacy = (id: number) => {
+  //   if (pharmacyRows.length > 1) {
+  //     setPharmacyRows(pharmacyRows.filter((row) => row.id !== id));
+  //   }
+  // };
 
-  const handlePharmacyChange = (id: number, field: keyof MpPartnerPharmacyRow, value: unknown) => {
-    setPharmacyRows(pharmacyRows.map((row) => (row.id === id ? { ...row, [field]: value } : row)));
-  };
+  // const handlePharmacyChange = (id: number, field: keyof MpPartnerPharmacyRow, value: unknown) => {
+  //   setPharmacyRows(pharmacyRows.map((row) => (row.id === id ? { ...row, [field]: value } : row)));
+  // };
 
   const handleCancel = () => {
     navigate('/admin/partners');
   };
 
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
-        거래선등록
+        {isNew ? '거래선등록' : '거래선수정'}
       </Typography>
 
       <form onSubmit={formik.handleSubmit}>
@@ -172,7 +232,7 @@ export default function MpAdminPartnerEdit() {
                 name="institutionCode"
                 value={formik.values.institutionCode}
                 disabled
-                placeholder={isEditMode ? formik.values.institutionCode : ''}
+                placeholder={isNew ? '' : formik.values.institutionCode}
               />
             </Grid>
 
@@ -225,81 +285,76 @@ export default function MpAdminPartnerEdit() {
                     <TableRow>
                       <TableCell>약국명</TableCell>
                       <TableCell>약국 주소</TableCell>
-                      <TableCell width={150}>정산</TableCell>
+                      <TableCell width={150}>상태</TableCell>
                       <TableCell width={120}></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {pharmacyRows.map((row) => (
-                      <TableRow key={row.id}>
-                        <TableCell>
-                          <TextField
-                            fullWidth
-                            size="small"
-                            value={row.pharmacyName}
-                            onChange={(e) => handlePharmacyChange(row.id, 'pharmacyName', e.target.value)}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <TextField
-                            fullWidth
-                            size="small"
-                            value={row.pharmacyAddress}
-                            onChange={(e) => handlePharmacyChange(row.id, 'pharmacyAddress', e.target.value)}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Select
-                            fullWidth
-                            size="small"
-                            value={row.state ? 'true' : 'false'}
-                            onChange={(e) => handlePharmacyChange(row.id, 'state', e.target.value === 'true')}
-                          >
-                            <MenuItem value={'true'}>정상</MenuItem>
-                            <MenuItem value={'false'}>폐업</MenuItem>
-                          </Select>
-                        </TableCell>
-                        <TableCell>
-                          <Stack direction="row" spacing={1}>
-                            <Button
-                              variant="contained"
-                              color="success"
-                              size="small"
-                              onClick={handleAddPharmacy}
-                              startIcon={<Add size={16} />}
-                            >
-                              +추가
-                            </Button>
-                            {pharmacyRows.length > 1 && (
-                              <Button
-                                variant="contained"
-                                size="small"
-                                onClick={() => handleRemovePharmacy(row.id)}
-                                startIcon={<Minus size={16} />}
-                                sx={{ bgcolor: 'grey.500', '&:hover': { bgcolor: 'grey.600' } }}
-                              >
-                                -삭제
-                              </Button>
-                            )}
-                          </Stack>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {/*{pharmacyRows.map((row) => (*/}
+                    <TableRow>
+                      <TableCell>
+                        <TextField
+                          fullWidth
+                          size="small"
+                          name="pharmacyName"
+                          value={formik.values.pharmacyName}
+                          onChange={formik.handleChange}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <TextField
+                          fullWidth
+                          size="small"
+                          name="pharmacyAddress"
+                          value={formik.values.pharmacyAddress}
+                          onChange={formik.handleChange}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Select
+                          fullWidth
+                          size="small"
+                          name="pharmacyStatus"
+                          value={formik.values.pharmacyStatus}
+                          onChange={formik.handleChange}
+                        >
+                          <MenuItem value={'NORMAL'}>정상</MenuItem>
+                          <MenuItem value={'CLOSED'}>폐업</MenuItem>
+                        </Select>
+                      </TableCell>
+                      <TableCell>
+                        {/*<Stack direction="row" spacing={1}>*/}
+                        {/*  <Button*/}
+                        {/*    variant="contained"*/}
+                        {/*    color="success"*/}
+                        {/*    size="small"*/}
+                        {/*    onClick={handleAddPharmacy}*/}
+                        {/*    startIcon={<Add size={16} />}*/}
+                        {/*  >*/}
+                        {/*    +추가*/}
+                        {/*  </Button>*/}
+                        {/*  {pharmacyRows.length > 1 && (*/}
+                        {/*    <Button*/}
+                        {/*      variant="contained"*/}
+                        {/*      size="small"*/}
+                        {/*      onClick={() => handleRemovePharmacy(row.id)}*/}
+                        {/*      startIcon={<Minus size={16} />}*/}
+                        {/*      sx={{ bgcolor: 'grey.500', '&:hover': { bgcolor: 'grey.600' } }}*/}
+                        {/*    >*/}
+                        {/*      -삭제*/}
+                        {/*    </Button>*/}
+                        {/*  )}*/}
+                        {/*</Stack>*/}
+                      </TableCell>
+                    </TableRow>
+                    {/*))}*/}
                   </TableBody>
                 </Table>
               </TableContainer>
             </Grid>
 
             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="비고"
-                name="notes"
-                value={formik.values.notes}
-                onChange={formik.handleChange}
-                multiline
-                rows={4}
-              />
+              <TextField fullWidth label="비고" name="note" value={formik.values.note} onChange={formik.handleChange} multiline rows={4} />
             </Grid>
           </Grid>
 
@@ -318,19 +373,6 @@ export default function MpAdminPartnerEdit() {
         <DialogTitle>제약사 조회</DialogTitle>
         <DialogContent>
           <Stack spacing={2}>
-            <Stack direction="row" spacing={1}>
-              <TextField
-                fullWidth
-                size="small"
-                placeholder="검색어를 입력하세요"
-                value={searchKeyword}
-                onChange={(e) => setSearchKeyword(e.target.value)}
-              />
-              <Button variant="contained" size="small">
-                검색
-              </Button>
-            </Stack>
-
             <TableContainer>
               <Table size="small">
                 <TableHead>
@@ -342,11 +384,11 @@ export default function MpAdminPartnerEdit() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {searchResults.map((company) => (
-                    <TableRow key={company.id}>
-                      <TableCell>{company.name}</TableCell>
+                  {drugCompanies.map((drugCompany) => (
+                    <TableRow key={drugCompany}>
+                      <TableCell>{drugCompany}</TableCell>
                       <TableCell align="center">
-                        <Button variant="contained" size="small" onClick={() => handlePharmaceuticalSelect(company)}>
+                        <Button variant="contained" size="small" onClick={() => handlePharmaceuticalSelect(drugCompany)}>
                           선택
                         </Button>
                       </TableCell>
@@ -367,15 +409,15 @@ export default function MpAdminPartnerEdit() {
         <DialogTitle>회사명 조회</DialogTitle>
         <DialogContent>
           <Stack spacing={2}>
-            <Stack direction="row" spacing={1}>
+            <Stack direction="row" spacing={1} component="form" noValidate onSubmit={partnerSearchFormik.handleSubmit}>
               <TextField
                 fullWidth
                 size="small"
                 placeholder="검색어를 입력하세요"
-                value={companySearchKeyword}
-                onChange={(e) => setCompanySearchKeyword(e.target.value)}
+                name="companyName"
+                onChange={partnerSearchFormik.handleChange}
               />
-              <Button variant="contained" size="small">
+              <Button variant="contained" size="small" type="submit">
                 검색
               </Button>
             </Stack>
@@ -391,11 +433,11 @@ export default function MpAdminPartnerEdit() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {companySearchResults.map((company) => (
-                    <TableRow key={company.id}>
-                      <TableCell>{company.name}</TableCell>
+                  {partnerSearchResult.map((partner) => (
+                    <TableRow key={partner.id}>
+                      <TableCell>{partner.companyName}</TableCell>
                       <TableCell align="center">
-                        <Button variant="contained" size="small" onClick={() => handleCompanySelect(company)}>
+                        <Button variant="contained" size="small" onClick={() => handlePartnerSelect(partner)}>
                           선택
                         </Button>
                       </TableCell>

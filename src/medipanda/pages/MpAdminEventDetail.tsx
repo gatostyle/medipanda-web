@@ -1,41 +1,44 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
+import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import MainCard from 'components/MainCard';
 import { EventBoardDetailsResponse, getEventBoardDetails } from 'medipanda/backend';
-import { format } from 'date-fns';
-import CircularProgress from '@mui/material/CircularProgress';
 import { TiptapEditor } from 'medipanda/components/TiptapEditor';
+import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
+import { useSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function MpAdminEventDetail() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
   const [event, setEvent] = useState<EventBoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const fetchData = async () => {
+    if (id === undefined) return;
+
+    setLoading(true);
+    try {
+      const data = await getEventBoardDetails(parseInt(id));
+      setEvent(data);
+    } catch (error) {
+      console.error('Failed to fetch event detail:', error);
+      enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
+      navigate('/admin/events');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchEventDetail = async () => {
-      if (!id) return;
-
-      setLoading(true);
-      try {
-        const data = await getEventBoardDetails(parseInt(id));
-        setEvent(data);
-      } catch (error) {
-        console.error('Failed to fetch event detail:', error);
-        navigate('/admin/events');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEventDetail();
+    fetchData();
   }, [id, navigate]);
 
   const handleEdit = () => {
@@ -113,7 +116,7 @@ export default function MpAdminEventDetail() {
                   이벤트기간
                 </Typography>
                 <Typography variant="body1">
-                  {format(new Date(event.eventStartDate), 'yyyy-MM-dd')} ~ {format(new Date(event.eventEndDate), 'yyyy-MM-dd')}
+                  {formatYyyyMmDd(event.eventStartDate)} ~ {formatYyyyMmDd(event.eventEndDate)}
                 </Typography>
               </Stack>
             </Grid>

@@ -1,10 +1,10 @@
-import { createContext, ReactNode, useState } from 'react';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import Typography from '@mui/material/Typography';
-import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import Typography from '@mui/material/Typography';
+import { createContext, ReactNode, useContext, useState } from 'react';
 
 export interface DeleteDialogConfig {
   title?: string;
@@ -74,4 +74,8 @@ export function MpDeleteDialogProvider({ children }: MpDeleteDialogProviderProps
       </Dialog>
     </MpDeleteDialogContext.Provider>
   );
+}
+
+export function useMpDeleteDialog() {
+  return useContext(MpDeleteDialogContext);
 }

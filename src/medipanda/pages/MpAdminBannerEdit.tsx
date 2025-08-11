@@ -1,6 +1,3 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useFormik } from 'formik';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
@@ -14,16 +11,19 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import MainCard from 'components/MainCard';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import { createBanner, DateTimeString, getBanner, updateBanner } from 'medipanda/backend';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
-import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
+import { useFormik } from 'formik';
 import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
-import { format } from 'date-fns';
+import { createBanner, DateTimeString, getBanner, updateBanner } from 'medipanda/backend';
+import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
+import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
+import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
+import { formatYyyyMmDd, DateFix } from 'medipanda/utils/dateFormat';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function MpAdminBannerEdit() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const navigate = useNavigate();
   const [, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -50,8 +50,8 @@ export default function MpAdminBannerEdit() {
     },
     onSubmit: async (values) => {
       try {
-        const startDateStr = values.startDate ? format(values.startDate, 'yyyy-MM-dd') : '';
-        const endDateStr = values.endDate ? format(values.endDate, 'yyyy-MM-dd') : '';
+        const startDateStr = values.startDate ? formatYyyyMmDd(values.startDate) : '';
+        const endDateStr = values.endDate ? formatYyyyMmDd(values.endDate) : '';
         const startAt = `${startDateStr}T${values.startHour.padStart(2, '0')}:${values.startMinute.padStart(2, '0')}:00`;
         const endAt = `${endDateStr}T${values.endHour.padStart(2, '0')}:${values.endMinute.padStart(2, '0')}:00`;
 
@@ -100,14 +100,14 @@ export default function MpAdminBannerEdit() {
 
   useEffect(() => {
     const fetchBannerDetail = async () => {
-      if (!id) return;
+      if (id === undefined) return;
 
       setLoading(true);
       try {
         const data = await getBanner(parseInt(id));
 
-        const startDate = new Date(data.startAt);
-        const endDate = new Date(data.endAt);
+        const startDate = DateFix(data.startAt);
+        const endDate = DateFix(data.endAt);
 
         formik.setValues({
           position: data.position,

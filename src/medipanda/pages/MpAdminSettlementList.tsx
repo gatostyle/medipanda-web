@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useFormik } from 'formik';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
+import Pagination from '@mui/material/Pagination';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -19,55 +19,63 @@ import Typography from '@mui/material/Typography';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
-import Pagination from '@mui/material/Pagination';
-import Checkbox from '@mui/material/Checkbox';
-import { SearchFilterBar, SearchFilterItem, SearchFilterActions } from 'medipanda/components/SearchFilterBar';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import {
-  MpSettlement,
-  MpSettlementSearchRequest,
-  mpFetchSettlementList,
-  mpDownloadSettlementExcel,
-  mpUploadSettlementFile,
-  mpDownloadSettlementEDI,
-  mpPrintSettlementEDI
-} from 'medipanda/api-definitions/MpSettlement';
-import { Link } from 'react-router-dom';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
-import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
+import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-react';
-import { Sequenced } from 'medipanda/utils/withSequence';
-import { DateString } from 'medipanda/backend';
+import { mpDownloadSettlementEDI, mpPrintSettlementEDI } from 'medipanda/api-definitions/MpSettlement';
+import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
+import { getDownloadSettlementListExcel, getSettlements, SettlementResponse, uploadSettlementExcel } from 'medipanda/backend';
+import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
+import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
+import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
+import { mockNumber } from 'medipanda/mockup';
+import { formatYyyyMm } from 'medipanda/utils/dateFormat';
+import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useMpInfoDialog } from '../hooks/useMpInfoDialog';
+
+interface SettlementResponseWithMockData extends SettlementResponse {
+  drugCompany: string;
+}
+
+function withMock<T extends SettlementResponse>(data: T): T & SettlementResponseWithMockData {
+  return {
+    ...data,
+    drugCompany: '제약사'
+  };
+}
 
 export default function MpAdminSettlementList() {
-  const [data, setData] = useState<Sequenced<MpSettlement>[]>([]);
+  const [data, setData] = useState<Sequenced<SettlementResponseWithMockData>[]>([]);
   const [, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const notImplementedDialog = useMpNotImplementedDialog();
+  const infoDialog = useMpInfoDialog();
   const errorDialog = useMpErrorDialog();
-
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 20
-  });
 
   const formik = useFormik({
     initialValues: {
       userConfirmation: '' as boolean | '',
-      searchType: 'dealerNumber' as 'dealerNumber' | 'companyName' | 'businessPartnerName',
+      searchType: 'dealerId' as 'dealerId' | 'drugCompany' | 'companyName',
       startAt: null as Date | null,
       endAt: null as Date | null,
-      searchKeyword: ''
+      searchKeyword: '',
+      pageIndex: 0,
+      pageSize: 20
     },
-    onSubmit: (values) => {
-      setPagination({ ...pagination, pageIndex: 0 });
+    onSubmit: () => {
+      if (formik.values.pageIndex !== 0) {
+        formik.setFieldValue('pageIndex', 0);
+      } else {
+        fetchData();
+      }
     }
   });
 
-  const columns = useMemo<ColumnDef<Sequenced<MpSettlement>>[]>(
+  const columns = useMemo<ColumnDef<Sequenced<SettlementResponseWithMockData>>[]>(
     () => [
       {
         id: 'select',
@@ -100,26 +108,31 @@ export default function MpAdminSettlementList() {
       {
         header: 'No',
         accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
         size: 60
       },
       {
         header: '딜러번호',
-        accessorKey: 'dealerNumber',
+        accessorKey: 'dealerId',
+        cell: ({ row }) => row.original.dealerId,
         size: 100
       },
       {
         header: '정산월',
         accessorKey: 'settlementMonth',
+        cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
         size: 100
       },
       {
         header: '제약사명',
-        accessorKey: 'companyName',
+        accessorKey: 'drugCompany',
+        cell: ({ row }) => row.original.drugCompany,
         size: 150
       },
       {
         header: '회사명',
-        accessorKey: 'businessPartnerName',
+        accessorKey: 'companyName',
+        cell: ({ row }) => row.original.companyName,
         size: 150
       },
       {
@@ -135,45 +148,41 @@ export default function MpAdminSettlementList() {
       {
         header: '처방금액',
         accessorKey: 'prescriptionAmount',
-        cell: ({ row }) => {
-          const value = row.original.prescriptionAmount;
-          return value ? `${value.toLocaleString()}` : '-';
-        },
+        cell: ({ row }) => row.original.prescriptionAmount.toLocaleString(),
         size: 120
       },
       {
         header: '공급가액',
         accessorKey: 'supplyAmount',
-        cell: ({ row }) => {
-          const value = row.original.supplyAmount;
-          return value ? `${value.toLocaleString()}` : '-';
-        },
+        cell: ({ row }) => row.original.supplyAmount.toLocaleString(),
         size: 120
       },
       {
         header: '세액',
         accessorKey: 'taxAmount',
-        cell: ({ row }) => {
-          const value = row.original.taxAmount;
-          return value ? `${value.toLocaleString()}` : '-';
-        },
+        cell: ({ row }) => row.original.taxAmount.toLocaleString(),
         size: 100
       },
       {
         header: '합계금액',
         accessorKey: 'totalAmount',
-        cell: ({ row }) => {
-          const value = row.original.totalAmount;
-          return value ? `${value.toLocaleString()}` : '-';
-        },
+        cell: ({ row }) => row.original.totalAmount.toLocaleString(),
         size: 120
       },
       {
         header: '사용자확인',
-        accessorKey: 'userConfirmation',
+        accessorKey: 'status',
         cell: ({ row }) => {
-          const value = row.original.userConfirmation;
-          return value ? '정산요청' : '이의신청';
+          const value = row.original.status;
+
+          switch (value) {
+            case 'REQUEST':
+              return '정산요청';
+            case 'OBJECTION':
+              return '이의신청';
+            default:
+              return '-';
+          }
         },
         size: 100
       }
@@ -187,9 +196,11 @@ export default function MpAdminSettlementList() {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      pagination
+      pagination: {
+        pageIndex: formik.values.pageIndex,
+        pageSize: formik.values.pageSize
+      }
     },
-    onPaginationChange: setPagination,
     pageCount: totalPages,
     manualPagination: true
   });
@@ -197,18 +208,19 @@ export default function MpAdminSettlementList() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const request: MpSettlementSearchRequest = {
-        page: pagination.pageIndex,
-        size: pagination.pageSize,
-        userConfirmation: formik.values.userConfirmation !== '' ? formik.values.userConfirmation : undefined,
-        searchType: formik.values.searchType,
-        startDate: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
-        endDate: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
-        searchKeyword: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined
-      };
+      const response = await getSettlements({
+        dealerName: undefined,
+        dealerId: formik.values.searchType === 'dealerId' ? parseInt(formik.values.searchKeyword) : undefined,
+        companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
+        drugCompany: formik.values.searchType === 'drugCompany' ? formik.values.searchKeyword : undefined,
+        status: formik.values.userConfirmation !== undefined ? (formik.values.userConfirmation ? 'REQUEST' : 'OBJECTION') : undefined,
+        startMonth: formik.values.startAt ? mockNumber() : undefined,
+        endMonth: formik.values.endAt ? mockNumber() : undefined,
+        page: formik.values.pageIndex,
+        size: formik.values.pageSize
+      });
 
-      const response = await mpFetchSettlementList(request);
-      setData(response.content);
+      setData(withSequence(response).content.map(withMock));
       setTotalElements(response.totalElements);
       setTotalPages(response.totalPages);
     } catch (error) {
@@ -223,42 +235,22 @@ export default function MpAdminSettlementList() {
 
   useEffect(() => {
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pagination.pageIndex, pagination.pageSize, formik.values]);
-
-  const handleExcelDownload = async () => {
-    try {
-      await mpDownloadSettlementExcel();
-    } catch (error) {
-      if (error instanceof NotImplementedError) {
-        notImplementedDialog.open(error.message);
-      } else {
-        console.error('Failed to download Excel:', error);
-        errorDialog.showError('Excel 다운로드 중 오류가 발생했습니다.');
-      }
-    }
-  };
+  }, [formik.values.pageIndex, formik.values.pageSize]);
 
   const handleFileUpload = async () => {
-    try {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = '.xlsx,.xls';
-      input.onchange = async (e) => {
-        const file = (e.target as HTMLInputElement).files?.[0];
-        if (file) {
-          await mpUploadSettlementFile(file);
-        }
-      };
-      input.click();
-    } catch (error) {
-      if (error instanceof NotImplementedError) {
-        notImplementedDialog.open(error.message);
-      } else {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.xlsx,.xls';
+    input.onchange = async (e) => {
+      try {
+        await uploadSettlementExcel({ file: (e.target as HTMLInputElement).files![0] });
+        infoDialog.showInfo('정산 파일을 업로드했습니다.');
+      } catch (error) {
         console.error('Failed to upload file:', error);
         errorDialog.showError('파일 업로드 중 오류가 발생했습니다.');
       }
-    }
+    };
+    input.click();
   };
 
   const handleEDIDownload = async () => {
@@ -323,9 +315,9 @@ export default function MpAdminSettlementList() {
                       onChange={(e) => formik.setFieldValue('searchType', e.target.value)}
                       displayEmpty
                     >
-                      <MenuItem value="dealerNumber">딜러번호</MenuItem>
-                      <MenuItem value="companyName">제약사명</MenuItem>
-                      <MenuItem value="businessPartnerName">회사명</MenuItem>
+                      <MenuItem value="dealerId">딜러번호</MenuItem>
+                      <MenuItem value="drugCompany">제약사명</MenuItem>
+                      <MenuItem value="companyName">회사명</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
@@ -367,7 +359,19 @@ export default function MpAdminSettlementList() {
                   variant="contained"
                   color="success"
                   size="small"
-                  onClick={handleExcelDownload}
+                  href={getDownloadSettlementListExcel({
+                    dealerName: undefined,
+                    dealerId: formik.values.searchType === 'dealerId' ? parseInt(formik.values.searchKeyword) : undefined,
+                    companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
+                    drugCompany: formik.values.searchType === 'drugCompany' ? formik.values.searchKeyword : undefined,
+                    status:
+                      formik.values.userConfirmation !== undefined ? (formik.values.userConfirmation ? 'REQUEST' : 'OBJECTION') : undefined,
+                    startMonth: formik.values.startAt ? mockNumber() : undefined,
+                    endMonth: formik.values.endAt ? mockNumber() : undefined,
+                    page: formik.values.pageIndex,
+                    size: formik.values.pageSize
+                  })}
+                  target="_blank"
                   startIcon={<DocumentDownload size={16} />}
                 >
                   Excel
@@ -414,10 +418,8 @@ export default function MpAdminSettlementList() {
             <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={pagination.pageIndex + 1}
-                onChange={(event, value) => {
-                  setPagination({ ...pagination, pageIndex: value - 1 });
-                }}
+                page={formik.values.pageIndex + 1}
+                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
                 color="primary"
                 variant="outlined"
                 showFirstButton

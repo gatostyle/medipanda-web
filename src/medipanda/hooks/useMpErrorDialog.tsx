@@ -1,12 +1,12 @@
-import { createContext, ReactNode, useState, useCallback } from 'react';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
+import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import DialogActions from '@mui/material/DialogActions';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
+import DialogTitle from '@mui/material/DialogTitle';
 import Typography from '@mui/material/Typography';
+import { createContext, ReactNode, useCallback, useContext, useState } from 'react';
 
 interface MpErrorDialogContextType {
   showError: (message: string, title?: string) => void;
@@ -108,4 +108,14 @@ export function MpErrorDialogProvider({ children }: MpErrorDialogProviderProps) 
       <MpErrorDialog open={dialogState.open} title={dialogState.title} message={dialogState.message} onClose={hideError} />
     </MpErrorDialogContext.Provider>
   );
+}
+
+export function useMpErrorDialog() {
+  const context = useContext(MpErrorDialogContext);
+
+  if (context === undefined) {
+    throw new Error('useMpErrorDialog must be used within a MpErrorDialogProvider');
+  }
+
+  return context;
 }

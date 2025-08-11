@@ -1,11 +1,11 @@
-import { useState, useMemo, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
 import {
   Box,
   Button,
   Card,
   Chip,
+  CircularProgress,
   Grid,
+  Pagination,
   Stack,
   Tab,
   Table,
@@ -15,25 +15,26 @@ import {
   TableHead,
   TableRow,
   Tabs,
-  Typography,
-  Pagination,
-  CircularProgress
+  Typography
 } from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import ScrollX from 'components/ScrollX';
 import {
-  SalesAgencyProductApplicantResponse,
-  SalesAgencyProductDetailsResponse,
+  getProductApplicants,
   getSalesAgencyProductDetails,
-  getProductApplicants
+  SalesAgencyProductApplicantResponse,
+  SalesAgencyProductDetailsResponse
 } from 'medipanda/backend';
-import { useSnackbar } from 'notistack';
 import { TiptapEditor } from 'medipanda/components/TiptapEditor';
+import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { useSnackbar } from 'notistack';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function MpAdminSalesAgencyProductDetail() {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
   const [tabValue, setTabValue] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -47,36 +48,42 @@ export default function MpAdminSalesAgencyProductDetail() {
       {
         header: 'No',
         accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
         size: 60
       },
       {
         header: '회원번호',
         accessorKey: 'id',
+        cell: ({ row }) => row.original.id,
         size: 100
       },
       {
         header: '아이디',
         accessorKey: 'userId',
+        cell: ({ row }) => row.original.userId,
         size: 120
       },
       {
         header: '회원명',
         accessorKey: 'memberName',
+        cell: ({ row }) => row.original.memberName,
         size: 100
       },
       {
         header: '핸드폰번호',
         accessorKey: 'phoneNumber',
+        cell: ({ row }) => row.original.phoneNumber,
         size: 140
       },
       {
         header: '신청일',
-        accessorKey: 'applicationDate',
+        accessorKey: 'appliedDate',
+        cell: ({ row }) => formatYyyyMmDd(row.original.appliedDate),
         size: 120
       },
       {
         header: '파트너사 계약여부',
-        accessorKey: 'partnerContract',
+        accessorKey: 'contractStatus',
         cell: ({ row }) => (
           <Chip
             label={row.original.contractStatus === 'CONTRACT' ? 'Y' : 'N'}
@@ -89,6 +96,7 @@ export default function MpAdminSalesAgencyProductDetail() {
       {
         header: '비고',
         accessorKey: 'note',
+        cell: ({ row }) => row.original.note,
         size: 100
       }
     ],
@@ -115,36 +123,36 @@ export default function MpAdminSalesAgencyProductDetail() {
     navigate(`/admin/sales-agency-products/${id}/edit`);
   };
 
+  const fetchData = async () => {
+    if (id === undefined) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const [detail, applicantsResponse] = await Promise.all([
+        getSalesAgencyProductDetails(parseInt(id)),
+        getProductApplicants(parseInt(id))
+      ]);
+
+      setProductDetail(detail);
+      setApplicants(withSequence(applicantsResponse).content);
+    } catch (error) {
+      console.error('Failed to fetch product detail:', error);
+      enqueueSnackbar('상품 정보를 불러오는데 실패했습니다.', { variant: 'error' });
+      navigate('/admin/sales-agency-products');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleBackToList = () => {
     navigate('/admin/sales-agency-products');
   };
 
   useEffect(() => {
-    const fetchProductDetail = async () => {
-      if (!id) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        setLoading(true);
-        const [detail, applicantsResponse] = await Promise.all([
-          getSalesAgencyProductDetails(parseInt(id)),
-          getProductApplicants(parseInt(id))
-        ]);
-
-        setProductDetail(detail);
-        setApplicants(withSequence(applicantsResponse).content);
-      } catch (error) {
-        console.error('Failed to fetch product detail:', error);
-        enqueueSnackbar('상품 정보를 불러오는데 실패했습니다.', { variant: 'error' });
-        navigate('/admin/sales-agency-products');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProductDetail();
+    fetchData();
   }, [id, navigate, enqueueSnackbar]);
 
   if (loading) {

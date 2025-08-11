@@ -1,12 +1,16 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useFormik } from 'formik';
+import AttachFile from '@mui/icons-material/AttachFile';
+import UploadFile from '@mui/icons-material/UploadFile';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
+import Pagination from '@mui/material/Pagination';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -20,23 +24,19 @@ import Typography from '@mui/material/Typography';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
-import Pagination from '@mui/material/Pagination';
-import { SearchFilterBar, SearchFilterItem, SearchFilterActions } from 'medipanda/components/SearchFilterBar';
-import { mpDownloadBusinessPartnerTemplate } from 'medipanda/api-definitions/MpBusinessPartner';
+import { useFormik } from 'formik';
+import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
 import { deletePartner, getPartners, PartnerResponse, uploadPartnersExcel } from 'medipanda/backend';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import AttachFile from '@mui/icons-material/AttachFile';
-import UploadFile from '@mui/icons-material/UploadFile';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
-import { Link } from 'react-router-dom';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
 import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
-import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
+import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
 import { backendNotImplemented } from 'medipanda/utils/backendNotImplemented';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { mockString } from 'medipanda/mockup';
 
 export default function MpAdminPartnerList() {
   const [data, setData] = useState<Sequenced<PartnerResponse>[]>([]);
@@ -51,19 +51,20 @@ export default function MpAdminPartnerList() {
   const errorDialog = useMpErrorDialog();
   const infoDialog = useMpInfoDialog();
 
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 20
-  });
-
   const formik = useFormik({
     initialValues: {
       searchType: 'company' as 'company' | 'partner' | 'pharmaceutical' | 'member',
       searchKeyword: '',
-      contractType: '' as 'CONTRACT' | 'NON_CONTRACT' | ''
+      contractType: '' as 'CONTRACT' | 'NON_CONTRACT' | '',
+      pageIndex: 0,
+      pageSize: 20
     },
-    onSubmit: (values) => {
-      setPagination({ ...pagination, pageIndex: 0 });
+    onSubmit: () => {
+      if (formik.values.pageIndex !== 0) {
+        formik.setFieldValue('pageIndex', 0);
+      } else {
+        fetchData();
+      }
     }
   });
 
@@ -100,6 +101,7 @@ export default function MpAdminPartnerList() {
       {
         header: 'No',
         accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
         size: 60
       },
       {
@@ -117,10 +119,7 @@ export default function MpAdminPartnerList() {
       {
         header: '계약유형',
         accessorKey: 'contractType',
-        cell: ({ row }) => {
-          const type = row.original.contractType;
-          return type === 'CONTRACT' ? '계약' : '미계약';
-        },
+        cell: ({ row }) => (row.original.contractType === 'CONTRACT' ? '계약' : '미계약'),
         size: 80
       },
       {
@@ -167,9 +166,11 @@ export default function MpAdminPartnerList() {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      pagination
+      pagination: {
+        pageIndex: formik.values.pageIndex,
+        pageSize: formik.values.pageSize
+      }
     },
-    onPaginationChange: setPagination,
     pageCount: totalPages,
     manualPagination: true
   });
@@ -179,8 +180,8 @@ export default function MpAdminPartnerList() {
     try {
       backendNotImplemented();
       const response = await getPartners({
-        page: pagination.pageIndex,
-        size: pagination.pageSize,
+        page: formik.values.pageIndex,
+        size: formik.values.pageSize,
         contractType: formik.values.contractType !== '' ? formik.values.contractType : undefined,
         companyName: formik.values.searchType === 'company' ? formik.values.searchKeyword : undefined
         // partnerName: formik.values.searchType === 'partner' ? formik.values.searchKeyword : undefined,
@@ -203,7 +204,7 @@ export default function MpAdminPartnerList() {
 
   useEffect(() => {
     fetchData();
-  }, [pagination.pageIndex, pagination.pageSize, formik.values]);
+  }, [formik.values.pageIndex, formik.values.pageSize]);
 
   const handleDelete = () => {
     if (selectedItems.length === 0) {
@@ -234,19 +235,6 @@ export default function MpAdminPartnerList() {
     });
   };
 
-  const handleTemplateDownload = async () => {
-    try {
-      await mpDownloadBusinessPartnerTemplate();
-    } catch (error) {
-      if (error instanceof NotImplementedError) {
-        notImplementedDialog.open(error.message);
-      } else {
-        console.error('Failed to download template:', error);
-        errorDialog.showError('양식 다운로드 중 오류가 발생했습니다.');
-      }
-    }
-  };
-
   const handleFileUpload = async () => {
     if (!uploadFile) {
       infoDialog.showInfo('업로드할 파일을 선택해주세요.');
@@ -254,7 +242,7 @@ export default function MpAdminPartnerList() {
     }
 
     try {
-      await uploadPartnersExcel({ file: uploadFile });
+      await uploadPartnersExcel(mockString(), { file: uploadFile });
       infoDialog.showInfo('파일 업로드가 완료되었습니다.');
       setUploadDialogOpen(false);
       setUploadFile(null);
@@ -395,10 +383,8 @@ export default function MpAdminPartnerList() {
             <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={pagination.pageIndex + 1}
-                onChange={(event, value) => {
-                  setPagination({ ...pagination, pageIndex: value - 1 });
-                }}
+                page={formik.values.pageIndex + 1}
+                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
                 color="primary"
                 variant="outlined"
                 showFirstButton
@@ -413,8 +399,15 @@ export default function MpAdminPartnerList() {
         <DialogTitle sx={{ fontSize: '1.25rem', fontWeight: 600 }}>거래선 업로드</DialogTitle>
         <DialogContent sx={{ pt: 3, pb: 3 }}>
           <Box sx={{ textAlign: 'right', mb: 2 }}>
-            <Button variant="contained" color="success" size="small" startIcon={<AttachFile />} onClick={handleTemplateDownload}>
-              양식다운로드
+            <Button
+              href={import.meta.env.VITE_APP_URL_FILE_BUSINESS_PARTNER}
+              target="_blank"
+              variant="contained"
+              color="success"
+              size="small"
+              startIcon={<AttachFile />}
+            >
+              양식 다운로드
             </Button>
           </Box>
           <Box

@@ -1,10 +1,8 @@
-import { useNavigate, useParams } from 'react-router-dom';
-import { useState, useMemo, useEffect } from 'react';
 import {
-  IconButton,
   Box,
-  Typography,
+  CircularProgress,
   Grid,
+  IconButton,
   Stack,
   Table,
   TableBody,
@@ -12,39 +10,73 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField
+  TextField,
+  Typography
 } from '@mui/material';
-import { ArrowLeft } from 'iconsax-react';
+import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { ArrowLeft } from 'iconsax-react';
 import {
-  MpSettlementPartnerDetail,
-  MpSettlementProduct,
-  mpGetSettlementBusinessPartnerDetail,
-  mpGetSettlementBusinessPartnerProducts
-} from 'medipanda/api-definitions/MpSettlementDetail';
+  getSettlementPartnerProducts,
+  getSettlementPartnerSummary,
+  getSettlements,
+  SettlementPartnerProductResponse,
+  SettlementPartnerResponse,
+  SettlementResponse
+} from 'medipanda/backend';
+import { useSnackbar } from 'notistack';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+
+interface SettlementResponseWithMockData extends SettlementResponse {
+  prescriptionMonth: string;
+}
+
+function withMock<T extends SettlementResponse>(data: T): T & SettlementResponseWithMockData {
+  return {
+    ...data,
+    prescriptionMonth: '2025-01'
+  };
+}
 
 export default function MpAdminSettlementBusinessPartnerDetail() {
   const navigate = useNavigate();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { id: _id } = useParams<{ id: string }>();
-  const [partnerDetail, setPartnerDetail] = useState<MpSettlementPartnerDetail | null>(null);
-  const [products, setProducts] = useState<MpSettlementProduct[]>([]);
+  const { enqueueSnackbar } = useSnackbar();
+  const { settlementId, id } = useParams();
+  const [loading, setLoading] = useState(true);
+  const [settlementDetail, setSettlementDetail] = useState<SettlementResponseWithMockData | null>(null);
+  const [settlementPartnerDetail, setSettlementPartnerDetail] = useState<SettlementPartnerResponse | null>(null);
+  const [products, setProducts] = useState<SettlementPartnerProductResponse[]>([]);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const [settlementResponse, partnerResponse, products] = await Promise.all([
+        getSettlements(),
+        getSettlementPartnerSummary({
+          settlementId: parseInt(settlementId!),
+          institutionCode: id
+        }),
+        getSettlementPartnerProducts(parseInt(id!))
+      ]);
+
+      setSettlementDetail(settlementResponse.content.map(withMock)[0]);
+      setSettlementPartnerDetail(partnerResponse.content[0]);
+      setProducts(products);
+    } catch (error) {
+      console.error('Failed to load data:', error);
+      enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadData = async () => {
-      const [detailData, productsData] = await Promise.all([
-        mpGetSettlementBusinessPartnerDetail(),
-        mpGetSettlementBusinessPartnerProducts()
-      ]);
-      setPartnerDetail(detailData);
-      setProducts(productsData);
-    };
-    loadData();
-  }, []);
+    fetchData();
+  }, [id]);
 
-  const columns = useMemo<ColumnDef<MpSettlementProduct>[]>(
+  const columns = useMemo<ColumnDef<SettlementPartnerProductResponse>[]>(
     () => [
       {
         header: 'No',
@@ -53,57 +85,62 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
       },
       {
         header: '보험코드',
-        accessorKey: 'insuranceCode',
+        accessorKey: 'productCode',
+        cell: ({ row }) => row.original.productCode,
         size: 120
       },
       {
         header: '제품명',
         accessorKey: 'productName',
+        cell: ({ row }) => row.original.productName,
         size: 150
       },
       {
         header: '표준코드',
-        accessorKey: 'standardCode',
+        accessorKey: 'productCode',
+        cell: ({ row }) => row.original.productCode,
         size: 140
       },
       {
         header: '수량',
         accessorKey: 'quantity',
+        cell: ({ row }) => row.original.quantity,
         size: 80
       },
       {
         header: '약가',
         accessorKey: 'unitPrice',
-        cell: ({ row }) => row.original.unitPrice.toLocaleString(),
+        cell: ({ row }) => row.original.unitPrice?.toLocaleString() ?? '-',
         size: 100
       },
       {
         header: '처방금액',
         accessorKey: 'prescriptionAmount',
-        cell: ({ getValue }) => (getValue() as number).toLocaleString(),
+        cell: ({ row }) => row.original.prescriptionAmount?.toLocaleString() ?? '-',
         size: 120
       },
       {
         header: '기본수수료율',
         accessorKey: 'feeRate',
-        cell: ({ getValue }) => `${getValue() as number}%`,
+        cell: ({ row }) => (row.original.feeRate !== null ? `${row.original.feeRate}%` : '-'),
         size: 120
       },
       {
         header: '거래수수료율',
-        accessorKey: 'transactionFeeRate',
-        cell: ({ getValue }) => `${getValue() as number}%`,
+        accessorKey: 'extraFeeRate',
+        cell: ({ row }) => (row.original.extraFeeRate !== null ? `${row.original.extraFeeRate}%` : '-'),
         size: 120
       },
       {
         header: '수수료 금액',
         accessorKey: 'feeAmount',
-        cell: ({ getValue }) => (getValue() as number).toLocaleString(),
+        cell: ({ row }) => row.original.feeAmount?.toLocaleString() ?? '-',
         size: 120
       },
       {
         header: '비고',
-        accessorKey: 'notes',
+        accessorKey: 'note',
+        cell: ({ row }) => row.original.note ?? '-',
         size: 200
       }
     ],
@@ -120,8 +157,16 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
     navigate('/admin/settlements');
   };
 
-  if (!partnerDetail) {
-    return <Box>Loading...</Box>;
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (!settlementPartnerDetail) {
+    return null;
   }
 
   return (
@@ -136,27 +181,45 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
       <MainCard sx={{ mb: 3 }}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
-            <TextField label="딜러명" value={partnerDetail.dealerName} fullWidth size="small" InputProps={{ readOnly: true }} />
+            <TextField label="딜러명" value={settlementPartnerDetail.dealerName} fullWidth size="small" InputProps={{ readOnly: true }} />
           </Grid>
           <Grid item xs={12} md={4}>
-            <TextField label="거래처코드" value={partnerDetail.institutionCode} fullWidth size="small" InputProps={{ readOnly: true }} />
+            <TextField
+              label="거래처코드"
+              value={settlementPartnerDetail.institutionCode}
+              fullWidth
+              size="small"
+              InputProps={{ readOnly: true }}
+            />
           </Grid>
           <Grid item xs={12} md={4}>
-            <TextField label="거래처명" value={partnerDetail.institutionName} fullWidth size="small" InputProps={{ readOnly: true }} />
+            <TextField
+              label="거래처명"
+              value={settlementPartnerDetail.institutionName}
+              fullWidth
+              size="small"
+              InputProps={{ readOnly: true }}
+            />
           </Grid>
           <Grid item xs={12} md={4}>
-            <TextField label="사업자등록번호" value={partnerDetail.businessNumber} fullWidth size="small" InputProps={{ readOnly: true }} />
+            <TextField
+              label="사업자등록번호"
+              value={settlementPartnerDetail.businessNumber}
+              fullWidth
+              size="small"
+              InputProps={{ readOnly: true }}
+            />
           </Grid>
           <Grid item xs={12} md={4}>
-            <TextField label="처방월" value={partnerDetail.prescriptionMonth} fullWidth size="small" InputProps={{ readOnly: true }} />
+            <TextField label="처방월" value={settlementDetail!.prescriptionMonth} fullWidth size="small" InputProps={{ readOnly: true }} />
           </Grid>
           <Grid item xs={12} md={4}>
-            <TextField label="정산월" value={partnerDetail.settlementMonth} fullWidth size="small" InputProps={{ readOnly: true }} />
+            <TextField label="정산월" value={settlementDetail!.settlementMonth} fullWidth size="small" InputProps={{ readOnly: true }} />
           </Grid>
           <Grid item xs={12} md={4}>
             <TextField
               label="처방금액"
-              value={partnerDetail.prescriptionAmount.toLocaleString()}
+              value={settlementDetail!.prescriptionAmount.toLocaleString()}
               fullWidth
               size="small"
               InputProps={{ readOnly: true }}

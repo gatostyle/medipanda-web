@@ -10,9 +10,9 @@ export function withSequence<T>(response: PagedResponse<T>): PagedResponse<Seque
 export function withSequence<T>(array: T[]): Sequenced<T>[];
 export function withSequence<T>(responseOrArray: PagedResponse<T> | T[]): PagedResponse<Sequenced<T>> | Sequenced<T>[] {
   if (Array.isArray(responseOrArray)) {
-    return responseOrArray.map((item, index) => ({
+    return responseOrArray.map((item, index, array) => ({
       ...item,
-      sequence: index + 1
+      sequence: array.length - index
     }));
   }
 
@@ -20,7 +20,7 @@ export function withSequence<T>(responseOrArray: PagedResponse<T> | T[]): PagedR
     ...responseOrArray,
     content: responseOrArray.content.map((item, index) => ({
       ...item,
-      sequence: responseOrArray.totalElements - responseOrArray.size * responseOrArray.number + index + 1
+      sequence: responseOrArray.totalElements - responseOrArray.size * responseOrArray.number - index
     }))
   };
 }

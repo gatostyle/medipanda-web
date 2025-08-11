@@ -1,27 +1,23 @@
-import { useEffect, useState, useContext } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
-import Switch from '@mui/material/Switch';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
+import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import MainCard from 'components/MainCard';
-import { getMemberDetails, signupByAdmin, getPermissions, AdminCreateRequest, updateByAdmin } from 'medipanda/backend';
-import { backendNotImplemented } from 'medipanda/utils/backendNotImplemented';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
+import { useFormik } from 'formik';
+import { getMemberDetails, getPermissions, signupByAdmin, updateByAdmin } from 'medipanda/backend';
 import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
-import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
-import { MpSessionContext } from 'medipanda/contexts/MpSessionContext';
-import { isMpSuperAdmin } from 'medipanda/utils/MpMemberRole';
+import { isMpSuperAdmin, useMpSession } from 'medipanda/hooks/useMpSession';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import * as yup from 'yup';
 
 const createValidationSchema = (isNew: boolean) =>
   yup.object({
@@ -61,11 +57,10 @@ const createValidationSchema = (isNew: boolean) =>
   });
 
 export default function MpAdminAdminEdit() {
-  const { userId } = useParams<{ userId: string }>();
+  const { userId } = useParams();
   const navigate = useNavigate();
-  const { session } = useContext(MpSessionContext);
+  const { session } = useMpSession();
   const [, setLoading] = useState(false);
-  const notImplementedDialog = useMpNotImplementedDialog();
   const errorDialog = useMpErrorDialog();
   const infoDialog = useMpInfoDialog();
   const isNew = userId === undefined;
@@ -110,7 +105,7 @@ export default function MpAdminAdminEdit() {
         const phoneNumber = `${values.phoneNumber1}-${values.phoneNumber2}-${values.phoneNumber3}`;
 
         if (isNew) {
-          const data: AdminCreateRequest = {
+          await signupByAdmin({
             status: values.status,
             name: values.name,
             userId: values.userId,
@@ -118,13 +113,10 @@ export default function MpAdminAdminEdit() {
             email: values.email,
             phoneNumber,
             permissions: values.permissions
-          };
-
-          await signupByAdmin(data);
+          });
           infoDialog.showInfo('관리자가 등록되었습니다.');
           navigate('/admin/admins');
         } else {
-          backendNotImplemented();
           await updateByAdmin(userId!, {
             name: values.name,
             userId: values.userId,
@@ -137,12 +129,8 @@ export default function MpAdminAdminEdit() {
           navigate('/admin/admins');
         }
       } catch (error) {
-        if (error instanceof NotImplementedError) {
-          notImplementedDialog.open(error.message);
-        } else {
-          console.error('Failed to save admin:', error);
-          errorDialog.showError('저장 중 오류가 발생했습니다.');
-        }
+        console.error('Failed to save admin:', error);
+        errorDialog.showError('저장 중 오류가 발생했습니다.');
       }
     }
   });

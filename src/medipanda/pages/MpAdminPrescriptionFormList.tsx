@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useFormik } from 'formik';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
+import Pagination from '@mui/material/Pagination';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -19,16 +18,8 @@ import Typography from '@mui/material/Typography';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
-import Pagination from '@mui/material/Pagination';
-import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import { Link } from 'react-router-dom';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
-import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
-import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
+import { useFormik } from 'formik';
 import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
-import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
 import {
   completePrescriptionPartner,
   DateTimeString,
@@ -36,6 +27,16 @@ import {
   getPrescriptionPartnerList,
   PrescriptionPartnerResponse
 } from 'medipanda/backend';
+import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
+import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
+import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
+import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
+import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
+import { formatYyyyMm, formatYyyyMmDd } from 'medipanda/utils/dateFormat';
+import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function MpAdminPrescriptionFormList() {
   const [data, setData] = useState<Sequenced<PrescriptionPartnerResponse>[]>([]);
@@ -48,32 +49,33 @@ export default function MpAdminPrescriptionFormList() {
   const errorDialog = useMpErrorDialog();
   const deleteDialog = useMpDeleteDialog();
 
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 20
-  });
-
   const formik = useFormik({
     initialValues: {
       searchType: '' as 'companyName' | 'dealerName' | 'drugCompany' | '',
       searchKeyword: '',
       status: '' as 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | '',
       startAt: null as Date | null,
-      endAt: null as Date | null
+      endAt: null as Date | null,
+      pageIndex: 0,
+      pageSize: 20
     },
-    onSubmit: (values) => {
-      setPagination({ ...pagination, pageIndex: 0 });
+    onSubmit: () => {
+      if (formik.values.pageIndex !== 0) {
+        formik.setFieldValue('pageIndex', 0);
+      } else {
+        fetchData();
+      }
     }
   });
 
-  const handleApprove = useCallback(async () => {
+  const handleApprove = async () => {
     try {
       await Promise.all(selectedItems.map((id) => completePrescriptionPartner(id)));
       const count = selectedItems.length;
       const message = count === 1 ? '처방이 승인되었습니다.' : `${count}개 처방이 승인되었습니다.`;
       infoDialog.showInfo(message);
       setSelectedItems([]);
-      setPagination({ ...pagination, pageIndex: 0 });
+      fetchData();
     } catch (error) {
       if (error instanceof NotImplementedError) {
         notImplementedDialog.open(error.message);
@@ -82,7 +84,7 @@ export default function MpAdminPrescriptionFormList() {
         errorDialog.showError('처방 승인 중 오류가 발생했습니다.');
       }
     }
-  }, [selectedItems, notImplementedDialog, infoDialog, errorDialog, pagination]);
+  };
 
   const columns = useMemo<ColumnDef<Sequenced<PrescriptionPartnerResponse>>[]>(
     () => [
@@ -117,21 +119,25 @@ export default function MpAdminPrescriptionFormList() {
       {
         header: 'No',
         accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
         size: 60
       },
       {
         header: '제약사명',
         accessorKey: 'drugCompany',
+        cell: ({ row }) => row.original.drugCompany,
         size: 120
       },
       {
         header: '회사명',
         accessorKey: 'companyName',
+        cell: ({ row }) => row.original.companyName,
         size: 120
       },
       {
         header: '거래처코드',
-        accessorKey: 'dealerCode',
+        accessorKey: 'institutionCode',
+        cell: ({ row }) => row.original.institutionCode,
         size: 100
       },
       {
@@ -146,22 +152,26 @@ export default function MpAdminPrescriptionFormList() {
       },
       {
         header: '사업자등록번호',
-        accessorKey: 'businessRegistrationNumber',
+        accessorKey: 'businessNumber',
+        cell: ({ row }) => row.original.businessNumber,
         size: 130
       },
       {
         header: '처방일',
-        accessorKey: 'prescriptionDate',
+        accessorKey: 'prescriptionMonth',
+        cell: ({ row }) => formatYyyyMm(row.original.prescriptionMonth),
         size: 100
       },
       {
         header: '접수일',
-        accessorKey: 'receptionDate',
+        accessorKey: 'settlementMonth',
+        cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
         size: 100
       },
       {
         header: '입력일',
         accessorKey: 'inputDate',
+        cell: ({ row }) => formatYyyyMmDd(row.original.inputDate),
         size: 100
       },
       {
@@ -196,14 +206,16 @@ export default function MpAdminPrescriptionFormList() {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      pagination
+      pagination: {
+        pageIndex: formik.values.pageIndex,
+        pageSize: formik.values.pageSize
+      }
     },
-    onPaginationChange: setPagination,
     pageCount: totalPages,
     manualPagination: true
   });
 
-  const fetchData = useCallback(async () => {
+  const fetchData = async () => {
     setLoading(true);
     try {
       const response = await getPrescriptionPartnerList({
@@ -213,8 +225,8 @@ export default function MpAdminPrescriptionFormList() {
         dealerName: formik.values.searchType === 'dealerName' ? formik.values.searchKeyword : undefined,
         prescriptionMonthStart: formik.values.startAt ? new DateTimeString(formik.values.startAt) : undefined,
         prescriptionMonthEnd: formik.values.endAt ? new DateTimeString(formik.values.endAt) : undefined,
-        page: pagination.pageIndex,
-        size: pagination.pageSize
+        page: formik.values.pageIndex,
+        size: formik.values.pageSize
       });
 
       setData(withSequence(response).content);
@@ -228,15 +240,14 @@ export default function MpAdminPrescriptionFormList() {
     } finally {
       setLoading(false);
     }
-  }, [pagination, formik.values]);
+  };
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, [formik.values.pageIndex, formik.values.pageSize]);
 
   const handleReset = () => {
     formik.resetForm();
-    setPagination({ ...pagination, pageIndex: 0 });
   };
 
   const handleDelete = () => {
@@ -355,9 +366,6 @@ export default function MpAdminPrescriptionFormList() {
                 <Button variant="contained" color="success" size="small" onClick={handleApprove} disabled={selectedItems.length === 0}>
                   승인완료
                 </Button>
-                <Button variant="contained" color="success" size="small" component={Link} to="/admin/prescription-forms/new">
-                  신규
-                </Button>
                 <Button variant="contained" size="small" color="error" disabled={selectedItems.length === 0} onClick={handleDelete}>
                   삭제
                 </Button>
@@ -394,10 +402,8 @@ export default function MpAdminPrescriptionFormList() {
             <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={pagination.pageIndex + 1}
-                onChange={(event, value) => {
-                  setPagination({ ...pagination, pageIndex: value - 1 });
-                }}
+                page={formik.values.pageIndex + 1}
+                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
                 color="primary"
                 variant="outlined"
                 showFirstButton

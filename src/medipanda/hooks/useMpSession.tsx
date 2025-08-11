@@ -1,11 +1,10 @@
-import { createContext, useEffect, useState } from 'react';
-import { encryptRSA } from 'medipanda/utils/rsa';
-import axios from 'utils/axios';
-import { isMpAdmin, isMpSuperAdmin } from 'medipanda/utils/MpMemberRole';
-import { filterMenuByPermissions, mpAdminMenu, mpMemberMenu } from 'medipanda/menu-items';
 import { MenuOrientation } from 'config';
-import { useMpMenu } from 'medipanda/hooks/useMpMenu';
-import { login as apiLogin, refreshToken as apiRefreshToken, whoAmI, getPermissions, MemberDetailsResponse } from 'medipanda/backend';
+import { getPermissions, login as apiLogin, MemberDetailsResponse, refreshToken as apiRefreshToken, whoAmI } from 'medipanda/backend';
+import { filterMenuByPermissions, mpAdminMenu, mpMemberMenu } from 'medipanda/menu-items';
+import { encryptRSA } from 'medipanda/utils/rsa';
+import { createContext, useContext, useEffect, useState } from 'react';
+import axios from 'utils/axios';
+import { useMpMenu } from './useMpMenu';
 
 const initialState = {
   session: null as MemberDetailsResponse | null,
@@ -21,12 +20,16 @@ export function MpSessionProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState(initialState.session);
   const [isLoading, setIsLoading] = useState(true);
 
-  const refreshToken = async (userId: string) => {
+  const rotateRefreshToken = async (userId: string) => {
+    const savedRefreshToken = localStorage.getItem('refreshToken');
+    console.log(`Using refresh token ends with: ${savedRefreshToken?.slice(-4)}`);
+
     const { refreshToken } = await apiRefreshToken({
       userId: userId,
-      refreshToken: localStorage.getItem('refreshToken') ?? ''
+      refreshToken: savedRefreshToken ?? ''
     });
     localStorage.setItem('refreshToken', refreshToken);
+    console.log(`Saved refresh token ends with: ${refreshToken?.slice(-4)}`);
   };
 
   const getSession = async () => {
@@ -48,8 +51,7 @@ export function MpSessionProvider({ children }: { children: React.ReactNode }) {
       setMenuOrientation(MenuOrientation.VERTICAL);
     }
 
-    await refreshToken(member.userId);
-    (window as any).tokenRefreshInterval = setInterval(() => refreshToken(member.userId), 60 * 1000);
+    (window as any).refreshTokenRotateInterval = setInterval(() => rotateRefreshToken(member.userId), 60 * 1000);
 
     return member;
   };
@@ -61,6 +63,7 @@ export function MpSessionProvider({ children }: { children: React.ReactNode }) {
       password: encryptedPassword
     });
     localStorage.setItem('refreshToken', refreshToken);
+    console.log(`Saved refresh token ends with: ${refreshToken?.slice(-4)}`);
 
     setSession(await getSession());
   };
@@ -100,4 +103,16 @@ export function MpSessionProvider({ children }: { children: React.ReactNode }) {
       {children}
     </MpSessionContext.Provider>
   );
+}
+
+export function useMpSession() {
+  return useContext(MpSessionContext);
+}
+
+export function isMpAdmin(member: MemberDetailsResponse) {
+  return member.role === 'SUPER_ADMIN' || member.role === 'ADMIN';
+}
+
+export function isMpSuperAdmin(member: MemberDetailsResponse) {
+  return member.role === 'SUPER_ADMIN';
 }

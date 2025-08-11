@@ -1,20 +1,22 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useFormik } from 'formik';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import MainCard from 'components/MainCard';
+import { useFormik } from 'formik';
 import { mpCreateInquiryResponse, mpUpdateInquiryResponse } from 'medipanda/api-definitions/MpInquiry';
-import { format } from 'date-fns';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
 import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
 import { BoardDetailsResponse, getBoardDetails } from 'medipanda/backend';
+import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
+import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
+import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
+import { formatYyyyMmDdHhMm } from 'medipanda/utils/dateFormat';
+import { useSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 interface BoardDetailsResponseWithMockData extends BoardDetailsResponse {
   member: {
@@ -25,7 +27,7 @@ interface BoardDetailsResponseWithMockData extends BoardDetailsResponse {
     phoneNumber: string;
   };
   responseContent: string;
-  responseCreatedAt?: string;
+  responseCreatedAt: string | null;
   notes: string;
 }
 
@@ -40,16 +42,17 @@ function withMock<T extends BoardDetailsResponse>(data: T): T & BoardDetailsResp
       phoneNumber: '010-1234-5678'
     },
     responseContent: '답변 내용',
-    responseCreatedAt: '답변 내용',
+    responseCreatedAt: '2025-05-01',
     notes: '비고 내용'
   };
 }
 
-export default function MpAdminCustomerCenterInquiryDetail() {
-  const { id } = useParams<{ id: string }>();
+export default function MpAdminInquiryEdit() {
+  const { id } = useParams();
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
   const [inquiry, setInquiry] = useState<BoardDetailsResponseWithMockData | null>(null);
-  const [, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const notImplementedDialog = useMpNotImplementedDialog();
   const errorDialog = useMpErrorDialog();
   const infoDialog = useMpInfoDialog();
@@ -60,7 +63,7 @@ export default function MpAdminCustomerCenterInquiryDetail() {
       notes: ''
     },
     onSubmit: async (values) => {
-      if (!id) return;
+      if (id === undefined) return;
 
       if (!values.responseContent.trim()) {
         infoDialog.showInfo('답변 내용을 입력해주세요.');
@@ -94,7 +97,7 @@ export default function MpAdminCustomerCenterInquiryDetail() {
 
   useEffect(() => {
     const fetchInquiryDetail = async () => {
-      if (!id) return;
+      if (id === undefined) return;
 
       setLoading(true);
       try {
@@ -106,6 +109,7 @@ export default function MpAdminCustomerCenterInquiryDetail() {
         formik.setFieldValue('notes', data.notes);
       } catch (error) {
         console.error('Failed to fetch inquiry detail:', error);
+        enqueueSnackbar('문의 정보를 불러오는데 실패했습니다.', { variant: 'error' });
       } finally {
         setLoading(false);
       }
@@ -118,6 +122,14 @@ export default function MpAdminCustomerCenterInquiryDetail() {
     navigate('/admin/inquiries');
   };
 
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   if (!inquiry) {
     return null;
   }
@@ -126,7 +138,7 @@ export default function MpAdminCustomerCenterInquiryDetail() {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Typography variant="h4" gutterBottom>
-          1:1 문의상세
+          1:1 문의 수정
         </Typography>
       </Grid>
 
@@ -232,7 +244,7 @@ export default function MpAdminCustomerCenterInquiryDetail() {
                 <TextField
                   fullWidth
                   size="small"
-                  value={format(new Date(inquiry.createdAt), 'yyyy-MM-dd HH:mm:ss')}
+                  value={formatYyyyMmDdHhMm(inquiry.createdAt)}
                   InputProps={{ readOnly: true }}
                   sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
                 />
@@ -264,7 +276,7 @@ export default function MpAdminCustomerCenterInquiryDetail() {
                 <TextField
                   fullWidth
                   size="small"
-                  value={format(new Date(inquiry.responseCreatedAt!), 'yyyy-MM-dd HH:mm:ss')}
+                  value={formatYyyyMmDdHhMm(inquiry.responseCreatedAt!)}
                   InputProps={{ readOnly: true }}
                   sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
                 />

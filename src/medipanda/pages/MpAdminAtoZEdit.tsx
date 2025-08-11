@@ -1,37 +1,32 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
 import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import { useSnackbar } from 'notistack';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import MainCard from 'components/MainCard';
+import { useFormik } from 'formik';
+import { createBoardPost, getBoardDetails, updateBoardPost } from 'medipanda/backend';
 import { TiptapEditor } from 'medipanda/components/TiptapEditor';
-import { getBoardDetails, createBoardPost, updateBoardPost } from 'medipanda/backend';
 import { useMpSession } from 'medipanda/hooks/useMpSession';
+import { useSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import * as Yup from 'yup';
 
-const validationSchema = Yup.object().shape({
-  title: Yup.string().required('제목을 입력해주세요.').max(100, '제목은 100자를 초과할 수 없습니다.'),
-  content: Yup.string().required('내용을 입력해주세요.')
-});
-
-export default function MpAdminContentManagementAtoZEdit() {
-  const { id } = useParams<{ id: string }>();
+export default function MpAdminAtoZEdit() {
+  const { id } = useParams();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { session } = useMpSession();
   const [loading, setLoading] = useState(false);
 
-  const isNew = !id;
+  const isNew = id === undefined;
 
   const formik = useFormik({
     initialValues: {
@@ -40,7 +35,10 @@ export default function MpAdminContentManagementAtoZEdit() {
       isExposed: true,
       attachmentFile: null as File | null
     },
-    validationSchema,
+    validationSchema: Yup.object().shape({
+      title: Yup.string().required('제목을 입력해주세요.').max(100, '제목은 100자를 초과할 수 없습니다.'),
+      content: Yup.string().required('내용을 입력해주세요.')
+    }),
     onSubmit: async (values, { setSubmitting }) => {
       if (!session?.userId) {
         enqueueSnackbar('로그인이 필요합니다.', { variant: 'error' });

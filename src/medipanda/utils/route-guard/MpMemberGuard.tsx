@@ -1,10 +1,9 @@
-import { GuardProps } from 'types/auth';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import { saveRedirectTo } from 'medipanda/utils/redirectTo';
-import { isMpAdmin } from 'medipanda/utils/MpMemberRole';
-import { useMpSession } from 'medipanda/hooks/useMpSession';
 import Loader from 'components/Loader';
+import { isMpAdmin, useMpSession } from 'medipanda/hooks/useMpSession';
+import { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { GuardProps } from 'types/auth';
+import { saveRedirectTo } from '../redirectTo';
 
 export function MpMemberGuard({ children }: GuardProps) {
   const { session, isLoading } = useMpSession();

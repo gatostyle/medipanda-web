@@ -1,10 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useFormik } from 'formik';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
+import Pagination from '@mui/material/Pagination';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -16,17 +15,18 @@ import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
-import { Link } from 'react-router-dom';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
-import Pagination from '@mui/material/Pagination';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import { SearchFilterBar, SearchFilterItem, SearchFilterActions } from 'medipanda/components/SearchFilterBar';
-import { format } from 'date-fns';
+import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-react';
-import { DateString, getUserMembers, MemberResponse } from 'medipanda/backend';
-import { PARTNER_CONTRACT_STATUS_LABELS, CONSENT_LABELS, MEMBER_ACCOUNT_STATUS_LABELS } from 'medipanda/ui-labels';
+import { DateString, getDownloadUserMembersExcel, getUserMembers, MemberResponse } from 'medipanda/backend';
+import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
+import { CONSENT_LABELS, MEMBER_ACCOUNT_STATUS_LABELS } from 'medipanda/ui-labels';
+import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function MpAdminMemberList() {
   const [data, setData] = useState<Sequenced<MemberResponse>[]>([]);
@@ -34,21 +34,22 @@ export default function MpAdminMemberList() {
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 20
-  });
-
   const formik = useFormik({
     initialValues: {
       contractStatus: '' as 'CONTRACT' | 'NON_CONTRACT' | '',
       searchField: 'name' as 'name' | 'id' | 'userId' | 'phoneNumber' | 'email' | 'companyName',
       searchKeyword: '',
       startAt: null as Date | null,
-      endAt: null as Date | null
+      endAt: null as Date | null,
+      pageIndex: 0,
+      pageSize: 20
     },
-    onSubmit: (values) => {
-      setPagination({ ...pagination, pageIndex: 0 });
+    onSubmit: () => {
+      if (formik.values.pageIndex !== 0) {
+        formik.setFieldValue('pageIndex', 0);
+      } else {
+        fetchData();
+      }
     }
   });
 
@@ -57,19 +58,19 @@ export default function MpAdminMemberList() {
       {
         header: 'No',
         accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
         size: 60
       },
       {
         header: '회원번호',
         accessorKey: 'id',
-        cell: ({ row }) => {
-          return row.original.id;
-        },
+        cell: ({ row }) => row.original.id,
         size: 80
       },
       {
         header: '아이디',
         accessorKey: 'userId',
+        cell: ({ row }) => row.original.userId,
         size: 120
       },
       {
@@ -85,69 +86,55 @@ export default function MpAdminMemberList() {
       {
         header: '회사명',
         accessorKey: 'companyName',
-        cell: ({ row }) => {
-          return row.original.companyName;
-        },
+        cell: ({ row }) => row.original.companyName,
         size: 150
       },
       {
         header: '휴대폰번호',
         accessorKey: 'phoneNumber',
+        cell: ({ row }) => row.original.phoneNumber,
         size: 130
       },
       {
         header: '이메일',
         accessorKey: 'email',
+        cell: ({ row }) => row.original.email,
         size: 200
       },
       {
         header: '파트너사 계약여부',
         accessorKey: 'partnerContractStatus',
-        cell: ({ row }) => {
-          const status = row.original.partnerContractStatus;
-          return status === 'NONE' ? PARTNER_CONTRACT_STATUS_LABELS['NONE'] : '계약';
-        },
+        cell: ({ row }) => (row.original.partnerContractStatus !== 'NONE' ? '계약' : '미계약'),
         size: 130
       },
       {
         header: 'CSO신고증 유무',
         accessorKey: 'hasCsoCert',
-        cell: ({ row }) => {
-          return row.original.hasCsoCert ? 'Y' : 'N';
-        },
+        cell: ({ row }) => (row.original.hasCsoCert ? 'Y' : 'N'),
         size: 120
       },
       {
         header: '계정상태',
         accessorKey: 'accountStatus',
-        cell: ({ row }) => {
-          return MEMBER_ACCOUNT_STATUS_LABELS[row.original.accountStatus];
-        },
+        cell: ({ row }) => MEMBER_ACCOUNT_STATUS_LABELS[row.original.accountStatus],
         size: 90
       },
       {
         header: '마케팅수신동의',
         accessorKey: 'marketingConsent',
-        cell: ({ row }) => {
-          const consent = row.original.marketingConsent;
-          return CONSENT_LABELS[String(consent)];
-        },
+        cell: ({ row }) => CONSENT_LABELS[String(row.original.marketingConsent)],
         size: 120
       },
       {
         header: '가입일',
         accessorKey: 'registrationDate',
-        cell: ({ row }) => {
-          return format(new Date(row.original.registrationDate), 'yyyy-MM-dd');
-        },
+        cell: ({ row }) => formatYyyyMmDd(row.original.registrationDate),
         size: 150
       },
       {
         header: '최종접속일',
         accessorKey: 'lastLoginDate',
-        cell: ({ row }) => {
-          return format(new Date(row.original.lastLoginDate), 'yyyy-MM-dd');
-        },
+        cell: ({ row }) => formatYyyyMmDd(row.original.lastLoginDate),
         size: 110
       }
     ],
@@ -160,9 +147,11 @@ export default function MpAdminMemberList() {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      pagination
+      pagination: {
+        pageIndex: formik.values.pageIndex,
+        pageSize: formik.values.pageSize
+      }
     },
-    onPaginationChange: setPagination,
     pageCount: totalPages,
     manualPagination: true
   });
@@ -182,8 +171,8 @@ export default function MpAdminMemberList() {
         companyName: formik.values.searchField === 'companyName' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
         startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
         endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
-        page: pagination.pageIndex,
-        size: pagination.pageSize
+        page: formik.values.pageIndex,
+        size: formik.values.pageSize
       });
 
       setData(withSequence(response).content);
@@ -201,11 +190,10 @@ export default function MpAdminMemberList() {
 
   useEffect(() => {
     fetchData();
-  }, [pagination.pageIndex, pagination.pageSize, formik.values]);
+  }, [formik.values.pageIndex, formik.values.pageSize]);
 
   const handleReset = () => {
     formik.resetForm();
-    setPagination({ ...pagination, pageIndex: 0 });
   };
 
   return (
@@ -293,46 +281,22 @@ export default function MpAdminMemberList() {
                   variant="contained"
                   color="success"
                   target="_blank"
-                  href={((): string => {
-                    const params = new URLSearchParams();
-
-                    if (formik.values.contractStatus !== '') {
-                      params.append('contractStatus', formik.values.contractStatus);
-                    }
-
-                    if (formik.values.searchField === 'name' && formik.values.searchKeyword) {
-                      params.append('name', formik.values.searchKeyword);
-                    }
-
-                    if (formik.values.searchField === 'userId' && formik.values.searchKeyword) {
-                      params.append('userId', formik.values.searchKeyword);
-                    }
-
-                    if (formik.values.searchField === 'phoneNumber' && formik.values.searchKeyword) {
-                      params.append('phoneNumber', formik.values.searchKeyword.replace(/-/g, ''));
-                    }
-
-                    if (formik.values.searchField === 'email' && formik.values.searchKeyword) {
-                      params.append('email', formik.values.searchKeyword);
-                    }
-
-                    if (formik.values.searchField === 'companyName' && formik.values.searchKeyword) {
-                      params.append('companyName', formik.values.searchKeyword);
-                    }
-
-                    if (formik.values.startAt) {
-                      params.append('startAt', new DateString(formik.values.startAt).toString());
-                    }
-
-                    if (formik.values.endAt) {
-                      params.append('endAt', new DateString(formik.values.endAt).toString());
-                    }
-
-                    params.append('page', String(pagination.pageIndex));
-                    params.append('size', String(pagination.pageSize));
-
-                    return `/v1/members/excel-download?${params.toString()}`;
-                  })()}
+                  href={getDownloadUserMembersExcel({
+                    contractStatus: formik.values.contractStatus !== '' ? formik.values.contractStatus : undefined,
+                    name: formik.values.searchField === 'name' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
+                    userId: formik.values.searchField === 'userId' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
+                    phoneNumber:
+                      formik.values.searchField === 'phoneNumber' && formik.values.searchKeyword
+                        ? formik.values.searchKeyword.replace(/-/g, '')
+                        : undefined,
+                    email: formik.values.searchField === 'email' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
+                    companyName:
+                      formik.values.searchField === 'companyName' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
+                    startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
+                    endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
+                    page: formik.values.pageIndex,
+                    size: formik.values.pageSize
+                  })}
                 >
                   <DocumentDownload />
                 </Button>
@@ -379,10 +343,8 @@ export default function MpAdminMemberList() {
             <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={pagination.pageIndex + 1}
-                onChange={(event, value) => {
-                  setPagination({ ...pagination, pageIndex: value - 1 });
-                }}
+                page={formik.values.pageIndex + 1}
+                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
                 color="primary"
                 variant="outlined"
                 showFirstButton

@@ -1,64 +1,40 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
 import CircularProgress from '@mui/material/CircularProgress';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
+import Select from '@mui/material/Select';
+import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import Switch from '@mui/material/Switch';
-import Chip from '@mui/material/Chip';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import SearchIcon from '@mui/icons-material/Search';
-import { useSnackbar } from 'notistack';
 import MainCard from 'components/MainCard';
+import { useFormik } from 'formik';
+import { createBoardPost, getBoardDetails, updateBoardPost } from 'medipanda/backend';
 import { TiptapEditor } from 'medipanda/components/TiptapEditor';
 import { useMpSession } from 'medipanda/hooks/useMpSession';
-import { NOTICE_TYPE_LABELS } from 'medipanda/ui-labels';
-import { createBoardPost, getBoardDetails, updateBoardPost } from 'medipanda/backend';
 import { mockNumber } from 'medipanda/mockup';
+import { useSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import * as Yup from 'yup';
 
-const noticeCategoryOptions = Object.entries(NOTICE_TYPE_LABELS).map(([value, label]) => ({
-  label,
-  value: value as
-    | 'PRODUCT_STATUS'
-    | 'MANUFACTURING_SUSPENSION'
-    | 'NEW_PRODUCT'
-    | 'POLICY'
-    | 'GENERAL'
-    | 'ANONYMOUS_BOARD'
-    | 'MR_CSO_MATCHING'
-}));
-
-const validationSchema = Yup.object().shape({
-  title: Yup.string().required('제목을 입력해주세요.').max(100, '제목은 100자를 초과할 수 없습니다.'),
-  content: Yup.string().required('내용을 입력해주세요.'),
-  noticeCategory: Yup.string().required('공지분류를 선택해주세요.'),
-  manufacturerName: Yup.string().when('noticeCategory', {
-    is: (val: string) => val !== 'GENERAL',
-    then: (schema) => schema.required('제약사명을 선택해주세요.'),
-    otherwise: (schema) => schema
-  })
-});
-
-export default function MpAdminCustomerCenterNoticeEdit() {
-  const { id } = useParams<{ id: string }>();
+export default function MpAdminNoticeEdit() {
+  const { id } = useParams();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { session } = useMpSession();
   const [loading, setLoading] = useState(false);
 
-  const isNew = !id;
+  const isNew = id === undefined;
 
   const formik = useFormik({
     initialValues: {
@@ -89,7 +65,16 @@ export default function MpAdminCustomerCenterNoticeEdit() {
       files: [] as File[],
       existingFiles: [] as string[]
     },
-    validationSchema,
+    validationSchema: Yup.object().shape({
+      title: Yup.string().required('제목을 입력해주세요.').max(100, '제목은 100자를 초과할 수 없습니다.'),
+      content: Yup.string().required('내용을 입력해주세요.'),
+      noticeCategory: Yup.string().required('공지분류를 선택해주세요.'),
+      manufacturerName: Yup.string().when('noticeCategory', {
+        is: (val: string) => val !== 'GENERAL',
+        then: (schema) => schema.required('제약사명을 선택해주세요.'),
+        otherwise: (schema) => schema
+      })
+    }),
     onSubmit: async (values, { setSubmitting }) => {
       if (!session?.userId) {
         enqueueSnackbar('로그인이 필요합니다.', { variant: 'error' });
@@ -256,11 +241,13 @@ export default function MpAdminCustomerCenterNoticeEdit() {
                     label="공지분류 *"
                     error={!!(formik.touched.noticeCategory && formik.errors.noticeCategory)}
                   >
-                    {noticeCategoryOptions.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
+                    <MenuItem value={'PRODUCT_STATUS'}>제약사 - 제품현향</MenuItem>
+                    <MenuItem value={'MANUFACTURING_SUSPENSION'}>제약사 - 정산 및 생산중단</MenuItem>
+                    <MenuItem value={'NEW_PRODUCT'}>제약사 - 신제품 정보</MenuItem>
+                    <MenuItem value={'POLICY'}>제약사 정책</MenuItem>
+                    <MenuItem value={'GENERAL'}>일반공지</MenuItem>
+                    <MenuItem value={'ANONYMOUS_BOARD'}>익명게시판</MenuItem>
+                    <MenuItem value={'MR_CSO_MATCHING'}>MR-CSO 매칭</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>

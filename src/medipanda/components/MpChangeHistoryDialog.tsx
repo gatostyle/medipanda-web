@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
   Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Pagination,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  IconButton,
-  Typography,
-  Pagination,
-  Stack
+  Typography
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import React, { useEffect, useState } from 'react';
 
 interface ChangeHistory {
   id: number;

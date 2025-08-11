@@ -1,11 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useFormik } from 'formik';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
+import Pagination from '@mui/material/Pagination';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -19,54 +18,66 @@ import Typography from '@mui/material/Typography';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
-import Pagination from '@mui/material/Pagination';
-import { SearchFilterBar, SearchFilterItem, SearchFilterActions } from 'medipanda/components/SearchFilterBar';
+import { useFormik } from 'formik';
 import { BoardMemberStatsResponse, getBoardMembers } from 'medipanda/backend';
-import { Sequenced } from 'medipanda/utils/withSequence';
-import { withSequence } from 'medipanda/utils/withSequence';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
+import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { useEffect, useMemo, useState } from 'react';
+
+interface BoardMemberStatsResponseWithMockData extends BoardMemberStatsResponse {
+  nickname: string;
+  email: string;
+}
+
+function withMock<T extends BoardMemberStatsResponse>(data: T): T & BoardMemberStatsResponseWithMockData {
+  return {
+    ...data,
+    nickname: '닉네임',
+    email: 'mock001@example.com'
+  };
+}
 
 export default function MpAdminCommunityUserList() {
-  const [data, setData] = useState<Sequenced<BoardMemberStatsResponse>[]>([]);
+  const [data, setData] = useState<Sequenced<BoardMemberStatsResponseWithMockData>[]>([]);
   const [, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 20
-  });
 
   const formik = useFormik({
     initialValues: {
       contractStatus: 'all' as 'all' | 'CONTRACT' | 'NON_CONTRACT',
       searchField: 'userId' as 'userId' | 'nickname',
-      searchKeyword: ''
+      searchKeyword: '',
+      pageIndex: 0,
+      pageSize: 20
     },
-    onSubmit: (values) => {
-      setPagination({ pageIndex: 0, pageSize: 20 });
-      fetchData(0, values);
+    onSubmit: () => {
+      if (formik.values.pageIndex !== 0) {
+        formik.setFieldValue('pageIndex', 0);
+      } else {
+        fetchData();
+      }
     }
   });
 
-  const fetchData = async (page: number, searchValues?: typeof formik.values) => {
-    const values = searchValues || formik.values;
+  const fetchData = async () => {
     setLoading(true);
     try {
       const response = await getBoardMembers({
-        userId: values.searchField === 'userId' && values.searchKeyword ? values.searchKeyword : undefined,
+        userId: formik.values.searchField === 'userId' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
         name: undefined,
-        nickname: values.searchField === 'nickname' && values.searchKeyword ? values.searchKeyword : undefined,
+        nickname: formik.values.searchField === 'nickname' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
         phoneNumber: undefined,
         email: undefined,
-        contractStatus: values.contractStatus !== 'all' ? values.contractStatus : undefined,
+        contractStatus: formik.values.contractStatus !== 'all' ? formik.values.contractStatus : undefined,
         startAt: undefined,
         endAt: undefined,
         filterDeleted: undefined,
-        page,
-        size: pagination.pageSize
+        page: formik.values.pageIndex,
+        size: formik.values.pageSize
       });
 
-      setData(withSequence(response).content);
+      setData(withSequence(response).content.map(withMock));
       setTotalElements(response.totalElements);
       setTotalPages(response.totalPages);
     } catch (error) {
@@ -77,100 +88,82 @@ export default function MpAdminCommunityUserList() {
   };
 
   useEffect(() => {
-    fetchData(0);
-  }, []);
+    fetchData();
+  }, [formik.values.pageIndex, formik.values.pageSize]);
 
-  const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
-    const newPageIndex = value - 1;
-    setPagination({ ...pagination, pageIndex: newPageIndex });
-    fetchData(newPageIndex);
-  };
-
-  const columns = useMemo<ColumnDef<Sequenced<BoardMemberStatsResponse>>[]>(
+  const columns = useMemo<ColumnDef<Sequenced<BoardMemberStatsResponseWithMockData>>[]>(
     () => [
       {
         header: 'No',
         accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
         size: 60
       },
       {
         header: '회원번호',
-        accessorKey: 'memberBaseId',
+        accessorKey: 'id',
+        cell: ({ row }) => row.original.id,
         size: 100
       },
       {
         header: '아이디',
         accessorKey: 'userId',
+        cell: ({ row }) => row.original.userId,
         size: 120
       },
       {
         header: '회원명',
         accessorKey: 'name',
+        cell: ({ row }) => row.original.name,
         size: 100
       },
       {
         header: '닉네임',
         accessorKey: 'nickname',
-        size: 120,
-        cell: ({ row }) => row.original.name
+        cell: ({ row }) => row.original.nickname,
+        size: 120
       },
       {
         header: '휴대폰번호',
         accessorKey: 'phoneNumber',
+        cell: ({ row }) => row.original.phoneNumber,
         size: 130
       },
       {
         header: '이메일',
         accessorKey: 'email',
-        size: 200,
-        cell: ({ row }) => {
-          return `${row.original.userId}@example.com`;
-        }
+        cell: ({ row }) => row.original.email,
+        size: 200
       },
       {
         header: '파트너사 계약여부',
-        accessorKey: 'isContracted',
-        size: 130,
-        cell: ({ row }) => {
-          const contractStatus = row.original.contractStatus;
-          return contractStatus === 'CONTRACT' ? '계약' : '미계약';
-        }
+        accessorKey: 'contractStatus',
+        cell: ({ row }) => (row.original.contractStatus === 'CONTRACT' ? '계약' : '미계약'),
+        size: 130
       },
       {
         header: '작성글 수',
         accessorKey: 'postCount',
-        size: 100,
-        cell: ({ row }) => {
-          const value = row.original.postCount;
-          return value !== undefined && value !== null ? value : 0;
-        }
+        cell: ({ row }) => row.original.postCount,
+        size: 100
       },
       {
         header: '댓글 수',
         accessorKey: 'commentCount',
-        size: 100,
-        cell: ({ row }) => {
-          const value = row.original.commentCount;
-          return value !== undefined && value !== null ? value : 0;
-        }
+        cell: ({ row }) => row.original.commentCount,
+        size: 100
       },
       {
         header: '좋아요 수',
-        accessorKey: 'likeCount',
-        size: 100,
-        cell: ({ row }) => {
-          const value = row.original.totalLikes;
-          return value !== undefined && value !== null ? value : 0;
-        }
+        accessorKey: 'totalLikes',
+        cell: ({ row }) => row.original.totalLikes,
+        size: 100
       },
       {
         header: '블라인드 글 수',
         accessorKey: 'blindPostCount',
-        size: 120,
-        cell: ({ row }) => {
-          const value = row.original.blindPostCount;
-          return value !== undefined && value !== null ? value : 0;
-        }
+        cell: ({ row }) => row.original.blindPostCount,
+        size: 120
       }
     ],
     []
@@ -181,9 +174,11 @@ export default function MpAdminCommunityUserList() {
     columns,
     pageCount: totalPages,
     state: {
-      pagination
+      pagination: {
+        pageIndex: formik.values.pageIndex,
+        pageSize: formik.values.pageSize
+      }
     },
-    onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true
@@ -253,8 +248,6 @@ export default function MpAdminCommunityUserList() {
                       size="small"
                       onClick={() => {
                         formik.resetForm();
-                        setPagination({ pageIndex: 0, pageSize: 20 });
-                        fetchData(0);
                       }}
                     >
                       초기화
@@ -314,8 +307,8 @@ export default function MpAdminCommunityUserList() {
             <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={pagination.pageIndex + 1}
-                onChange={handlePageChange}
+                page={formik.values.pageIndex + 1}
+                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
                 color="primary"
                 variant="outlined"
                 showFirstButton

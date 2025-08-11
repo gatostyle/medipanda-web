@@ -1,39 +1,27 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
 import Checkbox from '@mui/material/Checkbox';
 import CircularProgress from '@mui/material/CircularProgress';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { useSnackbar } from 'notistack';
-import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
-import { TiptapEditor } from 'medipanda/components/TiptapEditor';
+import { useFormik } from 'formik';
 import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { createProductExtraInfo, getProductDetails, updateProductExtraInfo } from 'medipanda/backend';
+import { TiptapEditor } from 'medipanda/components/TiptapEditor';
+import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
+import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
 import { useMpSession } from 'medipanda/hooks/useMpSession';
-
-const validationSchema = Yup.object().shape({
-  manufacturer: Yup.string().required('제약사를 입력해주세요.'),
-  productName: Yup.string().required('제품명을 입력해주세요.'),
-  productCode: Yup.string().required('제품코드를 입력해주세요.'),
-  composition: Yup.string().required('성분명을 입력해주세요.'),
-  price: Yup.number().required('약가를 입력해주세요.').min(0, '약가는 0 이상이어야 합니다.'),
-  feeRate: Yup.number()
-    .required('기본수수료율을 입력해주세요.')
-    .min(0, '수수료율은 0 이상이어야 합니다.')
-    .max(100, '수수료율은 100 이하여야 합니다.')
-});
+import { useSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import * as Yup from 'yup';
 
 export default function MpAdminProductEdit() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
@@ -41,7 +29,7 @@ export default function MpAdminProductEdit() {
   const errorDialog = useMpErrorDialog();
   const { session } = useMpSession();
 
-  const isNew = !id;
+  const isNew = id === undefined;
 
   const formik = useFormik({
     initialValues: {
@@ -61,7 +49,17 @@ export default function MpAdminProductEdit() {
       alternativeProducts: [] as string[],
       detailContent: ''
     },
-    validationSchema,
+    validationSchema: Yup.object().shape({
+      manufacturer: Yup.string().required('제약사를 입력해주세요.'),
+      productName: Yup.string().required('제품명을 입력해주세요.'),
+      productCode: Yup.string().required('제품코드를 입력해주세요.'),
+      composition: Yup.string().required('성분명을 입력해주세요.'),
+      price: Yup.number().required('약가를 입력해주세요.').min(0, '약가는 0 이상이어야 합니다.'),
+      feeRate: Yup.number()
+        .required('기본수수료율을 입력해주세요.')
+        .min(0, '수수료율은 0 이상이어야 합니다.')
+        .max(100, '수수료율은 100 이하여야 합니다.')
+    }),
     onSubmit: async (values, { setSubmitting }) => {
       try {
         if (isNew) {

@@ -1,17 +1,21 @@
-import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
 import MuiLink from '@mui/material/Link';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
+import Typography from '@mui/material/Typography';
 import MainCard from 'components/MainCard';
-import { TiptapEditor } from 'medipanda/components/TiptapEditor';
 import { BoardDetailsResponse, getBoardDetails } from 'medipanda/backend';
+import { TiptapEditor } from 'medipanda/components/TiptapEditor';
+import { useSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { formatYyyyMmDd } from '../utils/dateFormat';
 
 export default function MpAdminCustomerCenterFaqDetail() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
+  const { enqueueSnackbar } = useSnackbar();
   const [data, setData] = useState<BoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -28,36 +32,23 @@ export default function MpAdminCustomerCenterFaqDetail() {
       setData(response);
     } catch (error) {
       console.error('Failed to fetch FAQ detail:', error);
+      enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
     } finally {
       setLoading(false);
     }
   };
 
   if (loading) {
-    return <Typography>Loading...</Typography>;
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+        <CircularProgress />
+      </Box>
+    );
   }
 
   if (!data) {
-    return <Typography>데이터를 찾을 수 없습니다.</Typography>;
+    return null;
   }
-
-  const formatDate = (dateString: string) => {
-    if (!dateString) return '-';
-    try {
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) return dateString;
-      return date
-        .toLocaleDateString('ko-KR', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit'
-        })
-        .replace(/\. /g, '-')
-        .replace('.', '');
-    } catch {
-      return dateString;
-    }
-  };
 
   return (
     <Grid container spacing={3}>
@@ -132,7 +123,7 @@ export default function MpAdminCustomerCenterFaqDetail() {
               <Typography variant="body2" color="text.secondary" gutterBottom>
                 작성일
               </Typography>
-              <Typography variant="body1">{formatDate(data.createdAt)}</Typography>
+              <Typography variant="body1">{formatYyyyMmDd(data.createdAt)}</Typography>
             </Grid>
           </Grid>
 

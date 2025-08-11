@@ -11,7 +11,6 @@ import ko from 'date-fns/locale/ko';
 // project-imports
 import Drawer from './Drawer';
 import Header from './Header';
-import Footer from './Footer';
 import Loader from 'components/Loader';
 import Breadcrumbs from 'components/@extended/Breadcrumbs';
 
@@ -55,7 +54,6 @@ export default function MainLayout() {
             >
               <Breadcrumbs />
               <Outlet />
-              <Footer />
             </Container>
           </Box>
         </Box>

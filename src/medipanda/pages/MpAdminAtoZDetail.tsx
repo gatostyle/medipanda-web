@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
+import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid';
+import MuiLink from '@mui/material/Link';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -11,13 +12,16 @@ import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import MainCard from 'components/MainCard';
-import { TiptapEditor } from 'medipanda/components/TiptapEditor';
 import { BoardDetailsResponse, getBoardDetails } from 'medipanda/backend';
-import MuiLink from '@mui/material/Link';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
+import { TiptapEditor } from 'medipanda/components/TiptapEditor';
+import { useSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { formatYyyyMmDd } from '../utils/dateFormat';
 
-export default function MpAdminContentManagementAtoZDetail() {
-  const { id } = useParams<{ id: string }>();
+export default function MpAdminAtoZDetail() {
+  const { id } = useParams();
+  const { enqueueSnackbar } = useSnackbar();
   const [data, setData] = useState<BoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -34,17 +38,22 @@ export default function MpAdminContentManagementAtoZDetail() {
       setData(response);
     } catch (error) {
       console.error('Failed to fetch CSO A to Z detail:', error);
+      enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
     } finally {
       setLoading(false);
     }
   };
 
   if (loading) {
-    return <Typography>Loading...</Typography>;
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+        <CircularProgress />
+      </Box>
+    );
   }
 
   if (!data) {
-    return <Typography>데이터를 찾을 수 없습니다.</Typography>;
+    return null;
   }
 
   return (
@@ -121,23 +130,7 @@ export default function MpAdminContentManagementAtoZDetail() {
                   <TableCell component="th" scope="row" sx={{ fontWeight: 'bold' }}>
                     작성일
                   </TableCell>
-                  <TableCell>
-                    {(() => {
-                      try {
-                        const date = new Date(data.createdAt);
-                        return date
-                          .toLocaleDateString('ko-KR', {
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit'
-                          })
-                          .replace(/\. /g, '-')
-                          .replace('.', '');
-                      } catch {
-                        return data.createdAt;
-                      }
-                    })()}
-                  </TableCell>
+                  <TableCell>{formatYyyyMmDd(data.createdAt)}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>

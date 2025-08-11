@@ -1,11 +1,9 @@
-import { useState, useMemo, useCallback, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useFormik } from 'formik';
 import {
   Box,
   Button,
   Card,
   Checkbox,
+  CircularProgress,
   FormControlLabel,
   Grid,
   IconButton,
@@ -17,34 +15,37 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography,
-  CircularProgress
+  Typography
 } from '@mui/material';
-import { SearchNormal1, Add, Minus } from 'iconsax-react';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
-import { MpChangeHistoryDialog } from 'medipanda/components/MpChangeHistoryDialog';
-import { MpPartnerSearchModal } from 'medipanda/components/MpPartnerSearchModal';
-import { useSnackbar } from 'notistack';
+import { useFormik } from 'formik';
+import { Add, Minus, SearchNormal1 } from 'iconsax-react';
 import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
-import { Sequenced } from 'medipanda/utils/withSequence';
-import { MpOcrRequestModal } from 'medipanda/components/MpOcrRequestModal';
-import { OcrResponse } from 'medipanda/api-definitions/MpOcr';
 import {
   AttachedFileResponse,
   getAttachedEdiFiles,
   getPartnerProducts,
   getPrescriptionPartner,
   getProductSummaries,
+  OcrResponse,
   PartnerResponse,
   PrescriptionPartnerProductResponse
 } from 'medipanda/backend';
+import { MpChangeHistoryDialog } from 'medipanda/components/MpChangeHistoryDialog';
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { MpOcrRequestModal } from 'medipanda/components/MpOcrRequestModal';
+import { MpPartnerSearchModal } from 'medipanda/components/MpPartnerSearchModal';
+import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
+import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
+import { Sequenced } from 'medipanda/utils/withSequence';
+import { useSnackbar } from 'notistack';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { DateFix } from '../utils/dateFormat';
 
 export default function MpAdminPrescriptionFormProducts() {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const notImplementedDialog = useMpNotImplementedDialog();
   const errorDialog = useMpErrorDialog();
   const { enqueueSnackbar } = useSnackbar();
@@ -98,11 +99,13 @@ export default function MpAdminPrescriptionFormProducts() {
       {
         header: 'No',
         accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
         size: 60
       },
       {
         header: '보험코드',
-        accessorKey: 'insuranceCode',
+        accessorKey: 'productCode',
+        cell: ({ row }) => row.original.productCode,
         size: 120
       },
       {
@@ -127,6 +130,7 @@ export default function MpAdminPrescriptionFormProducts() {
       {
         header: '단위',
         accessorKey: 'unit',
+        cell: ({ row }) => row.original.unit,
         size: 80
       },
       {
@@ -236,7 +240,7 @@ export default function MpAdminPrescriptionFormProducts() {
     setChangeHistoryOpen(true);
   };
 
-  const handleOcrSubmit = (response: OcrResponse) => {
+  const handleOcrSubmit = (response: OcrResponse[]) => {
     const updatedProducts = products.map((product, index) => {
       if (index < response.length) {
         const data = response[index];
@@ -278,7 +282,7 @@ export default function MpAdminPrescriptionFormProducts() {
 
   useEffect(() => {
     const fetchPrescriptionFormData = async () => {
-      if (!id) {
+      if (id === undefined) {
         setLoading(false);
         return;
       }
@@ -298,8 +302,8 @@ export default function MpAdminPrescriptionFormProducts() {
           institutionCode: formDetail.institutionCode,
           businessNumber: formDetail.businessNumber,
           dealerName: formDetail.dealerName,
-          prescriptionMonth: new Date(formDetail.prescriptionMonth),
-          settlementMonth: new Date(formDetail.settlementMonth),
+          prescriptionMonth: DateFix(formDetail.prescriptionMonth),
+          settlementMonth: DateFix(formDetail.settlementMonth),
           prescriptionAmount: formDetail.amount.toLocaleString()
         });
 

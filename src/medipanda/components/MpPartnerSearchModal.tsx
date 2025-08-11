@@ -1,28 +1,28 @@
-import React, { useState, useCallback } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
   Box,
-  Typography,
-  TextField,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  InputAdornment,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  IconButton,
-  InputAdornment,
-  CircularProgress,
-  Stack
+  TextField,
+  Typography
 } from '@mui/material';
 import { SearchNormal1 } from 'iconsax-react';
-import CloseIcon from '@mui/icons-material/Close';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { getPartners, PartnerResponse } from 'medipanda/backend';
+import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
+import React, { useCallback, useState } from 'react';
 
 interface MpPartnerSearchModalProps {
   open: boolean;

@@ -1,10 +1,15 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useFormik } from 'formik';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
+import Pagination from '@mui/material/Pagination';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -15,27 +20,22 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import Checkbox from '@mui/material/Checkbox';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
-import Pagination from '@mui/material/Pagination';
-import { mpDownloadHospitalTemplate } from 'medipanda/api-definitions/MpHospital';
-import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
+import { useFormik } from 'formik';
+import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
+import { DateTimeString, getHospitals, HospitalResponse, softDeleteHospital, uploadHospitalExcel } from 'medipanda/backend';
+import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
-import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
-import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import { DateTimeString, getHospitals, HospitalResponse, softDeleteHospital, uploadHospitalExcel } from 'medipanda/backend';
+import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
+import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
+import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { useEffect, useMemo, useState } from 'react';
 
-export default function MpAdminContentManagementHospitalList() {
+export default function MpAdminHospitalList() {
   const notImplementedDialog = useMpNotImplementedDialog();
   const errorDialog = useMpErrorDialog();
   const infoDialog = useMpInfoDialog();
@@ -48,21 +48,22 @@ export default function MpAdminContentManagementHospitalList() {
   const [excelUploadDialogOpen, setExcelUploadDialogOpen] = useState(false);
   const [excelFile, setExcelFile] = useState<File | null>(null);
 
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 20
-  });
-
   const formik = useFormik({
     initialValues: {
       sido: '',
       sigungu: '',
       searchKeyword: '',
       startAt: null as Date | null,
-      endAt: null as Date | null
+      endAt: null as Date | null,
+      pageIndex: 0,
+      pageSize: 20
     },
-    onSubmit: (values) => {
-      setPagination({ ...pagination, pageIndex: 0 });
+    onSubmit: () => {
+      if (formik.values.pageIndex !== 0) {
+        formik.setFieldValue('pageIndex', 0);
+      } else {
+        fetchData();
+      }
     }
   });
 
@@ -84,19 +85,6 @@ export default function MpAdminContentManagementHospitalList() {
       } else {
         console.error('Failed to upload excel:', error);
         errorDialog.showError('엑셀 업로드 중 오류가 발생했습니다.');
-      }
-    }
-  };
-
-  const handleTemplateDownload = async () => {
-    try {
-      await mpDownloadHospitalTemplate();
-    } catch (error) {
-      if (error instanceof NotImplementedError) {
-        notImplementedDialog.open(error.message);
-      } else {
-        console.error('Failed to download template:', error);
-        errorDialog.showError('양식 다운로드 중 오류가 발생했습니다.');
       }
     }
   };
@@ -150,6 +138,7 @@ export default function MpAdminContentManagementHospitalList() {
       {
         header: 'No',
         accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
         size: 60
       },
       {
@@ -183,33 +172,29 @@ export default function MpAdminContentManagementHospitalList() {
       {
         header: '병의원명',
         accessorKey: 'name',
-        cell: ({ row }) => {
-          return row.original.name;
-        },
+        cell: ({ row }) => row.original.name,
         size: 200
       },
       {
         header: '주소',
         accessorKey: 'address',
-        cell: ({ row }) => {
-          return row.original.address;
-        },
+        cell: ({ row }) => row.original.address,
         size: 400
       },
       {
         header: '허가예정일',
         accessorKey: 'scheduledOpenDate',
         cell: ({ row }) => {
-          return row.original.scheduledOpenDate?.toString() ?? '-';
+          const value = row.original.scheduledOpenDate;
+
+          return value !== null ? formatYyyyMmDd(value) : '-';
         },
         size: 120
       },
       {
         header: '분류',
         accessorKey: 'source',
-        cell: ({ row }) => {
-          return row.original.source;
-        },
+        cell: ({ row }) => row.original.source,
         size: 120
       }
     ],
@@ -222,10 +207,12 @@ export default function MpAdminContentManagementHospitalList() {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      pagination,
+      pagination: {
+        pageIndex: formik.values.pageIndex,
+        pageSize: formik.values.pageSize
+      },
       rowSelection: selectedRows.reduce((acc, id) => ({ ...acc, [id]: true }), {})
     },
-    onPaginationChange: setPagination,
     onRowSelectionChange: (updater) => {
       const newSelection =
         typeof updater === 'function' ? updater(selectedRows.reduce((acc, id) => ({ ...acc, [id]: true }), {})) : updater;
@@ -244,8 +231,8 @@ export default function MpAdminContentManagementHospitalList() {
     setLoading(true);
     try {
       const response = await getHospitals({
-        page: pagination.pageIndex,
-        size: pagination.pageSize,
+        page: formik.values.pageIndex,
+        size: formik.values.pageSize,
         sido: formik.values.sido !== '' ? formik.values.sido : undefined,
         sigungu: formik.values.sigungu !== '' ? formik.values.sigungu : undefined,
         // searchKeyword: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
@@ -267,7 +254,7 @@ export default function MpAdminContentManagementHospitalList() {
 
   useEffect(() => {
     fetchData();
-  }, [pagination.pageIndex, pagination.pageSize, formik.values]);
+  }, [formik.values.pageIndex, formik.values.pageSize]);
 
   return (
     <Grid container spacing={3}>
@@ -474,10 +461,8 @@ export default function MpAdminContentManagementHospitalList() {
             <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={pagination.pageIndex + 1}
-                onChange={(event, value) => {
-                  setPagination({ ...pagination, pageIndex: value - 1 });
-                }}
+                page={formik.values.pageIndex + 1}
+                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
                 color="primary"
                 variant="outlined"
                 showFirstButton
@@ -492,14 +477,15 @@ export default function MpAdminContentManagementHospitalList() {
         <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}>개원병원정보 업로드</DialogTitle>
         <Box sx={{ position: 'absolute', top: 16, right: 16 }}>
           <Button
+            href={import.meta.env.VITE_APP_URL_FILE_HOSPITAL}
+            target="_blank"
             variant="contained"
             color="success"
             size="small"
             startIcon={<AttachFileIcon />}
-            onClick={handleTemplateDownload}
             sx={{ position: 'relative' }}
           >
-            양식다운로드
+            양식 다운로드
           </Button>
         </Box>
         <DialogContent sx={{ textAlign: 'center', py: 4 }}>

@@ -1,7 +1,3 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -9,27 +5,26 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
+import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
 import MainCard from 'components/MainCard';
-import { TiptapEditor } from 'medipanda/components/TiptapEditor';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import { createEventBoard, updateEventBoard, getEventBoardDetails } from 'medipanda/backend';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
-import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
+import { useFormik } from 'formik';
 import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
-
-const validationSchema = Yup.object({
-  title: Yup.string().required('제목을 입력해주세요'),
-  content: Yup.string().required('내용을 입력해주세요'),
-  startDate: Yup.date().nullable().required('시작일을 선택해주세요'),
-  endDate: Yup.date().nullable().required('종료일을 선택해주세요')
-});
+import { createEventBoard, getEventBoardDetails, updateEventBoard } from 'medipanda/backend';
+import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { TiptapEditor } from 'medipanda/components/TiptapEditor';
+import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
+import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
+import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import * as Yup from 'yup';
+import { useMpSession } from '../hooks/useMpSession';
+import { DateFix, formatYyyyMmDd } from '../utils/dateFormat';
 
 export default function MpAdminEventEdit() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
@@ -37,15 +32,16 @@ export default function MpAdminEventEdit() {
   const notImplementedDialog = useMpNotImplementedDialog();
   const infoDialog = useMpInfoDialog();
   const errorDialog = useMpErrorDialog();
+  const { session } = useMpSession();
 
-  const isNew = id === '';
+  const isNew = id === undefined;
 
   const formik = useFormik({
     initialValues: {
       isExposed: true,
       exposureRange: 'ALL' as 'ALL' | 'CONTRACTED' | 'UNCONTRACTED',
-      startDate: new Date() as Date | null,
-      endDate: new Date() as Date | null,
+      startDate: new Date(),
+      endDate: new Date(),
       title: '',
       description: '',
       content: '',
@@ -53,53 +49,58 @@ export default function MpAdminEventEdit() {
       note: '',
       internalName: ''
     },
-    validationSchema,
+    validationSchema: Yup.object({
+      title: Yup.string().required('제목을 입력해주세요'),
+      content: Yup.string().required('내용을 입력해주세요'),
+      startDate: Yup.date().nullable().required('시작일을 선택해주세요'),
+      endDate: Yup.date().nullable().required('종료일을 선택해주세요')
+    }),
     onSubmit: async (values) => {
       try {
-        const eventRequest = {
-          startAt: values.startDate ? values.startDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-          endAt: values.endDate ? values.endDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-          description: values.description,
-          videoUrl: values.videoUrl,
-          note: values.note
-        };
-
         if (isNew) {
-          const boardRequest = {
-            boardType: 'EVENT' as const,
-            userId: 'admin',
-            nickname: '관리자',
-            title: values.title,
-            content: values.content,
-            parentId: null,
-            isExposed: values.isExposed,
-            editorFileIds: null,
-            exposureRange: values.exposureRange,
-            noticeProperties: null
-          };
-
           await createEventBoard({
-            request: boardRequest,
-            eventRequest: eventRequest,
+            request: {
+              boardType: 'EVENT',
+              userId: session!.userId,
+              nickname: session!.name,
+              title: values.title,
+              content: values.content,
+              parentId: null,
+              isExposed: values.isExposed,
+              editorFileIds: null,
+              exposureRange: values.exposureRange,
+              noticeProperties: null
+            },
+            eventRequest: {
+              startAt: formatYyyyMmDd(values.startDate!),
+              endAt: formatYyyyMmDd(values.endDate!),
+              description: values.description,
+              videoUrl: values.videoUrl,
+              note: values.note
+            },
             thumbnail: thumbnailFile!,
             files: undefined
           });
           infoDialog.showInfo('이벤트가 등록되었습니다.');
         } else {
-          const boardRequest = {
-            title: values.title,
-            content: values.content,
-            isBlind: null,
-            isExposed: values.isExposed,
-            exposureRange: values.exposureRange,
-            keepFileIds: [],
-            editorFileIds: [],
-            noticeProperties: null
-          };
-
           await updateEventBoard(parseInt(id!), {
-            request: boardRequest,
-            eventRequest: eventRequest,
+            request: {
+              title: values.title,
+              content: values.content,
+              isBlind: null,
+              isExposed: values.isExposed,
+              exposureRange: values.exposureRange,
+              keepFileIds: [],
+              editorFileIds: [],
+              noticeProperties: null
+            },
+            eventRequest: {
+              startAt: formatYyyyMmDd(values.startDate!),
+              endAt: formatYyyyMmDd(values.endDate!),
+              description: values.description,
+              videoUrl: values.videoUrl,
+              note: values.note
+            },
             thumbnail: thumbnailFile ?? undefined,
             newFiles: undefined
           });
@@ -126,8 +127,8 @@ export default function MpAdminEventEdit() {
           formik.setValues({
             isExposed: event.boardPostDetail.isExposed,
             exposureRange: event.boardPostDetail.exposureRange,
-            startDate: new Date(event.eventStartDate),
-            endDate: new Date(event.eventEndDate),
+            startDate: DateFix(event.eventStartDate),
+            endDate: DateFix(event.eventEndDate),
             title: event.boardPostDetail.title,
             description: event.description,
             content: event.boardPostDetail.content,
@@ -212,7 +213,7 @@ export default function MpAdminEventEdit() {
                 </Typography>
                 <RadioGroup row name="exposureRange" value={formik.values.exposureRange} onChange={formik.handleChange}>
                   <FormControlLabel value={'ALL'} control={<Radio />} label="전체" />
-                  <FormControlLabel value={'CONTRACTED'} control={<Radio />} label="계약" />
+                  <FormControlLabel value={'CONTRACT  ED'} control={<Radio />} label="계약" />
                   <FormControlLabel value={'UNCONTRACTED'} control={<Radio />} label="미계약" />
                 </RadioGroup>
               </Grid>

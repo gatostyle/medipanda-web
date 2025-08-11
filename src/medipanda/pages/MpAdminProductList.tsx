@@ -1,13 +1,19 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useFormik } from 'formik';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
+import Pagination from '@mui/material/Pagination';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -18,26 +24,25 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import IconButton from '@mui/material/IconButton';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
-import Pagination from '@mui/material/Pagination';
-import { mpUploadRateTable, mpDownloadRateTableTemplate, mpDownloadProductsExcel } from 'medipanda/api-definitions/MpProduct';
-import { ProductSummaryResponse, getProductSummaries, updateProductExtraInfo_1 } from 'medipanda/backend';
-import { Link } from 'react-router-dom';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
+import { useFormik } from 'formik';
+import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
+import {
+  getDownloadProductSummariesExcel,
+  getProductSummaries,
+  ProductSummaryResponse,
+  updateProductExtraInfo_1,
+  uploadProductExtraInfo
+} from 'medipanda/backend';
 import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
-import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
+import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function MpAdminProductList() {
   const [data, setData] = useState<Sequenced<ProductSummaryResponse>[]>([]);
@@ -122,6 +127,7 @@ export default function MpAdminProductList() {
       {
         header: 'No',
         accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
         size: 60
       },
       {
@@ -155,14 +161,15 @@ export default function MpAdminProductList() {
       {
         header: '약가',
         accessorKey: 'price',
-        cell: ({ row }) =>
-          row.original.price !== null && row.original.price !== undefined ? `${row.original.price.toLocaleString()}` : '-',
+        cell: ({ row }) => {
+          return row.original.price !== null ? `${row.original.price.toLocaleString()}` : '-';
+        },
         size: 100
       },
       {
         header: '기본수수료율',
         accessorKey: 'feeRate',
-        cell: ({ row }) => (row.original.feeRate !== null && row.original.feeRate !== undefined ? `${row.original.feeRate}%` : '-'),
+        cell: ({ row }) => (row.original.feeRate !== null ? `${row.original.feeRate}%` : '-'),
         size: 120
       },
       {
@@ -203,42 +210,16 @@ export default function MpAdminProductList() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      let productName: string | undefined;
-      let composition: string | undefined;
-      let productCode: string | undefined;
-      let manufacturerName: string | undefined;
-      let note: string | undefined;
-
-      if (formik.values.searchKeyword) {
-        switch (formik.values.searchType) {
-          case 'productName':
-            productName = formik.values.searchKeyword;
-            break;
-          case 'composition':
-            composition = formik.values.searchKeyword;
-            break;
-          case 'productCode':
-            productCode = formik.values.searchKeyword;
-            break;
-          case 'manufacturerName':
-            manufacturerName = formik.values.searchKeyword;
-            break;
-          case 'note':
-            note = formik.values.searchKeyword;
-            break;
-        }
-      }
-
       const response = await getProductSummaries({
-        productName,
-        composition,
-        productCode,
-        manufacturerName,
-        note,
-        isAcquisition: formik.values.isAcquisition === true ? formik.values.isAcquisition : undefined,
-        isPromotion: formik.values.isPromotion === true ? formik.values.isPromotion : undefined,
-        isOutOfStock: formik.values.isOutOfStock === true ? formik.values.isOutOfStock : undefined,
-        isStopSelling: formik.values.isStopSelling === true ? formik.values.isStopSelling : undefined,
+        productName: formik.values.searchType === 'productName' ? formik.values.searchKeyword : undefined,
+        composition: formik.values.searchType === 'composition' ? formik.values.searchKeyword : undefined,
+        productCode: formik.values.searchType === 'productCode' ? formik.values.searchKeyword : undefined,
+        manufacturerName: formik.values.searchType === 'manufacturerName' ? formik.values.searchKeyword : undefined,
+        note: formik.values.searchType === 'note' ? formik.values.searchKeyword : undefined,
+        isAcquisition: formik.values.isAcquisition || undefined,
+        isPromotion: formik.values.isPromotion || undefined,
+        isOutOfStock: formik.values.isOutOfStock || undefined,
+        isStopSelling: formik.values.isStopSelling || undefined,
         page: pagination.pageIndex,
         size: pagination.pageSize
       });
@@ -281,49 +262,18 @@ export default function MpAdminProductList() {
     });
   };
 
-  const handleExcelDownload = async () => {
-    try {
-      await mpDownloadProductsExcel();
-    } catch (error) {
-      if (error instanceof NotImplementedError) {
-        notImplementedDialog.open(error.message);
-      } else {
-        console.error('Failed to download Excel:', error);
-        errorDialog.showError('엑셀 다운로드 중 오류가 발생했습니다.');
-      }
-    }
-  };
-
   const handleRateTableUpload = async () => {
     if (!rateTableFile) return;
 
     try {
-      const result = await mpUploadRateTable(rateTableFile);
-      if (result.success) {
-        infoDialog.showInfo(result.message);
-        setRateTableDialogOpen(false);
-        setRateTableFile(null);
-        fetchData();
-      }
+      await uploadProductExtraInfo({ file: rateTableFile });
+      infoDialog.showInfo('요율표를 성공적으로 업로드했습니다.');
     } catch (error) {
       if (error instanceof NotImplementedError) {
         notImplementedDialog.open(error.message);
       } else {
         console.error('Failed to upload rate table:', error);
         errorDialog.showError('요율표 업로드 중 오류가 발생했습니다.');
-      }
-    }
-  };
-
-  const handleTemplateDownload = async () => {
-    try {
-      await mpDownloadRateTableTemplate();
-    } catch (error) {
-      if (error instanceof NotImplementedError) {
-        notImplementedDialog.open(error.message);
-      } else {
-        console.error('Failed to download template:', error);
-        errorDialog.showError('양식 다운로드 중 오류가 발생했습니다.');
       }
     }
   };
@@ -433,7 +383,20 @@ export default function MpAdminProductList() {
               <Stack direction="row" spacing={1}>
                 <IconButton
                   size="small"
-                  onClick={handleExcelDownload}
+                  href={getDownloadProductSummariesExcel({
+                    productName: formik.values.searchType === 'productName' ? formik.values.searchKeyword : undefined,
+                    composition: formik.values.searchType === 'composition' ? formik.values.searchKeyword : undefined,
+                    productCode: formik.values.searchType === 'productCode' ? formik.values.searchKeyword : undefined,
+                    manufacturerName: formik.values.searchType === 'manufacturerName' ? formik.values.searchKeyword : undefined,
+                    note: formik.values.searchType === 'note' ? formik.values.searchKeyword : undefined,
+                    isAcquisition: formik.values.isAcquisition || undefined,
+                    isPromotion: formik.values.isPromotion || undefined,
+                    isOutOfStock: formik.values.isOutOfStock || undefined,
+                    isStopSelling: formik.values.isStopSelling || undefined,
+                    page: pagination.pageIndex,
+                    size: pagination.pageSize
+                  })}
+                  target="_blank"
                   sx={{
                     bgcolor: 'success.main',
                     color: 'white',
@@ -501,8 +464,14 @@ export default function MpAdminProductList() {
       <Dialog open={rateTableDialogOpen} onClose={() => setRateTableDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}>요율표업로드</DialogTitle>
         <Box sx={{ position: 'absolute', top: 16, right: 16 }}>
-          <Button variant="contained" color="success" size="small" onClick={handleTemplateDownload}>
-            양식다운로드
+          <Button
+            variant="contained"
+            color="success"
+            size="small"
+            href={import.meta.env.VITE_APP_URL_FILE_PRODUCT_RATE_TABLE}
+            target="_blank"
+          >
+            양식 다운로드
           </Button>
         </Box>
         <DialogContent sx={{ textAlign: 'center', py: 4 }}>

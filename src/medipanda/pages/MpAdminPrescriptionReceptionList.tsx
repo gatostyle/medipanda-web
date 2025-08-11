@@ -1,11 +1,15 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useFormik } from 'formik';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
+import Pagination from '@mui/material/Pagination';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -19,29 +23,25 @@ import Typography from '@mui/material/Typography';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
-import Pagination from '@mui/material/Pagination';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
+import { useFormik } from 'formik';
 import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
-import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
 import {
   confirmPrescription,
   DateString,
   DateTimeString,
-  downloadZippedEdiFiles,
+  getDownloadZippedEdiFiles,
   PrescriptionResponse,
-  searchPrescriptions
+  searchPrescriptions,
+  uploadEdiZip
 } from 'medipanda/backend';
-import { format } from 'date-fns';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import { uploadEdiZip } from 'medipanda/backend/backend';
 import MpDatePicker from 'medipanda/components/MpDatePicker';
+import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
+import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
+import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
+import { formatYyyyMm, formatYyyyMmDd } from 'medipanda/utils/dateFormat';
+import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export default function MpAdminPrescriptionReceptionList() {
   const [data, setData] = useState<Sequenced<PrescriptionResponse>[]>([]);
@@ -56,21 +56,22 @@ export default function MpAdminPrescriptionReceptionList() {
   const [settlementMonth, setSettlementMonth] = useState<Date | null>(null);
   const [ediZipFile, setEdiZipFile] = useState<File | null>(null);
 
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 20
-  });
-
   const formik = useFormik({
     initialValues: {
       searchType: 'companyName' as 'companyName' | 'userId' | 'dealerName' | 'dealerId',
       searchKeyword: '',
       status: '' as 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | '',
       startAt: null as Date | null,
-      endAt: null as Date | null
+      endAt: null as Date | null,
+      pageIndex: 0,
+      pageSize: 20
     },
-    onSubmit: (values) => {
-      setPagination({ ...pagination, pageIndex: 0 });
+    onSubmit: () => {
+      if (formik.values.pageIndex !== 0) {
+        formik.setFieldValue('pageIndex', 0);
+      } else {
+        fetchData();
+      }
     }
   });
 
@@ -78,8 +79,8 @@ export default function MpAdminPrescriptionReceptionList() {
     async (id: number) => {
       try {
         await confirmPrescription(id);
-        infoDialog.showInfo('접수가 확인되었습니다.');
-        setPagination({ ...pagination, pageIndex: 0 });
+        infoDialog.showInfo('접수 확인되었습니다.');
+        fetchData();
       } catch (error) {
         if (error instanceof NotImplementedError) {
           notImplementedDialog.open(error.message);
@@ -89,27 +90,15 @@ export default function MpAdminPrescriptionReceptionList() {
         }
       }
     },
-    [notImplementedDialog, errorDialog, infoDialog, pagination]
+    [notImplementedDialog, errorDialog, infoDialog]
   );
-
-  const handleFileDownload = async (id: number) => {
-    try {
-      await downloadZippedEdiFiles(id);
-    } catch (error) {
-      if (error instanceof NotImplementedError) {
-        notImplementedDialog.open(error.message);
-      } else {
-        console.error('Failed to download file:', error);
-        errorDialog.showError('파일 다운로드 중 오류가 발생했습니다.');
-      }
-    }
-  };
 
   const columns = useMemo<ColumnDef<Sequenced<PrescriptionResponse>>[]>(
     () => [
       {
         header: 'No',
         accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
         size: 60
       },
       {
@@ -139,33 +128,25 @@ export default function MpAdminPrescriptionReceptionList() {
       {
         header: '처방월',
         accessorKey: 'prescriptionMonth',
-        cell: ({ row }) => row.original.prescriptionMonth,
+        cell: ({ row }) => formatYyyyMm(row.original.prescriptionMonth),
         size: 100
       },
       {
         header: '정산월',
         accessorKey: 'settlementMonth',
-        cell: ({ row }) => row.original.settlementMonth,
+        cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
         size: 100
       },
       {
         header: '접수신청일',
         accessorKey: 'submittedAt',
-        cell: ({ row }) => {
-          return format(new Date(row.original.submittedAt), 'yyyy-MM-dd');
-        },
+        cell: ({ row }) => formatYyyyMmDd(row.original.submittedAt),
         size: 120
       },
       {
         header: '접수파일',
         cell: ({ row }) => (
-          <Button
-            variant="contained"
-            color="success"
-            size="small"
-            href={`/v1/prescriptions/partners/${row.original.id}/edi-files/download`}
-            target="_blank"
-          >
+          <Button variant="contained" color="success" size="small" href={getDownloadZippedEdiFiles(row.original.id)} target="_blank">
             파일 다운로드
           </Button>
         ),
@@ -191,7 +172,7 @@ export default function MpAdminPrescriptionReceptionList() {
         header: '관리자확인',
         cell: ({ row }) =>
           row.original.checkedAt ? (
-            <Typography variant="body2">{format(new Date(row.original.checkedAt), 'yyyy-MM-dd')}</Typography>
+            <Typography variant="body2">{formatYyyyMmDd(row.original.checkedAt)}</Typography>
           ) : (
             <Button variant="contained" color="success" size="small" onClick={() => handleConfirm(row.original.id)}>
               접수확인
@@ -200,7 +181,7 @@ export default function MpAdminPrescriptionReceptionList() {
         size: 120
       }
     ],
-    [handleConfirm, handleFileDownload]
+    [handleConfirm]
   );
 
   const table = useReactTable({
@@ -209,9 +190,11 @@ export default function MpAdminPrescriptionReceptionList() {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      pagination
+      pagination: {
+        pageIndex: formik.values.pageIndex,
+        pageSize: formik.values.pageSize
+      }
     },
-    onPaginationChange: setPagination,
     pageCount: totalPages,
     manualPagination: true
   });
@@ -227,8 +210,8 @@ export default function MpAdminPrescriptionReceptionList() {
         dealerId: formik.values.searchType === 'dealerId' ? parseInt(formik.values.searchKeyword) : undefined,
         startAt: formik.values.startAt ? new DateTimeString(formik.values.startAt) : undefined,
         endAt: formik.values.endAt ? new DateTimeString(formik.values.endAt) : undefined,
-        page: pagination.pageIndex,
-        size: pagination.pageSize
+        page: formik.values.pageIndex,
+        size: formik.values.pageSize
       });
 
       setData(withSequence(response).content);
@@ -246,7 +229,7 @@ export default function MpAdminPrescriptionReceptionList() {
 
   useEffect(() => {
     fetchData();
-  }, [pagination.pageIndex, pagination.pageSize, formik.values]);
+  }, [formik.values.pageIndex, formik.values.pageSize]);
 
   const handleFileUpload = async () => {
     if (!ediZipFile) return;
@@ -382,10 +365,8 @@ export default function MpAdminPrescriptionReceptionList() {
             <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={pagination.pageIndex + 1}
-                onChange={(event, value) => {
-                  setPagination({ ...pagination, pageIndex: value - 1 });
-                }}
+                page={formik.values.pageIndex + 1}
+                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
                 color="primary"
                 variant="outlined"
                 showFirstButton

@@ -1,12 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useFormik } from 'formik';
-import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
+import Pagination from '@mui/material/Pagination';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -20,35 +18,36 @@ import Typography from '@mui/material/Typography';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
-import Pagination from '@mui/material/Pagination';
-import { SearchFilterBar, SearchFilterItem, SearchFilterActions } from 'medipanda/components/SearchFilterBar';
+import { useFormik } from 'formik';
 import { getAdminMembers, MemberResponse } from 'medipanda/backend';
-import { Sequenced } from 'medipanda/utils/withSequence';
-import { Link } from 'react-router-dom';
-import { format } from 'date-fns';
-import { backendNotImplemented } from 'medipanda/utils/backendNotImplemented';
-import { withSequence } from 'medipanda/utils/withSequence';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
 import { MEMBER_ACCOUNT_STATUS_LABELS, MEMBER_ROLE_LABELS } from 'medipanda/ui-labels';
+import { backendNotImplemented } from 'medipanda/utils/backendNotImplemented';
+import { formatYyyyMmDdHhMm } from 'medipanda/utils/dateFormat';
+import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-export default function MpAdminPermissionAdminList() {
+export default function MpAdminAdminList() {
   const navigate = useNavigate();
   const [data, setData] = useState<Sequenced<MemberResponse>[]>([]);
   const [, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 20
-  });
-
   const formik = useFormik({
     initialValues: {
       type: 'name',
-      keyword: ''
+      keyword: '',
+      pageIndex: 0,
+      pageSize: 20
     },
-    onSubmit: (values) => {
-      setPagination({ ...pagination, pageIndex: 0 });
+    onSubmit: () => {
+      if (formik.values.pageIndex !== 0) {
+        formik.setFieldValue('pageIndex', 0);
+      } else {
+        fetchData();
+      }
     }
   });
 
@@ -57,11 +56,13 @@ export default function MpAdminPermissionAdminList() {
       {
         header: 'No',
         accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
         size: 60
       },
       {
         header: '아이디',
         accessorKey: 'userId',
+        cell: ({ row }) => row.original.userId,
         size: 120
       },
       {
@@ -77,11 +78,13 @@ export default function MpAdminPermissionAdminList() {
       {
         header: '이메일',
         accessorKey: 'email',
+        cell: ({ row }) => row.original.email,
         size: 200
       },
       {
         header: '연락처',
         accessorKey: 'phoneNumber',
+        cell: ({ row }) => row.original.phoneNumber,
         size: 150
       },
       {
@@ -101,9 +104,7 @@ export default function MpAdminPermissionAdminList() {
       {
         header: '등록일',
         accessorKey: 'registrationDate',
-        cell: ({ row }) => {
-          return format(new Date(row.original.registrationDate), 'yyyy-MM-dd HH:mm');
-        },
+        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.registrationDate),
         size: 150
       }
     ],
@@ -116,9 +117,11 @@ export default function MpAdminPermissionAdminList() {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      pagination
+      pagination: {
+        pageIndex: formik.values.pageIndex,
+        pageSize: formik.values.pageSize
+      }
     },
-    onPaginationChange: setPagination,
     pageCount: totalPages,
     manualPagination: true
   });
@@ -130,7 +133,7 @@ export default function MpAdminPermissionAdminList() {
         backendNotImplemented();
       }
 
-      const response = await getAdminMembers({ page: pagination.pageIndex, size: pagination.pageSize });
+      const response = await getAdminMembers({ page: formik.values.pageIndex, size: formik.values.pageSize });
 
       setData(withSequence(response).content);
       setTotalElements(response.totalElements);
@@ -147,7 +150,7 @@ export default function MpAdminPermissionAdminList() {
 
   useEffect(() => {
     fetchData();
-  }, [pagination.pageIndex, pagination.pageSize, formik.values]);
+  }, [formik.values.pageIndex, formik.values.pageSize]);
 
   return (
     <Grid container spacing={3}>
@@ -241,10 +244,8 @@ export default function MpAdminPermissionAdminList() {
             <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={pagination.pageIndex + 1}
-                onChange={(event, value) => {
-                  setPagination({ ...pagination, pageIndex: value - 1 });
-                }}
+                page={formik.values.pageIndex + 1}
+                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
                 color="primary"
                 variant="outlined"
                 showFirstButton

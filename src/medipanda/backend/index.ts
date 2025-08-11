@@ -64,6 +64,7 @@ export type {
   PartnerCreateRequest,
   PartnerResponse,
   PartnerUpdateRequest,
+  PerformanceStatsResponse,
   PrescriptionCreateRequest,
   PrescriptionPartnerProductCreateRequest,
   PrescriptionPartnerProductResponse,
@@ -90,7 +91,12 @@ export type {
   SampleProvideReportCreateRequest,
   SampleProvideReportDetailResponse,
   SampleProvideReportUpdateRequest,
+  SettlementPartnerProductResponse,
+  SettlementPartnerResponse,
+  SettlementResponse,
   SortObject,
   UpdateNoticeProperties
 } from './backend';
-export * from './backend-mockup';
+export * from './backend';
+export type { OcrResponse } from './ocr';
+export * from './ocr';

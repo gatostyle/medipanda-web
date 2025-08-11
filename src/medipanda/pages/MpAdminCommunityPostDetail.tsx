@@ -1,5 +1,3 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -19,19 +17,57 @@ import {
 } from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import ScrollX from 'components/ScrollX';
-import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { TiptapEditor } from 'medipanda/components/TiptapEditor';
 import { BoardReportResponse, CommentResponse, getBoardDetails } from 'medipanda/backend';
-import { useSnackbar } from 'notistack';
+import { TiptapEditor } from 'medipanda/components/TiptapEditor';
 import { BOARD_TYPE_LABELS } from 'medipanda/ui-labels';
+import { formatYyyyMmDdHhMm } from 'medipanda/utils/dateFormat';
+import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { useSnackbar } from 'notistack';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 export default function MpAdminCommunityPostDetail() {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const [tabValue, setTabValue] = useState(0);
   const [loading, setLoading] = useState(true);
   const { enqueueSnackbar } = useSnackbar();
+
+  const fetchData = async () => {
+    if (id === undefined) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const boardDetail = await getBoardDetails(parseInt(id));
+
+      setPostDetail({
+        boardType: BOARD_TYPE_LABELS[boardDetail.boardType],
+        name: boardDetail.name,
+        userId: boardDetail.userId,
+        nickname: boardDetail.nickname,
+        title: boardDetail.title,
+        content: boardDetail.content,
+        likesCount: boardDetail.likesCount,
+        commentsCount: boardDetail.commentCount,
+        viewsCount: boardDetail.viewsCount,
+        isBlind: boardDetail.isBlind,
+        registrationDate: boardDetail.createdAt
+      });
+
+      setComments(withSequence(boardDetail.comments));
+      setReports(withSequence(boardDetail.reports));
+    } catch (error) {
+      console.error('Failed to fetch post data:', error);
+      enqueueSnackbar('포스트 정보를 불러오는데 실패했습니다.', { variant: 'error' });
+      navigate('/admin/community-posts');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const tab = searchParams.get('tab');
@@ -45,42 +81,7 @@ export default function MpAdminCommunityPostDetail() {
   }, [searchParams]);
 
   useEffect(() => {
-    const fetchPostData = async () => {
-      if (!id) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        setLoading(true);
-        const boardDetail = await getBoardDetails(parseInt(id));
-
-        setPostDetail({
-          boardType: BOARD_TYPE_LABELS[boardDetail.boardType],
-          name: boardDetail.name,
-          userId: boardDetail.userId,
-          nickname: boardDetail.nickname,
-          title: boardDetail.title,
-          content: boardDetail.content,
-          likesCount: boardDetail.likesCount,
-          commentsCount: boardDetail.commentCount,
-          viewsCount: boardDetail.viewsCount,
-          isBlind: boardDetail.isBlind,
-          registrationDate: boardDetail.createdAt
-        });
-
-        setComments(withSequence(boardDetail.comments));
-        setReports(withSequence(boardDetail.reports));
-      } catch (error) {
-        console.error('Failed to fetch post data:', error);
-        enqueueSnackbar('포스트 정보를 불러오는데 실패했습니다.', { variant: 'error' });
-        navigate('/admin/community-posts');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPostData();
+    fetchData();
   }, [id, navigate, enqueueSnackbar]);
 
   const [postDetail, setPostDetail] = useState({
@@ -105,31 +106,37 @@ export default function MpAdminCommunityPostDetail() {
       {
         header: 'No',
         accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
         size: 60
       },
       {
         header: '아이디',
         accessorKey: 'userId',
+        cell: ({ row }) => row.original.userId,
         size: 120
       },
       {
         header: '회원명',
         accessorKey: 'name',
+        cell: ({ row }) => row.original.name,
         size: 100
       },
       {
         header: '닉네임',
         accessorKey: 'nickname',
+        cell: ({ row }) => row.original.nickname,
         size: 120
       },
       {
         header: '댓글내용',
         accessorKey: 'content',
+        cell: ({ row }) => row.original.content,
         size: 300
       },
       {
         header: '작성일시',
         accessorKey: 'createdAt',
+        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.createdAt),
         size: 160
       }
     ],
@@ -141,34 +148,37 @@ export default function MpAdminCommunityPostDetail() {
       {
         header: 'No',
         accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
         size: 60
       },
       {
         header: '아이디',
         accessorKey: 'userId',
+        cell: ({ row }) => row.original.userId,
         size: 120
       },
       {
         header: '회원명',
-        accessorKey: 'name',
+        accessorKey: 'memberName',
+        cell: ({ row }) => row.original.memberName,
         size: 100
       },
       {
         header: '닉네임',
         accessorKey: 'nickname',
+        cell: ({ row }) => row.original.nickname,
         size: 120
       },
       {
         header: '신고유형',
         accessorKey: 'reportType',
+        cell: ({ row }) => row.original.reportType,
         size: 150
       },
       {
         header: '신고일시',
         accessorKey: 'reportDateTime',
-        cell: ({ row }) => {
-          return row.original.reportDateTime;
-        },
+        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.reportDateTime),
         size: 160
       }
     ],

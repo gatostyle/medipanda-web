@@ -1,9 +1,8 @@
-import { GuardProps } from 'types/auth';
-import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import { useMpSession } from 'medipanda/hooks/useMpSession';
-import { isMpAdmin } from 'medipanda/utils/MpMemberRole';
 import Loader from 'components/Loader';
+import { isMpAdmin, useMpSession } from 'medipanda/hooks/useMpSession';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { GuardProps } from 'types/auth';
 
 export function MpGuestGuard({ children }: GuardProps) {
   const { session, isLoading } = useMpSession();

@@ -1,44 +1,39 @@
-import { useNavigate, useParams } from 'react-router-dom';
-import { useState, useMemo, useEffect } from 'react';
-import { useFormik } from 'formik';
 import {
-  IconButton,
   Box,
-  Typography,
-  Grid,
-  Stack,
   Button,
+  CircularProgress,
+  FormControl,
+  Grid,
+  IconButton,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Select,
-  MenuItem,
-  FormControl,
   TextField,
-  Pagination
+  Typography
 } from '@mui/material';
-import { ArrowLeft, DocumentDownload } from 'iconsax-react';
-import { Link } from 'react-router-dom';
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
-import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
-import { MpSettlementDetail, mpGetSettlementDetails, mpDownloadSettlementDetailsExcel } from 'medipanda/api-definitions/MpSettlement';
-import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
-import { Sequenced } from 'medipanda/utils/withSequence';
+import { useFormik } from 'formik';
+import { ArrowLeft, DocumentDownload } from 'iconsax-react';
+import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { useSnackbar } from 'notistack';
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { getDownloadSettlementPartnerSummaryExcel, getSettlementPartnerSummary, SettlementPartnerResponse } from 'medipanda/backend';
 
 export default function MpAdminSettlementEdit() {
   const navigate = useNavigate();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { id: _id } = useParams<{ id: string }>();
-  const notImplementedDialog = useMpNotImplementedDialog();
-  const infoDialog = useMpInfoDialog();
-  const errorDialog = useMpErrorDialog();
+  const { enqueueSnackbar } = useSnackbar();
+  const { id } = useParams();
+  const [loading, setLoading] = useState(false);
   const [totalElements] = useState(2);
   const [totalPages] = useState(1);
 
@@ -49,56 +44,82 @@ export default function MpAdminSettlementEdit() {
 
   const formik = useFormik({
     initialValues: {
-      searchType: 'institutionName',
+      searchType: 'institutionName' as 'institutionName' | 'businessNumber' | 'institutionCode',
       searchKeyword: ''
     },
     onSubmit: (values) => {
       console.log('Search:', values);
+      if (id) {
+        fetchSettlementData();
+      }
     }
   });
 
-  const [data, setData] = useState<Sequenced<MpSettlementDetail>[]>([]);
+  const [data, setData] = useState<Sequenced<SettlementPartnerResponse>[]>([]);
 
   useEffect(() => {
-    const loadData = async () => {
-      const settlementDetails = await mpGetSettlementDetails();
-      setData(
-        settlementDetails.map((item, index) => ({
-          ...item,
-          sequence: index + 1
-        }))
-      );
-    };
-    loadData();
-  }, []);
+    if (id) {
+      fetchSettlementData();
+    }
+  }, [id, pagination.pageIndex, pagination.pageSize]);
 
-  const columns = useMemo<ColumnDef<Sequenced<MpSettlementDetail>>[]>(
+  const fetchSettlementData = async () => {
+    if (id === undefined) return;
+
+    setLoading(true);
+    try {
+      const response = await getSettlementPartnerSummary({
+        settlementId: parseInt(id),
+        institutionName: formik.values.searchType === 'institutionName' ? formik.values.searchKeyword : undefined,
+        businessNumber: formik.values.searchType === 'businessNumber' ? formik.values.searchKeyword : undefined,
+        institutionCode: formik.values.searchType === 'institutionCode' ? formik.values.searchKeyword : undefined,
+        page: pagination.pageIndex,
+        size: pagination.pageSize
+      });
+
+      setData(withSequence(response).content);
+    } catch (error) {
+      console.error('Failed to fetch settlement data:', error);
+      enqueueSnackbar('정산 데이터를 불러오는데 실패했습니다.', { variant: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const columns = useMemo<ColumnDef<Sequenced<SettlementPartnerResponse>>[]>(
     () => [
       {
         header: 'No',
         accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
         size: 60
       },
       {
         header: '회사명',
         accessorKey: 'companyName',
+        cell: ({ row }) => row.original.companyName,
         size: 120
       },
       {
         header: '딜러명',
         accessorKey: 'dealerName',
+        cell: ({ row }) => row.original.dealerName,
         size: 100
       },
       {
         header: '거래처코드',
         accessorKey: 'institutionCode',
+        cell: ({ row }) => row.original.institutionCode,
         size: 120
       },
       {
         header: '거래처명',
-        accessorKey: 'institutionName',
+        accessorKey: 'institutionCode',
         cell: ({ row }) => (
-          <Link to={`/admin/settlements/business-partners/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link
+            to={`/admin/settlements/${id}/business-partners/${row.original.institutionCode}`}
+            style={{ textDecoration: 'none', color: '#1976d2' }}
+          >
             {row.original.institutionName}
           </Link>
         ),
@@ -107,6 +128,7 @@ export default function MpAdminSettlementEdit() {
       {
         header: '사업자등록번호',
         accessorKey: 'businessNumber',
+        cell: ({ row }) => row.original.businessNumber,
         size: 140
       },
       {
@@ -148,19 +170,13 @@ export default function MpAdminSettlementEdit() {
     navigate('/admin/settlements');
   };
 
-  const handleExcelDownload = async () => {
-    try {
-      await mpDownloadSettlementDetailsExcel();
-      infoDialog.showInfo('Excel 파일이 다운로드되었습니다.');
-    } catch (error) {
-      if (error instanceof NotImplementedError) {
-        notImplementedDialog.open(error.message);
-      } else {
-        console.error('Failed to download Excel:', error);
-        errorDialog.showError('Excel 다운로드 중 오류가 발생했습니다.');
-      }
-    }
-  };
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ p: 3 }}>
@@ -206,7 +222,19 @@ export default function MpAdminSettlementEdit() {
         <Box sx={{ p: 2 }}>
           <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
             <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
-            <Button variant="contained" color="success" onClick={handleExcelDownload}>
+            <Button
+              variant="contained"
+              color="success"
+              href={getDownloadSettlementPartnerSummaryExcel({
+                settlementId: parseInt(id!),
+                institutionName: formik.values.searchType === 'institutionName' ? formik.values.searchKeyword : undefined,
+                businessNumber: formik.values.searchType === 'businessNumber' ? formik.values.searchKeyword : undefined,
+                institutionCode: formik.values.searchType === 'institutionCode' ? formik.values.searchKeyword : undefined,
+                page: pagination.pageIndex,
+                size: pagination.pageSize
+              })}
+              target="_blank"
+            >
               <DocumentDownload style={{ marginRight: 8 }} />
               Excel
             </Button>

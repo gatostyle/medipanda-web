@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useSnackbar } from 'notistack';
 import Loader from 'components/Loader';
 import { useMpSession } from 'medipanda/hooks/useMpSession';
+import { useSnackbar } from 'notistack';
+import { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function MpLogout() {
   const navigate = useNavigate();

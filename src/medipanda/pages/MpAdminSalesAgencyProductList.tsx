@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useFormik } from 'formik';
+import { Download as ExcelIcon } from '@mui/icons-material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -8,6 +7,7 @@ import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
+import Pagination from '@mui/material/Pagination';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -21,21 +21,22 @@ import Typography from '@mui/material/Typography';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
-import Pagination from '@mui/material/Pagination';
-import { Download as ExcelIcon } from '@mui/icons-material';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { useFormik } from 'formik';
 import {
-  getSalesAgencyProducts,
+  DateString,
   deleteBoardPost,
-  SalesAgencyProductSummaryResponse,
-  downloadSalesAgencyProductsExcel,
-  DateString
+  getDownloadSalesAgencyProductsExcel,
+  getSalesAgencyProducts,
+  SalesAgencyProductSummaryResponse
 } from 'medipanda/backend';
-import { Link } from 'react-router-dom';
+import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
 import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
+import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function MpAdminSalesAgencyProductList() {
   const [data, setData] = useState<Sequenced<SalesAgencyProductSummaryResponse>[]>([]);
@@ -47,19 +48,20 @@ export default function MpAdminSalesAgencyProductList() {
   const errorDialog = useMpErrorDialog();
   const infoDialog = useMpInfoDialog();
 
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 20
-  });
-
   const formik = useFormik({
     initialValues: {
       searchType: 'productName' as 'productName' | 'clientName',
       searchKeyword: '',
-      date: null as Date | null
+      date: null as Date | null,
+      pageIndex: 0,
+      pageSize: 20
     },
-    onSubmit: (values) => {
-      setPagination({ ...pagination, pageIndex: 0 });
+    onSubmit: () => {
+      if (formik.values.pageIndex !== 0) {
+        formik.setFieldValue('pageIndex', 0);
+      } else {
+        fetchData();
+      }
     }
   });
 
@@ -96,6 +98,7 @@ export default function MpAdminSalesAgencyProductList() {
       {
         header: 'No',
         accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
         size: 60
       },
       {
@@ -115,6 +118,7 @@ export default function MpAdminSalesAgencyProductList() {
       {
         header: '위탁사',
         accessorKey: 'clientName',
+        cell: ({ row }) => row.original.clientName,
         size: 150
       },
       {
@@ -130,16 +134,13 @@ export default function MpAdminSalesAgencyProductList() {
       {
         header: '판매가',
         accessorKey: 'price',
-        cell: ({ row }) => {
-          const value = row.original.price;
-          return value.toLocaleString();
-        },
+        cell: ({ row }) => row.original.price.toLocaleString(),
         size: 100
       },
       {
         header: '계약일',
         accessorKey: 'contractDate',
-        cell: ({ row }) => row.original.contractDate,
+        cell: ({ row }) => formatYyyyMmDd(row.original.contractDate),
         size: 120
       },
       {
@@ -155,7 +156,7 @@ export default function MpAdminSalesAgencyProductList() {
         header: '게시기간',
         accessorKey: 'startAt',
         cell: ({ row }) => {
-          return `${row.original.startAt} ~ ${row.original.endAt}`;
+          return `${formatYyyyMmDd(row.original.startAt)} ~ ${formatYyyyMmDd(row.original.endAt)}`;
         },
         size: 200
       },
@@ -168,10 +169,7 @@ export default function MpAdminSalesAgencyProductList() {
       {
         header: '판매수량',
         accessorKey: 'quantity',
-        cell: ({ row }) => {
-          const value = row.original.quantity;
-          return value.toLocaleString();
-        },
+        cell: ({ row }) => row.original.quantity.toLocaleString(),
         size: 100
       }
     ],
@@ -184,9 +182,11 @@ export default function MpAdminSalesAgencyProductList() {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      pagination
+      pagination: {
+        pageIndex: formik.values.pageIndex,
+        pageSize: formik.values.pageSize
+      }
     },
-    onPaginationChange: setPagination,
     pageCount: totalPages,
     manualPagination: true
   });
@@ -199,8 +199,8 @@ export default function MpAdminSalesAgencyProductList() {
         clientName: formik.values.searchType === 'clientName' ? formik.values.searchKeyword : undefined,
         startAt: formik.values.date ? new DateString(formik.values.date) : undefined,
         endAt: formik.values.date ? new DateString(formik.values.date) : undefined,
-        page: pagination.pageIndex,
-        size: pagination.pageSize
+        page: formik.values.pageIndex,
+        size: formik.values.pageSize
       });
 
       setData(withSequence(response).content);
@@ -218,22 +218,10 @@ export default function MpAdminSalesAgencyProductList() {
 
   useEffect(() => {
     fetchData();
-  }, [pagination.pageIndex, pagination.pageSize, formik.values]);
+  }, [formik.values.pageIndex, formik.values.pageSize]);
 
   const handleReset = () => {
     formik.resetForm();
-    setPagination({ ...pagination, pageIndex: 0 });
-  };
-
-  const handleExcelDownload = async () => {
-    await downloadSalesAgencyProductsExcel({
-      productName: formik.values.searchType === 'productName' ? formik.values.searchKeyword : undefined,
-      clientName: formik.values.searchType === 'clientName' ? formik.values.searchKeyword : undefined,
-      startAt: formik.values.date ? new DateString(formik.values.date) : undefined,
-      endAt: formik.values.date ? new DateString(formik.values.date) : undefined,
-      page: pagination.pageIndex,
-      size: pagination.pageSize
-    });
   };
 
   const handleDelete = () => {
@@ -324,7 +312,15 @@ export default function MpAdminSalesAgencyProductList() {
                 <IconButton
                   size="small"
                   color="success"
-                  onClick={handleExcelDownload}
+                  href={getDownloadSalesAgencyProductsExcel({
+                    productName: formik.values.searchType === 'productName' ? formik.values.searchKeyword : undefined,
+                    clientName: formik.values.searchType === 'clientName' ? formik.values.searchKeyword : undefined,
+                    startAt: formik.values.date ? new DateString(formik.values.date) : undefined,
+                    endAt: formik.values.date ? new DateString(formik.values.date) : undefined,
+                    page: formik.values.pageIndex,
+                    size: formik.values.pageSize
+                  })}
+                  target="_blank"
                   sx={{
                     backgroundColor: 'success.main',
                     color: 'white',
@@ -374,10 +370,8 @@ export default function MpAdminSalesAgencyProductList() {
             <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={pagination.pageIndex + 1}
-                onChange={(event, value) => {
-                  setPagination({ ...pagination, pageIndex: value - 1 });
-                }}
+                page={formik.values.pageIndex + 1}
+                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
                 color="primary"
                 variant="outlined"
                 showFirstButton

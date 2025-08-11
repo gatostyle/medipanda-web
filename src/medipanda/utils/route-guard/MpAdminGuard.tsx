@@ -1,11 +1,10 @@
-import { GuardProps } from 'types/auth';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { saveRedirectTo } from 'medipanda/utils/redirectTo';
-import { isMpAdmin, isMpSuperAdmin } from 'medipanda/utils/MpMemberRole';
 import Loader from 'components/Loader';
-import { useMpSession } from 'medipanda/hooks/useMpSession';
 import { getPermissions } from 'medipanda/backend';
+import { isMpAdmin, isMpSuperAdmin, useMpSession } from 'medipanda/hooks/useMpSession';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { GuardProps } from 'types/auth';
+import { saveRedirectTo } from '../redirectTo';
 
 interface MpAdminGuardProps extends GuardProps {
   requiredPermission?:

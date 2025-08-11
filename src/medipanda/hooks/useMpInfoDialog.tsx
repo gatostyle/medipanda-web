@@ -1,12 +1,12 @@
-import { createContext, ReactNode, useState, useCallback } from 'react';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
+import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import DialogActions from '@mui/material/DialogActions';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
+import DialogTitle from '@mui/material/DialogTitle';
 import Typography from '@mui/material/Typography';
+import { createContext, ReactNode, useCallback, useContext, useState } from 'react';
 
 interface MpInfoDialogContextType {
   showInfo: (message: string, title?: string) => void;
@@ -108,4 +108,14 @@ export function MpInfoDialogProvider({ children }: MpInfoDialogProviderProps) {
       <MpInfoDialog open={dialogState.open} title={dialogState.title} message={dialogState.message} onClose={hideInfo} />
     </MpInfoDialogContext.Provider>
   );
+}
+
+export function useMpInfoDialog() {
+  const context = useContext(MpInfoDialogContext);
+
+  if (context === undefined) {
+    throw new Error('useMpInfoDialog must be used within a MpInfoDialogProvider');
+  }
+
+  return context;
 }

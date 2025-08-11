@@ -1,11 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useFormik } from 'formik';
-import { format } from 'date-fns';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
+import Pagination from '@mui/material/Pagination';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -19,13 +17,15 @@ import Typography from '@mui/material/Typography';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
-import Pagination from '@mui/material/Pagination';
-import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
-import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-react';
+import { DateTimeString, ExpenseReportResponse, getDownloadExpenseReportListExcel, getExpenseReportList } from 'medipanda/backend';
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
 import { EXPENSE_REPORT_CLASSIFICATION_LABELS, EXPENSE_REPORT_STATUS_LABELS } from 'medipanda/ui-labels';
-import { DateTimeString, downloadExpenseReportListExcel, ExpenseReportResponse, getExpenseReportList } from 'medipanda/backend';
+import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
+import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { useEffect, useMemo, useState } from 'react';
 
 export default function MpAdminExpenseReportList() {
   const [data, setData] = useState<Sequenced<ExpenseReportResponse>[]>([]);
@@ -33,31 +33,31 @@ export default function MpAdminExpenseReportList() {
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 20
-  });
-
   const formik = useFormik({
     initialValues: {
       reportStatus: '' as 'PENDING' | 'COMPLETED' | '',
       searchCriteria: '',
       startAt: null as Date | null,
       endAt: null as Date | null,
-      searchKeyword: ''
+      searchKeyword: '',
+      pageIndex: 0,
+      pageSize: 20
     },
-    onSubmit: (values) => {
-      setPagination({ pageIndex: 0, pageSize: 20 });
-      fetchData(0);
+    onSubmit: () => {
+      if (formik.values.pageIndex !== 0) {
+        formik.setFieldValue('pageIndex', 0);
+      } else {
+        fetchData();
+      }
     }
   });
 
-  const fetchData = async (page: number) => {
+  const fetchData = async () => {
     setLoading(true);
     try {
       const response = await getExpenseReportList({
-        page: page,
-        size: pagination.pageSize,
+        page: formik.values.pageIndex,
+        size: formik.values.pageSize,
         ...(formik.values.reportStatus !== '' && { reportStatus: formik.values.reportStatus }),
         companyName: formik.values.searchCriteria === 'companyName' ? formik.values.searchKeyword : undefined,
         userId: formik.values.searchCriteria === 'userId' ? formik.values.searchKeyword : undefined,
@@ -76,102 +76,70 @@ export default function MpAdminExpenseReportList() {
     }
   };
 
-  const handleExcelDownload = async () => {
-    try {
-      const blob = await downloadExpenseReportListExcel({
-        page: pagination.pageIndex,
-        size: pagination.pageSize,
-        ...(formik.values.reportStatus !== '' && { reportStatus: formik.values.reportStatus }),
-        companyName: formik.values.searchCriteria === 'companyName' ? formik.values.searchKeyword : undefined,
-        userId: formik.values.searchCriteria === 'userId' ? formik.values.searchKeyword : undefined,
-        productName: formik.values.searchCriteria === 'productName' ? formik.values.searchKeyword : undefined,
-        eventDateFrom: formik.values.startAt ? new DateTimeString(formik.values.startAt) : undefined,
-        eventDateTo: formik.values.endAt ? new DateTimeString(formik.values.endAt) : undefined
-      });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `지출보고_${format(new Date(), 'yyyyMMdd_HHmmss')}.xlsx`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Failed to download Excel:', error);
-    }
-  };
-
   useEffect(() => {
-    fetchData(0);
-  }, []);
-
-  const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
-    const newPageIndex = value - 1;
-    setPagination({ ...pagination, pageIndex: newPageIndex });
-    fetchData(newPageIndex);
-  };
+    fetchData();
+  }, [formik.values.pageIndex, formik.values.pageSize]);
 
   const columns = useMemo<ColumnDef<Sequenced<ExpenseReportResponse>>[]>(
     () => [
       {
         header: 'No',
         accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
         size: 60
       },
       {
         header: '아이디',
         accessorKey: 'userId',
+        cell: ({ row }) => row.original.userId,
         size: 100
       },
       {
         header: '회사명',
         accessorKey: 'companyName',
+        cell: ({ row }) => row.original.companyName,
         size: 120
       },
       {
         header: '제품명',
         accessorKey: 'productName',
+        cell: ({ row }) => row.original.productName,
         size: 150
       },
       {
         header: '유형',
         accessorKey: 'reportType',
-        size: 80,
         cell: ({ row }) => {
           const value = row.original.reportType;
           return EXPENSE_REPORT_CLASSIFICATION_LABELS[value];
-        }
+        },
+        size: 80
       },
       {
         header: '유형',
-        accessorKey: 'expenseReportType',
+        accessorKey: 'reportType',
+        cell: ({ row }) => row.original.reportType,
         size: 150
       },
       {
         header: '시행일시',
         accessorKey: 'eventStartAt',
-        size: 100,
         cell: ({ row }) => {
-          return `${format(new Date(row.original.eventStartAt!), 'yyyy-MM-dd')} ~ ${format(new Date(row.original.eventEndAt!), 'yyyy-MM-dd')}`;
-        }
+          return `${formatYyyyMmDd(row.original.eventStartAt!)} ~ ${formatYyyyMmDd(row.original.eventEndAt!)}`;
+        },
+        size: 100
       },
       {
         header: '지원금액',
         accessorKey: 'supportAmount',
-        size: 120,
-        cell: ({ row }) => {
-          const amount = row.original.supportAmount;
-          return `${amount.toLocaleString()}원`;
-        }
+        cell: ({ row }) => `${row.original.supportAmount.toLocaleString()}원`,
+        size: 120
       },
       {
         header: '신고상태',
         accessorKey: 'status',
-        size: 100,
-        cell: ({ row }) => {
-          const value = row.original.status;
-          return EXPENSE_REPORT_STATUS_LABELS[value];
-        }
+        cell: ({ row }) => EXPENSE_REPORT_STATUS_LABELS[row.original.status],
+        size: 100
       }
     ],
     []
@@ -182,9 +150,11 @@ export default function MpAdminExpenseReportList() {
     columns,
     pageCount: totalPages,
     state: {
-      pagination
+      pagination: {
+        pageIndex: formik.values.pageIndex,
+        pageSize: formik.values.pageSize
+      }
     },
-    onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true
@@ -260,7 +230,17 @@ export default function MpAdminExpenseReportList() {
                   size="small"
                   color="success"
                   startIcon={<DocumentDownload size={16} />}
-                  onClick={handleExcelDownload}
+                  href={getDownloadExpenseReportListExcel({
+                    page: formik.values.pageIndex,
+                    size: formik.values.pageSize,
+                    ...(formik.values.reportStatus !== '' && { reportStatus: formik.values.reportStatus }),
+                    companyName: formik.values.searchCriteria === 'companyName' ? formik.values.searchKeyword : undefined,
+                    userId: formik.values.searchCriteria === 'userId' ? formik.values.searchKeyword : undefined,
+                    productName: formik.values.searchCriteria === 'productName' ? formik.values.searchKeyword : undefined,
+                    eventDateFrom: formik.values.startAt ? new DateTimeString(formik.values.startAt) : undefined,
+                    eventDateTo: formik.values.endAt ? new DateTimeString(formik.values.endAt) : undefined
+                  })}
+                  target="_blank"
                 >
                   Excel
                 </Button>
@@ -303,8 +283,8 @@ export default function MpAdminExpenseReportList() {
             <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={pagination.pageIndex + 1}
-                onChange={handlePageChange}
+                page={formik.values.pageIndex + 1}
+                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
                 color="primary"
                 variant="outlined"
                 showFirstButton

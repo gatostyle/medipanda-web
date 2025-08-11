@@ -19,6 +19,7 @@ axiosServices.interceptors.response.use(
 
       if (!isAuthPage && !isAuthRequest) {
         localStorage.removeItem('refreshToken');
+        console.log(`Deleting refresh token`);
         clearInterval((window as any).tokenRefreshInterval);
         const currentUrl = window.location.pathname + window.location.search;
         window.location.replace(`/logout?authError=true&redirectTo=${encodeURIComponent(currentUrl)}`);

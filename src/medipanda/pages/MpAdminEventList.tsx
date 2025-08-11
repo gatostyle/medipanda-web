@@ -1,5 +1,3 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useFormik } from 'formik';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -7,6 +5,7 @@ import Chip from '@mui/material/Chip';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
+import Pagination from '@mui/material/Pagination';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -20,20 +19,20 @@ import Typography from '@mui/material/Typography';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
-import Pagination from '@mui/material/Pagination';
-import { SearchFilterBar, SearchFilterItem, SearchFilterActions } from 'medipanda/components/SearchFilterBar';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import { Sequenced } from 'medipanda/utils/withSequence';
-import { Link } from 'react-router-dom';
-import { format } from 'date-fns';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
-import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
+import { useFormik } from 'formik';
 import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
-import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
 import { DateString, EventBoardSummaryResponse, getEventBoards, softDeleteEventBoard } from 'medipanda/backend';
+import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
+import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
+import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
+import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
+import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
 import { EVENT_STATUS_LABELS } from 'medipanda/ui-labels';
-import { withSequence } from 'medipanda/utils/withSequence';
+import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
+import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function MpAdminEventList() {
   const [data, setData] = useState<Sequenced<EventBoardSummaryResponse>[]>([]);
@@ -46,20 +45,21 @@ export default function MpAdminEventList() {
   const errorDialog = useMpErrorDialog();
   const deleteDialog = useMpDeleteDialog();
 
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 20
-  });
-
   const formik = useFormik({
     initialValues: {
       status: '' as '' | 'IN_PROGRESS' | 'FINISHED',
       startAt: null as Date | null,
       endAt: null as Date | null,
-      searchKeyword: ''
+      searchKeyword: '',
+      pageIndex: 0,
+      pageSize: 20
     },
-    onSubmit: (values) => {
-      setPagination({ ...pagination, pageIndex: 0 });
+    onSubmit: () => {
+      if (formik.values.pageIndex !== 0) {
+        formik.setFieldValue('pageIndex', 0);
+      } else {
+        fetchData();
+      }
     }
   });
 
@@ -99,6 +99,7 @@ export default function MpAdminEventList() {
       {
         header: 'No',
         accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
         size: 60
       },
       {
@@ -162,7 +163,7 @@ export default function MpAdminEventList() {
         header: '작성일',
         accessorKey: 'createdDate',
         cell: ({ row }) => {
-          return format(new Date(row.original.createdDate), 'yyyy-MM-dd');
+          return formatYyyyMmDd(row.original.createdDate);
         },
         size: 120
       },
@@ -179,7 +180,7 @@ export default function MpAdminEventList() {
         header: '이벤트 기간',
         accessorKey: 'eventStartAt',
         cell: ({ row }) => {
-          return `${format(new Date(row.original.eventStartAt), 'yyyy-MM-dd')} ~ ${format(new Date(row.original.eventEndAt), 'yyyy-MM-dd')}`;
+          return `${formatYyyyMmDd(row.original.eventStartAt)} ~ ${formatYyyyMmDd(row.original.eventEndAt)}`;
         },
         size: 250
       }
@@ -193,9 +194,11 @@ export default function MpAdminEventList() {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      pagination
+      pagination: {
+        pageIndex: formik.values.pageIndex,
+        pageSize: formik.values.pageSize
+      }
     },
-    onPaginationChange: setPagination,
     pageCount: totalPages,
     manualPagination: true
   });
@@ -208,8 +211,8 @@ export default function MpAdminEventList() {
         title: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
         startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
         endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
-        page: pagination.pageIndex,
-        size: pagination.pageSize
+        page: formik.values.pageIndex,
+        size: formik.values.pageSize
       });
 
       setData(withSequence(response).content);
@@ -227,11 +230,10 @@ export default function MpAdminEventList() {
 
   useEffect(() => {
     fetchData();
-  }, [pagination.pageIndex, pagination.pageSize, formik.values]);
+  }, [formik.values.pageIndex, formik.values.pageSize]);
 
   const handleReset = () => {
     formik.resetForm();
-    setPagination({ ...pagination, pageIndex: 0 });
   };
 
   const handleDelete = () => {
@@ -366,10 +368,8 @@ export default function MpAdminEventList() {
             <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={pagination.pageIndex + 1}
-                onChange={(event, value) => {
-                  setPagination({ ...pagination, pageIndex: value - 1 });
-                }}
+                page={formik.values.pageIndex + 1}
+                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
                 color="primary"
                 variant="outlined"
                 showFirstButton

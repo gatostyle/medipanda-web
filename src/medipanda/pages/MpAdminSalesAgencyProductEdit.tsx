@@ -1,47 +1,50 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import { Download as ExcelIcon } from '@mui/icons-material';
 import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   FormControl,
   FormControlLabel,
   Grid,
+  IconButton,
   Pagination,
   Radio,
   RadioGroup,
   Stack,
   Tab,
-  Tabs,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  Tabs,
   TextField,
-  Typography,
-  IconButton
+  Typography
 } from '@mui/material';
-import { Download as ExcelIcon } from '@mui/icons-material';
 import MainCard from 'components/MainCard';
-import { TiptapEditor } from 'medipanda/components/TiptapEditor';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
+import { useFormik } from 'formik';
 import {
   createSalesAgencyProductBoard,
-  updateSalesAgencyProductBoard,
-  uploadEditorFile,
-  SalesAgencyProductDetailsResponse,
-  SalesAgencyProductApplicantResponse,
-  getSalesAgencyProductDetails,
   getProductApplicants,
-  updateApplicantNotes
+  getSalesAgencyProductDetails,
+  SalesAgencyProductApplicantResponse,
+  SalesAgencyProductDetailsResponse,
+  updateApplicantNotes,
+  updateSalesAgencyProductBoard,
+  uploadEditorFile
 } from 'medipanda/backend';
-import { EXPOSURE_RANGE_LABELS } from 'medipanda/ui-labels';
+import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { TiptapEditor } from 'medipanda/components/TiptapEditor';
+import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { useMpSession } from 'medipanda/hooks/useMpSession';
+import { EXPOSURE_RANGE_LABELS } from 'medipanda/ui-labels';
+import { useSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import * as Yup from 'yup';
+import { formatYyyyMmDd, DateFix } from '../utils/dateFormat';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -59,29 +62,21 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const validationSchema = Yup.object({
-  clientName: Yup.string().required('위탁사명은 필수입니다'),
-  productName: Yup.string().required('상품명은 필수입니다'),
-  exposureRange: Yup.string().oneOf(['ALL', 'CONTRACTED', 'UNCONTRACTED']).required('노출범위는 필수입니다'),
-  thumbnail: Yup.string().required('썸네일은 필수입니다'),
-  content: Yup.string().required('내용은 필수입니다'),
-  contractDate: Yup.date().required('계약일은 필수입니다'),
-  startDate: Yup.date().required('게시 시작일은 필수입니다'),
-  endDate: Yup.date().required('게시 종료일은 필수입니다').min(Yup.ref('startDate'), '종료일은 시작일 이후여야 합니다')
-});
-
 export default function MpAdminSalesAgencyProductEdit() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const navigate = useNavigate();
   const errorDialog = useMpErrorDialog();
+  const { enqueueSnackbar } = useSnackbar();
   const { session } = useMpSession();
-  const isEditMode = !!id;
+  const [loading, setLoading] = useState(false);
   const [tabValue, setTabValue] = useState(0);
   const [productDetail, setProductDetail] = useState<SalesAgencyProductDetailsResponse | null>(null);
   const [applicants, setApplicants] = useState<SalesAgencyProductApplicantResponse[]>([]);
   const [selectedApplicants, setSelectedApplicants] = useState<number[]>([]);
   const [applicantPage, setApplicantPage] = useState(1);
   const [applicantSearch, setApplicantSearch] = useState('');
+
+  const isNew = id === undefined;
 
   const formik = useFormik({
     initialValues: {
@@ -98,10 +93,19 @@ export default function MpAdminSalesAgencyProductEdit() {
       endDate: null as Date | null,
       viewCount: 0
     },
-    validationSchema,
+    validationSchema: Yup.object({
+      clientName: Yup.string().required('위탁사명은 필수입니다'),
+      productName: Yup.string().required('상품명은 필수입니다'),
+      exposureRange: Yup.string().oneOf(['ALL', 'CONTRACTED', 'UNCONTRACTED']).required('노출범위는 필수입니다'),
+      thumbnail: Yup.string().required('썸네일은 필수입니다'),
+      content: Yup.string().required('내용은 필수입니다'),
+      contractDate: Yup.date().required('계약일은 필수입니다'),
+      startDate: Yup.date().required('게시 시작일은 필수입니다'),
+      endDate: Yup.date().required('게시 종료일은 필수입니다').min(Yup.ref('startDate'), '종료일은 시작일 이후여야 합니다')
+    }),
     onSubmit: async (values) => {
       try {
-        if (isEditMode) {
+        if (!isNew) {
           await updateSalesAgencyProductBoard(parseInt(id!), {
             boardPostUpdateRequest: {
               title: values.productName,
@@ -116,11 +120,11 @@ export default function MpAdminSalesAgencyProductEdit() {
             salesAgencyProductUpdateRequest: {
               clientName: values.clientName,
               productName: values.productName,
-              contractDate: values.contractDate ? values.contractDate.toISOString().split('T')[0] : '',
+              contractDate: formatYyyyMmDd(values.contractDate!),
               videoUrl: values.videoUrl,
               note: values.note,
-              startAt: values.startDate ? values.startDate.toISOString().split('T')[0] : '',
-              endAt: values.endDate ? values.endDate.toISOString().split('T')[0] : '',
+              startAt: formatYyyyMmDd(values.startDate!),
+              endAt: formatYyyyMmDd(values.endDate!),
               quantity: null
             }
           });
@@ -143,11 +147,11 @@ export default function MpAdminSalesAgencyProductEdit() {
             salesAgencyProductCreateRequest: {
               clientName: values.clientName,
               productName: values.productName,
-              contractDate: values.contractDate ? values.contractDate.toISOString().split('T')[0] : '',
+              contractDate: formatYyyyMmDd(values.contractDate!),
               videoUrl: values.videoUrl,
               note: values.note,
-              startAt: values.startDate ? values.startDate.toISOString().split('T')[0] : '',
-              endAt: values.endDate ? values.endDate.toISOString().split('T')[0] : '',
+              startAt: formatYyyyMmDd(values.startDate!),
+              endAt: formatYyyyMmDd(values.endDate!),
               quantity: 1
             },
             thumbnail: thumbnailFile,
@@ -162,13 +166,14 @@ export default function MpAdminSalesAgencyProductEdit() {
   });
 
   useEffect(() => {
-    if (isEditMode) {
+    if (!isNew) {
       loadProductDetail();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, isEditMode]);
+  }, [id, isNew]);
 
   const loadProductDetail = async () => {
+    setLoading(true);
     try {
       const [detail, applicantsResponse] = await Promise.all([
         getSalesAgencyProductDetails(parseInt(id!)),
@@ -190,14 +195,17 @@ export default function MpAdminSalesAgencyProductEdit() {
         thumbnail: detail.thumbnailUrl ?? '',
         content: detail.boardPostDetail.content,
         videoUrl: detail.videoUrl ?? '',
-        contractDate: detail.contractDate ? new Date(detail.contractDate.toString()) : null,
+        contractDate: DateFix(detail.contractDate),
         note: detail.note ?? '',
-        startDate: detail.startDate ? new Date(detail.startDate) : null,
-        endDate: detail.endDate ? new Date(detail.endDate) : null,
+        startDate: DateFix(detail.startDate),
+        endDate: DateFix(detail.endDate),
         viewCount: detail.boardPostDetail.viewsCount
       });
     } catch (error) {
       console.error('Failed to load product detail:', error);
+      enqueueSnackbar('영업대행상품 정보를 불러오는데 실패했습니다.', { variant: 'error' });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -233,7 +241,7 @@ export default function MpAdminSalesAgencyProductEdit() {
   };
 
   const handleApplicantNotesUpdate = async (applicantId: number, notes: string) => {
-    if (!isEditMode) return;
+    if (isNew) return;
 
     try {
       const applicant = applicants.find((a) => a.id === applicantId);
@@ -257,10 +265,18 @@ export default function MpAdminSalesAgencyProductEdit() {
 
   const paginatedApplicants = filteredApplicants.slice((applicantPage - 1) * 20, applicantPage * 20);
 
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
-        영업대행상품 {isEditMode ? '상세' : '등록'}
+        영업대행상품 {isNew ? '등록' : '상세'}
       </Typography>
 
       <form onSubmit={formik.handleSubmit}>
@@ -268,7 +284,7 @@ export default function MpAdminSalesAgencyProductEdit() {
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs value={tabValue} onChange={handleTabChange} aria-label="basic tabs">
               <Tab label="기본정보" />
-              {isEditMode && <Tab label="신청자" />}
+              {!isNew && <Tab label="신청자" />}
             </Tabs>
           </Box>
 
@@ -404,7 +420,7 @@ export default function MpAdminSalesAgencyProductEdit() {
           </TabPanel>
 
           <TabPanel value={tabValue} index={1}>
-            {isEditMode && productDetail && (
+            {!isNew && productDetail && (
               <>
                 <Box sx={{ mb: 3 }}>
                   <Grid container spacing={2}>

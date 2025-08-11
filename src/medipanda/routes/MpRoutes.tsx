@@ -1,11 +1,10 @@
-import { lazy } from 'react';
-import { RouteObject } from 'react-router-dom';
 import Loadable from 'components/Loadable';
-import DashboardLayout from 'layout/Dashboard';
 import AuthLayout from 'layout/Auth';
+import DashboardLayout from 'layout/Dashboard';
 import { MpAdminGuard } from 'medipanda/utils/route-guard/MpAdminGuard';
 import { MpMemberGuard } from 'medipanda/utils/route-guard/MpMemberGuard';
-import React from 'react';
+import React, { lazy } from 'react';
+import { RouteObject } from 'react-router-dom';
 
 const MpLogin = Loadable(lazy(() => import('medipanda/pages/MpLogin')));
 const MpLogout = Loadable(lazy(() => import('medipanda/pages/MpLogout')));
@@ -49,7 +48,7 @@ const MpAdminFaqList = Loadable(lazy(() => import('medipanda/pages/MpAdminFaqLis
 const MpAdminFaqDetail = Loadable(lazy(() => import('medipanda/pages/MpAdminFaqDetail')));
 const MpAdminFaqEdit = Loadable(lazy(() => import('medipanda/pages/MpAdminFaqEdit')));
 const MpAdminInquiryList = Loadable(lazy(() => import('medipanda/pages/MpAdminInquiryList')));
-const MpAdminInquiryDetail = Loadable(lazy(() => import('medipanda/pages/MpAdminInquiryDetail')));
+const MpAdminInquiryEdit = Loadable(lazy(() => import('medipanda/pages/MpAdminInquiryEdit')));
 const MpAdminBannerList = Loadable(lazy(() => import('medipanda/pages/MpAdminBannerList')));
 const MpAdminBannerEdit = Loadable(lazy(() => import('medipanda/pages/MpAdminBannerEdit')));
 const MpAdminAdminList = Loadable(lazy(() => import('medipanda/pages/MpAdminAdminList')));
@@ -286,7 +285,7 @@ const adminRoute: RouteObject = {
       )
     },
     {
-      path: 'settlements/business-partners/:id',
+      path: 'settlements/:settlementId/business-partners/:id',
       element: (
         <MpAdminGuard requiredPermission={'SETTLEMENT_MANAGEMENT'}>
           <MpAdminSettlementBusinessPartnerDetail />
@@ -465,7 +464,7 @@ const adminRoute: RouteObject = {
       path: 'inquiries/:id',
       element: (
         <MpAdminGuard requiredPermission={'CUSTOMER_SERVICE'}>
-          <MpAdminInquiryDetail />
+          <MpAdminInquiryEdit />
         </MpAdminGuard>
       )
     },

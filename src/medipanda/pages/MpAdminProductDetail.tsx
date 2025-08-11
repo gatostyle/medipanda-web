@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Button, Card, Checkbox, FormControlLabel, Grid, Stack, Typography, CircularProgress } from '@mui/material';
+import { Box, Button, Card, Checkbox, CircularProgress, FormControlLabel, Grid, Stack, Typography } from '@mui/material';
+import { getProductDetails, ProductDetailsResponse } from 'medipanda/backend';
 import { TiptapEditor } from 'medipanda/components/TiptapEditor';
 import { useSnackbar } from 'notistack';
-import { getProductDetails, ProductDetailsResponse } from 'medipanda/backend';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function MpAdminProductDetail() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
