@@ -2,18 +2,11 @@ import Loadable from 'components/Loadable';
 import AuthLayout from 'layout/Auth';
 import DashboardLayout from 'layout/Dashboard';
 import { MpAdminGuard } from 'medipanda/utils/route-guard/MpAdminGuard';
-import { MpMemberGuard } from 'medipanda/utils/route-guard/MpMemberGuard';
 import React, { lazy } from 'react';
-import { RouteObject } from 'react-router-dom';
+import { Navigate, RouteObject } from 'react-router-dom';
 
 const MpLogin = Loadable(lazy(() => import('medipanda/pages/MpLogin')));
 const MpLogout = Loadable(lazy(() => import('medipanda/pages/MpLogout')));
-
-const MpMemberMain = Loadable(lazy(() => import('medipanda/pages/MpMemberMain')));
-const MpMemberProductList = Loadable(lazy(() => import('medipanda/pages/MpMemberProductList')));
-const MpMemberPrescriptionList = Loadable(lazy(() => import('medipanda/pages/MpMemberPrescriptionList')));
-const MpMemberSettlementList = Loadable(lazy(() => import('medipanda/pages/MpMemberSettlementList')));
-const MpMemberCommunity = Loadable(lazy(() => import('medipanda/pages/MpMemberCommunity')));
 
 const MpAdminMain = Loadable(lazy(() => import('medipanda/pages/MpAdminMain')));
 const MpAdminMemberList = Loadable(lazy(() => import('medipanda/pages/MpAdminMemberList')));
@@ -70,7 +63,9 @@ const authRoutes: RouteObject[] = [
       {
         path: 'login',
         element: <MpLogin />
-      }
+      },
+      { path: '', element: <Navigate to="/login" /> },
+      { path: '*', element: <MaintenanceError /> }
     ]
   },
   {
@@ -78,37 +73,6 @@ const authRoutes: RouteObject[] = [
     element: <MpLogout />
   }
 ];
-
-const userRoute: RouteObject = {
-  path: '/',
-  element: (
-    <MpMemberGuard>
-      <DashboardLayout />
-    </MpMemberGuard>
-  ),
-  children: [
-    {
-      element: <MpMemberMain />,
-      index: true
-    },
-    {
-      path: '/products',
-      element: <MpMemberProductList />
-    },
-    {
-      path: '/prescriptions',
-      element: <MpMemberPrescriptionList />
-    },
-    {
-      path: '/settlements',
-      element: <MpMemberSettlementList />
-    },
-    {
-      path: '/community',
-      element: <MpMemberCommunity />
-    }
-  ]
-};
 
 const adminRoute: RouteObject = {
   path: 'admin',
@@ -549,12 +513,11 @@ const adminRoute: RouteObject = {
           <MpAdminAdminEdit />
         </MpAdminGuard>
       )
-    },
-    { path: '*', element: <MaintenanceError /> }
+    }
   ]
 };
 
 export const MpRoutes: RouteObject = {
   path: '/',
-  children: [...authRoutes, userRoute, adminRoute, { path: '*', element: <MaintenanceError /> }]
+  children: [...authRoutes, adminRoute, { path: '*', element: <MaintenanceError /> }]
 };

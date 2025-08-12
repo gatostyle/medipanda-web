@@ -1,25 +1,28 @@
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import FormControl from '@mui/material/FormControl';
-import Grid from '@mui/material/Grid';
-import MenuItem from '@mui/material/MenuItem';
-import Pagination from '@mui/material/Pagination';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
@@ -27,26 +30,27 @@ import { useFormik } from 'formik';
 import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
 import { DateTimeString, getHospitals, HospitalResponse, softDeleteHospital, uploadHospitalExcel } from 'medipanda/backend';
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
 import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
 import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function MpAdminHospitalList() {
-  const notImplementedDialog = useMpNotImplementedDialog();
-  const errorDialog = useMpErrorDialog();
-  const infoDialog = useMpInfoDialog();
-  const deleteDialog = useMpDeleteDialog();
   const [data, setData] = useState<Sequenced<HospitalResponse>[]>([]);
   const [loading, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [excelUploadDialogOpen, setExcelUploadDialogOpen] = useState(false);
   const [excelFile, setExcelFile] = useState<File | null>(null);
+  const notImplementedDialog = useMpNotImplementedDialog();
+  const errorDialog = useMpErrorDialog();
+  const infoDialog = useMpInfoDialog();
+  const deleteDialog = useMpDeleteDialog();
 
   const formik = useFormik({
     initialValues: {
@@ -66,6 +70,10 @@ export default function MpAdminHospitalList() {
       }
     }
   });
+
+  const handleReset = () => {
+    formik.resetForm();
+  };
 
   const handleExcelUpload = async () => {
     if (!excelFile) {
@@ -90,21 +98,21 @@ export default function MpAdminHospitalList() {
   };
 
   const handleDeleteSelected = () => {
-    if (selectedRows.length === 0) {
+    if (selectedItems.length === 0) {
       infoDialog.showInfo('삭제할 항목을 선택해주세요.');
       return;
     }
 
-    const count = selectedRows.length;
+    const count = selectedItems.length;
     const message = count === 1 ? '선택한 개원병원을 삭제하시겠습니까?' : `${count}건이 선택되었습니다. 삭제하시겠습니까?`;
 
     deleteDialog.open({
       message,
       onConfirm: async () => {
         try {
-          await Promise.all(selectedRows.map((row) => softDeleteHospital(row)));
+          await Promise.all(selectedItems.map((id) => softDeleteHospital(id)));
           infoDialog.showInfo('삭제가 완료되었습니다.');
-          setSelectedRows([]);
+          setSelectedItems([]);
           fetchData();
         } catch (error) {
           if (error instanceof NotImplementedError) {
@@ -118,88 +126,98 @@ export default function MpAdminHospitalList() {
     });
   };
 
-  const columns = useMemo<ColumnDef<Sequenced<HospitalResponse>>[]>(
-    () => [
-      {
-        id: 'select',
-        header: ({ table }) => (
-          <Checkbox
-            checked={table.getIsAllPageRowsSelected()}
-            indeterminate={table.getIsSomePageRowsSelected()}
-            onChange={table.getToggleAllPageRowsSelectedHandler()}
-            size="small"
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox checked={row.getIsSelected()} disabled={!row.getCanSelect()} onChange={row.getToggleSelectedHandler()} size="small" />
-        ),
-        size: 60
+  const columns: ColumnDef<Sequenced<HospitalResponse>>[] = [
+    {
+      id: 'select',
+      header: () => (
+        <Checkbox
+          checked={selectedItems.length === data.length && data.length > 0}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems(data.map((item) => item.id));
+            } else {
+              setSelectedItems([]);
+            }
+          }}
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={selectedItems.includes(row.original.id)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems((prev) => [...prev, row.original.id]);
+            } else {
+              setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
+            }
+          }}
+        />
+      ),
+      size: 60
+    },
+    {
+      header: 'No',
+      accessorKey: 'sequence',
+      cell: ({ row }) => row.original.sequence,
+      size: 60
+    },
+    {
+      header: '지역',
+      accessorKey: 'sido',
+      cell: ({ row }) => {
+        const value = row.original.sido;
+        const sidoMap: Record<string, string> = {
+          SEOUL: '서울',
+          GYEONGGI: '경기',
+          INCHEON: '인천',
+          BUSAN: '부산',
+          DAEGU: '대구',
+          DAEJEON: '대전',
+          GWANGJU: '광주',
+          ULSAN: '울산',
+          SEJONG: '세종',
+          GANGWON: '강원',
+          CHUNGBUK: '충북',
+          CHUNGNAM: '충남',
+          JEONBUK: '전북',
+          JEONNAM: '전남',
+          GYEONGBUK: '경북',
+          GYEONGNAM: '경남',
+          JEJU: '제주'
+        };
+        return sidoMap[value] ?? value;
       },
-      {
-        header: 'No',
-        accessorKey: 'sequence',
-        cell: ({ row }) => row.original.sequence,
-        size: 60
-      },
-      {
-        header: '지역',
-        accessorKey: 'sido',
-        cell: ({ row }) => {
-          const value = row.original.sido;
-          const sidoMap: Record<string, string> = {
-            SEOUL: '서울',
-            GYEONGGI: '경기',
-            INCHEON: '인천',
-            BUSAN: '부산',
-            DAEGU: '대구',
-            DAEJEON: '대전',
-            GWANGJU: '광주',
-            ULSAN: '울산',
-            SEJONG: '세종',
-            GANGWON: '강원',
-            CHUNGBUK: '충북',
-            CHUNGNAM: '충남',
-            JEONBUK: '전북',
-            JEONNAM: '전남',
-            GYEONGBUK: '경북',
-            GYEONGNAM: '경남',
-            JEJU: '제주'
-          };
-          return sidoMap[value] ?? value;
-        },
-        size: 80
-      },
-      {
-        header: '병의원명',
-        accessorKey: 'name',
-        cell: ({ row }) => row.original.name,
-        size: 200
-      },
-      {
-        header: '주소',
-        accessorKey: 'address',
-        cell: ({ row }) => row.original.address,
-        size: 400
-      },
-      {
-        header: '허가예정일',
-        accessorKey: 'scheduledOpenDate',
-        cell: ({ row }) => {
-          const value = row.original.scheduledOpenDate;
+      size: 80
+    },
+    {
+      header: '병의원명',
+      accessorKey: 'name',
+      cell: ({ row }) => row.original.name,
+      size: 200
+    },
+    {
+      header: '주소',
+      accessorKey: 'address',
+      cell: ({ row }) => row.original.address,
+      size: 400
+    },
+    {
+      header: '허가예정일',
+      accessorKey: 'scheduledOpenDate',
+      cell: ({ row }) => {
+        const value = row.original.scheduledOpenDate;
 
-          return value !== null ? formatYyyyMmDd(value) : '-';
-        },
-        size: 120
+        return value !== null ? formatYyyyMmDd(value) : '-';
       },
-      {
-        header: '분류',
-        accessorKey: 'source',
-        cell: ({ row }) => row.original.source,
-        size: 120
-      }
-    ],
-    []
-  );
+      size: 120
+    },
+    {
+      header: '분류',
+      accessorKey: 'source',
+      cell: ({ row }) => row.original.source,
+      size: 120
+    }
+  ];
 
   const table = useReactTable({
     data,
@@ -210,21 +228,10 @@ export default function MpAdminHospitalList() {
       pagination: {
         pageIndex: formik.values.pageIndex,
         pageSize: formik.values.pageSize
-      },
-      rowSelection: selectedRows.reduce((acc, id) => ({ ...acc, [id]: true }), {})
-    },
-    onRowSelectionChange: (updater) => {
-      const newSelection =
-        typeof updater === 'function' ? updater(selectedRows.reduce((acc, id) => ({ ...acc, [id]: true }), {})) : updater;
-      setSelectedRows(
-        Object.keys(newSelection)
-          .filter((key) => newSelection[key])
-          .map(Number)
-      );
+      }
     },
     pageCount: totalPages,
-    manualPagination: true,
-    enableRowSelection: true
+    manualPagination: true
   });
 
   const fetchData = async () => {
@@ -268,16 +275,11 @@ export default function MpAdminHospitalList() {
         <MainCard content={false}>
           <Box sx={{ p: 3 }}>
             <form onSubmit={formik.handleSubmit}>
-              <Grid container spacing={2} alignItems="center">
-                <Grid item xs={12} sm={1.5}>
+              <SearchFilterBar>
+                <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <Select
-                      name="sido"
-                      value={formik.values.sido}
-                      onChange={(e) => formik.setFieldValue('sido', e.target.value)}
-                      displayEmpty
-                    >
-                      <MenuItem value="">시도</MenuItem>
+                    <InputLabel>시/도</InputLabel>
+                    <Select name="sido" label="시/도" value={formik.values.sido} onChange={formik.handleChange}>
                       <MenuItem value="SEOUL">서울</MenuItem>
                       <MenuItem value="GYEONGGI">경기</MenuItem>
                       <MenuItem value="INCHEON">인천</MenuItem>
@@ -297,16 +299,11 @@ export default function MpAdminHospitalList() {
                       <MenuItem value="JEJU">제주</MenuItem>
                     </Select>
                   </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={2}>
+                </SearchFilterItem>
+                <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <Select
-                      name="sigungu"
-                      value={formik.values.sigungu}
-                      onChange={(e) => formik.setFieldValue('sigungu', e.target.value)}
-                      displayEmpty
-                    >
-                      <MenuItem value="">시군구</MenuItem>
+                    <InputLabel>시/군/구</InputLabel>
+                    <Select name="sigungu" label="시/군/구" value={formik.values.sigungu} onChange={formik.handleChange}>
                       {formik.values.sido === 'SEOUL' && (
                         <>
                           <MenuItem value="gangnam">강남구</MenuItem>
@@ -373,30 +370,32 @@ export default function MpAdminHospitalList() {
                       )}
                     </Select>
                   </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={2}>
-                  <MpFormikDatePicker name="startAt" placeholder="시작일" formik={formik} />
-                </Grid>
-                <Grid item xs={12} sm={2}>
-                  <MpFormikDatePicker name="endAt" placeholder="종료일" formik={formik} />
-                </Grid>
-                <Grid item xs={12} sm={3}>
+                </SearchFilterItem>
+                <SearchFilterItem minWidth={140}>
+                  <MpFormikDatePicker name="startAt" label="시작일" formik={formik} />
+                </SearchFilterItem>
+                <SearchFilterItem minWidth={140}>
+                  <MpFormikDatePicker name="endAt" label="종료일" formik={formik} />
+                </SearchFilterItem>
+                <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
                     name="searchKeyword"
                     size="small"
                     placeholder="검색어를 입력하세요"
-                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && formik.handleSubmit()}
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
                   />
-                </Grid>
-                <Grid item xs={12} sm={1}>
-                  <Button variant="contained" color="primary" fullWidth size="small" type="submit">
+                </SearchFilterItem>
+                <SearchFilterActions>
+                  <Button variant="contained" size="small" type="submit">
                     검색
                   </Button>
-                </Grid>
-              </Grid>
+                  <Button variant="outlined" size="small" onClick={handleReset}>
+                    초기화
+                  </Button>
+                </SearchFilterActions>
+              </SearchFilterBar>
             </form>
           </Box>
         </MainCard>
@@ -406,26 +405,14 @@ export default function MpAdminHospitalList() {
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="subtitle1">검색결과: {totalElements} 건</Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              </Stack>
               <Stack direction="row" spacing={1}>
-                <Button variant="contained" color="success" onClick={() => setExcelUploadDialogOpen(true)}>
+                <Button variant="contained" color="success" size="small" onClick={() => setExcelUploadDialogOpen(true)}>
                   엑셀업로드
                 </Button>
-                <Button
-                  variant="contained"
-                  color="inherit"
-                  onClick={handleDeleteSelected}
-                  disabled={selectedRows.length === 0}
-                  sx={{
-                    bgcolor: selectedRows.length === 0 ? 'grey.300' : 'grey.500',
-                    '&:hover': {
-                      bgcolor: selectedRows.length === 0 ? 'grey.300' : 'grey.600'
-                    },
-                    '&.Mui-disabled': {
-                      color: 'grey.600'
-                    }
-                  }}
-                >
+                <Button variant="contained" color="error" size="small" onClick={handleDeleteSelected} disabled={selectedItems.length === 0}>
                   삭제
                 </Button>
               </Stack>

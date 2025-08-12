@@ -1,13 +1,4 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import Checkbox from '@mui/material/Checkbox';
-import CircularProgress from '@mui/material/CircularProgress';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import { Box, Button, Card, Checkbox, CircularProgress, FormControlLabel, Grid, Stack, TextField, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
 import { createProductExtraInfo, getProductDetails, updateProductExtraInfo } from 'medipanda/backend';

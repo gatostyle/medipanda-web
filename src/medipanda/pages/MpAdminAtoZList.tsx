@@ -1,22 +1,24 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import Chip from '@mui/material/Chip';
-import FormControl from '@mui/material/FormControl';
-import Grid from '@mui/material/Grid';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Pagination from '@mui/material/Pagination';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  Checkbox,
+  Chip,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
@@ -26,9 +28,9 @@ import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { formatYyyyMmDd } from '../utils/dateFormat';
+import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
 
 export default function MpAdminAtoZList() {
   const [data, setData] = useState<Sequenced<BoardPostResponse>[]>([]);
@@ -41,6 +43,7 @@ export default function MpAdminAtoZList() {
   const formik = useFormik({
     initialValues: {
       visible: undefined as boolean | undefined,
+      searchType: 'title' as 'title' | 'userId' | 'name' | 'nickname',
       searchKeyword: '',
       startAt: null as Date | null,
       endAt: null as Date | null,
@@ -56,75 +59,72 @@ export default function MpAdminAtoZList() {
     }
   });
 
-  const columns = useMemo<ColumnDef<Sequenced<BoardPostResponse>>[]>(
-    () => [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedItems.length === data.length && data.length > 0}
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelectedItems(data.map((item) => item.id));
-              } else {
-                setSelectedItems([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedItems.includes(row.original.id)}
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelectedItems((prev) => [...prev, row.original.id]);
-              } else {
-                setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50
+  const columns: ColumnDef<Sequenced<BoardPostResponse>>[] = [
+    {
+      id: 'select',
+      header: () => (
+        <Checkbox
+          checked={selectedItems.length === data.length && data.length > 0}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems(data.map((item) => item.id));
+            } else {
+              setSelectedItems([]);
+            }
+          }}
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={selectedItems.includes(row.original.id)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems((prev) => [...prev, row.original.id]);
+            } else {
+              setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
+            }
+          }}
+        />
+      ),
+      size: 50
+    },
+    {
+      header: 'No',
+      accessorKey: 'sequence',
+      cell: ({ row }) => row.original.sequence,
+      size: 80
+    },
+    {
+      header: '제목',
+      accessorKey: 'title',
+      cell: ({ row }) => (
+        <Link to={`/admin/atoz/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          {row.original.title}
+        </Link>
+      )
+    },
+    {
+      header: '상태',
+      accessorKey: 'isExposed',
+      cell: ({ row }) => {
+        const isExposed = row.original.isExposed;
+        return <Chip label={isExposed ? '노출' : '미노출'} color={isExposed ? 'success' : 'default'} variant="light" size="small" />;
       },
-      {
-        header: 'No',
-        accessorKey: 'sequence',
-        cell: ({ row }) => row.original.sequence,
-        size: 80
-      },
-      {
-        header: '제목',
-        accessorKey: 'title',
-        cell: ({ row }) => (
-          <Link to={`/admin/atoz/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-            {row.original.title}
-          </Link>
-        )
-      },
-      {
-        header: '상태',
-        accessorKey: 'isExposed',
-        cell: ({ row }) => {
-          const isExposed = row.original.isExposed;
-          return <Chip label={isExposed ? '노출' : '미노출'} color={isExposed ? 'success' : 'default'} variant="light" size="small" />;
-        },
-        size: 100
-      },
-      {
-        header: '조회 수',
-        accessorKey: 'viewsCount',
-        cell: ({ row }) => row.original.viewsCount.toLocaleString(),
-        size: 100
-      },
-      {
-        header: '작성일',
-        accessorKey: 'createdAt',
-        cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
-        size: 120
-      }
-    ],
-    [data, selectedItems]
-  );
+      size: 100
+    },
+    {
+      header: '조회 수',
+      accessorKey: 'viewsCount',
+      cell: ({ row }) => row.original.viewsCount.toLocaleString(),
+      size: 100
+    },
+    {
+      header: '작성일',
+      accessorKey: 'createdAt',
+      cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
+      size: 120
+    }
+  ];
 
   const table = useReactTable({
     data,
@@ -146,15 +146,15 @@ export default function MpAdminAtoZList() {
     try {
       const response = await getBoards({
         boardType: 'CSO_A_TO_Z',
-        userId: undefined,
-        name: undefined,
-        nickname: undefined,
+        userId: formik.values.searchType === 'userId' ? formik.values.searchKeyword : undefined,
+        name: formik.values.searchType === 'name' ? formik.values.searchKeyword : undefined,
+        nickname: formik.values.searchType === 'nickname' ? formik.values.searchKeyword : undefined,
         startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
         endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
         page: formik.values.pageIndex,
         size: formik.values.pageSize,
         filterBlind: undefined,
-        boardTitle: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        boardTitle: formik.values.searchType === 'title' ? formik.values.searchKeyword : undefined,
         filterDeleted: undefined,
         isExposed: formik.values.visible
       });
@@ -164,6 +164,9 @@ export default function MpAdminAtoZList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch CSO A to Z list:', error);
+      setData([]);
+      setTotalElements(0);
+      setTotalPages(0);
     } finally {
       setLoading(false);
     }
@@ -240,22 +243,32 @@ export default function MpAdminAtoZList() {
                 <SearchFilterItem minWidth={140}>
                   <MpFormikDatePicker name="endAt" label="종료일" formik={formik} />
                 </SearchFilterItem>
+                <SearchFilterItem minWidth={140}>
+                  <FormControl fullWidth size="small">
+                    <InputLabel>검색유형</InputLabel>
+                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
+                      <MenuItem value={'title'}>제목</MenuItem>
+                      <MenuItem value={'userId'}>아이디</MenuItem>
+                      <MenuItem value={'name'}>이름</MenuItem>
+                      <MenuItem value={'nickname'}>닉네임</MenuItem>
+                    </Select>
+                  </FormControl>
+                </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
                     name="searchKeyword"
                     size="small"
                     placeholder="검색어를 입력하세요"
-                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && formik.handleSubmit()}
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
                   />
                 </SearchFilterItem>
                 <SearchFilterActions>
-                  <Button variant="contained" color="primary" size="small" type="submit">
+                  <Button variant="contained" size="small" type="submit">
                     검색
                   </Button>
-                  <Button variant="outlined" color="inherit" size="small" onClick={handleReset}>
+                  <Button variant="outlined" size="small" onClick={handleReset}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -269,13 +282,15 @@ export default function MpAdminAtoZList() {
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              </Stack>
               <Stack direction="row" spacing={1}>
-                <Button variant="contained" color="error" size="small" disabled={selectedItems.length === 0} onClick={handleDelete}>
-                  삭제
-                </Button>
                 <Button variant="contained" color="success" size="small" component={Link} to="/admin/atoz/new">
                   등록
+                </Button>
+                <Button variant="contained" color="error" size="small" disabled={selectedItems.length === 0} onClick={handleDelete}>
+                  삭제
                 </Button>
               </Stack>
             </Stack>

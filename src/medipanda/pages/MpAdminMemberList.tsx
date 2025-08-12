@@ -1,19 +1,22 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import Grid from '@mui/material/Grid';
-import MenuItem from '@mui/material/MenuItem';
-import Pagination from '@mui/material/Pagination';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
@@ -25,7 +28,7 @@ import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipand
 import { CONSENT_LABELS, MEMBER_ACCOUNT_STATUS_LABELS } from 'medipanda/ui-labels';
 import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function MpAdminMemberList() {
@@ -53,93 +56,90 @@ export default function MpAdminMemberList() {
     }
   });
 
-  const columns = useMemo<ColumnDef<Sequenced<MemberResponse>>[]>(
-    () => [
-      {
-        header: 'No',
-        accessorKey: 'sequence',
-        cell: ({ row }) => row.original.sequence,
-        size: 60
-      },
-      {
-        header: '회원번호',
-        accessorKey: 'id',
-        cell: ({ row }) => row.original.id,
-        size: 80
-      },
-      {
-        header: '아이디',
-        accessorKey: 'userId',
-        cell: ({ row }) => row.original.userId,
-        size: 120
-      },
-      {
-        header: '회원명',
-        accessorKey: 'name',
-        cell: ({ row }) => (
-          <Link to={`/admin/members/${row.original.userId}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-            {row.original.name}
-          </Link>
-        ),
-        size: 100
-      },
-      {
-        header: '회사명',
-        accessorKey: 'companyName',
-        cell: ({ row }) => row.original.companyName,
-        size: 150
-      },
-      {
-        header: '휴대폰번호',
-        accessorKey: 'phoneNumber',
-        cell: ({ row }) => row.original.phoneNumber,
-        size: 130
-      },
-      {
-        header: '이메일',
-        accessorKey: 'email',
-        cell: ({ row }) => row.original.email,
-        size: 200
-      },
-      {
-        header: '파트너사 계약여부',
-        accessorKey: 'partnerContractStatus',
-        cell: ({ row }) => (row.original.partnerContractStatus !== 'NONE' ? '계약' : '미계약'),
-        size: 130
-      },
-      {
-        header: 'CSO신고증 유무',
-        accessorKey: 'hasCsoCert',
-        cell: ({ row }) => (row.original.hasCsoCert ? 'Y' : 'N'),
-        size: 120
-      },
-      {
-        header: '계정상태',
-        accessorKey: 'accountStatus',
-        cell: ({ row }) => MEMBER_ACCOUNT_STATUS_LABELS[row.original.accountStatus],
-        size: 90
-      },
-      {
-        header: '마케팅수신동의',
-        accessorKey: 'marketingConsent',
-        cell: ({ row }) => CONSENT_LABELS[String(row.original.marketingConsent)],
-        size: 120
-      },
-      {
-        header: '가입일',
-        accessorKey: 'registrationDate',
-        cell: ({ row }) => formatYyyyMmDd(row.original.registrationDate),
-        size: 150
-      },
-      {
-        header: '최종접속일',
-        accessorKey: 'lastLoginDate',
-        cell: ({ row }) => formatYyyyMmDd(row.original.lastLoginDate),
-        size: 110
-      }
-    ],
-    []
-  );
+  const columns: ColumnDef<Sequenced<MemberResponse>>[] = [
+    {
+      header: 'No',
+      accessorKey: 'sequence',
+      cell: ({ row }) => row.original.sequence,
+      size: 60
+    },
+    {
+      header: '회원번호',
+      accessorKey: 'id',
+      cell: ({ row }) => row.original.id,
+      size: 80
+    },
+    {
+      header: '아이디',
+      accessorKey: 'userId',
+      cell: ({ row }) => row.original.userId,
+      size: 120
+    },
+    {
+      header: '회원명',
+      accessorKey: 'name',
+      cell: ({ row }) => (
+        <Link to={`/admin/members/${row.original.userId}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          {row.original.name}
+        </Link>
+      ),
+      size: 100
+    },
+    {
+      header: '회사명',
+      accessorKey: 'companyName',
+      cell: ({ row }) => row.original.companyName,
+      size: 150
+    },
+    {
+      header: '휴대폰번호',
+      accessorKey: 'phoneNumber',
+      cell: ({ row }) => row.original.phoneNumber,
+      size: 130
+    },
+    {
+      header: '이메일',
+      accessorKey: 'email',
+      cell: ({ row }) => row.original.email,
+      size: 200
+    },
+    {
+      header: '파트너사 계약여부',
+      accessorKey: 'partnerContractStatus',
+      cell: ({ row }) => (row.original.partnerContractStatus !== 'NONE' ? '계약' : '미계약'),
+      size: 130
+    },
+    {
+      header: 'CSO신고증 유무',
+      accessorKey: 'hasCsoCert',
+      cell: ({ row }) => (row.original.hasCsoCert ? 'Y' : 'N'),
+      size: 120
+    },
+    {
+      header: '계정상태',
+      accessorKey: 'accountStatus',
+      cell: ({ row }) => MEMBER_ACCOUNT_STATUS_LABELS[row.original.accountStatus],
+      size: 90
+    },
+    {
+      header: '마케팅수신동의',
+      accessorKey: 'marketingConsent',
+      cell: ({ row }) => CONSENT_LABELS[String(row.original.marketingConsent)],
+      size: 120
+    },
+    {
+      header: '가입일',
+      accessorKey: 'registrationDate',
+      cell: ({ row }) => formatYyyyMmDd(row.original.registrationDate),
+      size: 150
+    },
+    {
+      header: '최종접속일',
+      accessorKey: 'lastLoginDate',
+      cell: ({ row }) => formatYyyyMmDd(row.original.lastLoginDate),
+      size: 110
+    }
+  ];
 
   const table = useReactTable({
     data,
@@ -211,13 +211,8 @@ export default function MpAdminMemberList() {
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <Select
-                      name="contractStatus"
-                      value={formik.values.contractStatus}
-                      onChange={(e) => formik.setFieldValue('contractStatus', e.target.value)}
-                      displayEmpty
-                    >
-                      <MenuItem value="">전체</MenuItem>
+                    <InputLabel>계약상태</InputLabel>
+                    <Select name="contractStatus" label="계약상태" value={formik.values.contractStatus} onChange={formik.handleChange}>
                       <MenuItem value={'CONTRACT'}>계약</MenuItem>
                       <MenuItem value={'NON_CONTRACT'}>미계약</MenuItem>
                     </Select>
@@ -225,18 +220,14 @@ export default function MpAdminMemberList() {
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <Select
-                      name="searchField"
-                      value={formik.values.searchField}
-                      onChange={(e) => formik.setFieldValue('searchField', e.target.value)}
-                      displayEmpty
-                    >
-                      <MenuItem value="name">회원명</MenuItem>
-                      <MenuItem value="id">회원번호</MenuItem>
-                      <MenuItem value="userId">아이디</MenuItem>
-                      <MenuItem value="phoneNumber">휴대폰번호</MenuItem>
-                      <MenuItem value="email">이메일</MenuItem>
-                      <MenuItem value="companyName">회사명</MenuItem>
+                    <InputLabel>검색유형</InputLabel>
+                    <Select name="searchField" label="검색유형" value={formik.values.searchField} onChange={formik.handleChange}>
+                      <MenuItem value={'name'}>회원명</MenuItem>
+                      <MenuItem value={'id'}>회원번호</MenuItem>
+                      <MenuItem value={'userId'}>아이디</MenuItem>
+                      <MenuItem value={'phoneNumber'}>휴대폰번호</MenuItem>
+                      <MenuItem value={'email'}>이메일</MenuItem>
+                      <MenuItem value={'companyName'}>회사명</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
@@ -250,8 +241,7 @@ export default function MpAdminMemberList() {
                   <TextField
                     name="searchKeyword"
                     size="small"
-                    placeholder="검색어를 입력해주세요"
-                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && formik.handleSubmit()}
+                    placeholder="검색어를 입력하세요"
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
@@ -275,7 +265,9 @@ export default function MpAdminMemberList() {
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              </Stack>
               <Stack direction="row" spacing={1}>
                 <Button
                   variant="contained"
@@ -329,7 +321,7 @@ export default function MpAdminMemberList() {
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body1" color="text.secondary">
+                          <Typography variant="body2" color="text.secondary">
                             검색 결과가 없습니다.
                           </Typography>
                         </TableCell>

@@ -1,25 +1,28 @@
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import FormControl from '@mui/material/FormControl';
-import Grid from '@mui/material/Grid';
-import MenuItem from '@mui/material/MenuItem';
-import Pagination from '@mui/material/Pagination';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
@@ -35,25 +38,26 @@ import {
 } from 'medipanda/backend';
 import MpDatePicker from 'medipanda/components/MpDatePicker';
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
 import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
 import { formatYyyyMm, formatYyyyMmDd } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export default function MpAdminPrescriptionReceptionList() {
   const [data, setData] = useState<Sequenced<PrescriptionResponse>[]>([]);
   const [loading, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const notImplementedDialog = useMpNotImplementedDialog();
-  const errorDialog = useMpErrorDialog();
-  const infoDialog = useMpInfoDialog();
   const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
   const [prescriptionMonth, setPrescriptionMonth] = useState<Date | null>(null);
   const [settlementMonth, setSettlementMonth] = useState<Date | null>(null);
   const [ediZipFile, setEdiZipFile] = useState<File | null>(null);
+  const notImplementedDialog = useMpNotImplementedDialog();
+  const errorDialog = useMpErrorDialog();
+  const infoDialog = useMpInfoDialog();
 
   const formik = useFormik({
     initialValues: {
@@ -92,102 +96,99 @@ export default function MpAdminPrescriptionReceptionList() {
     [notImplementedDialog, errorDialog, infoDialog]
   );
 
-  const columns = useMemo<ColumnDef<Sequenced<PrescriptionResponse>>[]>(
-    () => [
-      {
-        header: 'No',
-        accessorKey: 'sequence',
-        cell: ({ row }) => row.original.sequence,
-        size: 60
+  const columns: ColumnDef<Sequenced<PrescriptionResponse>>[] = [
+    {
+      header: 'No',
+      accessorKey: 'sequence',
+      cell: ({ row }) => row.original.sequence,
+      size: 60
+    },
+    {
+      header: '딜러번호',
+      accessorKey: 'dealerId',
+      cell: ({ row }) => row.original.dealerId,
+      size: 100
+    },
+    {
+      header: '아이디',
+      accessorKey: 'userId',
+      cell: ({ row }) => row.original.userId,
+      size: 120
+    },
+    {
+      header: '회사명',
+      accessorKey: 'companyName',
+      cell: ({ row }) => row.original.companyName,
+      size: 150
+    },
+    {
+      header: '딜러명',
+      accessorKey: 'dealerName',
+      cell: ({ row }) => row.original.dealerName,
+      size: 100
+    },
+    {
+      header: '처방월',
+      accessorKey: 'prescriptionMonth',
+      cell: ({ row }) => formatYyyyMm(row.original.prescriptionMonth),
+      size: 100
+    },
+    {
+      header: '정산월',
+      accessorKey: 'settlementMonth',
+      cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
+      size: 100
+    },
+    {
+      header: '접수신청일',
+      accessorKey: 'submittedAt',
+      cell: ({ row }) => formatYyyyMmDd(row.original.submittedAt),
+      size: 120
+    },
+    {
+      header: '접수파일',
+      cell: ({ row }) => (
+        <Button
+          variant="contained"
+          color="success"
+          size="small"
+          href={`/v1/prescriptions/partners/${row.original.id}/edi-files/download`}
+          target="_blank"
+        >
+          다운로드
+        </Button>
+      ),
+      size: 120
+    },
+    {
+      header: '접수상태',
+      accessorKey: 'status',
+      cell: ({ row }) => {
+        const status = row.original.status;
+
+        const labels = {
+          PENDING: '접수대기',
+          IN_PROGRESS: '처리중',
+          COMPLETED: '입력완료'
+        };
+
+        return <Chip label={labels[status]} size="small" sx={{ backgroundColor: '#4caf50', color: 'white' }} />;
       },
-      {
-        header: '딜러번호',
-        accessorKey: 'dealerId',
-        cell: ({ row }) => row.original.dealerId,
-        size: 100
-      },
-      {
-        header: '아이디',
-        accessorKey: 'userId',
-        cell: ({ row }) => row.original.userId,
-        size: 120
-      },
-      {
-        header: '회사명',
-        accessorKey: 'companyName',
-        cell: ({ row }) => row.original.companyName,
-        size: 150
-      },
-      {
-        header: '딜러명',
-        accessorKey: 'dealerName',
-        cell: ({ row }) => row.original.dealerName,
-        size: 100
-      },
-      {
-        header: '처방월',
-        accessorKey: 'prescriptionMonth',
-        cell: ({ row }) => formatYyyyMm(row.original.prescriptionMonth),
-        size: 100
-      },
-      {
-        header: '정산월',
-        accessorKey: 'settlementMonth',
-        cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
-        size: 100
-      },
-      {
-        header: '접수신청일',
-        accessorKey: 'submittedAt',
-        cell: ({ row }) => formatYyyyMmDd(row.original.submittedAt),
-        size: 120
-      },
-      {
-        header: '접수파일',
-        cell: ({ row }) => (
-          <Button
-            variant="contained"
-            color="success"
-            size="small"
-            href={`/v1/prescriptions/partners/${row.original.id}/edi-files/download`}
-            target="_blank"
-          >
-            다운로드
+      size: 100
+    },
+    {
+      header: '관리자확인',
+      cell: ({ row }) =>
+        row.original.status === 'PENDING' ? (
+          <Button variant="contained" color="success" size="small" onClick={() => handleConfirm(row.original.id)}>
+            접수확인
           </Button>
+        ) : (
+          <Typography variant="body2">{row.original.checkedAt ? formatYyyyMmDd(row.original.checkedAt) : '-'}</Typography>
         ),
-        size: 120
-      },
-      {
-        header: '접수상태',
-        accessorKey: 'status',
-        cell: ({ row }) => {
-          const status = row.original.status;
-
-          const labels = {
-            PENDING: '접수대기',
-            IN_PROGRESS: '처리중',
-            COMPLETED: '입력완료'
-          };
-
-          return <Chip label={labels[status]} size="small" sx={{ backgroundColor: '#4caf50', color: 'white' }} />;
-        },
-        size: 100
-      },
-      {
-        header: '관리자확인',
-        cell: ({ row }) =>
-          row.original.status === 'PENDING' ? (
-            <Button variant="contained" color="success" size="small" onClick={() => handleConfirm(row.original.id)}>
-              접수확인
-            </Button>
-          ) : (
-            <Typography variant="body2">{row.original.checkedAt ? formatYyyyMmDd(row.original.checkedAt) : '-'}</Typography>
-          ),
-        size: 120
-      }
-    ],
-    [handleConfirm]
-  );
+      size: 120
+    }
+  ];
 
   const table = useReactTable({
     data,
@@ -203,6 +204,10 @@ export default function MpAdminPrescriptionReceptionList() {
     pageCount: totalPages,
     manualPagination: true
   });
+
+  const handleReset = () => {
+    formik.resetForm();
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -269,60 +274,53 @@ export default function MpAdminPrescriptionReceptionList() {
         <MainCard content={false}>
           <Box sx={{ p: 3 }}>
             <form onSubmit={formik.handleSubmit}>
-              <Grid container spacing={2} alignItems="center">
-                <Grid item xs={12} sm={2}>
+              <SearchFilterBar>
+                <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <Select
-                      name="status"
-                      value={formik.values.status}
-                      onChange={(e) => formik.setFieldValue('status', e.target.value)}
-                      displayEmpty
-                    >
-                      <MenuItem value="">접수상태</MenuItem>
+                    <InputLabel>접수상태</InputLabel>
+                    <Select name="status" label="접수상태" value={formik.values.status} onChange={formik.handleChange}>
                       <MenuItem value={'PENDING'}>접수대기</MenuItem>
                       <MenuItem value={'IN_PROGRESS'}>처리중</MenuItem>
                       <MenuItem value={'COMPLETED'}>입력완료</MenuItem>
                     </Select>
                   </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={2}>
+                </SearchFilterItem>
+                <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <Select
-                      name="searchType"
-                      value={formik.values.searchType}
-                      onChange={(e) => formik.setFieldValue('searchType', e.target.value)}
-                      displayEmpty
-                    >
-                      <MenuItem value="companyName">회사명</MenuItem>
-                      <MenuItem value="id">아이디</MenuItem>
-                      <MenuItem value="dealerName">딜러명</MenuItem>
-                      <MenuItem value="dealerId">딜러번호</MenuItem>
+                    <InputLabel>검색유형</InputLabel>
+                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
+                      <MenuItem value={'companyName'}>회사명</MenuItem>
+                      <MenuItem value={'id'}>아이디</MenuItem>
+                      <MenuItem value={'dealerName'}>딜러명</MenuItem>
+                      <MenuItem value={'dealerId'}>딜러번호</MenuItem>
                     </Select>
                   </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={2}>
+                </SearchFilterItem>
+                <SearchFilterItem minWidth={140}>
                   <MpFormikDatePicker name="startAt" label="시작일" formik={formik} />
-                </Grid>
-                <Grid item xs={12} sm={2}>
+                </SearchFilterItem>
+                <SearchFilterItem minWidth={140}>
                   <MpFormikDatePicker name="endAt" label="종료일" formik={formik} />
-                </Grid>
-                <Grid item xs={12} sm={3}>
+                </SearchFilterItem>
+                <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
                     name="searchKeyword"
                     size="small"
-                    placeholder="검색어를 입력해주세요"
-                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && formik.handleSubmit()}
+                    placeholder="검색어를 입력하세요"
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
                   />
-                </Grid>
-                <Grid item xs={12} sm={1}>
-                  <Button variant="contained" size="small" type="submit" fullWidth>
+                </SearchFilterItem>
+                <SearchFilterActions>
+                  <Button variant="contained" size="small" type="submit">
                     검색
                   </Button>
-                </Grid>
-              </Grid>
+                  <Button variant="outlined" size="small" onClick={handleReset}>
+                    초기화
+                  </Button>
+                </SearchFilterActions>
+              </SearchFilterBar>
             </form>
           </Box>
         </MainCard>
@@ -332,7 +330,9 @@ export default function MpAdminPrescriptionReceptionList() {
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              </Stack>
               <Stack direction="row" spacing={1}>
                 <Button variant="contained" color="success" size="small" onClick={() => setRegisterDialogOpen(true)}>
                   EDI 등록

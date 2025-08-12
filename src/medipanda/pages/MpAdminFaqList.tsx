@@ -1,32 +1,36 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import Chip from '@mui/material/Chip';
-import FormControl from '@mui/material/FormControl';
-import Grid from '@mui/material/Grid';
-import MenuItem from '@mui/material/MenuItem';
-import Pagination from '@mui/material/Pagination';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  Checkbox,
+  Chip,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { BoardPostResponse, DateString, deleteBoardPost, getBoards } from 'medipanda/backend';
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { formatYyyyMmDd } from '../utils/dateFormat';
+import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
 
 export default function MpAdminFaqList() {
   const [data, setData] = useState<Sequenced<BoardPostResponse>[]>([]);
@@ -38,7 +42,7 @@ export default function MpAdminFaqList() {
 
   const formik = useFormik({
     initialValues: {
-      visible: 'all' as 'all' | 'visible' | 'hidden',
+      isExposed: '' as boolean | '',
       searchKeyword: '',
       startAt: null as Date | null,
       endAt: null as Date | null,
@@ -54,77 +58,74 @@ export default function MpAdminFaqList() {
     }
   });
 
-  const columns = useMemo<ColumnDef<Sequenced<BoardPostResponse>>[]>(
-    () => [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedItems.length === data.length && data.length > 0}
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelectedItems(data.map((item) => item.id));
-              } else {
-                setSelectedItems([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedItems.includes(row.original.id)}
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelectedItems((prev) => [...prev, row.original.id]);
-              } else {
-                setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50
+  const columns: ColumnDef<Sequenced<BoardPostResponse>>[] = [
+    {
+      id: 'select',
+      header: () => (
+        <Checkbox
+          checked={selectedItems.length === data.length && data.length > 0}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems(data.map((item) => item.id));
+            } else {
+              setSelectedItems([]);
+            }
+          }}
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={selectedItems.includes(row.original.id)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems((prev) => [...prev, row.original.id]);
+            } else {
+              setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
+            }
+          }}
+        />
+      ),
+      size: 50
+    },
+    {
+      header: 'No',
+      accessorKey: 'sequence',
+      cell: ({ row }) => row.original.sequence,
+      size: 80
+    },
+    {
+      header: '제목',
+      accessorKey: 'title',
+      cell: ({ row }) => (
+        <Link to={`/admin/faqs/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          {row.original.title}
+        </Link>
+      )
+    },
+    {
+      header: '상태',
+      accessorKey: 'isExposed',
+      cell: ({ row }) => {
+        const isExposed = row.original.isExposed;
+        return <Chip label={isExposed ? '노출' : '미노출'} color={isExposed ? 'success' : 'default'} variant="light" size="small" />;
       },
-      {
-        header: 'No',
-        accessorKey: 'sequence',
-        cell: ({ row }) => row.original.sequence,
-        size: 80
+      size: 100
+    },
+    {
+      header: '조회수',
+      accessorKey: 'viewsCount',
+      cell: ({ row }) => row.original.viewsCount.toLocaleString(),
+      size: 100
+    },
+    {
+      header: '작성일',
+      accessorKey: 'createdAt',
+      cell: ({ row }) => {
+        return formatYyyyMmDd(row.original.createdAt);
       },
-      {
-        header: '제목',
-        accessorKey: 'title',
-        cell: ({ row }) => (
-          <Link to={`/admin/faqs/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-            {row.original.title}
-          </Link>
-        )
-      },
-      {
-        header: '상태',
-        accessorKey: 'isExposed',
-        cell: ({ row }) => {
-          const isExposed = row.original.isExposed;
-          return <Chip label={isExposed ? '노출' : '미노출'} color={isExposed ? 'success' : 'default'} variant="light" size="small" />;
-        },
-        size: 100
-      },
-      {
-        header: '조회수',
-        accessorKey: 'viewsCount',
-        cell: ({ row }) => row.original.viewsCount.toLocaleString(),
-        size: 100
-      },
-      {
-        header: '작성일',
-        accessorKey: 'createdAt',
-        cell: ({ row }) => {
-          return formatYyyyMmDd(row.original.createdAt);
-        },
-        size: 120
-      }
-    ],
-    [data, selectedItems]
-  );
+      size: 120
+    }
+  ];
 
   const table = useReactTable({
     data,
@@ -156,7 +157,7 @@ export default function MpAdminFaqList() {
         filterBlind: undefined,
         boardTitle: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
         filterDeleted: undefined,
-        isExposed: formik.values.visible === 'all' ? undefined : formik.values.visible === 'visible'
+        isExposed: formik.values.isExposed !== '' ? formik.values.isExposed : undefined
       });
 
       setData(withSequence(response).content);
@@ -164,6 +165,9 @@ export default function MpAdminFaqList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch FAQ list:', error);
+      setData([]);
+      setTotalElements(0);
+      setTotalPages(0);
     } finally {
       setLoading(false);
     }
@@ -172,6 +176,10 @@ export default function MpAdminFaqList() {
   useEffect(() => {
     fetchData();
   }, [formik.values.pageIndex, formik.values.pageSize]);
+
+  const handleReset = () => {
+    formik.resetForm();
+  };
 
   const handleDelete = () => {
     const count = selectedItems.length;
@@ -204,35 +212,48 @@ export default function MpAdminFaqList() {
 
       <Grid item xs={12}>
         <MainCard content={false}>
-          <Box sx={{ p: 2 }}>
+          <Box sx={{ p: 3 }}>
             <form onSubmit={formik.handleSubmit}>
-              <Stack direction="row" spacing={1.5} alignItems="center">
-                <FormControl size="small" sx={{ minWidth: 120 }}>
-                  <Select value={formik.values.visible} onChange={(e) => formik.setFieldValue('visible', e.target.value)} displayEmpty>
-                    <MenuItem value="all">상태(전체)</MenuItem>
-                    <MenuItem value="visible">노출</MenuItem>
-                    <MenuItem value="hidden">미노출</MenuItem>
-                  </Select>
-                </FormControl>
-                <Box sx={{ width: 150 }}>
-                  <MpFormikDatePicker name="startAt" placeholder="시작일" formik={formik} />
-                </Box>
-                <Box sx={{ width: 150 }}>
-                  <MpFormikDatePicker name="endAt" placeholder="종료일" formik={formik} />
-                </Box>
-                <TextField
-                  name="searchKeyword"
-                  size="small"
-                  placeholder="검색어를 입력하세요"
-                  onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && formik.handleSubmit()}
-                  sx={{ flex: 1 }}
-                  value={formik.values.searchKeyword}
-                  onChange={formik.handleChange}
-                />
-                <Button variant="contained" size="small" type="submit" sx={{ px: 3 }}>
-                  검색
-                </Button>
-              </Stack>
+              <SearchFilterBar>
+                <SearchFilterItem minWidth={140}>
+                  <FormControl fullWidth size="small">
+                    <InputLabel>상태</InputLabel>
+                    <Select
+                      label="상태"
+                      name="isExposed"
+                      value={formik.values.isExposed}
+                      onChange={(e) => formik.setFieldValue('isExposed', e.target.value === 'true')}
+                    >
+                      <MenuItem value={'true'}>노출</MenuItem>
+                      <MenuItem value={'false'}>미노출</MenuItem>
+                    </Select>
+                  </FormControl>
+                </SearchFilterItem>
+                <SearchFilterItem minWidth={140}>
+                  <MpFormikDatePicker name="startAt" label="시작일" formik={formik} />
+                </SearchFilterItem>
+                <SearchFilterItem minWidth={140}>
+                  <MpFormikDatePicker name="endAt" label="종료일" formik={formik} />
+                </SearchFilterItem>
+                <SearchFilterItem flexGrow={1} minWidth={200}>
+                  <TextField
+                    name="searchKeyword"
+                    size="small"
+                    placeholder="검색어를 입력하세요"
+                    fullWidth
+                    value={formik.values.searchKeyword}
+                    onChange={formik.handleChange}
+                  />
+                </SearchFilterItem>
+                <SearchFilterActions>
+                  <Button variant="contained" size="small" type="submit">
+                    검색
+                  </Button>
+                  <Button variant="outlined" size="small" onClick={handleReset}>
+                    초기화
+                  </Button>
+                </SearchFilterActions>
+              </SearchFilterBar>
             </form>
           </Box>
         </MainCard>
@@ -242,7 +263,9 @@ export default function MpAdminFaqList() {
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              </Stack>
               <Stack direction="row" spacing={1}>
                 <Button variant="contained" size="small" color="error" disabled={selectedItems.length === 0} onClick={handleDelete}>
                   삭제

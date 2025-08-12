@@ -1,26 +1,28 @@
 import AttachFile from '@mui/icons-material/AttachFile';
 import UploadFile from '@mui/icons-material/UploadFile';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import FormControl from '@mui/material/FormControl';
-import Grid from '@mui/material/Grid';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Pagination from '@mui/material/Pagination';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  Checkbox,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
@@ -32,11 +34,11 @@ import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
 import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
+import { mockString } from 'medipanda/mockup';
 import { backendNotImplemented } from 'medipanda/utils/backendNotImplemented';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { mockString } from 'medipanda/mockup';
 
 export default function MpAdminPartnerList() {
   const [data, setData] = useState<Sequenced<PartnerResponse>[]>([]);
@@ -68,97 +70,94 @@ export default function MpAdminPartnerList() {
     }
   });
 
-  const columns = useMemo<ColumnDef<Sequenced<PartnerResponse>>[]>(
-    () => [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedItems.length === data.length && data.length > 0}
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelectedItems(data.map((item) => item.id));
-              } else {
-                setSelectedItems([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedItems.includes(row.original.id)}
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelectedItems((prev) => [...prev, row.original.id]);
-              } else {
-                setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50
-      },
-      {
-        header: 'No',
-        accessorKey: 'sequence',
-        cell: ({ row }) => row.original.sequence,
-        size: 60
-      },
-      {
-        header: '제약사명',
-        accessorKey: 'drugCompany',
-        cell: ({ row }) => row.original.drugCompany,
-        size: 150
-      },
-      {
-        header: '회사명',
-        accessorKey: 'companyName',
-        cell: ({ row }) => row.original.companyName,
-        size: 120
-      },
-      {
-        header: '계약유형',
-        accessorKey: 'contractType',
-        cell: ({ row }) => (row.original.contractType === 'CONTRACT' ? '계약' : '미계약'),
-        size: 80
-      },
-      {
-        header: '거래처코드',
-        accessorKey: 'institutionCode',
-        cell: ({ row }) => row.original.institutionCode,
-        size: 100
-      },
-      {
-        header: '거래처명',
-        accessorKey: 'institutionName',
-        cell: ({ row }) => (
-          <Link to={`/admin/partners/${row.original.id}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-            {row.original.institutionName}
-          </Link>
-        ),
-        size: 150
-      },
-      {
-        header: '사업자등록번호',
-        accessorKey: 'businessNumber',
-        cell: ({ row }) => row.original.businessNumber,
-        size: 130
-      },
-      {
-        header: '진료과',
-        accessorKey: 'medicalDepartment',
-        cell: ({ row }) => row.original.medicalDepartment ?? '-',
-        size: 100
-      },
-      {
-        header: '문전약국',
-        accessorKey: 'hasPharmacy',
-        cell: ({ row }) => (row.original.hasPharmacy ? 'Y' : 'N'),
-        size: 80
-      }
-    ],
-    [data, selectedItems]
-  );
+  const columns: ColumnDef<Sequenced<PartnerResponse>>[] = [
+    {
+      id: 'select',
+      header: () => (
+        <Checkbox
+          checked={selectedItems.length === data.length && data.length > 0}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems(data.map((item) => item.id));
+            } else {
+              setSelectedItems([]);
+            }
+          }}
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={selectedItems.includes(row.original.id)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems((prev) => [...prev, row.original.id]);
+            } else {
+              setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
+            }
+          }}
+        />
+      ),
+      size: 50
+    },
+    {
+      header: 'No',
+      accessorKey: 'sequence',
+      cell: ({ row }) => row.original.sequence,
+      size: 60
+    },
+    {
+      header: '제약사명',
+      accessorKey: 'drugCompany',
+      cell: ({ row }) => row.original.drugCompany,
+      size: 150
+    },
+    {
+      header: '회사명',
+      accessorKey: 'companyName',
+      cell: ({ row }) => row.original.companyName,
+      size: 120
+    },
+    {
+      header: '계약유형',
+      accessorKey: 'contractType',
+      cell: ({ row }) => (row.original.contractType === 'CONTRACT' ? '계약' : '미계약'),
+      size: 80
+    },
+    {
+      header: '거래처코드',
+      accessorKey: 'institutionCode',
+      cell: ({ row }) => row.original.institutionCode,
+      size: 100
+    },
+    {
+      header: '거래처명',
+      accessorKey: 'institutionName',
+      cell: ({ row }) => (
+        <Link to={`/admin/partners/${row.original.id}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          {row.original.institutionName}
+        </Link>
+      ),
+      size: 150
+    },
+    {
+      header: '사업자등록번호',
+      accessorKey: 'businessNumber',
+      cell: ({ row }) => row.original.businessNumber,
+      size: 130
+    },
+    {
+      header: '진료과',
+      accessorKey: 'medicalDepartment',
+      cell: ({ row }) => row.original.medicalDepartment ?? '-',
+      size: 100
+    },
+    {
+      header: '문전약국',
+      accessorKey: 'hasPharmacy',
+      cell: ({ row }) => (row.original.hasPharmacy ? 'Y' : 'N'),
+      size: 80
+    }
+  ];
 
   const table = useReactTable({
     data,
@@ -205,6 +204,10 @@ export default function MpAdminPartnerList() {
   useEffect(() => {
     fetchData();
   }, [formik.values.pageIndex, formik.values.pageSize]);
+
+  const handleReset = () => {
+    formik.resetForm();
+  };
 
   const handleDelete = () => {
     if (selectedItems.length === 0) {
@@ -286,13 +289,7 @@ export default function MpAdminPartnerList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>계약유형</InputLabel>
-                    <Select
-                      name="contractType"
-                      label="계약유형"
-                      value={formik.values.contractType}
-                      onChange={(e) => formik.setFieldValue('contractType', e.target.value)}
-                    >
-                      <MenuItem value="">전체</MenuItem>
+                    <Select name="contractType" label="계약유형" value={formik.values.contractType} onChange={formik.handleChange}>
                       <MenuItem value="DIRECT">법인</MenuItem>
                       <MenuItem value="INDIRECT">개인</MenuItem>
                     </Select>
@@ -300,16 +297,12 @@ export default function MpAdminPartnerList() {
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <Select
-                      name="searchType"
-                      value={formik.values.searchType}
-                      onChange={(e) => formik.setFieldValue('searchType', e.target.value)}
-                      displayEmpty
-                    >
-                      <MenuItem value="company">회사명</MenuItem>
-                      <MenuItem value="partner">거래처명</MenuItem>
-                      <MenuItem value="pharmaceutical">제약사명</MenuItem>
-                      <MenuItem value="member">회원명</MenuItem>
+                    <InputLabel>검색유형</InputLabel>
+                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
+                      <MenuItem value={'company'}>회사명</MenuItem>
+                      <MenuItem value={'partner'}>거래처명</MenuItem>
+                      <MenuItem value={'pharmaceutical'}>제약사명</MenuItem>
+                      <MenuItem value={'member'}>회원명</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
@@ -317,8 +310,7 @@ export default function MpAdminPartnerList() {
                   <TextField
                     name="searchKeyword"
                     size="small"
-                    placeholder="검색어를 입력해주세요"
-                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && formik.handleSubmit()}
+                    placeholder="검색어를 입력하세요"
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
@@ -327,6 +319,9 @@ export default function MpAdminPartnerList() {
                 <SearchFilterActions>
                   <Button variant="contained" size="small" type="submit">
                     검색
+                  </Button>
+                  <Button variant="outlined" size="small" onClick={handleReset}>
+                    초기화
                   </Button>
                 </SearchFilterActions>
               </SearchFilterBar>
@@ -339,16 +334,18 @@ export default function MpAdminPartnerList() {
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              </Stack>
               <Stack direction="row" spacing={1}>
-                <Button variant="contained" color="error" size="small" disabled={selectedItems.length === 0} onClick={handleDelete}>
-                  삭제
-                </Button>
                 <Button variant="contained" color="success" size="small" component={Link} to="/admin/partners/new">
                   등록
                 </Button>
-                <Button variant="outlined" size="small" onClick={() => setUploadDialogOpen(true)}>
+                <Button variant="contained" color="primary" size="small" onClick={() => setUploadDialogOpen(true)}>
                   파일업로드
+                </Button>
+                <Button variant="contained" color="error" size="small" disabled={selectedItems.length === 0} onClick={handleDelete}>
+                  삭제
                 </Button>
               </Stack>
             </Stack>

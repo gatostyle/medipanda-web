@@ -9,13 +9,13 @@ import {
   FormControlLabel,
   Grid,
   InputLabel,
+  Link as MuiLink,
   MenuItem,
   Select,
   Stack,
   TextField,
   Typography
 } from '@mui/material';
-import MuiLink from '@mui/material/Link';
 import { useFormik } from 'formik';
 import { mpUpdateMemberFile } from 'medipanda/api-definitions/MpMember';
 import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
@@ -137,7 +137,7 @@ export default function MpAdminMemberEdit() {
             contractDate: contractData.contractDate?.toString() ?? '',
             commissionRate: 0
           };
-        } catch (contractError) {
+        } catch (e) {
           setHasPartnerContract(false);
           console.log('No partner contract found for member:', userId);
         }

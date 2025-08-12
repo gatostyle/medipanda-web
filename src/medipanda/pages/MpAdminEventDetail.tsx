@@ -1,11 +1,4 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
-import CircularProgress from '@mui/material/CircularProgress';
-import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
+import { Box, Button, Chip, CircularProgress, Divider, Grid, Stack, Typography } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { EventBoardDetailsResponse, getEventBoardDetails } from 'medipanda/backend';
 import { TiptapEditor } from 'medipanda/components/TiptapEditor';

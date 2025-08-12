@@ -1,21 +1,23 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControl from '@mui/material/FormControl';
-import Grid from '@mui/material/Grid';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Pagination from '@mui/material/Pagination';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
@@ -27,7 +29,7 @@ import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
 import { CONTRACT_STATUS_LABELS } from 'medipanda/ui-labels';
 import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function MpAdminCommunityCommentList() {
   const [data, setData] = useState<Sequenced<CommentMemberResponse>[]>([]);
@@ -39,8 +41,8 @@ export default function MpAdminCommunityCommentList() {
 
   const formik = useFormik({
     initialValues: {
-      commentType: 'all' as 'all' | 'COMMENT' | 'REPLY',
-      searchType: 'nickname' as 'nickname' | 'userId' | 'name',
+      commentType: '' as 'COMMENT' | 'REPLY' | '',
+      searchType: '' as 'nickname' | 'userId' | '',
       searchKeyword: '',
       startAt: null as Date | null,
       endAt: null as Date | null,
@@ -56,108 +58,105 @@ export default function MpAdminCommunityCommentList() {
     }
   });
 
-  const columns = useMemo<ColumnDef<Sequenced<CommentMemberResponse>>[]>(
-    () => [
-      {
-        id: 'select',
-        header: () => (
+  const columns: ColumnDef<Sequenced<CommentMemberResponse>>[] = [
+    {
+      id: 'select',
+      header: () => (
+        <Checkbox
+          checked={selectedItems.length === data.length && data.length > 0}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems(data.map((item) => item.id));
+            } else {
+              setSelectedItems([]);
+            }
+          }}
+        />
+      ),
+      cell: ({ row }) => {
+        return (
           <Checkbox
-            checked={selectedItems.length === data.length && data.length > 0}
+            checked={selectedItems.includes(row.original.id)}
             onChange={(e) => {
               if (e.target.checked) {
-                setSelectedItems(data.map((item) => item.id));
+                setSelectedItems((prev) => [...prev, row.original.id]);
               } else {
-                setSelectedItems([]);
+                setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
               }
             }}
           />
-        ),
-        cell: ({ row }) => {
-          return (
-            <Checkbox
-              checked={selectedItems.includes(row.original.id)}
-              onChange={(e) => {
-                if (e.target.checked) {
-                  setSelectedItems((prev) => [...prev, row.original.id]);
-                } else {
-                  setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
-                }
-              }}
-            />
-          );
-        },
-        size: 50
+        );
       },
-      {
-        header: 'No',
-        accessorKey: 'sequence',
-        cell: ({ row }) => row.original.sequence,
-        size: 60
-      },
-      {
-        header: '아이디',
-        accessorKey: 'userId',
-        cell: ({ row }) => row.original.userId,
-        size: 150
-      },
-      {
-        header: '회원명',
-        accessorKey: 'name',
-        cell: ({ row }) => row.original.name,
-        size: 100
-      },
-      {
-        header: '닉네임',
-        accessorKey: 'nickname',
-        cell: ({ row }) => row.original.nickname,
-        size: 150
-      },
-      {
-        header: '계약유무',
-        accessorKey: 'contractStatus',
-        cell: ({ row }) => CONTRACT_STATUS_LABELS[row.original.contractStatus],
-        size: 100
-      },
-      {
-        header: '유형',
-        accessorKey: 'commentType',
-        cell: ({ row }) => (row.original.commentType === 'COMMENT' ? '댓글' : '대댓글'),
-        size: 80
-      },
-      {
-        header: '댓글내용',
-        accessorKey: 'content',
-        cell: ({ row }) => {
-          const content = row.original.content;
-          return (
-            <Typography
-              sx={{
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                maxWidth: 300
-              }}
-            >
-              {content}
-            </Typography>
-          );
-        }
-      },
-      {
-        header: '좋아요 수',
-        accessorKey: 'likesCount',
-        cell: ({ row }) => row.original.likesCount,
-        size: 100
-      },
-      {
-        header: '등록일',
-        accessorKey: 'createdAt',
-        cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
-        size: 150
+      size: 50
+    },
+    {
+      header: 'No',
+      accessorKey: 'sequence',
+      cell: ({ row }) => row.original.sequence,
+      size: 60
+    },
+    {
+      header: '아이디',
+      accessorKey: 'userId',
+      cell: ({ row }) => row.original.userId,
+      size: 150
+    },
+    {
+      header: '회원명',
+      accessorKey: 'name',
+      cell: ({ row }) => row.original.name,
+      size: 100
+    },
+    {
+      header: '닉네임',
+      accessorKey: 'nickname',
+      cell: ({ row }) => row.original.nickname,
+      size: 150
+    },
+    {
+      header: '계약유무',
+      accessorKey: 'contractStatus',
+      cell: ({ row }) => CONTRACT_STATUS_LABELS[row.original.contractStatus],
+      size: 100
+    },
+    {
+      header: '유형',
+      accessorKey: 'commentType',
+      cell: ({ row }) => (row.original.commentType === 'COMMENT' ? '댓글' : '대댓글'),
+      size: 80
+    },
+    {
+      header: '댓글내용',
+      accessorKey: 'content',
+      cell: ({ row }) => {
+        const content = row.original.content;
+        return (
+          <Typography
+            sx={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              maxWidth: 300
+            }}
+          >
+            {content}
+          </Typography>
+        );
       }
-    ],
-    [data, selectedItems]
-  );
+    },
+    {
+      header: '좋아요 수',
+      accessorKey: 'likesCount',
+      cell: ({ row }) => row.original.likesCount,
+      size: 100
+    },
+    {
+      header: '등록일',
+      accessorKey: 'createdAt',
+      cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
+      size: 150
+    }
+  ];
 
   const table = useReactTable({
     data,
@@ -182,7 +181,7 @@ export default function MpAdminCommunityCommentList() {
         nickname: formik.values.searchType === 'nickname' ? formik.values.searchKeyword : undefined,
         startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
         endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
-        commentType: formik.values.commentType === 'all' ? undefined : formik.values.commentType,
+        commentType: formik.values.commentType !== '' ? formik.values.commentType : undefined,
         filterDeleted: false,
         page: formik.values.pageIndex,
         size: formik.values.pageSize
@@ -204,6 +203,10 @@ export default function MpAdminCommunityCommentList() {
   useEffect(() => {
     fetchData();
   }, [formik.values.pageIndex, formik.values.pageSize]);
+
+  const handleReset = () => {
+    formik.resetForm();
+  };
 
   const handleBlind = () => {
     const count = selectedItems.length;
@@ -244,13 +247,7 @@ export default function MpAdminCommunityCommentList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>글 유형</InputLabel>
-                    <Select
-                      name="commentType"
-                      label="글 유형"
-                      value={formik.values.commentType}
-                      onChange={(e) => formik.setFieldValue('commentType', e.target.value)}
-                    >
-                      <MenuItem value="all">전체</MenuItem>
+                    <Select name="commentType" label="글 유형" value={formik.values.commentType} onChange={formik.handleChange}>
                       <MenuItem value={'COMMENT'}>댓글</MenuItem>
                       <MenuItem value={'REPLY'}>대댓글</MenuItem>
                     </Select>
@@ -258,35 +255,24 @@ export default function MpAdminCommunityCommentList() {
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <InputLabel>닉네임</InputLabel>
-                    <Select
-                      name="searchType"
-                      label="닉네임"
-                      value={formik.values.searchType}
-                      onChange={(e) => formik.setFieldValue('searchType', e.target.value)}
-                    >
-                      <MenuItem value="nickname">닉네임</MenuItem>
-                      <MenuItem value="userId">아이디</MenuItem>
-                      <MenuItem value="name">회원명</MenuItem>
+                    <InputLabel>검색유형</InputLabel>
+                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
+                      <MenuItem value={'nickname'}>닉네임</MenuItem>
+                      <MenuItem value={'userId'}>아이디</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <Box sx={{ width: '100%' }}>
-                    <MpFormikDatePicker name="startAt" label="시작일" formik={formik} />
-                  </Box>
+                  <MpFormikDatePicker name="startAt" label="시작일" formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <Box sx={{ width: '100%' }}>
-                    <MpFormikDatePicker name="endAt" label="종료일" formik={formik} />
-                  </Box>
+                  <MpFormikDatePicker name="endAt" label="종료일" formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
                     name="searchKeyword"
                     size="small"
-                    placeholder=""
-                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && formik.handleSubmit()}
+                    placeholder="검색어를 입력하세요"
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
@@ -295,6 +281,9 @@ export default function MpAdminCommunityCommentList() {
                 <SearchFilterActions>
                   <Button variant="contained" size="small" type="submit">
                     검색
+                  </Button>
+                  <Button variant="outlined" size="small" onClick={handleReset}>
+                    초기화
                   </Button>
                 </SearchFilterActions>
               </SearchFilterBar>
@@ -307,7 +296,9 @@ export default function MpAdminCommunityCommentList() {
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="subtitle1">검색결과: {totalElements} 건</Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              </Stack>
               <Stack direction="row" spacing={1}>
                 <Button variant="contained" color="success" size="small" disabled={selectedItems.length === 0} onClick={handleBlind}>
                   블라인드

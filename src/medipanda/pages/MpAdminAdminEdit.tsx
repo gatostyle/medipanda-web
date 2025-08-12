@@ -1,14 +1,16 @@
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Grid from '@mui/material/Grid';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import Switch from '@mui/material/Switch';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {
+  Button,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  MenuItem,
+  Select,
+  Stack,
+  Switch,
+  TextField,
+  Typography
+} from '@mui/material';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
 import { getMemberDetails, getPermissions, signupByAdmin, updateByAdmin } from 'medipanda/backend';

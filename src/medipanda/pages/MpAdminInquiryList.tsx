@@ -1,20 +1,22 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import Grid from '@mui/material/Grid';
-import Link from '@mui/material/Link';
-import MenuItem from '@mui/material/MenuItem';
-import Pagination from '@mui/material/Pagination';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
@@ -22,10 +24,11 @@ import { useFormik } from 'formik';
 import { InquiryResponseStatusFilter, InquirySearchType } from 'medipanda/api-definitions/MpInquiry';
 import { BoardPostResponse, getBoards } from 'medipanda/backend';
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
 import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 interface BoardPostResponseWithMockData extends BoardPostResponse {
   drugCompany: string;
@@ -45,7 +48,6 @@ function withMock<T extends BoardPostResponse>(data: T): T & BoardPostResponseWi
 }
 
 export default function MpAdminInquiryList() {
-  const navigate = useNavigate();
   const [data, setData] = useState<Sequenced<BoardPostResponseWithMockData>[]>([]);
   const [loading, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
@@ -70,85 +72,77 @@ export default function MpAdminInquiryList() {
     }
   });
 
-  const columns = useMemo<ColumnDef<Sequenced<BoardPostResponseWithMockData>>[]>(
-    () => [
-      {
-        header: 'No',
-        accessorKey: 'sequence',
-        cell: ({ row }) => row.original.sequence,
-        size: 60
-      },
-      {
-        header: '회원번호',
-        accessorKey: 'id',
-        cell: ({ row }) => row.original.id,
-        size: 100
-      },
-      {
-        header: '아이디',
-        accessorKey: 'userId',
-        cell: ({ row }) => row.original.userId,
-        size: 120
-      },
-      {
-        header: '회원명',
-        accessorKey: 'name',
-        cell: ({ row }) => row.original.name,
-        size: 100
-      },
-      {
-        header: '회사명',
-        accessorKey: 'drugCompany',
-        cell: ({ row }) => row.original.drugCompany,
-        size: 150
-      },
-      {
-        header: '제목',
-        accessorKey: 'title',
-        cell: ({ row }) => (
-          <Link
-            component="button"
-            variant="body2"
-            onClick={() => navigate(`/admin/inquiries/${row.original.id}`)}
-            sx={{ textDecoration: 'none', color: '#1976d2' }}
-          >
-            {row.original.title}
-          </Link>
-        ),
-        size: 250
-      },
-      {
-        header: '문의일',
-        accessorKey: 'createdAt',
-        cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
-        size: 100
-      },
-      {
-        header: '답변일',
-        accessorKey: 'responseCreatedAt',
-        cell: ({ row }) => {
-          const value = row.original.responseCreatedAt;
+  const columns: ColumnDef<Sequenced<BoardPostResponseWithMockData>>[] = [
+    {
+      header: 'No',
+      accessorKey: 'sequence',
+      cell: ({ row }) => row.original.sequence,
+      size: 60
+    },
+    {
+      header: '회원번호',
+      accessorKey: 'id',
+      cell: ({ row }) => row.original.id,
+      size: 100
+    },
+    {
+      header: '아이디',
+      accessorKey: 'userId',
+      cell: ({ row }) => row.original.userId,
+      size: 120
+    },
+    {
+      header: '회원명',
+      accessorKey: 'name',
+      cell: ({ row }) => row.original.name,
+      size: 100
+    },
+    {
+      header: '회사명',
+      accessorKey: 'drugCompany',
+      cell: ({ row }) => row.original.drugCompany,
+      size: 150
+    },
+    {
+      header: '제목',
+      accessorKey: 'title',
+      cell: ({ row }) => (
+        <Link to={`/admin/inquiries/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          {row.original.title}
+        </Link>
+      ),
+      size: 250
+    },
+    {
+      header: '문의일',
+      accessorKey: 'createdAt',
+      cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
+      size: 100
+    },
+    {
+      header: '답변일',
+      accessorKey: 'responseCreatedAt',
+      cell: ({ row }) => {
+        const value = row.original.responseCreatedAt;
 
-          return value !== null ? formatYyyyMmDd(value) : '-';
-        },
-        size: 100
+        return value !== null ? formatYyyyMmDd(value) : '-';
       },
-      {
-        header: '처리상태',
-        accessorKey: 'responseStatus',
-        cell: ({ row }) => {
-          switch (row.original.responseStatus) {
-            case 'PENDING':
-              return '처리중';
-            case 'COMPLETED':
-              return '처리완료';
-          }
-        },
-        size: 100
-      }
-    ],
-    [navigate]
-  );
+      size: 100
+    },
+    {
+      header: '처리상태',
+      accessorKey: 'responseStatus',
+      cell: ({ row }) => {
+        switch (row.original.responseStatus) {
+          case 'PENDING':
+            return '처리중';
+          case 'COMPLETED':
+            return '처리완료';
+        }
+      },
+      size: 100
+    }
+  ];
 
   const table = useReactTable({
     data,
@@ -196,6 +190,10 @@ export default function MpAdminInquiryList() {
     fetchData();
   }, [formik.values.pageIndex, formik.values.pageSize]);
 
+  const handleReset = () => {
+    formik.resetForm();
+  };
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -208,57 +206,57 @@ export default function MpAdminInquiryList() {
         <MainCard content={false}>
           <Box sx={{ p: 3 }}>
             <form onSubmit={formik.handleSubmit}>
-              <Grid container spacing={2} alignItems="center">
-                <Grid item xs={12} md={1.5}>
+              <SearchFilterBar>
+                <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
+                    <InputLabel>처리상태</InputLabel>
                     <Select
                       name="responseStatusFilter"
+                      label="처리상태"
                       value={formik.values.responseStatusFilter}
-                      onChange={(e) => formik.setFieldValue('responseStatusFilter', e.target.value)}
-                      displayEmpty
+                      onChange={formik.handleChange}
                     >
                       <MenuItem value={InquiryResponseStatusFilter.ALL}>처리상태(전체)</MenuItem>
                       <MenuItem value={InquiryResponseStatusFilter.WAITING}>답변대기중</MenuItem>
                       <MenuItem value={InquiryResponseStatusFilter.COMPLETED}>답변완료</MenuItem>
                     </Select>
                   </FormControl>
-                </Grid>
-                <Grid item xs={12} md={1.5}>
+                </SearchFilterItem>
+                <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <Select
-                      name="searchType"
-                      value={formik.values.searchType}
-                      onChange={(e) => formik.setFieldValue('searchType', e.target.value)}
-                    >
+                    <InputLabel>검색유형</InputLabel>
+                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={InquirySearchType.MEMBER_NAME}>회원명</MenuItem>
                       <MenuItem value={InquirySearchType.COMPANY_NAME}>회사명</MenuItem>
                       <MenuItem value={InquirySearchType.USER_ID}>아이디</MenuItem>
                     </Select>
                   </FormControl>
-                </Grid>
-                <Grid item xs={12} md={2}>
+                </SearchFilterItem>
+                <SearchFilterItem minWidth={140}>
                   <MpFormikDatePicker name="startAt" label="시작일" formik={formik} />
-                </Grid>
-                <Grid item xs={12} md={2}>
+                </SearchFilterItem>
+                <SearchFilterItem minWidth={140}>
                   <MpFormikDatePicker name="endAt" label="종료일" formik={formik} />
-                </Grid>
-                <Grid item xs={12} md={3}>
+                </SearchFilterItem>
+                <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
                     name="searchKeyword"
                     size="small"
                     placeholder="검색어를 입력하세요"
-                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && formik.handleSubmit()}
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
                   />
-                </Grid>
-                <Grid item xs={12} md={2}>
-                  <Button variant="contained" color="primary" size="medium" type="submit" fullWidth>
+                </SearchFilterItem>
+                <SearchFilterActions>
+                  <Button variant="contained" size="small" type="submit">
                     검색
                   </Button>
-                </Grid>
-              </Grid>
+                  <Button variant="outlined" size="small" onClick={handleReset}>
+                    초기화
+                  </Button>
+                </SearchFilterActions>
+              </SearchFilterBar>
             </form>
           </Box>
         </MainCard>
@@ -267,8 +265,10 @@ export default function MpAdminInquiryList() {
       <Grid item xs={12}>
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
-            <Stack direction="row" justifyContent="flex-start" alignItems="center" mb={2}>
-              <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              </Stack>
             </Stack>
 
             <ScrollX>

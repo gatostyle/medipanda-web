@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
 // material-ui
 import Box from '@mui/material/Box';
@@ -17,23 +17,19 @@ import Breadcrumbs from 'components/@extended/Breadcrumbs';
 import { DRAWER_WIDTH } from 'config';
 import useConfig from 'hooks/useConfig';
 import { useGetMenuMaster } from 'api/menu';
-import { MpAdminGuard, MpMemberGuard } from 'medipanda/utils/route-guard';
+import { MpAdminGuard } from 'medipanda/utils/route-guard';
 
 // ==============================|| MAIN LAYOUT ||============================== //
 
 export default function MainLayout() {
-  const location = useLocation();
-
   const { menuMasterLoading } = useGetMenuMaster();
 
   const { container } = useConfig();
 
   if (menuMasterLoading) return <Loader />;
 
-  const RoleGuard = location.pathname.startsWith('/admin') ? MpAdminGuard : MpMemberGuard;
-
   return (
-    <RoleGuard>
+    <MpAdminGuard>
       <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
         <Box sx={{ display: 'flex', width: '100%' }}>
           <Header />
@@ -58,6 +54,6 @@ export default function MainLayout() {
           </Box>
         </Box>
       </LocalizationProvider>
-    </RoleGuard>
+    </MpAdminGuard>
   );
 }

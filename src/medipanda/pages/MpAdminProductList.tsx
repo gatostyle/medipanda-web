@@ -1,29 +1,32 @@
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
-import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
-import MenuItem from '@mui/material/MenuItem';
-import Pagination from '@mui/material/Pagination';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  Grid,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
@@ -36,12 +39,13 @@ import {
   updateProductExtraInfo_1,
   uploadProductExtraInfo
 } from 'medipanda/backend';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
 import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function MpAdminProductList() {
@@ -95,105 +99,102 @@ export default function MpAdminProductList() {
     return '-';
   };
 
-  const columns = useMemo<ColumnDef<Sequenced<ProductSummaryResponse>>[]>(
-    () => [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedItems.length === data.length && data.length > 0}
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelectedItems(data.map((item) => item.id));
-              } else {
-                setSelectedItems([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedItems.includes(row.original.id)}
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelectedItems((prev) => [...prev, row.original.id]);
-              } else {
-                setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50
+  const columns: ColumnDef<Sequenced<ProductSummaryResponse>>[] = [
+    {
+      id: 'select',
+      header: () => (
+        <Checkbox
+          checked={selectedItems.length === data.length && data.length > 0}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems(data.map((item) => item.id));
+            } else {
+              setSelectedItems([]);
+            }
+          }}
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={selectedItems.includes(row.original.id)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems((prev) => [...prev, row.original.id]);
+            } else {
+              setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
+            }
+          }}
+        />
+      ),
+      size: 50
+    },
+    {
+      header: 'No',
+      accessorKey: 'sequence',
+      cell: ({ row }) => row.original.sequence,
+      size: 60
+    },
+    {
+      header: '제약사',
+      accessorKey: 'manufacturerName',
+      cell: ({ row }) => row.original.manufacturerName ?? '-',
+      size: 150
+    },
+    {
+      header: '제품명',
+      accessorKey: 'productName',
+      cell: ({ row }) => (
+        <Link to={`/admin/products/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          {row.original.productName ?? '-'}
+        </Link>
+      ),
+      size: 300
+    },
+    {
+      header: '성분명',
+      accessorKey: 'composition',
+      cell: ({ row }) => row.original.composition ?? '-',
+      size: 250
+    },
+    {
+      header: '제품코드',
+      accessorKey: 'productCode',
+      cell: ({ row }) => row.original.productCode,
+      size: 120
+    },
+    {
+      header: '약가',
+      accessorKey: 'price',
+      cell: ({ row }) => {
+        return row.original.price !== null ? `${row.original.price.toLocaleString()}` : '-';
       },
-      {
-        header: 'No',
-        accessorKey: 'sequence',
-        cell: ({ row }) => row.original.sequence,
-        size: 60
-      },
-      {
-        header: '제약사',
-        accessorKey: 'manufacturerName',
-        cell: ({ row }) => row.original.manufacturerName ?? '-',
-        size: 150
-      },
-      {
-        header: '제품명',
-        accessorKey: 'productName',
-        cell: ({ row }) => (
-          <Link to={`/admin/products/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-            {row.original.productName ?? '-'}
-          </Link>
-        ),
-        size: 300
-      },
-      {
-        header: '성분명',
-        accessorKey: 'composition',
-        cell: ({ row }) => row.original.composition ?? '-',
-        size: 250
-      },
-      {
-        header: '제품코드',
-        accessorKey: 'productCode',
-        cell: ({ row }) => row.original.productCode,
-        size: 120
-      },
-      {
-        header: '약가',
-        accessorKey: 'price',
-        cell: ({ row }) => {
-          return row.original.price !== null ? `${row.original.price.toLocaleString()}` : '-';
-        },
-        size: 100
-      },
-      {
-        header: '기본수수료율',
-        accessorKey: 'feeRate',
-        cell: ({ row }) => (row.original.feeRate !== null ? `${row.original.feeRate}%` : '-'),
-        size: 120
-      },
-      {
-        header: '변경요율',
-        accessorKey: 'changedFeeRate',
-        cell: ({ row }) => getChangedRateDisplay(row.original),
-        size: 120
-      },
-      {
-        header: '상태',
-        accessorKey: 'status',
-        cell: ({ row }) => getStatusDisplay(row.original),
-        size: 200
-      },
-      {
-        header: '비고',
-        accessorKey: 'note',
-        cell: ({ row }) => row.original.note ?? '-',
-        size: 200
-      }
-    ],
-    [data, selectedItems]
-  );
+      size: 100
+    },
+    {
+      header: '기본수수료율',
+      accessorKey: 'feeRate',
+      cell: ({ row }) => (row.original.feeRate !== null ? `${row.original.feeRate}%` : '-'),
+      size: 120
+    },
+    {
+      header: '변경요율',
+      accessorKey: 'changedFeeRate',
+      cell: ({ row }) => getChangedRateDisplay(row.original),
+      size: 120
+    },
+    {
+      header: '상태',
+      accessorKey: 'status',
+      cell: ({ row }) => getStatusDisplay(row.original),
+      size: 200
+    },
+    {
+      header: '비고',
+      accessorKey: 'note',
+      cell: ({ row }) => row.original.note ?? '-',
+      size: 200
+    }
+  ];
 
   const table = useReactTable({
     data,
@@ -243,6 +244,10 @@ export default function MpAdminProductList() {
   useEffect(() => {
     fetchData();
   }, [formik.values.pageIndex, formik.values.pageSize]);
+
+  const handleReset = () => {
+    formik.resetForm();
+  };
 
   const handleDelete = () => {
     const count = selectedItems.length;
@@ -294,35 +299,30 @@ export default function MpAdminProductList() {
         <MainCard content={false}>
           <Box sx={{ p: 3 }}>
             <form onSubmit={formik.handleSubmit}>
-              <Grid container spacing={2} alignItems="center">
-                <Grid item xs={12} sm={2}>
+              <SearchFilterBar>
+                <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <Select
-                      name="searchType"
-                      value={formik.values.searchType}
-                      onChange={(e) => formik.setFieldValue('searchType', e.target.value)}
-                      displayEmpty
-                    >
-                      <MenuItem value="productName">제품명</MenuItem>
-                      <MenuItem value="productCode">제품코드</MenuItem>
-                      <MenuItem value="manufacturerName">제약사</MenuItem>
-                      <MenuItem value="composition">성분명</MenuItem>
-                      <MenuItem value="note">비고</MenuItem>
+                    <InputLabel>검색유형</InputLabel>
+                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
+                      <MenuItem value={'productName'}>제품명</MenuItem>
+                      <MenuItem value={'productCode'}>제품코드</MenuItem>
+                      <MenuItem value={'manufacturerName'}>제약사</MenuItem>
+                      <MenuItem value={'composition'}>성분명</MenuItem>
+                      <MenuItem value={'note'}>비고</MenuItem>
                     </Select>
                   </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={4}>
+                </SearchFilterItem>
+                <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
                     name="searchKeyword"
                     size="small"
-                    placeholder="검색어를 입력해주세요"
-                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && formik.handleSubmit()}
+                    placeholder="검색어를 입력하세요"
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
                   />
-                </Grid>
-                <Grid item xs={12} sm={4}>
+                </SearchFilterItem>
+                <SearchFilterItem minWidth={300}>
                   <FormGroup row>
                     <FormControlLabel
                       control={
@@ -365,15 +365,16 @@ export default function MpAdminProductList() {
                       label="판매중단"
                     />
                   </FormGroup>
-                </Grid>
-                <Grid item xs={12} sm={2}>
-                  <Stack direction="row" spacing={1} justifyContent="flex-end">
-                    <Button variant="contained" size="small" type="submit">
-                      검색
-                    </Button>
-                  </Stack>
-                </Grid>
-              </Grid>
+                </SearchFilterItem>
+                <SearchFilterActions>
+                  <Button variant="contained" size="small" type="submit">
+                    검색
+                  </Button>
+                  <Button variant="outlined" size="small" onClick={handleReset}>
+                    초기화
+                  </Button>
+                </SearchFilterActions>
+              </SearchFilterBar>
             </form>
           </Box>
         </MainCard>
@@ -383,7 +384,9 @@ export default function MpAdminProductList() {
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              </Stack>
               <Stack direction="row" spacing={1}>
                 <IconButton
                   size="small"
@@ -413,7 +416,7 @@ export default function MpAdminProductList() {
                   삭제
                 </Button>
                 <Button variant="contained" color="success" size="small" component={Link} to="/admin/products/new">
-                  추가
+                  등록
                 </Button>
                 <Button variant="contained" color="success" size="small" onClick={() => setRateTableDialogOpen(true)}>
                   요율표업로드
@@ -470,9 +473,7 @@ export default function MpAdminProductList() {
               <Pagination
                 count={totalPages}
                 page={formik.values.pageIndex + 1}
-                onChange={(_, value) => {
-                  formik.setFieldValue('pageIndex', value - 1);
-                }}
+                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
                 color="primary"
                 variant="outlined"
                 showFirstButton

@@ -1,21 +1,23 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControl from '@mui/material/FormControl';
-import Grid from '@mui/material/Grid';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Pagination from '@mui/material/Pagination';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
@@ -31,9 +33,9 @@ import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDi
 import { mockNumber } from 'medipanda/mockup';
 import { formatYyyyMm } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useMpInfoDialog } from '../hooks/useMpInfoDialog';
+import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
 
 export default function MpAdminSettlementList() {
   const [data, setData] = useState<Sequenced<SettlementResponse>[]>([]);
@@ -64,114 +66,111 @@ export default function MpAdminSettlementList() {
     }
   });
 
-  const columns = useMemo<ColumnDef<Sequenced<SettlementResponse>>[]>(
-    () => [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedItems.length === data.length && data.length > 0}
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelectedItems(data.map((item) => item.id));
-              } else {
-                setSelectedItems([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedItems.includes(row.original.id)}
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelectedItems((prev) => [...prev, row.original.id]);
-              } else {
-                setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50
-      },
-      {
-        header: 'No',
-        accessorKey: 'sequence',
-        cell: ({ row }) => row.original.sequence,
-        size: 60
-      },
-      {
-        header: '딜러번호',
-        accessorKey: 'dealerId',
-        cell: ({ row }) => row.original.dealerId,
-        size: 100
-      },
-      {
-        header: '정산월',
-        accessorKey: 'settlementMonth',
-        cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
-        size: 100
-      },
-      {
-        header: '회사명',
-        accessorKey: 'companyName',
-        cell: ({ row }) => row.original.companyName,
-        size: 150
-      },
-      {
-        header: '딜러명',
-        accessorKey: 'dealerName',
-        cell: ({ row }) => (
-          <Link to={`/admin/settlements/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-            {row.original.dealerName}
-          </Link>
-        ),
-        size: 100
-      },
-      {
-        header: '처방금액',
-        accessorKey: 'prescriptionAmount',
-        cell: ({ row }) => row.original.prescriptionAmount.toLocaleString(),
-        size: 120
-      },
-      {
-        header: '공급가액',
-        accessorKey: 'supplyAmount',
-        cell: ({ row }) => row.original.supplyAmount.toLocaleString(),
-        size: 120
-      },
-      {
-        header: '세액',
-        accessorKey: 'taxAmount',
-        cell: ({ row }) => row.original.taxAmount.toLocaleString(),
-        size: 100
-      },
-      {
-        header: '합계금액',
-        accessorKey: 'totalAmount',
-        cell: ({ row }) => row.original.totalAmount.toLocaleString(),
-        size: 120
-      },
-      {
-        header: '사용자확인',
-        accessorKey: 'status',
-        cell: ({ row }) => {
-          const value = row.original.status;
+  const columns: ColumnDef<Sequenced<SettlementResponse>>[] = [
+    {
+      id: 'select',
+      header: () => (
+        <Checkbox
+          checked={selectedItems.length === data.length && data.length > 0}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems(data.map((item) => item.id));
+            } else {
+              setSelectedItems([]);
+            }
+          }}
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={selectedItems.includes(row.original.id)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems((prev) => [...prev, row.original.id]);
+            } else {
+              setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
+            }
+          }}
+        />
+      ),
+      size: 50
+    },
+    {
+      header: 'No',
+      accessorKey: 'sequence',
+      cell: ({ row }) => row.original.sequence,
+      size: 60
+    },
+    {
+      header: '딜러번호',
+      accessorKey: 'dealerId',
+      cell: ({ row }) => row.original.dealerId,
+      size: 100
+    },
+    {
+      header: '정산월',
+      accessorKey: 'settlementMonth',
+      cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
+      size: 100
+    },
+    {
+      header: '회사명',
+      accessorKey: 'companyName',
+      cell: ({ row }) => row.original.companyName,
+      size: 150
+    },
+    {
+      header: '딜러명',
+      accessorKey: 'dealerName',
+      cell: ({ row }) => (
+        <Link to={`/admin/settlements/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          {row.original.dealerName}
+        </Link>
+      ),
+      size: 100
+    },
+    {
+      header: '처방금액',
+      accessorKey: 'prescriptionAmount',
+      cell: ({ row }) => row.original.prescriptionAmount.toLocaleString(),
+      size: 120
+    },
+    {
+      header: '공급가액',
+      accessorKey: 'supplyAmount',
+      cell: ({ row }) => row.original.supplyAmount.toLocaleString(),
+      size: 120
+    },
+    {
+      header: '세액',
+      accessorKey: 'taxAmount',
+      cell: ({ row }) => row.original.taxAmount.toLocaleString(),
+      size: 100
+    },
+    {
+      header: '합계금액',
+      accessorKey: 'totalAmount',
+      cell: ({ row }) => row.original.totalAmount.toLocaleString(),
+      size: 120
+    },
+    {
+      header: '사용자확인',
+      accessorKey: 'status',
+      cell: ({ row }) => {
+        const value = row.original.status;
 
-          switch (value) {
-            case 'REQUEST':
-              return '정산요청';
-            case 'OBJECTION':
-              return '이의신청';
-            default:
-              return '-';
-          }
-        },
-        size: 100
-      }
-    ],
-    [data, selectedItems]
-  );
+        switch (value) {
+          case 'REQUEST':
+            return '정산요청';
+          case 'OBJECTION':
+            return '이의신청';
+          default:
+            return '-';
+        }
+      },
+      size: 100
+    }
+  ];
 
   const table = useReactTable({
     data,
@@ -218,6 +217,10 @@ export default function MpAdminSettlementList() {
   useEffect(() => {
     fetchData();
   }, [formik.values.pageIndex, formik.values.pageSize]);
+
+  const handleReset = () => {
+    formik.resetForm();
+  };
 
   const handleFileUpload = async () => {
     const input = document.createElement('input');
@@ -284,7 +287,6 @@ export default function MpAdminSettlementList() {
                       value={formik.values.userConfirmation}
                       onChange={(e) => formik.setFieldValue('userConfirmation', e.target.value === 'true')}
                     >
-                      <MenuItem value="">전체</MenuItem>
                       <MenuItem value={'true'}>정산요청</MenuItem>
                       <MenuItem value={'false'}>이의신청</MenuItem>
                     </Select>
@@ -292,14 +294,10 @@ export default function MpAdminSettlementList() {
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <Select
-                      name="searchType"
-                      value={formik.values.searchType}
-                      onChange={(e) => formik.setFieldValue('searchType', e.target.value)}
-                      displayEmpty
-                    >
-                      <MenuItem value="dealerId">딜러번호</MenuItem>
-                      <MenuItem value="companyName">회사명</MenuItem>
+                    <InputLabel>검색유형</InputLabel>
+                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
+                      <MenuItem value={'dealerId'}>딜러번호</MenuItem>
+                      <MenuItem value={'companyName'}>회사명</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
@@ -313,8 +311,7 @@ export default function MpAdminSettlementList() {
                   <TextField
                     name="searchKeyword"
                     size="small"
-                    placeholder="검색어를 입력해주세요"
-                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && formik.handleSubmit()}
+                    placeholder="검색어를 입력하세요"
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
@@ -323,6 +320,9 @@ export default function MpAdminSettlementList() {
                 <SearchFilterActions>
                   <Button variant="contained" size="small" type="submit">
                     검색
+                  </Button>
+                  <Button variant="outlined" size="small" onClick={handleReset}>
+                    초기화
                   </Button>
                 </SearchFilterActions>
               </SearchFilterBar>
@@ -335,7 +335,9 @@ export default function MpAdminSettlementList() {
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              </Stack>
               <Stack direction="row" spacing={1}>
                 <Button
                   variant="contained"

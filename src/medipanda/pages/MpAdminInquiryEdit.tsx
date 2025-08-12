@@ -1,10 +1,4 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import { Box, Button, CircularProgress, Grid, Stack, TextField, Typography } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
 import { mpCreateInquiryResponse, mpUpdateInquiryResponse } from 'medipanda/api-definitions/MpInquiry';

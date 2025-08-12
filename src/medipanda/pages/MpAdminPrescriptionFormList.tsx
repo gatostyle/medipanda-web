@@ -1,20 +1,23 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControl from '@mui/material/FormControl';
-import Grid from '@mui/material/Grid';
-import MenuItem from '@mui/material/MenuItem';
-import Pagination from '@mui/material/Pagination';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
@@ -35,7 +38,7 @@ import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
 import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
 import { formatYyyyMm, formatYyyyMmDd } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function MpAdminPrescriptionFormList() {
@@ -86,119 +89,116 @@ export default function MpAdminPrescriptionFormList() {
     }
   };
 
-  const columns = useMemo<ColumnDef<Sequenced<PrescriptionPartnerResponse>>[]>(
-    () => [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedItems.length === data.length && data.length > 0}
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelectedItems(data.map((item) => item.id));
-              } else {
-                setSelectedItems([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedItems.includes(row.original.id)}
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelectedItems((prev) => [...prev, row.original.id]);
-              } else {
-                setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50
-      },
-      {
-        header: 'No',
-        accessorKey: 'sequence',
-        cell: ({ row }) => row.original.sequence,
-        size: 60
-      },
-      {
-        header: '제약사명',
-        accessorKey: 'drugCompany',
-        cell: ({ row }) => row.original.drugCompany,
-        size: 120
-      },
-      {
-        header: '회사명',
-        accessorKey: 'companyName',
-        cell: ({ row }) => row.original.companyName,
-        size: 120
-      },
-      {
-        header: '거래처코드',
-        accessorKey: 'institutionCode',
-        cell: ({ row }) => row.original.institutionCode,
-        size: 100
-      },
-      {
-        header: '거래처명',
-        accessorKey: 'dealerName',
-        cell: ({ row }) => (
-          <Link to={`/admin/prescription-forms/${row.original.id}/products`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-            {row.original.dealerName}
-          </Link>
-        ),
-        size: 100
-      },
-      {
-        header: '사업자등록번호',
-        accessorKey: 'businessNumber',
-        cell: ({ row }) => row.original.businessNumber,
-        size: 130
-      },
-      {
-        header: '처방일',
-        accessorKey: 'prescriptionMonth',
-        cell: ({ row }) => formatYyyyMm(row.original.prescriptionMonth),
-        size: 100
-      },
-      {
-        header: '접수일',
-        accessorKey: 'settlementMonth',
-        cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
-        size: 100
-      },
-      {
-        header: '입력일',
-        accessorKey: 'inputDate',
-        cell: ({ row }) => formatYyyyMmDd(row.original.inputDate),
-        size: 100
-      },
-      {
-        header: '처방금액',
-        accessorKey: 'amount',
-        cell: ({ row }) => `${row.original.amount.toLocaleString()}`,
-        size: 100
-      },
-      {
-        header: '승인상태',
-        accessorKey: 'status',
-        cell: ({ row }) => {
-          const status = row.original.status;
+  const columns: ColumnDef<Sequenced<PrescriptionPartnerResponse>>[] = [
+    {
+      id: 'select',
+      header: () => (
+        <Checkbox
+          checked={selectedItems.length === data.length && data.length > 0}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems(data.map((item) => item.id));
+            } else {
+              setSelectedItems([]);
+            }
+          }}
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={selectedItems.includes(row.original.id)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems((prev) => [...prev, row.original.id]);
+            } else {
+              setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
+            }
+          }}
+        />
+      ),
+      size: 50
+    },
+    {
+      header: 'No',
+      accessorKey: 'sequence',
+      cell: ({ row }) => row.original.sequence,
+      size: 60
+    },
+    {
+      header: '제약사명',
+      accessorKey: 'drugCompany',
+      cell: ({ row }) => row.original.drugCompany,
+      size: 120
+    },
+    {
+      header: '회사명',
+      accessorKey: 'companyName',
+      cell: ({ row }) => row.original.companyName,
+      size: 120
+    },
+    {
+      header: '거래처코드',
+      accessorKey: 'institutionCode',
+      cell: ({ row }) => row.original.institutionCode,
+      size: 100
+    },
+    {
+      header: '거래처명',
+      accessorKey: 'dealerName',
+      cell: ({ row }) => (
+        <Link to={`/admin/prescription-forms/${row.original.id}/products`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          {row.original.dealerName}
+        </Link>
+      ),
+      size: 100
+    },
+    {
+      header: '사업자등록번호',
+      accessorKey: 'businessNumber',
+      cell: ({ row }) => row.original.businessNumber,
+      size: 130
+    },
+    {
+      header: '처방일',
+      accessorKey: 'prescriptionMonth',
+      cell: ({ row }) => formatYyyyMm(row.original.prescriptionMonth),
+      size: 100
+    },
+    {
+      header: '접수일',
+      accessorKey: 'settlementMonth',
+      cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
+      size: 100
+    },
+    {
+      header: '입력일',
+      accessorKey: 'inputDate',
+      cell: ({ row }) => formatYyyyMmDd(row.original.inputDate),
+      size: 100
+    },
+    {
+      header: '처방금액',
+      accessorKey: 'amount',
+      cell: ({ row }) => `${row.original.amount.toLocaleString()}`,
+      size: 100
+    },
+    {
+      header: '승인상태',
+      accessorKey: 'status',
+      cell: ({ row }) => {
+        const status = row.original.status;
 
-          const labels = {
-            PENDING: '승인대기',
-            IN_PROGRESS: '승인진행중',
-            COMPLETED: '승인완료'
-          };
+        const labels = {
+          PENDING: '승인대기',
+          IN_PROGRESS: '승인진행중',
+          COMPLETED: '승인완료'
+        };
 
-          return labels[status];
-        },
-        size: 80
-      }
-    ],
-    [data, selectedItems]
-  );
+        return labels[status];
+      },
+      size: 80
+    }
+  ];
 
   const table = useReactTable({
     data,
@@ -292,13 +292,8 @@ export default function MpAdminPrescriptionFormList() {
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <Select
-                      name="status"
-                      value={formik.values.status}
-                      onChange={(e) => formik.setFieldValue('status', e.target.value)}
-                      displayEmpty
-                    >
-                      <MenuItem value="">전체</MenuItem>
+                    <InputLabel>상태</InputLabel>
+                    <Select name="status" label="상태" value={formik.values.status} onChange={formik.handleChange}>
                       <MenuItem value={'PENDING'}>승인대기</MenuItem>
                       <MenuItem value={'COMPLETED'}>승인완료</MenuItem>
                     </Select>
@@ -306,14 +301,9 @@ export default function MpAdminPrescriptionFormList() {
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <Select
-                      name="searchType"
-                      value={formik.values.searchType}
-                      onChange={(e) => formik.setFieldValue('searchType', e.target.value)}
-                      displayEmpty
-                    >
-                      <MenuItem value="">회사명</MenuItem>
-                      <MenuItem value={'companyName'}>거래처명</MenuItem>
+                    <InputLabel>검색유형</InputLabel>
+                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
+                      <MenuItem value={'companyName'}>회사명</MenuItem>
                       <MenuItem value={'dealerName'}>딜러명</MenuItem>
                       <MenuItem value={'drugCompany'}>제약사명</MenuItem>
                     </Select>
@@ -329,8 +319,7 @@ export default function MpAdminPrescriptionFormList() {
                   <TextField
                     name="searchKeyword"
                     size="small"
-                    placeholder="검색어를 입력해주세요"
-                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && formik.handleSubmit()}
+                    placeholder="검색어를 입력하세요"
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
@@ -354,14 +343,12 @@ export default function MpAdminPrescriptionFormList() {
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Box>
-                <Typography variant="subtitle1" component="span">
-                  검색결과: {totalElements.toLocaleString()} 건
-                </Typography>
-                <Typography variant="subtitle1" component="span" sx={{ ml: 2 }}>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+                <Typography variant="subtitle1" sx={{ ml: 2 }}>
                   총 처방금액: {data.reduce((sum, item) => sum + item.amount, 0).toLocaleString()}원
                 </Typography>
-              </Box>
+              </Stack>
               <Stack direction="row" spacing={1}>
                 <Button variant="contained" color="success" size="small" onClick={handleApprove} disabled={selectedItems.length === 0}>
                   승인완료

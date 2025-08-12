@@ -1,22 +1,24 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import Chip from '@mui/material/Chip';
-import FormControl from '@mui/material/FormControl';
-import Grid from '@mui/material/Grid';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Pagination from '@mui/material/Pagination';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  Checkbox,
+  Chip,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
@@ -29,9 +31,9 @@ import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
 import { BOARD_TYPE_LABELS } from 'medipanda/ui-labels';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { formatYyyyMmDdHhMm } from '../utils/dateFormat';
+import { formatYyyyMmDdHhMm } from 'medipanda/utils/dateFormat';
 
 export default function MpAdminCommunityPostList() {
   const [data, setData] = useState<Sequenced<BoardPostResponse>[]>([]);
@@ -45,8 +47,7 @@ export default function MpAdminCommunityPostList() {
 
   const formik = useFormik({
     initialValues: {
-      boardType: 'all' as
-        | 'all'
+      boardType: '' as
         | 'ANONYMOUS'
         | 'MR_CSO_MATCHING'
         | 'NOTICE'
@@ -55,7 +56,8 @@ export default function MpAdminCommunityPostList() {
         | 'CSO_A_TO_Z'
         | 'EVENT'
         | 'SALES_AGENCY'
-        | 'PRODUCT',
+        | 'PRODUCT'
+        | '',
       searchType: 'title' as 'title' | 'userId' | 'name' | 'nickname',
       searchKeyword: '',
       startAt: null as Date | null,
@@ -72,117 +74,114 @@ export default function MpAdminCommunityPostList() {
     }
   });
 
-  const columns = useMemo<ColumnDef<Sequenced<BoardPostResponse>>[]>(
-    () => [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedItems.length === data.length && data.length > 0}
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelectedItems(data.map((item) => item.id));
-              } else {
-                setSelectedItems([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedItems.includes(row.original.id)}
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelectedItems((prev) => [...prev, row.original.id]);
-              } else {
-                setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50
+  const columns: ColumnDef<Sequenced<BoardPostResponse>>[] = [
+    {
+      id: 'select',
+      header: () => (
+        <Checkbox
+          checked={selectedItems.length === data.length && data.length > 0}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems(data.map((item) => item.id));
+            } else {
+              setSelectedItems([]);
+            }
+          }}
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={selectedItems.includes(row.original.id)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems((prev) => [...prev, row.original.id]);
+            } else {
+              setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
+            }
+          }}
+        />
+      ),
+      size: 50
+    },
+    {
+      header: 'No',
+      accessorKey: 'sequence',
+      cell: ({ row }) => row.original.sequence,
+      size: 60
+    },
+    {
+      header: '게시판유형',
+      accessorKey: 'boardType',
+      cell: ({ row }) => {
+        const boardType = row.original.boardType;
+        return <Chip label={BOARD_TYPE_LABELS[boardType]} color="primary" variant="light" size="small" />;
       },
-      {
-        header: 'No',
-        accessorKey: 'sequence',
-        cell: ({ row }) => row.original.sequence,
-        size: 60
-      },
-      {
-        header: '게시판유형',
-        accessorKey: 'boardType',
-        cell: ({ row }) => {
-          const boardType = row.original.boardType;
-          return <Chip label={BOARD_TYPE_LABELS[boardType]} color="primary" variant="light" size="small" />;
-        },
-        size: 120
-      },
-      {
-        header: '아이디',
-        accessorKey: 'userId',
-        cell: ({ row }) => row.original.userId,
-        size: 100
-      },
-      {
-        header: '회원명',
-        accessorKey: 'name',
-        cell: ({ row }) => row.original.name,
-        size: 100
-      },
-      {
-        header: '닉네임',
-        accessorKey: 'nickname',
-        cell: ({ row }) => row.original.nickname,
-        size: 100
-      },
-      {
-        header: '파트너사 계약여부',
-        accessorKey: 'memberType',
-        cell: ({ row }) => (row.original.memberType !== 'NONE' ? 'Y' : 'N'),
-        size: 120
-      },
-      {
-        header: '제목',
-        accessorKey: 'title',
-        cell: ({ row }) => (
-          <Link to={`/admin/community-posts/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-            {row.original.title}
-          </Link>
-        )
-      },
-      {
-        header: '좋아요 수',
-        accessorKey: 'likesCount',
-        cell: ({ row }) => row.original.likesCount,
-        size: 100
-      },
-      {
-        header: '댓글 수',
-        accessorKey: 'commentCount',
-        cell: ({ row }) => row.original.commentCount,
-        size: 100
-      },
-      {
-        header: '조회수',
-        accessorKey: 'viewsCount',
-        cell: ({ row }) => row.original.viewsCount,
-        size: 100
-      },
-      {
-        header: '블라인드 여부',
-        accessorKey: 'isBlind',
-        cell: ({ row }) => (row.original.isBlind ? 'Y' : 'N'),
-        size: 120
-      },
-      {
-        header: '등록일',
-        accessorKey: 'createdAt',
-        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.createdAt),
-        size: 150
-      }
-    ],
-    [data, selectedItems]
-  );
+      size: 120
+    },
+    {
+      header: '아이디',
+      accessorKey: 'userId',
+      cell: ({ row }) => row.original.userId,
+      size: 100
+    },
+    {
+      header: '회원명',
+      accessorKey: 'name',
+      cell: ({ row }) => row.original.name,
+      size: 100
+    },
+    {
+      header: '닉네임',
+      accessorKey: 'nickname',
+      cell: ({ row }) => row.original.nickname,
+      size: 100
+    },
+    {
+      header: '파트너사 계약여부',
+      accessorKey: 'memberType',
+      cell: ({ row }) => (row.original.memberType !== 'NONE' ? 'Y' : 'N'),
+      size: 120
+    },
+    {
+      header: '제목',
+      accessorKey: 'title',
+      cell: ({ row }) => (
+        <Link to={`/admin/community-posts/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          {row.original.title}
+        </Link>
+      )
+    },
+    {
+      header: '좋아요 수',
+      accessorKey: 'likesCount',
+      cell: ({ row }) => row.original.likesCount,
+      size: 100
+    },
+    {
+      header: '댓글 수',
+      accessorKey: 'commentCount',
+      cell: ({ row }) => row.original.commentCount,
+      size: 100
+    },
+    {
+      header: '조회수',
+      accessorKey: 'viewsCount',
+      cell: ({ row }) => row.original.viewsCount,
+      size: 100
+    },
+    {
+      header: '블라인드 여부',
+      accessorKey: 'isBlind',
+      cell: ({ row }) => (row.original.isBlind ? 'Y' : 'N'),
+      size: 120
+    },
+    {
+      header: '등록일',
+      accessorKey: 'createdAt',
+      cell: ({ row }) => formatYyyyMmDdHhMm(row.original.createdAt),
+      size: 150
+    }
+  ];
 
   const table = useReactTable({
     data,
@@ -203,7 +202,7 @@ export default function MpAdminCommunityPostList() {
     setLoading(true);
     try {
       const response = await getBoards({
-        boardType: formik.values.boardType === 'all' ? undefined : formik.values.boardType,
+        boardType: formik.values.boardType !== '' ? formik.values.boardType : undefined,
         userId: formik.values.searchType === 'userId' ? formik.values.searchKeyword : undefined,
         name: formik.values.searchType === 'name' ? formik.values.searchKeyword : undefined,
         nickname: formik.values.searchType === 'nickname' ? formik.values.searchKeyword : undefined,
@@ -282,13 +281,7 @@ export default function MpAdminCommunityPostList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>게시판유형</InputLabel>
-                    <Select
-                      name="boardType"
-                      label="게시판유형"
-                      value={formik.values.boardType}
-                      onChange={(e) => formik.setFieldValue('boardType', e.target.value)}
-                    >
-                      <MenuItem value="all">전체</MenuItem>
+                    <Select name="boardType" label="게시판유형" value={formik.values.boardType} onChange={formik.handleChange}>
                       <MenuItem value={'ANONYMOUS'}>익명게시판</MenuItem>
                       <MenuItem value={'MR_CSO_MATCHING'}>MR-CSO 매칭</MenuItem>
                     </Select>
@@ -296,17 +289,12 @@ export default function MpAdminCommunityPostList() {
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <InputLabel>검색 기준</InputLabel>
-                    <Select
-                      name="searchType"
-                      label="검색 기준"
-                      value={formik.values.searchType}
-                      onChange={(e) => formik.setFieldValue('searchType', e.target.value)}
-                    >
-                      <MenuItem value="title">제목</MenuItem>
-                      <MenuItem value="userId">아이디</MenuItem>
-                      <MenuItem value="name">회원명</MenuItem>
-                      <MenuItem value="nickname">닉네임</MenuItem>
+                    <InputLabel>검색유형</InputLabel>
+                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
+                      <MenuItem value={'title'}>제목</MenuItem>
+                      <MenuItem value={'userId'}>아이디</MenuItem>
+                      <MenuItem value={'name'}>회원명</MenuItem>
+                      <MenuItem value={'nickname'}>닉네임</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
@@ -321,21 +309,18 @@ export default function MpAdminCommunityPostList() {
                     name="searchKeyword"
                     size="small"
                     placeholder="검색어를 입력하세요"
-                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && formik.handleSubmit()}
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
                   />
                 </SearchFilterItem>
                 <SearchFilterActions>
-                  <Stack direction="row" spacing={1}>
-                    <Button variant="contained" color="primary" size="small" type="submit">
-                      검색
-                    </Button>
-                    <Button variant="outlined" color="inherit" size="small" onClick={handleReset}>
-                      초기화
-                    </Button>
-                  </Stack>
+                  <Button variant="contained" size="small" type="submit">
+                    검색
+                  </Button>
+                  <Button variant="outlined" size="small" onClick={handleReset}>
+                    초기화
+                  </Button>
                 </SearchFilterActions>
               </SearchFilterBar>
             </form>
@@ -347,7 +332,9 @@ export default function MpAdminCommunityPostList() {
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              </Stack>
               <Stack direction="row" spacing={1}>
                 <Button variant="contained" color="success" size="small" disabled={selectedItems.length === 0} onClick={handleBlind}>
                   블라인드

@@ -1,20 +1,23 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
-import FormControl from '@mui/material/FormControl';
-import Grid from '@mui/material/Grid';
-import MenuItem from '@mui/material/MenuItem';
-import Pagination from '@mui/material/Pagination';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  Chip,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
@@ -25,11 +28,10 @@ import { MEMBER_ACCOUNT_STATUS_LABELS, MEMBER_ROLE_LABELS } from 'medipanda/ui-l
 import { backendNotImplemented } from 'medipanda/utils/backendNotImplemented';
 import { formatYyyyMmDdHhMm } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function MpAdminAdminList() {
-  const navigate = useNavigate();
   const [data, setData] = useState<Sequenced<MemberResponse>[]>([]);
   const [loading, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
@@ -51,65 +53,66 @@ export default function MpAdminAdminList() {
     }
   });
 
-  const columns = useMemo<ColumnDef<Sequenced<MemberResponse>>[]>(
-    () => [
-      {
-        header: 'No',
-        accessorKey: 'sequence',
-        cell: ({ row }) => row.original.sequence,
-        size: 60
+  const handleReset = () => {
+    formik.resetForm();
+  };
+
+  const columns: ColumnDef<Sequenced<MemberResponse>>[] = [
+    {
+      header: 'No',
+      accessorKey: 'sequence',
+      cell: ({ row }) => row.original.sequence,
+      size: 60
+    },
+    {
+      header: '아이디',
+      accessorKey: 'userId',
+      cell: ({ row }) => row.original.userId,
+      size: 120
+    },
+    {
+      header: '관리자',
+      accessorKey: 'name',
+      cell: ({ row }) => (
+        <Link to={`/admin/admins/${row.original.userId}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          {row.original.name}
+        </Link>
+      ),
+      size: 120
+    },
+    {
+      header: '이메일',
+      accessorKey: 'email',
+      cell: ({ row }) => row.original.email,
+      size: 200
+    },
+    {
+      header: '연락처',
+      accessorKey: 'phoneNumber',
+      cell: ({ row }) => row.original.phoneNumber,
+      size: 150
+    },
+    {
+      header: '권한',
+      cell: ({ row }) => {
+        return MEMBER_ROLE_LABELS[row.original.role];
       },
-      {
-        header: '아이디',
-        accessorKey: 'userId',
-        cell: ({ row }) => row.original.userId,
-        size: 120
+      size: 100
+    },
+    {
+      header: '상태',
+      cell: ({ row }) => {
+        return <Chip label={MEMBER_ACCOUNT_STATUS_LABELS[row.original.accountStatus]} color="success" variant="light" size="small" />;
       },
-      {
-        header: '관리자',
-        accessorKey: 'name',
-        cell: ({ row }) => (
-          <Link to={`/admin/admins/${row.original.userId}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-            {row.original.name}
-          </Link>
-        ),
-        size: 120
-      },
-      {
-        header: '이메일',
-        accessorKey: 'email',
-        cell: ({ row }) => row.original.email,
-        size: 200
-      },
-      {
-        header: '연락처',
-        accessorKey: 'phoneNumber',
-        cell: ({ row }) => row.original.phoneNumber,
-        size: 150
-      },
-      {
-        header: '권한',
-        cell: ({ row }) => {
-          return MEMBER_ROLE_LABELS[row.original.role];
-        },
-        size: 100
-      },
-      {
-        header: '상태',
-        cell: ({ row }) => {
-          return <Chip label={MEMBER_ACCOUNT_STATUS_LABELS[row.original.accountStatus]} color="success" variant="light" size="small" />;
-        },
-        size: 80
-      },
-      {
-        header: '등록일',
-        accessorKey: 'registrationDate',
-        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.registrationDate),
-        size: 150
-      }
-    ],
-    []
-  );
+      size: 80
+    },
+    {
+      header: '등록일',
+      accessorKey: 'registrationDate',
+      cell: ({ row }) => formatYyyyMmDdHhMm(row.original.registrationDate),
+      size: 150
+    }
+  ];
 
   const table = useReactTable({
     data,
@@ -167,16 +170,12 @@ export default function MpAdminAdminList() {
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <Select
-                      name="type"
-                      value={formik.values.type}
-                      onChange={(e) => formik.setFieldValue('type', e.target.value)}
-                      displayEmpty
-                    >
-                      <MenuItem value="name">관리자명</MenuItem>
-                      <MenuItem value="userId">아이디</MenuItem>
-                      <MenuItem value="email">이메일</MenuItem>
-                      <MenuItem value="phoneNumber">연락처</MenuItem>
+                    <InputLabel>검색유형</InputLabel>
+                    <Select name="type" label="검색유형" value={formik.values.type} onChange={formik.handleChange}>
+                      <MenuItem value={'name'}>관리자명</MenuItem>
+                      <MenuItem value={'userId'}>아이디</MenuItem>
+                      <MenuItem value={'email'}>이메일</MenuItem>
+                      <MenuItem value={'phoneNumber'}>연락처</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
@@ -185,7 +184,6 @@ export default function MpAdminAdminList() {
                     name="keyword"
                     size="small"
                     placeholder="검색어를 입력하세요"
-                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && formik.handleSubmit()}
                     fullWidth
                     value={formik.values.keyword}
                     onChange={formik.handleChange}
@@ -194,6 +192,9 @@ export default function MpAdminAdminList() {
                 <SearchFilterActions>
                   <Button variant="contained" size="small" type="submit">
                     검색
+                  </Button>
+                  <Button variant="outlined" size="small" onClick={handleReset}>
+                    초기화
                   </Button>
                 </SearchFilterActions>
               </SearchFilterBar>
@@ -206,10 +207,12 @@ export default function MpAdminAdminList() {
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              </Stack>
               <Stack direction="row" spacing={1}>
-                <Button variant="contained" size="small" color="success" onClick={() => navigate('/admin/admins/new')}>
-                  등록하기
+                <Button variant="contained" size="small" color="success" component={Link} to="/admin/admins/new">
+                  등록
                 </Button>
               </Stack>
             </Stack>

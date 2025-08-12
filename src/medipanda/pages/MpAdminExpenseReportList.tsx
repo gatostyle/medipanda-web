@@ -1,19 +1,22 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import Grid from '@mui/material/Grid';
-import MenuItem from '@mui/material/MenuItem';
-import Pagination from '@mui/material/Pagination';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
@@ -25,7 +28,7 @@ import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipand
 import { EXPENSE_REPORT_CLASSIFICATION_LABELS, EXPENSE_REPORT_STATUS_LABELS } from 'medipanda/ui-labels';
 import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function MpAdminExpenseReportList() {
   const [data, setData] = useState<Sequenced<ExpenseReportResponse>[]>([]);
@@ -71,6 +74,9 @@ export default function MpAdminExpenseReportList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch expense reports:', error);
+      setData([]);
+      setTotalElements(0);
+      setTotalPages(0);
     } finally {
       setLoading(false);
     }
@@ -80,83 +86,78 @@ export default function MpAdminExpenseReportList() {
     fetchData();
   }, [formik.values.pageIndex, formik.values.pageSize]);
 
-  const columns = useMemo<ColumnDef<Sequenced<ExpenseReportResponse>>[]>(
-    () => [
-      {
-        header: 'No',
-        accessorKey: 'sequence',
-        cell: ({ row }) => row.original.sequence,
-        size: 60
+  const handleReset = () => {
+    formik.resetForm();
+  };
+
+  const columns: ColumnDef<Sequenced<ExpenseReportResponse>>[] = [
+    {
+      header: 'No',
+      accessorKey: 'sequence',
+      cell: ({ row }) => row.original.sequence,
+      size: 60
+    },
+    {
+      header: '아이디',
+      accessorKey: 'userId',
+      cell: ({ row }) => row.original.userId,
+      size: 100
+    },
+    {
+      header: '회사명',
+      accessorKey: 'companyName',
+      cell: ({ row }) => row.original.companyName,
+      size: 120
+    },
+    {
+      header: '제품명',
+      accessorKey: 'productName',
+      cell: ({ row }) => row.original.productName,
+      size: 150
+    },
+    {
+      header: '유형',
+      accessorKey: 'reportType',
+      cell: ({ row }) => {
+        const value = row.original.reportType;
+        return EXPENSE_REPORT_CLASSIFICATION_LABELS[value];
       },
-      {
-        header: '아이디',
-        accessorKey: 'userId',
-        cell: ({ row }) => row.original.userId,
-        size: 100
+      size: 150
+    },
+    {
+      header: '시행일시',
+      accessorKey: 'eventStartAt',
+      cell: ({ row }) => {
+        return `${formatYyyyMmDd(row.original.eventStartAt!)} ~ ${formatYyyyMmDd(row.original.eventEndAt!)}`;
       },
-      {
-        header: '회사명',
-        accessorKey: 'companyName',
-        cell: ({ row }) => row.original.companyName,
-        size: 120
-      },
-      {
-        header: '제품명',
-        accessorKey: 'productName',
-        cell: ({ row }) => row.original.productName,
-        size: 150
-      },
-      {
-        header: '유형',
-        accessorKey: 'reportType',
-        cell: ({ row }) => {
-          const value = row.original.reportType;
-          return EXPENSE_REPORT_CLASSIFICATION_LABELS[value];
-        },
-        size: 80
-      },
-      {
-        header: '유형',
-        accessorKey: 'reportType',
-        cell: ({ row }) => row.original.reportType,
-        size: 150
-      },
-      {
-        header: '시행일시',
-        accessorKey: 'eventStartAt',
-        cell: ({ row }) => {
-          return `${formatYyyyMmDd(row.original.eventStartAt!)} ~ ${formatYyyyMmDd(row.original.eventEndAt!)}`;
-        },
-        size: 100
-      },
-      {
-        header: '지원금액',
-        accessorKey: 'supportAmount',
-        cell: ({ row }) => `${row.original.supportAmount.toLocaleString()}원`,
-        size: 120
-      },
-      {
-        header: '신고상태',
-        accessorKey: 'status',
-        cell: ({ row }) => EXPENSE_REPORT_STATUS_LABELS[row.original.status],
-        size: 100
-      }
-    ],
-    []
-  );
+      size: 100
+    },
+    {
+      header: '지원금액',
+      accessorKey: 'supportAmount',
+      cell: ({ row }) => `${row.original.supportAmount.toLocaleString()}원`,
+      size: 120
+    },
+    {
+      header: '신고상태',
+      accessorKey: 'status',
+      cell: ({ row }) => EXPENSE_REPORT_STATUS_LABELS[row.original.status],
+      size: 100
+    }
+  ];
 
   const table = useReactTable({
     data,
     columns,
-    pageCount: totalPages,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     state: {
       pagination: {
         pageIndex: formik.values.pageIndex,
         pageSize: formik.values.pageSize
       }
     },
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    pageCount: totalPages,
     manualPagination: true
   });
 
@@ -175,8 +176,8 @@ export default function MpAdminExpenseReportList() {
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <Select name="reportStatus" value={formik.values.reportStatus} onChange={formik.handleChange} displayEmpty>
-                      <MenuItem value="all">전체</MenuItem>
+                    <InputLabel>신고상태</InputLabel>
+                    <Select name="reportStatus" label="신고상태" value={formik.values.reportStatus} onChange={formik.handleChange}>
                       <MenuItem value={'PENDING'}>{EXPENSE_REPORT_STATUS_LABELS['PENDING']}</MenuItem>
                       <MenuItem value={'COMPLETED'}>{EXPENSE_REPORT_STATUS_LABELS['COMPLETED']}</MenuItem>
                     </Select>
@@ -184,7 +185,8 @@ export default function MpAdminExpenseReportList() {
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <Select name="searchCriteria" value={formik.values.searchCriteria} onChange={formik.handleChange} displayEmpty>
+                    <InputLabel>검색유형</InputLabel>
+                    <Select name="searchCriteria" label="검색유형" value={formik.values.searchCriteria} onChange={formik.handleChange}>
                       <MenuItem value={'companyName'}>회사명</MenuItem>
                       <MenuItem value={'userId'}>아이디</MenuItem>
                       <MenuItem value={'productName'}>제품명</MenuItem>
@@ -205,12 +207,14 @@ export default function MpAdminExpenseReportList() {
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
                     placeholder="검색어를 입력하세요"
-                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && formik.handleSubmit()}
                   />
                 </SearchFilterItem>
                 <SearchFilterActions>
                   <Button type="submit" variant="contained" size="small">
                     검색
+                  </Button>
+                  <Button variant="outlined" color="inherit" size="small" onClick={handleReset}>
+                    초기화
                   </Button>
                 </SearchFilterActions>
               </SearchFilterBar>
@@ -223,7 +227,9 @@ export default function MpAdminExpenseReportList() {
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="subtitle1">검색결과: {totalElements} 건</Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              </Stack>
               <Stack direction="row" spacing={1}>
                 <Button
                   variant="contained"
@@ -279,7 +285,7 @@ export default function MpAdminExpenseReportList() {
                       </TableRow>
                     ) : (
                       table.getRowModel().rows.map((row) => (
-                        <TableRow key={row.id} hover>
+                        <TableRow key={row.id}>
                           {row.getVisibleCells().map((cell) => (
                             <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                           ))}

@@ -1,21 +1,23 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControl from '@mui/material/FormControl';
-import Grid from '@mui/material/Grid';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Pagination from '@mui/material/Pagination';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
@@ -27,7 +29,7 @@ import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
 import { BOARD_TYPE_LABELS, EXPOSURE_RANGE_LABELS, NOTICE_TYPE_LABELS } from 'medipanda/ui-labels';
 import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 interface BoardPostResponseWithMockData extends BoardPostResponse {
@@ -69,100 +71,97 @@ export default function MpAdminNoticeList() {
     }
   });
 
-  const columns = useMemo<ColumnDef<Sequenced<BoardPostResponseWithMockData>>[]>(
-    () => [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedItems.length === data.length && data.length > 0}
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelectedItems(data.map((item) => item.id));
-              } else {
-                setSelectedItems([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedItems.includes(row.original.id)}
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelectedItems((prev) => [...prev, row.original.id]);
-              } else {
-                setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50
+  const columns: ColumnDef<Sequenced<BoardPostResponseWithMockData>>[] = [
+    {
+      id: 'select',
+      header: () => (
+        <Checkbox
+          checked={selectedItems.length === data.length && data.length > 0}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems(data.map((item) => item.id));
+            } else {
+              setSelectedItems([]);
+            }
+          }}
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={selectedItems.includes(row.original.id)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems((prev) => [...prev, row.original.id]);
+            } else {
+              setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
+            }
+          }}
+        />
+      ),
+      size: 50
+    },
+    {
+      header: 'No',
+      accessorKey: 'sequence',
+      cell: ({ row }) => row.original.sequence,
+      size: 60
+    },
+    {
+      header: '게시판',
+      accessorKey: 'boardType',
+      cell: ({ row }) => BOARD_TYPE_LABELS[row.original.boardType],
+      size: 100
+    },
+    {
+      header: '공지분류',
+      accessorKey: 'noticeType',
+      cell: ({ row }) => {
+        const noticeType = row.original.noticeType;
+        if (!noticeType) return '-';
+        return NOTICE_TYPE_LABELS[noticeType];
       },
-      {
-        header: 'No',
-        accessorKey: 'sequence',
-        cell: ({ row }) => row.original.sequence,
-        size: 60
-      },
-      {
-        header: '게시판',
-        accessorKey: 'boardType',
-        cell: ({ row }) => BOARD_TYPE_LABELS[row.original.boardType],
-        size: 100
-      },
-      {
-        header: '공지분류',
-        accessorKey: 'noticeType',
-        cell: ({ row }) => {
-          const noticeType = row.original.noticeType;
-          if (!noticeType) return '-';
-          return NOTICE_TYPE_LABELS[noticeType];
-        },
-        size: 100
-      },
-      {
-        header: '제약사명',
-        accessorKey: 'drugCompany',
-        cell: ({ row }) => row.original.drugCompany,
-        size: 120
-      },
-      {
-        header: '제목',
-        accessorKey: 'title',
-        cell: ({ row }) => (
-          <Link to={`/admin/notices/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-            {row.original.title}
-          </Link>
-        )
-      },
-      {
-        header: '상태',
-        accessorKey: 'isExposed',
-        cell: ({ row }) => (row.original.isExposed ? '노출' : '미노출'),
-        size: 80
-      },
-      {
-        header: '노출범위',
-        accessorKey: 'exposureRange',
-        cell: ({ row }) => EXPOSURE_RANGE_LABELS[row.original.exposureRange],
-        size: 80
-      },
-      {
-        header: '조회수',
-        accessorKey: 'viewsCount',
-        cell: ({ row }) => row.original.viewsCount.toLocaleString(),
-        size: 80
-      },
-      {
-        header: '작성일',
-        accessorKey: 'createdAt',
-        cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
-        size: 100
-      }
-    ],
-    [data, selectedItems]
-  );
+      size: 100
+    },
+    {
+      header: '제약사명',
+      accessorKey: 'drugCompany',
+      cell: ({ row }) => row.original.drugCompany,
+      size: 120
+    },
+    {
+      header: '제목',
+      accessorKey: 'title',
+      cell: ({ row }) => (
+        <Link to={`/admin/notices/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          {row.original.title}
+        </Link>
+      )
+    },
+    {
+      header: '상태',
+      accessorKey: 'isExposed',
+      cell: ({ row }) => (row.original.isExposed ? '노출' : '미노출'),
+      size: 80
+    },
+    {
+      header: '노출범위',
+      accessorKey: 'exposureRange',
+      cell: ({ row }) => EXPOSURE_RANGE_LABELS[row.original.exposureRange],
+      size: 80
+    },
+    {
+      header: '조회수',
+      accessorKey: 'viewsCount',
+      cell: ({ row }) => row.original.viewsCount.toLocaleString(),
+      size: 80
+    },
+    {
+      header: '작성일',
+      accessorKey: 'createdAt',
+      cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
+      size: 100
+    }
+  ];
 
   const table = useReactTable({
     data,
@@ -203,6 +202,9 @@ export default function MpAdminNoticeList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch notice list:', error);
+      setData([]);
+      setTotalElements(0);
+      setTotalPages(0);
     } finally {
       setLoading(false);
     }
@@ -223,6 +225,10 @@ export default function MpAdminNoticeList() {
     };
     fetchManufacturers();
   }, []);
+
+  const handleReset = () => {
+    formik.resetForm();
+  };
 
   const handleDelete = () => {
     const count = selectedItems.length;
@@ -265,24 +271,17 @@ export default function MpAdminNoticeList() {
                       name="isExposed"
                       label="상태(전체)"
                       value={formik.values.isExposed}
-                      onChange={(e) => formik.setFieldValue('isExposed', e.target.value === '' ? '' : e.target.value === 'true')}
+                      onChange={(e) => formik.setFieldValue('isExposed', e.target.value === 'true')}
                     >
-                      <MenuItem value="">전체</MenuItem>
-                      <MenuItem value="true">노출</MenuItem>
-                      <MenuItem value="false">미노출</MenuItem>
+                      <MenuItem value={'true'}>노출</MenuItem>
+                      <MenuItem value={'false'}>미노출</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>제약사명</InputLabel>
-                    <Select
-                      name="drugCompany"
-                      label="제약사명"
-                      value={formik.values.drugCompany}
-                      onChange={(e) => formik.setFieldValue('drugCompany', e.target.value)}
-                    >
-                      <MenuItem value="">전체</MenuItem>
+                    <Select name="drugCompany" label="제약사명" value={formik.values.drugCompany} onChange={formik.handleChange}>
                       {manufacturerOptions.map((manufacturer) => (
                         <MenuItem key={manufacturer} value={manufacturer}>
                           {manufacturer}
@@ -302,7 +301,6 @@ export default function MpAdminNoticeList() {
                     name="searchKeyword"
                     size="small"
                     placeholder="검색어를 입력하세요"
-                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && formik.handleSubmit()}
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
@@ -312,7 +310,7 @@ export default function MpAdminNoticeList() {
                   <Button variant="contained" size="small" type="submit">
                     검색
                   </Button>
-                  <Button variant="outlined" size="small" onClick={() => formik.resetForm()}>
+                  <Button variant="outlined" size="small" onClick={handleReset}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -326,7 +324,9 @@ export default function MpAdminNoticeList() {
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              </Stack>
               <Stack direction="row" spacing={1}>
                 <Button variant="contained" color="error" size="small" disabled={selectedItems.length === 0} onClick={handleDelete}>
                   삭제

@@ -1,20 +1,22 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import Grid from '@mui/material/Grid';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Pagination from '@mui/material/Pagination';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
@@ -22,7 +24,7 @@ import { useFormik } from 'formik';
 import { BoardMemberStatsResponse, getBoardMembers } from 'medipanda/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface BoardMemberStatsResponseWithMockData extends BoardMemberStatsResponse {
   nickname: string;
@@ -45,8 +47,8 @@ export default function MpAdminCommunityUserList() {
 
   const formik = useFormik({
     initialValues: {
-      contractStatus: 'all' as 'all' | 'CONTRACT' | 'NON_CONTRACT',
-      searchField: 'userId' as 'userId' | 'nickname',
+      contractStatus: '' as 'CONTRACT' | 'NON_CONTRACT' | '',
+      searchType: 'userId' as 'userId' | 'nickname',
       searchKeyword: '',
       pageIndex: 0,
       pageSize: 20
@@ -64,12 +66,12 @@ export default function MpAdminCommunityUserList() {
     setLoading(true);
     try {
       const response = await getBoardMembers({
-        userId: formik.values.searchField === 'userId' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
+        userId: formik.values.searchType === 'userId' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
         name: undefined,
-        nickname: formik.values.searchField === 'nickname' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
+        nickname: formik.values.searchType === 'nickname' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
         phoneNumber: undefined,
         email: undefined,
-        contractStatus: formik.values.contractStatus !== 'all' ? formik.values.contractStatus : undefined,
+        contractStatus: formik.values.contractStatus !== '' ? formik.values.contractStatus : undefined,
         startAt: undefined,
         endAt: undefined,
         filterDeleted: undefined,
@@ -82,6 +84,9 @@ export default function MpAdminCommunityUserList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch board members:', error);
+      setData([]);
+      setTotalElements(0);
+      setTotalPages(0);
     } finally {
       setLoading(false);
     }
@@ -91,96 +96,97 @@ export default function MpAdminCommunityUserList() {
     fetchData();
   }, [formik.values.pageIndex, formik.values.pageSize]);
 
-  const columns = useMemo<ColumnDef<Sequenced<BoardMemberStatsResponseWithMockData>>[]>(
-    () => [
-      {
-        header: 'No',
-        accessorKey: 'sequence',
-        cell: ({ row }) => row.original.sequence,
-        size: 60
-      },
-      {
-        header: '회원번호',
-        accessorKey: 'id',
-        cell: ({ row }) => row.original.id,
-        size: 100
-      },
-      {
-        header: '아이디',
-        accessorKey: 'userId',
-        cell: ({ row }) => row.original.userId,
-        size: 120
-      },
-      {
-        header: '회원명',
-        accessorKey: 'name',
-        cell: ({ row }) => row.original.name,
-        size: 100
-      },
-      {
-        header: '닉네임',
-        accessorKey: 'nickname',
-        cell: ({ row }) => row.original.nickname,
-        size: 120
-      },
-      {
-        header: '휴대폰번호',
-        accessorKey: 'phoneNumber',
-        cell: ({ row }) => row.original.phoneNumber,
-        size: 130
-      },
-      {
-        header: '이메일',
-        accessorKey: 'email',
-        cell: ({ row }) => row.original.email,
-        size: 200
-      },
-      {
-        header: '파트너사 계약여부',
-        accessorKey: 'contractStatus',
-        cell: ({ row }) => (row.original.contractStatus === 'CONTRACT' ? '계약' : '미계약'),
-        size: 130
-      },
-      {
-        header: '작성글 수',
-        accessorKey: 'postCount',
-        cell: ({ row }) => row.original.postCount,
-        size: 100
-      },
-      {
-        header: '댓글 수',
-        accessorKey: 'commentCount',
-        cell: ({ row }) => row.original.commentCount,
-        size: 100
-      },
-      {
-        header: '좋아요 수',
-        accessorKey: 'totalLikes',
-        cell: ({ row }) => row.original.totalLikes,
-        size: 100
-      },
-      {
-        header: '블라인드 글 수',
-        accessorKey: 'blindPostCount',
-        cell: ({ row }) => row.original.blindPostCount,
-        size: 120
-      }
-    ],
-    []
-  );
+  const handleReset = () => {
+    formik.resetForm();
+  };
+
+  const columns: ColumnDef<Sequenced<BoardMemberStatsResponseWithMockData>>[] = [
+    {
+      header: 'No',
+      accessorKey: 'sequence',
+      cell: ({ row }) => row.original.sequence,
+      size: 60
+    },
+    {
+      header: '회원번호',
+      accessorKey: 'id',
+      cell: ({ row }) => row.original.id,
+      size: 100
+    },
+    {
+      header: '아이디',
+      accessorKey: 'userId',
+      cell: ({ row }) => row.original.userId,
+      size: 120
+    },
+    {
+      header: '회원명',
+      accessorKey: 'name',
+      cell: ({ row }) => row.original.name,
+      size: 100
+    },
+    {
+      header: '닉네임',
+      accessorKey: 'nickname',
+      cell: ({ row }) => row.original.nickname,
+      size: 120
+    },
+    {
+      header: '휴대폰번호',
+      accessorKey: 'phoneNumber',
+      cell: ({ row }) => row.original.phoneNumber,
+      size: 130
+    },
+    {
+      header: '이메일',
+      accessorKey: 'email',
+      cell: ({ row }) => row.original.email,
+      size: 200
+    },
+    {
+      header: '파트너사 계약여부',
+      accessorKey: 'contractStatus',
+      cell: ({ row }) => (row.original.contractStatus === 'CONTRACT' ? '계약' : '미계약'),
+      size: 130
+    },
+    {
+      header: '작성글 수',
+      accessorKey: 'postCount',
+      cell: ({ row }) => row.original.postCount,
+      size: 100
+    },
+    {
+      header: '댓글 수',
+      accessorKey: 'commentCount',
+      cell: ({ row }) => row.original.commentCount,
+      size: 100
+    },
+    {
+      header: '좋아요 수',
+      accessorKey: 'totalLikes',
+      cell: ({ row }) => row.original.totalLikes,
+      size: 100
+    },
+    {
+      header: '블라인드 글 수',
+      accessorKey: 'blindPostCount',
+      cell: ({ row }) => row.original.blindPostCount,
+      size: 120
+    }
+  ];
 
   const table = useReactTable({
     data,
     columns,
-    pageCount: totalPages,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     state: {
       pagination: {
         pageIndex: formik.values.pageIndex,
         pageSize: formik.values.pageSize
       }
     },
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    pageCount: totalPages,
     manualPagination: true
   });
 
@@ -198,7 +204,7 @@ export default function MpAdminCommunityUserList() {
             <form onSubmit={formik.handleSubmit}>
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth>
+                  <FormControl fullWidth size="small">
                     <InputLabel>파트너사 계약여부</InputLabel>
                     <Select
                       name="contractStatus"
@@ -207,24 +213,17 @@ export default function MpAdminCommunityUserList() {
                       label="파트너사 계약여부"
                       size="small"
                     >
-                      <MenuItem value="all">전체</MenuItem>
                       <MenuItem value={'CONTRACT'}>계약</MenuItem>
                       <MenuItem value={'NON_CONTRACT'}>미계약</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth>
-                    <InputLabel>회원번호</InputLabel>
-                    <Select
-                      name="searchField"
-                      value={formik.values.searchField}
-                      onChange={formik.handleChange}
-                      label="회원번호"
-                      size="small"
-                    >
-                      <MenuItem value="userId">아이디</MenuItem>
-                      <MenuItem value="nickname">닉네임</MenuItem>
+                  <FormControl fullWidth size="small">
+                    <InputLabel>검색유형</InputLabel>
+                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange} label="검색유형" size="small">
+                      <MenuItem value={'userId'}>아이디</MenuItem>
+                      <MenuItem value={'nickname'}>닉네임</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
@@ -239,20 +238,12 @@ export default function MpAdminCommunityUserList() {
                   />
                 </SearchFilterItem>
                 <SearchFilterActions>
-                  <Stack direction="row" spacing={1}>
-                    <Button type="submit" variant="contained" size="small">
-                      검색
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      onClick={() => {
-                        formik.resetForm();
-                      }}
-                    >
-                      초기화
-                    </Button>
-                  </Stack>
+                  <Button type="submit" variant="contained" size="small">
+                    검색
+                  </Button>
+                  <Button variant="outlined" size="small" onClick={handleReset}>
+                    초기화
+                  </Button>
                 </SearchFilterActions>
               </SearchFilterBar>
             </form>
@@ -264,7 +255,9 @@ export default function MpAdminCommunityUserList() {
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              </Stack>
             </Stack>
 
             <ScrollX>
@@ -293,14 +286,14 @@ export default function MpAdminCommunityUserList() {
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body1" color="text.secondary">
+                          <Typography variant="body2" color="text.secondary">
                             검색 결과가 없습니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : (
                       table.getRowModel().rows.map((row) => (
-                        <TableRow key={row.id} hover>
+                        <TableRow key={row.id}>
                           {row.getVisibleCells().map((cell) => (
                             <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                           ))}

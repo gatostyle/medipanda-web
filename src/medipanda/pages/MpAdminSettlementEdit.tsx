@@ -23,11 +23,11 @@ import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { ArrowLeft, DocumentDownload } from 'iconsax-react';
+import { getDownloadSettlementPartnerSummaryExcel, getSettlementPartnerSummary, SettlementPartnerResponse } from 'medipanda/backend';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { getDownloadSettlementPartnerSummaryExcel, getSettlementPartnerSummary, SettlementPartnerResponse } from 'medipanda/backend';
 
 export default function MpAdminSettlementEdit() {
   const navigate = useNavigate();
@@ -48,7 +48,6 @@ export default function MpAdminSettlementEdit() {
       searchKeyword: ''
     },
     onSubmit: (values) => {
-      console.log('Search:', values);
       if (id) {
         fetchSettlementData();
       }

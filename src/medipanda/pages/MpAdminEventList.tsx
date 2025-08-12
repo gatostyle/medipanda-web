@@ -1,21 +1,24 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import Chip from '@mui/material/Chip';
-import FormControl from '@mui/material/FormControl';
-import Grid from '@mui/material/Grid';
-import MenuItem from '@mui/material/MenuItem';
-import Pagination from '@mui/material/Pagination';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  Checkbox,
+  Chip,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
@@ -31,7 +34,7 @@ import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDi
 import { EVENT_STATUS_LABELS } from 'medipanda/ui-labels';
 import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function MpAdminEventList() {
@@ -39,7 +42,7 @@ export default function MpAdminEventList() {
   const [loading, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const notImplementedDialog = useMpNotImplementedDialog();
   const infoDialog = useMpInfoDialog();
   const errorDialog = useMpErrorDialog();
@@ -47,7 +50,7 @@ export default function MpAdminEventList() {
 
   const formik = useFormik({
     initialValues: {
-      status: '' as '' | 'IN_PROGRESS' | 'FINISHED',
+      status: '' as 'IN_PROGRESS' | 'FINISHED' | '',
       startAt: null as Date | null,
       endAt: null as Date | null,
       searchKeyword: '',
@@ -63,130 +66,119 @@ export default function MpAdminEventList() {
     }
   });
 
-  const columns = useMemo<ColumnDef<Sequenced<EventBoardSummaryResponse>>[]>(
-    () => [
-      {
-        id: 'select',
-        header: ({ table }) => (
-          <Checkbox
-            checked={table.getIsAllPageRowsSelected()}
-            indeterminate={table.getIsSomePageRowsSelected()}
-            onChange={(event) => {
-              table.toggleAllPageRowsSelected(event.target.checked);
-              if (event.target.checked) {
-                setSelectedRows(data.map((row) => row.id));
-              } else {
-                setSelectedRows([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onChange={(event) => {
-              row.toggleSelected(event.target.checked);
-              if (event.target.checked) {
-                setSelectedRows([...selectedRows, row.original.id]);
-              } else {
-                setSelectedRows(selectedRows.filter((id) => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50
+  const columns: ColumnDef<Sequenced<EventBoardSummaryResponse>>[] = [
+    {
+      id: 'select',
+      header: () => (
+        <Checkbox
+          checked={selectedItems.length === data.length && data.length > 0}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems(data.map((item) => item.id));
+            } else {
+              setSelectedItems([]);
+            }
+          }}
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={selectedItems.includes(row.original.id)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedItems((prev) => [...prev, row.original.id]);
+            } else {
+              setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
+            }
+          }}
+        />
+      ),
+      size: 50
+    },
+    {
+      header: 'No',
+      accessorKey: 'sequence',
+      cell: ({ row }) => row.original.sequence,
+      size: 60
+    },
+    {
+      header: '이벤트 상태',
+      accessorKey: 'eventStatus',
+      cell: ({ row }) => {
+        const status = row.original.eventStatus;
+        return (
+          <Chip label={EVENT_STATUS_LABELS[status]} color={status === 'IN_PROGRESS' ? 'success' : 'default'} variant="light" size="small" />
+        );
       },
-      {
-        header: 'No',
-        accessorKey: 'sequence',
-        cell: ({ row }) => row.original.sequence,
-        size: 60
-      },
-      {
-        header: '이벤트 상태',
-        accessorKey: 'eventStatus',
-        cell: ({ row }) => {
-          const status = row.original.eventStatus;
+      size: 100
+    },
+    {
+      header: '썸네일',
+      accessorKey: 'thumbnailUrl',
+      cell: ({ row }) => {
+        const thumbnail = row.original.thumbnailUrl;
+        if (thumbnail) {
           return (
-            <Chip
-              label={EVENT_STATUS_LABELS[status]}
-              color={status === 'IN_PROGRESS' ? 'success' : 'default'}
-              variant="light"
-              size="small"
-            />
+            <Box sx={{ width: 80, height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <img
+                src={thumbnail}
+                alt="썸네일"
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  objectFit: 'cover',
+                  borderRadius: '4px'
+                }}
+              />
+            </Box>
           );
-        },
-        size: 100
+        }
+        return <Box sx={{ width: 80, height: 60, bgcolor: 'grey.200', borderRadius: 1 }} />;
       },
-      {
-        header: '썸네일',
-        accessorKey: 'thumbnailUrl',
-        cell: ({ row }) => {
-          const thumbnail = row.original.thumbnailUrl;
-          if (thumbnail) {
-            return (
-              <Box sx={{ width: 80, height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <img
-                  src={thumbnail}
-                  alt="썸네일"
-                  style={{
-                    maxWidth: '100%',
-                    maxHeight: '100%',
-                    objectFit: 'cover',
-                    borderRadius: '4px'
-                  }}
-                />
-              </Box>
-            );
-          }
-          return <Box sx={{ width: 80, height: 60, bgcolor: 'grey.200', borderRadius: 1 }} />;
-        },
-        size: 100
+      size: 100
+    },
+    {
+      header: '제목',
+      accessorKey: 'title',
+      cell: ({ row }) => (
+        <Link to={`/admin/events/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          {row.original.title}
+        </Link>
+      ),
+      size: 300
+    },
+    {
+      header: '조회 수',
+      accessorKey: 'viewCount',
+      cell: ({ row }) => row.original.viewCount.toLocaleString(),
+      size: 100
+    },
+    {
+      header: '작성일',
+      accessorKey: 'createdDate',
+      cell: ({ row }) => {
+        return formatYyyyMmDd(row.original.createdDate);
       },
-      {
-        header: '제목',
-        accessorKey: 'title',
-        cell: ({ row }) => (
-          <Link to={`/admin/events/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-            {row.original.title}
-          </Link>
-        ),
-        size: 300
+      size: 120
+    },
+    {
+      header: '노출상태',
+      accessorKey: 'isExposed',
+      cell: ({ row }) => {
+        const isExposed = row.original.isExposed;
+        return <Chip label={isExposed ? '노출' : '미노출'} color={isExposed ? 'primary' : 'default'} variant="light" size="small" />;
       },
-      {
-        header: '조회 수',
-        accessorKey: 'viewCount',
-        cell: ({ row }) => row.original.viewCount.toLocaleString(),
-        size: 100
+      size: 100
+    },
+    {
+      header: '이벤트 기간',
+      accessorKey: 'eventStartAt',
+      cell: ({ row }) => {
+        return `${formatYyyyMmDd(row.original.eventStartAt)} ~ ${formatYyyyMmDd(row.original.eventEndAt)}`;
       },
-      {
-        header: '작성일',
-        accessorKey: 'createdDate',
-        cell: ({ row }) => {
-          return formatYyyyMmDd(row.original.createdDate);
-        },
-        size: 120
-      },
-      {
-        header: '노출상태',
-        accessorKey: 'isExposed',
-        cell: ({ row }) => {
-          const isExposed = row.original.isExposed;
-          return <Chip label={isExposed ? '노출' : '미노출'} color={isExposed ? 'primary' : 'default'} variant="light" size="small" />;
-        },
-        size: 100
-      },
-      {
-        header: '이벤트 기간',
-        accessorKey: 'eventStartAt',
-        cell: ({ row }) => {
-          return `${formatYyyyMmDd(row.original.eventStartAt)} ~ ${formatYyyyMmDd(row.original.eventEndAt)}`;
-        },
-        size: 250
-      }
-    ],
-    [data, selectedRows]
-  );
+      size: 250
+    }
+  ];
 
   const table = useReactTable({
     data,
@@ -237,19 +229,19 @@ export default function MpAdminEventList() {
   };
 
   const handleDelete = () => {
-    if (selectedRows.length === 0) {
+    if (selectedItems.length === 0) {
       infoDialog.showInfo('삭제할 이벤트를 선택해주세요.');
       return;
     }
 
     deleteDialog.open({
       title: '이벤트 삭제',
-      message: `선택한 ${selectedRows.length}개의 이벤트를 삭제하시겠습니까?`,
+      message: `선택한 ${selectedItems.length}개의 이벤트를 삭제하시겠습니까?`,
       onConfirm: async () => {
         try {
-          await Promise.all(selectedRows.map((id) => softDeleteEventBoard(id)));
+          await Promise.all(selectedItems.map((id) => softDeleteEventBoard(id)));
           infoDialog.showInfo('이벤트가 삭제되었습니다.');
-          setSelectedRows([]);
+          setSelectedItems([]);
           fetchData();
         } catch (error) {
           if (error instanceof NotImplementedError) {
@@ -278,15 +270,10 @@ export default function MpAdminEventList() {
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <Select
-                      name="status"
-                      value={formik.values.status}
-                      onChange={(e) => formik.setFieldValue('status', e.target.value)}
-                      displayEmpty
-                    >
-                      <MenuItem value="">전체</MenuItem>
-                      <MenuItem value={'FINISHED'}>종료</MenuItem>
-                      <MenuItem value={'IN_PROGRESS'}>진행중</MenuItem>
+                    <InputLabel>상태</InputLabel>
+                    <Select name="status" label="상태" value={formik.values.status} onChange={formik.handleChange}>
+                      <MenuItem value="IN_PROGRESS">진행중</MenuItem>
+                      <MenuItem value="FINISHED">종료</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
@@ -294,28 +281,25 @@ export default function MpAdminEventList() {
                   <MpFormikDatePicker name="startAt" label="시작일" formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="endAt" label="종룼일" formik={formik} />
+                  <MpFormikDatePicker name="endAt" label="종료일" formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
                     name="searchKeyword"
                     size="small"
                     placeholder="검색어를 입력해주세요"
-                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && formik.handleSubmit()}
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
                   />
                 </SearchFilterItem>
                 <SearchFilterActions>
-                  <Stack direction="row" spacing={1}>
-                    <Button variant="contained" size="small" type="submit">
-                      검색
-                    </Button>
-                    <Button variant="outlined" size="small" onClick={handleReset}>
-                      초기화
-                    </Button>
-                  </Stack>
+                  <Button variant="contained" size="small" type="submit">
+                    검색
+                  </Button>
+                  <Button variant="outlined" size="small" onClick={handleReset}>
+                    초기화
+                  </Button>
                 </SearchFilterActions>
               </SearchFilterBar>
             </form>
@@ -327,9 +311,11 @@ export default function MpAdminEventList() {
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              </Stack>
               <Stack direction="row" spacing={1}>
-                <Button variant="contained" size="small" color="error" disabled={selectedRows.length === 0} onClick={handleDelete}>
+                <Button variant="contained" size="small" color="error" disabled={selectedItems.length === 0} onClick={handleDelete}>
                   삭제
                 </Button>
                 <Button variant="contained" size="small" color="success" component={Link} to="/admin/events/new">

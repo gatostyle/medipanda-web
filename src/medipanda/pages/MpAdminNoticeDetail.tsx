@@ -1,17 +1,19 @@
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Grid from '@mui/material/Grid';
-import MuiLink from '@mui/material/Link';
-import Switch from '@mui/material/Switch';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableRow from '@mui/material/TableRow';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  FormControlLabel,
+  Grid,
+  Link as MuiLink,
+  Switch,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Typography
+} from '@mui/material';
 import MainCard from 'components/MainCard';
 import { BoardDetailsResponse, getBoardDetails } from 'medipanda/backend';
 import { TiptapEditor } from 'medipanda/components/TiptapEditor';

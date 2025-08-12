@@ -1,10 +1,5 @@
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
-import Grid from '@mui/material/Grid';
-import MuiLink from '@mui/material/Link';
-import Typography from '@mui/material/Typography';
+import { Box, Button, CircularProgress, Grid, Link as MuiLink, Typography } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { BoardDetailsResponse, getBoardDetails } from 'medipanda/backend';
 import { TiptapEditor } from 'medipanda/components/TiptapEditor';

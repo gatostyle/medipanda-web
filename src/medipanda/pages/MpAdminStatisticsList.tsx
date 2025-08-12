@@ -1,19 +1,22 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import Grid from '@mui/material/Grid';
-import MenuItem from '@mui/material/MenuItem';
-import Pagination from '@mui/material/Pagination';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
@@ -25,7 +28,7 @@ import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipand
 import { mockNumber } from 'medipanda/mockup';
 import { formatYyyyMm } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface PerformanceStatsResponseWithMockData extends PerformanceStatsResponse {
   baseFeeRate: number;
@@ -48,7 +51,7 @@ export default function MpAdminStatisticsList() {
   const formik = useFormik({
     initialValues: {
       searchType: 'companyName' as 'drugCompany' | 'companyName' | 'dealerName' | 'institutionName',
-      searchText: '',
+      searchKeyword: '',
       settlementDate: null as Date | null,
       pageIndex: 0,
       pageSize: 20
@@ -66,10 +69,10 @@ export default function MpAdminStatisticsList() {
     setLoading(true);
     try {
       const response = await getPerformanceStats({
-        drugCompany: formik.values.searchType === 'drugCompany' ? formik.values.searchText : undefined,
-        companyName: formik.values.searchType === 'companyName' ? formik.values.searchText : undefined,
-        dealerName: formik.values.searchType === 'dealerName' ? formik.values.searchText : undefined,
-        institutionName: formik.values.searchType === 'institutionName' ? formik.values.searchText : undefined,
+        drugCompany: formik.values.searchType === 'drugCompany' ? formik.values.searchKeyword : undefined,
+        companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
+        dealerName: formik.values.searchType === 'dealerName' ? formik.values.searchKeyword : undefined,
+        institutionName: formik.values.searchType === 'institutionName' ? formik.values.searchKeyword : undefined,
         startMonth: formik.values.settlementDate ? mockNumber() : undefined,
         endMonth: formik.values.settlementDate ? mockNumber() : undefined,
         page: formik.values.pageIndex,
@@ -91,90 +94,91 @@ export default function MpAdminStatisticsList() {
     fetchData();
   }, [formik.values.pageIndex, formik.values.pageSize]);
 
-  const columns = useMemo<ColumnDef<Sequenced<PerformanceStatsResponseWithMockData>>[]>(
-    () => [
-      {
-        header: 'No',
-        accessorKey: 'sequence',
-        cell: ({ row }) => row.original.sequence,
-        size: 60
-      },
-      {
-        header: '제약사명',
-        accessorKey: 'drugCompany',
-        cell: ({ row }) => row.original.drugCompany,
-        size: 120
-      },
-      {
-        header: '회사명',
-        accessorKey: 'companyName',
-        cell: ({ row }) => row.original.companyName,
-        size: 120
-      },
-      {
-        header: '딜러명',
-        accessorKey: 'dealerName',
-        cell: ({ row }) => row.original.dealerName,
-        size: 100
-      },
-      {
-        header: '거래처코드',
-        accessorKey: 'institutionCode',
-        cell: ({ row }) => row.original.institutionCode,
-        size: 120
-      },
-      {
-        header: '거래처명',
-        accessorKey: 'institutionName',
-        cell: ({ row }) => row.original.institutionName,
-        size: 120
-      },
-      {
-        header: '정산월',
-        accessorKey: 'settlementMonth',
-        cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
-        size: 100
-      },
-      {
-        header: '처방금액',
-        accessorKey: 'prescriptionAmount',
-        cell: ({ row }) => row.original.prescriptionAmount.toLocaleString(),
-        size: 120
-      },
-      {
-        header: '합계금액',
-        accessorKey: 'totalAmount',
-        cell: ({ row }) => row.original.totalAmount.toLocaleString(),
-        size: 120
-      },
-      {
-        header: '수수료금액',
-        accessorKey: 'feeAmount',
-        cell: ({ row }) => row.original.feeAmount.toLocaleString(),
-        size: 120
-      },
-      {
-        header: '기본수수료율',
-        accessorKey: 'baseFeeRate',
-        cell: ({ row }) => row.original.baseFeeRate.toLocaleString(),
-        size: 100
-      }
-    ],
-    []
-  );
+  const handleReset = () => {
+    formik.resetForm();
+  };
+
+  const columns: ColumnDef<Sequenced<PerformanceStatsResponseWithMockData>>[] = [
+    {
+      header: 'No',
+      accessorKey: 'sequence',
+      cell: ({ row }) => row.original.sequence,
+      size: 60
+    },
+    {
+      header: '제약사명',
+      accessorKey: 'drugCompany',
+      cell: ({ row }) => row.original.drugCompany,
+      size: 120
+    },
+    {
+      header: '회사명',
+      accessorKey: 'companyName',
+      cell: ({ row }) => row.original.companyName,
+      size: 120
+    },
+    {
+      header: '딜러명',
+      accessorKey: 'dealerName',
+      cell: ({ row }) => row.original.dealerName,
+      size: 100
+    },
+    {
+      header: '거래처코드',
+      accessorKey: 'institutionCode',
+      cell: ({ row }) => row.original.institutionCode,
+      size: 120
+    },
+    {
+      header: '거래처명',
+      accessorKey: 'institutionName',
+      cell: ({ row }) => row.original.institutionName,
+      size: 120
+    },
+    {
+      header: '정산월',
+      accessorKey: 'settlementMonth',
+      cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
+      size: 100
+    },
+    {
+      header: '처방금액',
+      accessorKey: 'prescriptionAmount',
+      cell: ({ row }) => row.original.prescriptionAmount.toLocaleString(),
+      size: 120
+    },
+    {
+      header: '합계금액',
+      accessorKey: 'totalAmount',
+      cell: ({ row }) => row.original.totalAmount.toLocaleString(),
+      size: 120
+    },
+    {
+      header: '수수료금액',
+      accessorKey: 'feeAmount',
+      cell: ({ row }) => row.original.feeAmount.toLocaleString(),
+      size: 120
+    },
+    {
+      header: '기본수수료율',
+      accessorKey: 'baseFeeRate',
+      cell: ({ row }) => row.original.baseFeeRate.toLocaleString(),
+      size: 100
+    }
+  ];
 
   const table = useReactTable({
     data,
     columns,
-    pageCount: totalPages,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     state: {
       pagination: {
         pageIndex: formik.values.pageIndex,
         pageSize: formik.values.pageSize
       }
     },
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    pageCount: totalPages,
     manualPagination: true
   });
 
@@ -193,11 +197,12 @@ export default function MpAdminStatisticsList() {
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange} displayEmpty>
-                      <MenuItem value="drugCompany">회사명</MenuItem>
-                      <MenuItem value="companyName">제약사명</MenuItem>
-                      <MenuItem value="dealerName">딜러명</MenuItem>
-                      <MenuItem value="institutionName">거래처명</MenuItem>
+                    <InputLabel>검색유형</InputLabel>
+                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
+                      <MenuItem value={'drugCompany'}>제약사명</MenuItem>
+                      <MenuItem value={'companyName'}>회사명</MenuItem>
+                      <MenuItem value={'dealerName'}>딜러명</MenuItem>
+                      <MenuItem value={'institutionName'}>거래처명</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
@@ -212,12 +217,11 @@ export default function MpAdminStatisticsList() {
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
-                    name="searchText"
+                    name="searchKeyword"
                     size="small"
                     placeholder="검색어를 입력하세요"
-                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && formik.handleSubmit()}
                     fullWidth
-                    value={formik.values.searchText}
+                    value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
                   />
                 </SearchFilterItem>
@@ -225,7 +229,7 @@ export default function MpAdminStatisticsList() {
                   <Button variant="contained" size="small" type="submit">
                     검색
                   </Button>
-                  <Button variant="outlined" size="small" onClick={() => formik.resetForm()}>
+                  <Button variant="outlined" size="small" onClick={handleReset}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -239,7 +243,7 @@ export default function MpAdminStatisticsList() {
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Stack direction="row" spacing={2} alignItems="center">
+              <Stack direction="row" spacing={2}>
                 <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
                 <Typography variant="subtitle1">총 처방금액: {totalPrescriptionAmount.toLocaleString()}원</Typography>
               </Stack>
@@ -248,10 +252,10 @@ export default function MpAdminStatisticsList() {
                   variant="contained"
                   color="success"
                   href={getDownloadPerformanceExcel({
-                    drugCompany: formik.values.searchType === 'drugCompany' ? formik.values.searchText : undefined,
-                    companyName: formik.values.searchType === 'companyName' ? formik.values.searchText : undefined,
-                    dealerName: formik.values.searchType === 'dealerName' ? formik.values.searchText : undefined,
-                    institutionName: formik.values.searchType === 'institutionName' ? formik.values.searchText : undefined,
+                    drugCompany: formik.values.searchType === 'drugCompany' ? formik.values.searchKeyword : undefined,
+                    companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
+                    dealerName: formik.values.searchType === 'dealerName' ? formik.values.searchKeyword : undefined,
+                    institutionName: formik.values.searchType === 'institutionName' ? formik.values.searchKeyword : undefined,
                     startMonth: formik.values.settlementDate ? mockNumber() : undefined,
                     endMonth: formik.values.settlementDate ? mockNumber() : undefined,
                     page: formik.values.pageIndex,
@@ -289,14 +293,14 @@ export default function MpAdminStatisticsList() {
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body1" color="text.secondary">
+                          <Typography variant="body2" color="text.secondary">
                             검색 결과가 없습니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : (
                       table.getRowModel().rows.map((row) => (
-                        <TableRow key={row.id} hover>
+                        <TableRow key={row.id}>
                           {row.getVisibleCells().map((cell) => (
                             <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                           ))}

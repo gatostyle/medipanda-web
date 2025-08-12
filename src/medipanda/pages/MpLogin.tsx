@@ -1,9 +1,4 @@
-import Button from '@mui/material/Button';
-import FormHelperText from '@mui/material/FormHelperText';
-import Grid from '@mui/material/Grid';
-import InputAdornment from '@mui/material/InputAdornment';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import Stack from '@mui/material/Stack';
+import { Button, FormHelperText, Grid, InputAdornment, OutlinedInput, Stack } from '@mui/material';
 import IconButton from 'components/@extended/IconButton';
 import { useFormik } from 'formik';
 import { Eye, EyeSlash } from 'iconsax-react';

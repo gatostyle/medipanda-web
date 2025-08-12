@@ -1,20 +1,23 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
-import FormControl from '@mui/material/FormControl';
-import Grid from '@mui/material/Grid';
-import MenuItem from '@mui/material/MenuItem';
-import Pagination from '@mui/material/Pagination';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  Chip,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
@@ -24,7 +27,7 @@ import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
 import { formatYyyyMmDd, formatYyyyMmDdHhMm } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function MpAdminBannerList() {
@@ -51,121 +54,122 @@ export default function MpAdminBannerList() {
     }
   });
 
-  const columns = useMemo<ColumnDef<Sequenced<BannerResponse>>[]>(
-    () => [
-      {
-        header: 'No',
-        accessorKey: 'sequence',
-        cell: ({ row }) => row.original.sequence,
-        size: 60
+  const handleReset = () => {
+    formik.resetForm();
+  };
+
+  const columns: ColumnDef<Sequenced<BannerResponse>>[] = [
+    {
+      header: 'No',
+      accessorKey: 'sequence',
+      cell: ({ row }) => row.original.sequence,
+      size: 60
+    },
+    {
+      header: '배너위치',
+      accessorKey: 'position',
+      cell: ({ row }) => {
+        const position = row.original.position;
+        switch (position) {
+          case 'POPUP':
+            return '팝업배너';
+          case 'PC_MAIN':
+            return 'PC 메인';
+          case 'PC_COMMUNITY':
+            return 'PC 커뮤니티';
+          case 'MOB_MAIN':
+            return 'Mob 메인';
+          default:
+            return position;
+        }
       },
-      {
-        header: '배너위치',
-        accessorKey: 'position',
-        cell: ({ row }) => {
-          const position = row.original.position;
-          switch (position) {
-            case 'POPUP':
-              return '팝업배너';
-            case 'PC_MAIN':
-              return 'PC 메인';
-            case 'PC_COMMUNITY':
-              return 'PC 커뮤니티';
-            case 'MOB_MAIN':
-              return 'Mob 메인';
-            default:
-              return position;
-          }
-        },
-        size: 120
+      size: 120
+    },
+    {
+      header: '배너제목',
+      accessorKey: 'title',
+      cell: ({ row }) => (
+        <Link to={`/admin/banners/${row.original.id}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          {row.original.title}
+        </Link>
+      ),
+      size: 200
+    },
+    {
+      header: '노출상태',
+      accessorKey: 'status',
+      cell: ({ row }) => {
+        const status = row.original.status;
+        return (
+          <Chip
+            label={status === 'VISIBLE' ? '노출' : '미노출'}
+            color={status === 'VISIBLE' ? 'success' : 'default'}
+            variant="light"
+            size="small"
+          />
+        );
       },
-      {
-        header: '배너제목',
-        accessorKey: 'title',
-        cell: ({ row }) => (
-          <Link to={`/admin/banners/${row.original.id}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-            {row.original.title}
-          </Link>
-        ),
-        size: 200
+      size: 100
+    },
+    {
+      header: '노출범위',
+      accessorKey: 'scope',
+      cell: ({ row }) => {
+        const scope = row.original.scope;
+        switch (scope) {
+          case 'ENTIRE':
+            return '전체';
+          case 'CONTRACT':
+            return '계약';
+          case 'NON_CONTRACT':
+            return '미계약';
+          default:
+            return scope;
+        }
       },
-      {
-        header: '노출상태',
-        accessorKey: 'status',
-        cell: ({ row }) => {
-          const status = row.original.status;
-          return (
-            <Chip
-              label={status === 'VISIBLE' ? '노출' : '미노출'}
-              color={status === 'VISIBLE' ? 'success' : 'default'}
-              variant="light"
-              size="small"
-            />
-          );
-        },
-        size: 100
+      size: 100
+    },
+    {
+      header: '게시기간',
+      accessorKey: 'startAt',
+      cell: ({ row }) => {
+        return `${formatYyyyMmDdHhMm(row.original.startAt)} ~ ${formatYyyyMmDdHhMm(row.original.endAt)}`;
       },
-      {
-        header: '노출범위',
-        accessorKey: 'scope',
-        cell: ({ row }) => {
-          const scope = row.original.scope;
-          switch (scope) {
-            case 'ENTIRE':
-              return '전체';
-            case 'CONTRACT':
-              return '계약';
-            case 'NON_CONTRACT':
-              return '미계약';
-            default:
-              return scope;
-          }
-        },
-        size: 100
+      size: 300
+    },
+    {
+      header: '등록일',
+      accessorKey: 'startAt',
+      cell: ({ row }) => {
+        return formatYyyyMmDd(row.original.startAt);
       },
-      {
-        header: '게시기간',
-        accessorKey: 'startAt',
-        cell: ({ row }) => {
-          return `${formatYyyyMmDdHhMm(row.original.startAt)} ~ ${formatYyyyMmDdHhMm(row.original.endAt)}`;
-        },
-        size: 300
-      },
-      {
-        header: '등록일',
-        accessorKey: 'startAt',
-        cell: ({ row }) => {
-          return formatYyyyMmDd(row.original.startAt);
-        },
-        size: 150
-      },
-      {
-        header: '노출순서',
-        accessorKey: 'displayOrder',
-        cell: ({ row }) => row.original.displayOrder,
-        size: 80
-      },
-      {
-        header: '노출수',
-        accessorKey: 'viewCount',
-        cell: ({ row }) => row.original.viewCount.toLocaleString(),
-        size: 100
-      },
-      {
-        header: '클릭수',
-        accessorKey: 'clickCount',
-        cell: ({ row }) => row.original.clickCount.toLocaleString(),
-        size: 100
-      },
-      {
-        header: 'CTR',
-        accessorKey: 'ctr',
-        cell: ({ row }) => `${row.original.ctr}%`,
-        size: 80
-      }
-    ],
-    []
-  );
+      size: 150
+    },
+    {
+      header: '노출순서',
+      accessorKey: 'displayOrder',
+      cell: ({ row }) => row.original.displayOrder,
+      size: 80
+    },
+    {
+      header: '노출수',
+      accessorKey: 'viewCount',
+      cell: ({ row }) => row.original.viewCount.toLocaleString(),
+      size: 100
+    },
+    {
+      header: '클릭수',
+      accessorKey: 'clickCount',
+      cell: ({ row }) => row.original.clickCount.toLocaleString(),
+      size: 100
+    },
+    {
+      header: 'CTR',
+      accessorKey: 'ctr',
+      cell: ({ row }) => `${row.original.ctr}%`,
+      size: 80
+    }
+  ];
 
   const table = useReactTable({
     data,
@@ -214,23 +218,20 @@ export default function MpAdminBannerList() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4">배너관리</Typography>
+        <Typography variant="h4" gutterBottom>
+          배너관리
+        </Typography>
       </Grid>
 
       <Grid item xs={12}>
         <MainCard content={false}>
-          <Box sx={{ p: 2 }}>
+          <Box sx={{ p: 3 }}>
             <form onSubmit={formik.handleSubmit}>
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <Select
-                      name="bannerStatus"
-                      value={formik.values.bannerStatus}
-                      onChange={(e) => formik.setFieldValue('bannerStatus', e.target.value)}
-                      displayEmpty
-                    >
-                      <MenuItem value="">상태(전체)</MenuItem>
+                    <InputLabel>상태</InputLabel>
+                    <Select name="bannerStatus" label="상태" value={formik.values.bannerStatus} onChange={formik.handleChange}>
                       <MenuItem value={'VISIBLE'}>노출</MenuItem>
                       <MenuItem value={'HIDDEN'}>미노출</MenuItem>
                     </Select>
@@ -246,8 +247,7 @@ export default function MpAdminBannerList() {
                   <TextField
                     name="bannerTitle"
                     size="small"
-                    placeholder="배너제목을 입력해주세요"
-                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && formik.handleSubmit()}
+                    placeholder="검색어를 입력하세요"
                     fullWidth
                     value={formik.values.bannerTitle}
                     onChange={formik.handleChange}
@@ -256,6 +256,9 @@ export default function MpAdminBannerList() {
                 <SearchFilterActions>
                   <Button variant="contained" size="small" type="submit">
                     검색
+                  </Button>
+                  <Button variant="outlined" size="small" onClick={handleReset}>
+                    초기화
                   </Button>
                 </SearchFilterActions>
               </SearchFilterBar>
@@ -268,16 +271,14 @@ export default function MpAdminBannerList() {
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
-              <Button
-                variant="contained"
-                size="small"
-                sx={{ backgroundColor: '#4caf50', '&:hover': { backgroundColor: '#45a049' } }}
-                component={Link}
-                to="/admin/banners/new"
-              >
-                등록하기
-              </Button>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+              </Stack>
+              <Stack direction="row" spacing={1}>
+                <Button variant="contained" color="success" size="small" component={Link} to="/admin/banners/new">
+                  등록
+                </Button>
+              </Stack>
             </Stack>
 
             <ScrollX>

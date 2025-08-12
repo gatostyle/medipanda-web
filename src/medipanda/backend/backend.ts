@@ -150,11 +150,11 @@ export interface BlindPostResponse {
   memberName: string;
   content: string;
   reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
+  userId: string;
   nickname: string;
   likesCount: number;
-  userId: string;
-  postType: 'BOARD' | 'COMMENT';
   blindAt: string;
+  postType: 'BOARD' | 'COMMENT';
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
 }
 
@@ -270,12 +270,12 @@ export interface CommentMemberResponse {
   id: number;
   content: string;
   commentType: 'COMMENT' | 'REPLY';
+  userId: string;
   nickname: string;
   likesCount: number;
-  userId: string;
   createdAt: string;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   isBlind: boolean;
+  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
 }
 
 export interface CommentResponse {
@@ -2129,6 +2129,17 @@ export async function updateSalesAgencyProductBoard(
     method: 'PATCH',
     url: `/v1/sales-agency-products/${id}`,
     data: form
+  });
+}
+
+/**
+ * 영업대행 상품 삭제
+ * DELETE /v1/sales-agency-products/{id}
+ */
+export async function deleteSalesAgencyProduct(id: number): Promise<void> {
+  await axios.request({
+    method: 'DELETE',
+    url: `/v1/sales-agency-products/${id}`
   });
 }
 

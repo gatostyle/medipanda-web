@@ -46,7 +46,6 @@ export function MpSessionProvider({ children }: { children: React.ReactNode }) {
     window.refreshTokenRotateInterval = setInterval(
       async () => {
         const savedRefreshToken = localStorage.getItem('refreshToken');
-        console.log(`Using refresh token ends with: ${savedRefreshToken?.slice(-4)}`);
 
         try {
           const { refreshToken } = await apiRefreshToken({
@@ -54,12 +53,10 @@ export function MpSessionProvider({ children }: { children: React.ReactNode }) {
             refreshToken: savedRefreshToken ?? ''
           });
           localStorage.setItem('refreshToken', refreshToken);
-          console.log(`Saved refresh token ends with: ${refreshToken?.slice(-4)}`);
         } catch (e) {
           if ((e as any)?.response?.status === 401) {
             clearInterval(window.refreshTokenRotateInterval);
             localStorage.removeItem('refreshToken');
-            console.log(`Deleting refresh token`);
             const currentUrl = window.location.pathname + window.location.search;
             window.location.replace(`/logout?authError=true&redirectTo=${encodeURIComponent(currentUrl)}`);
           } else {
@@ -80,7 +77,6 @@ export function MpSessionProvider({ children }: { children: React.ReactNode }) {
       password: encryptedPassword
     });
     localStorage.setItem('refreshToken', refreshToken);
-    console.log(`Saved refresh token ends with: ${refreshToken?.slice(-4)}`);
 
     setSession(await getSession());
   };
