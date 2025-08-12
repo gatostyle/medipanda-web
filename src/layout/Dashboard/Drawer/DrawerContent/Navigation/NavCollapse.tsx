@@ -171,11 +171,7 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
     const isChildPath = menu.children?.some((item: NavItemType) => {
       const fullItemUrl = item.url?.startsWith('/') ? item.url : `/admin/${item.url}`;
 
-      if (fullItemUrl === pathname || item.url === pathname) {
-        return true;
-      }
-
-      if (item.link && !!matchPath({ path: item?.link, end: false }, pathname)) {
+      if (fullItemUrl === pathname || !!matchPath({ path: fullItemUrl, end: false }, pathname)) {
         return true;
       }
 

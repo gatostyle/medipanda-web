@@ -20,7 +20,7 @@ import ScrollX from 'components/ScrollX';
 import { BoardReportResponse, CommentResponse, getBoardDetails } from 'medipanda/backend';
 import { TiptapEditor } from 'medipanda/components/TiptapEditor';
 import { BOARD_TYPE_LABELS } from 'medipanda/ui-labels';
-import { formatYyyyMmDdHhMm } from 'medipanda/utils/dateFormat';
+import { formatYyyyMmDd, formatYyyyMmDdHhMm } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
@@ -311,7 +311,7 @@ export default function MpAdminCommunityPostDetail() {
                   <Typography variant="body2" color="text.secondary">
                     등록일
                   </Typography>
-                  <Typography variant="body1">{postDetail.registrationDate}</Typography>
+                  <Typography variant="body1">{formatYyyyMmDd(postDetail.registrationDate)}</Typography>
                 </Box>
               </Stack>
 

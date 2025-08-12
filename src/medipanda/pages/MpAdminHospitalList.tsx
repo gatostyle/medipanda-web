@@ -119,7 +119,7 @@ export default function MpAdminHospitalList() {
             notImplementedDialog.open(error.message);
           } else {
             console.error('Failed to delete hospitals:', error);
-            errorDialog.showError('병원 삭제 중 오류가 발생했습니다.');
+            errorDialog.showError('개원병원 삭제 중 오류가 발생했습니다.');
           }
         }
       }

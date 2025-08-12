@@ -97,12 +97,7 @@ export default function MpAdminPrescriptionFormProducts() {
     setPartnerProducts((prev) =>
       prev.map((p, i) => {
         if (index === i) {
-          const updatedProduct = { ...p, [field]: value };
-          if (field === 'quantity') {
-            updatedProduct.totalPrice = Number(value) * updatedProduct.unitPrice;
-            updatedProduct.feeAmount = updatedProduct.totalPrice * updatedProduct.baseFeeRate;
-          }
-          return updatedProduct;
+          return { ...p, [field]: value };
         }
         return p;
       })
@@ -155,9 +150,9 @@ export default function MpAdminPrescriptionFormProducts() {
           <TextField
             size="small"
             type="number"
+            fullWidth
             value={row.original.quantity}
             onChange={(e) => handleProductChange(row.index, 'quantity', e.target.value)}
-            sx={{ width: 80 }}
           />
         ),
         size: 100
@@ -171,19 +166,46 @@ export default function MpAdminPrescriptionFormProducts() {
       {
         header: '총 금액',
         accessorKey: 'totalPrice',
-        cell: ({ row }) => row.original.totalPrice.toLocaleString(),
+        cell: ({ row }) => (
+          <TextField
+            size="small"
+            type="number"
+            fullWidth
+            name="totalPrice"
+            value={row.original.totalPrice}
+            onChange={(e) => handleProductChange(row.index, 'totalPrice', e.target.value)}
+          />
+        ),
         size: 120
       },
       {
         header: '기본수수료율',
         accessorKey: 'baseFeeRate',
-        cell: ({ row }) => `${row.original.baseFeeRate}%`,
+        cell: ({ row }) => (
+          <TextField
+            size="small"
+            type="number"
+            fullWidth
+            name="baseFeeRate"
+            value={row.original.baseFeeRate}
+            onChange={(e) => handleProductChange(row.index, 'baseFeeRate', e.target.value)}
+          />
+        ),
         size: 120
       },
       {
         header: '수수료 금액',
         accessorKey: 'feeAmount',
-        cell: ({ row }) => row.original.feeAmount.toLocaleString(),
+        cell: ({ row }) => (
+          <TextField
+            size="small"
+            type="number"
+            fullWidth
+            name="feeAmount"
+            value={row.original.feeAmount}
+            onChange={(e) => handleProductChange(row.index, 'feeAmount', e.target.value)}
+          />
+        ),
         size: 120
       },
       {
@@ -259,9 +281,7 @@ export default function MpAdminPrescriptionFormProducts() {
         productCode: product.productCode,
         productName: product.productName ?? '',
         unitPrice: product.price ?? 0,
-        totalPrice: currentPartnerProduct.quantity * (product.price ?? 0),
-        baseFeeRate: product.feeRate ?? 0,
-        feeAmount: currentPartnerProduct.quantity * (product.price ?? 0) * (product.feeRate ?? 0)
+        baseFeeRate: product.feeRate ?? 0
       },
       ...partnerProducts.slice(currentProductItemIndex + 1)
     ]);

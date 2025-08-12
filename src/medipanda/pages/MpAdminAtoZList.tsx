@@ -27,6 +27,7 @@ import { BoardPostResponse, DateString, deleteBoardPost, getBoards } from 'medip
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
+import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -39,6 +40,7 @@ export default function MpAdminAtoZList() {
   const [totalPages, setTotalPages] = useState(0);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const deleteDialog = useMpDeleteDialog();
+  const errorDialog = useMpErrorDialog();
 
   const formik = useFormik({
     initialValues: {
@@ -164,6 +166,7 @@ export default function MpAdminAtoZList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch CSO A to Z list:', error);
+      errorDialog.showError('CSO A TO Z 목록을 불러오는 중 오류가 발생했습니다.');
       setData([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -196,6 +199,7 @@ export default function MpAdminAtoZList() {
           fetchData();
         } catch (error) {
           console.error('Failed to delete items:', error);
+          errorDialog.showError('CSO A TO Z 삭제 중 오류가 발생했습니다.');
         }
       }
     });
@@ -286,11 +290,11 @@ export default function MpAdminAtoZList() {
                 <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
               <Stack direction="row" spacing={1}>
-                <Button variant="contained" color="success" size="small" component={Link} to="/admin/atoz/new">
-                  등록
-                </Button>
                 <Button variant="contained" color="error" size="small" disabled={selectedItems.length === 0} onClick={handleDelete}>
                   삭제
+                </Button>
+                <Button variant="contained" color="success" size="small" component={Link} to="/admin/atoz/new">
+                  등록
                 </Button>
               </Stack>
             </Stack>

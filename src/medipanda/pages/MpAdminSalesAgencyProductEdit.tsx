@@ -531,7 +531,7 @@ export default function MpAdminSalesAgencyProductEdit() {
                           <TableCell>{applicant.userId}</TableCell>
                           <TableCell>{applicant.memberName}</TableCell>
                           <TableCell>{applicant.phoneNumber}</TableCell>
-                          <TableCell>{applicant.appliedDate}</TableCell>
+                          <TableCell>{formatYyyyMmDd(applicant.appliedDate)}</TableCell>
                           <TableCell>{applicant.contractStatus === 'CONTRACT' ? 'Y' : 'N'}</TableCell>
                           <TableCell>
                             <TextField

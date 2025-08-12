@@ -338,14 +338,14 @@ export default function MpAdminPartnerList() {
                 <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
               <Stack direction="row" spacing={1}>
-                <Button variant="contained" color="success" size="small" component={Link} to="/admin/partners/new">
-                  등록
-                </Button>
                 <Button variant="contained" color="primary" size="small" onClick={() => setUploadDialogOpen(true)}>
                   파일업로드
                 </Button>
                 <Button variant="contained" color="error" size="small" disabled={selectedItems.length === 0} onClick={handleDelete}>
                   삭제
+                </Button>
+                <Button variant="contained" color="success" size="small" component={Link} to="/admin/partners/new">
+                  등록
                 </Button>
               </Stack>
             </Stack>

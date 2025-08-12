@@ -26,6 +26,7 @@ import { CommentMemberResponse, DateString, getCommentMembers, toggleBlindStatus
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
+import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { CONTRACT_STATUS_LABELS } from 'medipanda/ui-labels';
 import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
@@ -38,6 +39,7 @@ export default function MpAdminCommunityCommentList() {
   const [totalPages, setTotalPages] = useState(0);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const deleteDialog = useMpDeleteDialog();
+  const errorDialog = useMpErrorDialog();
 
   const formik = useFormik({
     initialValues: {
@@ -192,6 +194,7 @@ export default function MpAdminCommunityCommentList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch comment list:', error);
+      errorDialog.showError('댓글 목록을 불러오는 중 오류가 발생했습니다.');
       setData([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -226,6 +229,7 @@ export default function MpAdminCommunityCommentList() {
           setSelectedItems([]);
         } catch (error) {
           console.error('Failed to blind comments:', error);
+          errorDialog.showError('댓글 블라인드 처리 중 오류가 발생했습니다.');
         }
       }
     });

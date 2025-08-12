@@ -27,6 +27,7 @@ import { BoardPostResponse, DateString, deleteBoardPost, getBoards } from 'medip
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
+import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -39,6 +40,7 @@ export default function MpAdminFaqList() {
   const [totalPages, setTotalPages] = useState(0);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const deleteDialog = useMpDeleteDialog();
+  const errorDialog = useMpErrorDialog();
 
   const formik = useFormik({
     initialValues: {
@@ -165,6 +167,7 @@ export default function MpAdminFaqList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch FAQ list:', error);
+      errorDialog.showError('FAQ 목록을 불러오는 중 오류가 발생했습니다.');
       setData([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -197,6 +200,7 @@ export default function MpAdminFaqList() {
           fetchData();
         } catch (error) {
           console.error('Failed to delete items:', error);
+          errorDialog.showError('FAQ 삭제 중 오류가 발생했습니다.');
         }
       }
     });

@@ -26,6 +26,7 @@ import { BoardPostResponse, DateString, deleteBoardPost, getBoards, getDrugCompa
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
+import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { BOARD_TYPE_LABELS, EXPOSURE_RANGE_LABELS, NOTICE_TYPE_LABELS } from 'medipanda/ui-labels';
 import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
@@ -51,6 +52,7 @@ export default function MpAdminNoticeList() {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [manufacturerOptions, setManufacturerOptions] = useState<string[]>([]);
   const deleteDialog = useMpDeleteDialog();
+  const errorDialog = useMpErrorDialog();
 
   const formik = useFormik({
     initialValues: {
@@ -202,6 +204,7 @@ export default function MpAdminNoticeList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch notice list:', error);
+      errorDialog.showError('공지사항 목록을 불러오는 중 오류가 발생했습니다.');
       setData([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -221,6 +224,7 @@ export default function MpAdminNoticeList() {
         setManufacturerOptions(manufacturers);
       } catch (error) {
         console.error('Failed to fetch manufacturer list:', error);
+        errorDialog.showError('제약사 목록을 불러오는 중 오류가 발생했습니다.');
       }
     };
     fetchManufacturers();
@@ -246,6 +250,7 @@ export default function MpAdminNoticeList() {
           fetchData();
         } catch (error) {
           console.error('Failed to delete items:', error);
+          errorDialog.showError('삭제 중 오류가 발생했습니다.');
         }
       }
     });

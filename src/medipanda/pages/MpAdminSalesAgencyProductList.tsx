@@ -238,7 +238,7 @@ export default function MpAdminSalesAgencyProductList() {
           fetchData();
         } catch (error) {
           console.error('Failed to delete sales agency products:', error);
-          errorDialog.showError('삭제 중 오류가 발생했습니다.');
+          errorDialog.showError('상품 삭제 중 오류가 발생했습니다.');
         }
       }
     });

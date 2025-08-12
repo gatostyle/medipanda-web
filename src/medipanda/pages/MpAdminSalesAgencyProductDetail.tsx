@@ -233,7 +233,7 @@ export default function MpAdminSalesAgencyProductDetail() {
                     <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                       계약일
                     </Typography>
-                    <Typography variant="body1">{productDetail?.contractDate}</Typography>
+                    <Typography variant="body1">{productDetail ? formatYyyyMmDd(productDetail.contractDate) : '-'}</Typography>
                   </Box>
 
                   <Box>
@@ -248,7 +248,9 @@ export default function MpAdminSalesAgencyProductDetail() {
                       <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                         게시기간
                       </Typography>
-                      <Typography variant="body1">{`${productDetail?.startDate} ~ ${productDetail?.endDate}`}</Typography>
+                      <Typography variant="body1">
+                        {productDetail ? `${formatYyyyMmDd(productDetail.startDate)} ~ ${formatYyyyMmDd(productDetail.endDate)}` : '-'}
+                      </Typography>
                     </Box>
                     <Box>
                       <Typography variant="subtitle2" color="text.secondary" gutterBottom>

@@ -2436,7 +2436,11 @@ export async function getEventBoardDetails(id: number): Promise<EventBoardDetail
     method: 'GET',
     url: `/v1/events/${id}`
   });
-  return response.data;
+  return {
+    ...response.data,
+    eventStartDate: String(response.data.eventStartDate).replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'),
+    eventEndDate: String(response.data.eventEndDate).replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')
+  };
 }
 
 /**

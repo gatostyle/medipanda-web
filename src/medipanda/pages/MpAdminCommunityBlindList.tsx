@@ -26,6 +26,7 @@ import { BlindPostResponse, DateString, getBlindPosts, unblindPost } from 'medip
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
+import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { formatYyyyMmDdHhMm } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
@@ -37,6 +38,7 @@ export default function MpAdminCommunityBlindList() {
   const [totalPages, setTotalPages] = useState(0);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const deleteDialog = useMpDeleteDialog();
+  const errorDialog = useMpErrorDialog();
 
   const formik = useFormik({
     initialValues: {
@@ -179,6 +181,7 @@ export default function MpAdminCommunityBlindList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch blind post list:', error);
+      errorDialog.showError('블라인드 목록을 불러오는 중 오류가 발생했습니다.');
       setData([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -218,6 +221,7 @@ export default function MpAdminCommunityBlindList() {
           setSelectedItems([]);
         } catch (error) {
           console.error('Failed to unblind posts:', error);
+          errorDialog.showError('블라인드 해제 중 오류가 발생했습니다.');
         }
       }
     });

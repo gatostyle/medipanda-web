@@ -19,7 +19,7 @@ import {
 import { useFormik } from 'formik';
 import { mpUpdateMemberFile } from 'medipanda/api-definitions/MpMember';
 import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
-import { approveOrRejectCso, getContractDetails, getMemberDetails, MemberDetailsResponse } from 'medipanda/backend';
+import { approveOrRejectCso, getContractDetails, getMemberDetails } from 'medipanda/backend';
 import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
 import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
@@ -27,14 +27,7 @@ import { mockString } from 'medipanda/mockup';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-
-function withMock<T extends MemberDetailsResponse>(data: T): T {
-  return {
-    ...data,
-    id: -1,
-    gender: Math.random() > 0.5 ? 'MALE' : 'FEMALE'
-  };
-}
+import { formatYyyyMmDd } from '../utils/dateFormat';
 
 export default function MpAdminMemberEdit() {
   const { userId } = useParams();
@@ -95,25 +88,25 @@ export default function MpAdminMemberEdit() {
       try {
         setLoading(true);
 
-        const memberData = withMock(await getMemberDetails(userId));
+        const memberDetail = await getMemberDetails(userId);
         let formikValues = formik.values;
 
         formikValues = {
           ...formikValues,
-          memberId: memberData.id,
-          userId: memberData.userId,
-          name: memberData.name,
-          phoneNumber: memberData.phoneNumber,
-          birthDate: memberData.birthDate,
-          gender: memberData.gender ?? '',
-          email: memberData.email,
-          referralCode: memberData.referralCode ?? '',
-          registrationDate: memberData.registrationDate,
-          lastLoginDate: memberData.lastLoginDate,
+          memberId: memberDetail.id,
+          userId: memberDetail.userId,
+          name: memberDetail.name,
+          phoneNumber: memberDetail.phoneNumber,
+          birthDate: memberDetail.birthDate,
+          gender: memberDetail.gender ?? '',
+          email: memberDetail.email,
+          referralCode: memberDetail.referralCode ?? '',
+          registrationDate: memberDetail.registrationDate,
+          lastLoginDate: memberDetail.lastLoginDate,
           accountStatus: 'ACTIVATED',
-          csoLicenseFile: memberData.csoCertUrl ?? '',
-          note: memberData.note ?? '',
-          marketingAgreements: memberData.marketingAgreements || {
+          csoLicenseFile: memberDetail.csoCertUrl ?? '',
+          note: memberDetail.note ?? '',
+          marketingAgreements: memberDetail.marketingAgreements || {
             sms: false,
             email: false,
             push: false
@@ -307,7 +300,7 @@ export default function MpAdminMemberEdit() {
                         생년월일
                       </Typography>
                       <Typography variant="body1">
-                        {formik.values.birthDate} {formik.values.gender}
+                        {formatYyyyMmDd(formik.values.birthDate)} {formik.values.gender}
                       </Typography>
                     </Grid>
 
@@ -333,14 +326,14 @@ export default function MpAdminMemberEdit() {
                       <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                         가입일
                       </Typography>
-                      <Typography variant="body1">{formik.values.registrationDate}</Typography>
+                      <Typography variant="body1">{formatYyyyMmDd(formik.values.registrationDate)}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
                       <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                         최종접속일
                       </Typography>
-                      <Typography variant="body1">{formik.values.lastLoginDate}</Typography>
+                      <Typography variant="body1">{formatYyyyMmDd(formik.values.lastLoginDate)}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
@@ -465,7 +458,7 @@ export default function MpAdminMemberEdit() {
                           <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                             계약일
                           </Typography>
-                          <Typography variant="body1">{formik.values.contractDate}</Typography>
+                          <Typography variant="body1">{formatYyyyMmDd(formik.values.contractDate)}</Typography>
                         </Grid>
 
                         <Grid item xs={6}>

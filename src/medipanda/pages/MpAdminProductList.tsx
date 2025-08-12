@@ -412,14 +412,14 @@ export default function MpAdminProductList() {
                 >
                   <FileDownloadIcon fontSize="small" />
                 </IconButton>
+                <Button variant="contained" color="success" size="small" onClick={() => setRateTableDialogOpen(true)}>
+                  요율표업로드
+                </Button>
                 <Button variant="contained" color="error" size="small" disabled={selectedItems.length === 0} onClick={handleDelete}>
                   삭제
                 </Button>
                 <Button variant="contained" color="success" size="small" component={Link} to="/admin/products/new">
                   등록
-                </Button>
-                <Button variant="contained" color="success" size="small" onClick={() => setRateTableDialogOpen(true)}>
-                  요율표업로드
                 </Button>
               </Stack>
             </Stack>

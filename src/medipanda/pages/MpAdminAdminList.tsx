@@ -24,6 +24,7 @@ import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { getAdminMembers, MemberResponse } from 'medipanda/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
+import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { MEMBER_ACCOUNT_STATUS_LABELS, MEMBER_ROLE_LABELS } from 'medipanda/ui-labels';
 import { backendNotImplemented } from 'medipanda/utils/backendNotImplemented';
 import { formatYyyyMmDdHhMm } from 'medipanda/utils/dateFormat';
@@ -36,6 +37,7 @@ export default function MpAdminAdminList() {
   const [loading, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const errorDialog = useMpErrorDialog();
 
   const formik = useFormik({
     initialValues: {
@@ -143,6 +145,7 @@ export default function MpAdminAdminList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch admin list:', error);
+      errorDialog.showError('관리자 목록을 불러오는 중 오류가 발생했습니다.');
       setData([]);
       setTotalElements(0);
       setTotalPages(0);
