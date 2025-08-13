@@ -240,7 +240,6 @@ export default function MpAdminNoticeEdit() {
                     name="noticeCategory"
                     value={formik.values.noticeCategory}
                     onChange={formik.handleChange}
-                    label="공지분류 *"
                     error={!!(formik.touched.noticeCategory && formik.errors.noticeCategory)}
                   >
                     <MenuItem value={'PRODUCT_STATUS'}>제약사 - 제품현향</MenuItem>

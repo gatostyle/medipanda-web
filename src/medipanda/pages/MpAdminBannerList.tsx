@@ -234,7 +234,7 @@ export default function MpAdminBannerList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>상태</InputLabel>
-                    <Select name="bannerStatus" label="상태" value={formik.values.bannerStatus} onChange={formik.handleChange}>
+                    <Select name="bannerStatus" value={formik.values.bannerStatus} onChange={formik.handleChange}>
                       <MenuItem value={'VISIBLE'}>노출</MenuItem>
                       <MenuItem value={'HIDDEN'}>미노출</MenuItem>
                     </Select>

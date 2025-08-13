@@ -251,7 +251,7 @@ export default function MpAdminCommunityCommentList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>글 유형</InputLabel>
-                    <Select name="commentType" label="글 유형" value={formik.values.commentType} onChange={formik.handleChange}>
+                    <Select name="commentType" value={formik.values.commentType} onChange={formik.handleChange}>
                       <MenuItem value={'COMMENT'}>댓글</MenuItem>
                       <MenuItem value={'REPLY'}>대댓글</MenuItem>
                     </Select>
@@ -260,7 +260,7 @@ export default function MpAdminCommunityCommentList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
+                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'nickname'}>닉네임</MenuItem>
                       <MenuItem value={'userId'}>아이디</MenuItem>
                     </Select>

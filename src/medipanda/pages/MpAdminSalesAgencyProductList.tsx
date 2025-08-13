@@ -1,4 +1,4 @@
-import { Download as ExcelIcon } from '@mui/icons-material';
+import { DocumentDownload } from 'iconsax-react';
 import {
   Box,
   Button,
@@ -6,7 +6,6 @@ import {
   Chip,
   FormControl,
   Grid,
-  IconButton,
   InputLabel,
   MenuItem,
   Pagination,
@@ -205,6 +204,7 @@ export default function MpAdminSalesAgencyProductList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch sales agency product list:', error);
+      errorDialog.showError('영업대행상품 목록을 불러오는 중 오류가 발생했습니다.');
       setData([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -260,7 +260,7 @@ export default function MpAdminSalesAgencyProductList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
+                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'productName'}>상품명</MenuItem>
                       <MenuItem value={'clientName'}>위탁사</MenuItem>
                     </Select>
@@ -301,9 +301,10 @@ export default function MpAdminSalesAgencyProductList() {
                 <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
               <Stack direction="row" spacing={1}>
-                <IconButton
-                  size="small"
+                <Button
+                  variant="contained"
                   color="success"
+                  size="small"
                   href={getDownloadSalesAgencyProductsExcel({
                     productName: formik.values.searchType === 'productName' ? formik.values.searchKeyword : undefined,
                     clientName: formik.values.searchType === 'clientName' ? formik.values.searchKeyword : undefined,
@@ -313,16 +314,10 @@ export default function MpAdminSalesAgencyProductList() {
                     size: formik.values.pageSize
                   })}
                   target="_blank"
-                  sx={{
-                    backgroundColor: 'success.main',
-                    color: 'white',
-                    '&:hover': {
-                      backgroundColor: 'success.dark'
-                    }
-                  }}
+                  startIcon={<DocumentDownload size={16} />}
                 >
-                  <ExcelIcon fontSize="small" />
-                </IconButton>
+                  Excel
+                </Button>
                 <Button variant="contained" color="error" size="small" disabled={selectedItems.length === 0} onClick={handleDelete}>
                   삭제
                 </Button>

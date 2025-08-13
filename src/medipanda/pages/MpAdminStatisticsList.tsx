@@ -87,7 +87,7 @@ export default function MpAdminStatisticsList() {
       setTotalPrescriptionAmount(response.content.reduce((sum, item) => sum + item.prescriptionAmount, 0));
     } catch (error) {
       console.error('Failed to fetch performance statistics:', error);
-      errorDialog.showError('실적통계를 불러오는 중 오류가 발생했습니다.');
+      errorDialog.showError('실적통계 목록을 불러오는 중 오류가 발생했습니다.');
       setData([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -205,7 +205,7 @@ export default function MpAdminStatisticsList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
+                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'drugCompany'}>제약사명</MenuItem>
                       <MenuItem value={'companyName'}>회사명</MenuItem>
                       <MenuItem value={'dealerName'}>딜러명</MenuItem>
@@ -258,6 +258,7 @@ export default function MpAdminStatisticsList() {
                 <Button
                   variant="contained"
                   color="success"
+                  size="small"
                   href={getDownloadPerformanceExcel({
                     drugCompany: formik.values.searchType === 'drugCompany' ? formik.values.searchKeyword : undefined,
                     companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
@@ -269,8 +270,9 @@ export default function MpAdminStatisticsList() {
                     size: formik.values.pageSize
                   })}
                   target="_blank"
+                  startIcon={<DocumentDownload size={16} />}
                 >
-                  <DocumentDownload />
+                  Excel
                 </Button>
               </Stack>
             </Stack>

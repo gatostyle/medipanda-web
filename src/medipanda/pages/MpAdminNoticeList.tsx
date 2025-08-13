@@ -271,11 +271,10 @@ export default function MpAdminNoticeList() {
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <InputLabel>상태(전체)</InputLabel>
+                    <InputLabel>상태</InputLabel>
                     <Select
                       name="isExposed"
-                      label="상태(전체)"
-                      value={formik.values.isExposed}
+                      value={`${formik.values.isExposed}`}
                       onChange={(e) => formik.setFieldValue('isExposed', e.target.value === 'true')}
                     >
                       <MenuItem value={'true'}>노출</MenuItem>
@@ -286,7 +285,7 @@ export default function MpAdminNoticeList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>제약사명</InputLabel>
-                    <Select name="drugCompany" label="제약사명" value={formik.values.drugCompany} onChange={formik.handleChange}>
+                    <Select name="drugCompany" value={formik.values.drugCompany} onChange={formik.handleChange}>
                       {manufacturerOptions.map((manufacturer) => (
                         <MenuItem key={manufacturer} value={manufacturer}>
                           {manufacturer}
@@ -296,10 +295,10 @@ export default function MpAdminNoticeList() {
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="startAt" placeholder="시작일" formik={formik} />
+                  <MpFormikDatePicker name="startAt" label="시작일" formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="endAt" placeholder="종료일" formik={formik} />
+                  <MpFormikDatePicker name="endAt" label="종료일" formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField

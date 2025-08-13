@@ -243,7 +243,7 @@ export default function MpAdminCommunityBlindList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>글 유형</InputLabel>
-                    <Select name="postType" label="글 유형" value={formik.values.postType} onChange={formik.handleChange}>
+                    <Select name="postType" value={formik.values.postType} onChange={formik.handleChange}>
                       <MenuItem value={'BOARD'}>포스트</MenuItem>
                       <MenuItem value={'COMMENT'}>댓글</MenuItem>
                     </Select>
@@ -252,7 +252,7 @@ export default function MpAdminCommunityBlindList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
+                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'nickname'}>닉네임</MenuItem>
                       <MenuItem value={'userId'}>아이디</MenuItem>
                       <MenuItem value={'memberName'}>회원명</MenuItem>

@@ -41,9 +41,9 @@ export default function MpAdminExpenseReportList() {
   const formik = useFormik({
     initialValues: {
       reportStatus: '' as 'PENDING' | 'COMPLETED' | '',
-      searchCriteria: '',
-      startAt: null as Date | null,
-      endAt: null as Date | null,
+      searchType: '' as 'companyName' | 'userId' | 'productName',
+      eventDateFrom: null as Date | null,
+      eventDateTo: null as Date | null,
       searchKeyword: '',
       pageIndex: 0,
       pageSize: 20
@@ -64,11 +64,11 @@ export default function MpAdminExpenseReportList() {
         page: formik.values.pageIndex,
         size: formik.values.pageSize,
         ...(formik.values.reportStatus !== '' && { reportStatus: formik.values.reportStatus }),
-        companyName: formik.values.searchCriteria === 'companyName' ? formik.values.searchKeyword : undefined,
-        userId: formik.values.searchCriteria === 'userId' ? formik.values.searchKeyword : undefined,
-        productName: formik.values.searchCriteria === 'productName' ? formik.values.searchKeyword : undefined,
-        eventDateFrom: formik.values.startAt ? new DateTimeString(formik.values.startAt) : undefined,
-        eventDateTo: formik.values.endAt ? new DateTimeString(formik.values.endAt) : undefined
+        companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
+        userId: formik.values.searchType === 'userId' ? formik.values.searchKeyword : undefined,
+        productName: formik.values.searchType === 'productName' ? formik.values.searchKeyword : undefined,
+        eventDateFrom: formik.values.eventDateFrom ? new DateTimeString(formik.values.eventDateFrom) : undefined,
+        eventDateTo: formik.values.eventDateTo ? new DateTimeString(formik.values.eventDateTo) : undefined
       });
 
       setData(withSequence(response).content);
@@ -180,7 +180,7 @@ export default function MpAdminExpenseReportList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>신고상태</InputLabel>
-                    <Select name="reportStatus" label="신고상태" value={formik.values.reportStatus} onChange={formik.handleChange}>
+                    <Select name="reportStatus" value={formik.values.reportStatus} onChange={formik.handleChange}>
                       <MenuItem value={'PENDING'}>{EXPENSE_REPORT_STATUS_LABELS['PENDING']}</MenuItem>
                       <MenuItem value={'COMPLETED'}>{EXPENSE_REPORT_STATUS_LABELS['COMPLETED']}</MenuItem>
                     </Select>
@@ -189,7 +189,7 @@ export default function MpAdminExpenseReportList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchCriteria" label="검색유형" value={formik.values.searchCriteria} onChange={formik.handleChange}>
+                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'companyName'}>회사명</MenuItem>
                       <MenuItem value={'userId'}>아이디</MenuItem>
                       <MenuItem value={'productName'}>제품명</MenuItem>
@@ -197,10 +197,10 @@ export default function MpAdminExpenseReportList() {
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="startAt" placeholder="시작일" formik={formik} />
+                  <MpFormikDatePicker name="eventDateFrom" label="시작일" formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="endAt" placeholder="종료일" formik={formik} />
+                  <MpFormikDatePicker name="eventDateTo" label="종료일" formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
@@ -216,7 +216,7 @@ export default function MpAdminExpenseReportList() {
                   <Button type="submit" variant="contained" size="small">
                     검색
                   </Button>
-                  <Button variant="outlined" color="inherit" size="small" onClick={handleReset}>
+                  <Button variant="outlined" size="small" onClick={handleReset}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -243,11 +243,11 @@ export default function MpAdminExpenseReportList() {
                     page: formik.values.pageIndex,
                     size: formik.values.pageSize,
                     ...(formik.values.reportStatus !== '' && { reportStatus: formik.values.reportStatus }),
-                    companyName: formik.values.searchCriteria === 'companyName' ? formik.values.searchKeyword : undefined,
-                    userId: formik.values.searchCriteria === 'userId' ? formik.values.searchKeyword : undefined,
-                    productName: formik.values.searchCriteria === 'productName' ? formik.values.searchKeyword : undefined,
-                    eventDateFrom: formik.values.startAt ? new DateTimeString(formik.values.startAt) : undefined,
-                    eventDateTo: formik.values.endAt ? new DateTimeString(formik.values.endAt) : undefined
+                    companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
+                    userId: formik.values.searchType === 'userId' ? formik.values.searchKeyword : undefined,
+                    productName: formik.values.searchType === 'productName' ? formik.values.searchKeyword : undefined,
+                    eventDateFrom: formik.values.eventDateFrom ? new DateTimeString(formik.values.eventDateFrom) : undefined,
+                    eventDateTo: formik.values.eventDateTo ? new DateTimeString(formik.values.eventDateTo) : undefined
                   })}
                   target="_blank"
                 >

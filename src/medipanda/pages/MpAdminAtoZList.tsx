@@ -44,7 +44,7 @@ export default function MpAdminAtoZList() {
 
   const formik = useFormik({
     initialValues: {
-      visible: undefined as boolean | undefined,
+      isExposed: '' as boolean | '',
       searchType: 'title' as 'title' | 'userId' | 'name' | 'nickname',
       searchKeyword: '',
       startAt: null as Date | null,
@@ -158,7 +158,7 @@ export default function MpAdminAtoZList() {
         filterBlind: undefined,
         boardTitle: formik.values.searchType === 'title' ? formik.values.searchKeyword : undefined,
         filterDeleted: undefined,
-        isExposed: formik.values.visible
+        isExposed: formik.values.isExposed !== '' ? formik.values.isExposed : undefined
       });
 
       setData(withSequence(response).content);
@@ -220,24 +220,13 @@ export default function MpAdminAtoZList() {
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
-                    <InputLabel>상태(전체)</InputLabel>
+                    <InputLabel>상태</InputLabel>
                     <Select
-                      value={formik.values.visible === undefined ? 'ALL' : formik.values.visible ? 'VISIBLE' : 'HIDDEN'}
-                      label="상태(전체)"
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        if (value === 'ALL') {
-                          formik.setFieldValue('visible', undefined);
-                        } else if (value === 'VISIBLE') {
-                          formik.setFieldValue('visible', true);
-                        } else {
-                          formik.setFieldValue('visible', false);
-                        }
-                      }}
+                      value={`${formik.values.isExposed}`}
+                      onChange={(e) => formik.setFieldValue('isExposed', e.target.value === 'true')}
                     >
-                      <MenuItem value="ALL">전체</MenuItem>
-                      <MenuItem value="VISIBLE">노출</MenuItem>
-                      <MenuItem value="HIDDEN">미노출</MenuItem>
+                      <MenuItem value={'true'}>노출</MenuItem>
+                      <MenuItem value={'false'}>미노출</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
@@ -250,7 +239,7 @@ export default function MpAdminAtoZList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
+                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'title'}>제목</MenuItem>
                       <MenuItem value={'userId'}>아이디</MenuItem>
                       <MenuItem value={'name'}>이름</MenuItem>

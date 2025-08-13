@@ -42,7 +42,7 @@ export default function MpAdminMemberList() {
   const formik = useFormik({
     initialValues: {
       contractStatus: '' as 'CONTRACT' | 'NON_CONTRACT' | '',
-      searchField: 'name' as 'name' | 'id' | 'userId' | 'phoneNumber' | 'email' | 'companyName',
+      searchType: 'name' as 'name' | 'id' | 'userId' | 'phoneNumber' | 'email' | 'companyName',
       searchKeyword: '',
       startAt: null as Date | null,
       endAt: null as Date | null,
@@ -163,14 +163,14 @@ export default function MpAdminMemberList() {
     try {
       const response = await getUserMembers({
         contractStatus: formik.values.contractStatus !== '' ? formik.values.contractStatus : undefined,
-        name: formik.values.searchField === 'name' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
-        userId: formik.values.searchField === 'userId' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
+        name: formik.values.searchType === 'name' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
+        userId: formik.values.searchType === 'userId' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
         phoneNumber:
-          formik.values.searchField === 'phoneNumber' && formik.values.searchKeyword
+          formik.values.searchType === 'phoneNumber' && formik.values.searchKeyword
             ? formik.values.searchKeyword.replace(/-/g, '')
             : undefined,
-        email: formik.values.searchField === 'email' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
-        companyName: formik.values.searchField === 'companyName' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
+        email: formik.values.searchType === 'email' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
+        companyName: formik.values.searchType === 'companyName' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
         startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
         endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
         page: formik.values.pageIndex,
@@ -215,7 +215,7 @@ export default function MpAdminMemberList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>계약상태</InputLabel>
-                    <Select name="contractStatus" label="계약상태" value={formik.values.contractStatus} onChange={formik.handleChange}>
+                    <Select name="contractStatus" value={formik.values.contractStatus} onChange={formik.handleChange}>
                       <MenuItem value={'CONTRACT'}>계약</MenuItem>
                       <MenuItem value={'NON_CONTRACT'}>미계약</MenuItem>
                     </Select>
@@ -224,7 +224,7 @@ export default function MpAdminMemberList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchField" label="검색유형" value={formik.values.searchField} onChange={formik.handleChange}>
+                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'name'}>회원명</MenuItem>
                       <MenuItem value={'id'}>회원번호</MenuItem>
                       <MenuItem value={'userId'}>아이디</MenuItem>
@@ -275,25 +275,27 @@ export default function MpAdminMemberList() {
                 <Button
                   variant="contained"
                   color="success"
+                  size="small"
                   target="_blank"
                   href={getDownloadUserMembersExcel({
                     contractStatus: formik.values.contractStatus !== '' ? formik.values.contractStatus : undefined,
-                    name: formik.values.searchField === 'name' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
-                    userId: formik.values.searchField === 'userId' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
+                    name: formik.values.searchType === 'name' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
+                    userId: formik.values.searchType === 'userId' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
                     phoneNumber:
-                      formik.values.searchField === 'phoneNumber' && formik.values.searchKeyword
+                      formik.values.searchType === 'phoneNumber' && formik.values.searchKeyword
                         ? formik.values.searchKeyword.replace(/-/g, '')
                         : undefined,
-                    email: formik.values.searchField === 'email' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
+                    email: formik.values.searchType === 'email' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
                     companyName:
-                      formik.values.searchField === 'companyName' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
+                      formik.values.searchType === 'companyName' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
                     startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
                     endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
                     page: formik.values.pageIndex,
                     size: formik.values.pageSize
                   })}
+                  startIcon={<DocumentDownload size={16} />}
                 >
-                  <DocumentDownload />
+                  Excel
                 </Button>
               </Stack>
             </Stack>

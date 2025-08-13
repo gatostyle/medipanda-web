@@ -57,8 +57,8 @@ export default function MpAdminPrescriptionFormList() {
       searchType: '' as 'companyName' | 'dealerName' | 'drugCompany' | '',
       searchKeyword: '',
       status: '' as 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | '',
-      startAt: null as Date | null,
-      endAt: null as Date | null,
+      prescriptionMonthStart: null as Date | null,
+      prescriptionMonthEnd: null as Date | null,
       pageIndex: 0,
       pageSize: 20
     },
@@ -223,8 +223,8 @@ export default function MpAdminPrescriptionFormList() {
         companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
         drugCompany: formik.values.searchType === 'drugCompany' ? formik.values.searchKeyword : undefined,
         dealerName: formik.values.searchType === 'dealerName' ? formik.values.searchKeyword : undefined,
-        prescriptionMonthStart: formik.values.startAt ? new DateTimeString(formik.values.startAt) : undefined,
-        prescriptionMonthEnd: formik.values.endAt ? new DateTimeString(formik.values.endAt) : undefined,
+        prescriptionMonthStart: formik.values.prescriptionMonthStart ? new DateTimeString(formik.values.prescriptionMonthStart) : undefined,
+        prescriptionMonthEnd: formik.values.prescriptionMonthEnd ? new DateTimeString(formik.values.prescriptionMonthEnd) : undefined,
         page: formik.values.pageIndex,
         size: formik.values.pageSize
       });
@@ -234,6 +234,7 @@ export default function MpAdminPrescriptionFormList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch prescription form list:', error);
+      errorDialog.showError('처방입력 목록을 불러오는 중 오류가 발생했습니다.');
       setData([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -293,7 +294,7 @@ export default function MpAdminPrescriptionFormList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>상태</InputLabel>
-                    <Select name="status" label="상태" value={formik.values.status} onChange={formik.handleChange}>
+                    <Select name="status" value={formik.values.status} onChange={formik.handleChange}>
                       <MenuItem value={'PENDING'}>승인대기</MenuItem>
                       <MenuItem value={'COMPLETED'}>승인완료</MenuItem>
                     </Select>
@@ -302,7 +303,7 @@ export default function MpAdminPrescriptionFormList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
+                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'companyName'}>회사명</MenuItem>
                       <MenuItem value={'dealerName'}>딜러명</MenuItem>
                       <MenuItem value={'drugCompany'}>제약사명</MenuItem>
@@ -310,10 +311,10 @@ export default function MpAdminPrescriptionFormList() {
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="startAt" label="시작일" formik={formik} />
+                  <MpFormikDatePicker name="prescriptionMonthStart" label="시작일" formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="endAt" label="종료일" formik={formik} />
+                  <MpFormikDatePicker name="prescriptionMonthEnd" label="종료일" formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField

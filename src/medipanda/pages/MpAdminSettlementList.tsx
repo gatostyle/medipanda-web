@@ -50,6 +50,7 @@ export default function MpAdminSettlementList() {
   const formik = useFormik({
     initialValues: {
       userConfirmation: '' as boolean | '',
+      status: '' as 'REQUEST' | 'OBJECTION' | '',
       searchType: '' as 'dealerId' | 'companyName' | '',
       startAt: null as Date | null,
       endAt: null as Date | null,
@@ -194,7 +195,7 @@ export default function MpAdminSettlementList() {
         dealerName: undefined,
         dealerId: formik.values.searchType === 'dealerId' ? parseInt(formik.values.searchKeyword) : undefined,
         companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
-        status: formik.values.userConfirmation !== '' ? (formik.values.userConfirmation ? 'REQUEST' : 'OBJECTION') : undefined,
+        status: formik.values.status !== '' ? formik.values.status : undefined,
         startMonth: formik.values.startAt ? mockNumber() : undefined,
         endMonth: formik.values.endAt ? mockNumber() : undefined,
         page: formik.values.pageIndex,
@@ -206,6 +207,7 @@ export default function MpAdminSettlementList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch settlement list:', error);
+      errorDialog.showError('정산내역 목록을 불러오는 중 오류가 발생했습니다.');
       setData([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -281,21 +283,16 @@ export default function MpAdminSettlementList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>사용자확인</InputLabel>
-                    <Select
-                      name="userConfirmation"
-                      label="사용자확인"
-                      value={formik.values.userConfirmation}
-                      onChange={(e) => formik.setFieldValue('userConfirmation', e.target.value === 'true')}
-                    >
-                      <MenuItem value={'true'}>정산요청</MenuItem>
-                      <MenuItem value={'false'}>이의신청</MenuItem>
+                    <Select name="status" value={formik.values.status} onChange={formik.handleChange}>
+                      <MenuItem value={'REQUEST'}>정산요청</MenuItem>
+                      <MenuItem value={'OBJECTION'}>이의신청</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
+                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'dealerId'}>딜러번호</MenuItem>
                       <MenuItem value={'companyName'}>회사명</MenuItem>
                     </Select>
@@ -347,7 +344,7 @@ export default function MpAdminSettlementList() {
                     dealerName: undefined,
                     dealerId: formik.values.searchType === 'dealerId' ? parseInt(formik.values.searchKeyword) : undefined,
                     companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
-                    status: formik.values.userConfirmation !== '' ? (formik.values.userConfirmation ? 'REQUEST' : 'OBJECTION') : undefined,
+                    status: formik.values.status !== '' ? formik.values.status : undefined,
                     startMonth: formik.values.startAt ? mockNumber() : undefined,
                     endMonth: formik.values.endAt ? mockNumber() : undefined,
                     page: formik.values.pageIndex,
@@ -362,7 +359,7 @@ export default function MpAdminSettlementList() {
                   파일 업로드
                 </Button>
                 <Button variant="contained" color="success" size="small" onClick={handleEDIDownload}>
-                  EDI다운로드
+                  EDI 다운로드
                 </Button>
                 <Button variant="contained" color="success" size="small" onClick={handleEDIPrint}>
                   EDI인쇄

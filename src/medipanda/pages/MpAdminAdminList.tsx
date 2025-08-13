@@ -174,7 +174,7 @@ export default function MpAdminAdminList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="type" label="검색유형" value={formik.values.type} onChange={formik.handleChange}>
+                    <Select name="type" value={formik.values.type} onChange={formik.handleChange}>
                       <MenuItem value={'name'}>관리자명</MenuItem>
                       <MenuItem value={'userId'}>아이디</MenuItem>
                       <MenuItem value={'email'}>이메일</MenuItem>

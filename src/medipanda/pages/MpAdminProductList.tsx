@@ -1,5 +1,5 @@
-import AttachFileIcon from '@mui/icons-material/AttachFile';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import { AttachFile as AttachFileIcon, UploadFile } from '@mui/icons-material';
+import { DocumentDownload } from 'iconsax-react';
 import {
   Box,
   Button,
@@ -12,7 +12,6 @@ import {
   FormControlLabel,
   FormGroup,
   Grid,
-  IconButton,
   InputLabel,
   MenuItem,
   Pagination,
@@ -45,7 +44,8 @@ import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
 import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
 import { Link } from 'react-router-dom';
 
 export default function MpAdminProductList() {
@@ -60,6 +60,14 @@ export default function MpAdminProductList() {
   const deleteDialog = useMpDeleteDialog();
   const errorDialog = useMpErrorDialog();
   const infoDialog = useMpInfoDialog();
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    if (acceptedFiles.length > 0) {
+      setRateTableFile(acceptedFiles[0]);
+    }
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: { 'application/vnd.ms-excel': ['.xls', '.xlsx'] } });
 
   const formik = useFormik({
     initialValues: {
@@ -233,6 +241,7 @@ export default function MpAdminProductList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch product list:', error);
+      errorDialog.showError('제품 목록을 불러오는 중 오류가 발생했습니다.');
       setData([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -303,7 +312,7 @@ export default function MpAdminProductList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
+                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'productName'}>제품명</MenuItem>
                       <MenuItem value={'productCode'}>제품코드</MenuItem>
                       <MenuItem value={'manufacturerName'}>제약사</MenuItem>
@@ -388,7 +397,9 @@ export default function MpAdminProductList() {
                 <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
               <Stack direction="row" spacing={1}>
-                <IconButton
+                <Button
+                  variant="contained"
+                  color="success"
                   size="small"
                   href={getDownloadProductSummariesExcel({
                     productName: formik.values.searchType === 'productName' ? formik.values.searchKeyword : undefined,
@@ -404,16 +415,12 @@ export default function MpAdminProductList() {
                     size: formik.values.pageSize
                   })}
                   target="_blank"
-                  sx={{
-                    bgcolor: 'success.main',
-                    color: 'white',
-                    '&:hover': { bgcolor: 'success.dark' }
-                  }}
+                  startIcon={<DocumentDownload size={16} />}
                 >
-                  <FileDownloadIcon fontSize="small" />
-                </IconButton>
+                  Excel
+                </Button>
                 <Button variant="contained" color="success" size="small" onClick={() => setRateTableDialogOpen(true)}>
-                  요율표업로드
+                  요율표 업로드
                 </Button>
                 <Button variant="contained" color="error" size="small" disabled={selectedItems.length === 0} onClick={handleDelete}>
                   삭제
@@ -485,52 +492,58 @@ export default function MpAdminProductList() {
       </Grid>
 
       <Dialog open={rateTableDialogOpen} onClose={() => setRateTableDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}>요율표업로드</DialogTitle>
-        <Box sx={{ position: 'absolute', top: 16, right: 16 }}>
-          <Button
-            variant="contained"
-            color="success"
-            size="small"
-            href={import.meta.env.VITE_APP_URL_FILE_PRODUCT_RATE_TABLE}
-            target="_blank"
+        <DialogTitle sx={{ fontSize: '1.25rem', fontWeight: 600 }}>요율표 업로드</DialogTitle>
+        <DialogContent sx={{ pt: 3, pb: 3 }}>
+          <Box sx={{ textAlign: 'right', mb: 2 }}>
+            <Button
+              href={import.meta.env.VITE_APP_URL_FILE_PRODUCT_RATE_TABLE}
+              target="_blank"
+              variant="contained"
+              color="success"
+              size="small"
+              startIcon={<AttachFileIcon />}
+            >
+              양식 다운로드
+            </Button>
+          </Box>
+          <Box
+            {...getRootProps()}
+            sx={{
+              border: '2px dashed #e0e0e0',
+              borderRadius: 1,
+              p: 4,
+              textAlign: 'center',
+              cursor: 'pointer',
+              bgcolor: isDragActive ? 'action.hover' : 'transparent',
+              '&:hover': {
+                borderColor: 'primary.main'
+              }
+            }}
           >
-            양식 다운로드
-          </Button>
-        </Box>
-        <DialogContent sx={{ textAlign: 'center', py: 4 }}>
-          <Button variant="contained" color="success" component="label" startIcon={<AttachFileIcon />} sx={{ px: 4, py: 2 }}>
-            파일
-            <input
-              type="file"
-              hidden
-              accept=".xlsx,.xls"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  setRateTableFile(file);
-                }
-              }}
-            />
-          </Button>
-          {rateTableFile && (
-            <Typography variant="body2" sx={{ mt: 2 }}>
-              선택된 파일: {rateTableFile.name}
+            <input {...getInputProps()} />
+            <UploadFile sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
+            <Typography variant="h6" color="text.secondary">
+              여기에 파일을 드래그하거나 클릭하여 업로드하세요.
             </Typography>
-          )}
+            {rateTableFile && (
+              <Typography variant="body2" sx={{ mt: 1 }}>
+                선택된 파일: {rateTableFile.name}
+              </Typography>
+            )}
+          </Box>
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'center', pb: 3 }}>
           <Button
-            variant="contained"
-            color="inherit"
+            variant="outlined"
             onClick={() => {
               setRateTableDialogOpen(false);
               setRateTableFile(null);
             }}
-            sx={{ px: 4 }}
+            sx={{ minWidth: 100 }}
           >
             취소
           </Button>
-          <Button variant="contained" color="success" onClick={handleRateTableUpload} disabled={!rateTableFile} sx={{ px: 4 }}>
+          <Button variant="contained" color="success" onClick={handleRateTableUpload} disabled={!rateTableFile} sx={{ minWidth: 100 }}>
             업데이트
           </Button>
         </DialogActions>

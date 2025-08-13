@@ -1,10 +1,10 @@
-import AttachFile from '@mui/icons-material/AttachFile';
-import UploadFile from '@mui/icons-material/UploadFile';
+import { AttachFile as AttachFileIcon, UploadFile } from '@mui/icons-material';
 import {
   Box,
   Button,
   Checkbox,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
   FormControl,
@@ -37,7 +37,8 @@ import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDi
 import { mockString } from 'medipanda/mockup';
 import { backendNotImplemented } from 'medipanda/utils/backendNotImplemented';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
 import { Link } from 'react-router-dom';
 
 export default function MpAdminPartnerList() {
@@ -52,6 +53,14 @@ export default function MpAdminPartnerList() {
   const notImplementedDialog = useMpNotImplementedDialog();
   const errorDialog = useMpErrorDialog();
   const infoDialog = useMpInfoDialog();
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    if (acceptedFiles.length > 0) {
+      setUploadFile(acceptedFiles[0]);
+    }
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: { 'application/vnd.ms-excel': ['.xls', '.xlsx'] } });
 
   const formik = useFormik({
     initialValues: {
@@ -193,6 +202,7 @@ export default function MpAdminPartnerList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch business partner list:', error);
+      errorDialog.showError('거래선 목록을 불러오는 중 오류가 발생했습니다.');
       setData([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -260,19 +270,6 @@ export default function MpAdminPartnerList() {
     }
   };
 
-  const handleFileSelect = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.xlsx,.xls';
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        setUploadFile(file);
-      }
-    };
-    input.click();
-  };
-
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -289,16 +286,16 @@ export default function MpAdminPartnerList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>계약유형</InputLabel>
-                    <Select name="contractType" label="계약유형" value={formik.values.contractType} onChange={formik.handleChange}>
-                      <MenuItem value="DIRECT">법인</MenuItem>
-                      <MenuItem value="INDIRECT">개인</MenuItem>
+                    <Select name="contractType" value={formik.values.contractType} onChange={formik.handleChange}>
+                      <MenuItem value={'CONTRACT'}>법인</MenuItem>
+                      <MenuItem value={'NON_CONTRACT'}>개인</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
+                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'company'}>회사명</MenuItem>
                       <MenuItem value={'partner'}>거래처명</MenuItem>
                       <MenuItem value={'pharmaceutical'}>제약사명</MenuItem>
@@ -339,7 +336,7 @@ export default function MpAdminPartnerList() {
               </Stack>
               <Stack direction="row" spacing={1}>
                 <Button variant="contained" color="primary" size="small" onClick={() => setUploadDialogOpen(true)}>
-                  파일업로드
+                  파일 업로드
                 </Button>
                 <Button variant="contained" color="error" size="small" disabled={selectedItems.length === 0} onClick={handleDelete}>
                   삭제
@@ -420,51 +417,52 @@ export default function MpAdminPartnerList() {
               variant="contained"
               color="success"
               size="small"
-              startIcon={<AttachFile />}
+              startIcon={<AttachFileIcon />}
             >
               양식 다운로드
             </Button>
           </Box>
           <Box
+            {...getRootProps()}
             sx={{
               border: '2px dashed #e0e0e0',
               borderRadius: 1,
               p: 4,
               textAlign: 'center',
               cursor: 'pointer',
+              bgcolor: isDragActive ? 'action.hover' : 'transparent',
               '&:hover': {
-                borderColor: '#bdbdbd',
-                bgcolor: 'action.hover'
+                borderColor: 'primary.main'
               }
             }}
-            onClick={handleFileSelect}
           >
+            <input {...getInputProps()} />
             <UploadFile sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
-            <Button variant="outlined" size="small">
-              파일
-            </Button>
+            <Typography variant="h6" color="text.secondary">
+              여기에 파일을 드래그하거나 클릭하여 업로드하세요.
+            </Typography>
             {uploadFile && (
-              <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+              <Typography variant="body2" sx={{ mt: 1 }}>
                 선택된 파일: {uploadFile.name}
               </Typography>
             )}
           </Box>
-          <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
-            <Button
-              variant="outlined"
-              onClick={() => {
-                setUploadDialogOpen(false);
-                setUploadFile(null);
-              }}
-              sx={{ minWidth: 100 }}
-            >
-              취소
-            </Button>
-            <Button variant="contained" color="success" onClick={handleFileUpload} disabled={!uploadFile} sx={{ minWidth: 100 }}>
-              업데이트
-            </Button>
-          </Stack>
         </DialogContent>
+        <DialogActions sx={{ justifyContent: 'center', pb: 3 }}>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              setUploadDialogOpen(false);
+              setUploadFile(null);
+            }}
+            sx={{ minWidth: 100 }}
+          >
+            취소
+          </Button>
+          <Button variant="contained" color="success" onClick={handleFileUpload} disabled={!uploadFile} sx={{ minWidth: 100 }}>
+            업데이트
+          </Button>
+        </DialogActions>
       </Dialog>
     </Grid>
   );

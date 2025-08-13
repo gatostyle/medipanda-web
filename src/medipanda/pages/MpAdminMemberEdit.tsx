@@ -339,7 +339,7 @@ export default function MpAdminMemberEdit() {
                     <Grid item xs={6}>
                       <FormControl fullWidth size="small">
                         <InputLabel>계정상태</InputLabel>
-                        <Select name="accountStatus" label="계정상태" value={formik.values.accountStatus} onChange={formik.handleChange}>
+                        <Select name="accountStatus" value={formik.values.accountStatus} onChange={formik.handleChange}>
                           <MenuItem value={'ACTIVATED'}>활성</MenuItem>
                           <MenuItem value={'BLOCKED'}>비활성</MenuItem>
                         </Select>
@@ -387,7 +387,7 @@ export default function MpAdminMemberEdit() {
                         <Grid item xs={6}>
                           <FormControl fullWidth size="small">
                             <InputLabel>유형</InputLabel>
-                            <Select name="contractType" label="유형" value={formik.values.contractType} onChange={formik.handleChange}>
+                            <Select name="contractType" value={formik.values.contractType} onChange={formik.handleChange}>
                               <MenuItem value={'ORGANIZATION'}>법인계약</MenuItem>
                               <MenuItem value={'INDIVIDUAL'}>개인계약</MenuItem>
                             </Select>

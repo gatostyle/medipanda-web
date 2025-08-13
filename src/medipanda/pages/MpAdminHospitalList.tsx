@@ -57,8 +57,8 @@ export default function MpAdminHospitalList() {
       sido: '',
       sigungu: '',
       searchKeyword: '',
-      startAt: null as Date | null,
-      endAt: null as Date | null,
+      startDate: null as Date | null,
+      endDate: null as Date | null,
       pageIndex: 0,
       pageSize: 20
     },
@@ -243,14 +243,15 @@ export default function MpAdminHospitalList() {
         sido: formik.values.sido !== '' ? formik.values.sido : undefined,
         sigungu: formik.values.sigungu !== '' ? formik.values.sigungu : undefined,
         // searchKeyword: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        startDate: formik.values.startAt ? new DateTimeString(formik.values.startAt) : undefined,
-        endDate: formik.values.endAt ? new DateTimeString(formik.values.endAt) : undefined
+        startDate: formik.values.startDate ? new DateTimeString(formik.values.startDate) : undefined,
+        endDate: formik.values.endDate ? new DateTimeString(formik.values.endDate) : undefined
       });
       setData(withSequence(response).content);
       setTotalElements(response.totalElements);
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch hospital list:', error);
+      errorDialog.showError('개원병원 목록을 불러오는 중 오류가 발생했습니다.');
       setData([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -279,7 +280,7 @@ export default function MpAdminHospitalList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>시/도</InputLabel>
-                    <Select name="sido" label="시/도" value={formik.values.sido} onChange={formik.handleChange}>
+                    <Select name="sido" value={formik.values.sido} onChange={formik.handleChange}>
                       <MenuItem value="SEOUL">서울</MenuItem>
                       <MenuItem value="GYEONGGI">경기</MenuItem>
                       <MenuItem value="INCHEON">인천</MenuItem>
@@ -303,7 +304,7 @@ export default function MpAdminHospitalList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>시/군/구</InputLabel>
-                    <Select name="sigungu" label="시/군/구" value={formik.values.sigungu} onChange={formik.handleChange}>
+                    <Select name="sigungu" value={formik.values.sigungu} onChange={formik.handleChange}>
                       {formik.values.sido === 'SEOUL' && (
                         <>
                           <MenuItem value="gangnam">강남구</MenuItem>
@@ -372,10 +373,10 @@ export default function MpAdminHospitalList() {
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="startAt" label="시작일" formik={formik} />
+                  <MpFormikDatePicker name="startDate" label="시작일" formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="endAt" label="종료일" formik={formik} />
+                  <MpFormikDatePicker name="endDate" label="종료일" formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
@@ -410,7 +411,7 @@ export default function MpAdminHospitalList() {
               </Stack>
               <Stack direction="row" spacing={1}>
                 <Button variant="contained" color="success" size="small" onClick={() => setExcelUploadDialogOpen(true)}>
-                  엑셀업로드
+                  엑셀 업로드
                 </Button>
                 <Button variant="contained" color="error" size="small" onClick={handleDeleteSelected} disabled={selectedItems.length === 0}>
                   삭제

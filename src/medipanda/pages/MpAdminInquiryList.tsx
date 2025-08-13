@@ -213,12 +213,7 @@ export default function MpAdminInquiryList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>처리상태</InputLabel>
-                    <Select
-                      name="responseStatusFilter"
-                      label="처리상태"
-                      value={formik.values.responseStatusFilter}
-                      onChange={formik.handleChange}
-                    >
+                    <Select name="responseStatusFilter" value={formik.values.responseStatusFilter} onChange={formik.handleChange}>
                       <MenuItem value={InquiryResponseStatusFilter.ALL}>처리상태(전체)</MenuItem>
                       <MenuItem value={InquiryResponseStatusFilter.WAITING}>답변대기중</MenuItem>
                       <MenuItem value={InquiryResponseStatusFilter.COMPLETED}>답변완료</MenuItem>
@@ -228,7 +223,7 @@ export default function MpAdminInquiryList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
+                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={InquirySearchType.MEMBER_NAME}>회원명</MenuItem>
                       <MenuItem value={InquirySearchType.COMPANY_NAME}>회사명</MenuItem>
                       <MenuItem value={InquirySearchType.USER_ID}>아이디</MenuItem>

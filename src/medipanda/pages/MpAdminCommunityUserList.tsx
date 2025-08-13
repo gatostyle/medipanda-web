@@ -209,13 +209,7 @@ export default function MpAdminCommunityUserList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>파트너사 계약여부</InputLabel>
-                    <Select
-                      name="contractStatus"
-                      value={formik.values.contractStatus}
-                      onChange={formik.handleChange}
-                      label="파트너사 계약여부"
-                      size="small"
-                    >
+                    <Select name="contractStatus" value={formik.values.contractStatus} onChange={formik.handleChange} size="small">
                       <MenuItem value={'CONTRACT'}>계약</MenuItem>
                       <MenuItem value={'NON_CONTRACT'}>미계약</MenuItem>
                     </Select>
@@ -224,7 +218,7 @@ export default function MpAdminCommunityUserList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange} label="검색유형" size="small">
+                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'userId'}>아이디</MenuItem>
                       <MenuItem value={'nickname'}>닉네임</MenuItem>
                     </Select>

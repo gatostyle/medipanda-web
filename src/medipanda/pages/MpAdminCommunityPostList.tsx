@@ -219,6 +219,7 @@ export default function MpAdminCommunityPostList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch community post list:', error);
+      errorDialog.showError('포스트 목록을 불러오는 중 오류가 발생했습니다.');
       setData([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -281,7 +282,7 @@ export default function MpAdminCommunityPostList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>게시판유형</InputLabel>
-                    <Select name="boardType" label="게시판유형" value={formik.values.boardType} onChange={formik.handleChange}>
+                    <Select name="boardType" value={formik.values.boardType} onChange={formik.handleChange}>
                       <MenuItem value={'ANONYMOUS'}>익명게시판</MenuItem>
                       <MenuItem value={'MR_CSO_MATCHING'}>MR-CSO 매칭</MenuItem>
                     </Select>
@@ -290,7 +291,7 @@ export default function MpAdminCommunityPostList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
+                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'title'}>제목</MenuItem>
                       <MenuItem value={'userId'}>아이디</MenuItem>
                       <MenuItem value={'name'}>회원명</MenuItem>

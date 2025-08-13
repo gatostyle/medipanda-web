@@ -223,9 +223,8 @@ export default function MpAdminFaqList() {
                   <FormControl fullWidth size="small">
                     <InputLabel>상태</InputLabel>
                     <Select
-                      label="상태"
                       name="isExposed"
-                      value={formik.values.isExposed}
+                      value={`${formik.values.isExposed}`}
                       onChange={(e) => formik.setFieldValue('isExposed', e.target.value === 'true')}
                     >
                       <MenuItem value={'true'}>노출</MenuItem>

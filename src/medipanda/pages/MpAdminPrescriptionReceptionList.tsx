@@ -1,4 +1,4 @@
-import AttachFileIcon from '@mui/icons-material/AttachFile';
+import { UploadFile } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -45,6 +45,7 @@ import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDi
 import { formatYyyyMm, formatYyyyMmDd } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
 import { useCallback, useEffect, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
 
 export default function MpAdminPrescriptionReceptionList() {
   const [data, setData] = useState<Sequenced<PrescriptionResponse>[]>([]);
@@ -58,6 +59,14 @@ export default function MpAdminPrescriptionReceptionList() {
   const notImplementedDialog = useMpNotImplementedDialog();
   const errorDialog = useMpErrorDialog();
   const infoDialog = useMpInfoDialog();
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    if (acceptedFiles.length > 0) {
+      setEdiZipFile(acceptedFiles[0]);
+    }
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: { 'application/zip': ['.zip'] } });
 
   const formik = useFormik({
     initialValues: {
@@ -78,23 +87,20 @@ export default function MpAdminPrescriptionReceptionList() {
     }
   });
 
-  const handleConfirm = useCallback(
-    async (id: number) => {
-      try {
-        await confirmPrescription(id);
-        infoDialog.showInfo('접수 확인되었습니다.');
-        fetchData();
-      } catch (error) {
-        if (error instanceof NotImplementedError) {
-          notImplementedDialog.open(error.message);
-        } else {
-          console.error('Failed to confirm reception:', error);
-          errorDialog.showError('접수 확인 중 오류가 발생했습니다.');
-        }
+  const handleConfirm = async (id: number) => {
+    try {
+      await confirmPrescription(id);
+      infoDialog.showInfo('접수 확인되었습니다.');
+      fetchData();
+    } catch (error) {
+      if (error instanceof NotImplementedError) {
+        notImplementedDialog.open(error.message);
+      } else {
+        console.error('Failed to confirm reception:', error);
+        errorDialog.showError('접수 확인 중 오류가 발생했습니다.');
       }
-    },
-    [notImplementedDialog, errorDialog, infoDialog]
-  );
+    }
+  };
 
   const columns: ColumnDef<Sequenced<PrescriptionResponse>>[] = [
     {
@@ -229,6 +235,7 @@ export default function MpAdminPrescriptionReceptionList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch prescription reception list:', error);
+      errorDialog.showError('처방접수 목록을 불러오는 중 오류가 발생했습니다.');
       setData([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -278,7 +285,7 @@ export default function MpAdminPrescriptionReceptionList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>접수상태</InputLabel>
-                    <Select name="status" label="접수상태" value={formik.values.status} onChange={formik.handleChange}>
+                    <Select name="status" value={formik.values.status} onChange={formik.handleChange}>
                       <MenuItem value={'PENDING'}>접수대기</MenuItem>
                       <MenuItem value={'IN_PROGRESS'}>처리중</MenuItem>
                       <MenuItem value={'COMPLETED'}>입력완료</MenuItem>
@@ -288,7 +295,7 @@ export default function MpAdminPrescriptionReceptionList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" label="검색유형" value={formik.values.searchType} onChange={formik.handleChange}>
+                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'companyName'}>회사명</MenuItem>
                       <MenuItem value={'id'}>아이디</MenuItem>
                       <MenuItem value={'dealerName'}>딜러명</MenuItem>
@@ -402,7 +409,7 @@ export default function MpAdminPrescriptionReceptionList() {
 
       <Dialog open={registerDialogOpen} onClose={() => setRegisterDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}>EDI 등록</DialogTitle>
-        <DialogContent sx={{ textAlign: 'center', py: 4 }}>
+        <DialogContent sx={{ pt: 3, pb: 3 }}>
           <Stack direction="row" spacing={2} justifyContent="center" alignItems="center" sx={{ mb: 3 }}>
             <Typography variant="body1">처방월 선택</Typography>
             <Box>
@@ -429,39 +436,44 @@ export default function MpAdminPrescriptionReceptionList() {
               />
             </Box>
           </Stack>
-          <Button variant="contained" color="success" component="label" startIcon={<AttachFileIcon />}>
-            .zip 파일 선택
-            <input
-              type="file"
-              hidden
-              accept=".zip"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  setEdiZipFile(file);
-                }
-              }}
-            />
-          </Button>
-          {ediZipFile && (
-            <Typography variant="body2" sx={{ mt: 2 }}>
-              선택된 파일: {ediZipFile.name}
+          <Box
+            {...getRootProps()}
+            sx={{
+              border: '2px dashed #e0e0e0',
+              borderRadius: 1,
+              p: 4,
+              textAlign: 'center',
+              cursor: 'pointer',
+              bgcolor: isDragActive ? 'action.hover' : 'transparent',
+              '&:hover': {
+                borderColor: 'primary.main'
+              }
+            }}
+          >
+            <input {...getInputProps()} />
+            <UploadFile sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
+            <Typography variant="h6" color="text.secondary">
+              여기에 파일을 드래그하거나 클릭하여 업로드하세요.
             </Typography>
-          )}
+            {ediZipFile && (
+              <Typography variant="body2" sx={{ mt: 1 }}>
+                선택된 파일: {ediZipFile.name}
+              </Typography>
+            )}
+          </Box>
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'center', pb: 3 }}>
           <Button
-            variant="contained"
-            color="inherit"
+            variant="outlined"
             onClick={() => {
               setRegisterDialogOpen(false);
               setEdiZipFile(null);
             }}
-            sx={{ px: 4 }}
+            sx={{ minWidth: 100 }}
           >
             취소
           </Button>
-          <Button variant="contained" color="success" onClick={handleFileUpload} disabled={!ediZipFile} sx={{ px: 4 }}>
+          <Button variant="contained" color="success" onClick={handleFileUpload} disabled={!ediZipFile} sx={{ minWidth: 100 }}>
             업데이트
           </Button>
         </DialogActions>

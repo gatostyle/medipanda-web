@@ -212,6 +212,7 @@ export default function MpAdminEventList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch event list:', error);
+      errorDialog.showError('이벤트 목록을 불러오는 중 오류가 발생했습니다.');
       setData([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -271,9 +272,9 @@ export default function MpAdminEventList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size="small">
                     <InputLabel>상태</InputLabel>
-                    <Select name="status" label="상태" value={formik.values.status} onChange={formik.handleChange}>
-                      <MenuItem value="IN_PROGRESS">진행중</MenuItem>
-                      <MenuItem value="FINISHED">종료</MenuItem>
+                    <Select name="status" value={formik.values.status} onChange={formik.handleChange}>
+                      <MenuItem value={'IN_PROGRESS'}>진행중</MenuItem>
+                      <MenuItem value={'FINISHED'}>종료</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
