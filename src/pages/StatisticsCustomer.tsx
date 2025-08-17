@@ -109,32 +109,22 @@ export default function StatisticsCustomer() {
 
   return (
     <ContentContainer>
-      <Typography variant='h4' sx={{ mb: 4, fontWeight: 'bold', color: '#333' }}>
-        정산
-      </Typography>
+      <Typography sx={{ mb: 4, fontWeight: 'bold', color: '#333' }}>정산</Typography>
 
       <Box sx={{ mb: 3 }}>
-        <TabButton
-          className={selectedTab === '정산내역' ? 'selected' : ''}
-          onClick={() => setSelectedTab('정산내역')}
-        >
+        <TabButton className={selectedTab === '정산내역' ? 'selected' : ''} onClick={() => setSelectedTab('정산내역')}>
           정산내역
         </TabButton>
-        <TabButton
-          className={selectedTab === '매출통계' ? 'selected' : ''}
-          onClick={() => setSelectedTab('매출통계')}
-        >
+        <TabButton className={selectedTab === '매출통계' ? 'selected' : ''} onClick={() => setSelectedTab('매출통계')}>
           매출통계
         </TabButton>
       </Box>
 
       <PeriodToggle>
-        <Typography variant='body2' sx={{ color: isPeriodCompleted ? '#999' : '#6B3AA0', fontWeight: 500 }}>
-          진행예정
-        </Typography>
+        <Typography sx={{ color: isPeriodCompleted ? '#999' : '#6B3AA0', fontWeight: 500 }}>진행예정</Typography>
         <Switch
           checked={isPeriodCompleted}
-          onChange={(e) => setIsPeriodCompleted(e.target.checked)}
+          onChange={e => setIsPeriodCompleted(e.target.checked)}
           sx={{
             '& .MuiSwitch-switchBase.Mui-checked': {
               color: '#6B3AA0',
@@ -144,30 +134,16 @@ export default function StatisticsCustomer() {
             },
           }}
         />
-        <Typography variant='body2' sx={{ color: isPeriodCompleted ? '#6B3AA0' : '#999', fontWeight: 500 }}>
-          지급완료
-        </Typography>
+        <Typography sx={{ color: isPeriodCompleted ? '#6B3AA0' : '#999', fontWeight: 500 }}>지급완료</Typography>
       </PeriodToggle>
 
       <FilterContainer>
-        <TextField
-          type='month'
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          size='small'
-          sx={{ width: '140px' }}
-        />
-        <Typography variant='body2' sx={{ color: '#666' }}>-</Typography>
-        <TextField
-          type='month'
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          size='small'
-          sx={{ width: '140px' }}
-        />
+        <TextField type='month' value={startDate} onChange={e => setStartDate(e.target.value)} size='small' sx={{ width: '140px' }} />
+        <Typography sx={{ color: '#666' }}>-</Typography>
+        <TextField type='month' value={endDate} onChange={e => setEndDate(e.target.value)} size='small' sx={{ width: '140px' }} />
         <TextField
           value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
+          onChange={e => setSearchValue(e.target.value)}
           size='small'
           sx={{ width: '200px' }}
           InputProps={{
@@ -190,15 +166,12 @@ export default function StatisticsCustomer() {
             </TableRow>
           </StyledTableHead>
           <TableBody>
-            {mockData.map((row) => (
+            {mockData.map(row => (
               <TableRow key={row.id} sx={{ '&:hover': { backgroundColor: '#f9f9f9' } }}>
                 <StyledTableCell>{row.hospital}</StyledTableCell>
                 <StyledTableCell>{row.amount}</StyledTableCell>
                 <StyledTableCell>
-                  <ActionButton
-                    component={RouterLink}
-                    to={`/statistics/customer/${row.id}`}
-                  >
+                  <ActionButton component={RouterLink} to={`/statistics/customer/${row.id}`}>
                     신규
                   </ActionButton>
                 </StyledTableCell>

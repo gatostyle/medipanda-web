@@ -1,11 +1,10 @@
-import axios from 'axios';
-import { login as apiLogin, type MemberDetailsResponse, refreshToken as apiRefreshToken, whoAmI } from 'backend';
+import { login as apiLogin, logout as apiLogout, type MemberDetailsResponse, refreshToken as apiRefreshToken, whoAmI } from 'backend';
 import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
 import { encryptRSA } from 'utils/rsa';
 
 declare global {
   interface Window {
-    tokenRefreshInterval?: ReturnType<typeof setInterval>;
+    refreshTokenRotateInterval: ReturnType<typeof setInterval>;
   }
 }
 
@@ -29,25 +28,35 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState(initialState.session);
   const [isLoading, setIsLoading] = useState(true);
 
-  const refreshToken = async (userId: string) => {
-    const { refreshToken } = await apiRefreshToken({
-      userId: userId,
-      refreshToken: localStorage.getItem('refreshToken') ?? '',
-    });
-    localStorage.setItem('refreshToken', refreshToken);
-  };
-
   const getSession = async () => {
     const member = await whoAmI();
 
-    await refreshToken(member.userId);
-    window.tokenRefreshInterval = setInterval(() => refreshToken(member.userId), 60 * 1000);
+    window.refreshTokenRotateInterval = setInterval(
+      async () => {
+        const savedRefreshToken = localStorage.getItem('refreshToken');
+
+        try {
+          const { refreshToken } = await apiRefreshToken({
+            userId: member.userId,
+            refreshToken: savedRefreshToken ?? '',
+          });
+          localStorage.setItem('refreshToken', refreshToken);
+        } catch (e) {
+          console.error(e);
+          clearInterval(window.refreshTokenRotateInterval);
+          localStorage.removeItem('refreshToken');
+
+          setSession(null);
+        }
+      },
+      import.meta.env.VITE_APP_TOKEN_ROTATE_INTERVAL,
+    );
 
     return member;
   };
 
   const login = async (userId: string, password: string) => {
-    const encryptedPassword = import.meta.env.VITE_SKIP_PASSWORD_ENCRYPTION === 'true' ? password : await encryptRSA(password);
+    const encryptedPassword = import.meta.env.VITE_APP_ENCRYPT_PASSWORD === 'true' ? password : await encryptRSA(password);
     const { refreshToken } = await apiLogin({
       userId,
       password: encryptedPassword,
@@ -59,9 +68,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
-      await axios.get('/v1/auth/logout');
+      await apiLogout();
     } catch (error) {
-      console.error(error);
+      console.error('Logout error:', error);
     } finally {
       setSession(null);
     }

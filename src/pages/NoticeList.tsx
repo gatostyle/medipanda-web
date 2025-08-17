@@ -1,243 +1,193 @@
 import { Search } from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  Chip,
-  InputAdornment,
-  Pagination,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
-  Typography,
-} from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Box, Button, InputAdornment, Stack, Table, TableBody, TableCell, TableRow, TextField, Typography } from '@mui/material';
+import { useFormik } from 'formik';
+import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router';
+import { type BoardPostResponse, getBoards } from '../backend';
+import { MedipandaPagination } from '../components/MedipandaPagination.tsx';
+import { colors, typography } from '../globalStyles.ts';
+import { formatYyyyMmDd } from '../utils/dateFormat.ts';
 
-const CategoryButton = styled(Button)({
-  padding: '8px 16px',
-  borderRadius: '4px',
-  textTransform: 'none',
-  fontSize: '14px',
-  fontWeight: 500,
-  minWidth: 'auto',
-  '&.selected': {
-    backgroundColor: '#6B3AA0',
-    color: '#fff',
-    border: '1px solid #6B3AA0',
-    '&:hover': {
-      backgroundColor: '#6B3AA0',
-    },
-  },
-  '&:not(.selected)': {
-    backgroundColor: 'transparent',
-    color: '#666',
-    border: '1px solid #e0e0e0',
-    '&:hover': {
-      backgroundColor: '#f5f5f5',
-    },
-  },
-});
-
-const StyledTableCell = styled(TableCell)({
-  padding: '16px',
-  borderBottom: '1px solid #f0f0f0',
-  fontSize: '14px',
-});
-
-const StyledTableHead = styled(TableHead)({
-  backgroundColor: '#f8f9fa',
-  '& .MuiTableCell-head': {
-    fontWeight: 600,
-    color: '#333',
-    borderBottom: '1px solid #e0e0e0',
-  },
-});
-
-const categories = ['전체', '제품정보', '정산 및 실적관리', '서비스 정보', '계약사 정책', '일반문의'];
-
-const mockNotices = [
-  {
-    id: 1,
-    title: '[품질] 휴비스트제약- 품질 및 관리 품목 안내',
-    category: '동구바이오',
-    createdAt: '2025-05-08',
-    isNew: false,
-  },
-  {
-    id: 2,
-    title: '[수수료변경] 아주약품- 트라넥스',
-    category: '메디판다',
-    createdAt: '2025-05-08',
-    isNew: false,
-  },
-  {
-    id: 3,
-    title: '[품질] 휴비스트제약- 품질 및 관리...',
-    category: '동구바이오',
-    createdAt: '2025-05-08',
-    isNew: false,
-  },
-  {
-    id: 4,
-    title: '[수수료변경] 아주약품- 트라넥스',
-    category: '메디판다',
-    createdAt: '2025-05-08',
-    isNew: false,
-  },
-  {
-    id: 5,
-    title: '[품질] 휴비스트제약- 품질 및 관리...',
-    category: '동구바이오',
-    createdAt: '2025-05-08',
-    isNew: false,
-  },
-  {
-    id: 6,
-    title: '[수수료변경] 아주약품- 트라넥스',
-    category: '메디판다',
-    createdAt: '2025-05-08',
-    isNew: false,
-  },
-  {
-    id: 7,
-    title: '[품질] 휴비스트제약- 품질 및 관리...',
-    category: '동구바이오',
-    createdAt: '2025-05-08',
-    isNew: false,
-  },
-  {
-    id: 8,
-    title: '[품질] 휴비스트제약- 품질 및 관리...',
-    category: '동구바이오',
-    createdAt: '2025-05-08',
-    isNew: false,
-  },
-  {
-    id: 9,
-    title: '[품질] 휴비스트제약- 품질 및 관리...',
-    category: '동구바이오',
-    createdAt: '2025-05-08',
-    isNew: false,
-  },
-  {
-    id: 10,
-    title: '[품질] 휴비스트제약- 품질 및 관리...',
-    category: '동구바이오',
-    createdAt: '2025-05-08',
-    isNew: false,
-  },
-];
+const categories = ['전체', '제품현황', '정산 및 생산중단', '신제품 정보', '제약사 정책', '일반공지'];
 
 export default function NoticeList() {
-  return (
-    <Box>
-      <Typography variant='h5' sx={{ mb: 4, fontWeight: 'bold', color: '#333' }}>
-        공지사항
-      </Typography>
+  const [data, setData] = useState<BoardPostResponse[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
 
-      <Box sx={{ mb: 3, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-        {categories.map((category, index) => (
-          <CategoryButton key={category} className={index === 0 ? 'selected' : ''}>
-            {category}
-          </CategoryButton>
-        ))}
+  const formik = useFormik({
+    initialValues: {
+      searchKeyword: '',
+      pageIndex: 0,
+      pageSize: 10,
+      totalPages: 1,
+    },
+    onSubmit: async () => {
+      if (formik.values.pageIndex !== 0) {
+        await formik.setFieldValue('pageIndex', 0);
+      } else {
+        await fetchData();
+      }
+    },
+  });
+
+  const fetchData = async () => {
+    const response = await getBoards({
+      boardType: 'NOTICE',
+      boardTitle: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+      page: formik.values.pageIndex,
+      size: formik.values.pageSize,
+    });
+
+    setData(response.content);
+    setTotalPages(response.totalPages);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [formik.values.pageIndex, formik.values.pageSize]);
+
+  return (
+    <Stack alignItems='center'>
+      <Box sx={{ width: '100%' }}>
+        <Typography
+          sx={{
+            ...typography.heading3M,
+            color: colors.gray80,
+            mb: '30px',
+          }}
+        >
+          공지사항
+        </Typography>
       </Box>
 
-      <Box sx={{ mb: 4, display: 'flex', justifyContent: 'flex-end' }}>
+      <Stack
+        direction='row'
+        alignItems='center'
+        component='form'
+        onSubmit={formik.handleSubmit}
+        sx={{
+          width: '100%',
+          marginTop: '30px',
+        }}
+      >
+        <Stack direction='row' alignItems='center' sx={{ justifyContent: 'space-between' }}>
+          {categories.map((category, index) => (
+            <Button
+              variant='text'
+              sx={{
+                ...typography.mediumTextB,
+                color: colors.gray50,
+                '&:hover': {
+                  color: colors.vividViolet,
+                  textDecoration: 'underline',
+                },
+                ...(index === 0 && {
+                  color: colors.vividViolet,
+                  textDecoration: 'underline',
+                }),
+              }}
+            >
+              {category}
+            </Button>
+          ))}
+        </Stack>
         <TextField
-          placeholder='제목이나 글쓴이 제목을 검색하세요'
           size='small'
-          sx={{ width: '400px' }}
+          name='searchKeyword'
+          value={formik.values.searchKeyword}
+          onChange={formik.handleChange}
+          placeholder='제약사명 또는 제목을 검색해주세요'
           InputProps={{
             endAdornment: (
               <InputAdornment position='end'>
-                <Search sx={{ color: '#999' }} />
+                <Search sx={{ color: colors.gray500 }} />
               </InputAdornment>
             ),
           }}
-        />
-      </Box>
-
-      <TableContainer component={Paper} sx={{ boxShadow: 'none', border: '1px solid #e0e0e0' }}>
-        <Table>
-          <StyledTableHead>
-            <TableRow>
-              <StyledTableCell align='center' sx={{ width: '80px' }}>
-                No
-              </StyledTableCell>
-              <StyledTableCell sx={{ width: '60%' }}>제목</StyledTableCell>
-              <StyledTableCell align='center' sx={{ width: '120px' }}>
-                문의일
-              </StyledTableCell>
-              <StyledTableCell align='center' sx={{ width: '120px' }}>
-                답변상태
-              </StyledTableCell>
-            </TableRow>
-          </StyledTableHead>
-          <TableBody>
-            {mockNotices.map((notice, index) => (
-              <TableRow key={notice.id} sx={{ '&:hover': { backgroundColor: '#f9f9f9' } }}>
-                <StyledTableCell align='center'>{mockNotices.length - index}</StyledTableCell>
-                <StyledTableCell>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Chip
-                      label={notice.category}
-                      size='small'
-                      sx={{
-                        backgroundColor: notice.category === '동구바이오' ? '#6B3AA0' : '#e0e0e0',
-                        color: notice.category === '동구바이오' ? '#fff' : '#666',
-                        fontSize: '12px',
-                        height: '24px',
-                      }}
-                    />
-                    <Typography
-                      component={RouterLink}
-                      to={`/customer-service/notice/${notice.id}`}
-                      sx={{
-                        textDecoration: 'none',
-                        color: '#333',
-                        '&:hover': {
-                          textDecoration: 'underline',
-                          color: '#6B3AA0',
-                        },
-                      }}
-                    >
-                      {notice.title}
-                    </Typography>
-                  </Box>
-                </StyledTableCell>
-                <StyledTableCell align='center'>{notice.createdAt}</StyledTableCell>
-                <StyledTableCell align='center'>
-                  <Typography sx={{ color: '#999', fontSize: '14px' }}>-</Typography>
-                </StyledTableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-        <Pagination
-          count={10}
-          page={1}
-          showFirstButton
-          showLastButton
           sx={{
-            '& .MuiPaginationItem-root': {
-              fontSize: '14px',
-            },
-            '& .Mui-selected': {
-              backgroundColor: '#6B3AA0 !important',
-              color: '#fff',
-            },
+            width: '350px',
+            marginLeft: 'auto',
           }}
         />
-      </Box>
-    </Box>
+      </Stack>
+
+      <Table
+        sx={{
+          marginTop: '10px',
+          borderTop: `1px solid ${colors.gray50}`,
+        }}
+      >
+        <TableBody>
+          {data.map((notice, index) => (
+            <TableRow
+              key={notice.id}
+              sx={{
+                borderBottom: `1px solid ${colors.gray10}`,
+                ...(index < 2 && {
+                  backgroundColor: colors.gray10,
+                }),
+              }}
+            >
+              <TableCell>
+                <Typography
+                  sx={{
+                    ...typography.smallTextR,
+                    color: notice.noticeType === 'GENERAL' ? colors.vividViolet : colors.gray70,
+                  }}
+                >
+                  {notice.noticeType}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Typography
+                    component={RouterLink}
+                    to={`/customer-service/notice/${notice.id}`}
+                    sx={{
+                      ...typography.smallTextR,
+                      color: colors.gray70,
+                      textDecoration: 'none',
+                      '&:hover': {
+                        color: colors.vividViolet,
+                        textDecoration: 'underline',
+                      },
+
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    {index < 2 && (
+                      <img
+                        src='/assets/icons/icon-pin.svg'
+                        style={{
+                          width: '16px',
+                          height: '16px',
+                          marginRight: '4px',
+                        }}
+                      />
+                    )}
+                    {notice.title}
+                  </Typography>
+                </Box>
+              </TableCell>
+              <TableCell align='center'>
+                <Typography sx={{ ...typography.smallTextR, color: colors.gray70 }}>{formatYyyyMmDd(notice.createdAt)}</Typography>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      <MedipandaPagination
+        count={totalPages}
+        page={formik.values.pageIndex + 1}
+        showFirstButton
+        showLastButton
+        onChange={(_, page) => {
+          formik.setFieldValue('pageIndex', page - 1);
+        }}
+        sx={{ marginTop: '40px' }}
+      />
+    </Stack>
   );
 }

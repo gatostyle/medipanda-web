@@ -1,282 +1,244 @@
-import { Favorite, Search, Visibility } from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  InputAdornment,
-  Pagination,
-  TextField,
-  Typography,
-} from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { useState } from 'react';
+import { Search } from '@mui/icons-material';
+import { Box, Button, InputAdornment, Stack, Table, TableBody, TableHead, TextField, Typography } from '@mui/material';
+import { useFormik } from 'formik';
 import { Link as RouterLink } from 'react-router';
+import { useEffect, useState } from 'react';
+import { type BoardPostResponse, getBoards } from '../backend';
+import { MedipandaPagination } from '../components/MedipandaPagination.tsx';
+import { MedipandaTableCell, MedipandaTableRow } from '../components/MedipandaTable.tsx';
+import { colors, typography } from '../globalStyles.ts';
+import { formatYyyyMmDdHhMm } from '../utils/dateFormat.ts';
 
-const ContentContainer = styled(Box)({
-  padding: '24px',
-  display: 'flex',
-  gap: '24px',
-});
+export default function AnonymousList() {
+  const [data, setData] = useState<BoardPostResponse[]>([]);
+  const [noticeData, setNoticeData] = useState<BoardPostResponse[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
 
-const MainContent = styled(Box)({
-  flex: 1,
-});
-
-const Sidebar = styled(Box)({
-  width: '300px',
-  flexShrink: 0,
-});
-
-const TabButton = styled(Button)({
-  padding: '12px 24px',
-  borderRadius: '4px',
-  textTransform: 'none',
-  fontSize: '14px',
-  fontWeight: 500,
-  minWidth: 'auto',
-  '&.selected': {
-    backgroundColor: '#e0e0e0',
-    color: '#333',
-    '&:hover': {
-      backgroundColor: '#e0e0e0',
+  const formik = useFormik({
+    initialValues: {
+      searchKeyword: '',
+      pageIndex: 0,
+      pageSize: 10,
+      totalPages: 1,
     },
-  },
-  '&:not(.selected)': {
-    backgroundColor: 'transparent',
-    color: '#666',
-    '&:hover': {
-      backgroundColor: '#f5f5f5',
+    onSubmit: async () => {
+      if (formik.values.pageIndex !== 0) {
+        await formik.setFieldValue('pageIndex', 0);
+      } else {
+        await fetchData();
+      }
     },
-  },
-});
+  });
 
-const PostCard = styled(Card)({
-  backgroundColor: '#fff',
-  boxShadow: 'none',
-  border: '1px solid #e0e0e0',
-  borderRadius: '8px',
-  marginBottom: '16px',
-  cursor: 'pointer',
-  '&:hover': {
-    borderColor: '#ccc',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-  },
-});
+  const fetchData = async () => {
+    const response = await getBoards({
+      boardType: 'MR_CSO_MATCHING',
+      boardTitle: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+      page: formik.values.pageIndex,
+      size: formik.values.pageSize,
+    });
 
-const FilterContainer = styled(Box)({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  marginBottom: '24px',
-});
+    setData(response.content);
+    setTotalPages(response.totalPages);
 
-const PostHeader = styled(Box)({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '8px',
-  marginBottom: '12px',
-});
+    const noticeResponse = await getBoards({
+      boardType: 'NOTICE',
+      size: 2,
+    });
 
-const PostStats = styled(Box)({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '16px',
-  color: '#666',
-  fontSize: '14px',
-  marginTop: '12px',
-});
+    setNoticeData(noticeResponse.content);
+  };
 
-const RelatedPostCard = styled(Card)({
-  backgroundColor: '#f5f5f5',
-  boxShadow: 'none',
-  borderRadius: '8px',
-  marginBottom: '8px',
-  cursor: 'pointer',
-  '&:hover': {
-    backgroundColor: '#e0e0e0',
-  },
-});
-
-export default function MrCsoMatchingList() {
-  const [searchValue, setSearchValue] = useState('');
-
-  const mockPosts = [
-    {
-      id: 1,
-      title: '클들이 방워헙하에가 갖출 외래하생년기다',
-      author: '메디판다',
-      timestamp: 'YY-MM-DD HH:MM',
-      likes: 2548,
-      views: 46,
-      isNew: true,
-      status: '완료',
-    },
-    {
-      id: 2,
-      title: '차니별 나 인원인 오록페서',
-      author: '익명CSO',
-      timestamp: 'YY-MM-DD HH:MM',
-      likes: 4603,
-      views: 332,
-      isNew: true,
-      status: '내 글',
-    },
-  ];
-
-  const relatedPosts = [
-    { id: 1, title: '공고내용 width392' },
-    { id: 2, title: '공고내용 width392' },
-    { id: 3, title: '공고내용 width392' },
-  ];
+  useEffect(() => {
+    fetchData();
+  }, [formik.values.pageIndex, formik.values.pageSize]);
 
   return (
-    <Box>
-      <ContentContainer>
-        <MainContent>
-          <Typography variant='h4' sx={{ mb: 4, fontWeight: 'bold', color: '#333' }}>
-            커뮤니티
-          </Typography>
-
-          <Box sx={{ mb: 3 }}>
-            <TabButton>익명게시판</TabButton>
-            <TabButton className='selected'>MR-CSO 매칭</TabButton>
-          </Box>
-
-          <FilterContainer>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Typography variant='body1' sx={{ fontWeight: 500 }}>
-                제목
-              </Typography>
-              <Typography variant='body1' sx={{ fontWeight: 500 }}>
-                작성자
-              </Typography>
-              <Typography variant='body1' sx={{ fontWeight: 500 }}>
-                작성일
-              </Typography>
-              <Typography variant='body1' sx={{ fontWeight: 500 }}>
-                조회수
-              </Typography>
-              <Typography variant='body1' sx={{ fontWeight: 500 }}>
-                좋아요
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 1 }}>
-                <Button
-                  variant='contained'
-                  size='small'
+    <>
+      <Stack
+        direction='row'
+        alignItems='flex-start'
+        gap='24px'
+        sx={{
+          marginTop: '40px',
+        }}
+      >
+        <Stack alignItems='center' sx={{ width: '800px' }}>
+          <Table>
+            <TableHead>
+              <MedipandaTableRow>
+                <MedipandaTableCell sx={{ width: '380px' }}>제목</MedipandaTableCell>
+                <MedipandaTableCell sx={{ width: '80px' }}>작성자</MedipandaTableCell>
+                <MedipandaTableCell sx={{ width: '110px' }}>작성일</MedipandaTableCell>
+                <MedipandaTableCell sx={{ width: '60px' }}>조회수</MedipandaTableCell>
+                <MedipandaTableCell sx={{ width: '60px' }}>좋아요</MedipandaTableCell>
+              </MedipandaTableRow>
+            </TableHead>
+            <TableBody>
+              {[...noticeData, ...data].map(post => (
+                <MedipandaTableRow
+                  key={post.id}
                   sx={{
-                    backgroundColor: '#1a237e',
-                    textTransform: 'none',
-                    fontSize: '12px',
-                    '&:hover': {
-                      backgroundColor: '#0d47a1',
-                    },
+                    ...(noticeData.includes(post) && {
+                      backgroundColor: colors.gray10,
+                    }),
                   }}
                 >
-                  글쓰기
-                </Button>
-                <Button
-                  variant='outlined'
-                  size='small'
-                  sx={{
-                    borderColor: '#f44336',
-                    color: '#f44336',
-                    textTransform: 'none',
-                    fontSize: '12px',
-                    '&:hover': {
-                      borderColor: '#d32f2f',
-                      color: '#d32f2f',
-                    },
-                  }}
-                >
-                  내 글
-                </Button>
-              </Box>
-            </Box>
-          </FilterContainer>
-
-          <Box sx={{ mb: 3 }}>
-            {mockPosts.map((post) => (
-              <PostCard key={post.id} component={RouterLink} to={`/community/mr-cso-matching/${post.id}`}>
-                <CardContent sx={{ p: 3 }}>
-                  <PostHeader>
-                    <Typography
-                      sx={{
-                        fontSize: '16px',
-                        fontWeight: 500,
-                        color: '#333',
-                        textDecoration: 'none',
-                      }}
-                    >
-                      {post.title}
-                    </Typography>
-                    {post.isNew && <Chip label='24' size='small' color='error' />}
-                  </PostHeader>
-
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                      <Typography variant='body2' sx={{ color: '#666' }}>
-                        {post.author}
+                  <MedipandaTableCell>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      {noticeData.includes(post) && (
+                        <img
+                          src='/assets/icons/icon-pin.svg'
+                          style={{
+                            width: '16px',
+                            height: '16px',
+                          }}
+                        />
+                      )}
+                      <Typography
+                        component={RouterLink}
+                        to={`/community/anonymous/${post.id}`}
+                        sx={{
+                          textDecoration: 'none',
+                          color: colors.gray600,
+                          '&:hover': { textDecoration: 'underline', color: colors.primary },
+                        }}
+                      >
+                        {post.title}
                       </Typography>
-                      <Typography variant='body2' sx={{ color: '#666' }}>
-                        {post.timestamp}
-                      </Typography>
-                      <Typography variant='body2' sx={{ color: '#666' }}>
-                        {post.views}
-                      </Typography>
-                      <Typography variant='body2' sx={{ color: '#666' }}>
-                        {post.likes.toLocaleString()}
-                      </Typography>
+                      <img
+                        src='/assets/icons/icon-image.svg'
+                        style={{
+                          width: '16px',
+                          height: '16px',
+                        }}
+                      />
+                      <Typography sx={{ ...typography.smallTextB, color: colors.red }}>[{post.commentCount}]</Typography>
                     </Box>
-                    <Chip
-                      label={post.status}
-                      size='small'
-                      variant='outlined'
-                      sx={{
-                        color: post.status === '완료' ? '#4caf50' : '#666',
-                        borderColor: post.status === '완료' ? '#4caf50' : '#666',
-                      }}
-                    />
-                  </Box>
-                </CardContent>
-              </PostCard>
-            ))}
+                  </MedipandaTableCell>
+                  <MedipandaTableCell>{post.nickname}</MedipandaTableCell>
+                  <MedipandaTableCell>{formatYyyyMmDdHhMm(post.createdAt)}</MedipandaTableCell>
+                  <MedipandaTableCell>
+                    {post.viewsCount >= 1000 ? `${(post.viewsCount / 1000).toFixed(1).replace(/\.0$/, '')}만` : post.viewsCount}
+                  </MedipandaTableCell>
+                  <MedipandaTableCell>
+                    {post.likesCount >= 1000 ? `${(post.likesCount / 1000).toFixed(1).replace(/\.0$/, '')}만` : post.likesCount}
+                  </MedipandaTableCell>
+                </MedipandaTableRow>
+              ))}
+            </TableBody>
+          </Table>
+
+          <Box sx={{ marginTop: '40px' }}>
+            <TextField
+              name='searchKeyword'
+              value={formik.values.searchKeyword}
+              onChange={formik.handleChange}
+              placeholder='제목을 입력해주세요.'
+              fullWidth
+              size='small'
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <Search />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                width: '480px',
+              }}
+            />
           </Box>
 
-          <TextField
-            fullWidth
-            placeholder='자유롭게 입력해주세요'
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            size='small'
-            sx={{ mb: 3 }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position='end'>
-                  <Search sx={{ color: '#999' }} />
-                </InputAdornment>
-              ),
+          <MedipandaPagination
+            count={totalPages}
+            page={formik.values.pageIndex + 1}
+            showFirstButton
+            showLastButton
+            onChange={(_, page) => {
+              formik.setFieldValue('pageIndex', page - 1);
+            }}
+            sx={{ marginTop: '40px' }}
+          />
+        </Stack>
+        <Stack
+          alignItems='center'
+          gap='10px'
+          sx={{
+            width: '400px',
+          }}
+        >
+          <Stack
+            direction='row'
+            gap='10px'
+            sx={{
+              width: '100%',
+            }}
+          >
+            <Button
+              fullWidth
+              variant='contained'
+              sx={{
+                height: '50px',
+                backgroundColor: colors.navy,
+              }}
+            >
+              <Typography sx={{ ...typography.largeTextB, color: colors.white }}>글쓰기</Typography>
+            </Button>
+            <Button
+              fullWidth
+              variant='contained'
+              sx={{
+                height: '50px',
+                backgroundColor: colors.gray20,
+                color: colors.gray80,
+              }}
+            >
+              <Box
+                sx={{
+                  padding: '5px 10px',
+                  marginRight: '5px',
+                  border: `1px solid ${colors.red}`,
+                  borderRadius: '10px',
+                  boxSizing: 'border-box',
+                  backgroundColor: colors.white,
+                  color: colors.red,
+                }}
+              >
+                <Typography sx={{ fontSize: '10px', lineHeight: '100%' }}>MY</Typography>
+              </Box>
+              <Typography sx={{ ...typography.largeTextB, color: colors.gray80 }}>내 글</Typography>
+            </Button>
+          </Stack>
+          <img
+            src='https://picsum.photos/392/120'
+            width='392px'
+            height='120px'
+            style={{
+              border: `1p solid ${colors.gray20}`,
+              borderRadius: '5px',
             }}
           />
-
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Pagination count={10} page={2} showFirstButton showLastButton />
-          </Box>
-        </MainContent>
-
-        <Sidebar>
-          {relatedPosts.map((post, index) => (
-            <RelatedPostCard key={post.id}>
-              <CardContent sx={{ p: 2 }}>
-                <Typography variant='body2' sx={{ fontSize: '13px', color: '#666' }}>
-                  {post.title}
-                </Typography>
-              </CardContent>
-            </RelatedPostCard>
-          ))}
-        </Sidebar>
-      </ContentContainer>
-    </Box>
+          <img
+            src='https://picsum.photos/392/120'
+            width='392px'
+            height='120px'
+            style={{
+              border: `1p solid ${colors.gray20}`,
+              borderRadius: '5px',
+            }}
+          />
+          <img
+            src='https://picsum.photos/392/120'
+            width='392px'
+            height='120px'
+            style={{
+              border: `1p solid ${colors.gray20}`,
+              borderRadius: '5px',
+            }}
+          />
+        </Stack>
+      </Stack>
+    </>
   );
 }

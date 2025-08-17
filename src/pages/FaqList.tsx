@@ -1,185 +1,160 @@
 import { Add, Remove, Search } from '@mui/icons-material';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  IconButton,
-  InputAdornment,
-  Link,
-  Pagination,
-  TextField,
-  Typography,
-} from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { useState } from 'react';
-
-const StyledAccordion = styled(Accordion)({
-  boxShadow: 'none',
-  border: '1px solid #e0e0e0',
-  borderRadius: '8px !important',
-  marginBottom: '8px',
-  '&:before': {
-    display: 'none',
-  },
-  '&.Mui-expanded': {
-    margin: '0 0 8px 0',
-  },
-});
-
-const StyledAccordionSummary = styled(AccordionSummary)({
-  padding: '16px 24px',
-  minHeight: '60px',
-  '&.Mui-expanded': {
-    minHeight: '60px',
-  },
-  '& .MuiAccordionSummary-content': {
-    margin: '12px 0',
-    alignItems: 'center',
-    '&.Mui-expanded': {
-      margin: '12px 0',
-    },
-  },
-});
-
-const StyledAccordionDetails = styled(AccordionDetails)({
-  padding: '0 24px 24px 24px',
-  borderTop: '1px solid #f0f0f0',
-});
-
-const mockFaqs = [
-  {
-    id: 1,
-    question: 'EDI 처방 가이드',
-    answer: 'EDI 처방에 대해서 질문내역을 안내드립니다. 다른 문의는 1:1 문의로 요청하십니다.\n감사합니다.',
-    createdAt: '2025-05-08 10:36',
-    attachments: [
-      {
-        fileName: '엑셀파일.xls',
-        fileUrl: '/mock-excel-file.xls',
-      },
-    ],
-  },
-  {
-    id: 2,
-    question: '정산 가이드',
-    answer: '정산 관련 가이드 내용입니다.',
-    createdAt: '2025-05-08 10:36',
-    attachments: [],
-  },
-  {
-    id: 3,
-    question: '커뮤니티 익명 변경 예정',
-    answer: '커뮤니티 익명 변경에 대한 안내사항입니다.',
-    createdAt: '2025-05-08 10:36',
-    attachments: [],
-  },
-  {
-    id: 4,
-    question: '정산 가이드',
-    answer: '정산 가이드 내용입니다.',
-    createdAt: '2025-05-08 10:36',
-    attachments: [],
-  },
-  {
-    id: 5,
-    question: 'EDI 처방 가이드',
-    answer: 'EDI 처방 가이드 내용입니다.',
-    createdAt: '2025-05-08 10:36',
-    attachments: [],
-  },
-  {
-    id: 6,
-    question: 'EDI 처방 가이드',
-    answer: 'EDI 처방 가이드 내용입니다.',
-    createdAt: '2025-05-08 10:36',
-    attachments: [],
-  },
-  {
-    id: 7,
-    question: 'EDI 처방 가이드',
-    answer: 'EDI 처방 가이드 내용입니다.',
-    createdAt: '2025-05-08 10:36',
-    attachments: [],
-  },
-  {
-    id: 8,
-    question: 'EDI 처방 가이드',
-    answer: 'EDI 처방 가이드 내용입니다.',
-    createdAt: '2025-05-08 10:36',
-    attachments: [],
-  },
-];
+import { Accordion, AccordionDetails, AccordionSummary, Box, InputAdornment, Link, Stack, TextField, Typography } from '@mui/material';
+import { useFormik } from 'formik';
+import { useEffect, useState } from 'react';
+import { Link as RouterLink } from 'react-router';
+import { type BoardDetailsResponse, type BoardPostResponse, getBoardDetails, getBoards } from '../backend';
+import { MedipandaPagination } from '../components/MedipandaPagination.tsx';
+import { colors, typography } from '../globalStyles.ts';
+import { formatYyyyMmDdHhMm } from '../utils/dateFormat.ts';
 
 export default function FaqList() {
-  const [expanded, setExpanded] = useState<string | false>(false);
+  const [data, setData] = useState<BoardPostResponse[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [expandedDetail, setExpandedDetail] = useState<BoardDetailsResponse | null>(null);
 
-  const handleChange = (panel: string) => (_event: React.SyntheticEvent, isExpanded: boolean) => {
-    setExpanded(isExpanded ? panel : false);
+  const formik = useFormik({
+    initialValues: {
+      searchKeyword: '',
+      pageIndex: 0,
+      pageSize: 10,
+      totalPages: 1,
+      expandedId: -1,
+    },
+    onSubmit: async () => {
+      await formik.setFieldValue('expandedId', -1);
+
+      if (formik.values.pageIndex !== 0) {
+        await formik.setFieldValue('pageIndex', 0);
+      } else {
+        await fetchData();
+      }
+    },
+  });
+
+  const fetchData = async () => {
+    const response = await getBoards({
+      boardType: 'FAQ',
+      boardTitle: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+      page: formik.values.pageIndex,
+      size: formik.values.pageSize,
+    });
+
+    setData(response.content);
+    setTotalPages(response.totalPages);
   };
 
+  const fetchDetail = async (id: number) => {
+    setExpandedDetail(await getBoardDetails(id));
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [formik.values.pageIndex, formik.values.pageSize]);
+
+  useEffect(() => {
+    setExpandedDetail(null);
+
+    if (formik.values.expandedId === -1) {
+      return;
+    }
+
+    fetchDetail(formik.values.expandedId);
+  }, [formik.values.expandedId]);
+
   return (
-    <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-        <Typography variant='h5' sx={{ fontWeight: 'bold', color: '#333' }}>
+    <Stack alignItems='center'>
+      <Box sx={{ width: '100%' }}>
+        <Typography
+          sx={{
+            ...typography.heading3M,
+            color: colors.gray80,
+            mb: '30px',
+          }}
+        >
           FAQ
         </Typography>
+      </Box>
+      <Stack
+        direction='row'
+        component='form'
+        onSubmit={formik.handleSubmit}
+        sx={{
+          width: '100%',
+          marginTop: '30px',
+        }}
+      >
         <TextField
-          placeholder='궁금한 질문 검색어 보세요'
           size='small'
-          sx={{ width: '300px' }}
+          name='searchKeyword'
+          value={formik.values.searchKeyword}
+          onChange={formik.handleChange}
+          placeholder='궁금한 점을 검색해 보세요.'
           InputProps={{
             endAdornment: (
               <InputAdornment position='end'>
-                <Search sx={{ color: '#999' }} />
+                <Search sx={{ color: colors.gray500 }} />
               </InputAdornment>
             ),
           }}
+          sx={{ width: '300px', marginLeft: 'auto' }}
         />
-      </Box>
-
-      <Box sx={{ mb: 4 }}>
-        {mockFaqs.map(faq => (
-          <StyledAccordion key={faq.id} expanded={expanded === `panel${faq.id}`} onChange={handleChange(`panel${faq.id}`)}>
-            <StyledAccordionSummary>
-              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                <Typography
-                  sx={{
-                    fontSize: '16px',
-                    fontWeight: 500,
-                    color: '#333',
-                    flexGrow: 1,
-                  }}
-                >
-                  Q {faq.question}
+      </Stack>
+      <Box sx={{ width: '100%', marginTop: '10px', borderTop: `1px solid ${colors.gray50}` }}>
+        {data.map(faq => (
+          <Accordion
+            key={faq.id}
+            expanded={formik.values.expandedId === faq.id && expandedDetail !== null}
+            onChange={() => formik.setFieldValue('expandedId', faq.id)}
+            sx={{
+              boxShadow: 'none',
+              '&:before': {
+                display: 'none',
+              },
+            }}
+          >
+            <AccordionSummary
+              sx={{
+                '&.Mui-expanded': {
+                  minHeight: 'unset',
+                },
+                '& .MuiAccordionSummary-content.Mui-expanded': {
+                  margin: '12px 0',
+                },
+                borderBottom: `1px solid ${colors.gray30}`,
+              }}
+            >
+              <Stack direction='row' alignItems='center'>
+                <Typography sx={{ ...typography.heading4B, color: colors.gray50 }}>Q</Typography>
+                <Typography sx={{ ...typography.largeTextB, color: colors.gray80, width: '629px', marginLeft: '20px' }}>
+                  {faq.title}
                 </Typography>
-                <Typography variant='body2' sx={{ color: '#999', mr: 2, fontSize: '13px' }}>
-                  {faq.createdAt}
+                <Typography sx={{ ...typography.largeTextR, color: colors.gray50, marginLeft: '20px', marginRight: '20px' }}>
+                  {formatYyyyMmDdHhMm(faq.createdAt)}
                 </Typography>
-                <IconButton size='small' sx={{ color: '#666' }}>
-                  {expanded === `panel${faq.id}` ? <Remove /> : <Add />}
-                </IconButton>
-              </Box>
-            </StyledAccordionSummary>
-            <StyledAccordionDetails>
-              {faq.attachments && faq.attachments.length > 0 && (
+                {formik.values.expandedId === faq.id ? <Remove /> : <Add />}
+              </Stack>
+            </AccordionSummary>
+            <AccordionDetails sx={{ marginX: '50px', backgroundColor: colors.gray10 }}>
+              {expandedDetail?.attachments && expandedDetail.attachments.length > 0 && (
                 <Box sx={{ mb: 2 }}>
-                  {faq.attachments.map((file, index) => (
+                  {expandedDetail.attachments.map((file, index) => (
                     <Link
                       key={index}
-                      href={file.fileUrl}
-                      download
+                      component={RouterLink}
+                      to={file.fileUrl}
+                      target='_blank'
                       sx={{
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: 0.5,
-                        color: '#6B3AA0',
+                        color: colors.primary,
                         textDecoration: 'underline',
                         fontSize: '14px',
                         mb: 1,
                       }}
                     >
-                      {file.fileName}
+                      {new URL(file.fileUrl).pathname.split('/').pop()}
                     </Link>
                   ))}
                 </Box>
@@ -188,34 +163,26 @@ export default function FaqList() {
                 variant='body1'
                 sx={{
                   lineHeight: 1.8,
-                  color: '#333',
+                  color: colors.gray700,
                   whiteSpace: 'pre-line',
                 }}
               >
-                {faq.answer}
+                {expandedDetail?.content}
               </Typography>
-            </StyledAccordionDetails>
-          </StyledAccordion>
+            </AccordionDetails>
+          </Accordion>
         ))}
       </Box>
-
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Pagination
-          count={10}
-          page={1}
-          showFirstButton
-          showLastButton
-          sx={{
-            '& .MuiPaginationItem-root': {
-              fontSize: '14px',
-            },
-            '& .Mui-selected': {
-              backgroundColor: '#6B3AA0 !important',
-              color: '#fff',
-            },
-          }}
-        />
-      </Box>
-    </Box>
+      <MedipandaPagination
+        count={totalPages}
+        page={formik.values.pageIndex + 1}
+        showFirstButton
+        showLastButton
+        onChange={(_, page) => {
+          formik.setFieldValue('pageIndex', page - 1);
+        }}
+        sx={{ marginTop: '40px' }}
+      />
+    </Stack>
   );
 }

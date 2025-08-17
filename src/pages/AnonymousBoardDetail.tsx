@@ -1,17 +1,9 @@
 import { Favorite, MoreHoriz, Visibility } from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  IconButton,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Alert, Box, Button, Card, CardContent, Chip, CircularProgress, IconButton, Snackbar, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
-import { useParams } from 'react-router';
+import { useParams, useNavigate } from 'react-router';
+import { colors } from '../globalStyles';
 
 const ContentContainer = styled(Box)({
   padding: '24px',
@@ -36,25 +28,24 @@ const TabButton = styled(Button)({
   fontWeight: 500,
   minWidth: 'auto',
   '&.selected': {
-    backgroundColor: '#e0e0e0',
-    color: '#333',
+    backgroundColor: colors.gray300,
+    color: colors.gray700,
     '&:hover': {
-      backgroundColor: '#e0e0e0',
+      backgroundColor: colors.gray300,
     },
   },
   '&:not(.selected)': {
     backgroundColor: 'transparent',
-    color: '#666',
+    color: colors.gray500,
     '&:hover': {
-      backgroundColor: '#f5f5f5',
+      backgroundColor: colors.gray50,
     },
   },
 });
 
 const PostCard = styled(Card)({
-  backgroundColor: '#fff',
   boxShadow: 'none',
-  border: '1px solid #e0e0e0',
+  border: `1px solid ${colors.gray300}`,
   borderRadius: '8px',
   marginBottom: '24px',
 });
@@ -83,14 +74,14 @@ const PostStats = styled(Box)({
   alignItems: 'center',
   gap: '16px',
   marginTop: '16px',
-  color: '#666',
+  color: colors.gray500,
   fontSize: '14px',
 });
 
 const CommentCard = styled(Card)({
-  backgroundColor: '#f8f9fa',
+  backgroundColor: colors.gray100,
   boxShadow: 'none',
-  border: '1px solid #e0e0e0',
+  border: `1px solid ${colors.gray300}`,
   borderRadius: '8px',
   marginBottom: '12px',
 });
@@ -102,19 +93,31 @@ const CommentInput = styled(Box)({
 });
 
 const RelatedPostCard = styled(Card)({
-  backgroundColor: '#f5f5f5',
+  backgroundColor: colors.gray50,
   boxShadow: 'none',
   borderRadius: '8px',
   marginBottom: '8px',
   cursor: 'pointer',
   '&:hover': {
-    backgroundColor: '#e0e0e0',
+    backgroundColor: colors.gray300,
   },
 });
 
 export default function AnonymousBoardDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [comment, setComment] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const [currentTab, setCurrentTab] = useState('anonymous');
+
+  const showSnackbar = (message, severity = 'success') => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
 
   const mockPost = {
     id: Number(id),
@@ -158,32 +161,68 @@ export default function AnonymousBoardDetail() {
   ];
 
   const handleSubmitComment = () => {
-    if (!comment.trim()) return;
-    console.log('Submitting comment:', comment);
-    setComment('');
+    if (!comment.trim()) {
+      showSnackbar('댓글을 입력해주세요.', 'warning');
+      return;
+    }
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setComment('');
+      showSnackbar('댓글이 성공적으로 등록되었습니다!', 'success');
+    }, 1000);
+  };
+
+  const handleTabChange = tab => {
+    setCurrentTab(tab);
+    if (tab === 'anonymous') {
+      navigate('/community/anonymous');
+    } else if (tab === 'mrCso') {
+      navigate('/community/mr-cso-matching');
+    }
+  };
+
+  const handleAction = action => {
+    switch (action) {
+      case 'report':
+        showSnackbar('신고가 접수되었습니다.', 'success');
+        break;
+      case 'save':
+        showSnackbar('게시글이 저장되었습니다.', 'success');
+        break;
+      case 'edit':
+        navigate(`/community/anonymous/${id}/edit`);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleRelatedPostClick = postId => {
+    navigate(`/community/anonymous/${postId}`);
   };
 
   return (
     <Box>
       <ContentContainer>
         <MainContent>
-          <Typography variant='h4' sx={{ mb: 4, fontWeight: 'bold', color: '#333' }}>
-            커뮤니티
-          </Typography>
+          <Typography sx={{ mb: 4, fontWeight: 'bold', color: colors.gray700 }}>커뮤니티</Typography>
 
           <Box sx={{ mb: 3 }}>
-            <TabButton className='selected'>익명게시판</TabButton>
-            <TabButton>MR-CSO 매칭</TabButton>
+            <TabButton className={currentTab === 'anonymous' ? 'selected' : ''} onClick={() => handleTabChange('anonymous')}>
+              익명게시판
+            </TabButton>
+            <TabButton className={currentTab === 'mrCso' ? 'selected' : ''} onClick={() => handleTabChange('mrCso')}>
+              MR-CSO 매칭
+            </TabButton>
           </Box>
 
           <PostCard>
             <CardContent sx={{ p: 3 }}>
               <PostHeader>
                 <Box>
-                  <Typography variant='h5' sx={{ fontWeight: 'bold', color: '#333', mb: 1 }}>
-                    {mockPost.title}
-                  </Typography>
-                  <Typography variant='body2' sx={{ color: '#666' }}>
+                  <Typography sx={{ fontWeight: 'bold', color: colors.gray700, mb: 1 }}>{mockPost.title}</Typography>
+                  <Typography sx={{ color: colors.gray500 }}>
                     {mockPost.author} · {mockPost.timestamp}
                   </Typography>
                 </Box>
@@ -193,22 +232,20 @@ export default function AnonymousBoardDetail() {
                   </IconButton>
                   <Chip label='신고하기' size='small' />
                   <PostActions>
-                    <ActionButton variant='outlined' size='small' color='error'>
+                    <ActionButton variant='outlined' size='small' color='error' onClick={() => handleAction('report')}>
                       신고하기
                     </ActionButton>
-                    <ActionButton variant='outlined' size='small'>
+                    <ActionButton variant='outlined' size='small' onClick={() => handleAction('save')}>
                       저장하기
                     </ActionButton>
-                    <ActionButton variant='contained' size='small'>
+                    <ActionButton variant='contained' size='small' onClick={() => handleAction('edit')}>
                       수정하기
                     </ActionButton>
                   </PostActions>
                 </Box>
               </PostHeader>
 
-              <Typography variant='body1' sx={{ mb: 2, lineHeight: 1.6 }}>
-                {mockPost.content}
-              </Typography>
+              <Typography sx={{ mb: 2, lineHeight: 1.6 }}>{mockPost.content}</Typography>
 
               <Box sx={{ mb: 2 }}>
                 <img
@@ -219,9 +256,9 @@ export default function AnonymousBoardDetail() {
                     height: '150px',
                     objectFit: 'cover',
                     borderRadius: '8px',
-                    backgroundColor: '#f0f0f0',
+                    backgroundColor: colors.gray200,
                   }}
-                  onError={(e) => {
+                  onError={e => {
                     e.currentTarget.style.display = 'none';
                   }}
                 />
@@ -241,28 +278,22 @@ export default function AnonymousBoardDetail() {
           </PostCard>
 
           <Box sx={{ mb: 3 }}>
-            {mockPost.comments.map((comment) => (
+            {mockPost.comments.map(comment => (
               <CommentCard key={comment.id}>
                 <CardContent sx={{ p: 2 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Typography variant='body2' sx={{ fontWeight: 500 }}>
-                        {comment.author}
-                      </Typography>
+                      <Typography sx={{ fontWeight: 500 }}>{comment.author}</Typography>
                       <Chip label='CSO' size='small' color='error' />
                     </Box>
                     <IconButton size='small'>
                       <MoreHoriz />
                     </IconButton>
                   </Box>
-                  <Typography variant='body2' sx={{ mb: 1 }}>
-                    {comment.content}
-                  </Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, color: '#666', fontSize: '12px' }}>
+                  <Typography sx={{ mb: 1 }}>{comment.content}</Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, color: colors.gray500, fontSize: '12px' }}>
                     <span>{comment.timestamp}</span>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      ❤️ {comment.likes}
-                    </Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>❤️ {comment.likes}</Box>
                     {comment.replies && <span>답글 {comment.replies}</span>}
                   </Box>
                 </CardContent>
@@ -275,46 +306,52 @@ export default function AnonymousBoardDetail() {
               fullWidth
               placeholder='자유롭게 남겨주세요'
               value={comment}
-              onChange={(e) => setComment(e.target.value)}
+              onChange={e => setComment(e.target.value)}
               size='small'
             />
             <Button
               variant='contained'
               onClick={handleSubmitComment}
+              disabled={loading}
               sx={{
-                backgroundColor: '#1a237e',
+                backgroundColor: colors.navy,
                 textTransform: 'none',
                 '&:hover': {
-                  backgroundColor: '#0d47a1',
+                  backgroundColor: colors.primaryDark,
                 },
               }}
             >
+              {loading ? <CircularProgress size={20} color='inherit' sx={{ mr: 1 }} /> : null}
               등록하기
             </Button>
           </CommentInput>
         </MainContent>
 
         <Sidebar>
-          <Typography variant='h6' sx={{ mb: 2, fontWeight: 'bold' }}>
-            관련글
-          </Typography>
+          <Typography sx={{ mb: 2, fontWeight: 'bold' }}>관련글</Typography>
           {relatedPosts.map((post, index) => (
-            <RelatedPostCard key={post.id}>
+            <RelatedPostCard key={post.id} onClick={() => handleRelatedPostClick(post.id)}>
               <CardContent sx={{ p: 2 }}>
-                <Typography variant='body2' sx={{ fontSize: '12px', color: '#666', mb: 0.5 }}>
-                  {index + 1}
-                </Typography>
-                <Typography variant='body2' sx={{ fontSize: '13px', lineHeight: 1.4, mb: 1 }}>
-                  {post.title}
-                </Typography>
-                <Typography variant='body2' sx={{ fontSize: '11px', color: '#999' }}>
-                  {post.author}
-                </Typography>
+                <Typography sx={{ fontSize: '12px', color: colors.gray500, mb: 0.5 }}>{index + 1}</Typography>
+                <Typography sx={{ fontSize: '13px', lineHeight: 1.4, mb: 1 }}>{post.title}</Typography>
+                <Typography sx={{ fontSize: '11px', color: colors.gray400 }}>{post.author}</Typography>
               </CardContent>
             </RelatedPostCard>
           ))}
         </Sidebar>
       </ContentContainer>
+
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

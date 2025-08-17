@@ -1,12 +1,20 @@
 import { CalendarToday, Search } from '@mui/icons-material';
 import {
+  Alert,
   Box,
   Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Fade,
   FormControl,
   InputAdornment,
   MenuItem,
   Paper,
   Select,
+  Snackbar,
   Table,
   TableBody,
   TableCell,
@@ -18,6 +26,7 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
+import { colors } from '../globalStyles';
 
 const TabButton = styled(Button)({
   padding: '16px 32px',
@@ -29,15 +38,15 @@ const TabButton = styled(Button)({
   borderBottom: '3px solid transparent',
   '&.selected': {
     backgroundColor: 'transparent',
-    color: '#6B3AA0',
-    borderBottom: '3px solid #6B3AA0',
+    color: colors.primary,
+    borderBottom: `3px solid ${colors.primary}`,
     fontWeight: 'bold',
   },
   '&:not(.selected)': {
     backgroundColor: 'transparent',
-    color: '#666',
+    color: colors.gray500,
     '&:hover': {
-      backgroundColor: '#f5f5f5',
+      backgroundColor: colors.gray100,
     },
   },
 });
@@ -52,29 +61,29 @@ const DateRangeBox = styled(Box)({
 const ChartArea = styled(Box)({
   width: '100%',
   height: '300px',
-  backgroundColor: '#f8f9fa',
-  border: '1px solid #e0e0e0',
+  backgroundColor: colors.gray100,
+  border: `1px solid ${colors.gray300}`,
   borderRadius: '8px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   marginBottom: '32px',
-  color: '#666',
+  color: colors.gray500,
   fontSize: '18px',
 });
 
 const StyledTableCell = styled(TableCell)({
   padding: '16px',
-  borderBottom: '1px solid #f0f0f0',
+  borderBottom: `1px solid ${colors.gray200}`,
   fontSize: '14px',
 });
 
 const StyledTableHead = styled(TableHead)({
-  backgroundColor: '#f8f9fa',
+  backgroundColor: colors.gray100,
   '& .MuiTableCell-head': {
     fontWeight: 600,
-    color: '#333',
-    borderBottom: '1px solid #e0e0e0',
+    color: colors.gray700,
+    borderBottom: `1px solid ${colors.gray300}`,
   },
 });
 
@@ -128,18 +137,70 @@ export default function StatisticsAll() {
   const [startDate, setStartDate] = useState('시작월');
   const [endDate, setEndDate] = useState('종료월');
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState('전체매출');
+
+  const [loading, setLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const [confirmDialog, setConfirmDialog] = useState(false);
+  const [actionType, setActionType] = useState('');
+  const [tabLoading, setTabLoading] = useState(false);
+  const [dateLoading, setDateLoading] = useState(false);
+
+  const showSnackbar = (message, severity = 'success') => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  const handleTabChange = newTab => {
+    setTabLoading(true);
+    setTimeout(() => {
+      setCurrentTab(newTab);
+      setTabLoading(false);
+      const tabName = newTab === 0 ? '정산내역' : '매출통계';
+      showSnackbar(`${tabName} 탭으로 이동했습니다.`, 'info');
+    }, 300);
+  };
+
+  const handleFilterChange = filter => {
+    setActiveFilter(filter);
+    showSnackbar(`${filter} 필터로 전환했습니다.`, 'info');
+  };
+
+  const handleDateSearch = () => {
+    setDateLoading(true);
+    setTimeout(() => {
+      setDateLoading(false);
+      showSnackbar('기간 검색이 완료되었습니다.', 'success');
+    }, 1000);
+  };
+
+  const handleAction = type => {
+    setActionType(type);
+    if (type === '파일다운로드') {
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
+        showSnackbar('정산 데이터가 다운로드되었습니다.');
+      }, 1500);
+    } else {
+      setConfirmDialog(true);
+    }
+  };
 
   return (
     <Box>
-      <Typography variant='h4' sx={{ mb: 4, fontWeight: 'bold', color: '#333' }}>
-        정산
-      </Typography>
+      <Typography sx={{ mb: 4, fontWeight: 'bold', color: colors.gray700 }}>정산</Typography>
 
       <Box sx={{ mb: 3 }}>
-        <TabButton className={currentTab === 0 ? 'selected' : ''} onClick={() => setCurrentTab(0)}>
+        <TabButton className={currentTab === 0 ? 'selected' : ''} onClick={() => handleTabChange(0)} disabled={tabLoading}>
+          {tabLoading && currentTab !== 0 ? <CircularProgress size={16} sx={{ mr: 1 }} /> : null}
           정산내역
         </TabButton>
-        <TabButton className={currentTab === 1 ? 'selected' : ''} onClick={() => setCurrentTab(1)}>
+        <TabButton className={currentTab === 1 ? 'selected' : ''} onClick={() => handleTabChange(1)} disabled={tabLoading}>
+          {tabLoading && currentTab !== 1 ? <CircularProgress size={16} sx={{ mr: 1 }} /> : null}
           매출통계
         </TabButton>
       </Box>
@@ -148,25 +209,38 @@ export default function StatisticsAll() {
         <Box>
           <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
             <Button
-              variant='contained'
+              variant={activeFilter === '전체매출' ? 'contained' : 'outlined'}
               sx={{
-                backgroundColor: '#6B3AA0',
+                backgroundColor: activeFilter === '전체매출' ? colors.primary : 'transparent',
+                borderColor: activeFilter === '전체매출' ? colors.primary : colors.gray300,
+                color: activeFilter === '전체매출' ? colors.white : colors.gray500,
                 textTransform: 'none',
                 borderRadius: '20px',
-                '&:hover': { backgroundColor: '#5a2d8a' },
+                '&:hover': {
+                  backgroundColor: activeFilter === '전체매출' ? colors.primaryDark : 'rgba(107, 58, 160, 0.1)',
+                  borderColor: colors.primary,
+                  color: activeFilter === '전체매출' ? colors.white : colors.primary,
+                },
               }}
+              onClick={() => handleFilterChange('전체매출')}
             >
               전체매출
             </Button>
             <Button
-              variant='outlined'
+              variant={activeFilter === '거래처매출' ? 'contained' : 'outlined'}
               sx={{
-                borderColor: '#e0e0e0',
-                color: '#666',
+                backgroundColor: activeFilter === '거래처매출' ? colors.primary : 'transparent',
+                borderColor: activeFilter === '거래처매출' ? colors.primary : colors.gray300,
+                color: activeFilter === '거래처매출' ? colors.white : colors.gray500,
                 textTransform: 'none',
                 borderRadius: '20px',
-                '&:hover': { borderColor: '#6B3AA0', color: '#6B3AA0' },
+                '&:hover': {
+                  backgroundColor: activeFilter === '거래처매출' ? colors.primaryDark : 'rgba(107, 58, 160, 0.1)',
+                  borderColor: colors.primary,
+                  color: activeFilter === '거래처매출' ? colors.white : colors.primary,
+                },
               }}
+              onClick={() => handleFilterChange('거래처매출')}
             >
               거래처매출
             </Button>
@@ -179,7 +253,7 @@ export default function StatisticsAll() {
                 onChange={e => setStartDate(e.target.value)}
                 size='small'
                 displayEmpty
-                startAdornment={<CalendarToday sx={{ mr: 1, color: '#999' }} />}
+                startAdornment={<CalendarToday sx={{ mr: 1, color: colors.gray400 }} />}
               >
                 <MenuItem value='시작월'>시작월</MenuItem>
                 <MenuItem value='2025-01'>2025-01</MenuItem>
@@ -188,14 +262,14 @@ export default function StatisticsAll() {
                 <MenuItem value='2025-04'>2025-04</MenuItem>
               </Select>
             </FormControl>
-            <Typography sx={{ color: '#666' }}>~</Typography>
+            <Typography sx={{ color: colors.gray500 }}>~</Typography>
             <FormControl sx={{ minWidth: 120 }}>
               <Select
                 value={endDate}
                 onChange={e => setEndDate(e.target.value)}
                 size='small'
                 displayEmpty
-                startAdornment={<CalendarToday sx={{ mr: 1, color: '#999' }} />}
+                startAdornment={<CalendarToday sx={{ mr: 1, color: colors.gray400 }} />}
               >
                 <MenuItem value='종료월'>종료월</MenuItem>
                 <MenuItem value='2025-01'>2025-01</MenuItem>
@@ -207,11 +281,14 @@ export default function StatisticsAll() {
             <Button
               variant='contained'
               sx={{
-                backgroundColor: '#6B3AA0',
+                backgroundColor: colors.primary,
                 textTransform: 'none',
-                '&:hover': { backgroundColor: '#5a2d8a' },
+                '&:hover': { backgroundColor: colors.primaryDark },
               }}
+              onClick={handleDateSearch}
+              disabled={dateLoading}
             >
+              {dateLoading ? <CircularProgress size={20} color='inherit' sx={{ mr: 1 }} /> : null}
               검색
             </Button>
             <TextField
@@ -232,11 +309,11 @@ export default function StatisticsAll() {
 
           <ChartArea>그래프 영역</ChartArea>
 
-          <Typography variant='body2' sx={{ mb: 2, color: '#f44336', textAlign: 'center' }}>
+          <Typography sx={{ mb: 2, color: colors.error, textAlign: 'center' }}>
             ※ 정산월 기준으로 산정된 금액이며, 만원단위 이하는 절삭한 금액으로 표시 됩니다.
           </Typography>
 
-          <TableContainer component={Paper} sx={{ boxShadow: 'none', border: '1px solid #e0e0e0' }}>
+          <TableContainer component={Paper} sx={{ boxShadow: 'none', border: `1px solid ${colors.gray300}` }}>
             <Table>
               <StyledTableHead>
                 <TableRow>
@@ -252,13 +329,13 @@ export default function StatisticsAll() {
               </StyledTableHead>
               <TableBody>
                 {mockStatistics.map(stat => (
-                  <TableRow key={stat.id} sx={{ '&:hover': { backgroundColor: '#f9f9f9' } }}>
+                  <TableRow key={stat.id} sx={{ '&:hover': { backgroundColor: colors.gray50 } }}>
                     <StyledTableCell>
                       <input
                         type='checkbox'
                         checked={stat.checked}
                         style={{
-                          accentColor: '#6B3AA0',
+                          accentColor: colors.primary,
                           width: '16px',
                           height: '16px',
                         }}
@@ -269,7 +346,7 @@ export default function StatisticsAll() {
                         variant='body2'
                         sx={{
                           fontWeight: stat.id === 1 ? 'bold' : 'normal',
-                          color: stat.id === 1 ? '#6B3AA0' : '#333',
+                          color: stat.id === 1 ? colors.primary : colors.gray700,
                         }}
                       >
                         {stat.companyName}
@@ -280,7 +357,7 @@ export default function StatisticsAll() {
                         variant='body2'
                         sx={{
                           fontWeight: stat.id === 1 ? 'bold' : 'normal',
-                          color: stat.id === 1 ? '#6B3AA0' : '#333',
+                          color: stat.id === 1 ? colors.primary : colors.gray700,
                         }}
                       >
                         {stat.prescriptionAmount}
@@ -291,7 +368,7 @@ export default function StatisticsAll() {
                         variant='body2'
                         sx={{
                           fontWeight: stat.id === 1 ? 'bold' : 'normal',
-                          color: stat.id === 1 ? '#6B3AA0' : '#333',
+                          color: stat.id === 1 ? colors.primary : colors.gray700,
                         }}
                       >
                         {stat.settlementAmount}
@@ -309,22 +386,19 @@ export default function StatisticsAll() {
         <Box>
           <Box sx={{ display: 'flex', gap: 2, mb: 3, alignItems: 'center' }}>
             <FormControl sx={{ minWidth: 120 }}>
-              <Select
-                value="제약사명"
-                size="small"
-              >
-                <MenuItem value="제약사명">제약사명</MenuItem>
-                <MenuItem value="딜러명">딜러명</MenuItem>
-                <MenuItem value="거래처명">거래처명</MenuItem>
+              <Select value='제약사명' size='small'>
+                <MenuItem value='제약사명'>제약사명</MenuItem>
+                <MenuItem value='딜러명'>딜러명</MenuItem>
+                <MenuItem value='거래처명'>거래처명</MenuItem>
               </Select>
             </FormControl>
             <TextField
-              placeholder="검색"
-              size="small"
+              placeholder='검색'
+              size='small'
               sx={{ flex: 1 }}
               InputProps={{
                 endAdornment: (
-                  <InputAdornment position="end">
+                  <InputAdornment position='end'>
                     <Search />
                   </InputAdornment>
                 ),
@@ -333,82 +407,112 @@ export default function StatisticsAll() {
           </Box>
 
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>
-              합계금액 : 663,239,627
-            </Typography>
+            <Typography sx={{ fontWeight: 'bold', color: colors.gray700 }}>합계금액 : 663,239,627</Typography>
             <Box sx={{ display: 'flex', gap: 1 }}>
               <Button
-                variant="contained"
+                variant='contained'
                 sx={{
-                  backgroundColor: '#1a237e',
+                  backgroundColor: colors.navy,
                   textTransform: 'none',
                   borderRadius: '20px',
                   padding: '8px 20px',
-                  '&:hover': { backgroundColor: '#0d47a1' },
+                  '&:hover': { backgroundColor: colors.navy },
                 }}
+                onClick={() => handleAction('파일다운로드')}
+                disabled={loading}
               >
+                {loading && actionType === '파일다운로드' ? <CircularProgress size={16} color='inherit' sx={{ mr: 1 }} /> : null}
                 파일다운로드
               </Button>
               <Button
-                variant="outlined"
+                variant='outlined'
                 sx={{
-                  borderColor: '#6B3AA0',
-                  color: '#6B3AA0',
+                  borderColor: colors.primary,
+                  color: colors.primary,
                   textTransform: 'none',
                   borderRadius: '20px',
                   padding: '8px 20px',
-                  '&:hover': { backgroundColor: '#f3f0ff' },
+                  '&:hover': { backgroundColor: 'rgba(107, 58, 160, 0.1)' },
                 }}
+                onClick={() => handleAction('정산신청')}
+                disabled={loading}
               >
                 정산신청
               </Button>
               <Button
-                variant="outlined"
+                variant='outlined'
                 sx={{
-                  borderColor: '#f44336',
-                  color: '#f44336',
+                  borderColor: colors.error,
+                  color: colors.error,
                   textTransform: 'none',
                   borderRadius: '20px',
                   padding: '8px 20px',
-                  '&:hover': { backgroundColor: '#ffebee' },
+                  '&:hover': { backgroundColor: 'rgba(244, 67, 54, 0.1)' },
                 }}
+                onClick={() => handleAction('이의신청')}
+                disabled={loading}
               >
                 이의신청
               </Button>
             </Box>
           </Box>
 
-          <TableContainer component={Paper} sx={{ boxShadow: 'none', border: '1px solid #e0e0e0' }}>
+          <TableContainer component={Paper} sx={{ boxShadow: 'none', border: `1px solid ${colors.gray300}` }}>
             <Table>
               <StyledTableHead>
                 <TableRow>
                   <StyledTableCell sx={{ width: '150px' }}>제약사명</StyledTableCell>
                   <StyledTableCell sx={{ width: '120px' }}>딜러명</StyledTableCell>
-                  <StyledTableCell align="right" sx={{ width: '150px' }}>공급가액</StyledTableCell>
-                  <StyledTableCell align="right" sx={{ width: '120px' }}>세액</StyledTableCell>
-                  <StyledTableCell align="right" sx={{ width: '150px' }}>합계금액</StyledTableCell>
+                  <StyledTableCell align='right' sx={{ width: '150px' }}>
+                    공급가액
+                  </StyledTableCell>
+                  <StyledTableCell align='right' sx={{ width: '120px' }}>
+                    세액
+                  </StyledTableCell>
+                  <StyledTableCell align='right' sx={{ width: '150px' }}>
+                    합계금액
+                  </StyledTableCell>
                 </TableRow>
               </StyledTableHead>
               <TableBody>
                 {[
-                  { drugCompany: '동구바이오', dealerName: '정길동', supplyAmount: null, taxAmount: null, totalAmount: '승인대기중', status: 'pending' },
-                  { drugCompany: '동구바이오', dealerName: '홍길동', supplyAmount: 328303614, taxAmount: 3316198, totalAmount: 331619812, status: 'approved' },
-                  { drugCompany: '동구바이오', dealerName: '나유비', supplyAmount: 328303614, taxAmount: 3316198, totalAmount: 331619812, status: 'approved' },
+                  {
+                    drugCompany: '동구바이오',
+                    dealerName: '정길동',
+                    supplyAmount: null,
+                    taxAmount: null,
+                    totalAmount: '승인대기중',
+                    status: 'pending',
+                  },
+                  {
+                    drugCompany: '동구바이오',
+                    dealerName: '홍길동',
+                    supplyAmount: 328303614,
+                    taxAmount: 3316198,
+                    totalAmount: 331619812,
+                    status: 'approved',
+                  },
+                  {
+                    drugCompany: '동구바이오',
+                    dealerName: '나유비',
+                    supplyAmount: 328303614,
+                    taxAmount: 3316198,
+                    totalAmount: 331619812,
+                    status: 'approved',
+                  },
                 ].map((settlement, index) => (
-                  <TableRow key={index} sx={{ '&:hover': { backgroundColor: '#f9f9f9' } }}>
+                  <TableRow key={index} sx={{ '&:hover': { backgroundColor: colors.gray50 } }}>
                     <StyledTableCell>{settlement.drugCompany}</StyledTableCell>
                     <StyledTableCell>{settlement.dealerName}</StyledTableCell>
-                    <StyledTableCell align="right">
+                    <StyledTableCell align='right'>
                       {settlement.status === 'pending' ? '-' : settlement.supplyAmount?.toLocaleString()}
                     </StyledTableCell>
-                    <StyledTableCell align="right">
+                    <StyledTableCell align='right'>
                       {settlement.status === 'pending' ? '-' : settlement.taxAmount?.toLocaleString()}
                     </StyledTableCell>
-                    <StyledTableCell align="right">
+                    <StyledTableCell align='right'>
                       {settlement.status === 'pending' ? (
-                        <Typography sx={{ color: '#ff9800', fontWeight: 500 }}>
-                          {settlement.totalAmount}
-                        </Typography>
+                        <Typography sx={{ color: colors.warning, fontWeight: 500 }}>{settlement.totalAmount}</Typography>
                       ) : (
                         settlement.totalAmount?.toLocaleString()
                       )}
@@ -420,6 +524,60 @@ export default function StatisticsAll() {
           </TableContainer>
         </Box>
       )}
+
+      {/* Confirmation Dialog */}
+      <Dialog open={confirmDialog} onClose={() => setConfirmDialog(false)}>
+        <DialogTitle>
+          {actionType === '정산신청' ? '정산 신청 확인' : actionType === '이의신청' ? '이의 신청 확인' : '작업 확인'}
+        </DialogTitle>
+        <DialogContent>
+          <Typography>
+            {actionType === '정산신청'
+              ? '선택된 항목에 대해 정산을 신청하시겠습니까?'
+              : actionType === '이의신청'
+                ? '선택된 항목에 대해 이의를 신청하시겠습니까?'
+                : '이 작업을 진행하시겠습니까?'}
+          </Typography>
+          <Typography sx={{ mt: 1, color: colors.gray500 }}>
+            {actionType === '정산신청'
+              ? '정산 신청 후 취소가 어려울 수 있습니다.'
+              : actionType === '이의신청'
+                ? '이의 신청은 담당자 검토 후 처리됩니다.'
+                : '작업 후 취소가 어려울 수 있습니다.'}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmDialog(false)}>취소</Button>
+          <Button
+            variant='contained'
+            onClick={() => {
+              setConfirmDialog(false);
+              const message =
+                actionType === '정산신청'
+                  ? '정산 신청이 완료되었습니다.'
+                  : actionType === '이의신청'
+                    ? '이의 신청이 접수되었습니다.'
+                    : '작업이 완료되었습니다.';
+              showSnackbar(message, 'success');
+            }}
+            sx={{ backgroundColor: colors.primary }}
+          >
+            확인
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

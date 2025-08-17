@@ -1,155 +1,89 @@
-import { Box, Button, Link, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { useParams } from 'react-router';
-
-const ContentContainer = styled(Box)({
-  padding: '40px',
-  maxWidth: '800px',
-  margin: '0 auto',
-});
-
-const ProductCard = styled(Box)({
-  backgroundColor: '#fff',
-  borderRadius: '8px',
-  padding: '40px',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-  border: '1px solid #f0f0f0',
-});
-
-const BusinessPartnerLabel = styled(Typography)({
-  fontSize: '14px',
-  color: '#666',
-  marginBottom: '12px',
-});
-
-const ProductTitle = styled(Typography)({
-  fontSize: '24px',
-  fontWeight: 'bold',
-  color: '#333',
-  marginBottom: '16px',
-});
-
-const DateAndViews = styled(Typography)({
-  fontSize: '14px',
-  color: '#999',
-  marginBottom: '40px',
-});
-
-const FeeLabel = styled(Typography)({
-  fontSize: '16px',
-  fontWeight: 500,
-  color: '#333',
-  marginBottom: '8px',
-});
-
-const FeeDescription = styled(Typography)({
-  fontSize: '16px',
-  color: '#333',
-  marginBottom: '24px',
-});
-
-const AdditionalInfo = styled(Typography)({
-  fontSize: '14px',
-  color: '#666',
-  marginBottom: '8px',
-});
-
-const WebsiteLink = styled(Link)({
-  fontSize: '14px',
-  color: '#6B3AA0',
-  textDecoration: 'underline',
-  marginBottom: '40px',
-  display: 'block',
-});
-
-const ButtonContainer = styled(Box)({
-  display: 'flex',
-  gap: '12px',
-  justifyContent: 'center',
-  marginTop: '40px',
-});
-
-const ApplyButton = styled(Button)({
-  backgroundColor: '#6B3AA0',
-  color: '#fff',
-  padding: '12px 32px',
-  fontSize: '16px',
-  fontWeight: 500,
-  textTransform: 'none',
-  borderRadius: '6px',
-  '&:hover': {
-    backgroundColor: '#5a2d8a',
-  },
-});
-
-const CompletedButton = styled(Button)({
-  backgroundColor: '#999',
-  color: '#fff',
-  padding: '12px 32px',
-  fontSize: '16px',
-  fontWeight: 500,
-  textTransform: 'none',
-  borderRadius: '6px',
-  '&:hover': {
-    backgroundColor: '#777',
-  },
-});
+import { Box, Button, Stack, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
+import { getSalesAgencyProductDetails, type SalesAgencyProductDetailsResponse } from '../backend';
+import { FixedLoader } from '../components/FixedLoader.tsx';
+import { colors, typography } from '../globalStyles';
+import { formatYyyyMmDd } from '../utils/dateFormat.ts';
+import { mockBoolean } from '../utils/mock.ts';
 
 export default function SalesAgencyProductDetail() {
-  const { id } = useParams();
+  const { id: paramId } = useParams();
+  const navigate = useNavigate();
+  const [data, setData] = useState<SalesAgencyProductDetailsResponse | null>(null);
 
-  // Mock data - would be fetched from API in real implementation
-  const mockProduct = {
-    id: Number(id),
-    businessPartner: '리베스 플러리',
-    title: '병원경영&마케팅',
-    dateRange: '2025-06-10 ~ 2025-06-30',
-    viewCount: 1260,
-    feeDescription: ': 영업성사에 따른 차감제의 50%',
-    website: 'www.csosales.com',
-    isApplied: false,
+  const fetchData = async (id: number) => {
+    const response = await getSalesAgencyProductDetails(id);
+
+    setData(response);
   };
 
+  useEffect(() => {
+    const id = Number(paramId);
+    if (isNaN(id)) {
+      alert('잘못된 접근입니다.');
+      navigate('/customer-service/notice', { replace: true });
+      return;
+    }
+
+    fetchData(id);
+  }, [paramId]);
+
+  if (!data) {
+    return <FixedLoader />;
+  }
+
+  const isApplied = mockBoolean();
+
   return (
-    <ContentContainer>
-      <Typography variant='h4' sx={{ mb: 4, fontWeight: 'bold', color: '#333' }}>
+    <Stack>
+      <Typography
+        sx={{
+          ...typography.heading3M,
+          color: colors.gray80,
+        }}
+      >
         영업대행상품
       </Typography>
 
-      <ProductCard>
-        <BusinessPartnerLabel>{mockProduct.businessPartner}</BusinessPartnerLabel>
+      <Stack
+        gap='5px'
+        sx={{
+          width: '912px',
+          padding: '20px',
+          marginTop: '30px',
+          borderTop: `1px solid ${colors.gray50}`,
+        }}
+      >
+        <Typography sx={{ ...typography.normalTextB, color: colors.gray80 }}>{data.clientName}</Typography>
+        <Typography sx={{ ...typography.heading4B, color: colors.gray80 }}>{data.productName}</Typography>
+        <Typography sx={{ ...typography.smallTextR, color: colors.gray50 }}>
+          {formatYyyyMmDd(data.startDate)} ~ {formatYyyyMmDd(data.endDate)} | 조회수 {data.boardPostDetail.viewsCount.toLocaleString()}
+        </Typography>
+      </Stack>
 
-        <ProductTitle>{mockProduct.title}</ProductTitle>
+      <Stack
+        sx={{
+          width: '912px',
+          padding: '50px 20px',
+        }}
+      >
+        {data.boardPostDetail.content}
+      </Stack>
 
-        <DateAndViews>
-          {mockProduct.dateRange} · 조회수 {mockProduct.viewCount.toLocaleString()}
-        </DateAndViews>
-
-        <Box sx={{ mb: 4 }}>
-          <FeeLabel>영업대행수수료</FeeLabel>
-          <FeeDescription>{mockProduct.feeDescription}</FeeDescription>
-        </Box>
-
-        <AdditionalInfo>
-          자세한 상품설명은 아래 사이트 참고해주세요.
-        </AdditionalInfo>
-
-        <WebsiteLink href={`https://${mockProduct.website}`} target='_blank' rel='noopener noreferrer'>
-          {mockProduct.website}
-        </WebsiteLink>
-
-        <ButtonContainer>
-          {mockProduct.isApplied ? (
-            <CompletedButton variant='contained'>
-              영업대행 신청완료
-            </CompletedButton>
-          ) : (
-            <ApplyButton variant='contained'>
-              영업대행 신청하기
-            </ApplyButton>
-          )}
-        </ButtonContainer>
-      </ProductCard>
-    </ContentContainer>
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+        <Button
+          variant='contained'
+          disabled={isApplied}
+          sx={{
+            width: '287px',
+            height: '49px',
+            backgroundColor: !isApplied ? colors.vividViolet : colors.gray50,
+          }}
+        >
+          {!isApplied ? '영업대행 신청하기' : '영업대행 신청완료'}
+        </Button>
+      </Box>
+    </Stack>
   );
 }

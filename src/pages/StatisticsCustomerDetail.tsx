@@ -122,39 +122,27 @@ export default function StatisticsCustomerDetail() {
   };
 
   const handleSelectItem = (id: number) => {
-    setSelectedItems(prev =>
-      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
-    );
+    setSelectedItems(prev => (prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]));
   };
 
   return (
     <ContentContainer>
-      <Typography variant='h4' sx={{ mb: 4, fontWeight: 'bold', color: '#333' }}>
-        정산
-      </Typography>
+      <Typography sx={{ mb: 4, fontWeight: 'bold', color: '#333' }}>정산</Typography>
 
       <Box sx={{ mb: 3 }}>
-        <TabButton
-          className={selectedTab === '정산내역' ? 'selected' : ''}
-          onClick={() => setSelectedTab('정산내역')}
-        >
+        <TabButton className={selectedTab === '정산내역' ? 'selected' : ''} onClick={() => setSelectedTab('정산내역')}>
           정산내역
         </TabButton>
-        <TabButton
-          className={selectedTab === '매출통계' ? 'selected' : ''}
-          onClick={() => setSelectedTab('매출통계')}
-        >
+        <TabButton className={selectedTab === '매출통계' ? 'selected' : ''} onClick={() => setSelectedTab('매출통계')}>
           매출통계
         </TabButton>
       </Box>
 
       <PeriodToggle>
-        <Typography variant='body2' sx={{ color: isPeriodCompleted ? '#999' : '#6B3AA0', fontWeight: 500 }}>
-          진행예정
-        </Typography>
+        <Typography sx={{ color: isPeriodCompleted ? '#999' : '#6B3AA0', fontWeight: 500 }}>진행예정</Typography>
         <Switch
           checked={isPeriodCompleted}
-          onChange={(e) => setIsPeriodCompleted(e.target.checked)}
+          onChange={e => setIsPeriodCompleted(e.target.checked)}
           sx={{
             '& .MuiSwitch-switchBase.Mui-checked': {
               color: '#6B3AA0',
@@ -164,30 +152,16 @@ export default function StatisticsCustomerDetail() {
             },
           }}
         />
-        <Typography variant='body2' sx={{ color: isPeriodCompleted ? '#6B3AA0' : '#999', fontWeight: 500 }}>
-          지급완료
-        </Typography>
+        <Typography sx={{ color: isPeriodCompleted ? '#6B3AA0' : '#999', fontWeight: 500 }}>지급완료</Typography>
       </PeriodToggle>
 
       <FilterContainer>
-        <TextField
-          type='month'
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          size='small'
-          sx={{ width: '140px' }}
-        />
-        <Typography variant='body2' sx={{ color: '#666' }}>-</Typography>
-        <TextField
-          type='month'
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          size='small'
-          sx={{ width: '140px' }}
-        />
+        <TextField type='month' value={startDate} onChange={e => setStartDate(e.target.value)} size='small' sx={{ width: '140px' }} />
+        <Typography sx={{ color: '#666' }}>-</Typography>
+        <TextField type='month' value={endDate} onChange={e => setEndDate(e.target.value)} size='small' sx={{ width: '140px' }} />
         <TextField
           value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
+          onChange={e => setSearchValue(e.target.value)}
           size='small'
           sx={{ width: '200px' }}
           InputProps={{
@@ -200,13 +174,9 @@ export default function StatisticsCustomerDetail() {
         />
       </FilterContainer>
 
-      <ChartArea>
-        그래프 영역
-      </ChartArea>
+      <ChartArea>그래프 영역</ChartArea>
 
-      <NoticeText>
-        * 정산대 기준으로 산정된 금액이며, 안전인터 아바는 불상환 금액으로 표시 됩니다.
-      </NoticeText>
+      <NoticeText>* 정산대 기준으로 산정된 금액이며, 안전인터 아바는 불상환 금액으로 표시 됩니다.</NoticeText>
 
       <TableContainer component={Paper} sx={{ boxShadow: 'none', border: '1px solid #e0e0e0' }}>
         <Table>
@@ -231,7 +201,7 @@ export default function StatisticsCustomerDetail() {
             </TableRow>
           </StyledTableHead>
           <TableBody>
-            {mockData.map((row) => (
+            {mockData.map(row => (
               <TableRow key={row.id} sx={{ '&:hover': { backgroundColor: '#f9f9f9' } }}>
                 <StyledTableCell padding='checkbox'>
                   <Checkbox

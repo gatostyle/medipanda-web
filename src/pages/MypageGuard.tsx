@@ -1,6 +1,7 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Box, Button, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
+import { Box, Button, IconButton, InputAdornment, Stack, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
+import { colors, typography } from '../globalStyles.ts';
 
 export default function MypageGuard() {
   const [password, setPassword] = useState('');
@@ -11,68 +12,85 @@ export default function MypageGuard() {
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '400px',
-        textAlign: 'center',
-      }}
-    >
-      <Typography variant='h6' sx={{ mb: 4, color: '#333', fontWeight: 500 }}>
-        회원님의 정보를 보호하기 위해 비밀번호를 다시 확인합니다.
-      </Typography>
+    <>
+      <Stack>
+        <Typography sx={{ ...typography.heading3B, color: colors.gray80 }}>마이페이지</Typography>
+        <Box sx={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center', display: 'flex', my: '100px' }}>
+          <Stack>
+            <Typography
+              variant='h6'
+              sx={{
+                ...typography.largeTextM,
+                color: colors.gray80,
+                fontWeight: 400,
+                fontSize: '16px',
+                lineHeight: 1.5,
+              }}
+            >
+              회원님의 정보를 보호하기 위해 비밀번호를 다시 확인합니다.
+            </Typography>
 
-      <Box component='form' onSubmit={handleSubmit} sx={{ width: '100%', maxWidth: '400px' }}>
-        <TextField
-          fullWidth
-          type={showPassword ? 'text' : 'password'}
-          placeholder='비밀번호를 입력해주세요.'
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          sx={{
-            mb: 3,
-            '& .MuiOutlinedInput-root': {
-              backgroundColor: '#fff',
-              borderRadius: '8px',
-            },
-          }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position='end'>
-                <IconButton onClick={() => setShowPassword(!showPassword)} edge='end' sx={{ color: '#999' }}>
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
+            <Stack
+              direction='row'
+              component='form'
+              onSubmit={handleSubmit}
+              sx={{
+                width: '440px',
+                marginTop: '20px',
+              }}
+            >
+              <TextField
+                fullWidth
+                type={showPassword ? 'text' : 'password'}
+                placeholder='비밀번호를 입력해주세요.'
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    backgroundColor: colors.white,
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    height: '48px',
+                    '& fieldset': {
+                      borderColor: colors.gray300,
+                      borderWidth: '1px',
+                    },
+                    '&:hover fieldset': {
+                      borderColor: colors.gray400,
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: colors.primary,
+                      borderWidth: '2px',
+                    },
+                  },
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton onClick={() => setShowPassword(!showPassword)} edge='end' sx={{ color: colors.gray400 }}>
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
 
-        <Button
-          type='submit'
-          variant='contained'
-          disabled={!password.trim()}
-          sx={{
-            backgroundColor: '#1a237e',
-            color: '#fff',
-            padding: '12px 48px',
-            borderRadius: '8px',
-            textTransform: 'none',
-            fontWeight: 500,
-            '&:hover': {
-              backgroundColor: '#0d47a1',
-            },
-            '&:disabled': {
-              backgroundColor: '#e0e0e0',
-              color: '#999',
-            },
-          }}
-        >
-          확인
-        </Button>
-      </Box>
-    </Box>
+              <Button
+                type='submit'
+                variant='contained'
+                disabled={!password.trim()}
+                sx={{
+                  width: '100px',
+                  ml: '10px',
+                  backgroundColor: colors.navy,
+                }}
+              >
+                확인
+              </Button>
+            </Stack>
+          </Stack>
+        </Box>
+      </Stack>
+    </>
   );
 }

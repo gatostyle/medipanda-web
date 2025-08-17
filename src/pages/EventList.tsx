@@ -1,172 +1,143 @@
-import { Box, Card, CardContent, Chip, Grid, Pagination, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Box, Stack, Typography } from '@mui/material';
+import { useFormik } from 'formik';
+import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router';
-
-const EventCard = styled(Card)({
-  backgroundColor: '#fff',
-  boxShadow: 'none',
-  border: '1px solid #e0e0e0',
-  borderRadius: '12px',
-  overflow: 'hidden',
-  cursor: 'pointer',
-  transition: 'transform 0.2s ease-in-out',
-  '&:hover': {
-    transform: 'translateY(-2px)',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-  },
-});
-
-const EventImage = styled(Box)({
-  width: '100%',
-  height: '180px',
-  backgroundColor: '#e0e0e0',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: '#666',
-  fontSize: '14px',
-});
-
-const StatusChip = styled(Chip)(({ status }) => ({
-  position: 'absolute',
-  top: '12px',
-  right: '12px',
-  fontSize: '12px',
-  fontWeight: 500,
-  ...(status === 'active' && {
-    backgroundColor: '#4caf50',
-    color: '#fff',
-  }),
-  ...(status === 'ended' && {
-    backgroundColor: '#424242',
-    color: '#fff',
-  }),
-}));
-
-const mockEvents = [
-  {
-    id: 1,
-    title: '메디판다 그랜드 오픈이벤트!!!!!!',
-    description: '해당 이벤트는 메디판다 오픈기념 이벤트입니다.',
-    startDate: '2025-06-10',
-    endDate: '2025-06-30',
-    status: 'active',
-    thumbnailUrl: null,
-  },
-  {
-    id: 2,
-    title: '이벤트 제목',
-    description: '이벤트 설명@@@@@@@@@@@@@@@@@@@@@@',
-    startDate: '2025-06-10',
-    endDate: '2025-06-30',
-    status: 'active',
-    thumbnailUrl: null,
-  },
-  {
-    id: 3,
-    title: '이벤트 제목',
-    description: '이벤트 설명@@@@@@@@@@@@@@@@@@@@@@',
-    startDate: '2025-06-10',
-    endDate: '2025-06-30',
-    status: 'active',
-    thumbnailUrl: null,
-  },
-  {
-    id: 4,
-    title: '이벤트 제목',
-    description: '이벤트 설명@@@@@@@@@@@@@@@@@@@@@@',
-    startDate: '2025-06-10',
-    endDate: '2025-06-30',
-    status: 'ended',
-    thumbnailUrl: null,
-  },
-  {
-    id: 5,
-    title: '이벤트 제목',
-    description: '이벤트 설명@@@@@@@@@@@@@@@@@@@@@@',
-    startDate: '2025-06-10',
-    endDate: '2025-06-30',
-    status: 'ended',
-    thumbnailUrl: null,
-  },
-];
+import { type EventBoardSummaryResponse, getEventBoards } from '../backend';
+import { MedipandaPagination } from '../components/MedipandaPagination.tsx';
+import { colors, typography } from '../globalStyles.ts';
+import { formatYyyyMmDd } from '../utils/dateFormat.ts';
 
 export default function EventList() {
+  const [data, setData] = useState<EventBoardSummaryResponse[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const formik = useFormik({
+    initialValues: {
+      pageIndex: 0,
+      pageSize: 10,
+      totalPages: 1,
+    },
+    onSubmit: async () => {
+      if (formik.values.pageIndex !== 0) {
+        await formik.setFieldValue('pageIndex', 0);
+      } else {
+        await fetchData();
+      }
+    },
+  });
+
+  const fetchData = async () => {
+    const response = await getEventBoards({
+      page: formik.values.pageIndex,
+      size: formik.values.pageSize,
+    });
+
+    setData(response.content);
+    setTotalPages(response.totalPages);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [formik.values.pageIndex, formik.values.pageSize]);
+
   return (
-    <Box>
-      <Typography variant='h4' sx={{ mb: 4, fontWeight: 'bold', color: '#333' }}>
+    <Stack>
+      <Typography
+        sx={{
+          ...typography.heading3M,
+          color: colors.gray80,
+        }}
+      >
         이벤트
       </Typography>
 
-      <Grid container spacing={3}>
-        {mockEvents.map(event => (
-          <Grid item xs={12} sm={6} md={4} key={event.id}>
-            <EventCard component={RouterLink} to={`/events/${event.id}`} sx={{ textDecoration: 'none' }}>
-              <Box sx={{ position: 'relative' }}>
-                <EventImage>
-                  {event.thumbnailUrl ? (
-                    <img src={event.thumbnailUrl} alt={event.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  ) : (
-                    <Typography variant='body2' sx={{ color: '#999' }}>
-                      이벤트 이미지
-                    </Typography>
-                  )}
-                </EventImage>
-                {event.status === 'ended' && <StatusChip label='종료' size='small' status='ended' />}
-              </Box>
-              <CardContent sx={{ p: 3 }}>
-                <Typography
-                  variant='h6'
+      <Stack
+        sx={{
+          marginTop: '30px',
+          marginBottom: '40px',
+        }}
+      >
+        {data.map(event => (
+          <Stack
+            direction='row'
+            component={RouterLink}
+            to={`/events/${event.id}`}
+            sx={{
+              textDecoration: 'none',
+            }}
+          >
+            <Box
+              sx={{
+                position: 'relative',
+                marginBottom: '20px',
+              }}
+            >
+              <img
+                src={event.thumbnailUrl}
+                width='300px'
+                height='150px'
+                style={{
+                  borderRadius: '10px',
+                }}
+              />
+              {new Date(event.eventEndAt) < new Date() && (
+                <Box
                   sx={{
-                    fontWeight: 'bold',
-                    color: '#333',
-                    mb: 1,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    left: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: colors.gray80,
+                    opacity: 0.8,
+                    borderRadius: '10px',
                   }}
                 >
-                  {event.title}
-                </Typography>
-                <Typography
-                  variant='body2'
-                  sx={{
-                    color: '#666',
-                    mb: 2,
-                    lineHeight: 1.5,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {event.description}
-                </Typography>
-                <Typography variant='caption' sx={{ color: '#999', fontSize: '13px' }}>
-                  {event.startDate} ~ {event.endDate}
-                </Typography>
-              </CardContent>
-            </EventCard>
-          </Grid>
+                  <Typography
+                    sx={{
+                      ...typography.heading4B,
+                      color: colors.white,
+                    }}
+                  >
+                    종료
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+            <Stack
+              sx={{
+                width: '100%',
+                padding: '24px 20px',
+                marginLeft: '30px',
+                borderWidth: '1px 0',
+                borderStyle: 'solid',
+                borderColor: colors.gray50,
+              }}
+            >
+              <Typography sx={{ ...typography.heading4B, color: colors.gray80 }}>{event.title}</Typography>
+              {/*<Typography sx={{ ...typography.largeTextM, color: colors.gray80 }}>{event.description}</Typography>*/}
+              <Typography sx={{ ...typography.smallTextR, color: colors.gray50, marginTop: 'auto' }}>
+                {formatYyyyMmDd(event.eventStartAt)} ~ {formatYyyyMmDd(event.eventEndAt)}
+              </Typography>
+            </Stack>
+          </Stack>
         ))}
-      </Grid>
+      </Stack>
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6 }}>
-        <Pagination
-          count={10}
-          page={1}
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <MedipandaPagination
+          count={totalPages}
+          page={formik.values.pageIndex + 1}
           showFirstButton
           showLastButton
-          sx={{
-            '& .MuiPaginationItem-root': {
-              fontSize: '14px',
-            },
-            '& .Mui-selected': {
-              backgroundColor: '#6B3AA0 !important',
-              color: '#fff',
-            },
+          onChange={(_, page) => {
+            formik.setFieldValue('pageIndex', page - 1);
           }}
         />
       </Box>
-    </Box>
+    </Stack>
   );
 }

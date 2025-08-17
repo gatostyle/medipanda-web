@@ -1,78 +1,103 @@
 import { lazy } from 'react';
 import { createBrowserRouter, type RouteObject } from 'react-router';
-import { Loadable } from './components/Loadable.tsx';
+import { Loadable } from './components/Loadable';
 
-const GlobalLayout = Loadable(lazy(() => import('./layouts/GlobalLayout.tsx')));
-const MyPageLayout = Loadable(lazy(() => import('./layouts/MyPageLayout.tsx')));
-const CustomerServiceLayout = Loadable(lazy(() => import('./layouts/CustomerServiceLayout.tsx')));
+const GlobalLayout = Loadable(lazy(() => import('./layouts/GlobalLayout')));
+const TabbedLayout = Loadable(lazy(() => import('./layouts/TabbedLayout')));
+const SidebarLayout = Loadable(lazy(() => import('./layouts/SidebarLayout')));
 
-const Home = Loadable(lazy(() => import('./pages/Home.tsx')));
-const HomeNoContract = Loadable(lazy(() => import('./pages/HomeNoContract.tsx')));
+const Login = Loadable(lazy(() => import('./pages/Login')));
+const Logout = Loadable(lazy(() => import('./pages/Logout')));
 
-const MypageGuard = Loadable(lazy(() => import('./pages/MypageGuard.tsx')));
-const MypageInfo = Loadable(lazy(() => import('./pages/MypageInfo.tsx')));
-const MypageNotification = Loadable(lazy(() => import('./pages/MypageNotification.tsx')));
-const MypageWithdraw = Loadable(lazy(() => import('./pages/MypageWithdraw.tsx')));
+const Home = Loadable(lazy(() => import('./pages/Home')));
 
-const RequestContract = Loadable(lazy(() => import('./pages/RequestContract.tsx')));
-const RequestContractPending = Loadable(lazy(() => import('./pages/RequestContractPending.tsx')));
-const RequestContractComplete = Loadable(lazy(() => import('./pages/RequestContractComplete.tsx')));
+const MypageGuard = Loadable(lazy(() => import('./pages/MypageGuard')));
+const MypageInfo = Loadable(lazy(() => import('./pages/MypageInfo')));
+const MypageNotification = Loadable(lazy(() => import('./pages/MypageNotification')));
+const MypageWithdraw = Loadable(lazy(() => import('./pages/MypageWithdraw')));
 
-const Products = Loadable(lazy(() => import('./pages/Products.tsx')));
+const PartnerContract = Loadable(lazy(() => import('./pages/PartnerContract')));
 
-const Performance = Loadable(lazy(() => import('./pages/Performance.tsx')));
-const PerformanceBatch = Loadable(lazy(() => import('./pages/PerformanceBatch.tsx')));
+const ProductList = Loadable(lazy(() => import('./pages/ProductList')));
 
-const Dealers = Loadable(lazy(() => import('./pages/Dealers.tsx')));
+const PrescriptionList = Loadable(lazy(() => import('./pages/PrescriptionList')));
+const DealerList = Loadable(lazy(() => import('./pages/DealerList')));
 
-const Settlements = Loadable(lazy(() => import('./pages/Settlements.tsx')));
-const SettlementsCustomerDetail = Loadable(lazy(() => import('./pages/SettlementsCustomerDetail.tsx')));
+const Settlements = Loadable(lazy(() => import('./pages/Settlements')));
+const SettlementsCustomerDetail = Loadable(lazy(() => import('./pages/SettlementsCustomerDetail')));
+const SalesStatistic = Loadable(lazy(() => import('./pages/SalesStatistic')));
 
-const StatisticsAll = Loadable(lazy(() => import('./pages/StatisticsAll.tsx')));
-const StatisticsCustomer = Loadable(lazy(() => import('./pages/StatisticsCustomer.tsx')));
-const StatisticsCustomerDetail = Loadable(lazy(() => import('./pages/StatisticsCustomerDetail.tsx')));
+const StatisticsAll = Loadable(lazy(() => import('./pages/StatisticsAll')));
+const StatisticsCustomer = Loadable(lazy(() => import('./pages/StatisticsCustomer')));
+const StatisticsCustomerDetail = Loadable(lazy(() => import('./pages/StatisticsCustomerDetail')));
 
-const AnonymousList = Loadable(lazy(() => import('./pages/AnonymousList.tsx')));
-const AnonymousBoardDetail = Loadable(lazy(() => import('./pages/AnonymousBoardDetail.tsx')));
-const MrCsoMatchingList = Loadable(lazy(() => import('./pages/MrCsoMatchingList.tsx')));
-const MrCsoMatchingCreate = Loadable(lazy(() => import('./pages/MrCsoMatchingCreate.tsx')));
+const AnonymousList = Loadable(lazy(() => import('./pages/AnonymousList')));
+const AnonymousBoardDetail = Loadable(lazy(() => import('./pages/AnonymousBoardDetail')));
+const MrCsoMatchingList = Loadable(lazy(() => import('./pages/MrCsoMatchingList')));
+const MrCsoMatchingNew = Loadable(lazy(() => import('./pages/./MrCsoMatchingNew')));
 
-const SalesAgencyProductList = Loadable(lazy(() => import('./pages/SalesAgencyProductList.tsx')));
-const SalesAgencyProductDetail = Loadable(lazy(() => import('./pages/SalesAgencyProductDetail.tsx')));
+const SalesAgencyProductList = Loadable(lazy(() => import('./pages/SalesAgencyProductList')));
+const SalesAgencyProductDetail = Loadable(lazy(() => import('./pages/SalesAgencyProductDetail')));
 
-const EventList = Loadable(lazy(() => import('./pages/EventList.tsx')));
-const EventDetail = Loadable(lazy(() => import('./pages/EventDetail.tsx')));
+const EventList = Loadable(lazy(() => import('./pages/EventList')));
+const EventDetail = Loadable(lazy(() => import('./pages/EventDetail')));
 
-const NoticeList = Loadable(lazy(() => import('./pages/NoticeList.tsx')));
-const NoticeDetail = Loadable(lazy(() => import('./pages/NoticeDetail.tsx')));
-const FaqList = Loadable(lazy(() => import('./pages/FaqList.tsx')));
-const InquiryList = Loadable(lazy(() => import('./pages/InquiryList.tsx')));
-const InquiryDetail = Loadable(lazy(() => import('./pages/InquiryDetail.tsx')));
-const InquiryNew = Loadable(lazy(() => import('./pages/InquiryNew.tsx')));
+const NoticeList = Loadable(lazy(() => import('./pages/NoticeList')));
+const NoticeDetail = Loadable(lazy(() => import('./pages/NoticeDetail')));
+const FaqList = Loadable(lazy(() => import('./pages/FaqList')));
+const InquiryList = Loadable(lazy(() => import('./pages/InquiryList')));
+const InquiryDetail = Loadable(lazy(() => import('./pages/InquiryDetail')));
+const InquiryNew = Loadable(lazy(() => import('./pages/InquiryNew')));
 
-const Error404 = Loadable(lazy(() => import('./pages/404.tsx')));
+const Error404 = Loadable(lazy(() => import('./pages/404')));
+
+const Terms = Loadable(lazy(() => import('./pages/Terms')));
+const Privacy = Loadable(lazy(() => import('./pages/Privacy')));
+const Partnership = Loadable(lazy(() => import('./pages/Partnership')));
 
 const route: RouteObject[] = [
+  {
+    path: '/login',
+    element: <Login />,
+  },
+  {
+    path: '/logout',
+    element: <Logout />,
+  },
   {
     path: '/',
     element: <GlobalLayout />,
     children: [
       {
-        index: true,
+        path: '',
         element: <Home />,
       },
       {
-        path: 'home-no-contract',
-        element: <HomeNoContract />,
+        path: 'mypage/guard',
+        element: <MypageGuard />,
       },
       {
         path: 'mypage',
-        element: <MyPageLayout />,
+        element: (
+          <SidebarLayout
+            title='마이페이지'
+            tabConfig={[
+              {
+                label: '내정보관리',
+                to: '/mypage/info',
+              },
+              {
+                label: '수신설정',
+                to: '/mypage/notification',
+              },
+              {
+                label: '회원탈퇴',
+                to: '/mypage/withdraw',
+              },
+            ]}
+          />
+        ),
         children: [
-          {
-            path: 'guard',
-            element: <MypageGuard />,
-          },
           {
             path: 'info',
             element: <MypageInfo />,
@@ -88,36 +113,68 @@ const route: RouteObject[] = [
         ],
       },
       {
-        path: 'request-contract',
-        element: <RequestContract />,
-      },
-      {
-        path: 'request-contract/pending',
-        element: <RequestContractPending />,
-      },
-      {
-        path: 'request-contract/complete',
-        element: <RequestContractComplete />,
+        path: 'partner-contract',
+        element: <PartnerContract />,
       },
       {
         path: 'products',
-        element: <Products />,
+        element: <ProductList />,
       },
       {
-        path: 'performance',
-        element: <Performance />,
+        path: '',
+        element: (
+          <TabbedLayout
+            title='실적관리'
+            tabConfig={[
+              {
+                label: '실적입력(EDI)',
+                to: '/prescriptions',
+              },
+              {
+                label: '소속딜러 관리',
+                to: '/dealers',
+              },
+            ]}
+          />
+        ),
+        children: [
+          {
+            path: 'prescriptions',
+            element: <PrescriptionList />,
+          },
+          {
+            path: 'dealers',
+            element: <DealerList />,
+          },
+        ],
       },
       {
-        path: 'performance/batch',
-        element: <PerformanceBatch />,
-      },
-      {
-        path: 'dealers',
-        element: <Dealers />,
-      },
-      {
-        path: 'settlements',
-        element: <Settlements />,
+        path: '',
+        element: (
+          <TabbedLayout
+            title='정산'
+            tabConfig={[
+              {
+                label: '정산내역',
+                to: '/settlements',
+              },
+              {
+                label: '매출통계',
+                to: '/sales-statistics',
+              },
+            ]}
+          />
+        ),
+        children: [
+          {
+            path: 'settlements',
+            element: <Settlements />,
+          },
+          {
+            path: 'sales-statistics',
+            element: <SalesStatistic />,
+          },
+        ],
       },
       {
         path: 'settlements/customer/:id',
@@ -136,27 +193,47 @@ const route: RouteObject[] = [
         element: <StatisticsCustomerDetail />,
       },
       {
-        path: 'community/anonymous',
-        element: <AnonymousList />,
+        path: 'community',
+        element: (
+          <TabbedLayout
+            title='커뮤니티'
+            tabConfig={[
+              {
+                label: '익명게시판',
+                to: '/community/anonymous',
+              },
+              {
+                label: 'MR-CSO 매칭',
+                to: '/community/mr-cso-matching',
+              },
+            ]}
+          />
+        ),
+        children: [
+          {
+            path: 'anonymous',
+            element: <AnonymousList />,
+          },
+          {
+            path: 'mr-cso-matching',
+            element: <MrCsoMatchingList />,
+          },
+        ],
       },
       {
         path: 'community/anonymous/:id',
         element: <AnonymousBoardDetail />,
       },
       {
-        path: 'community/mrcso-matching',
-        element: <MrCsoMatchingList />,
+        path: 'community/mrcso-matching/new',
+        element: <MrCsoMatchingNew />,
       },
       {
-        path: 'community/mrcso-matching/create',
-        element: <MrCsoMatchingCreate />,
-      },
-      {
-        path: 'sales-agency/products',
+        path: 'sales-agency-products',
         element: <SalesAgencyProductList />,
       },
       {
-        path: 'sales-agency/products/:id',
+        path: 'sales-agency-products/:id',
         element: <SalesAgencyProductDetail />,
       },
       {
@@ -169,12 +246,26 @@ const route: RouteObject[] = [
       },
       {
         path: 'customer-service',
-        element: <CustomerServiceLayout />,
+        element: (
+          <SidebarLayout
+            title='고객센터'
+            tabConfig={[
+              {
+                label: '공지사항',
+                to: '/customer-service/notice',
+              },
+              {
+                label: 'FAQ',
+                to: '/customer-service/faq',
+              },
+              {
+                label: '1:1 문의내역',
+                to: '/customer-service/inquiry',
+              },
+            ]}
+          />
+        ),
         children: [
-          {
-            index: true,
-            element: <NoticeList />,
-          },
           {
             path: 'notice',
             element: <NoticeList />,
@@ -200,6 +291,18 @@ const route: RouteObject[] = [
             element: <InquiryNew />,
           },
         ],
+      },
+      {
+        path: 'terms',
+        element: <Terms />,
+      },
+      {
+        path: 'privacy',
+        element: <Privacy />,
+      },
+      {
+        path: 'partnership',
+        element: <Partnership />,
       },
     ],
   },

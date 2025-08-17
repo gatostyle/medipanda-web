@@ -99,7 +99,6 @@ const StyledTableCell = styled(TableCell)({
 });
 
 const DetailCard = styled(Card)({
-  backgroundColor: '#fff',
   boxShadow: 'none',
   border: '1px solid #e0e0e0',
   borderRadius: '8px',
@@ -128,28 +127,20 @@ export default function SettlementsCustomerDetail() {
     products: [
       { category: '거래처명', supplyAndTax: '110,366,605', settlement: '121,403,265' },
       { category: 'D형일', supplyAndTax: '110,366,605', settlement: '121,403,265' },
-    ]
+    ],
   };
 
   return (
     <Box>
       <ContentContainer>
         <MainContent>
-          <Typography variant='h4' sx={{ mb: 4, fontWeight: 'bold', color: '#333' }}>
-            정산
-          </Typography>
+          <Typography sx={{ mb: 4, fontWeight: 'bold', color: '#333' }}>정산</Typography>
 
           <Box sx={{ mb: 3 }}>
-            <TabButton
-              className={selectedTab === '정산내역' ? 'selected' : ''}
-              onClick={() => setSelectedTab('정산내역')}
-            >
+            <TabButton className={selectedTab === '정산내역' ? 'selected' : ''} onClick={() => setSelectedTab('정산내역')}>
               정산내역
             </TabButton>
-            <TabButton
-              className={selectedTab === '매출통계' ? 'selected' : ''}
-              onClick={() => setSelectedTab('매출통계')}
-            >
+            <TabButton className={selectedTab === '매출통계' ? 'selected' : ''} onClick={() => setSelectedTab('매출통계')}>
               매출통계
             </TabButton>
           </Box>
@@ -158,9 +149,7 @@ export default function SettlementsCustomerDetail() {
             <IconButton size='small'>
               <ChevronLeft />
             </IconButton>
-            <Typography variant='h6' sx={{ fontWeight: 500 }}>
-              {currentMonth}
-            </Typography>
+            <Typography sx={{ fontWeight: 500 }}>{currentMonth}</Typography>
             <IconButton size='small'>
               <ChevronRight />
             </IconButton>
@@ -168,10 +157,7 @@ export default function SettlementsCustomerDetail() {
 
           <FilterContainer>
             <FormControl size='small' sx={{ minWidth: 160 }}>
-              <Select
-                value={selectedCompany}
-                onChange={(e) => setSelectedCompany(e.target.value)}
-              >
+              <Select value={selectedCompany} onChange={e => setSelectedCompany(e.target.value)}>
                 <MenuItem value='제약사명'>제약사명</MenuItem>
                 <MenuItem value='동구바이오'>동구바이오</MenuItem>
               </Select>
@@ -179,7 +165,7 @@ export default function SettlementsCustomerDetail() {
             <TextField
               size='small'
               value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
+              onChange={e => setSearchValue(e.target.value)}
               sx={{ width: '300px' }}
               InputProps={{
                 endAdornment: (
@@ -192,15 +178,9 @@ export default function SettlementsCustomerDetail() {
           </FilterContainer>
 
           <SummaryContainer>
-            <Typography variant='body1' sx={{ fontWeight: 500 }}>
-              합계금액: 663,239,627
-            </Typography>
+            <Typography sx={{ fontWeight: 500 }}>합계금액: 663,239,627</Typography>
             <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button
-                variant='outlined'
-                startIcon={<GetApp />}
-                sx={{ textTransform: 'none' }}
-              >
+              <Button variant='outlined' startIcon={<GetApp />} sx={{ textTransform: 'none' }}>
                 파일다운로드
               </Button>
               <Button variant='outlined' sx={{ textTransform: 'none' }}>
@@ -227,9 +207,7 @@ export default function SettlementsCustomerDetail() {
                 {mockData.map((row, index) => (
                   <TableRow key={index} sx={{ '&:hover': { backgroundColor: '#f9f9f9' } }}>
                     <StyledTableCell>
-                      <Typography sx={{ color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }}>
-                        {row.company}
-                      </Typography>
+                      <Typography sx={{ color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }}>{row.company}</Typography>
                     </StyledTableCell>
                     <StyledTableCell>{row.manager}</StyledTableCell>
                     <StyledTableCell>{row.supplyAmount}</StyledTableCell>
@@ -249,34 +227,18 @@ export default function SettlementsCustomerDetail() {
         <Sidebar>
           <DetailCard>
             <CardContent sx={{ p: 3 }}>
-              <Typography variant='h6' sx={{ mb: 3, fontWeight: 'bold' }}>
-                정산내역 상세(거래처)
-              </Typography>
+              <Typography sx={{ mb: 3, fontWeight: 'bold' }}>정산내역 상세(거래처)</Typography>
 
               <Box sx={{ mb: 3 }}>
-                <Typography variant='body2' sx={{ color: '#666', mb: 1 }}>
-                  제약사명: {detailData.company}
-                </Typography>
-                <Typography variant='body2' sx={{ color: '#666', mb: 1 }}>
-                  담당자: {detailData.manager}
-                </Typography>
-                <Typography variant='body2' sx={{ color: '#666', mb: 1 }}>
-                  거래금액: {detailData.totalAmount}
-                </Typography>
-                <Typography variant='body2' sx={{ color: '#666', mb: 1 }}>
-                  공급가액: {detailData.supplyAmount}
-                </Typography>
-                <Typography variant='body2' sx={{ color: '#666', mb: 1 }}>
-                  세액: {detailData.taxAmount}
-                </Typography>
-                <Typography variant='body2' sx={{ color: '#666' }}>
-                  합계금액: {detailData.settlementAmount}
-                </Typography>
+                <Typography sx={{ color: '#666', mb: 1 }}>제약사명: {detailData.company}</Typography>
+                <Typography sx={{ color: '#666', mb: 1 }}>담당자: {detailData.manager}</Typography>
+                <Typography sx={{ color: '#666', mb: 1 }}>거래금액: {detailData.totalAmount}</Typography>
+                <Typography sx={{ color: '#666', mb: 1 }}>공급가액: {detailData.supplyAmount}</Typography>
+                <Typography sx={{ color: '#666', mb: 1 }}>세액: {detailData.taxAmount}</Typography>
+                <Typography sx={{ color: '#666' }}>합계금액: {detailData.settlementAmount}</Typography>
               </Box>
 
-              <Typography variant='body1' sx={{ mb: 2, fontWeight: 500 }}>
-                합계금액: 663,239,627 · 정산구분: ▼
-              </Typography>
+              <Typography sx={{ mb: 2, fontWeight: 500 }}>합계금액: 663,239,627 · 정산구분: ▼</Typography>
 
               <Table size='small'>
                 <TableHead>

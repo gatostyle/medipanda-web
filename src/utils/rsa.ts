@@ -1,14 +1,22 @@
 import { getPublicKey } from 'backend';
 
-const pem = await (async (): Promise<string> => {
-  try {
-    const response = await getPublicKey();
-    return response.publicKey;
-  } catch (error) {
-    console.error('Failed to fetch public key from server:', error);
-    throw error;
+let pemPromise: Promise<string> | null = null;
+
+function getPublicKeyPem(): Promise<string> {
+  if (!pemPromise) {
+    pemPromise = (async (): Promise<string> => {
+      try {
+        const response = await getPublicKey();
+        return response.publicKey;
+      } catch (error) {
+        console.error('Failed to fetch public key from server:', error);
+        pemPromise = null;
+        throw error;
+      }
+    })();
   }
-})();
+  return pemPromise;
+}
 
 function pemToArrayBuffer(pem: string): ArrayBuffer {
   const b64 = pem.replace(/-----(BEGIN|END) PUBLIC KEY-----/g, '').replace(/\s/g, '');
@@ -31,6 +39,7 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
 }
 
 export async function encryptRSA(plaintext: string) {
+  const pem = await getPublicKeyPem();
   const keyBuffer = pemToArrayBuffer(pem);
 
   const publicKey = await crypto.subtle.importKey(

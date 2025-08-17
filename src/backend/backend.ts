@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'utils/axios';
 
 export class DateTimeString extends String {
   public constructor(value: string | Date) {
@@ -125,7 +125,7 @@ export interface BannerResponse {
   scope: 'ENTIRE' | 'CONTRACT' | 'NON_CONTRACT';
   position: string;
   displayOrder: number;
-  viewCount: number;
+  viewsCount: number;
   clickCount: number;
   ctr: number;
   note: string | null;
@@ -149,10 +149,10 @@ export interface BlindPostResponse {
   id: number;
   memberName: string;
   content: string;
-  userId: string;
-  nickname: string;
-  likesCount: number;
   reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
+  likesCount: number;
+  nickname: string;
+  userId: string;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   postType: 'BOARD' | 'COMMENT';
   blindAt: string;
@@ -189,19 +189,20 @@ export interface BoardDetailsResponse {
 export interface BoardMemberStatsResponse {
   name: string;
   id: number;
-  userId: string;
-  phoneNumber: string;
   commentCount: number;
-  blindPostCount: number;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  phoneNumber: string;
+  userId: string;
   postCount: number;
   totalLikes: number;
+  blindPostCount: number;
+  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
 }
 
 export interface BoardPostCreateRequest {
   boardType: 'ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z' | 'EVENT' | 'SALES_AGENCY' | 'PRODUCT';
   userId: string;
   nickname: string;
+  hiddenNickname: boolean;
   title: string;
   content: string;
   parentId: number | null;
@@ -269,11 +270,11 @@ export interface CommentMemberResponse {
   name: string;
   id: number;
   content: string;
-  userId: string;
   commentType: 'COMMENT' | 'REPLY';
-  nickname: string;
   likesCount: number;
+  nickname: string;
   createdAt: string;
+  userId: string;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   isBlind: boolean;
 }
@@ -297,6 +298,16 @@ export interface CommentUpdateRequest {
   content: string;
 }
 
+export interface DealerCreateRequest {
+  dealerName: string;
+}
+
+export interface DealerResponse {
+  id: number;
+  dealerName: string;
+  createdAt: string;
+}
+
 export interface EditorUploadResponse {
   s3FileId: number;
   fileName: string;
@@ -313,8 +324,8 @@ export interface EventBoardCreateRequest {
 
 export interface EventBoardDetailsResponse {
   eventId: number;
-  eventStartDate: number;
-  eventEndDate: number;
+  eventStartDate: string;
+  eventEndDate: string;
   description: string;
   thumbnailUrl: string;
   videoUrl: string | null;
@@ -329,7 +340,7 @@ export interface EventBoardSummaryResponse {
   eventStartAt: string;
   eventEndAt: string;
   isExposed: boolean;
-  viewCount: number;
+  viewsCount: number;
   createdDate: string;
   eventStatus: 'IN_PROGRESS' | 'FINISHED';
 }
@@ -359,6 +370,20 @@ export interface FcmTokenRequest {
   fcmToken: string;
 }
 
+export interface FileValidationErrorDto {
+  fileName: string;
+  error:
+    | 'INVALID_EXTENSION'
+    | 'INVALID_FILENAME_FORMAT'
+    | 'DEALER_NOT_FOUND'
+    | 'PARTNER_NOT_FOUND'
+    | 'DRUG_COMPANY_NOT_FOUND'
+    | 'INVALID_MONTH_FORMAT'
+    | 'DUPLICATE_DEALER_PARTNER_DRUG_COMPANY'
+    | 'DRUG_COMPANY_MISMATCH';
+  message: string;
+}
+
 export interface HospitalResponse {
   id: number;
   name: string;
@@ -372,6 +397,28 @@ export interface HospitalResponse {
 export interface InstitutionInfo {
   name: string;
   code: string;
+}
+
+export interface KmcAuthRequest {
+  cpId: string;
+  urlCode: string;
+  certMet: string;
+  plusInfo: string;
+}
+
+export interface KmcAuthResponse {
+  tr_cert: string;
+  tr_url: string;
+}
+
+export interface KmcCallbackResult {
+  name: string;
+  phone: string;
+  birth: string;
+  gender: string;
+  connectionInfo: string;
+  duplicationInfo: string;
+  resultStatus: string;
 }
 
 export interface LoginRequest {
@@ -417,6 +464,7 @@ export interface MemberDetailsResponse {
   lastLoginDate: string;
   note: string | null;
   role: 'USER' | 'ADMIN' | 'SUPER_ADMIN';
+  nicknameHidden: boolean;
 }
 
 export interface MemberResponse {
@@ -434,6 +482,7 @@ export interface MemberResponse {
   accountStatus: 'ACTIVATED' | 'BLOCKED' | 'DELETED';
   role: 'USER' | 'ADMIN' | 'SUPER_ADMIN';
   companyName: string | null;
+  nicknameHidden: boolean;
   createdAt: string;
 }
 
@@ -461,6 +510,16 @@ export interface MemberUpdateRequest {
   marketingAgreement: MarketingAgreements | null;
 }
 
+export interface MonthlyFeeAmountResponse {
+  month: number;
+  feeAmount: number;
+}
+
+export interface MonthlyPrescriptionCountResponse {
+  month: number;
+  count: number;
+}
+
 export interface NoteUpdateItem {
   userId: string;
   note: string | null;
@@ -485,264 +544,264 @@ export interface OcrOriginalItem {
 }
 
 export interface PageBannerResponse {
-  totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
+  totalPages: number;
+  pageable: PageableObject;
   size: number;
   content: BannerResponse[];
   number: number;
   sort: SortObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
-  pageable: PageableObject;
   empty: boolean;
 }
 
 export interface PageBlindPostResponse {
-  totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
+  totalPages: number;
+  pageable: PageableObject;
   size: number;
   content: BlindPostResponse[];
   number: number;
   sort: SortObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
-  pageable: PageableObject;
   empty: boolean;
 }
 
 export interface PageBoardMemberStatsResponse {
-  totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
+  totalPages: number;
+  pageable: PageableObject;
   size: number;
   content: BoardMemberStatsResponse[];
   number: number;
   sort: SortObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
-  pageable: PageableObject;
   empty: boolean;
 }
 
 export interface PageBoardPostResponse {
-  totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
+  totalPages: number;
+  pageable: PageableObject;
   size: number;
   content: BoardPostResponse[];
   number: number;
   sort: SortObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
-  pageable: PageableObject;
   empty: boolean;
 }
 
 export interface PageCommentMemberResponse {
-  totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
+  totalPages: number;
+  pageable: PageableObject;
   size: number;
   content: CommentMemberResponse[];
   number: number;
   sort: SortObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
-  pageable: PageableObject;
   empty: boolean;
 }
 
 export interface PageEventBoardSummaryResponse {
-  totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
+  totalPages: number;
+  pageable: PageableObject;
   size: number;
   content: EventBoardSummaryResponse[];
   number: number;
   sort: SortObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
-  pageable: PageableObject;
   empty: boolean;
 }
 
 export interface PageExpenseReportResponse {
-  totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
+  totalPages: number;
+  pageable: PageableObject;
   size: number;
   content: ExpenseReportResponse[];
   number: number;
   sort: SortObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
-  pageable: PageableObject;
   empty: boolean;
 }
 
 export interface PageHospitalResponse {
-  totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
+  totalPages: number;
+  pageable: PageableObject;
   size: number;
   content: HospitalResponse[];
   number: number;
   sort: SortObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
-  pageable: PageableObject;
   empty: boolean;
 }
 
 export interface PageMemberResponse {
-  totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
+  totalPages: number;
+  pageable: PageableObject;
   size: number;
   content: MemberResponse[];
   number: number;
   sort: SortObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
-  pageable: PageableObject;
   empty: boolean;
 }
 
 export interface PagePartnerResponse {
-  totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
+  totalPages: number;
+  pageable: PageableObject;
   size: number;
   content: PartnerResponse[];
   number: number;
   sort: SortObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
-  pageable: PageableObject;
   empty: boolean;
 }
 
 export interface PagePerformanceStatsResponse {
-  totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
+  totalPages: number;
+  pageable: PageableObject;
   size: number;
   content: PerformanceStatsResponse[];
   number: number;
   sort: SortObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
-  pageable: PageableObject;
   empty: boolean;
 }
 
 export interface PagePrescriptionPartnerResponse {
-  totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
+  totalPages: number;
+  pageable: PageableObject;
   size: number;
   content: PrescriptionPartnerResponse[];
   number: number;
   sort: SortObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
-  pageable: PageableObject;
   empty: boolean;
 }
 
 export interface PagePrescriptionResponse {
-  totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
+  totalPages: number;
+  pageable: PageableObject;
   size: number;
   content: PrescriptionResponse[];
   number: number;
   sort: SortObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
-  pageable: PageableObject;
   empty: boolean;
 }
 
 export interface PageProductSummaryResponse {
-  totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
+  totalPages: number;
+  pageable: PageableObject;
   size: number;
   content: ProductSummaryResponse[];
   number: number;
   sort: SortObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
-  pageable: PageableObject;
   empty: boolean;
 }
 
 export interface PageSalesAgencyProductApplicantResponse {
-  totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
+  totalPages: number;
+  pageable: PageableObject;
   size: number;
   content: SalesAgencyProductApplicantResponse[];
   number: number;
   sort: SortObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
-  pageable: PageableObject;
   empty: boolean;
 }
 
 export interface PageSalesAgencyProductSummaryResponse {
-  totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
+  totalPages: number;
+  pageable: PageableObject;
   size: number;
   content: SalesAgencyProductSummaryResponse[];
   number: number;
   sort: SortObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
-  pageable: PageableObject;
   empty: boolean;
 }
 
 export interface PageSettlementPartnerResponse {
-  totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
+  totalPages: number;
+  pageable: PageableObject;
   size: number;
   content: SettlementPartnerResponse[];
   number: number;
   sort: SortObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
-  pageable: PageableObject;
   empty: boolean;
 }
 
 export interface PageSettlementResponse {
-  totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
+  totalPages: number;
+  pageable: PageableObject;
   size: number;
   content: SettlementResponse[];
   number: number;
   sort: SortObject;
+  first: boolean;
+  last: boolean;
   numberOfElements: number;
-  pageable: PageableObject;
   empty: boolean;
 }
 
 export interface PageableObject {
+  pageNumber: number;
+  pageSize: number;
   offset: number;
   sort: SortObject;
   paged: boolean;
   unpaged: boolean;
-  pageSize: number;
-  pageNumber: number;
 }
 
 export interface PartnerContractDetailsResponse {
@@ -773,6 +832,7 @@ export interface PartnerContractUpdateRequest {
 }
 
 export interface PartnerCreateRequest {
+  drugCompanyId: number;
   userId: string;
   drugCompany: string;
   companyName: string;
@@ -789,7 +849,7 @@ export interface PartnerCreateRequest {
 
 export interface PartnerResponse {
   id: number;
-  drugCompany: string;
+  drugCompanyName: string;
   companyName: string;
   contractType: 'CONTRACT' | 'NON_CONTRACT';
   institutionCode: string;
@@ -804,7 +864,8 @@ export interface PartnerResponse {
 }
 
 export interface PartnerUpdateRequest {
-  drugCompany: string | null;
+  drugCompanyId: number | null;
+  drugCompanyName: string | null;
   companyName: string | null;
   contractType: ('CONTRACT' | 'NON_CONTRACT') | null;
   institutionCode: string | null;
@@ -823,7 +884,7 @@ export interface PerformanceStatsResponse {
   dealerName: string | null;
   institutionCode: string | null;
   institutionName: string | null;
-  settlementMonth: number;
+  settlementMonth: string;
   prescriptionAmount: number;
   totalAmount: number;
   feeAmount: number;
@@ -832,6 +893,7 @@ export interface PerformanceStatsResponse {
 export interface PrescriptionCreateRequest {
   dealerId: number;
   partnerId: number;
+  drugCompanyIds: number[] | null;
   prescriptionMonth: DateTimeString;
   settlementMonth: DateTimeString;
 }
@@ -885,6 +947,7 @@ export interface PrescriptionResponse {
   id: number;
   dealerId: number;
   userId: string;
+  drugCompanyName: string;
   companyName: string;
   dealerName: string;
   prescriptionMonth: string;
@@ -892,6 +955,14 @@ export interface PrescriptionResponse {
   submittedAt: string;
   status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
   checkedAt: string | null;
+  type: string;
+}
+
+export interface PrescriptionZipUploadResult {
+  success: boolean;
+  errors: FileValidationErrorDto[];
+  createdPrescriptionPartnerCount: number;
+  createdEdiFileCount: number;
 }
 
 export interface ProductBriefingMultiCreateRequest {
@@ -1124,7 +1195,7 @@ export interface SampleProvideReportDetailResponse {
   provideCount: number;
   institutionName: string;
   institutionCode: string;
-  providedAt: string;
+  providedAt: DateString;
   attachedFiles: AttachedFileResponse[];
   status: 'PENDING' | 'COMPLETED';
 }
@@ -1167,7 +1238,8 @@ export interface SettlementPartnerResponse {
 
 export interface SettlementResponse {
   id: number;
-  settlementMonth: number;
+  settlementMonth: string;
+  drugCompanyName: string;
   dealerId: number;
   dealerName: string;
   companyName: string | null;
@@ -1179,8 +1251,8 @@ export interface SettlementResponse {
 }
 
 export interface SortObject {
-  empty: boolean;
   sorted: boolean;
+  empty: boolean;
   unsorted: boolean;
 }
 
@@ -1315,10 +1387,17 @@ export async function updateBoardPost(
     newFiles?: File[];
   },
 ): Promise<string> {
+  const form = new FormData();
+  form.append('updateRequest', new Blob([JSON.stringify(data.updateRequest)], { type: 'application/json' }));
+  if (data.newFiles !== undefined) {
+    for (const v of data.newFiles) {
+      form.append('newFiles', v);
+    }
+  }
   const response = await axios.request<string>({
     method: 'PUT',
     url: `/v1/boards/${id}`,
-    data,
+    data: form,
   });
   return response.data;
 }
@@ -1367,6 +1446,17 @@ export async function uploadSettlementExcel(data: { file: File }): Promise<void>
     method: 'POST',
     url: '/v1/settlements/upload',
     data,
+  });
+}
+
+/**
+ * 테스트 데이터 생성용
+ * POST /v1/settlements/generate-test-settlements
+ */
+export async function generateSettlements(): Promise<void> {
+  await axios.request({
+    method: 'POST',
+    url: '/v1/settlements/generate-test-settlements',
   });
 }
 
@@ -1479,10 +1569,21 @@ export async function createProductExtraInfo(data: {
   productExtraInfoCreateRequest: ProductExtraInfoRequest;
   files?: File[];
 }): Promise<void> {
+  const form = new FormData();
+  form.append('boardPostCreateRequest', new Blob([JSON.stringify(data.boardPostCreateRequest)], { type: 'application/json' }));
+  form.append(
+    'productExtraInfoCreateRequest',
+    new Blob([JSON.stringify(data.productExtraInfoCreateRequest)], { type: 'application/json' }),
+  );
+  if (data.files !== undefined) {
+    for (const v of data.files) {
+      form.append('files', v);
+    }
+  }
   await axios.request({
     method: 'POST',
     url: '/v1/products/extra-info',
-    data,
+    data: form,
   });
 }
 
@@ -1490,16 +1591,21 @@ export async function createProductExtraInfo(data: {
  * EDI ZIP 파일 업로드 (대량 업로드)
  * POST /v1/prescriptions/zip
  */
-export async function uploadEdiZip(data: { prescriptionMonth: string; settlementMonth: string; file: File }): Promise<void> {
+export async function uploadEdiZip(data: {
+  prescriptionMonth: string;
+  settlementMonth: string;
+  file: File;
+}): Promise<PrescriptionZipUploadResult> {
   const form = new FormData();
   form.append('prescriptionMonth', data.prescriptionMonth);
   form.append('settlementMonth', data.settlementMonth);
   form.append('file', data.file);
-  await axios.request({
+  const response = await axios.request<PrescriptionZipUploadResult>({
     method: 'POST',
     url: '/v1/prescriptions/zip',
     data: form,
   });
+  return response.data;
 }
 
 /**
@@ -1528,6 +1634,17 @@ export async function uploadPartnerEdiFiles(data: { request: PrescriptionCreateR
     method: 'POST',
     url: '/v1/prescriptions/partner-files',
     data: form,
+  });
+}
+
+/**
+ * 월 통계 캐시 삭제
+ * POST /v1/prescriptions/cache/evict
+ */
+export async function evict(): Promise<void> {
+  await axios.request({
+    method: 'POST',
+    url: '/v1/prescriptions/cache/evict',
   });
 }
 
@@ -1716,6 +1833,19 @@ export async function registerFcmToken(data: FcmTokenRequest): Promise<void> {
 }
 
 /**
+ * 비밀번호 확인 (현재 로그인 사용자)
+ * POST /v1/members/check-password
+ */
+export async function checkPassword(options?: { password?: string }): Promise<boolean> {
+  const response = await axios.request<boolean>({
+    method: 'POST',
+    url: '/v1/members/check-password',
+    params: options,
+  });
+  return response.data;
+}
+
+/**
  * 관리자 목록 조회
  * GET /v1/members/admins
  */
@@ -1738,6 +1868,30 @@ export async function signupByAdmin(data: AdminCreateRequest): Promise<void> {
     url: '/v1/members/admins',
     data,
   });
+}
+
+/**
+ * POST /v1/kmc/auth/request
+ */
+export async function createAuthRequest(data: KmcAuthRequest): Promise<KmcAuthResponse> {
+  const response = await axios.request<KmcAuthResponse>({
+    method: 'POST',
+    url: '/v1/kmc/auth/request',
+    data,
+  });
+  return response.data;
+}
+
+/**
+ * POST /v1/kmc/auth/callback
+ */
+export async function handleCallback(options?: { apiToken?: string; apiCertNum?: string }): Promise<KmcCallbackResult> {
+  const response = await axios.request<KmcCallbackResult>({
+    method: 'POST',
+    url: '/v1/kmc/auth/callback',
+    params: options,
+  });
+  return response.data;
 }
 
 /**
@@ -1868,6 +2022,31 @@ export async function createEventBoard(data: {
     method: 'POST',
     url: '/v1/events',
     data: form,
+  });
+  return response.data;
+}
+
+/**
+ * 내 딜러 목록 조회(현재 로그인 사용자 소속)
+ * GET /v1/dealers
+ */
+export async function listDealers(): Promise<DealerResponse[]> {
+  const response = await axios.request<DealerResponse[]>({
+    method: 'GET',
+    url: '/v1/dealers',
+  });
+  return response.data;
+}
+
+/**
+ * 딜러 생성(현재 로그인 사용자 소속)
+ * POST /v1/dealers
+ */
+export async function createDealer(data: DealerCreateRequest): Promise<DealerResponse> {
+  const response = await axios.request<DealerResponse>({
+    method: 'POST',
+    url: '/v1/dealers',
+    data,
   });
   return response.data;
 }
@@ -2028,12 +2207,17 @@ export async function verifyCode(
  * 휴대폰 인증번호 전송
  * POST /v1/auth/verification-code/send/{userId}
  */
-export async function sendVerificationCode(userId: string): Promise<string> {
-  const response = await axios.request<string>({
+export async function sendVerificationCode(
+  userId: string,
+  options?: {
+    phoneNumber?: string;
+  },
+): Promise<void> {
+  await axios.request({
     method: 'POST',
     url: `/v1/auth/verification-code/send/${userId}`,
+    params: options,
   });
-  return response.data;
 }
 
 /**
@@ -2113,6 +2297,17 @@ export async function updateSalesAgencyProductBoard(
 }
 
 /**
+ * 영업대행 상품 삭제
+ * DELETE /v1/sales-agency-products/{id}
+ */
+export async function deleteSalesAgencyProduct(id: number): Promise<void> {
+  await axios.request({
+    method: 'DELETE',
+    url: `/v1/sales-agency-products/${id}`,
+  });
+}
+
+/**
  * 영업대행 상품 신청자 비고 일괄 수정
  * PATCH /v1/sales-agency-products/applicants/notes
  */
@@ -2136,10 +2331,21 @@ export async function updateProductExtraInfo(
     newFiles?: File[];
   },
 ): Promise<void> {
+  const form = new FormData();
+  form.append('boardPostUpdateRequest', new Blob([JSON.stringify(data.boardPostUpdateRequest)], { type: 'application/json' }));
+  form.append(
+    'productExtraInfoCreateRequest',
+    new Blob([JSON.stringify(data.productExtraInfoCreateRequest)], { type: 'application/json' }),
+  );
+  if (data.newFiles !== undefined) {
+    for (const v of data.newFiles) {
+      form.append('newFiles', v);
+    }
+  }
   await axios.request({
     method: 'PATCH',
     url: `/v1/products/${id}/extra-info`,
-    data,
+    data: form,
   });
 }
 
@@ -2479,6 +2685,18 @@ export async function updateBanner(
 }
 
 /**
+ * 문자 전송 테스트
+ * GET /v1/test/sms
+ */
+export async function tetSms(options?: { userId?: string; phoneNumber?: string }): Promise<void> {
+  await axios.request({
+    method: 'GET',
+    url: '/v1/test/sms',
+    params: options,
+  });
+}
+
+/**
  * 앱 푸시 메시지 전송 테스트
  * GET /v1/test/push
  */
@@ -2558,7 +2776,6 @@ export async function getSettlements(options?: {
   dealerName?: string;
   dealerId?: number;
   companyName?: string;
-  drugCompany?: string;
   status?: 'REQUEST' | 'OBJECTION';
   startMonth?: number;
   endMonth?: number;
@@ -2569,6 +2786,18 @@ export async function getSettlements(options?: {
     method: 'GET',
     url: '/v1/settlements',
     params: options,
+  });
+  return response.data;
+}
+
+/**
+ * 정산내역 단건 조회
+ * GET /v1/settlements/{id}
+ */
+export async function getSettlement(id: number): Promise<SettlementResponse> {
+  const response = await axios.request<SettlementResponse>({
+    method: 'GET',
+    url: `/v1/settlements/${id}`,
   });
   return response.data;
 }
@@ -2599,7 +2828,7 @@ export async function getPerformanceStats(options?: {
  * 실적통계 Excel 다운로드 (현재 페이지 기준)
  * GET /v1/settlements/performance/excel-download
  */
-export async function downloadPerformanceExcel(options?: {
+export function getDownloadPerformanceExcel(options?: {
   drugCompany?: string;
   companyName?: string;
   dealerName?: string;
@@ -2608,14 +2837,13 @@ export async function downloadPerformanceExcel(options?: {
   endMonth?: number;
   page?: number;
   size?: number;
-}): Promise<Blob> {
-  const response = await axios.request<Blob>({
-    method: 'GET',
-    url: '/v1/settlements/performance/excel-download',
-    params: options,
-    responseType: 'blob',
-  });
-  return response.data;
+}): string {
+  const baseUrl = '/v1/settlements/performance/excel-download';
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
 }
 
 /**
@@ -2654,45 +2882,42 @@ export async function getSettlementPartnerProducts(settlementPartnerId: number):
  * 정산상세내역 (거래처별 합계) Excel 다운로드 (현재 페이지 기준)
  * GET /v1/settlements/partners/excel-download
  */
-export async function downloadSettlementPartnerSummaryExcel(options?: {
+export function getDownloadSettlementPartnerSummaryExcel(options?: {
   settlementId?: number;
   institutionName?: string;
   businessNumber?: string;
   institutionCode?: string;
   page?: number;
   size?: number;
-}): Promise<Blob> {
-  const response = await axios.request<Blob>({
-    method: 'GET',
-    url: '/v1/settlements/partners/excel-download',
-    params: options,
-    responseType: 'blob',
-  });
-  return response.data;
+}): string {
+  const baseUrl = '/v1/settlements/partners/excel-download';
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
 }
 
 /**
  * 정산내역 목록 Excel 다운로드 (현재 페이지 기준)
  * GET /v1/settlements/excel-download
  */
-export async function downloadSettlementListExcel(options?: {
+export function getDownloadSettlementListExcel(options?: {
   dealerName?: string;
   dealerId?: number;
   companyName?: string;
-  drugCompany?: string;
   status?: 'REQUEST' | 'OBJECTION';
   startMonth?: number;
   endMonth?: number;
   page?: number;
   size?: number;
-}): Promise<Blob> {
-  const response = await axios.request<Blob>({
-    method: 'GET',
-    url: '/v1/settlements/excel-download',
-    params: options,
-    responseType: 'blob',
-  });
-  return response.data;
+}): string {
+  const baseUrl = '/v1/settlements/excel-download';
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
 }
 
 /**
@@ -2720,7 +2945,7 @@ export async function getProductApplicants(
  * 영업대행 상품 신청자 목록 Excel 다운로드 (현재 페이지 기준)
  * GET /v1/sales-agency-products/{id}/applicants/excel-download
  */
-export async function downloadProductApplicantsExcel(
+export function getDownloadProductApplicantsExcel(
   id: number,
   options?: {
     userId?: string;
@@ -2728,35 +2953,33 @@ export async function downloadProductApplicantsExcel(
     page?: number;
     size?: number;
   },
-): Promise<Blob> {
-  const response = await axios.request<Blob>({
-    method: 'GET',
-    url: `/v1/sales-agency-products/${id}/applicants/excel-download`,
-    params: options,
-    responseType: 'blob',
-  });
-  return response.data;
+): string {
+  const baseUrl = `/v1/sales-agency-products/${id}/applicants/excel-download`;
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
 }
 
 /**
  * 영업대행 상품 목록 Excel 다운로드 (현재 페이지 기준)
  * GET /v1/sales-agency-products/excel-download
  */
-export async function downloadSalesAgencyProductsExcel(options?: {
+export function getDownloadSalesAgencyProductsExcel(options?: {
   productName?: string;
   clientName?: string;
   startAt?: DateString;
   endAt?: DateString;
   page?: number;
   size?: number;
-}): Promise<Blob> {
-  const response = await axios.request<Blob>({
-    method: 'GET',
-    url: '/v1/sales-agency-products/excel-download',
-    params: options,
-    responseType: 'blob',
-  });
-  return response.data;
+}): string {
+  const baseUrl = '/v1/sales-agency-products/excel-download';
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
 }
 
 /**
@@ -2801,7 +3024,7 @@ export async function getProductDetails(id: number): Promise<ProductDetailsRespo
  * 제품 정보 목록 Excel 다운로드 (현재 페이지 기준)
  * GET /v1/products/excel-download
  */
-export async function downloadProductSummariesExcel(options?: {
+export function getDownloadProductSummariesExcel(options?: {
   productName?: string;
   composition?: string;
   productCode?: string;
@@ -2814,14 +3037,13 @@ export async function downloadProductSummariesExcel(options?: {
   sortType?: 'LATEST' | 'PRICE_ASC' | 'PRICE_DESC' | 'FEE_RATE_ASC' | 'FEE_RATE_DESC';
   page?: number;
   size?: number;
-}): Promise<Blob> {
-  const response = await axios.request<Blob>({
-    method: 'GET',
-    url: '/v1/products/excel-download',
-    params: options,
-    responseType: 'blob',
-  });
-  return response.data;
+}): string {
+  const baseUrl = '/v1/products/excel-download';
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
 }
 
 /**
@@ -2930,6 +3152,44 @@ export async function downloadZippedEdiFiles(prescriptionId: number): Promise<vo
 }
 
 /**
+ * 요청 날짜가 속한 월의 수수료 합계 (submittedDate 기준)
+ * GET /v1/prescriptions/monthly-fee
+ */
+export async function monthlyFee(options?: { referenceDate?: number }): Promise<MonthlyFeeAmountResponse> {
+  const response = await axios.request<MonthlyFeeAmountResponse>({
+    method: 'GET',
+    url: '/v1/prescriptions/monthly-fee',
+    params: options,
+  });
+  return response.data;
+}
+
+/**
+ * 요청 날짜가 속한 월의 처방전 수 (submittedDate 기준)
+ * GET /v1/prescriptions/monthly-count
+ */
+export async function monthlyCount(options?: { referenceDate?: number }): Promise<MonthlyPrescriptionCountResponse> {
+  const response = await axios.request<MonthlyPrescriptionCountResponse>({
+    method: 'GET',
+    url: '/v1/prescriptions/monthly-count',
+    params: options,
+  });
+  return response.data;
+}
+
+/**
+ * member.userId로 소유 파트너 ID 목록 조회
+ * GET /v1/partners/ids/{userId}
+ */
+export async function getPartnerIdsByUserId(userId: string): Promise<number[]> {
+  const response = await axios.request<number[]>({
+    method: 'GET',
+    url: `/v1/partners/ids/${userId}`,
+  });
+  return response.data;
+}
+
+/**
  * 제약사명 목록 조회
  * GET /v1/partners/drug-companies
  */
@@ -2981,7 +3241,7 @@ export async function isUserIdAvailable(userId: string): Promise<boolean> {
  * 회원 목록 Excel 다운로드 (현재 페이지 기준)
  * GET /v1/members/excel-download
  */
-export async function downloadUserMembersExcel(options?: {
+export function getDownloadUserMembersExcel(options?: {
   memberId?: number;
   userId?: string;
   name?: string;
@@ -2994,14 +3254,13 @@ export async function downloadUserMembersExcel(options?: {
   endAt?: DateString;
   page?: number;
   size?: number;
-}): Promise<Blob> {
-  const response = await axios.request<Blob>({
-    method: 'GET',
-    url: '/v1/members/excel-download',
-    params: options,
-    responseType: 'blob',
-  });
-  return response.data;
+}): string {
+  const baseUrl = '/v1/members/excel-download';
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
 }
 
 /**
@@ -3050,6 +3309,19 @@ export async function getHospitals(options?: {
 }
 
 /**
+ * 요청 기준일 포함 최근 한 달 사이 오픈한 병원 수
+ * GET /v1/hospitals/opened/count
+ */
+export async function getRecentlyOpenedCount(options?: { referenceDate?: DateString }): Promise<number> {
+  const response = await axios.request<number>({
+    method: 'GET',
+    url: '/v1/hospitals/opened/count',
+    params: options,
+  });
+  return response.data;
+}
+
+/**
  * 지출보고 목록 조회 (페이징)
  * GET /v1/expense-reports
  */
@@ -3073,10 +3345,22 @@ export async function getExpenseReportList(options?: {
 }
 
 /**
+ * ExpenseReport 파일 일괄 다운로드
+ * GET /v1/expense-reports/files/download
+ */
+export async function downloadExpenseReportFiles(options?: { ids?: number[] }): Promise<void> {
+  await axios.request({
+    method: 'GET',
+    url: '/v1/expense-reports/files/download',
+    params: options,
+  });
+}
+
+/**
  * 지출보고 목록 Excel 다운로드 (현재 페이지 기준)
  * GET /v1/expense-reports/excel-download
  */
-export async function downloadExpenseReportListExcel(options?: {
+export function getDownloadExpenseReportListExcel(options?: {
   status?: 'PENDING' | 'COMPLETED';
   userId?: string;
   productName?: string;
@@ -3086,12 +3370,23 @@ export async function downloadExpenseReportListExcel(options?: {
   eventDateTo?: DateTimeString;
   page?: number;
   size?: number;
-}): Promise<Blob> {
-  const response = await axios.request<Blob>({
+}): string {
+  const baseUrl = '/v1/expense-reports/excel-download';
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
+}
+
+/**
+ * member.userId로 owner dealer.id 조회
+ * GET /v1/dealers/id/{userId}
+ */
+export async function getDealerIdByUserId(userId: string): Promise<number> {
+  const response = await axios.request<number>({
     method: 'GET',
-    url: '/v1/expense-reports/excel-download',
-    params: options,
-    responseType: 'blob',
+    url: `/v1/dealers/id/${userId}`,
   });
   return response.data;
 }
@@ -3163,6 +3458,17 @@ export async function whoAmI(): Promise<MemberDetailsResponse> {
     url: '/v1/auth/me',
   });
   return response.data;
+}
+
+/**
+ * 로그아웃
+ * GET /v1/auth/logout
+ */
+export async function logout(): Promise<void> {
+  await axios.request({
+    method: 'GET',
+    url: '/v1/auth/logout',
+  });
 }
 
 /**

@@ -1,104 +1,79 @@
-import { Create, Search } from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  Chip,
-  Fab,
-  InputAdornment,
-  Pagination,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
-  Typography,
-} from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Search } from '@mui/icons-material';
+import { Box, Fab, InputAdornment, Stack, Table, TableBody, TableHead, TextField, Typography } from '@mui/material';
+import { useFormik } from 'formik';
+import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router';
-
-const TabButton = styled(Button)({
-  padding: '12px 24px',
-  borderRadius: '4px 4px 0 0',
-  textTransform: 'none',
-  fontSize: '14px',
-  fontWeight: 500,
-  border: 'none',
-  '&.selected': {
-    backgroundColor: '#6B3AA0',
-    color: '#fff',
-    borderBottom: 'none',
-    '&:hover': {
-      backgroundColor: '#6B3AA0',
-    },
-  },
-  '&:not(.selected)': {
-    backgroundColor: '#f8f9fa',
-    color: '#666',
-    borderBottom: '1px solid #e0e0e0',
-    '&:hover': {
-      backgroundColor: '#e9ecef',
-    },
-  },
-});
-
-const StyledTableCell = styled(TableCell)({
-  padding: '16px',
-  borderBottom: '1px solid #f0f0f0',
-  fontSize: '14px',
-});
-
-const StyledTableHead = styled(TableHead)({
-  backgroundColor: '#f8f9fa',
-  '& .MuiTableCell-head': {
-    fontWeight: 600,
-    color: '#333',
-    borderBottom: '1px solid #e0e0e0',
-  },
-});
-
-const mockInquiries = [
-  {
-    id: 1,
-    title: '커뮤니티에서 활동 중에 답글처리의 안내요',
-    createdAt: '2025-05-08 10:36',
-    status: '답변 대기중',
-    statusColor: '#f44336',
-  },
-  {
-    id: 2,
-    title: 'MR-CSO 매칭 기능문의',
-    createdAt: '2025-05-08 10:36',
-    status: '답변 완료',
-    statusColor: '#4caf50',
-  },
-  {
-    id: 3,
-    title: 'CSO Link beta 서비스 요청',
-    createdAt: '2025-05-08 10:36',
-    status: '답변 완료',
-    statusColor: '#4caf50',
-  },
-];
+import { type BoardPostResponse, getBoards } from '../backend';
+import { InquiryStatusChip } from '../components/InquiryStatusChip.tsx';
+import { MedipandaPagination } from '../components/MedipandaPagination.tsx';
+import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '../components/MedipandaTab.tsx';
+import { MedipandaTableCell, MedipandaTableRow } from '../components/MedipandaTable.tsx';
+import { colors, typography } from '../globalStyles.ts';
+import { formatYyyyMmDdHhMm } from '../utils/dateFormat.ts';
+import { mockBoolean } from '../utils/mock.ts';
+import { type Sequenced, withSequence } from '../utils/withSequence.ts';
 
 export default function InquiryList() {
-  return (
-    <Box sx={{ position: 'relative' }}>
-      <Typography variant='h5' sx={{ mb: 4, fontWeight: 'bold', color: '#333' }}>
-        1:1 문의내역
-      </Typography>
+  const [data, setData] = useState<Sequenced<BoardPostResponse>[]>([]);
 
-      <Box sx={{ mb: 3 }}>
-        <TabButton className='selected'>문의내역</TabButton>
+  const formik = useFormik({
+    initialValues: {
+      searchKeyword: '',
+      pageIndex: 0,
+      pageSize: 10,
+      expandedId: -1,
+    },
+    onSubmit: async () => {
+      if (formik.values.pageIndex !== 0) {
+        await formik.setFieldValue('pageIndex', 0);
+      } else {
+        await fetchData();
+      }
+    },
+  });
+
+  const fetchData = async () => {
+    const response = await getBoards({
+      boardType: 'INQUIRY',
+      boardTitle: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+      page: formik.values.pageIndex,
+      size: formik.values.pageSize,
+    });
+
+    setData(withSequence(response).content);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [formik.values.pageIndex, formik.values.pageSize]);
+
+  return (
+    <Stack alignItems='center'>
+      <Box sx={{ width: '100%' }}>
+        <Typography
+          sx={{
+            ...typography.heading3M,
+            color: colors.gray80,
+            mb: '30px',
+          }}
+        >
+          1:1 문의내역
+        </Typography>
       </Box>
 
-      <Box sx={{ mb: 4, display: 'flex', justifyContent: 'flex-end' }}>
+      <MedipandaTabs value={0} sx={{ width: '100%' }}>
+        <MedipandaTab label='문의내역' />
+        <MedipandaTabElse />
+      </MedipandaTabs>
+
+      <Stack direction='row' component='form' onSubmit={formik.handleSubmit} sx={{ width: '100%', marginTop: '40px' }}>
         <TextField
-          placeholder='문의 내역을 검색해 보세요'
           size='small'
-          sx={{ width: '300px' }}
+          name='searchKeyword'
+          value={formik.values.searchKeyword}
+          onChange={formik.handleChange}
+          placeholder='문의 내역을 검색해 보세요'
+          sx={{ width: '350px', marginLeft: 'auto' }}
           InputProps={{
             endAdornment: (
               <InputAdornment position='end'>
@@ -107,99 +82,65 @@ export default function InquiryList() {
             ),
           }}
         />
-      </Box>
+      </Stack>
 
-      <TableContainer component={Paper} sx={{ boxShadow: 'none', border: '1px solid #e0e0e0' }}>
-        <Table>
-          <StyledTableHead>
-            <TableRow>
-              <StyledTableCell align='center' sx={{ width: '80px' }}>
-                No
-              </StyledTableCell>
-              <StyledTableCell sx={{ width: '60%' }}>제목</StyledTableCell>
-              <StyledTableCell align='center' sx={{ width: '140px' }}>
-                문의일
-              </StyledTableCell>
-              <StyledTableCell align='center' sx={{ width: '140px' }}>
-                답변상태
-              </StyledTableCell>
-            </TableRow>
-          </StyledTableHead>
-          <TableBody>
-            {mockInquiries.map((inquiry, index) => (
-              <TableRow key={inquiry.id} sx={{ '&:hover': { backgroundColor: '#f9f9f9' } }}>
-                <StyledTableCell align='center'>{mockInquiries.length - index}</StyledTableCell>
-                <StyledTableCell>
-                  <Typography
-                    component={RouterLink}
-                    to={`/customer-service/inquiry/${inquiry.id}`}
-                    sx={{
-                      textDecoration: 'none',
-                      color: '#333',
-                      '&:hover': {
-                        textDecoration: 'underline',
-                        color: '#6B3AA0',
-                      },
-                    }}
-                  >
-                    {inquiry.title}
-                  </Typography>
-                </StyledTableCell>
-                <StyledTableCell align='center'>{inquiry.createdAt}</StyledTableCell>
-                <StyledTableCell align='center'>
-                  <Chip
-                    label={inquiry.status}
-                    size='small'
-                    sx={{
-                      backgroundColor: inquiry.statusColor,
-                      color: '#fff',
-                      fontSize: '12px',
-                      fontWeight: 500,
-                    }}
-                  />
-                </StyledTableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Table sx={{ marginTop: '10px' }}>
+        <TableHead>
+          <MedipandaTableRow>
+            <MedipandaTableCell sx={{ width: '80px' }}>No</MedipandaTableCell>
+            <MedipandaTableCell sx={{ width: '472px' }}>제목</MedipandaTableCell>
+            <MedipandaTableCell sx={{ width: '130px' }}>문의일</MedipandaTableCell>
+            <MedipandaTableCell sx={{ width: '100px' }}>답변상태</MedipandaTableCell>
+          </MedipandaTableRow>
+        </TableHead>
+        <TableBody>
+          {data.map(inquiry => (
+            <MedipandaTableRow key={inquiry.id}>
+              <MedipandaTableCell>{`${inquiry.sequence}`}</MedipandaTableCell>
+              <MedipandaTableCell sx={{ textAlign: 'left' }}>{inquiry.title}</MedipandaTableCell>
+              <MedipandaTableCell>{formatYyyyMmDdHhMm(inquiry.createdAt)}</MedipandaTableCell>
+              <MedipandaTableCell>
+                <InquiryStatusChip responseStatus={mockBoolean()} />
+              </MedipandaTableCell>
+            </MedipandaTableRow>
+          ))}
+        </TableBody>
+      </Table>
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-        <Pagination
-          count={10}
-          page={1}
-          showFirstButton
-          showLastButton
-          sx={{
-            '& .MuiPaginationItem-root': {
-              fontSize: '14px',
-            },
-            '& .Mui-selected': {
-              backgroundColor: '#6B3AA0 !important',
-              color: '#fff',
-            },
-          }}
-        />
-      </Box>
+      <MedipandaPagination count={10} page={1} showFirstButton showLastButton sx={{ marginTop: '40px' }} />
 
       <Fab
         component={RouterLink}
         to='/customer-service/inquiry/new'
         sx={{
           position: 'fixed',
-          bottom: 80,
-          right: 80,
-          backgroundColor: '#1a237e',
-          color: '#fff',
-          width: 64,
-          height: 64,
+          right: '40px',
+          bottom: '160px',
+          width: '90px',
+          height: '90px',
+          backgroundColor: colors.navy,
           '&:hover': {
-            backgroundColor: '#0d47a1',
+            backgroundColor: colors.vividViolet,
           },
         }}
       >
-        <Create />
+        <img src='/assets/icons/icon-inquiry-new.svg' style={{ width: '54px', height: '54px' }} />
       </Fab>
-    </Box>
+
+      <Fab
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        sx={{
+          position: 'fixed',
+          right: '40px',
+          bottom: '60px',
+          width: '90px',
+          height: '90px',
+          border: `1px solid ${colors.navy}`,
+          backgroundColor: colors.white,
+        }}
+      >
+        <img src='/assets/icons/icon-top.svg' style={{ width: '54px', height: '54px' }} />
+      </Fab>
+    </Stack>
   );
 }

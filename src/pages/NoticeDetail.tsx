@@ -1,127 +1,137 @@
-import { GetApp } from '@mui/icons-material';
-import { Box, Button, Chip, Link, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { Link as RouterLink, useParams } from 'react-router';
-
-const ContentArea = styled(Box)({
-  backgroundColor: '#fff',
-  borderRadius: '8px',
-  padding: '32px',
-  border: '1px solid #e0e0e0',
-});
-
-const FileDownloadLink = styled(Link)({
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '4px',
-  color: '#6B3AA0',
-  textDecoration: 'underline',
-  fontSize: '14px',
-  cursor: 'pointer',
-  '&:hover': {
-    textDecoration: 'underline',
-  },
-});
+import { Box, Button, Link, Stack, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router';
+import { type BoardDetailsResponse, getBoardDetails } from '../backend';
+import { FixedLoader } from '../components/FixedLoader.tsx';
+import { colors, typography } from '../globalStyles';
+import { formatYyyyMmDd } from '../utils/dateFormat.ts';
 
 export default function NoticeDetail() {
-  const { id } = useParams();
+  const { id: paramId } = useParams();
+  const navigate = useNavigate();
+  const [data, setData] = useState<BoardDetailsResponse | null>(null);
 
-  const mockNotice = {
-    id: Number(id),
-    category: '동구바이오',
-    title: '[품질] 휴비스트제약- 품질 및 관리 품목 안내',
-    content: `품질 및 관리 품목 안내드립니다
+  const fetchData = async (id: number) => {
+    const response = await getBoardDetails(id);
 
-하기 품목과 간순니다.
-
-감사합니다.`,
-    createdAt: '25-04-01 10:36',
-    viewCount: 1250,
-    attachments: [
-      {
-        fileName: '엑셀파일.xls',
-        fileUrl: '/mock-excel-file.xls',
-      },
-    ],
+    setData(response);
   };
 
+  useEffect(() => {
+    const id = Number(paramId);
+    if (isNaN(id)) {
+      alert('잘못된 접근입니다.');
+      navigate('/customer-service/notice', { replace: true });
+      return;
+    }
+
+    fetchData(id);
+  }, [paramId]);
+
+  if (!data) {
+    return <FixedLoader />;
+  }
+
   return (
-    <Box>
-      <Typography variant='body2' sx={{ mb: 2, color: '#666' }}>
-        메디판다 공지
-      </Typography>
+    <Stack alignItems='center'>
+      <Box sx={{ width: '100%' }}>
+        <Typography
+          sx={{
+            ...typography.heading3M,
+            color: colors.gray80,
+            mb: '30px',
+          }}
+        >
+          공지사항
+        </Typography>
+      </Box>
 
-      <ContentArea>
-        <Box sx={{ mb: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-            <Chip
-              label={mockNotice.category}
-              size='small'
-              sx={{
-                backgroundColor: '#6B3AA0',
-                color: '#fff',
-                fontSize: '12px',
-                height: '24px',
+      <Stack
+        direction='row'
+        alignItems='center'
+        sx={{
+          width: '100%',
+          marginTop: '30px',
+        }}
+      >
+        <Typography
+          sx={{
+            ...typography.mediumTextB,
+            color: colors.gray50,
+            marginLeft: 'auto',
+          }}
+        >
+          {data.noticeProperties?.noticeType} 공지
+        </Typography>
+      </Stack>
+
+      <Stack
+        gap='5px'
+        sx={{
+          width: '100%',
+          padding: '20px',
+          marginTop: '20px',
+          borderTop: `1px solid ${colors.gray50}`,
+          boxSizing: 'border-box',
+        }}
+      >
+        <Typography sx={{ ...typography.normalTextB, color: colors.gray80 }}>{data.noticeProperties?.noticeType}</Typography>
+        <Typography sx={{ ...typography.heading4B, color: colors.gray80 }}>{data.title}</Typography>
+        <Typography sx={{ ...typography.smallTextR, color: colors.gray50 }}>
+          {formatYyyyMmDd(data.createdAt)} | 조회수 {data.viewsCount.toLocaleString()}
+        </Typography>
+      </Stack>
+
+      {data.attachments && data.attachments.length > 0 && (
+        <Stack
+          sx={{
+            width: '100%',
+            padding: '15px 20px',
+            backgroundColor: colors.gray30,
+            boxSizing: 'border-box',
+          }}
+        >
+          {data.attachments.map((file, index) => (
+            <Link
+              key={index}
+              component={RouterLink}
+              to={file.fileUrl}
+              target='_blank'
+              style={{
+                ...typography.largeTextR,
               }}
-            />
-            <Typography variant='h5' sx={{ fontWeight: 'bold', color: '#333' }}>
-              {mockNotice.title}
-            </Typography>
-          </Box>
+            >
+              {new URL(file.fileUrl).pathname.split('/').pop()}
+            </Link>
+          ))}
+        </Stack>
+      )}
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 3 }}>
-            <Typography variant='body2' sx={{ color: '#666' }}>
-              {mockNotice.createdAt}
-            </Typography>
-            <Typography variant='body2' sx={{ color: '#666' }}>
-              조회수 {mockNotice.viewCount.toLocaleString()}
-            </Typography>
-          </Box>
+      <Box
+        sx={{
+          width: '100%',
+          padding: '50px 20px',
+          boxSizing: 'border-box',
+        }}
+      >
+        {data.content}
+      </Box>
 
-          {mockNotice.attachments && mockNotice.attachments.length > 0 && (
-            <Box sx={{ mb: 3 }}>
-              {mockNotice.attachments.map((file, index) => (
-                <FileDownloadLink key={index} href={file.fileUrl} download>
-                  <GetApp sx={{ fontSize: '16px' }} />
-                  {file.fileName}
-                </FileDownloadLink>
-              ))}
-            </Box>
-          )}
-        </Box>
-
-        <Box sx={{ mb: 4, minHeight: '200px' }}>
-          <Typography
-            variant='body1'
-            sx={{
-              lineHeight: 1.8,
-              color: '#333',
-              whiteSpace: 'pre-line',
-            }}
-          >
-            {mockNotice.content}
-          </Typography>
-        </Box>
-
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Button
-            component={RouterLink}
-            to='/customer-service/notice'
-            variant='outlined'
-            sx={{
-              padding: '12px 32px',
-              borderColor: '#e0e0e0',
-              color: '#666',
-              '&:hover': {
-                borderColor: '#6B3AA0',
-                color: '#6B3AA0',
-              },
-            }}
-          >
-            목록
-          </Button>
-        </Box>
-      </ContentArea>
-    </Box>
+      <Box>
+        <Button
+          variant='outlined'
+          component={RouterLink}
+          to='/customer-service/notice'
+          sx={{
+            width: '160px',
+            height: '50px',
+            borderColor: colors.navy,
+            color: colors.navy,
+          }}
+        >
+          목록
+        </Button>
+      </Box>
+    </Stack>
   );
 }

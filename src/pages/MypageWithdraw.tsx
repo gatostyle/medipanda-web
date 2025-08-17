@@ -1,150 +1,188 @@
-import { Box, Button, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import {
+  Alert,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Snackbar,
+  Stack,
+  Typography,
+} from '@mui/material';
+import { useState } from 'react';
 import { Link as RouterLink } from 'react-router';
-
-const CenteredContainer = styled(Box)({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  textAlign: 'center',
-  maxWidth: '600px',
-  margin: '0 auto',
-  padding: '32px 24px',
-});
-
-const PandaIcon = styled(Box)({
-  width: '80px',
-  height: '80px',
-  borderRadius: '50%',
-  backgroundColor: '#f0f0f0',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  marginBottom: '24px',
-  fontSize: '40px',
-});
-
-const BenefitSection = styled(Box)({
-  width: '100%',
-  backgroundColor: '#f8f9fa',
-  borderRadius: '12px',
-  padding: '32px',
-  marginBottom: '32px',
-  textAlign: 'left',
-});
-
-const BenefitItem = styled(Box)({
-  marginBottom: '24px',
-  '&:last-child': {
-    marginBottom: 0,
-  },
-});
-
-const BenefitNumber = styled(Typography)({
-  color: '#6B3AA0',
-  fontWeight: 'bold',
-  fontSize: '18px',
-  marginBottom: '8px',
-});
-
-const WarningBox = styled(Box)({
-  backgroundColor: '#fff3cd',
-  border: '1px solid #ffeaa7',
-  borderRadius: '8px',
-  padding: '16px',
-  marginBottom: '32px',
-  textAlign: 'center',
-});
-
-const WithdrawButton = styled(Button)({
-  backgroundColor: '#999',
-  color: '#fff',
-  padding: '12px 32px',
-  textTransform: 'none',
-  fontWeight: 500,
-  '&:hover': {
-    backgroundColor: '#777',
-  },
-});
-
-const CancelButton = styled(Button)({
-  backgroundColor: '#6B3AA0',
-  color: '#fff',
-  padding: '12px 32px',
-  textTransform: 'none',
-  fontWeight: 500,
-  '&:hover': {
-    backgroundColor: '#5a2d8a',
-  },
-});
-
-const benefits = [
-  {
-    title: '편리한 정산업무',
-    description: '매번 엑셀작업으로 정산을 하셨다면,\n전산화된 데이터로 정산관리가 가능해집니다.',
-  },
-  {
-    title: 'CSO-MR의 커뮤니티',
-    description: '제약영업에 대한 고민거리를 동료들과나누며\n영업네트워킹 및 정보 공유가 가능합니다.',
-  },
-  {
-    title: 'CSO활동에 필요한 정보',
-    description:
-      '내가 거래하는 제약사의 이슈사항을 바로 바로 알림을\n받을 수 있습니다.\n\nCSO 시작부터 진행하면서 필요한 정보들을 무료로\n제공 받으실 수 있습니다.',
-  },
-  {
-    title: '특별한 혜택',
-    description: '와인, 레스토랑 등 다양한 제휴 할인 혜택을\n받으실 수 있습니다.',
-  },
-];
+import { colors, typography } from '../globalStyles.ts';
 
 export default function MypageWithdraw() {
+  const [confirmDialog, setConfirmDialog] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+
+  const showSnackbar = (message, severity = 'success') => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  const handleWithdraw = () => {
+    setConfirmDialog(false);
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      showSnackbar('회원 탈퇴가 완료되었습니다.', 'success');
+    }, 2000);
+  };
+
   return (
-    <CenteredContainer>
-      <PandaIcon>🐼</PandaIcon>
-
-      <Typography variant='h4' sx={{ fontWeight: 'bold', color: '#333', mb: 2 }}>
-        정말로
-      </Typography>
-      <Typography variant='h5' sx={{ fontWeight: 'bold', color: '#333', mb: 4 }}>
-        회원을 탈퇴하시겠어요?
-      </Typography>
-
-      <BenefitSection>
-        {benefits.map((benefit, index) => (
-          <BenefitItem key={index}>
-            <BenefitNumber>
-              {index + 1}. {benefit.title}
-            </BenefitNumber>
+    <>
+      <Stack alignItems='center'>
+        <Stack direction='row'>
+          <img src='/assets/crying-panda.svg' />
+          <Stack
+            sx={{
+              marginLeft: '30px',
+            }}
+          >
             <Typography
-              variant='body2'
               sx={{
-                color: '#666',
-                lineHeight: 1.6,
-                whiteSpace: 'pre-line',
+                ...typography.heading2B,
               }}
             >
-              {benefit.description}
+              정말로
             </Typography>
-          </BenefitItem>
-        ))}
-      </BenefitSection>
+            <Typography
+              sx={{
+                ...typography.heading2B,
+              }}
+            >
+              회원을 탈퇴하시겠어요?
+            </Typography>
+          </Stack>
+        </Stack>
 
-      <WarningBox>
-        <Typography variant='h6' sx={{ fontWeight: 'bold', color: '#d32f2f', mb: 2 }}>
-          위 혜택들이 사라져요.
-        </Typography>
-        <Typography variant='body2' sx={{ color: '#d32f2f' }}>
+        <Stack
+          alignItems='center'
+          gap='30px'
+          sx={{
+            width: '500px',
+            padding: '30px 105px',
+            border: `1px solid ${colors.gray30}`,
+            marginTop: '30px',
+            borderRadius: '5px',
+            backgroundColor: '#f7f7f7',
+          }}
+        >
+          <Stack gap='8px'>
+            <Typography sx={{ ...typography.largeTextB, color: colors.gray80, textAlign: 'center' }}>1. 편리한 정산업무</Typography>
+            <Typography sx={{ ...typography.mediumTextR, color: colors.gray80, textAlign: 'center' }}>
+              매번 엑셀작업으로 정산을 하셨다면,
+              <br />
+              전산화된 데이터로 정산관리가 가능해집니다.
+            </Typography>
+          </Stack>
+          <Stack gap='8px'>
+            <Typography sx={{ ...typography.largeTextB, color: colors.gray80, textAlign: 'center' }}>2. CSO-MR의 커뮤니티</Typography>
+            <Typography sx={{ ...typography.mediumTextR, color: colors.gray80, textAlign: 'center' }}>
+              제약영업에 대한 고민거리를 동료들과나누며
+              <br />
+              영업네트워킹 및 정보 공유가 가능합니다.
+            </Typography>
+          </Stack>
+          <Stack gap='8px'>
+            <Typography sx={{ ...typography.largeTextB, color: colors.gray80, textAlign: 'center' }}>3. CSO활동에 필요한 정보</Typography>
+            <Typography sx={{ ...typography.mediumTextR, color: colors.gray80, textAlign: 'center' }}>
+              내가 거래하는 제약사의 이슈사항을 바로 바로 알림을 <br />
+              받을 수 있습니다. <br />
+              CSO 시작부터 진행하면서 필요한 정보들을 무료로 <br />
+              제공 받으실 수 있습니다.
+            </Typography>
+          </Stack>
+          <Stack gap='8px'>
+            <Typography sx={{ ...typography.largeTextB, color: colors.gray80, textAlign: 'center' }}>4. 특별한 혜택</Typography>
+            <Typography sx={{ ...typography.mediumTextR, color: colors.gray80, textAlign: 'center' }}>
+              와인, 레스토랑 등 다양한 제휴 할인 혜택을 <br />
+              받으실 수 있습니다.
+            </Typography>
+          </Stack>
+        </Stack>
+
+        <Typography sx={{ ...typography.heading2B, color: colors.gray80, marginTop: '30px' }}>위 혜택들이 사라져요.</Typography>
+        <Typography sx={{ ...typography.largeTextB, color: colors.gray80, marginTop: '10px' }}>
           탈퇴할 경우, 동일한 아이디로는 재가입이 불가해요.
         </Typography>
-      </WarningBox>
 
-      <Box sx={{ display: 'flex', gap: 2 }}>
-        <WithdrawButton>탈퇴하기</WithdrawButton>
-        <CancelButton component={RouterLink} to='/mypage/info'>
-          취소하기
-        </CancelButton>
-      </Box>
-    </CenteredContainer>
+        <Stack
+          direction='row'
+          gap='10px'
+          sx={{
+            width: '330px',
+            marginTop: '60px',
+          }}
+        >
+          <Button
+            fullWidth
+            variant='outlined'
+            sx={{
+              height: '49px',
+              backgroundColor: colors.gray50,
+              color: colors.white,
+            }}
+            onClick={() => setConfirmDialog(true)}
+            disabled={loading}
+          >
+            {loading ? <CircularProgress size={20} color='inherit' sx={{ mr: 1 }} /> : null}
+            탈퇴하기
+          </Button>
+          <Button
+            fullWidth
+            variant='contained'
+            sx={{
+              height: '49px',
+              backgroundColor: colors.vividViolet,
+            }}
+            component={RouterLink}
+            to='/mypage/info'
+          >
+            취소하기
+          </Button>
+        </Stack>
+      </Stack>
+
+      {/* Confirmation Dialog */}
+      <Dialog open={confirmDialog} onClose={() => setConfirmDialog(false)} maxWidth='sm' fullWidth>
+        <DialogTitle sx={{ color: '#d32f2f', fontWeight: 'bold' }}>회원 탈퇴 확인</DialogTitle>
+        <DialogContent>
+          <Typography sx={{ mb: 2 }}>정말로 회원을 탈퇴하시겠습니까?</Typography>
+          <Typography sx={{ color: '#666', mb: 1 }}>• 탈퇴 시 모든 데이터가 삭제됩니다</Typography>
+          <Typography sx={{ color: '#666', mb: 1 }}>• 동일한 아이디로 재가입이 불가능합니다</Typography>
+          <Typography sx={{ color: '#666' }}>• 탈퇴 후 복구가 불가능합니다</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmDialog(false)}>취소</Button>
+          <Button
+            variant='contained'
+            onClick={handleWithdraw}
+            sx={{ backgroundColor: '#d32f2f', '&:hover': { backgroundColor: '#b71c1c' } }}
+          >
+            탈퇴하기
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </>
   );
 }
