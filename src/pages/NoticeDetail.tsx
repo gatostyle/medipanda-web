@@ -3,18 +3,18 @@ import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router';
 import { type BoardDetailsResponse, getBoardDetails } from '../backend';
 import { FixedLoader } from '../components/FixedLoader.tsx';
-import { colors, typography } from '../globalStyles';
+import { colors, typography } from '../custom/globalStyles.ts';
 import { formatYyyyMmDd } from '../utils/dateFormat.ts';
 
 export default function NoticeDetail() {
   const { id: paramId } = useParams();
   const navigate = useNavigate();
-  const [data, setData] = useState<BoardDetailsResponse | null>(null);
+  const [detail, setDetail] = useState<BoardDetailsResponse | null>(null);
 
-  const fetchData = async (id: number) => {
+  const fetchDetail = async (id: number) => {
     const response = await getBoardDetails(id);
 
-    setData(response);
+    setDetail(response);
   };
 
   useEffect(() => {
@@ -25,23 +25,17 @@ export default function NoticeDetail() {
       return;
     }
 
-    fetchData(id);
+    fetchDetail(id);
   }, [paramId]);
 
-  if (!data) {
+  if (!detail) {
     return <FixedLoader />;
   }
 
   return (
     <Stack alignItems='center'>
       <Box sx={{ width: '100%' }}>
-        <Typography
-          sx={{
-            ...typography.heading3M,
-            color: colors.gray80,
-            mb: '30px',
-          }}
-        >
+        <Typography variant='heading3M' sx={{ color: colors.gray80, mb: '30px' }}>
           공지사항
         </Typography>
       </Box>
@@ -54,14 +48,8 @@ export default function NoticeDetail() {
           marginTop: '30px',
         }}
       >
-        <Typography
-          sx={{
-            ...typography.mediumTextB,
-            color: colors.gray50,
-            marginLeft: 'auto',
-          }}
-        >
-          {data.noticeProperties?.noticeType} 공지
+        <Typography variant='mediumTextB' sx={{ color: colors.gray50, marginLeft: 'auto' }}>
+          {detail.noticeProperties?.noticeType} 공지
         </Typography>
       </Stack>
 
@@ -75,14 +63,18 @@ export default function NoticeDetail() {
           boxSizing: 'border-box',
         }}
       >
-        <Typography sx={{ ...typography.normalTextB, color: colors.gray80 }}>{data.noticeProperties?.noticeType}</Typography>
-        <Typography sx={{ ...typography.heading4B, color: colors.gray80 }}>{data.title}</Typography>
-        <Typography sx={{ ...typography.smallTextR, color: colors.gray50 }}>
-          {formatYyyyMmDd(data.createdAt)} | 조회수 {data.viewsCount.toLocaleString()}
+        <Typography variant='normalTextB' sx={{ color: colors.gray80 }}>
+          {detail.noticeProperties?.noticeType}
+        </Typography>
+        <Typography variant='heading4B' sx={{ color: colors.gray80 }}>
+          {detail.title}
+        </Typography>
+        <Typography variant='smallTextR' sx={{ color: colors.gray50 }}>
+          {formatYyyyMmDd(detail.createdAt)} | 조회수 {detail.viewsCount.toLocaleString()}
         </Typography>
       </Stack>
 
-      {data.attachments && data.attachments.length > 0 && (
+      {detail.attachments && detail.attachments.length > 0 && (
         <Stack
           sx={{
             width: '100%',
@@ -91,7 +83,7 @@ export default function NoticeDetail() {
             boxSizing: 'border-box',
           }}
         >
-          {data.attachments.map((file, index) => (
+          {detail.attachments.map((file, index) => (
             <Link
               key={index}
               component={RouterLink}
@@ -114,7 +106,7 @@ export default function NoticeDetail() {
           boxSizing: 'border-box',
         }}
       >
-        {data.content}
+        {detail.content}
       </Box>
 
       <Box>

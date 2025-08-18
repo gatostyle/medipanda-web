@@ -1,9 +1,13 @@
 import { Favorite, MoreHoriz, Visibility } from '@mui/icons-material';
 import { Alert, Box, Button, Card, CardContent, Chip, CircularProgress, IconButton, Snackbar, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { colors } from '../globalStyles';
+import { type BoardDetailsResponse, getBoardDetails } from '../backend';
+import { FixedLoader } from '../components/FixedLoader.tsx';
+import { MedipandaButton } from '../custom/components/MedipandaButton.tsx';
+import { colors } from '../custom/globalStyles.ts';
+import { formatYyyyMmDdHhMm } from '../utils/dateFormat.ts';
 
 const ContentContainer = styled(Box)({
   padding: '24px',
@@ -105,7 +109,6 @@ const RelatedPostCard = styled(Card)({
 
 export default function AnonymousBoardDetail() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -117,41 +120,6 @@ export default function AnonymousBoardDetail() {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
     setSnackbarOpen(true);
-  };
-
-  const mockPost = {
-    id: Number(id),
-    title: 'CSO 하시는 형들 있나요',
-    author: 'CSO 찾니다',
-    timestamp: '25-04-01 10:34',
-    content: '솔리없제 괜찮어서 다른 일중일... 😭',
-    imageUrl: '/mock-post-image.jpg',
-    likes: 10,
-    views: 300,
-    comments: [
-      {
-        id: 1,
-        author: 'CSO하니',
-        content: '일어나면 일요다명하죠',
-        timestamp: '24시',
-        likes: 16,
-        replies: 2,
-      },
-      {
-        id: 2,
-        author: '익명의 CSO',
-        content: '첫사 CSO 일하느낀 일만나 다른나고 힘니',
-        timestamp: '24시',
-        likes: 0,
-      },
-      {
-        id: 3,
-        author: 'CSO 일하는',
-        content: '월 10년 기기이 하는으......',
-        timestamp: '14시',
-        likes: 0,
-      },
-    ],
   };
 
   const relatedPosts = [
@@ -201,6 +169,30 @@ export default function AnonymousBoardDetail() {
   const handleRelatedPostClick = postId => {
     navigate(`/community/anonymous/${postId}`);
   };
+  const { id: paramId } = useParams();
+  const navigate = useNavigate();
+  const [detail, setDetail] = useState<BoardDetailsResponse | null>(null);
+
+  const fetchDetail = async (id: number) => {
+    const response = await getBoardDetails(id);
+
+    setDetail(response);
+  };
+
+  useEffect(() => {
+    const id = Number(paramId);
+    if (isNaN(id)) {
+      alert('잘못된 접근입니다.');
+      navigate('/community/anonymous', { replace: true });
+      return;
+    }
+
+    fetchDetail(id);
+  }, [paramId]);
+
+  if (!detail) {
+    return <FixedLoader />;
+  }
 
   return (
     <Box>
@@ -221,9 +213,9 @@ export default function AnonymousBoardDetail() {
             <CardContent sx={{ p: 3 }}>
               <PostHeader>
                 <Box>
-                  <Typography sx={{ fontWeight: 'bold', color: colors.gray700, mb: 1 }}>{mockPost.title}</Typography>
+                  <Typography sx={{ fontWeight: 'bold', color: colors.gray700, mb: 1 }}>{detail.title}</Typography>
                   <Typography sx={{ color: colors.gray500 }}>
-                    {mockPost.author} · {mockPost.timestamp}
+                    {detail.nickname} · {formatYyyyMmDdHhMm(detail.createdAt)}
                   </Typography>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -245,45 +237,30 @@ export default function AnonymousBoardDetail() {
                 </Box>
               </PostHeader>
 
-              <Typography sx={{ mb: 2, lineHeight: 1.6 }}>{mockPost.content}</Typography>
+              <Typography sx={{ mb: 2, lineHeight: 1.6 }}>{detail.content}</Typography>
 
-              <Box sx={{ mb: 2 }}>
-                <img
-                  src={mockPost.imageUrl}
-                  alt='Post image'
-                  style={{
-                    width: '200px',
-                    height: '150px',
-                    objectFit: 'cover',
-                    borderRadius: '8px',
-                    backgroundColor: colors.gray200,
-                  }}
-                  onError={e => {
-                    e.currentTarget.style.display = 'none';
-                  }}
-                />
-              </Box>
+              <Box sx={{ mb: 2 }}>{detail.content}</Box>
 
               <PostStats>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                   <Favorite fontSize='small' />
-                  {mockPost.likes}
+                  {detail.likesCount}
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                   <Visibility fontSize='small' />
-                  {mockPost.views}
+                  {detail.viewsCount}
                 </Box>
               </PostStats>
             </CardContent>
           </PostCard>
 
           <Box sx={{ mb: 3 }}>
-            {mockPost.comments.map(comment => (
+            {detail.comments.map(comment => (
               <CommentCard key={comment.id}>
                 <CardContent sx={{ p: 2 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Typography sx={{ fontWeight: 500 }}>{comment.author}</Typography>
+                      <Typography sx={{ fontWeight: 500 }}>{comment.nickname}</Typography>
                       <Chip label='CSO' size='small' color='error' />
                     </Box>
                     <IconButton size='small'>
@@ -292,9 +269,8 @@ export default function AnonymousBoardDetail() {
                   </Box>
                   <Typography sx={{ mb: 1 }}>{comment.content}</Typography>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, color: colors.gray500, fontSize: '12px' }}>
-                    <span>{comment.timestamp}</span>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>❤️ {comment.likes}</Box>
-                    {comment.replies && <span>답글 {comment.replies}</span>}
+                    <span>{formatYyyyMmDdHhMm(comment.createdAt)}</span>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>❤️ {comment.likesCount}</Box>
                   </Box>
                 </CardContent>
               </CommentCard>
@@ -309,21 +285,10 @@ export default function AnonymousBoardDetail() {
               onChange={e => setComment(e.target.value)}
               size='small'
             />
-            <Button
-              variant='contained'
-              onClick={handleSubmitComment}
-              disabled={loading}
-              sx={{
-                backgroundColor: colors.navy,
-                textTransform: 'none',
-                '&:hover': {
-                  backgroundColor: colors.primaryDark,
-                },
-              }}
-            >
+            <MedipandaButton onClick={handleSubmitComment} disabled={loading} variant='contained' color='secondary'>
               {loading ? <CircularProgress size={20} color='inherit' sx={{ mr: 1 }} /> : null}
               등록하기
-            </Button>
+            </MedipandaButton>
           </CommentInput>
         </MainContent>
 

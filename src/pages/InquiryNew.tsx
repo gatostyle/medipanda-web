@@ -14,8 +14,9 @@ import {
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router';
 import { useState } from 'react';
-import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '../components/MedipandaTab.tsx';
-import { colors, typography } from '../globalStyles.ts';
+import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '../custom/components/MedipandaTab.tsx';
+import { MedipandaButton } from '../custom/components/MedipandaButton.tsx';
+import { colors } from '../custom/globalStyles.ts';
 
 export default function InquiryNew() {
   const [title, setTitle] = useState('');
@@ -67,13 +68,7 @@ export default function InquiryNew() {
   return (
     <Stack alignItems='center'>
       <Box sx={{ width: '100%' }}>
-        <Typography
-          sx={{
-            ...typography.heading3M,
-            color: colors.gray80,
-            mb: '30px',
-          }}
-        >
+        <Typography variant='heading3M' sx={{ color: colors.gray80, mb: '30px' }}>
           1:1 문의내역
         </Typography>
       </Box>
@@ -85,7 +80,9 @@ export default function InquiryNew() {
 
       <Stack gap='20px' sx={{ width: '600px', marginTop: '40px' }}>
         <Stack direction='row' alignItems='flex=start'>
-          <Typography sx={{ ...typography.largeTextM, color: colors.gray80, lineHeight: '56px' }}>제목*</Typography>
+          <Typography variant='largeTextM' sx={{ color: colors.gray80, lineHeight: '56px' }}>
+            제목*
+          </Typography>
           <TextField
             fullWidth
             placeholder='제목을 입력해주세요'
@@ -99,7 +96,9 @@ export default function InquiryNew() {
         </Stack>
 
         <Stack direction='row' alignItems='flex=start'>
-          <Typography sx={{ ...typography.largeTextM, color: colors.gray80, lineHeight: '56px' }}>문의내용*</Typography>
+          <Typography variant='largeTextM' sx={{ color: colors.gray80, lineHeight: '56px' }}>
+            문의내용*
+          </Typography>
           <TextField
             fullWidth
             multiline
@@ -115,7 +114,9 @@ export default function InquiryNew() {
         </Stack>
 
         <Stack direction='row' alignItems='flex=start'>
-          <Typography sx={{ ...typography.largeTextM, color: colors.gray80, lineHeight: '56px' }}>파일 첨부</Typography>
+          <Typography variant='largeTextM' sx={{ color: colors.gray80, lineHeight: '56px' }}>
+            파일 첨부
+          </Typography>
           <Stack
             gap='5px'
             sx={{
@@ -149,34 +150,32 @@ export default function InquiryNew() {
           marginTop: '60px',
         }}
       >
-        <Button
+        <MedipandaButton
           component={RouterLink}
           to='/customer-service/inquiry'
           variant='outlined'
+          size='large'
+          color='secondary'
           sx={{
             width: '160px',
-            height: '50px',
-            borderColor: colors.navy,
-            color: colors.navy,
           }}
         >
           취소
-        </Button>
-        <Button
-          variant='contained'
+        </MedipandaButton>
+        <MedipandaButton
           onClick={handleSubmit}
           disabled={!title.trim() || !content.trim() || loading}
-          sx={{
-            width: '160px',
-            height: '50px',
-            backgroundColor: colors.vividViolet,
-          }}
           component={RouterLink}
           to='/mypage/info'
+          variant='contained'
+          size='large'
+          sx={{
+            width: '160px',
+          }}
         >
           {loading ? <CircularProgress size={20} color='inherit' sx={{ mr: 1 }} /> : null}
           문의하기
-        </Button>
+        </MedipandaButton>
       </Stack>
 
       {/* Success Dialog */}

@@ -1,11 +1,11 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Box, Button, Card, FormControl, FormHelperText, IconButton, InputAdornment, Stack, Typography } from '@mui/material';
+import { Box, Card, FormControl, FormHelperText, IconButton, InputAdornment, Stack, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { type SyntheticEvent, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import * as Yup from 'yup';
+import { MedipandaButton } from '../custom/components/MedipandaButton.tsx';
 import { MedipandaOutlinedInput } from '../custom/components/MedipandaOutlinedInput.tsx';
-import { colors, typography } from '../globalStyles.ts';
 import { useSession } from '../hooks/useSession.tsx';
 
 export default function Login() {
@@ -123,13 +123,7 @@ export default function Login() {
                 width: '400px',
               }}
             >
-              <Typography
-                sx={{
-                  ...typography.heading4B,
-                  width: '100%',
-                  textAlign: 'center',
-                }}
-              >
+              <Typography variant='heading4B' sx={{ width: '100%', textAlign: 'center' }}>
                 로그인
               </Typography>
               <FormControl>
@@ -177,18 +171,9 @@ export default function Login() {
                 <FormHelperText error>{(touched.password && errors.password && errors.password) || ' '}</FormHelperText>
               </FormControl>
               <Stack sx={{ pointerEvents: isSubmitting ? 'none' : undefined }}>
-                <Button
-                  disabled={isSubmitting}
-                  fullWidth
-                  size='large'
-                  type='submit'
-                  variant='contained'
-                  sx={{
-                    backgroundColor: colors.navy,
-                  }}
-                >
+                <MedipandaButton type='submit' disabled={isSubmitting} fullWidth size='large' variant='contained' color='secondary'>
                   로그인
-                </Button>
+                </MedipandaButton>
                 <FormHelperText error>{errors.submit}</FormHelperText>
               </Stack>
             </Stack>

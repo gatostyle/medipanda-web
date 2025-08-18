@@ -4,17 +4,17 @@ import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router';
 import { type BoardPostResponse, getBoards } from '../backend';
-import { MedipandaPagination } from '../components/MedipandaPagination.tsx';
-import { colors, typography } from '../globalStyles.ts';
+import { MedipandaPagination } from '../custom/components/MedipandaPagination.tsx';
+import { colors, typography } from '../custom/globalStyles.ts';
 import { formatYyyyMmDd } from '../utils/dateFormat.ts';
 
 const categories = ['전체', '제품현황', '정산 및 생산중단', '신제품 정보', '제약사 정책', '일반공지'];
 
 export default function NoticeList() {
-  const [data, setData] = useState<BoardPostResponse[]>([]);
+  const [page, setPage] = useState<BoardPostResponse[]>([]);
   const [totalPages, setTotalPages] = useState(0);
 
-  const formik = useFormik({
+  const pageFormik = useFormik({
     initialValues: {
       searchKeyword: '',
       pageIndex: 0,
@@ -22,40 +22,34 @@ export default function NoticeList() {
       totalPages: 1,
     },
     onSubmit: async () => {
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
+      if (pageFormik.values.pageIndex !== 0) {
+        await pageFormik.setFieldValue('pageIndex', 0);
       } else {
-        await fetchData();
+        await fetchPage();
       }
     },
   });
 
-  const fetchData = async () => {
+  const fetchPage = async () => {
     const response = await getBoards({
       boardType: 'NOTICE',
-      boardTitle: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-      page: formik.values.pageIndex,
-      size: formik.values.pageSize,
+      boardTitle: pageFormik.values.searchKeyword !== '' ? pageFormik.values.searchKeyword : undefined,
+      page: pageFormik.values.pageIndex,
+      size: pageFormik.values.pageSize,
     });
 
-    setData(response.content);
+    setPage(response.content);
     setTotalPages(response.totalPages);
   };
 
   useEffect(() => {
-    fetchData();
-  }, [formik.values.pageIndex, formik.values.pageSize]);
+    pageFormik.submitForm();
+  }, [pageFormik.values.pageIndex, pageFormik.values.pageSize]);
 
   return (
     <Stack alignItems='center'>
       <Box sx={{ width: '100%' }}>
-        <Typography
-          sx={{
-            ...typography.heading3M,
-            color: colors.gray80,
-            mb: '30px',
-          }}
-        >
+        <Typography variant='heading3M' sx={{ color: colors.gray80, mb: '30px' }}>
           공지사항
         </Typography>
       </Box>
@@ -64,7 +58,7 @@ export default function NoticeList() {
         direction='row'
         alignItems='center'
         component='form'
-        onSubmit={formik.handleSubmit}
+        onSubmit={pageFormik.handleSubmit}
         sx={{
           width: '100%',
           marginTop: '30px',
@@ -94,8 +88,8 @@ export default function NoticeList() {
         <TextField
           size='small'
           name='searchKeyword'
-          value={formik.values.searchKeyword}
-          onChange={formik.handleChange}
+          value={pageFormik.values.searchKeyword}
+          onChange={pageFormik.handleChange}
           placeholder='제약사명 또는 제목을 검색해주세요'
           InputProps={{
             endAdornment: (
@@ -118,7 +112,7 @@ export default function NoticeList() {
         }}
       >
         <TableBody>
-          {data.map((notice, index) => (
+          {page.map((notice, index) => (
             <TableRow
               key={notice.id}
               sx={{
@@ -129,12 +123,7 @@ export default function NoticeList() {
               }}
             >
               <TableCell>
-                <Typography
-                  sx={{
-                    ...typography.smallTextR,
-                    color: notice.noticeType === 'GENERAL' ? colors.vividViolet : colors.gray70,
-                  }}
-                >
+                <Typography variant='smallTextR' sx={{ color: notice.noticeType === 'GENERAL' ? colors.vividViolet : colors.gray70 }}>
                   {notice.noticeType}
                 </Typography>
               </TableCell>
@@ -143,8 +132,8 @@ export default function NoticeList() {
                   <Typography
                     component={RouterLink}
                     to={`/customer-service/notice/${notice.id}`}
+                    variant='smallTextR'
                     sx={{
-                      ...typography.smallTextR,
                       color: colors.gray70,
                       textDecoration: 'none',
                       '&:hover': {
@@ -171,7 +160,9 @@ export default function NoticeList() {
                 </Box>
               </TableCell>
               <TableCell align='center'>
-                <Typography sx={{ ...typography.smallTextR, color: colors.gray70 }}>{formatYyyyMmDd(notice.createdAt)}</Typography>
+                <Typography variant='smallTextR' sx={{ color: colors.gray70 }}>
+                  {formatYyyyMmDd(notice.createdAt)}
+                </Typography>
               </TableCell>
             </TableRow>
           ))}
@@ -180,11 +171,11 @@ export default function NoticeList() {
 
       <MedipandaPagination
         count={totalPages}
-        page={formik.values.pageIndex + 1}
+        page={pageFormik.values.pageIndex + 1}
         showFirstButton
         showLastButton
         onChange={(_, page) => {
-          formik.setFieldValue('pageIndex', page - 1);
+          pageFormik.setFieldValue('pageIndex', page - 1);
         }}
         sx={{ marginTop: '40px' }}
       />

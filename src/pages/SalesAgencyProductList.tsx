@@ -4,51 +4,46 @@ import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router';
 import { getSalesAgencyProducts, type SalesAgencyProductSummaryResponse } from '../backend';
 import { LazyImage } from '../components/LazyImage.tsx';
-import { MedipandaPagination } from '../components/MedipandaPagination.tsx';
-import { colors, typography } from '../globalStyles.ts';
+import { MedipandaPagination } from '../custom/components/MedipandaPagination.tsx';
+import { colors } from '../custom/globalStyles.ts';
 import { formatYyyyMmDd } from '../utils/dateFormat.ts';
 
 export default function SalesAgencyProductList() {
-  const [data, setData] = useState<SalesAgencyProductSummaryResponse[]>([]);
+  const [page, setPage] = useState<SalesAgencyProductSummaryResponse[]>([]);
   const [totalPages, setTotalPages] = useState(0);
 
-  const formik = useFormik({
+  const pageFormik = useFormik({
     initialValues: {
       pageIndex: 0,
       pageSize: 5,
       totalPages: 1,
     },
     onSubmit: async () => {
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
+      if (pageFormik.values.pageIndex !== 0) {
+        await pageFormik.setFieldValue('pageIndex', 0);
       } else {
-        await fetchData();
+        await fetchPage();
       }
     },
   });
 
-  const fetchData = async () => {
+  const fetchPage = async () => {
     const response = await getSalesAgencyProducts({
-      page: formik.values.pageIndex,
-      size: formik.values.pageSize,
+      page: pageFormik.values.pageIndex,
+      size: pageFormik.values.pageSize,
     });
 
-    setData(response.content);
+    setPage(response.content);
     setTotalPages(response.totalPages);
   };
 
   useEffect(() => {
-    fetchData();
-  }, [formik.values.pageIndex, formik.values.pageSize]);
+    pageFormik.submitForm();
+  }, [pageFormik.values.pageIndex, pageFormik.values.pageSize]);
 
   return (
     <Stack>
-      <Typography
-        sx={{
-          ...typography.heading3M,
-          color: colors.gray80,
-        }}
-      >
+      <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
         영업대행상품
       </Typography>
 
@@ -58,7 +53,7 @@ export default function SalesAgencyProductList() {
           marginBottom: '40px',
         }}
       >
-        {data.map(salesAgencyProduct => (
+        {page.map(salesAgencyProduct => (
           <Stack
             direction='row'
             component={RouterLink}
@@ -97,12 +92,7 @@ export default function SalesAgencyProductList() {
                     borderRadius: '10px',
                   }}
                 >
-                  <Typography
-                    sx={{
-                      ...typography.heading4B,
-                      color: colors.white,
-                    }}
-                  >
+                  <Typography variant='heading4B' sx={{ color: colors.white }}>
                     종료
                   </Typography>
                 </Box>
@@ -118,9 +108,13 @@ export default function SalesAgencyProductList() {
                 borderColor: colors.gray50,
               }}
             >
-              <Typography sx={{ ...typography.heading4B, color: colors.gray80 }}>{salesAgencyProduct.clientName}</Typography>
-              <Typography sx={{ ...typography.largeTextM, color: colors.gray80 }}>{salesAgencyProduct.productName}</Typography>
-              <Typography sx={{ ...typography.smallTextR, color: colors.gray50, marginTop: 'auto' }}>
+              <Typography variant='heading4B' sx={{ color: colors.gray80 }}>
+                {salesAgencyProduct.clientName}
+              </Typography>
+              <Typography variant='largeTextM' sx={{ color: colors.gray80 }}>
+                {salesAgencyProduct.productName}
+              </Typography>
+              <Typography variant='smallTextR' sx={{ color: colors.gray50, marginTop: 'auto' }}>
                 {formatYyyyMmDd(salesAgencyProduct.startAt)} ~ {formatYyyyMmDd(salesAgencyProduct.endAt)}
               </Typography>
             </Stack>
@@ -131,11 +125,11 @@ export default function SalesAgencyProductList() {
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <MedipandaPagination
           count={totalPages}
-          page={formik.values.pageIndex + 1}
+          page={pageFormik.values.pageIndex + 1}
           showFirstButton
           showLastButton
           onChange={(_, page) => {
-            formik.setFieldValue('pageIndex', page - 1);
+            pageFormik.setFieldValue('pageIndex', page - 1);
           }}
         />
       </Box>

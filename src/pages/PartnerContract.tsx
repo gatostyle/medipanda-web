@@ -18,7 +18,8 @@ import { styled } from '@mui/material/styles';
 import { ArrowDown2 } from 'iconsax-reactjs';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router';
-import { colors, typography } from '../globalStyles';
+import { MedipandaButton } from '../custom/components/MedipandaButton.tsx';
+import { colors, typography } from '../custom/globalStyles.ts';
 
 const PartnerContractFormRow = styled(Stack)({
   flexDirection: 'row',
@@ -154,9 +155,11 @@ export default function PartnerContract() {
           padding: '60px 180px',
         }}
       >
-        <Typography sx={{ ...typography.heading3M, color: colors.gray80 }}>파트너사 계약신청</Typography>
+        <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
+          파트너사 계약신청
+        </Typography>
         {!isIndividual && !isCorporate && (
-          <Typography sx={{ ...typography.mediumTextR, color: colors.gray80, marginTop: '20px' }}>
+          <Typography variant='mediumTextR' sx={{ color: colors.gray80, marginTop: '20px' }}>
             혜택1. 의약품 제품 검색으로 수수료 비교 정보를 빠르게 확인하세요.
             <br />
             혜택2. AI 문자인식(OCR)으로 처방 통계를 자동으로 입력하세요.
@@ -250,7 +253,7 @@ export default function PartnerContract() {
             <PartnerContractFormLabel>정산은행</PartnerContractFormLabel>
             <PartnerContractFormInput>
               <PartnerContractFormButton variant='outlined'>
-                <Typography sx={{ ...typography.largeTextR }}>은행을 선택해주세요</Typography>
+                <Typography variant='largeTextR'>은행을 선택해주세요</Typography>
                 <ArrowDown2 style={{ marginLeft: 'auto' }} />
               </PartnerContractFormButton>
             </PartnerContractFormInput>
@@ -317,23 +320,18 @@ export default function PartnerContract() {
           </Box>
 
           <Box sx={{ textAlign: 'center' }}>
-            <Button
-              variant='contained'
+            <MedipandaButton
               onClick={handleSubmit}
               disabled={!agreement || loading}
+              variant='contained'
+              size='large'
               sx={{
                 width: '327px',
-                height: '50px',
-                backgroundColor: agreement ? colors.vividViolet : colors.gray50,
-                color: colors.white,
-                '&:hover': {
-                  backgroundColor: agreement ? undefined : colors.gray50,
-                },
               }}
             >
               {loading ? <CircularProgress size={20} color='inherit' sx={{ mr: 1 }} /> : null}
               계약신청완료
-            </Button>
+            </MedipandaButton>
           </Box>
         </Stack>
       </Stack>

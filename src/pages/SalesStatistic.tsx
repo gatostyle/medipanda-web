@@ -1,4 +1,4 @@
-import { KeyboardArrowLeft, KeyboardArrowRight, Search } from '@mui/icons-material';
+import { Search } from '@mui/icons-material';
 import {
   Alert,
   Box,
@@ -7,27 +7,20 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  FormControl,
-  IconButton,
   InputAdornment,
-  MenuItem,
   Paper,
-  Select,
   Snackbar,
   Stack,
   Table,
   TableBody,
   TableContainer,
-  TableHead,
   TableRow,
   TextField,
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { MedipandaPagination } from '../components/MedipandaPagination.tsx';
-import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '../components/MedipandaTab.tsx';
-import { MedipandaTableCell, MedipandaTableRow } from '../components/MedipandaTable.tsx';
-import { colors, StyledTableHead, StyledTableCell, typography } from '../globalStyles.ts';
+import { MedipandaButton } from '../custom/components/MedipandaButton.tsx';
+import { colors, StyledTableHead, StyledTableCell } from '../custom/globalStyles.ts';
 
 const mockSettlements = [
   {
@@ -60,7 +53,7 @@ const mockSettlements = [
 ];
 
 export default function SalesStatistic() {
-  const [currentTab, setCurrentTab] = useState(0);
+  const [currentTab, setCurrentTab] = useState<'ALL' | 'INDIVIDUAL'>('ALL');
   const [searchCategory, setSearchCategory] = useState('제약사명');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -130,6 +123,37 @@ export default function SalesStatistic() {
 
   return (
     <>
+      <Stack
+        direction='row'
+        justifyContent='center'
+        sx={{
+          wdith: '100%',
+        }}
+      >
+        <MedipandaButton
+          variant={currentTab === 'ALL' ? 'contained' : 'outlined'}
+          rounded
+          onClick={() => setCurrentTab('ALL')}
+          sx={{
+            borderTopRightRadius: '0px',
+            borderBottomRightRadius: '0px',
+          }}
+        >
+          전체매출
+        </MedipandaButton>
+        <MedipandaButton
+          variant={currentTab === 'INDIVIDUAL' ? 'contained' : 'outlined'}
+          rounded
+          onClick={() => setCurrentTab('INDIVIDUAL')}
+          sx={{
+            borderBottomLeftRadius: '0px',
+            borderTopLeftRadius: '0px',
+          }}
+        >
+          거래처매출
+        </MedipandaButton>
+      </Stack>
+
       <Box>
         <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
           <Button

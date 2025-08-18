@@ -2,8 +2,9 @@ import { GetApp } from '@mui/icons-material';
 import { Alert, Box, Button, CircularProgress, FormControl, MenuItem, Select, Snackbar, Stack, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
-import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '../components/MedipandaTab.tsx';
-import { colors, typography } from '../globalStyles.ts';
+import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '../custom/components/MedipandaTab.tsx';
+import { MedipandaButton } from '../custom/components/MedipandaButton.tsx';
+import { colors, typography } from '../custom/globalStyles.ts';
 
 const MypageFormRow = styled(Stack)({
   alignItems: 'center',
@@ -122,13 +123,7 @@ export default function MypageInfo() {
     <>
       <Stack alignItems='center'>
         <Box sx={{ width: '100%' }}>
-          <Typography
-            sx={{
-              ...typography.heading3M,
-              color: colors.gray80,
-              mb: '30px',
-            }}
-          >
+          <Typography variant='heading3M' sx={{ color: colors.gray80, mb: '30px' }}>
             내정보관리
           </Typography>
         </Box>
@@ -177,17 +172,9 @@ export default function MypageInfo() {
                 />
               </MypageFormInput>
               <MypageFormExtra>
-                <Button
-                  fullWidth
-                  variant='contained'
-                  onClick={handlePasswordChange}
-                  sx={{
-                    height: '56px',
-                    backgroundColor: colors.vividViolet,
-                  }}
-                >
+                <MedipandaButton fullWidth variant='contained' size='large' onClick={handlePasswordChange}>
                   변경
-                </Button>
+                </MedipandaButton>
               </MypageFormExtra>
             </MypageFormRow>
 
@@ -225,17 +212,9 @@ export default function MypageInfo() {
                 <TextField value={formData.phone} onChange={handleInputChange('phone')} sx={{ flex: 1 }} />
               </MypageFormInput>
               <MypageFormExtra>
-                <Button
-                  fullWidth
-                  variant='contained'
-                  onClick={handlePhoneChange}
-                  sx={{
-                    height: '56px',
-                    backgroundColor: colors.vividViolet,
-                  }}
-                >
+                <MedipandaButton fullWidth variant='contained' size='large' onClick={handlePhoneChange}>
                   변경
-                </Button>
+                </MedipandaButton>
               </MypageFormExtra>
             </MypageFormRow>
 
@@ -309,31 +288,13 @@ export default function MypageInfo() {
         </Stack>
 
         <Stack direction='row' gap='10px' sx={{ width: '330px' }}>
-          <Button
-            fullWidth
-            variant='outlined'
-            onClick={handleCancel}
-            sx={{
-              height: '49px',
-              borderColor: colors.navy,
-              color: colors.gray600,
-            }}
-          >
+          <MedipandaButton onClick={handleCancel} fullWidth variant='outlined' size='large' color='secondary'>
             취소
-          </Button>
-          <Button
-            fullWidth
-            variant='contained'
-            onClick={handleSave}
-            disabled={loading}
-            sx={{
-              height: '49px',
-              backgroundColor: colors.navy,
-            }}
-          >
+          </MedipandaButton>
+          <MedipandaButton onClick={handleSave} disabled={loading} variant='contained' fullWidth size='large' color='secondary'>
             {loading ? <CircularProgress size={20} color='inherit' sx={{ mr: 1 }} /> : null}
             수정
-          </Button>
+          </MedipandaButton>
         </Stack>
       </Stack>
 

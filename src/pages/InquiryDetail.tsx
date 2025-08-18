@@ -3,8 +3,8 @@ import { Alert, Box, Button, CircularProgress, Snackbar, Stack, Typography } fro
 import { useState } from 'react';
 import { Link as RouterLink, useParams } from 'react-router';
 import { InquiryStatusChip } from '../components/InquiryStatusChip.tsx';
-import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '../components/MedipandaTab.tsx';
-import { colors, typography } from '../globalStyles';
+import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '../custom/components/MedipandaTab.tsx';
+import { colors } from '../custom/globalStyles.ts';
 import { formatYyyyMmDdHhMm } from '../utils/dateFormat.ts';
 
 export default function InquiryDetail() {
@@ -51,13 +51,7 @@ CSO Link 방식에 ------- 으로 확인이 되고있습니다.
   return (
     <Stack alignItems='center'>
       <Box sx={{ width: '100%' }}>
-        <Typography
-          sx={{
-            ...typography.heading3M,
-            color: colors.gray80,
-            mb: '30px',
-          }}
-        >
+        <Typography variant='heading3M' sx={{ color: colors.gray80, mb: '30px' }}>
           1:1 문의내엵
         </Typography>
       </Box>
@@ -79,9 +73,11 @@ CSO Link 방식에 ------- 으로 확인이 되고있습니다.
           boxSizing: 'border-box',
         }}
       >
-        <Typography sx={{ ...typography.heading4B, color: colors.gray80 }}>{mockInquiry.title}</Typography>
+        <Typography variant='heading4B' sx={{ color: colors.gray80 }}>
+          {mockInquiry.title}
+        </Typography>
         <InquiryStatusChip responseStatus={mockInquiry.status} />
-        <Typography sx={{ ...typography.smallTextR, color: colors.gray50, marginLeft: 'auto' }}>
+        <Typography variant='smallTextR' sx={{ color: colors.gray50, marginLeft: 'auto' }}>
           {formatYyyyMmDdHhMm(mockInquiry.createdAt)}
         </Typography>
       </Stack>
@@ -106,9 +102,13 @@ CSO Link 방식에 ------- 으로 확인이 되고있습니다.
           }}
         >
           <Stack direction='row' alignItems='center'>
-            <Typography sx={{ ...typography.heading2B, color: colors.gray80 }}>문의하신 내용의 답변이 완료되었습니다.</Typography>
-            <Typography sx={{ ...typography.heading5B, color: colors.gray80, marginLeft: 'auto' }}>관리자</Typography>
-            <Typography sx={{ ...typography.smallTextR, color: colors.gray50, marginLeft: '10px' }}>
+            <Typography variant='heading2B' sx={{ color: colors.gray80 }}>
+              문의하신 내용의 답변이 완료되었습니다.
+            </Typography>
+            <Typography variant='heading5B' sx={{ color: colors.gray80, marginLeft: 'auto' }}>
+              관리자
+            </Typography>
+            <Typography variant='smallTextR' sx={{ color: colors.gray50, marginLeft: '10px' }}>
               {formatYyyyMmDdHhMm(mockInquiry.answer.respondedAt)}
             </Typography>
           </Stack>

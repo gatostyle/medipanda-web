@@ -4,17 +4,17 @@ import { useFormik } from 'formik';
 import { Link as RouterLink } from 'react-router';
 import { useEffect, useState } from 'react';
 import { type BoardPostResponse, getBoards } from '../backend';
-import { MedipandaPagination } from '../components/MedipandaPagination.tsx';
-import { MedipandaTableCell, MedipandaTableRow } from '../components/MedipandaTable.tsx';
-import { colors, typography } from '../globalStyles.ts';
+import { MedipandaPagination } from '../custom/components/MedipandaPagination.tsx';
+import { colors } from '../custom/globalStyles.ts';
 import { formatYyyyMmDdHhMm } from '../utils/dateFormat.ts';
+import { MedipandaTableCell, MedipandaTableRow } from 'custom/components/MedipandaTable.tsx';
 
-export default function AnonymousList() {
-  const [data, setData] = useState<BoardPostResponse[]>([]);
-  const [noticeData, setNoticeData] = useState<BoardPostResponse[]>([]);
+export default function MrCsoMatchingList() {
+  const [page, setPage] = useState<BoardPostResponse[]>([]);
+  const [noticePage, setNoticePage] = useState<BoardPostResponse[]>([]);
   const [totalPages, setTotalPages] = useState(0);
 
-  const formik = useFormik({
+  const pageFormik = useFormik({
     initialValues: {
       searchKeyword: '',
       pageIndex: 0,
@@ -22,23 +22,23 @@ export default function AnonymousList() {
       totalPages: 1,
     },
     onSubmit: async () => {
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
+      if (pageFormik.values.pageIndex !== 0) {
+        await pageFormik.setFieldValue('pageIndex', 0);
       } else {
-        await fetchData();
+        await fetchPage();
       }
     },
   });
 
-  const fetchData = async () => {
+  const fetchPage = async () => {
     const response = await getBoards({
       boardType: 'MR_CSO_MATCHING',
-      boardTitle: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-      page: formik.values.pageIndex,
-      size: formik.values.pageSize,
+      boardTitle: pageFormik.values.searchKeyword !== '' ? pageFormik.values.searchKeyword : undefined,
+      page: pageFormik.values.pageIndex,
+      size: pageFormik.values.pageSize,
     });
 
-    setData(response.content);
+    setPage(response.content);
     setTotalPages(response.totalPages);
 
     const noticeResponse = await getBoards({
@@ -46,12 +46,12 @@ export default function AnonymousList() {
       size: 2,
     });
 
-    setNoticeData(noticeResponse.content);
+    setNoticePage(noticeResponse.content);
   };
 
   useEffect(() => {
-    fetchData();
-  }, [formik.values.pageIndex, formik.values.pageSize]);
+    pageFormik.submitForm();
+  }, [pageFormik.values.pageIndex, pageFormik.values.pageSize]);
 
   return (
     <>
@@ -75,18 +75,18 @@ export default function AnonymousList() {
               </MedipandaTableRow>
             </TableHead>
             <TableBody>
-              {[...noticeData, ...data].map(post => (
+              {[...noticePage, ...page].map(post => (
                 <MedipandaTableRow
                   key={post.id}
                   sx={{
-                    ...(noticeData.includes(post) && {
+                    ...(noticePage.includes(post) && {
                       backgroundColor: colors.gray10,
                     }),
                   }}
                 >
                   <MedipandaTableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      {noticeData.includes(post) && (
+                      {noticePage.includes(post) && (
                         <img
                           src='/assets/icons/icon-pin.svg'
                           style={{
@@ -113,7 +113,9 @@ export default function AnonymousList() {
                           height: '16px',
                         }}
                       />
-                      <Typography sx={{ ...typography.smallTextB, color: colors.red }}>[{post.commentCount}]</Typography>
+                      <Typography variant='smallTextB' sx={{ color: colors.red }}>
+                        [{post.commentCount}]
+                      </Typography>
                     </Box>
                   </MedipandaTableCell>
                   <MedipandaTableCell>{post.nickname}</MedipandaTableCell>
@@ -132,8 +134,8 @@ export default function AnonymousList() {
           <Box sx={{ marginTop: '40px' }}>
             <TextField
               name='searchKeyword'
-              value={formik.values.searchKeyword}
-              onChange={formik.handleChange}
+              value={pageFormik.values.searchKeyword}
+              onChange={pageFormik.handleChange}
               placeholder='제목을 입력해주세요.'
               fullWidth
               size='small'
@@ -152,11 +154,11 @@ export default function AnonymousList() {
 
           <MedipandaPagination
             count={totalPages}
-            page={formik.values.pageIndex + 1}
+            page={pageFormik.values.pageIndex + 1}
             showFirstButton
             showLastButton
             onChange={(_, page) => {
-              formik.setFieldValue('pageIndex', page - 1);
+              pageFormik.setFieldValue('pageIndex', page - 1);
             }}
             sx={{ marginTop: '40px' }}
           />
@@ -183,7 +185,9 @@ export default function AnonymousList() {
                 backgroundColor: colors.navy,
               }}
             >
-              <Typography sx={{ ...typography.largeTextB, color: colors.white }}>글쓰기</Typography>
+              <Typography variant='largeTextB' sx={{ color: colors.white }}>
+                글쓰기
+              </Typography>
             </Button>
             <Button
               fullWidth
@@ -207,7 +211,9 @@ export default function AnonymousList() {
               >
                 <Typography sx={{ fontSize: '10px', lineHeight: '100%' }}>MY</Typography>
               </Box>
-              <Typography sx={{ ...typography.largeTextB, color: colors.gray80 }}>내 글</Typography>
+              <Typography variant='largeTextB' sx={{ color: colors.gray80 }}>
+                내 글
+              </Typography>
             </Button>
           </Stack>
           <img

@@ -1,5 +1,5 @@
 import { lazy } from 'react';
-import { createBrowserRouter, type RouteObject } from 'react-router';
+import { createBrowserRouter, type RouteObject, Navigate } from 'react-router';
 import { Loadable } from './components/Loadable';
 
 const GlobalLayout = Loadable(lazy(() => import('./layouts/GlobalLayout')));
@@ -11,25 +11,13 @@ const Logout = Loadable(lazy(() => import('./pages/Logout')));
 
 const Home = Loadable(lazy(() => import('./pages/Home')));
 
-const MypageGuard = Loadable(lazy(() => import('./pages/MypageGuard')));
-const MypageInfo = Loadable(lazy(() => import('./pages/MypageInfo')));
-const MypageNotification = Loadable(lazy(() => import('./pages/MypageNotification')));
-const MypageWithdraw = Loadable(lazy(() => import('./pages/MypageWithdraw')));
-
-const PartnerContract = Loadable(lazy(() => import('./pages/PartnerContract')));
-
 const ProductList = Loadable(lazy(() => import('./pages/ProductList')));
 
 const PrescriptionList = Loadable(lazy(() => import('./pages/PrescriptionList')));
 const DealerList = Loadable(lazy(() => import('./pages/DealerList')));
 
-const Settlements = Loadable(lazy(() => import('./pages/Settlements')));
-const SettlementsCustomerDetail = Loadable(lazy(() => import('./pages/SettlementsCustomerDetail')));
+const SettlementList = Loadable(lazy(() => import('./pages/./SettlementList')));
 const SalesStatistic = Loadable(lazy(() => import('./pages/SalesStatistic')));
-
-const StatisticsAll = Loadable(lazy(() => import('./pages/StatisticsAll')));
-const StatisticsCustomer = Loadable(lazy(() => import('./pages/StatisticsCustomer')));
-const StatisticsCustomerDetail = Loadable(lazy(() => import('./pages/StatisticsCustomerDetail')));
 
 const AnonymousList = Loadable(lazy(() => import('./pages/AnonymousList')));
 const AnonymousBoardDetail = Loadable(lazy(() => import('./pages/AnonymousBoardDetail')));
@@ -49,11 +37,18 @@ const InquiryList = Loadable(lazy(() => import('./pages/InquiryList')));
 const InquiryDetail = Loadable(lazy(() => import('./pages/InquiryDetail')));
 const InquiryNew = Loadable(lazy(() => import('./pages/InquiryNew')));
 
-const Error404 = Loadable(lazy(() => import('./pages/404')));
+const MypageGuard = Loadable(lazy(() => import('./pages/MypageGuard')));
+const MypageInfo = Loadable(lazy(() => import('./pages/MypageInfo')));
+const MypageNotification = Loadable(lazy(() => import('./pages/MypageNotification')));
+const MypageWithdraw = Loadable(lazy(() => import('./pages/MypageWithdraw')));
+
+const PartnerContract = Loadable(lazy(() => import('./pages/PartnerContract')));
 
 const Terms = Loadable(lazy(() => import('./pages/Terms')));
 const Privacy = Loadable(lazy(() => import('./pages/Privacy')));
 const Partnership = Loadable(lazy(() => import('./pages/Partnership')));
+
+const Error404 = Loadable(lazy(() => import('./pages/404')));
 
 const route: RouteObject[] = [
   {
@@ -156,41 +151,25 @@ const route: RouteObject[] = [
             tabConfig={[
               {
                 label: '정산내역',
-                to: '/settlements',
+                to: '/settlement-list',
               },
               {
                 label: '매출통계',
-                to: '/sales-statistics',
+                to: '/sales-statistic',
               },
             ]}
           />
         ),
         children: [
           {
-            path: 'settlements',
-            element: <Settlements />,
+            path: 'settlement-list',
+            element: <SettlementList />,
           },
           {
-            path: 'sales-statistics',
+            path: 'sales-statistic',
             element: <SalesStatistic />,
           },
         ],
-      },
-      {
-        path: 'settlements/customer/:id',
-        element: <SettlementsCustomerDetail />,
-      },
-      {
-        path: 'statistics/all',
-        element: <StatisticsAll />,
-      },
-      {
-        path: 'statistics/customer',
-        element: <StatisticsCustomer />,
-      },
-      {
-        path: 'statistics/customer/:id',
-        element: <StatisticsCustomerDetail />,
       },
       {
         path: 'community',
@@ -210,6 +189,10 @@ const route: RouteObject[] = [
           />
         ),
         children: [
+          {
+            index: true,
+            element: <Navigate to={'anonymous'} />,
+          },
           {
             path: 'anonymous',
             element: <AnonymousList />,

@@ -4,7 +4,7 @@ import { useSession } from 'hooks/useSession';
 import { memo } from 'react';
 import { Link as RouterLink, Outlet, useLocation } from 'react-router';
 import { MedipandaTextLink } from '../custom/components/MedipandaTextLink.tsx';
-import { colors, typography } from '../globalStyles.ts';
+import { colors, typography } from '../custom/globalStyles.ts';
 
 const StyledContainer = styled(Container)({
   maxWidth: '1224px !important',
@@ -36,9 +36,9 @@ const Footer = styled('footer')({
 
 const navItems = [
   { path: '/products', label: '제품검색' },
-  { path: '/prescriptions', label: '실적관리' },
-  { path: '/settlements', label: '정산' },
-  { path: '/community/anonymous', label: '커뮤니티' },
+  { path: '/prescriptions', label: '실적관리', secondaryPaths: ['/dealers'] },
+  { path: '/settlement-list', label: '정산', secondaryPaths: ['/sales-statistic'] },
+  { path: '/community', label: '커뮤니티' },
   { path: '/sales-agency-products', label: '영업대행상품' },
   { path: '/events', label: '이벤트' },
   { path: '/customer-service/notice', label: '공지사항' },
@@ -78,7 +78,9 @@ function GlobalLayout() {
                   key={item.path}
                   to={item.path}
                   sx={{
-                    color: currentPath.startsWith(item.path) ? colors.vividViolet : colors.gray80,
+                    color: [item.path, ...(item.secondaryPaths || [])].some(path => currentPath.startsWith(path))
+                      ? colors.vividViolet
+                      : colors.gray80,
                   }}
                 >
                   {item.label}
@@ -89,19 +91,13 @@ function GlobalLayout() {
               <Box sx={{ mr: 1.5 }}>
                 {session ? (
                   <>
-                    <MedipandaTextLink
-                      component={RouterLink}
-                      to='/mypage/info'
-                      sx={{
-                        ...typography.heading5B,
-                      }}
-                    >
+                    <MedipandaTextLink typography='heading5B' component={RouterLink} to='/mypage/info'>
                       {session.name}
                     </MedipandaTextLink>
                     <Typography
                       component='span'
+                      variant='heading5R'
                       sx={{
-                        ...typography.heading5R,
                         color: colors.navy,
                       }}
                     >
@@ -109,13 +105,7 @@ function GlobalLayout() {
                     </Typography>
                   </>
                 ) : (
-                  <MedipandaTextLink
-                    component={RouterLink}
-                    to='/login'
-                    sx={{
-                      ...typography.heading5B,
-                    }}
-                  >
+                  <MedipandaTextLink component={RouterLink} to='/login' typography='heading5B'>
                     로그인
                   </MedipandaTextLink>
                 )}
@@ -154,16 +144,13 @@ function GlobalLayout() {
                 <span style={{ color: colors.white, margin: '0 8px' }}>|</span>
                 <FooterLink to='/partnership'>제휴문의</FooterLink>
               </Stack>
-              <Typography sx={{ ...typography.smallTextR, color: colors.white }}>
+              <Typography variant='smallTextR' sx={{ color: colors.white }}>
                 법인명 : (주)케이앤메디슨 | 서울시 강남구 논현로 416, 4층 운기빌딩(역삼동) | 대표 : 황혁진 | 사업자등록번호 : 338-81-00767
-              </Typography>
-              <Typography sx={{ ...typography.smallTextR, color: colors.white }}>
+                <br />
                 팩스 : 02-6280-6393 | 이메일 : keymedi@keymedi.com
-              </Typography>
-              <Typography sx={{ ...typography.smallTextR, color: colors.white }}>
+                <br />
                 대표전화 : 02-540-0703 | 고객센터 : 오전 10시~오후 5시(토/일/공휴일 휴무)
-              </Typography>
-              <Typography sx={{ ...typography.smallTextR, color: colors.white }}>
+                <br />
                 통신판매번호 : 제2017-서울강남-03514호 | 개인정보관리책임자 : 강승균 | 메일 : keymedi@keymedi.com | Copyright©keymedi All
                 Rights Reserved.
               </Typography>

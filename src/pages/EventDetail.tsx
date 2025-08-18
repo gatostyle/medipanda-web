@@ -1,40 +1,40 @@
 import { Stack, Typography } from '@mui/material';
-import { useParams } from 'react-router';
-import { colors, typography } from '../globalStyles';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
+import { type EventBoardDetailsResponse, getEventBoardDetails } from '../backend';
+import { FixedLoader } from '../components/FixedLoader.tsx';
+import { colors } from '../custom/globalStyles.ts';
+import { formatYyyyMmDd } from '../utils/dateFormat.ts';
 
 export default function EventDetail() {
-  const { id } = useParams();
+  const { id: paramId } = useParams();
+  const navigate = useNavigate();
+  const [detail, setdetail] = useState<EventBoardDetailsResponse | null>(null);
 
-  const mockEvent = {
-    id: Number(id),
-    title: '메디판다 그랜드 오픈이벤트!!!!!',
-    description: '해당 이벤트는 메디판다 오픈기념 이벤트입니다.',
-    dateRange: '2025-06-10 ~ 2025-06-30',
-    viewsCount: 1260,
-    benefits: [
-      {
-        number: '하나',
-        title: '다양한 혜택제품',
-        description: '다양한 혜택제품, JW 수액, 주사제, 소모품 등 병원에 필요한 제품을 원스톱 구매!',
-        icon: '💊',
-      },
-      {
-        number: '둘',
-        title: '포인트 제도',
-        description: '포스팀 적립 제도! 시그 가입 시 5만 포인트 지급!',
-        icon: '🎁',
-      },
-    ],
+  const fetchDetail = async (id: number) => {
+    const response = await getEventBoardDetails(id);
+
+    setdetail(response);
   };
+
+  useEffect(() => {
+    const id = Number(paramId);
+    if (isNaN(id)) {
+      alert('잘못된 접근입니다.');
+      navigate('/events', { replace: true });
+      return;
+    }
+
+    fetchDetail(id);
+  }, [paramId]);
+
+  if (!detail) {
+    return <FixedLoader />;
+  }
 
   return (
     <Stack>
-      <Typography
-        sx={{
-          ...typography.heading3M,
-          color: colors.gray80,
-        }}
-      >
+      <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
         이벤트
       </Typography>
 
@@ -47,10 +47,15 @@ export default function EventDetail() {
           borderTop: `1px solid ${colors.gray50}`,
         }}
       >
-        <Typography sx={{ ...typography.heading4B, color: colors.gray80 }}>{mockEvent.title}</Typography>
-        <Typography sx={{ ...typography.normalTextR, color: colors.gray80 }}>{mockEvent.description}</Typography>
-        <Typography sx={{ ...typography.smallTextR, color: colors.gray50 }}>
-          {mockEvent.dateRange} | 조회수 {mockEvent.viewsCount.toLocaleString()}
+        <Typography variant='heading4B' sx={{ color: colors.gray80 }}>
+          {detail.boardPostDetail.title}
+        </Typography>
+        <Typography variant='normalTextR' sx={{ color: colors.gray80 }}>
+          {detail.description}
+        </Typography>
+        <Typography variant='smallTextR' sx={{ color: colors.gray50 }}>
+          {formatYyyyMmDd(detail.eventStartDate)} ~ {formatYyyyMmDd(detail.eventEndDate)} | 조회수{' '}
+          {detail.boardPostDetail.viewsCount.toLocaleString()}
         </Typography>
       </Stack>
 
@@ -60,7 +65,7 @@ export default function EventDetail() {
           padding: '50px 20px',
         }}
       >
-        <span>이미지</span>
+        {detail.boardPostDetail.content}
       </Stack>
     </Stack>
   );

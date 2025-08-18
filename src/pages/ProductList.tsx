@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Dialog,
-  DialogContent,
   DialogTitle,
   FormControl,
   IconButton,
@@ -18,97 +17,82 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { useFormik } from 'formik';
 import { ArrowDown2, ArrowUp2 } from 'iconsax-reactjs';
-import { Fragment, useState } from 'react';
-import { MedipandaPagination } from '../components/MedipandaPagination.tsx';
-import { MedipandaTableCell, MedipandaTableRow } from '../components/MedipandaTable.tsx';
-import { colors, typography } from '../globalStyles.ts';
+import { Fragment, useEffect, useState } from 'react';
+import { getProductDetails, getProductSummaries, type ProductDetailsResponse, type ProductSummaryResponse } from '../backend';
+import { FixedLoader } from '../components/FixedLoader.tsx';
+import { MedipandaPagination } from '../custom/components/MedipandaPagination.tsx';
+import { colors, typography } from '../custom/globalStyles.ts';
+import { MedipandaTableCell, MedipandaTableRow } from 'custom/components/MedipandaTable.tsx';
 
-const mockProducts = [
-  {
-    id: 1,
-    manufacturer: '휴온스생명과학\n(구.크리스탈)',
-    productName: '파메졸캡슐50mg',
-    composition: '당귀·목과·방풍·속단·오가피·우슬·위령선·육계·진교·천궁·천마·홍화 25% ethanol...',
-    price: 1516,
-    insuranceStatus: '급여',
-    baseFeeRate: '90%',
-    status: '프로모션',
-    feeChange: '60%\n(7월)',
-    note: '비고내용~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~@@',
-  },
-  {
-    id: 2,
-    manufacturer: '건일바이오팜',
-    productName: '파메졸캡슐50mg',
-    composition: '당귀·목과·방풍·속단·오가피·우슬·위령선·육계·진교·천궁·천마·홍화 25% ethanol...',
-    price: 1516,
-    insuranceStatus: '급여',
-    baseFeeRate: '90%',
-    status: '프로모션',
-    feeChange: '60%\n(7월)',
-    note: '비고내용~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~@@',
-  },
-  {
-    id: 3,
-    manufacturer: '건일바이오팜',
-    productName: '파메졸캡슐50mg',
-    composition: '당귀·목과·방풍·속단·오가피·우슬·위령선·육계·진교·천궁·천마·홍화 25% ethanol...',
-    price: 1516,
-    insuranceStatus: '비급여',
-    baseFeeRate: '90%',
-    status: '프로모션',
-    feeChange: '60%\n(7월)',
-    note: '비고내용~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~@@',
-  },
-  {
-    id: 4,
-    manufacturer: '건일바이오팜',
-    productName: '파메졸캡슐50mg',
-    composition: '당귀·목과·방풍·속단·오가피·우슬·위령선·육계·진교·천궁·천마·홍화 25% ethanol...',
-    price: 1516,
-    insuranceStatus: '비급여',
-    baseFeeRate: '90%',
-    status: '프로모션',
-    feeChange: '60%\n(7월)',
-    note: '비고내용~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~@@',
-  },
-  {
-    id: 5,
-    manufacturer: '휴온스생명과학\n(구.크리스탈)',
-    productName: '파메졸캡슐50mg',
-    composition: '당귀·목과·방풍·속단·오가피·우슬·위령선·육계·진교·천궁·천마·홍화 25% ethanol...',
-    price: 1516,
-    insuranceStatus: '급여',
-    baseFeeRate: '90%',
-    status: '프로모션',
-    feeChange: '60%\n(7월)',
-    note: '비고내용~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~@@',
-  },
-  {
-    id: 6,
-    manufacturer: '휴온스생명과학\n(구.크리스탈)',
-    productName: '파메졸캡슐50mg',
-    composition: '당귀·목과·방풍·속단·오가피·우슬·위령선·육계·진교·천궁·천마·홍화 25% ethanol...',
-    price: 1516,
-    insuranceStatus: '급여',
-    baseFeeRate: '90%',
-    status: '프로모션',
-    feeChange: '60%\n(7월)',
-    note: '비고내용~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~@@',
-  },
-];
+const searchTypeLabel = {
+  composition: '성분명',
+  productName: '제품명',
+  manufacturerName: '제약사명',
+};
+
+const sortTypeLabel = {
+  PRICE_ASC: '약가 낮은순',
+  PRICE_DESC: '약가 높은순',
+  FEE_RATE_ASC: '기본수수료율 낮은순',
+  FEE_RATE_DESC: '기본수수료율 높은순',
+};
+
+const statusLabel = {
+  isAcquisition: '취급품목',
+  isPromotion: '프로모션',
+  isOutOfStock: '품절',
+  isStopSelling: '판매중단',
+};
 
 export default function ProductList() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortOrder, setSortOrder] = useState('기본수수료율 높은순');
-  const [searchType, setSearchType] = useState<string>('성분명');
   const [searchTypeDropdownOpen, setSearchTypeDropdownOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+
+  const [page, setPage] = useState<ProductSummaryResponse[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const pageFormik = useFormik({
+    initialValues: {
+      searchType: 'composition' as 'composition' | 'productName' | 'manufacturerName',
+      searchKeyword: '',
+      sortType: 'FEE_RATE_DESC' as 'PRICE_ASC' | 'PRICE_DESC' | 'FEE_RATE_ASC' | 'FEE_RATE_DESC',
+      pageIndex: 0,
+      pageSize: 10,
+      totalPages: 1,
+    },
+    onSubmit: async () => {
+      if (pageFormik.values.pageIndex !== 0) {
+        await pageFormik.setFieldValue('pageIndex', 0);
+      } else {
+        await fetchPage();
+      }
+    },
+  });
+
+  const fetchPage = async () => {
+    const response = await getProductSummaries({
+      composition: pageFormik.values.searchType === 'composition' ? pageFormik.values.searchKeyword : undefined,
+      productName: pageFormik.values.searchType === 'productName' ? pageFormik.values.searchKeyword : undefined,
+      manufacturerName: pageFormik.values.searchType === 'manufacturerName' ? pageFormik.values.searchKeyword : undefined,
+      sortType: pageFormik.values.sortType,
+      page: pageFormik.values.pageIndex,
+      size: pageFormik.values.pageSize,
+    });
+
+    setPage(response.content);
+    setTotalPages(response.totalPages);
+  };
+
+  useEffect(() => {
+    pageFormik.submitForm();
+  }, [pageFormik.values.pageIndex, pageFormik.values.pageSize]);
 
   return (
     <>
       <Stack alignItems='center'>
-        <Stack direction='row' gap='10px'>
+        <Stack direction='row' gap='10px' component='form' onSubmit={pageFormik.handleSubmit}>
           <Box
             sx={{
               position: 'relative',
@@ -127,7 +111,15 @@ export default function ProductList() {
               }}
               onClick={() => setSearchTypeDropdownOpen(!searchTypeDropdownOpen)}
             >
-              <Typography>{searchType}</Typography>
+              <Typography>
+                {
+                  {
+                    composition: '성분명',
+                    productName: '제품명',
+                    manufacturerName: '제약사명',
+                  }[pageFormik.values.searchType]
+                }
+              </Typography>
               <ArrowDown2 style={{ marginLeft: 'auto' }} />
             </Button>
             {searchTypeDropdownOpen && (
@@ -140,65 +132,56 @@ export default function ProductList() {
                   color: colors.white,
                 }}
               >
-                <Button
-                  variant='contained'
-                  sx={{
-                    ...typography.heading5R,
-                    width: '100%',
-                    height: '60px',
-                    backgroundColor: colors.vividViolet,
-                    borderTopLeftRadius: '30px',
-                    borderTopRightRadius: '30px',
-                  }}
-                  onClick={() => {
-                    setSearchType('성분명');
-                    setSearchTypeDropdownOpen(!searchTypeDropdownOpen);
-                  }}
-                >
-                  <Typography>성분명</Typography>
-                  <ArrowUp2 style={{ marginLeft: 'auto' }} />
-                </Button>
-                <Button
-                  variant='contained'
-                  sx={{
-                    ...typography.heading5R,
-                    width: '100%',
-                    height: '60px',
-                    backgroundColor: colors.vividViolet,
-                  }}
-                  onClick={() => {
-                    setSearchType('제품명');
-                    setSearchTypeDropdownOpen(!searchTypeDropdownOpen);
-                  }}
-                >
-                  <Typography>제품명</Typography>
-                  <ArrowUp2 style={{ marginLeft: 'auto', opacity: 0 }} />
-                </Button>
-                <Button
-                  variant='contained'
-                  sx={{
-                    ...typography.heading5R,
-                    width: '100%',
-                    height: '60px',
-                    backgroundColor: colors.vividViolet,
-                    borderBottomLeftRadius: '30px',
-                    borderBottomRightRadius: '30px',
-                  }}
-                  onClick={() => {
-                    setSearchType('제약사명');
-                    setSearchTypeDropdownOpen(!searchTypeDropdownOpen);
-                  }}
-                >
-                  <Typography>제약사명</Typography>
-                  <ArrowUp2 style={{ marginLeft: 'auto', opacity: 0 }} />
-                </Button>
+                {(['composition', 'productName', 'manufacturerName'] as const).map((type, index, arr) => (
+                  <Button
+                    variant='contained'
+                    sx={{
+                      ...typography.heading5R,
+                      width: '100%',
+                      height: '60px',
+                      backgroundColor: colors.vividViolet,
+                      ...(index === 0
+                        ? {
+                            borderTopLeftRadius: '30px',
+                            borderTopRightRadius: '30px',
+                          }
+                        : {
+                            borderTopLeftRadius: '0px',
+                            borderTopRightRadius: '0px',
+                          }),
+                      ...(index === arr.length - 1
+                        ? {
+                            borderBottomLeftRadius: '30px',
+                            borderBottomRightRadius: '30px',
+                          }
+                        : {
+                            borderBottomLeftRadius: '0px',
+                            borderBottomRightRadius: '0px',
+                          }),
+                    }}
+                    onClick={() => {
+                      pageFormik.setFieldValue('searchType', type);
+                      pageFormik.submitForm();
+                      setSearchTypeDropdownOpen(!searchTypeDropdownOpen);
+                    }}
+                  >
+                    <Typography>{searchTypeLabel[type]}</Typography>
+                    <ArrowUp2
+                      style={{
+                        marginLeft: 'auto',
+                        ...(index === 0 ? {} : { opacity: 0 }),
+                      }}
+                    />
+                  </Button>
+                ))}
               </Stack>
             )}
           </Box>
           <TextField
-            placeholder='성분명을 검색하세요.'
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
+            name='searchKeyword'
+            value={pageFormik.values.searchKeyword}
+            onChange={pageFormik.handleChange}
+            placeholder={`${searchTypeLabel[pageFormik.values.searchType]}을 검색하세요.`}
             InputProps={{
               endAdornment: (
                 <InputAdornment position='end'>
@@ -235,55 +218,44 @@ export default function ProductList() {
         </Stack>
 
         <Stack direction='row' sx={{ alignItems: 'center', width: '100%', marginTop: '40px' }}>
-          <Typography sx={{ ...typography.mediumTextR, color: colors.gray500 }}>전체 : 10,248건</Typography>
+          <Typography variant='mediumTextR' sx={{ color: colors.gray500 }}>
+            전체 : {totalPages}건
+          </Typography>
           <Stack direction='row' alignItems='center' gap='10px' sx={{ marginLeft: 'auto' }}>
-            <Typography sx={{ ...typography.mediumTextR, color: colors.navy }}>정렬기준 : </Typography>
+            <Typography variant='mediumTextR' sx={{ color: colors.navy }}>
+              정렬기준 :{' '}
+            </Typography>
             <FormControl
               sx={{
                 width: '350px',
               }}
             >
               <Select
-                value={sortOrder}
-                onChange={e => setSortOrder(e.target.value)}
+                name='sortType'
+                value={pageFormik.values.sortType}
+                onChange={async e => {
+                  await pageFormik.setFieldValue('sortType', e.target.value);
+                  await pageFormik.submitForm();
+                }}
                 size='small'
                 sx={{
                   ...typography.mediumTextR,
                   color: colors.vividViolet,
                 }}
               >
-                <MenuItem
-                  value='기본수수료율 높은순'
-                  sx={{
-                    '&.Mui-selected': { color: colors.vividViolet },
-                  }}
-                >
-                  기본수수료율 높은순
-                </MenuItem>
-                <MenuItem
-                  value='기본수수료율 낮은순'
-                  sx={{
-                    '&.Mui-selected': { color: colors.vividViolet },
-                  }}
-                >
-                  기본수수료율 낮은순
-                </MenuItem>
-                <MenuItem
-                  value='약가 높은순'
-                  sx={{
-                    '&.Mui-selected': { color: colors.vividViolet },
-                  }}
-                >
-                  약가 높은순
-                </MenuItem>
-                <MenuItem
-                  value='약가 낮은순'
-                  sx={{
-                    '&.Mui-selected': { color: colors.vividViolet },
-                  }}
-                >
-                  약가 낮은순
-                </MenuItem>
+                {Object.keys(sortTypeLabel).map((key, index) => {
+                  return (
+                    <MenuItem
+                      key={index}
+                      value={key}
+                      sx={{
+                        '&.Mui-selected': { color: colors.vividViolet },
+                      }}
+                    >
+                      {sortTypeLabel[key]}
+                    </MenuItem>
+                  );
+                })}
               </Select>
             </FormControl>
           </Stack>
@@ -306,60 +278,51 @@ export default function ProductList() {
             </MedipandaTableRow>
           </TableHead>
           <TableBody>
-            {mockProducts.map(product => (
+            {page.map(product => (
               <Fragment key={product.id}>
-                <MedipandaTableRow sx={{ borderBottom: 'none' }}>
+                <MedipandaTableRow
+                  onClick={() => setSelectedId(product.id)}
+                  sx={{
+                    cursor: 'pointer',
+                    borderBottomWidth: '0 !important',
+                  }}
+                >
                   <MedipandaTableCell rowSpan={2}>
-                    <Typography
-                      sx={{
-                        ...typography.smallTextR,
-                        whiteSpace: 'pre-line',
-                      }}
-                    >
-                      {product.manufacturer}
+                    <Typography variant='smallTextR' sx={{ whiteSpace: 'pre-line' }}>
+                      {product.manufacturerName}
                     </Typography>
                   </MedipandaTableCell>
                   <MedipandaTableCell sx={{ textAlign: 'left' }}>
                     <Stack gap='5px' sx={{ width: '450px' }}>
-                      <Typography
-                        sx={{
-                          ...typography.largeTextB,
-                          color: colors.gray70,
-                        }}
-                      >
+                      <Typography variant='largeTextB' sx={{ color: colors.gray70 }}>
                         {product.productName}
                       </Typography>
                       <Typography
-                        sx={{
-                          ...typography.mediumTextR,
-                          color: colors.gray50,
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                        }}
+                        variant='mediumTextR'
+                        sx={{ color: colors.gray50, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                       >
                         {product.composition}
                       </Typography>
                     </Stack>
                   </MedipandaTableCell>
-                  <MedipandaTableCell align='center'>{product.price.toLocaleString()}</MedipandaTableCell>
-                  <MedipandaTableCell align='center'>{product.insuranceStatus}</MedipandaTableCell>
+                  <MedipandaTableCell align='center'>{product.price?.toLocaleString() ?? '-'}</MedipandaTableCell>
+                  <MedipandaTableCell align='center'>{product.note ?? '-'}</MedipandaTableCell>
                   <MedipandaTableCell align='center'>
-                    <Typography sx={{ fontWeight: 500 }}>{product.baseFeeRate}</Typography>
+                    <Typography sx={{ fontWeight: 500 }}>{product.feeRate ?? '-'}</Typography>
                   </MedipandaTableCell>
-                  <MedipandaTableCell align='center'>{product.status}</MedipandaTableCell>
-                  <MedipandaTableCell align='center'>{product.feeChange}</MedipandaTableCell>
+                  <MedipandaTableCell align='center'>
+                    {Object.keys(statusLabel)
+                      .map(key => (product[key] ? statusLabel[key] : ''))
+                      .filter(Boolean)
+                      .join(', ') || '-'}
+                  </MedipandaTableCell>
+                  <MedipandaTableCell align='center'>{product.changedFeeRate ?? '-'}</MedipandaTableCell>
                 </MedipandaTableRow>
                 <MedipandaTableRow>
                   <MedipandaTableCell colSpan={6} sx={{ textAlign: 'left' }}>
                     <Typography
-                      sx={{
-                        ...typography.mediumTextR,
-                        color: colors.vividViolet,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}
+                      variant='mediumTextR'
+                      sx={{ color: colors.vividViolet, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                     >
                       {product.note}
                     </Typography>
@@ -370,40 +333,183 @@ export default function ProductList() {
           </TableBody>
         </Table>
 
-        <MedipandaPagination sx={{ marginTop: '40px' }} count={10} page={1} showFirstButton showLastButton />
+        <MedipandaPagination
+          count={totalPages}
+          page={pageFormik.values.pageIndex + 1}
+          showFirstButton
+          showLastButton
+          onChange={(_, page) => {
+            pageFormik.setFieldValue('pageIndex', page - 1);
+          }}
+          sx={{ marginTop: '40px' }}
+        />
       </Stack>
-      <Dialog
+
+      <ReplaceableProductDialog open={selectedId !== null} id={selectedId} onClose={() => setSelectedId(null)} />
+    </>
+  );
+}
+
+function ReplaceableProductDialog({ open, onClose, id }: { open?: boolean; onClose?: () => void; id: number | null }) {
+  const [detail, setDetail] = useState<ProductDetailsResponse | null>(null);
+
+  const fetchDetail = async (id: number) => {
+    const response = await getProductDetails(id);
+
+    setDetail(response);
+  };
+
+  useEffect(() => {
+    if (id === null) {
+      return;
+    }
+
+    fetchDetail(id);
+  }, [id]);
+
+  const [page, setPage] = useState<ProductSummaryResponse[]>([]);
+
+  if (!open) {
+    return null;
+  }
+
+  if (!detail) {
+    return <FixedLoader />;
+  }
+
+  return (
+    <Dialog
+      open
+      onClose={onClose}
+      maxWidth={false}
+      sx={{
+        '& .MuiDialog-paper': {
+          width: '1000px',
+          borderRadius: '20px',
+        },
+      }}
+    >
+      <DialogTitle
         sx={{
-          '& .MuiDialog-paper': {
-            width: '1000px',
-            borderRadius: '20px',
-          },
+          display: 'flex',
+          alignItems: 'center',
+          height: '80px',
+          padding: '22px 30px',
+          boxSizing: 'border-box',
+          backgroundColor: colors.gray10,
         }}
       >
-        <DialogTitle
+        <Typography variant='heading2B' sx={{ color: colors.gray80 }}>
+          대체가능 의약품 보기
+        </Typography>
+        <IconButton sx={{ marginLeft: 'auto' }}>
+          <Close />
+        </IconButton>
+      </DialogTitle>
+      <Table>
+        <TableBody>
+          <TableCell></TableCell>
+        </TableBody>
+      </Table>
+      <Stack>
+        <table style={{ margin: '40px 30px' }}>
+          <tr style={{ height: '39px' }}>
+            <td style={{ width: '100px' }}>제약사명:</td>
+            <td style={{ width: '320px' }}>{detail.manufacturer}</td>
+            <td style={{ width: '100px' }}>약가:</td>
+            <td style={{ width: '320px' }}>{detail.price}</td>
+          </tr>
+          <tr style={{ height: '39px' }}>
+            <td>제품명:</td>
+            <td>{detail.productName}</td>
+            <td>기본: 수수료율</td>
+            <td>{detail.feeRate}</td>
+          </tr>
+          <tr style={{ height: '39px' }}>
+            <td>성분명:</td>
+            <td>{detail.composition}</td>
+            <td>상태:</td>
+            <td>
+              {Object.keys(statusLabel)
+                .map(key => (detail[key] ? statusLabel[key] : ''))
+                .filter(Boolean)
+                .join(', ') || '-'}
+            </td>
+          </tr>
+          <tr style={{ height: '39px' }}>
+            <td>제품코드:</td>
+            <td>{detail.productCode}</td>
+            <td>비고:</td>
+            <td>{detail.note}</td>
+          </tr>
+        </table>
+        <Table
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            height: '80px',
-            padding: '22px 30px',
-            boxSizing: 'border-box',
-            backgroundColor: colors.gray10,
+            marginTop: '10px',
+            marginBottom: '40px',
           }}
         >
-          <Typography sx={{ ...typography.heading2B, color: colors.gray80 }}>대체가능 의약품 보기</Typography>
-          <IconButton sx={{ marginLeft: 'auto' }}>
-            <Close />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent sx={{ padding: '40px 0px 60px 0px' }}>
-          <Table>
-            <TableBody>
-              <TableCell></TableCell>
-            </TableBody>
-          </Table>
-          <Stack></Stack>
-        </DialogContent>
-      </Dialog>
-    </>
+          <TableHead>
+            <MedipandaTableRow>
+              <MedipandaTableCell sx={{ width: '120px' }}>제약사명</MedipandaTableCell>
+              <MedipandaTableCell sx={{ width: '450px' }}>제품정보</MedipandaTableCell>
+              <MedipandaTableCell sx={{ width: '80px' }}>약가</MedipandaTableCell>
+              <MedipandaTableCell sx={{ width: '65px' }}>급여정보</MedipandaTableCell>
+              <MedipandaTableCell sx={{ width: '90px' }}>기본 수수료율</MedipandaTableCell>
+              <MedipandaTableCell sx={{ width: '80px' }}>상태</MedipandaTableCell>
+              <MedipandaTableCell sx={{ width: '60px' }}>변경</MedipandaTableCell>
+            </MedipandaTableRow>
+          </TableHead>
+          <TableBody>
+            {page.map(product => (
+              <Fragment key={product.id}>
+                <MedipandaTableRow sx={{ borderBottomWidth: '0 !important' }}>
+                  <MedipandaTableCell rowSpan={2}>
+                    <Typography variant='smallTextR' sx={{ whiteSpace: 'pre-line' }}>
+                      {product.manufacturerName}
+                    </Typography>
+                  </MedipandaTableCell>
+                  <MedipandaTableCell sx={{ textAlign: 'left' }}>
+                    <Stack gap='5px' sx={{ width: '450px' }}>
+                      <Typography variant='largeTextB' sx={{ color: colors.gray70 }}>
+                        {product.productName}
+                      </Typography>
+                      <Typography
+                        variant='mediumTextR'
+                        sx={{ color: colors.gray50, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                      >
+                        {product.composition}
+                      </Typography>
+                    </Stack>
+                  </MedipandaTableCell>
+                  <MedipandaTableCell align='center'>{product.price?.toLocaleString() ?? '-'}</MedipandaTableCell>
+                  <MedipandaTableCell align='center'>{product.note ?? '-'}</MedipandaTableCell>
+                  <MedipandaTableCell align='center'>
+                    <Typography sx={{ fontWeight: 500 }}>{product.feeRate ?? '-'}</Typography>
+                  </MedipandaTableCell>
+                  <MedipandaTableCell align='center'>
+                    {Object.keys(statusLabel)
+                      .map(key => (product[key] ? statusLabel[key] : ''))
+                      .filter(Boolean)
+                      .join(', ') || '-'}
+                  </MedipandaTableCell>
+                  <MedipandaTableCell align='center'>{product.changedFeeRate ?? '-'}</MedipandaTableCell>
+                </MedipandaTableRow>
+                <MedipandaTableRow>
+                  <MedipandaTableCell colSpan={6} sx={{ textAlign: 'left' }}>
+                    <Typography
+                      variant='mediumTextR'
+                      sx={{ color: colors.vividViolet, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                    >
+                      {product.note}
+                    </Typography>
+                  </MedipandaTableCell>
+                </MedipandaTableRow>
+              </Fragment>
+            ))}
+          </TableBody>
+        </Table>
+      </Stack>
+    </Dialog>
   );
 }

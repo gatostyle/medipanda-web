@@ -5,18 +5,18 @@ import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router';
 import { type BoardPostResponse, getBoards } from '../backend';
 import { InquiryStatusChip } from '../components/InquiryStatusChip.tsx';
-import { MedipandaPagination } from '../components/MedipandaPagination.tsx';
-import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '../components/MedipandaTab.tsx';
-import { MedipandaTableCell, MedipandaTableRow } from '../components/MedipandaTable.tsx';
-import { colors, typography } from '../globalStyles.ts';
+import { MedipandaPagination } from '../custom/components/MedipandaPagination.tsx';
+import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '../custom/components/MedipandaTab.tsx';
+import { colors } from '../custom/globalStyles.ts';
 import { formatYyyyMmDdHhMm } from '../utils/dateFormat.ts';
 import { mockBoolean } from '../utils/mock.ts';
 import { type Sequenced, withSequence } from '../utils/withSequence.ts';
+import { MedipandaTableCell, MedipandaTableRow } from 'custom/components/MedipandaTable.tsx';
 
 export default function InquiryList() {
-  const [data, setData] = useState<Sequenced<BoardPostResponse>[]>([]);
+  const [page, setPage] = useState<Sequenced<BoardPostResponse>[]>([]);
 
-  const formik = useFormik({
+  const pageFormik = useFormik({
     initialValues: {
       searchKeyword: '',
       pageIndex: 0,
@@ -24,39 +24,33 @@ export default function InquiryList() {
       expandedId: -1,
     },
     onSubmit: async () => {
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
+      if (pageFormik.values.pageIndex !== 0) {
+        await pageFormik.setFieldValue('pageIndex', 0);
       } else {
-        await fetchData();
+        await fetchPage();
       }
     },
   });
 
-  const fetchData = async () => {
+  const fetchPage = async () => {
     const response = await getBoards({
       boardType: 'INQUIRY',
-      boardTitle: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-      page: formik.values.pageIndex,
-      size: formik.values.pageSize,
+      boardTitle: pageFormik.values.searchKeyword !== '' ? pageFormik.values.searchKeyword : undefined,
+      page: pageFormik.values.pageIndex,
+      size: pageFormik.values.pageSize,
     });
 
-    setData(withSequence(response).content);
+    setPage(withSequence(response).content);
   };
 
   useEffect(() => {
-    fetchData();
-  }, [formik.values.pageIndex, formik.values.pageSize]);
+    pageFormik.submitForm();
+  }, [pageFormik.values.pageIndex, pageFormik.values.pageSize]);
 
   return (
     <Stack alignItems='center'>
       <Box sx={{ width: '100%' }}>
-        <Typography
-          sx={{
-            ...typography.heading3M,
-            color: colors.gray80,
-            mb: '30px',
-          }}
-        >
+        <Typography variant='heading3M' sx={{ color: colors.gray80, mb: '30px' }}>
           1:1 문의내역
         </Typography>
       </Box>
@@ -66,12 +60,12 @@ export default function InquiryList() {
         <MedipandaTabElse />
       </MedipandaTabs>
 
-      <Stack direction='row' component='form' onSubmit={formik.handleSubmit} sx={{ width: '100%', marginTop: '40px' }}>
+      <Stack direction='row' component='form' onSubmit={pageFormik.handleSubmit} sx={{ width: '100%', marginTop: '40px' }}>
         <TextField
           size='small'
           name='searchKeyword'
-          value={formik.values.searchKeyword}
-          onChange={formik.handleChange}
+          value={pageFormik.values.searchKeyword}
+          onChange={pageFormik.handleChange}
           placeholder='문의 내역을 검색해 보세요'
           sx={{ width: '350px', marginLeft: 'auto' }}
           InputProps={{
@@ -94,7 +88,7 @@ export default function InquiryList() {
           </MedipandaTableRow>
         </TableHead>
         <TableBody>
-          {data.map(inquiry => (
+          {page.map(inquiry => (
             <MedipandaTableRow key={inquiry.id}>
               <MedipandaTableCell>{`${inquiry.sequence}`}</MedipandaTableCell>
               <MedipandaTableCell sx={{ textAlign: 'left' }}>{inquiry.title}</MedipandaTableCell>

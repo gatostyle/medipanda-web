@@ -20,7 +20,7 @@ import {
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router';
-import { colors } from '../globalStyles';
+import { colors } from '../custom/globalStyles.ts';
 
 const ContentContainer = styled(Box)({
   padding: '24px',

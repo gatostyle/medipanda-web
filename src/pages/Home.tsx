@@ -1,47 +1,19 @@
 import { KeyboardArrowRight } from '@mui/icons-material';
-import { Box, Button, Stack, Table, TableBody, TableHead, Typography } from '@mui/material';
+import { Box, Button, Stack, type TableProps, Typography } from '@mui/material';
+import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router';
 import { type BoardPostResponse, getBoards } from '../backend';
 import { LazyImage } from '../components/LazyImage.tsx';
-import { MedipandaTableCell, MedipandaTableRow } from '../components/MedipandaTable.tsx';
-import { colors, typography } from '../globalStyles.ts';
+import { MedipandaButton } from '../custom/components/MedipandaButton.tsx';
+import { MedipandaTable } from '../custom/components/MedipandaTable.tsx';
+import { colors, typography } from '../custom/globalStyles.ts';
 import { formatYyyyMmDd } from '../utils/dateFormat.ts';
 import { type Sequenced, withSequence } from '../utils/withSequence.ts';
 
 export default function Home() {
-  const [data, setData] = useState<Sequenced<BoardPostResponse>[]>([]);
-
-  const formik = useFormik({
-    initialValues: {
-      boardType: 'ANONYMOUS' as 'ANONYMOUS' | 'MR_CSO_MATCHING',
-      pageIndex: 0,
-      pageSize: 10,
-      totalPages: 1,
-    },
-    onSubmit: async () => {
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchData();
-      }
-    },
-  });
-
-  const fetchData = async () => {
-    const response = await getBoards({
-      boardType: formik.values.boardType,
-      page: formik.values.pageIndex,
-      size: formik.values.pageSize,
-    });
-
-    setData(withSequence(response).content);
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [formik.values.boardType]);
+  const [recentBoardType, setRecentBoardType] = useState<'ANONYMOUS' | 'MR_CSO_MATCHING'>('ANONYMOUS');
 
   return (
     <Box>
@@ -101,94 +73,134 @@ export default function Home() {
       >
         <Button
           variant='text'
-          onClick={() => formik.setFieldValue('boardType', 'ANONYMOUS')}
+          onClick={() => setRecentBoardType('ANONYMOUS')}
           sx={{
             ...typography.heading4B,
-            color: formik.values.boardType === 'ANONYMOUS' ? colors.gray80 : colors.gray40,
+            color: recentBoardType === 'ANONYMOUS' ? colors.gray80 : colors.gray40,
           }}
         >
           익명게시판
         </Button>
         <Button
           variant='text'
-          onClick={() => formik.setFieldValue('boardType', 'MR_CSO_MATCHING')}
+          onClick={() => setRecentBoardType('MR_CSO_MATCHING')}
           sx={{
             ...typography.heading4B,
-            color: formik.values.boardType === 'MR_CSO_MATCHING' ? colors.gray80 : colors.gray40,
+            color: recentBoardType === 'MR_CSO_MATCHING' ? colors.gray80 : colors.gray40,
             marginLeft: '30px',
           }}
         >
           MR-CSO매칭
         </Button>
-        <Button
+        <MedipandaButton
           variant='contained'
           startIcon={<img src='/assets/icons/icon-pen.svg' />}
+          component={RouterLink}
+          to={recentBoardType === 'ANONYMOUS' ? '/community/anonymous/new' : '/community/mr-cso-matching/new'}
           sx={{
-            backgroundColor: colors.vividViolet,
             marginLeft: 'auto',
           }}
         >
           글쓰기
-        </Button>
-        <Button
+        </MedipandaButton>
+        <MedipandaButton
           variant='outlined'
           endIcon={<KeyboardArrowRight />}
           component={RouterLink}
-          to={formik.values.boardType === 'ANONYMOUS' ? '/community/anonymous' : '/community/mr-cso-matching'}
+          to={recentBoardType === 'ANONYMOUS' ? '/community/anonymous' : '/community/mr-cso-matching'}
           sx={{
-            borderColor: colors.vividViolet,
-            color: colors.vividViolet,
             marginLeft: '10px',
           }}
         >
           더보기
-        </Button>
+        </MedipandaButton>
       </Stack>
 
-      <Table sx={{ marginTop: '15px' }}>
-        <TableHead>
-          <MedipandaTableRow>
-            <MedipandaTableCell sx={{ width: '80px' }}>No</MedipandaTableCell>
-            <MedipandaTableCell sx={{ width: 'auto' }}>제목</MedipandaTableCell>
-            <MedipandaTableCell sx={{ width: '100px' }}>댓글</MedipandaTableCell>
-            <MedipandaTableCell sx={{ width: '100px' }}>추천수</MedipandaTableCell>
-            <MedipandaTableCell sx={{ width: '120px' }}>작성자</MedipandaTableCell>
-            <MedipandaTableCell sx={{ width: '100px' }}>등록일</MedipandaTableCell>
-            <MedipandaTableCell sx={{ width: '100px' }}>조회수</MedipandaTableCell>
-          </MedipandaTableRow>
-        </TableHead>
-        <TableBody>
-          {data.map((post, index) => (
-            <MedipandaTableRow
-              key={post.id}
-              sx={{
-                '&:last-child td': { borderBottom: 'none' },
-              }}
-            >
-              <MedipandaTableCell>{index + 1}</MedipandaTableCell>
-              <MedipandaTableCell sx={{ textAlign: 'left' }}>
-                <Typography
-                  component={RouterLink}
-                  to={`/community/anonymous/${post.id}`}
-                  sx={{
-                    textDecoration: 'none',
-                    color: colors.gray700,
-                    fontSize: '14px',
-                    '&:hover': { textDecoration: 'underline', color: colors.primary },
-                  }}
-                >
-                  {post.title}
-                </Typography>
-              </MedipandaTableCell>
-              <MedipandaTableCell>{post.commentCount}개</MedipandaTableCell>
-              <MedipandaTableCell>{post.likesCount.toLocaleString()}</MedipandaTableCell>
-              <MedipandaTableCell>{post.nickname}</MedipandaTableCell>
-              <MedipandaTableCell>{formatYyyyMmDd(post.createdAt)}</MedipandaTableCell>
-              <MedipandaTableCell>{post.viewsCount.toLocaleString()}</MedipandaTableCell>
-            </MedipandaTableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <RecentBoardTable boardType={recentBoardType} sx={{ marginTop: '15px' }} />
     </Box>
   );
+}
+
+function RecentBoardTable({ boardType, ...props }: TableProps & { boardType: 'ANONYMOUS' | 'MR_CSO_MATCHING' }) {
+  const [page, setPage] = useState<Sequenced<BoardPostResponse>[]>([]);
+
+  const pageFormik = useFormik({
+    initialValues: {
+      pageIndex: 0,
+      pageSize: 10,
+      totalPages: 1,
+    },
+    onSubmit: async () => {
+      if (pageFormik.values.pageIndex !== 0) {
+        await pageFormik.setFieldValue('pageIndex', 0);
+      } else {
+        await fetchPage();
+      }
+    },
+  });
+
+  const fetchPage = async () => {
+    const response = await getBoards({
+      boardType: boardType,
+      page: pageFormik.values.pageIndex,
+      size: pageFormik.values.pageSize,
+    });
+
+    setPage(withSequence(response).content);
+  };
+
+  useEffect(() => {
+    pageFormik.submitForm();
+  }, [boardType, pageFormik.values.pageIndex, pageFormik.values.pageSize]);
+
+  const table = useReactTable({
+    data: page,
+    columns: [
+      {
+        header: 'No',
+        accessorKey: 'sequence',
+      },
+      {
+        header: '제목',
+        accessorKey: 'title',
+        cell: ({ row }) => (
+          <Typography
+            component={RouterLink}
+            to={`/community/${boardType.toLowerCase()}/${row.original.id}`}
+            sx={{
+              textDecoration: 'none',
+              color: colors.gray700,
+              fontSize: '14px',
+              '&:hover': { textDecoration: 'underline', color: colors.primary },
+            }}
+          >
+            {row.original.title}
+          </Typography>
+        ),
+      },
+      {
+        header: '댓글',
+        cell: ({ row }) => `${row.original.commentCount}개`,
+      },
+      {
+        header: '추천수',
+        accessorKey: 'likesCount',
+      },
+      {
+        header: '작성자',
+        accessorKey: 'nickname',
+      },
+      {
+        header: '등록일',
+        cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
+      },
+      {
+        header: '조회수',
+        accessorKey: 'viewsCount',
+      },
+    ],
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  return <MedipandaTable {...props} table={table} />;
 }

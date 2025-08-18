@@ -4,16 +4,16 @@ import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router';
 import { type BoardDetailsResponse, type BoardPostResponse, getBoardDetails, getBoards } from '../backend';
-import { MedipandaPagination } from '../components/MedipandaPagination.tsx';
-import { colors, typography } from '../globalStyles.ts';
+import { MedipandaPagination } from '../custom/components/MedipandaPagination.tsx';
+import { colors } from '../custom/globalStyles.ts';
 import { formatYyyyMmDdHhMm } from '../utils/dateFormat.ts';
 
 export default function FaqList() {
-  const [data, setData] = useState<BoardPostResponse[]>([]);
+  const [page, setPage] = useState<BoardPostResponse[]>([]);
   const [totalPages, setTotalPages] = useState(0);
   const [expandedDetail, setExpandedDetail] = useState<BoardDetailsResponse | null>(null);
 
-  const formik = useFormik({
+  const pageFormik = useFormik({
     initialValues: {
       searchKeyword: '',
       pageIndex: 0,
@@ -22,25 +22,25 @@ export default function FaqList() {
       expandedId: -1,
     },
     onSubmit: async () => {
-      await formik.setFieldValue('expandedId', -1);
+      await pageFormik.setFieldValue('expandedId', -1);
 
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
+      if (pageFormik.values.pageIndex !== 0) {
+        await pageFormik.setFieldValue('pageIndex', 0);
       } else {
-        await fetchData();
+        await fetchPage();
       }
     },
   });
 
-  const fetchData = async () => {
+  const fetchPage = async () => {
     const response = await getBoards({
       boardType: 'FAQ',
-      boardTitle: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-      page: formik.values.pageIndex,
-      size: formik.values.pageSize,
+      boardTitle: pageFormik.values.searchKeyword !== '' ? pageFormik.values.searchKeyword : undefined,
+      page: pageFormik.values.pageIndex,
+      size: pageFormik.values.pageSize,
     });
 
-    setData(response.content);
+    setPage(response.content);
     setTotalPages(response.totalPages);
   };
 
@@ -49,36 +49,30 @@ export default function FaqList() {
   };
 
   useEffect(() => {
-    fetchData();
-  }, [formik.values.pageIndex, formik.values.pageSize]);
+    pageFormik.submitForm();
+  }, [pageFormik.values.pageIndex, pageFormik.values.pageSize]);
 
   useEffect(() => {
     setExpandedDetail(null);
 
-    if (formik.values.expandedId === -1) {
+    if (pageFormik.values.expandedId === -1) {
       return;
     }
 
-    fetchDetail(formik.values.expandedId);
-  }, [formik.values.expandedId]);
+    fetchDetail(pageFormik.values.expandedId);
+  }, [pageFormik.values.expandedId]);
 
   return (
     <Stack alignItems='center'>
       <Box sx={{ width: '100%' }}>
-        <Typography
-          sx={{
-            ...typography.heading3M,
-            color: colors.gray80,
-            mb: '30px',
-          }}
-        >
+        <Typography variant='heading3M' sx={{ color: colors.gray80, mb: '30px' }}>
           FAQ
         </Typography>
       </Box>
       <Stack
         direction='row'
         component='form'
-        onSubmit={formik.handleSubmit}
+        onSubmit={pageFormik.handleSubmit}
         sx={{
           width: '100%',
           marginTop: '30px',
@@ -87,8 +81,8 @@ export default function FaqList() {
         <TextField
           size='small'
           name='searchKeyword'
-          value={formik.values.searchKeyword}
-          onChange={formik.handleChange}
+          value={pageFormik.values.searchKeyword}
+          onChange={pageFormik.handleChange}
           placeholder='궁금한 점을 검색해 보세요.'
           InputProps={{
             endAdornment: (
@@ -101,11 +95,11 @@ export default function FaqList() {
         />
       </Stack>
       <Box sx={{ width: '100%', marginTop: '10px', borderTop: `1px solid ${colors.gray50}` }}>
-        {data.map(faq => (
+        {page.map(faq => (
           <Accordion
             key={faq.id}
-            expanded={formik.values.expandedId === faq.id && expandedDetail !== null}
-            onChange={() => formik.setFieldValue('expandedId', faq.id)}
+            expanded={pageFormik.values.expandedId === faq.id && expandedDetail !== null}
+            onChange={() => pageFormik.setFieldValue('expandedId', faq.id)}
             sx={{
               boxShadow: 'none',
               '&:before': {
@@ -125,14 +119,16 @@ export default function FaqList() {
               }}
             >
               <Stack direction='row' alignItems='center'>
-                <Typography sx={{ ...typography.heading4B, color: colors.gray50 }}>Q</Typography>
-                <Typography sx={{ ...typography.largeTextB, color: colors.gray80, width: '629px', marginLeft: '20px' }}>
+                <Typography variant='heading4B' sx={{ color: colors.gray50 }}>
+                  Q
+                </Typography>
+                <Typography variant='largeTextB' sx={{ color: colors.gray80, width: '629px', marginLeft: '20px' }}>
                   {faq.title}
                 </Typography>
-                <Typography sx={{ ...typography.largeTextR, color: colors.gray50, marginLeft: '20px', marginRight: '20px' }}>
+                <Typography variant='largeTextR' sx={{ color: colors.gray50, marginLeft: '20px', marginRight: '20px' }}>
                   {formatYyyyMmDdHhMm(faq.createdAt)}
                 </Typography>
-                {formik.values.expandedId === faq.id ? <Remove /> : <Add />}
+                {pageFormik.values.expandedId === faq.id ? <Remove /> : <Add />}
               </Stack>
             </AccordionSummary>
             <AccordionDetails sx={{ marginX: '50px', backgroundColor: colors.gray10 }}>
@@ -175,11 +171,11 @@ export default function FaqList() {
       </Box>
       <MedipandaPagination
         count={totalPages}
-        page={formik.values.pageIndex + 1}
+        page={pageFormik.values.pageIndex + 1}
         showFirstButton
         showLastButton
         onChange={(_, page) => {
-          formik.setFieldValue('pageIndex', page - 1);
+          pageFormik.setFieldValue('pageIndex', page - 1);
         }}
         sx={{ marginTop: '40px' }}
       />

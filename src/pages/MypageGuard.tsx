@@ -1,7 +1,7 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Box, Button, IconButton, InputAdornment, Stack, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
-import { colors, typography } from '../globalStyles.ts';
+import { colors } from '../custom/globalStyles.ts';
 
 export default function MypageGuard() {
   const [password, setPassword] = useState('');
@@ -14,13 +14,14 @@ export default function MypageGuard() {
   return (
     <>
       <Stack>
-        <Typography sx={{ ...typography.heading3B, color: colors.gray80 }}>마이페이지</Typography>
+        <Typography variant='heading3B' sx={{ color: colors.gray80 }}>
+          마이페이지
+        </Typography>
         <Box sx={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center', display: 'flex', my: '100px' }}>
           <Stack>
             <Typography
-              variant='h6'
+              variant='largeTextM'
               sx={{
-                ...typography.largeTextM,
                 color: colors.gray80,
                 fontWeight: 400,
                 fontSize: '16px',

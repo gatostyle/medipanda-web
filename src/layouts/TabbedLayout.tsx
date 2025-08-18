@@ -1,8 +1,8 @@
 import { Typography } from '@mui/material';
 import { memo } from 'react';
 import { Link as RouterLink, Outlet, useLocation } from 'react-router';
-import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '../components/MedipandaTab.tsx';
-import { colors, typography } from '../globalStyles.ts';
+import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '../custom/components/MedipandaTab.tsx';
+import { colors } from '../custom/globalStyles.ts';
 
 interface TabbedLayoutProps {
   title: string;
@@ -14,12 +14,7 @@ function TabbedLayout({ title, tabConfig }: TabbedLayoutProps) {
 
   return (
     <>
-      <Typography
-        sx={{
-          ...typography.heading3M,
-          color: colors.gray80,
-        }}
-      >
+      <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
         {title}
       </Typography>
 

@@ -3,33 +3,33 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { getSalesAgencyProductDetails, type SalesAgencyProductDetailsResponse } from '../backend';
 import { FixedLoader } from '../components/FixedLoader.tsx';
-import { colors, typography } from '../globalStyles';
+import { colors } from '../custom/globalStyles.ts';
 import { formatYyyyMmDd } from '../utils/dateFormat.ts';
 import { mockBoolean } from '../utils/mock.ts';
 
 export default function SalesAgencyProductDetail() {
   const { id: paramId } = useParams();
   const navigate = useNavigate();
-  const [data, setData] = useState<SalesAgencyProductDetailsResponse | null>(null);
+  const [detail, setDetail] = useState<SalesAgencyProductDetailsResponse | null>(null);
 
-  const fetchData = async (id: number) => {
+  const fetchDetail = async (id: number) => {
     const response = await getSalesAgencyProductDetails(id);
 
-    setData(response);
+    setDetail(response);
   };
 
   useEffect(() => {
     const id = Number(paramId);
     if (isNaN(id)) {
       alert('잘못된 접근입니다.');
-      navigate('/customer-service/notice', { replace: true });
+      navigate('sales-agency-products', { replace: true });
       return;
     }
 
-    fetchData(id);
+    fetchDetail(id);
   }, [paramId]);
 
-  if (!data) {
+  if (!detail) {
     return <FixedLoader />;
   }
 
@@ -37,12 +37,7 @@ export default function SalesAgencyProductDetail() {
 
   return (
     <Stack>
-      <Typography
-        sx={{
-          ...typography.heading3M,
-          color: colors.gray80,
-        }}
-      >
+      <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
         영업대행상품
       </Typography>
 
@@ -55,10 +50,15 @@ export default function SalesAgencyProductDetail() {
           borderTop: `1px solid ${colors.gray50}`,
         }}
       >
-        <Typography sx={{ ...typography.normalTextB, color: colors.gray80 }}>{data.clientName}</Typography>
-        <Typography sx={{ ...typography.heading4B, color: colors.gray80 }}>{data.productName}</Typography>
-        <Typography sx={{ ...typography.smallTextR, color: colors.gray50 }}>
-          {formatYyyyMmDd(data.startDate)} ~ {formatYyyyMmDd(data.endDate)} | 조회수 {data.boardPostDetail.viewsCount.toLocaleString()}
+        <Typography variant='normalTextB' sx={{ color: colors.gray80 }}>
+          {detail.clientName}
+        </Typography>
+        <Typography variant='heading4B' sx={{ color: colors.gray80 }}>
+          {detail.productName}
+        </Typography>
+        <Typography variant='smallTextR' sx={{ color: colors.gray50 }}>
+          {formatYyyyMmDd(detail.startDate)} ~ {formatYyyyMmDd(detail.endDate)} | 조회수{' '}
+          {detail.boardPostDetail.viewsCount.toLocaleString()}
         </Typography>
       </Stack>
 
@@ -68,7 +68,7 @@ export default function SalesAgencyProductDetail() {
           padding: '50px 20px',
         }}
       >
-        {data.boardPostDetail.content}
+        {detail.boardPostDetail.content}
       </Stack>
 
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>

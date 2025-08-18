@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Button, Chip, Pagination, TableCell, TableHead } from '@mui/material';
+import { TableCell, TableHead } from '@mui/material';
 
 export const colors = {
   primary: '#6B3AA0',
@@ -51,133 +51,111 @@ export const typography = {
     fontSize: '24px',
     fontWeight: 700,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
   heading3B: {
     fontSize: '36px',
     fontWeight: 700,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
   heading3M: {
     fontSize: '36px',
     fontWeight: 500,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
   heading3R: {
     fontSize: '36px',
     fontWeight: 400,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
   heading4B: {
     fontSize: '20px',
     fontWeight: 700,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
   heading4M: {
     fontSize: '20px',
     fontWeight: 500,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
   heading4R: {
     fontSize: '20px',
     fontWeight: 400,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
   heading5B: {
     fontSize: '18px',
     fontWeight: 700,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
   heading5M: {
     fontSize: '18px',
     fontWeight: 500,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
   heading5R: {
     fontSize: '18px',
     fontWeight: 400,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
   normalTextB: {
     fontSize: '17px',
     fontWeight: 700,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
   normalTextM: {
     fontSize: '17px',
     fontWeight: 500,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
   normalTextR: {
     fontSize: '17px',
     fontWeight: 400,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
   largeTextB: {
     fontSize: '16px',
     fontWeight: 700,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
   largeTextM: {
     fontSize: '16px',
     fontWeight: 500,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
   largeTextR: {
     fontSize: '16px',
     fontWeight: 400,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
   mediumTextB: {
     fontSize: '14px',
     fontWeight: 700,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
   mediumTextM: {
     fontSize: '14px',
     fontWeight: 500,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
   mediumTextR: {
     fontSize: '14px',
     fontWeight: 400,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
   smallTextB: {
     fontSize: '12px',
     fontWeight: 700,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
   smallTextM: {
     fontSize: '12px',
     fontWeight: 500,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
   smallTextR: {
     fontSize: '12px',
     fontWeight: 400,
     lineHeight: 1.5,
-    whiteSpace: 'nowrap',
   },
 };
 

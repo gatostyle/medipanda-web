@@ -1,7 +1,7 @@
 import { Box, Button, Checkbox, FormControlLabel, Stack, Switch, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
-import { colors, typography } from '../globalStyles.ts';
+import { colors } from '../custom/globalStyles.ts';
 
 const MarketingCheckbox = styled(Checkbox)({
   color: '#6B3AA0',
@@ -44,13 +44,7 @@ export default function MypageNotification() {
     <>
       <Stack alignItems='center'>
         <Box sx={{ width: '100%' }}>
-          <Typography
-            sx={{
-              ...typography.heading3M,
-              color: colors.gray80,
-              mb: '30px',
-            }}
-          >
+          <Typography variant='heading3M' sx={{ color: colors.gray80, mb: '30px' }}>
             수신정보
           </Typography>
         </Box>
@@ -72,13 +66,7 @@ export default function MypageNotification() {
               py: '10px',
             }}
           >
-            <Typography
-              sx={{
-                ...typography.largeTextB,
-                color: colors.white,
-                width: '100%',
-              }}
-            >
+            <Typography variant='largeTextB' sx={{ color: colors.white, width: '100%' }}>
               전체 알림 받기
             </Typography>
             <Switch size='medium' />
@@ -102,13 +90,7 @@ export default function MypageNotification() {
               py: '10px',
             }}
           >
-            <Typography
-              sx={{
-                ...typography.largeTextB,
-                color: colors.gray80,
-                width: '100%',
-              }}
-            >
+            <Typography variant='largeTextB' sx={{ color: colors.gray80, width: '100%' }}>
               공지사항 (제약사)
             </Typography>
             <Switch size='medium' />
@@ -121,13 +103,7 @@ export default function MypageNotification() {
               py: '10px',
             }}
           >
-            <Typography
-              sx={{
-                ...typography.largeTextB,
-                color: colors.gray80,
-                width: '100%',
-              }}
-            >
+            <Typography variant='largeTextB' sx={{ color: colors.gray80, width: '100%' }}>
               신규 영업대행상품
             </Typography>
             <Switch size='medium' />
@@ -140,13 +116,7 @@ export default function MypageNotification() {
               py: '10px',
             }}
           >
-            <Typography
-              sx={{
-                ...typography.largeTextB,
-                color: colors.gray80,
-                width: '100%',
-              }}
-            >
+            <Typography variant='largeTextB' sx={{ color: colors.gray80, width: '100%' }}>
               실적관리
             </Typography>
             <Switch size='medium' />
@@ -159,13 +129,7 @@ export default function MypageNotification() {
               py: '10px',
             }}
           >
-            <Typography
-              sx={{
-                ...typography.largeTextB,
-                color: colors.gray80,
-                width: '100%',
-              }}
-            >
+            <Typography variant='largeTextB' sx={{ color: colors.gray80, width: '100%' }}>
               정산
             </Typography>
             <Switch size='medium' />
@@ -178,13 +142,7 @@ export default function MypageNotification() {
               py: '10px',
             }}
           >
-            <Typography
-              sx={{
-                ...typography.largeTextB,
-                color: colors.gray80,
-                width: '100%',
-              }}
-            >
+            <Typography variant='largeTextB' sx={{ color: colors.gray80, width: '100%' }}>
               커뮤니티
             </Typography>
             <Switch size='medium' />
@@ -201,12 +159,7 @@ export default function MypageNotification() {
             marginTop: '40px',
           }}
         >
-          <Typography
-            sx={{
-              ...typography.largeTextB,
-              color: colors.gray80,
-            }}
-          >
+          <Typography variant='largeTextB' sx={{ color: colors.gray80 }}>
             마케팅 수신 동의
           </Typography>
           <Stack

@@ -2,7 +2,7 @@ import { Box, List, ListItemButton, ListItemText, Stack, Typography } from '@mui
 import { styled } from '@mui/material/styles';
 import { memo } from 'react';
 import { Link as RouterLink, Outlet, useLocation } from 'react-router';
-import { colors, typography } from '../globalStyles.ts';
+import { colors, typography } from '../custom/globalStyles.ts';
 
 const SidebarLink = styled(ListItemButton)({
   color: colors.gray80,
@@ -32,12 +32,7 @@ function SidebarLayout({ title, tabConfig }: SidebarLayoutProps) {
   return (
     <Stack direction='row'>
       <Stack>
-        <Typography
-          sx={{
-            ...typography.heading3B,
-            color: colors.gray80,
-          }}
-        >
+        <Typography variant='heading3B' sx={{ color: colors.gray80 }}>
           {title}
         </Typography>
         <List
