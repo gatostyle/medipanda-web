@@ -16,7 +16,9 @@ import {
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
+import { Link as RouterLink } from 'react-router';
 import {
+  getDownloadSettlementListExcel,
   getSettlement,
   getSettlementPartnerSummary,
   getSettlements,
@@ -31,6 +33,8 @@ import { colors } from '../custom/globalStyles.ts';
 import { formatYyyyMm, formatYyyy년Mm월 } from '../utils/dateFormat.ts';
 
 export default function SettlementList() {
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+
   const [page, setPage] = useState<SettlementResponse[]>([]);
   const [totalPages, setTotalPages] = useState(0);
 
@@ -156,6 +160,16 @@ export default function SettlementList() {
                 variant='contained'
                 size='small'
                 color='secondary'
+                component={RouterLink}
+                to={getDownloadSettlementListExcel({
+                  companyName: pageFormik.values.searchType === 'companyName' ? pageFormik.values.searchKeyword : undefined,
+                  dealerName: pageFormik.values.searchType === 'dealerName' ? pageFormik.values.searchKeyword : undefined,
+                  startMonth: formatYyyyMm(pageFormik.values.settlementMonth),
+                  endMonth: formatYyyyMm(pageFormik.values.settlementMonth),
+                  page: pageFormik.values.pageIndex,
+                  size: pageFormik.values.pageSize,
+                })}
+                target='_blank'
                 sx={{
                   marginLeft: 'auto',
                 }}
@@ -175,7 +189,13 @@ export default function SettlementList() {
               </TableHead>
               <TableBody>
                 {page.map(settlement => (
-                  <MedipandaTableRow key={settlement.id}>
+                  <MedipandaTableRow
+                    key={settlement.id}
+                    onClick={() => setSelectedId(settlement.id)}
+                    sx={{
+                      cursor: 'pointer',
+                    }}
+                  >
                     <MedipandaTableCell>{settlement.drugCompanyName}</MedipandaTableCell>
                     <MedipandaTableCell>
                       <Button
@@ -244,7 +264,17 @@ export default function SettlementList() {
                 이의신청
               </MedipandaButton>
             </Stack>
-            <SettlementDetailForm id={1} />
+            <Stack
+              alignItems='center'
+              sx={{
+                paddingY: '40px',
+                marginTop: '10px',
+                border: `1px solid ${colors.gray30}`,
+                boxSizing: 'border-box',
+              }}
+            >
+              <SettlementDetailForm id={selectedId} />
+            </Stack>
           </Stack>
         </Stack>
       </Stack>
@@ -338,19 +368,9 @@ function SettlementDetailForm({ id }: { id: number | null }) {
 
   if (id === null) {
     return (
-      <Stack
-        alignItems='center'
-        sx={{
-          paddingY: '40px',
-          marginTop: '10px',
-          border: `1px solid ${colors.gray30}`,
-          boxSizing: 'border-box',
-        }}
-      >
-        <Typography variant='largeTextM' sx={{ color: colors.gray80 }}>
-          내역을 확인하실 딜러를 선택해주세요.
-        </Typography>
-      </Stack>
+      <Typography variant='largeTextM' sx={{ color: colors.gray80 }}>
+        내역을 확인하실 딜러를 선택해주세요.
+      </Typography>
     );
   }
 
@@ -359,15 +379,7 @@ function SettlementDetailForm({ id }: { id: number | null }) {
   }
 
   return (
-    <Stack
-      alignItems='center'
-      sx={{
-        paddingY: '40px',
-        marginTop: '10px',
-        border: `1px solid ${colors.gray30}`,
-        boxSizing: 'border-box',
-      }}
-    >
+    <>
       <Typography variant='heading2B' sx={{ color: colors.gray80 }}>
         정산내역 상세
       </Typography>
@@ -433,6 +445,6 @@ function SettlementDetailForm({ id }: { id: number | null }) {
         }}
         sx={{ marginTop: '40px' }}
       />
-    </Stack>
+    </>
   );
 }

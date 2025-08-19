@@ -1,18 +1,14 @@
-import { Close, Search } from '@mui/icons-material';
+import { Search } from '@mui/icons-material';
 import {
   Box,
   Button,
-  Dialog,
-  DialogTitle,
   FormControl,
-  IconButton,
   InputAdornment,
   MenuItem,
   Select,
   Stack,
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TextField,
   Typography,
@@ -22,6 +18,7 @@ import { ArrowDown2, ArrowUp2 } from 'iconsax-reactjs';
 import { Fragment, useEffect, useState } from 'react';
 import { getProductDetails, getProductSummaries, type ProductDetailsResponse, type ProductSummaryResponse } from '../backend';
 import { FixedLoader } from '../components/FixedLoader.tsx';
+import { MedipandaDialog, MedipandaDialogTitle } from '../custom/components/MedipandaDialog.tsx';
 import { MedipandaPagination } from '../custom/components/MedipandaPagination.tsx';
 import { colors, typography } from '../custom/globalStyles.ts';
 import { MedipandaTableCell, MedipandaTableRow } from 'custom/components/MedipandaTable.tsx';
@@ -378,39 +375,8 @@ function ReplaceableProductDialog({ open, onClose, id }: { open?: boolean; onClo
   }
 
   return (
-    <Dialog
-      open
-      onClose={onClose}
-      maxWidth={false}
-      sx={{
-        '& .MuiDialog-paper': {
-          width: '1000px',
-          borderRadius: '20px',
-        },
-      }}
-    >
-      <DialogTitle
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          height: '80px',
-          padding: '22px 30px',
-          boxSizing: 'border-box',
-          backgroundColor: colors.gray10,
-        }}
-      >
-        <Typography variant='heading2B' sx={{ color: colors.gray80 }}>
-          대체가능 의약품 보기
-        </Typography>
-        <IconButton sx={{ marginLeft: 'auto' }}>
-          <Close />
-        </IconButton>
-      </DialogTitle>
-      <Table>
-        <TableBody>
-          <TableCell></TableCell>
-        </TableBody>
-      </Table>
+    <MedipandaDialog open onClose={onClose} width='1000px'>
+      <MedipandaDialogTitle title='대체가능 의약품 보기' onClose={onClose} />
       <Stack>
         <table style={{ margin: '40px 30px' }}>
           <tr style={{ height: '39px' }}>
@@ -451,6 +417,7 @@ function ReplaceableProductDialog({ open, onClose, id }: { open?: boolean; onClo
         >
           <TableHead>
             <MedipandaTableRow>
+              <MedipandaTableCell sx={{ width: '120px' }}>대체</MedipandaTableCell>
               <MedipandaTableCell sx={{ width: '120px' }}>제약사명</MedipandaTableCell>
               <MedipandaTableCell sx={{ width: '450px' }}>제품정보</MedipandaTableCell>
               <MedipandaTableCell sx={{ width: '80px' }}>약가</MedipandaTableCell>
@@ -464,6 +431,11 @@ function ReplaceableProductDialog({ open, onClose, id }: { open?: boolean; onClo
             {page.map(product => (
               <Fragment key={product.id}>
                 <MedipandaTableRow sx={{ borderBottomWidth: '0 !important' }}>
+                  <MedipandaTableCell rowSpan={2}>
+                    <Typography variant='smallTextR' sx={{ whiteSpace: 'pre-line' }}>
+                      {'-'}
+                    </Typography>
+                  </MedipandaTableCell>
                   <MedipandaTableCell rowSpan={2}>
                     <Typography variant='smallTextR' sx={{ whiteSpace: 'pre-line' }}>
                       {product.manufacturerName}
@@ -510,6 +482,6 @@ function ReplaceableProductDialog({ open, onClose, id }: { open?: boolean; onClo
           </TableBody>
         </Table>
       </Stack>
-    </Dialog>
+    </MedipandaDialog>
   );
 }

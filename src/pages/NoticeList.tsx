@@ -67,6 +67,7 @@ export default function NoticeList() {
         <Stack direction='row' alignItems='center' sx={{ justifyContent: 'space-between' }}>
           {categories.map((category, index) => (
             <Button
+              key={category}
               variant='text'
               sx={{
                 ...typography.mediumTextB,

@@ -54,6 +54,7 @@ export default function EventList() {
       >
         {page.map(event => (
           <Stack
+            key={event.id}
             direction='row'
             component={RouterLink}
             to={`/events/${event.id}`}

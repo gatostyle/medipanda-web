@@ -2,7 +2,9 @@ import { createTheme } from '@mui/material';
 import type { CSSProperties } from 'react';
 
 type MedipandaTypographyKeys =
+  | 'heading1.7B'
   | 'heading2B'
+  | 'heading2R'
   | 'heading3B'
   | 'heading3M'
   | 'heading3R'
@@ -37,9 +39,19 @@ export const medipandaTypographyTheme = createTheme({
       fontFamily: 'Pretendard',
       whiteSpace: 'nowrap',
     },
+    'heading1.7B': {
+      fontSize: '28px',
+      fontWeight: 700,
+      lineHeight: 1.2,
+    },
     heading2B: {
       fontSize: '24px',
       fontWeight: 700,
+      lineHeight: 1.5,
+    },
+    heading2R: {
+      fontSize: '24px',
+      fontWeight: 400,
       lineHeight: 1.5,
     },
     heading3B: {

@@ -1,337 +1,368 @@
 import { Search } from '@mui/icons-material';
-import {
-  Alert,
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  InputAdornment,
-  Paper,
-  Snackbar,
-  Stack,
-  Table,
-  TableBody,
-  TableContainer,
-  TableRow,
-  TextField,
-  Typography,
-} from '@mui/material';
-import { useState } from 'react';
+import { Checkbox, IconButton, InputAdornment, Stack, Typography } from '@mui/material';
+import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { useFormik } from 'formik';
+import { useEffect, useState } from 'react';
+import { getPerformanceStats, type PerformanceStatsResponse } from '../backend';
 import { MedipandaButton } from '../custom/components/MedipandaButton.tsx';
-import { colors, StyledTableHead, StyledTableCell } from '../custom/globalStyles.ts';
-
-const mockSettlements = [
-  {
-    id: 1,
-    drugCompany: '동구바이오',
-    dealerName: '정길동',
-    supplyAmount: '-',
-    taxAmount: '-',
-    totalAmount: '승인대기중',
-    status: 'pending',
-  },
-  {
-    id: 2,
-    drugCompany: '동구바이오',
-    dealerName: '홍길동',
-    supplyAmount: 328303614,
-    taxAmount: 3316198,
-    totalAmount: 331619812,
-    status: 'approved',
-  },
-  {
-    id: 3,
-    drugCompany: '동구바이오',
-    dealerName: '나유비',
-    supplyAmount: 328303614,
-    taxAmount: 3316198,
-    totalAmount: 331619812,
-    status: 'approved',
-  },
-];
+import { MedipandaDatePicker } from '../custom/components/MedipandaDatePicker.tsx';
+import { MedipandaOutlinedInput } from '../custom/components/MedipandaOutlinedInput.tsx';
+import { MedipandaTable } from '../custom/components/MedipandaTable.tsx';
+import { colors } from '../custom/globalStyles.ts';
+import { DATEFORMAT_YYYY_MM, formatYyyyMm } from '../utils/dateFormat.ts';
 
 export default function SalesStatistic() {
   const [currentTab, setCurrentTab] = useState<'ALL' | 'INDIVIDUAL'>('ALL');
-  const [searchCategory, setSearchCategory] = useState('제약사명');
-  const [searchQuery, setSearchQuery] = useState('');
 
-  const [loading, setLoading] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-  const [confirmDialog, setConfirmDialog] = useState(false);
-  const [actionType, setActionType] = useState('');
-  const [currentMonth, setCurrentMonth] = useState('2025년 4월');
-  const [tabLoading, setTabLoading] = useState(false);
+  return (
+    <>
+      <Stack gap='40px'>
+        <Stack direction='row' justifyContent='center'>
+          <MedipandaButton
+            variant={currentTab === 'ALL' ? 'contained' : 'outlined'}
+            rounded
+            onClick={() => setCurrentTab('ALL')}
+            sx={{
+              width: '140px',
+              borderTopRightRadius: '0px',
+              borderBottomRightRadius: '0px',
+            }}
+          >
+            전체매출
+          </MedipandaButton>
+          <MedipandaButton
+            variant={currentTab === 'INDIVIDUAL' ? 'contained' : 'outlined'}
+            rounded
+            onClick={() => setCurrentTab('INDIVIDUAL')}
+            sx={{
+              width: '140px',
+              borderBottomLeftRadius: '0px',
+              borderTopLeftRadius: '0px',
+            }}
+          >
+            거래처매출
+          </MedipandaButton>
+        </Stack>
 
-  const showSnackbar = (message, severity = 'success') => {
-    setSnackbarMessage(message);
-    setSnackbarSeverity(severity);
-    setSnackbarOpen(true);
-  };
+        {currentTab === 'ALL' ? <TotalSalesStatistic /> : <PartnerSalesStatistic />}
+      </Stack>
+    </>
+  );
+}
 
-  const handleMonthChange = direction => {
-    setLoading(true);
-    const year = parseInt(currentMonth.match(/\d{4}/)[0]);
-    const month = parseInt(currentMonth.match(/\d+(?=월)/)[0]);
+function TotalSalesStatistic() {
+  const [page, setPage] = useState<PerformanceStatsResponse[]>([]);
 
-    let newYear = year;
-    let newMonth = month;
-
-    if (direction === 'prev') {
-      newMonth -= 1;
-      if (newMonth < 1) {
-        newMonth = 12;
-        newYear -= 1;
+  const pageFormik = useFormik({
+    initialValues: {
+      startMonth: null as Date | null,
+      endMonth: null as Date | null,
+      searchKeyword: '',
+      pageIndex: 0,
+      pageSize: 20,
+      totalPages: 1,
+    },
+    onSubmit: async () => {
+      if (pageFormik.values.pageIndex !== 0) {
+        await pageFormik.setFieldValue('pageIndex', 0);
+      } else {
+        await fetchPage();
       }
-    } else {
-      newMonth += 1;
-      if (newMonth > 12) {
-        newMonth = 1;
-        newYear += 1;
+    },
+  });
+
+  const fetchPage = async () => {
+    const response = await getPerformanceStats({
+      institutionName: pageFormik.values.searchKeyword !== '' ? pageFormik.values.searchKeyword : undefined,
+      startMonth: pageFormik.values.startMonth !== null ? formatYyyyMm(pageFormik.values.startMonth) : undefined,
+      endMonth: pageFormik.values.endMonth !== null ? formatYyyyMm(pageFormik.values.endMonth) : undefined,
+      page: pageFormik.values.pageIndex,
+      size: pageFormik.values.pageSize,
+    });
+
+    setPage(response.content);
+  };
+
+  useEffect(() => {
+    pageFormik.submitForm();
+  }, [pageFormik.values.pageIndex, pageFormik.values.pageSize]);
+
+  return (
+    <>
+      <Stack direction='row' justifyContent='center' alignItems='center' gap='10px' component='form' onSubmit={pageFormik.handleSubmit}>
+        <MedipandaDatePicker
+          value={pageFormik.values.startMonth}
+          onChange={date => pageFormik.setFieldValue('startMonth', date)}
+          label='시작월'
+          format={DATEFORMAT_YYYY_MM}
+          views={['year', 'month']}
+          sx={{
+            width: '180px',
+          }}
+        />
+        ~
+        <MedipandaDatePicker
+          value={pageFormik.values.endMonth}
+          onChange={date => pageFormik.setFieldValue('endMonth', date)}
+          label='종료월'
+          format={DATEFORMAT_YYYY_MM}
+          views={['year', 'month']}
+          sx={{
+            width: '180px',
+          }}
+        />
+        <MedipandaOutlinedInput
+          name='searchKeyword'
+          value={pageFormik.values.searchKeyword ?? ''}
+          onChange={pageFormik.handleChange}
+          placeholder='검색'
+          endAdornment={
+            <InputAdornment position='end'>
+              <IconButton edge='end'>
+                <Search />
+              </IconButton>
+            </InputAdornment>
+          }
+          sx={{
+            width: '400px',
+            height: '50px',
+          }}
+        />
+        <button type='submit' hidden />
+      </Stack>
+
+      {page.length > 0 ? (
+        <ChartView data={page} />
+      ) : (
+        <Stack alignItems='center'>
+          <Typography variant='largeTextM' sx={{ color: colors.gray80 }}>
+            검색 결과가 없습니다.
+          </Typography>
+        </Stack>
+      )}
+    </>
+  );
+}
+
+function PartnerSalesStatistic() {
+  const [partnerPage, setPartnerPage] = useState<PerformanceStatsResponse[]>([]);
+
+  const [page, setPage] = useState<PerformanceStatsResponse[]>([]);
+
+  const pageFormik = useFormik({
+    initialValues: {
+      startMonth: null as Date | null,
+      endMonth: null as Date | null,
+      searchKeyword: '',
+      pageIndex: 0,
+      pageSize: 20,
+      totalPages: 1,
+    },
+    onSubmit: async () => {
+      if (pageFormik.values.pageIndex !== 0) {
+        await pageFormik.setFieldValue('pageIndex', 0);
+      } else {
+        await fetchPage();
       }
-    }
+    },
+  });
 
-    setTimeout(() => {
-      setCurrentMonth(`${newYear}년 ${newMonth}월`);
-      setLoading(false);
-    }, 500);
+  const fetchPage = async () => {
+    const response = await getPerformanceStats({
+      institutionName: pageFormik.values.searchKeyword !== '' ? pageFormik.values.searchKeyword : undefined,
+      startMonth: pageFormik.values.startMonth !== null ? formatYyyyMm(pageFormik.values.startMonth) : undefined,
+      endMonth: pageFormik.values.endMonth !== null ? formatYyyyMm(pageFormik.values.endMonth) : undefined,
+      page: pageFormik.values.pageIndex,
+      size: pageFormik.values.pageSize,
+    });
+
+    setPage(response.content);
+
+    setPartnerPage([]);
   };
 
-  const handleAction = type => {
-    setActionType(type);
-    if (type === '파일다운로드') {
-      setLoading(true);
-      setTimeout(() => {
-        setLoading(false);
-        showSnackbar('정산 데이터가 다운로드되었습니다.');
-        const link = document.createElement('a');
-        link.href = '/mock-settlements-data.xlsx';
-        link.download = 'settlements-data.xlsx';
-        link.click();
-      }, 1500);
-    } else {
-      setConfirmDialog(true);
-    }
-  };
+  useEffect(() => {
+    pageFormik.submitForm();
+  }, [pageFormik.values.pageIndex, pageFormik.values.pageSize]);
 
-  const totalAmount = mockSettlements
-    .filter(item => item.status === 'approved')
-    .reduce((sum, item) => sum + (typeof item.totalAmount === 'number' ? item.totalAmount : 0), 0);
+  const table = useReactTable({
+    data: page,
+    columns: [
+      {
+        header: '거래처명',
+        cell: ({ row }) => row.original.institutionName,
+      },
+      {
+        header: '처방금액',
+        cell: ({ row }) => row.original.prescriptionAmount,
+      },
+      {
+        header: '정산(합계)금액(VAT포함)',
+        cell: ({ row }) => row.original.totalAmount,
+      },
+      {
+        header: '관리',
+        cell: ({ row }) => (
+          <MedipandaButton onClick={() => setPartnerPage([row.original])} size='small' variant='contained' rounded color='secondary'>
+            선택
+          </MedipandaButton>
+        ),
+      },
+    ],
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  return (
+    <>
+      <Stack direction='row' justifyContent='center' alignItems='center' gap='10px' component='form' onSubmit={pageFormik.handleSubmit}>
+        <MedipandaDatePicker
+          value={pageFormik.values.startMonth}
+          onChange={date => pageFormik.setFieldValue('startMonth', date)}
+          label='시작월'
+          format={DATEFORMAT_YYYY_MM}
+          views={['year', 'month']}
+          sx={{
+            width: '180px',
+          }}
+        />
+        ~
+        <MedipandaDatePicker
+          value={pageFormik.values.endMonth}
+          onChange={date => pageFormik.setFieldValue('endMonth', date)}
+          label='종료월'
+          format={DATEFORMAT_YYYY_MM}
+          views={['year', 'month']}
+          sx={{
+            width: '180px',
+          }}
+        />
+        <MedipandaOutlinedInput
+          name='searchKeyword'
+          value={pageFormik.values.searchKeyword ?? ''}
+          onChange={pageFormik.handleChange}
+          placeholder='거래처명을 입력해주세요.'
+          endAdornment={
+            <InputAdornment position='end'>
+              <IconButton edge='end'>
+                <Search />
+              </IconButton>
+            </InputAdornment>
+          }
+          sx={{
+            width: '400px',
+            height: '50px',
+          }}
+        />
+        <button type='submit' hidden />
+      </Stack>
+
+      {page.length > 0 ? (
+        partnerPage.length > 0 ? (
+          <ChartView data={partnerPage} />
+        ) : (
+          <MedipandaTable table={table} />
+        )
+      ) : (
+        <Stack alignItems='center'>
+          <Typography variant='largeTextM' sx={{ color: colors.gray80 }}>
+            검색 결과가 없습니다.
+          </Typography>
+        </Stack>
+      )}
+    </>
+  );
+}
+
+function ChartView({ data }: { data: PerformanceStatsResponse[] }) {
+  const [checkedIndexes, setCheckedIndexes] = useState<number[]>([]);
+
+  useEffect(() => {
+    setCheckedIndexes([]);
+  }, [data]);
+
+  const table = useReactTable({
+    data,
+    columns: [
+      {
+        id: 'select',
+        header: () => {
+          return (
+            <Checkbox
+              checked={checkedIndexes.length === data.length}
+              onChange={(_, checked) => {
+                if (checked) {
+                  setCheckedIndexes([...data.map((_, index) => index)]);
+                } else {
+                  setCheckedIndexes([]);
+                }
+              }}
+              sx={{
+                '& svg': {
+                  color: colors.vividViolet,
+                },
+              }}
+            />
+          );
+        },
+        cell: ({ row }) => (
+          <Checkbox
+            checked={checkedIndexes.includes(row.index)}
+            onChange={(_, checked) => {
+              if (checked) {
+                setCheckedIndexes(prev => [...prev, row.index]);
+              } else {
+                setCheckedIndexes(prev => prev.filter(index => index !== row.index));
+              }
+            }}
+            sx={{
+              '& svg': {
+                color: colors.vividViolet,
+              },
+            }}
+          />
+        ),
+      },
+      {
+        header: '제약사명',
+        cell: ({ row }) => row.original.drugCompany,
+      },
+      {
+        header: '처방금액',
+        cell: ({ row }) => row.original.prescriptionAmount,
+      },
+      {
+        header: '정산(합계)금액(VAT포함)',
+        cell: ({ row }) => row.original.totalAmount,
+      },
+    ],
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   return (
     <>
       <Stack
-        direction='row'
         justifyContent='center'
+        alignItems='center'
         sx={{
-          wdith: '100%',
+          width: '100%',
+          height: '550px',
+          backgroundColor: colors.gray30,
         }}
       >
-        <MedipandaButton
-          variant={currentTab === 'ALL' ? 'contained' : 'outlined'}
-          rounded
-          onClick={() => setCurrentTab('ALL')}
-          sx={{
-            borderTopRightRadius: '0px',
-            borderBottomRightRadius: '0px',
-          }}
-        >
-          전체매출
-        </MedipandaButton>
-        <MedipandaButton
-          variant={currentTab === 'INDIVIDUAL' ? 'contained' : 'outlined'}
-          rounded
-          onClick={() => setCurrentTab('INDIVIDUAL')}
-          sx={{
-            borderBottomLeftRadius: '0px',
-            borderTopLeftRadius: '0px',
-          }}
-        >
-          거래처매출
-        </MedipandaButton>
+        그래프 영역
       </Stack>
 
-      <Box>
-        <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
-          <Button
-            variant='outlined'
-            sx={{
-              borderColor: colors.primary,
-              color: colors.primary,
-              textTransform: 'none',
-              borderRadius: '20px',
-              '&:hover': { backgroundColor: colors.primaryLight },
-            }}
-            onClick={() => {
-              showSnackbar('전체매출 보기로 전환했습니다.', 'info');
-            }}
-          >
-            전체매출
-          </Button>
-          <Button
-            variant='contained'
-            sx={{
-              backgroundColor: colors.primary,
-              textTransform: 'none',
-              borderRadius: '20px',
-              '&:hover': { backgroundColor: colors.primaryDark },
-            }}
-            onClick={() => {
-              showSnackbar('거래처매출 보기로 전환했습니다.', 'info');
-            }}
-          >
-            거래처매출
-          </Button>
-        </Box>
-
-        <Box sx={{ display: 'flex', gap: 2, mb: 3, alignItems: 'center' }}>
-          <TextField
-            value='2025-07'
-            size='small'
-            sx={{ width: '140px' }}
-            InputProps={{
-              startAdornment: <InputAdornment position='start'>📅</InputAdornment>,
-            }}
-          />
-          <Typography sx={{ color: colors.gray500 }}>~</Typography>
-          <TextField
-            value='2025-11'
-            size='small'
-            sx={{ width: '140px' }}
-            InputProps={{
-              startAdornment: <InputAdornment position='start'>📅</InputAdornment>,
-            }}
-          />
-          <TextField
-            placeholder='A 병원'
-            value='A 병원'
-            size='small'
-            sx={{ flex: 1 }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position='end'>
-                  <Search />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box>
-
-        <Box
-          sx={{
-            width: '100%',
-            height: '300px',
-            backgroundColor: colors.gray100,
-            border: `1px solid ${colors.gray300}`,
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: '32px',
-            color: colors.gray500,
-            fontSize: '18px',
-          }}
-        >
-          그래프 영역
-        </Box>
-
-        <Typography sx={{ mb: 2, color: colors.error, textAlign: 'center' }}>
+      <Stack gap='10px' alignItems='center'>
+        <Typography variant='largeTextR' sx={{ color: colors.red }}>
           ※ 정산월 기준으로 산정된 금액이며, 만원단위 이하는 절삭한 금액으로 표시 됩니다.
         </Typography>
-
-        <TableContainer component={Paper} sx={{ boxShadow: 'none', border: `1px solid ${colors.gray300}` }}>
-          <Table>
-            <StyledTableHead>
-              <TableRow>
-                <StyledTableCell sx={{ width: '150px' }}>거래처명</StyledTableCell>
-                <StyledTableCell align='right' sx={{ width: '180px' }}>
-                  정산(합계)금액(VAT별도)
-                </StyledTableCell>
-                <StyledTableCell align='center' sx={{ width: '100px' }}>
-                  관리
-                </StyledTableCell>
-              </TableRow>
-            </StyledTableHead>
-            <TableBody>
-              {[
-                { name: 'A 병원 1', amount: 15500000, selected: true },
-                { name: 'A 병원 2', amount: 50500145, selected: true },
-                { name: 'A 병원 3', amount: 1050202500, selected: true },
-                { name: 'A 병원 4', amount: 65500050, selected: true },
-                { name: 'A 병원 5', amount: 0, selected: true },
-              ].map((item, index) => (
-                <TableRow key={index} sx={{ '&:hover': { backgroundColor: colors.gray50 } }}>
-                  <StyledTableCell>{item.name}</StyledTableCell>
-                  <StyledTableCell align='right'>{item.amount.toLocaleString()}</StyledTableCell>
-                  <StyledTableCell align='center'>
-                    <Button
-                      variant='contained'
-                      size='small'
-                      sx={{
-                        backgroundColor: colors.primary,
-                        color: colors.white,
-                        textTransform: 'none',
-                        borderRadius: '20px',
-                        padding: '4px 16px',
-                        '&:hover': {
-                          backgroundColor: colors.primaryDark,
-                        },
-                      }}
-                      onClick={() => {
-                        showSnackbar(`${item.name}이(가) 선택되었습니다.`, 'success');
-                      }}
-                    >
-                      선택
-                    </Button>
-                  </StyledTableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
-
-      {/* Confirmation Dialog */}
-      <Dialog open={confirmDialog} onClose={() => setConfirmDialog(false)}>
-        <DialogTitle>{actionType === '정산신청' ? '정산 신청 확인' : '이의 신청 확인'}</DialogTitle>
-        <DialogContent>
-          <Typography>
-            {actionType === '정산신청' ? '선택된 항목들에 대해 정산을 신청하시겠습니까?' : '이의 신청을 진행하시겠습니까?'}
-          </Typography>
-          <Typography sx={{ mt: 1, color: colors.gray500 }}>
-            {actionType === '정산신청' ? '신청 후 취소가 어려울 수 있습니다.' : '이의 사유를 상세히 작성해 주세요.'}
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setConfirmDialog(false)}>취소</Button>
-          <Button
-            variant='contained'
-            onClick={() => {
-              setConfirmDialog(false);
-              const message = actionType === '정산신청' ? '정산 신청이 완료되었습니다.' : '이의 신청이 접수되었습니다.';
-              showSnackbar(message, 'success');
-            }}
-            sx={{ backgroundColor: colors.primary }}
-          >
-            확인
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Snackbar for notifications */}
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+        <MedipandaTable
+          table={table}
+          sx={{
+            maxWidth: '800px',
+          }}
+        />
+      </Stack>
     </>
   );
 }

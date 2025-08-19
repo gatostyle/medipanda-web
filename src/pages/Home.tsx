@@ -158,11 +158,10 @@ function RecentBoardTable({ boardType, ...props }: TableProps & { boardType: 'AN
     columns: [
       {
         header: 'No',
-        accessorKey: 'sequence',
+        cell: ({ row }) => row.original.sequence,
       },
       {
         header: '제목',
-        accessorKey: 'title',
         cell: ({ row }) => (
           <Typography
             component={RouterLink}
@@ -184,11 +183,11 @@ function RecentBoardTable({ boardType, ...props }: TableProps & { boardType: 'AN
       },
       {
         header: '추천수',
-        accessorKey: 'likesCount',
+        cell: ({ row }) => row.original.likesCount,
       },
       {
         header: '작성자',
-        accessorKey: 'nickname',
+        cell: ({ row }) => row.original.nickname,
       },
       {
         header: '등록일',
@@ -196,7 +195,7 @@ function RecentBoardTable({ boardType, ...props }: TableProps & { boardType: 'AN
       },
       {
         header: '조회수',
-        accessorKey: 'viewsCount',
+        cell: ({ row }) => row.original.viewsCount,
       },
     ],
     getCoreRowModel: getCoreRowModel(),

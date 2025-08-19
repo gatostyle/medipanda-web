@@ -55,6 +55,7 @@ export default function SalesAgencyProductList() {
       >
         {page.map(salesAgencyProduct => (
           <Stack
+            key={salesAgencyProduct.id}
             direction='row'
             component={RouterLink}
             to={`/sales-agency-products/${salesAgencyProduct.id}`}

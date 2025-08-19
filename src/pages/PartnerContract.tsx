@@ -93,7 +93,7 @@ export default function PartnerContract() {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error' | 'warning'>('success');
   const [successDialog, setSuccessDialog] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState<{ [key: string]: string }>({});
+  const [uploadedFiles, setUploadedFiles] = useState<Record<string, string>>({});
 
   const showSnackbar = (message: string, severity: 'success' | 'error' | 'warning' = 'success') => {
     setSnackbarMessage(message);
