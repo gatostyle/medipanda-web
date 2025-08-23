@@ -1,7 +1,7 @@
+import { colors } from '@/themes';
+import { Close } from '@mui/icons-material';
 import { Dialog, DialogContent, DialogTitle, IconButton, Stack, Typography } from '@mui/material';
 import type { ComponentProps, CSSProperties } from 'react';
-import { colors } from '../globalStyles.ts';
-import { Close } from '@mui/icons-material';
 
 export function MedipandaDialog({ width, ...props }: Omit<ComponentProps<typeof Dialog>, 'sx'> & { width?: CSSProperties['width'] }) {
   return (

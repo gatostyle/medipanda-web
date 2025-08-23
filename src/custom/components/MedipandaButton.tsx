@@ -1,5 +1,5 @@
+import { colors, typography } from '@/themes';
 import { Button, type ButtonProps, type ButtonTypeMap, createTheme, type ExtendButtonBase, ThemeProvider } from '@mui/material';
-import { colors, typography } from '../globalStyles.ts';
 
 const medipandaButtonTheme = createTheme({
   palette: {

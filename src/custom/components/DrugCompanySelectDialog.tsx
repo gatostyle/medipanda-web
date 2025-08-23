@@ -1,11 +1,11 @@
+import { type DrugCompanyResponse, getDrugCompanies } from '@/backend';
+import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
 import { Stack } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { useFormik } from 'formik';
-import { useEffect, useState } from 'react';
-import { type DrugCompanyResponse, getDrugCompanies } from '../../backend';
-import { MedipandaButton } from './MedipandaButton.tsx';
-import { MedipandaDialog, MedipandaDialogContent, MedipandaDialogTitle } from './MedipandaDialog.tsx';
-import { MedipandaTable } from './MedipandaTable.tsx';
+import { useEffect } from 'react';
+import { MedipandaButton } from './MedipandaButton';
+import { MedipandaDialog, MedipandaDialogContent, MedipandaDialogTitle } from './MedipandaDialog';
+import { MedipandaTable } from './MedipandaTable';
 
 export function DrugCompanySelectDialog({
   open,
@@ -18,36 +18,24 @@ export function DrugCompanySelectDialog({
   onSelect?: (drugCompany: DrugCompanyResponse) => void;
   excludedIds?: number[];
 }) {
-  const [page, setPage] = useState<DrugCompanyResponse[]>([]);
-
-  const pageFormik = useFormik({
-    initialValues: {
-      searchKeyword: '',
-      pageIndex: 0,
-      pageSize: 10,
-      totalPages: 1,
+  const { content, formik: pageFormik } = usePageFetchFormik({
+    fetcher: async () => {
+      return (await getDrugCompanies()).filter(drugCompany => !(excludedIds ?? []).includes(drugCompany.id));
     },
-    onSubmit: async () => {
-      if (pageFormik.values.pageIndex !== 0) {
-        await pageFormik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchPage();
-      }
-    },
+    initialContent: [],
   });
 
-  const fetchPage = async () => {
-    const data = await getDrugCompanies();
-
-    setPage(data.filter(drugCompany => !(excludedIds ?? []).includes(drugCompany.id)));
-  };
-
   useEffect(() => {
-    pageFormik.submitForm();
-  }, [open, pageFormik.values.pageIndex, pageFormik.values.pageSize]);
+    if (open) {
+      (async () => {
+        await pageFormik.setFieldValue('searchKeyword', '');
+        await pageFormik.submitForm();
+      })();
+    }
+  }, [open]);
 
   const table = useReactTable({
-    data: page,
+    data: content,
     columns: [
       {
         header: '제약사명',

@@ -1,6 +1,6 @@
+import { colors, typography } from '@/themes';
 import { Pagination } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { colors, typography } from '../globalStyles.ts';
 
 export const MedipandaPagination = styled(Pagination)({
   '& .MuiPaginationItem-root': {

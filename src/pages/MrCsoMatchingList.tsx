@@ -1,57 +1,46 @@
+import { getBoards } from '@/backend';
+import { CommunityBanners } from '@/custom/components/CommunityBanners';
+import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
+import { MedipandaTableCell, MedipandaTableRow } from '@/custom/components/MedipandaTable';
+import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
+import { colors } from '@/themes';
+import { formatYyyyMmDdHhMm } from '@/lib/dateFormat';
 import { Search } from '@mui/icons-material';
-import { Box, Button, InputAdornment, Stack, Table, TableBody, TableHead, TextField, Typography } from '@mui/material';
-import { useFormik } from 'formik';
+import { Box, Button, InputAdornment, Link, Stack, Table, TableBody, TableHead, TextField, Typography } from '@mui/material';
 import { Link as RouterLink } from 'react-router';
-import { useEffect, useState } from 'react';
-import { type BoardPostResponse, getBoards } from '../backend';
-import { MedipandaPagination } from '../custom/components/MedipandaPagination.tsx';
-import { colors } from '../custom/globalStyles.ts';
-import { formatYyyyMmDdHhMm } from '../utils/dateFormat.ts';
-import { MedipandaTableCell, MedipandaTableRow } from 'custom/components/MedipandaTable.tsx';
 
 export default function MrCsoMatchingList() {
-  const [page, setPage] = useState<BoardPostResponse[]>([]);
-  const [noticePage, setNoticePage] = useState<BoardPostResponse[]>([]);
-  const [totalPages, setTotalPages] = useState(0);
-
-  const pageFormik = useFormik({
-    initialValues: {
+  const {
+    content: page,
+    pageCount: totalPages,
+    formik: pageFormik,
+  } = usePageFetchFormik({
+    initialFormValues: {
       searchKeyword: '',
-      pageIndex: 0,
-      pageSize: 10,
-      totalPages: 1,
     },
-    onSubmit: async () => {
-      if (pageFormik.values.pageIndex !== 0) {
-        await pageFormik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchPage();
-      }
+    fetcher: values => {
+      return getBoards({
+        boardType: 'MR_CSO_MATCHING',
+        boardTitle: values.searchKeyword !== '' ? values.searchKeyword : undefined,
+        page: values.pageIndex,
+        size: values.pageSize,
+      });
     },
+    contentSelector: response => response.content,
+    pageCountSelector: response => response.totalPages,
+    initialContent: [],
   });
 
-  const fetchPage = async () => {
-    const response = await getBoards({
-      boardType: 'MR_CSO_MATCHING',
-      boardTitle: pageFormik.values.searchKeyword !== '' ? pageFormik.values.searchKeyword : undefined,
-      page: pageFormik.values.pageIndex,
-      size: pageFormik.values.pageSize,
-    });
-
-    setPage(response.content);
-    setTotalPages(response.totalPages);
-
-    const noticeResponse = await getBoards({
-      boardType: 'NOTICE',
-      size: 2,
-    });
-
-    setNoticePage(noticeResponse.content);
-  };
-
-  useEffect(() => {
-    pageFormik.submitForm();
-  }, [pageFormik.values.pageIndex, pageFormik.values.pageSize]);
+  const { content: noticePage } = usePageFetchFormik({
+    fetcher: () => {
+      return getBoards({
+        boardType: 'NOTICE',
+        size: 2,
+      });
+    },
+    contentSelector: response => response.content,
+    initialContent: [],
+  });
 
   return (
     <>
@@ -63,7 +52,7 @@ export default function MrCsoMatchingList() {
           marginTop: '40px',
         }}
       >
-        <Stack alignItems='center' sx={{ width: '800px' }}>
+        <Stack>
           <Table>
             <TableHead>
               <MedipandaTableRow>
@@ -95,17 +84,19 @@ export default function MrCsoMatchingList() {
                           }}
                         />
                       )}
-                      <Typography
+                      <Link
                         component={RouterLink}
                         to={`/community/anonymous/${post.id}`}
+                        underline='hover'
                         sx={{
-                          textDecoration: 'none',
-                          color: colors.gray600,
-                          '&:hover': { textDecoration: 'underline', color: colors.primary },
+                          color: colors.gray70,
+                          '&:hover': {
+                            color: colors.vividViolet,
+                          },
                         }}
                       >
                         {post.title}
-                      </Typography>
+                      </Link>
                       <img
                         src='/assets/icons/icon-image.svg'
                         style={{
@@ -120,18 +111,19 @@ export default function MrCsoMatchingList() {
                   </MedipandaTableCell>
                   <MedipandaTableCell>{post.nickname}</MedipandaTableCell>
                   <MedipandaTableCell>{formatYyyyMmDdHhMm(post.createdAt)}</MedipandaTableCell>
-                  <MedipandaTableCell>
-                    {post.viewsCount >= 1000 ? `${(post.viewsCount / 1000).toFixed(1).replace(/\.0$/, '')}만` : post.viewsCount}
-                  </MedipandaTableCell>
-                  <MedipandaTableCell>
-                    {post.likesCount >= 1000 ? `${(post.likesCount / 1000).toFixed(1).replace(/\.0$/, '')}만` : post.likesCount}
-                  </MedipandaTableCell>
+                  <MedipandaTableCell>{post.viewsCount.toLocaleString()}</MedipandaTableCell>
+                  <MedipandaTableCell>{post.likesCount.toLocaleString()}</MedipandaTableCell>
                 </MedipandaTableRow>
               ))}
             </TableBody>
           </Table>
 
-          <Box sx={{ marginTop: '40px' }}>
+          <Box
+            sx={{
+              alignSelf: 'center',
+              marginTop: '40px',
+            }}
+          >
             <TextField
               name='searchKeyword'
               value={pageFormik.values.searchKeyword}
@@ -160,26 +152,24 @@ export default function MrCsoMatchingList() {
             onChange={(_, page) => {
               pageFormik.setFieldValue('pageIndex', page - 1);
             }}
-            sx={{ marginTop: '40px' }}
+            sx={{
+              alignSelf: 'center',
+              marginTop: '40px',
+            }}
           />
         </Stack>
         <Stack
-          alignItems='center'
           gap='10px'
           sx={{
             width: '400px',
           }}
         >
-          <Stack
-            direction='row'
-            gap='10px'
-            sx={{
-              width: '100%',
-            }}
-          >
+          <Stack direction='row' gap='10px'>
             <Button
               fullWidth
               variant='contained'
+              component={RouterLink}
+              to='/community/mr-cso-matching/new'
               sx={{
                 height: '50px',
                 backgroundColor: colors.navy,
@@ -201,7 +191,6 @@ export default function MrCsoMatchingList() {
               <Box
                 sx={{
                   padding: '5px 10px',
-                  marginRight: '5px',
                   border: `1px solid ${colors.red}`,
                   borderRadius: '10px',
                   boxSizing: 'border-box',
@@ -211,38 +200,13 @@ export default function MrCsoMatchingList() {
               >
                 <Typography sx={{ fontSize: '10px', lineHeight: '100%' }}>MY</Typography>
               </Box>
-              <Typography variant='largeTextB' sx={{ color: colors.gray80 }}>
+              <Typography variant='largeTextB' sx={{ marginLeft: '5px', color: colors.gray80 }}>
                 내 글
               </Typography>
             </Button>
           </Stack>
-          <img
-            src='https://picsum.photos/392/120'
-            width='392px'
-            height='120px'
-            style={{
-              border: `1p solid ${colors.gray20}`,
-              borderRadius: '5px',
-            }}
-          />
-          <img
-            src='https://picsum.photos/392/120'
-            width='392px'
-            height='120px'
-            style={{
-              border: `1p solid ${colors.gray20}`,
-              borderRadius: '5px',
-            }}
-          />
-          <img
-            src='https://picsum.photos/392/120'
-            width='392px'
-            height='120px'
-            style={{
-              border: `1p solid ${colors.gray20}`,
-              borderRadius: '5px',
-            }}
-          />
+
+          <CommunityBanners />
         </Stack>
       </Stack>
     </>

@@ -1,45 +1,27 @@
+import { createDealer, type DrugCompanyResponse, listDealers } from '@/backend';
+import { DrugCompanySelectDialog } from '@/custom/components/DrugCompanySelectDialog';
+import { MedipandaButton } from '@/custom/components/MedipandaButton';
+import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
+import { MedipandaTable } from '@/custom/components/MedipandaTable';
+import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
+import { colors } from '@/themes';
+import { formatYyyyMmDd } from '@/lib/dateFormat';
+import { mockString } from '@/lib/mock';
+import { withSequence } from '@/lib/withSequence';
 import { Stack, TextField, Typography } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
-import { useEffect, useState } from 'react';
-import { createDealer, type DealerResponse, type DrugCompanyResponse, listDealers } from '../backend';
-import { DrugCompanySelectDialog } from '../custom/components/DrugCompanySelectDialog.tsx';
-import { MedipandaButton } from '../custom/components/MedipandaButton.tsx';
-import { MedipandaOutlinedInput } from '../custom/components/MedipandaOutlinedInput.tsx';
-import { MedipandaTable } from '../custom/components/MedipandaTable.tsx';
-import { colors } from '../custom/globalStyles.ts';
-import { formatYyyyMmDd } from '../utils/dateFormat.ts';
-import { mockString } from '../utils/mock.ts';
-import { type Sequenced, withSequence } from '../utils/withSequence.ts';
+import { useState } from 'react';
 
 export default function DealerList() {
-  const [page, setPage] = useState<Sequenced<DealerResponse>[]>([]);
+  const { content: page } = usePageFetchFormik({
+    fetcher: async () => {
+      const response = await listDealers();
 
-  const pageFormik = useFormik({
-    initialValues: {
-      searchType: 'companyName' as 'companyName' | 'dealerName',
-      pageIndex: 0,
-      pageSize: 10,
-      totalPages: 1,
+      return withSequence(response);
     },
-    onSubmit: async () => {
-      if (pageFormik.values.pageIndex !== 0) {
-        await pageFormik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchPage();
-      }
-    },
+    initialContent: [],
   });
-
-  const fetchPage = async () => {
-    const response = await listDealers();
-
-    setPage(withSequence(response));
-  };
-
-  useEffect(() => {
-    pageFormik.submitForm();
-  }, [pageFormik.values.pageIndex, pageFormik.values.pageSize]);
 
   const table = useReactTable({
     data: page,
@@ -70,27 +52,20 @@ export default function DealerList() {
 
   return (
     <>
-      <Stack
-        alignItems='center'
-        sx={{
-          width: '100%',
-        }}
-      >
-        <Stack direction='row' alignItems='flex-start' gap='24px' sx={{ width: '100%', marginTop: '10px' }}>
-          <Stack alignItems='center' sx={{ width: '600px' }}>
-            <MedipandaTable table={table} />
-          </Stack>
-          <Stack
-            gap='10px'
-            sx={{
-              width: '600px',
-              padding: '40px 75px',
-              border: `1px solid ${colors.gray30}`,
-              boxSizing: 'border-box',
-            }}
-          >
-            <DealerCreateForm />
-          </Stack>
+      <Stack direction='row' alignItems='flex-start' gap='24px' sx={{ marginTop: '10px' }}>
+        <Stack alignItems='center' sx={{ width: '600px' }}>
+          <MedipandaTable table={table} />
+        </Stack>
+        <Stack
+          gap='10px'
+          sx={{
+            width: '600px',
+            padding: '40px 75px',
+            border: `1px solid ${colors.gray30}`,
+            boxSizing: 'border-box',
+          }}
+        >
+          <DealerCreateForm />
         </Stack>
       </Stack>
     </>
@@ -138,7 +113,7 @@ function DealerCreateForm() {
         />
       </Stack>
       {(formik.values.drugCompanies as (DrugCompanyResponse | null)[]).concat(null).map((drugCompany, index) => (
-        <Stack key={index} direction='row' alignItems='center'>
+        <Stack key={drugCompany?.id ?? ''} direction='row' alignItems='center'>
           <Typography variant='largeTextM' sx={{ color: colors.gray80, width: '120px' }}>
             {index === 0 ? '거래제약사' : ''}
           </Typography>

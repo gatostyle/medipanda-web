@@ -1,4 +1,4 @@
-import { getPublicKey } from 'backend';
+import { getPublicKey } from '@/backend';
 
 let pemPromise: Promise<string> | null = null;
 

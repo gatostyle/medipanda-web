@@ -1,10 +1,11 @@
+import { MedipandaButton } from '@/custom/components/MedipandaButton';
+import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/components/MedipandaTab';
+import { colors, typography } from '@/themes';
 import { GetApp } from '@mui/icons-material';
 import { Alert, Box, Button, CircularProgress, FormControl, MenuItem, Select, Snackbar, Stack, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
-import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '../custom/components/MedipandaTab.tsx';
-import { MedipandaButton } from '../custom/components/MedipandaButton.tsx';
-import { colors, typography } from '../custom/globalStyles.ts';
+import { Link as RouterLink } from 'react-router';
 
 const MypageFormRow = styled(Stack)({
   alignItems: 'center',
@@ -115,20 +116,14 @@ export default function MypageInfo() {
     }, 1500);
   };
 
-  const handleCancel = () => {
-    showSnackbar('수정이 취소되었습니다.', 'info');
-  };
-
   return (
     <>
-      <Stack alignItems='center'>
-        <Box sx={{ width: '100%' }}>
-          <Typography variant='heading3M' sx={{ color: colors.gray80, mb: '30px' }}>
-            내정보관리
-          </Typography>
-        </Box>
+      <>
+        <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
+          내정보관리
+        </Typography>
 
-        <MedipandaTabs value={0} sx={{ width: '100%' }}>
+        <MedipandaTabs value={0} sx={{ marginTop: '30px' }}>
           <MedipandaTab label={'기본정보'}></MedipandaTab>
           <MedipandaTabElse />
         </MedipandaTabs>
@@ -137,7 +132,7 @@ export default function MypageInfo() {
           sx={{
             alignItems: 'center',
             mt: '20px',
-            mb: '60px',
+            marginBottom: '60px',
           }}
         >
           <Stack sx={{ width: '544px' }}>
@@ -242,7 +237,7 @@ export default function MypageInfo() {
           </Stack>
         </Stack>
 
-        <MedipandaTabs value={0} sx={{ width: '100%' }}>
+        <MedipandaTabs value={0}>
           <MedipandaTab label={'추가정보'}></MedipandaTab>
           <MedipandaTabElse />
         </MedipandaTabs>
@@ -251,14 +246,14 @@ export default function MypageInfo() {
           sx={{
             alignItems: 'center',
             mt: '20px',
-            mb: '60px',
+            marginBottom: '60px',
           }}
         >
           <Stack sx={{ width: '544px' }}>
             <MypageFormRow direction='row'>
               <MypageFormLabel>닉네임</MypageFormLabel>
               <MypageFormInput>
-                <TextField value={formData.nickname} onChange={handleInputChange('nickname')} fullWidth sx={{ mb: 1 }} />
+                <TextField value={formData.nickname} onChange={handleInputChange('nickname')} fullWidth sx={{ marginBottom: 1 }} />
                 <Typography sx={{ color: '#f44336', fontSize: '12px' }}>닉네임 변경은 1달에 1회 가능합니다.</Typography>
               </MypageFormInput>
             </MypageFormRow>
@@ -266,7 +261,7 @@ export default function MypageInfo() {
             <MypageFormRow direction='row'>
               <MypageFormLabel>CSO 등록증</MypageFormLabel>
               <MypageFormInput>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: 1 }}>
                   <FileUploadButton startIcon={<GetApp />} onClick={handleFileUpload}>
                     파일 올리기
                   </FileUploadButton>
@@ -287,8 +282,15 @@ export default function MypageInfo() {
           </Stack>
         </Stack>
 
-        <Stack direction='row' gap='10px' sx={{ width: '330px' }}>
-          <MedipandaButton onClick={handleCancel} fullWidth variant='outlined' size='large' color='secondary'>
+        <Stack
+          direction='row'
+          gap='10px'
+          sx={{
+            alignSelf: 'center',
+            width: '330px',
+          }}
+        >
+          <MedipandaButton variant='outlined' size='large' color='secondary' fullWidth component={RouterLink} to={'/'}>
             취소
           </MedipandaButton>
           <MedipandaButton onClick={handleSave} disabled={loading} variant='contained' fullWidth size='large' color='secondary'>
@@ -296,7 +298,7 @@ export default function MypageInfo() {
             수정
           </MedipandaButton>
         </Stack>
-      </Stack>
+      </>
 
       {/* Snackbar for notifications */}
       <Snackbar
@@ -305,7 +307,7 @@ export default function MypageInfo() {
         onClose={() => setSnackbarOpen(false)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

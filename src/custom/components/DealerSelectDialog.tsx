@@ -1,11 +1,10 @@
+import { type DealerResponse, listDealers } from '@/backend';
+import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { useFormik } from 'formik';
-import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router';
-import { type DealerResponse, listDealers } from '../../backend';
-import { MedipandaButton } from './MedipandaButton.tsx';
-import { MedipandaDialog, MedipandaDialogContent, MedipandaDialogTitle } from './MedipandaDialog.tsx';
-import { MedipandaTable } from './MedipandaTable.tsx';
+import { MedipandaButton } from './MedipandaButton';
+import { MedipandaDialog, MedipandaDialogContent, MedipandaDialogTitle } from './MedipandaDialog';
+import { MedipandaTable } from './MedipandaTable';
 
 export function DealerSelectDialog({
   open,
@@ -16,33 +15,10 @@ export function DealerSelectDialog({
   onClose?: () => void;
   onSelect?: (dealer: DealerResponse) => void;
 }) {
-  const [page, setPage] = useState<DealerResponse[]>([]);
-
-  const pageFormik = useFormik({
-    initialValues: {
-      searchKeyword: '',
-      pageIndex: 0,
-      pageSize: 10,
-      totalPages: 1,
-    },
-    onSubmit: async () => {
-      if (pageFormik.values.pageIndex !== 0) {
-        await pageFormik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchPage();
-      }
-    },
+  const { content: page } = usePageFetchFormik({
+    fetcher: listDealers,
+    initialContent: [],
   });
-
-  const fetchPage = async () => {
-    const data = await listDealers();
-
-    setPage(data);
-  };
-
-  useEffect(() => {
-    pageFormik.submitForm();
-  }, [open, pageFormik.values.pageIndex, pageFormik.values.pageSize]);
 
   const table = useReactTable({
     data: page,

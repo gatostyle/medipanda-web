@@ -1,66 +1,52 @@
+import { getBoards } from '@/backend';
+import { InquiryStatusChip } from '@/components/InquiryStatusChip';
+import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
+import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/components/MedipandaTab';
+import { MedipandaTableCell, MedipandaTableRow } from '@/custom/components/MedipandaTable';
+import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
+import { colors } from '@/themes';
+import { formatYyyyMmDdHhMm } from '@/lib/dateFormat';
+import { mockBoolean } from '@/lib/mock';
+import { withSequence } from '@/lib/withSequence';
 import { Search } from '@mui/icons-material';
-import { Box, Fab, InputAdornment, Stack, Table, TableBody, TableHead, TextField, Typography } from '@mui/material';
-import { useFormik } from 'formik';
-import { useEffect, useState } from 'react';
+import { Fab, InputAdornment, Stack, Table, TableBody, TableHead, TextField, Typography } from '@mui/material';
 import { Link as RouterLink } from 'react-router';
-import { type BoardPostResponse, getBoards } from '../backend';
-import { InquiryStatusChip } from '../components/InquiryStatusChip.tsx';
-import { MedipandaPagination } from '../custom/components/MedipandaPagination.tsx';
-import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '../custom/components/MedipandaTab.tsx';
-import { colors } from '../custom/globalStyles.ts';
-import { formatYyyyMmDdHhMm } from '../utils/dateFormat.ts';
-import { mockBoolean } from '../utils/mock.ts';
-import { type Sequenced, withSequence } from '../utils/withSequence.ts';
-import { MedipandaTableCell, MedipandaTableRow } from 'custom/components/MedipandaTable.tsx';
 
 export default function InquiryList() {
-  const [page, setPage] = useState<Sequenced<BoardPostResponse>[]>([]);
-
-  const pageFormik = useFormik({
-    initialValues: {
+  const {
+    content: page,
+    pageCount: totalPages,
+    formik: pageFormik,
+  } = usePageFetchFormik({
+    initialFormValues: {
       searchKeyword: '',
-      pageIndex: 0,
-      pageSize: 10,
-      expandedId: -1,
     },
-    onSubmit: async () => {
-      if (pageFormik.values.pageIndex !== 0) {
-        await pageFormik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchPage();
-      }
+    fetcher: async values => {
+      const response = await getBoards({
+        boardType: 'INQUIRY',
+        boardTitle: values.searchKeyword !== '' ? values.searchKeyword : undefined,
+        page: values.pageIndex,
+        size: values.pageSize,
+      });
+
+      return withSequence(response);
     },
+    contentSelector: response => response.content,
+    initialContent: [],
   });
 
-  const fetchPage = async () => {
-    const response = await getBoards({
-      boardType: 'INQUIRY',
-      boardTitle: pageFormik.values.searchKeyword !== '' ? pageFormik.values.searchKeyword : undefined,
-      page: pageFormik.values.pageIndex,
-      size: pageFormik.values.pageSize,
-    });
-
-    setPage(withSequence(response).content);
-  };
-
-  useEffect(() => {
-    pageFormik.submitForm();
-  }, [pageFormik.values.pageIndex, pageFormik.values.pageSize]);
-
   return (
-    <Stack alignItems='center'>
-      <Box sx={{ width: '100%' }}>
-        <Typography variant='heading3M' sx={{ color: colors.gray80, mb: '30px' }}>
-          1:1 문의내역
-        </Typography>
-      </Box>
+    <>
+      <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
+        1:1 문의내역
+      </Typography>
 
-      <MedipandaTabs value={0} sx={{ width: '100%' }}>
+      <MedipandaTabs value={0} sx={{ marginTop: '30px' }}>
         <MedipandaTab label='문의내역' />
         <MedipandaTabElse />
       </MedipandaTabs>
 
-      <Stack direction='row' component='form' onSubmit={pageFormik.handleSubmit} sx={{ width: '100%', marginTop: '40px' }}>
+      <Stack direction='row' component='form' onSubmit={pageFormik.handleSubmit} sx={{ marginTop: '40px' }}>
         <TextField
           size='small'
           name='searchKeyword'
@@ -101,7 +87,16 @@ export default function InquiryList() {
         </TableBody>
       </Table>
 
-      <MedipandaPagination count={10} page={1} showFirstButton showLastButton sx={{ marginTop: '40px' }} />
+      <MedipandaPagination
+        count={totalPages}
+        page={pageFormik.values.pageIndex + 1}
+        showFirstButton
+        showLastButton
+        sx={{
+          alignSelf: 'center',
+          marginTop: '40px',
+        }}
+      />
 
       <Fab
         component={RouterLink}
@@ -135,6 +130,6 @@ export default function InquiryList() {
       >
         <img src='/assets/icons/icon-top.svg' style={{ width: '54px', height: '54px' }} />
       </Fab>
-    </Stack>
+    </>
   );
 }

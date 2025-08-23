@@ -1,47 +1,30 @@
+import { getEventBoards } from '@/backend';
+import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
+import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
+import { colors } from '@/themes';
+import { formatYyyyMmDd, parseUtcDateString } from '@/lib/dateFormat';
 import { Box, Stack, Typography } from '@mui/material';
-import { useFormik } from 'formik';
-import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router';
-import { type EventBoardSummaryResponse, getEventBoards } from '../backend';
-import { MedipandaPagination } from '../custom/components/MedipandaPagination.tsx';
-import { colors } from '../custom/globalStyles.ts';
-import { formatYyyyMmDd } from '../utils/dateFormat.ts';
 
 export default function EventList() {
-  const [page, setPage] = useState<EventBoardSummaryResponse[]>([]);
-  const [totalPages, setTotalPages] = useState(0);
-
-  const pageFormik = useFormik({
-    initialValues: {
-      pageIndex: 0,
-      pageSize: 10,
-      totalPages: 1,
+  const {
+    content: page,
+    pageCount: totalPages,
+    formik: pageFormik,
+  } = usePageFetchFormik({
+    fetcher: values => {
+      return getEventBoards({
+        page: values.pageIndex,
+        size: values.pageSize,
+      });
     },
-    onSubmit: async () => {
-      if (pageFormik.values.pageIndex !== 0) {
-        await pageFormik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchPage();
-      }
-    },
+    contentSelector: response => response.content,
+    pageCountSelector: response => response.totalPages,
+    initialContent: [],
   });
 
-  const fetchPage = async () => {
-    const response = await getEventBoards({
-      page: pageFormik.values.pageIndex,
-      size: pageFormik.values.pageSize,
-    });
-
-    setPage(response.content);
-    setTotalPages(response.totalPages);
-  };
-
-  useEffect(() => {
-    pageFormik.submitForm();
-  }, [pageFormik.values.pageIndex, pageFormik.values.pageSize]);
-
   return (
-    <Stack>
+    <>
       <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
         이벤트
       </Typography>
@@ -49,7 +32,6 @@ export default function EventList() {
       <Stack
         sx={{
           marginTop: '30px',
-          marginBottom: '40px',
         }}
       >
         {page.map(event => (
@@ -76,7 +58,7 @@ export default function EventList() {
                   borderRadius: '10px',
                 }}
               />
-              {new Date(event.eventEndAt) < new Date() && (
+              {parseUtcDateString(event.eventEndAt) < new Date() && (
                 <Box
                   sx={{
                     position: 'absolute',
@@ -100,7 +82,7 @@ export default function EventList() {
             </Box>
             <Stack
               sx={{
-                width: '100%',
+                flexGrow: 1,
                 padding: '24px 20px',
                 marginLeft: '30px',
                 borderWidth: '1px 0',
@@ -120,17 +102,19 @@ export default function EventList() {
         ))}
       </Stack>
 
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <MedipandaPagination
-          count={totalPages}
-          page={pageFormik.values.pageIndex + 1}
-          showFirstButton
-          showLastButton
-          onChange={(_, page) => {
-            pageFormik.setFieldValue('pageIndex', page - 1);
-          }}
-        />
-      </Box>
-    </Stack>
+      <MedipandaPagination
+        count={totalPages}
+        page={pageFormik.values.pageIndex + 1}
+        showFirstButton
+        showLastButton
+        onChange={(_, page) => {
+          pageFormik.setFieldValue('pageIndex', page - 1);
+        }}
+        sx={{
+          alignSelf: 'center',
+          marginTop: '30px',
+        }}
+      />
+    </>
   );
 }

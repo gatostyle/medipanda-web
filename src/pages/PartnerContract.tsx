@@ -1,8 +1,10 @@
+import { MedipandaButton } from '@/custom/components/MedipandaButton';
+import { MedipandaCheckbox } from '@/custom/components/MedipandaCheckbox';
+import { colors, typography } from '@/themes';
 import {
   Alert,
   Box,
   Button,
-  Checkbox,
   CircularProgress,
   Dialog,
   DialogActions,
@@ -18,8 +20,6 @@ import { styled } from '@mui/material/styles';
 import { ArrowDown2 } from 'iconsax-reactjs';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router';
-import { MedipandaButton } from '../custom/components/MedipandaButton.tsx';
-import { colors, typography } from '../custom/globalStyles.ts';
 
 const PartnerContractFormRow = styled(Stack)({
   flexDirection: 'row',
@@ -75,7 +75,7 @@ const PartnerContractFormButton = styled(Button)({
 });
 
 export default function PartnerContract() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const contractStatus = searchParams.get('status');
   const isIndividual = contractStatus === 'INDIVIDUAL';
   const isCorporate = contractStatus === 'CORPORATE';
@@ -305,15 +305,9 @@ export default function PartnerContract() {
             </PartnerContractFormInput>
           </PartnerContractFormRow>
 
-          <Box sx={{ textAlign: 'center', mt: 4, mb: 3 }}>
+          <Box sx={{ textAlign: 'center', mt: 4, marginBottom: 3 }}>
             <FormControlLabel
-              control={
-                <Checkbox
-                  checked={agreement}
-                  onChange={e => setAgreement(e.target.checked)}
-                  sx={{ color: colors.vividViolet, '&.Mui-checked': { color: colors.vividViolet } }}
-                />
-              }
+              control={<MedipandaCheckbox checked={agreement} onChange={e => setAgreement(e.target.checked)} />}
               label='파트너사 계약을 신청합니다.'
               sx={{ color: colors.gray700 }}
             />
@@ -339,14 +333,16 @@ export default function PartnerContract() {
       {/* Success Dialog */}
       <Dialog open={successDialog} onClose={() => setSuccessDialog(false)} maxWidth='md' fullWidth>
         <DialogTitle sx={{ textAlign: 'center', color: colors.primary, fontWeight: 'bold', fontSize: '24px' }}>계약 신청 완료!</DialogTitle>
-        <DialogContent sx={{ textAlign: 'center', py: 4 }}>
-          <Typography sx={{ mb: 3, fontSize: '18px', fontWeight: 500 }}>파트너사 계약 신청이 성공적으로 접수되었습니다.</Typography>
-          <Box sx={{ backgroundColor: colors.gray100, borderRadius: '8px', p: 3, mb: 3 }}>
-            <Typography sx={{ color: colors.gray700, mb: 2, fontWeight: 500 }}>다음 단계 안내:</Typography>
-            <Typography sx={{ color: 'colors.gray500', mb: 1, textAlign: 'left' }}>
+        <DialogContent sx={{ textAlign: 'center', paddingY: 4 }}>
+          <Typography sx={{ marginBottom: 3, fontSize: '18px', fontWeight: 500 }}>
+            파트너사 계약 신청이 성공적으로 접수되었습니다.
+          </Typography>
+          <Box sx={{ backgroundColor: colors.gray100, borderRadius: '8px', p: 3, marginBottom: 3 }}>
+            <Typography sx={{ color: colors.gray700, marginBottom: 2, fontWeight: 500 }}>다음 단계 안내:</Typography>
+            <Typography sx={{ color: 'colors.gray500', marginBottom: 1, textAlign: 'left' }}>
               1. 담당자가 제출된 서류를 검토합니다 (2-3일 소요)
             </Typography>
-            <Typography sx={{ color: 'colors.gray500', mb: 1, textAlign: 'left' }}>
+            <Typography sx={{ color: 'colors.gray500', marginBottom: 1, textAlign: 'left' }}>
               2. 검토 완료 후 승인/반려 결과를 알려드립니다
             </Typography>
             <Typography sx={{ color: 'colors.gray500', textAlign: 'left' }}>3. 승인 시 바로 서비스 이용이 가능합니다</Typography>
@@ -360,7 +356,7 @@ export default function PartnerContract() {
             sx={{
               backgroundColor: colors.primary,
               px: 6,
-              py: 1.5,
+              paddingY: 1.5,
               '&:hover': { backgroundColor: colors.primaryDark },
             }}
           >
@@ -376,7 +372,7 @@ export default function PartnerContract() {
         onClose={() => setSnackbarOpen(false)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

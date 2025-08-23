@@ -1,6 +1,6 @@
-import { login as apiLogin, logout as apiLogout, type MemberDetailsResponse, refreshToken as apiRefreshToken, whoAmI } from 'backend';
+import { login as apiLogin, logout as apiLogout, type MemberDetailsResponse, refreshToken as apiRefreshToken, whoAmI } from '@/backend';
+import { encryptRSA } from '@/lib/rsa';
 import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
-import { encryptRSA } from 'utils/rsa';
 
 declare global {
   interface Window {
@@ -77,17 +77,19 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    (async () => {
-      try {
-        setSession(await getSession());
-      } catch (error) {
-        console.error(error);
-        setSession(null);
-      } finally {
-        setIsLoading(false);
-      }
-    })();
+    refreshSession();
   }, []);
+
+  const refreshSession = async () => {
+    try {
+      setSession(await getSession());
+    } catch (error) {
+      console.error(error);
+      setSession(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <SessionContext.Provider

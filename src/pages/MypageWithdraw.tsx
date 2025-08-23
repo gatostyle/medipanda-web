@@ -1,3 +1,5 @@
+import { MedipandaButton } from '@/custom/components/MedipandaButton';
+import { colors } from '@/themes';
 import {
   Alert,
   Button,
@@ -12,8 +14,6 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { Link as RouterLink } from 'react-router';
-import { MedipandaButton } from '../custom/components/MedipandaButton.tsx';
-import { colors } from '../custom/globalStyles.ts';
 
 export default function MypageWithdraw() {
   const [confirmDialog, setConfirmDialog] = useState(false);
@@ -149,9 +149,9 @@ export default function MypageWithdraw() {
       <Dialog open={confirmDialog} onClose={() => setConfirmDialog(false)} maxWidth='sm' fullWidth>
         <DialogTitle sx={{ color: '#d32f2f', fontWeight: 'bold' }}>회원 탈퇴 확인</DialogTitle>
         <DialogContent>
-          <Typography sx={{ mb: 2 }}>정말로 회원을 탈퇴하시겠습니까?</Typography>
-          <Typography sx={{ color: '#666', mb: 1 }}>• 탈퇴 시 모든 데이터가 삭제됩니다</Typography>
-          <Typography sx={{ color: '#666', mb: 1 }}>• 동일한 아이디로 재가입이 불가능합니다</Typography>
+          <Typography sx={{ marginBottom: 2 }}>정말로 회원을 탈퇴하시겠습니까?</Typography>
+          <Typography sx={{ color: '#666', marginBottom: 1 }}>• 탈퇴 시 모든 데이터가 삭제됩니다</Typography>
+          <Typography sx={{ color: '#666', marginBottom: 1 }}>• 동일한 아이디로 재가입이 불가능합니다</Typography>
           <Typography sx={{ color: '#666' }}>• 탈퇴 후 복구가 불가능합니다</Typography>
         </DialogContent>
         <DialogActions>
@@ -173,7 +173,7 @@ export default function MypageWithdraw() {
         onClose={() => setSnackbarOpen(false)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

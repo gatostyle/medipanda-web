@@ -1,16 +1,30 @@
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { getSalesAgencyProductDetails, type SalesAgencyProductDetailsResponse } from '@/backend';
+import { MedipandaButton } from '@/custom/components/MedipandaButton';
+import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
+import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
+import { colors } from '@/themes';
+import { formatYyyyMmDd } from '@/lib/dateFormat';
+import { Box, Stack, Typography } from '@mui/material';
+import { EditorContent } from '@tiptap/react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { getSalesAgencyProductDetails, type SalesAgencyProductDetailsResponse } from '../backend';
-import { FixedLoader } from '../components/FixedLoader.tsx';
-import { colors } from '../custom/globalStyles.ts';
-import { formatYyyyMmDd } from '../utils/dateFormat.ts';
-import { mockBoolean } from '../utils/mock.ts';
 
 export default function SalesAgencyProductDetail() {
   const { id: paramId } = useParams();
+  const salesAgencyProductId = Number(paramId);
+
   const navigate = useNavigate();
   const [detail, setDetail] = useState<SalesAgencyProductDetailsResponse | null>(null);
+
+  useEffect(() => {
+    if (Number.isNaN(salesAgencyProductId)) {
+      alert('잘못된 접근입니다.');
+      navigate('/sales-agency-products', { replace: true });
+      return;
+    }
+
+    fetchDetail(salesAgencyProductId);
+  }, [salesAgencyProductId, navigate]);
 
   const fetchDetail = async (id: number) => {
     const response = await getSalesAgencyProductDetails(id);
@@ -18,25 +32,23 @@ export default function SalesAgencyProductDetail() {
     setDetail(response);
   };
 
+  const { editor } = useMedipandaEditor();
+
   useEffect(() => {
-    const id = Number(paramId);
-    if (isNaN(id)) {
-      alert('잘못된 접근입니다.');
-      navigate('sales-agency-products', { replace: true });
+    if (detail === null) {
       return;
     }
 
-    fetchDetail(id);
-  }, [paramId]);
+    editor.setEditable(false);
+    editor.commands.setContent(detail.boardPostDetail.content);
+  }, [detail, editor]);
 
   if (!detail) {
-    return <FixedLoader />;
+    return <FixedLinearLoader />;
   }
 
-  const isApplied = mockBoolean();
-
   return (
-    <Stack>
+    <>
       <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
         영업대행상품
       </Typography>
@@ -62,28 +74,25 @@ export default function SalesAgencyProductDetail() {
         </Typography>
       </Stack>
 
-      <Stack
-        sx={{
-          width: '912px',
+      <EditorContent
+        editor={editor}
+        style={{
           padding: '50px 20px',
         }}
-      >
-        {detail.boardPostDetail.content}
-      </Stack>
+      />
 
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-        <Button
+        <MedipandaButton
+          disabled={detail.applied}
           variant='contained'
-          disabled={isApplied}
+          size='large'
           sx={{
             width: '287px',
-            height: '49px',
-            backgroundColor: !isApplied ? colors.vividViolet : colors.gray50,
           }}
         >
-          {!isApplied ? '영업대행 신청하기' : '영업대행 신청완료'}
-        </Button>
+          {detail.applied ? '영업대행 신청완료' : '영업대행 신청하기'}
+        </MedipandaButton>
       </Box>
-    </Stack>
+    </>
   );
 }

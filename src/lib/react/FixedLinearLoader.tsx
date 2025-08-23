@@ -9,7 +9,7 @@ const LoaderWrapper = styled('div')(() => ({
   width: '100%',
 }));
 
-export function FixedLoader() {
+export function FixedLinearLoader() {
   return (
     <LoaderWrapper>
       <LinearProgress color='primary' sx={{ height: 2 }} />

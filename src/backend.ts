@@ -8,10 +8,6 @@ export class DateTimeString extends String {
 
     super(value);
   }
-
-  public toDate(): Date {
-    return new Date(this.toString());
-  }
 }
 
 export class DateString extends String {
@@ -21,10 +17,6 @@ export class DateString extends String {
     }
 
     super(value);
-  }
-
-  public toDate(): Date {
-    return new Date(this.toString());
   }
 }
 
@@ -95,15 +87,24 @@ export interface AdminUpdateRequest {
     | null;
 }
 
-export interface AttachedFileResponse {
-  fileId: number;
-  fileName: string;
-  fileUrl: string;
+export interface AlternativeProductDto {
+  substituent: string | null;
+  manufacturer: string | null;
+  kdCode: string;
+  productName: string;
+  composition: string | null;
+  nhiPrice: number | null;
+  nhiUnit: string | null;
+  price: number | null;
+  feeRate: number | null;
+  note: string | null;
 }
 
 export interface AttachmentResponse {
   s3fileId: number;
   fileUrl: string;
+  type: 'ATTACHMENT' | 'EDITOR';
+  fileName: string;
 }
 
 export interface BannerCreateRequest {
@@ -149,13 +150,13 @@ export interface BlindPostResponse {
   id: number;
   memberName: string;
   content: string;
-  userId: string;
   reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
   nickname: string;
+  userId: string;
   likesCount: number;
+  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   postType: 'BOARD' | 'COMMENT';
   blindAt: string;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
 }
 
 export interface BlindUpdateRequest {
@@ -191,11 +192,11 @@ export interface BoardMemberStatsResponse {
   id: number;
   userId: string;
   phoneNumber: string;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   commentCount: number;
+  totalLikes: number;
   blindPostCount: number;
   postCount: number;
-  totalLikes: number;
+  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
 }
 
 export interface BoardPostCreateRequest {
@@ -227,9 +228,8 @@ export interface BoardPostResponse {
   createdAt: string;
   isExposed: boolean;
   exposureRange: 'ALL' | 'CONTRACTED' | 'UNCONTRACTED';
-  noticeType:
-    | ('PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING')
-    | null;
+  noticeProperties: NoticeProperties | null;
+  hasChildren: boolean;
 }
 
 export interface BoardPostUpdateRequest {
@@ -271,9 +271,9 @@ export interface CommentMemberResponse {
   id: number;
   content: string;
   commentType: 'COMMENT' | 'REPLY';
+  nickname: string;
   userId: string;
   createdAt: string;
-  nickname: string;
   likesCount: number;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   isBlind: boolean;
@@ -300,6 +300,9 @@ export interface CommentUpdateRequest {
 
 export interface DealerCreateRequest {
   dealerName: string;
+  bankName: string | null;
+  accountNumber: string | null;
+  drugCompanyIds: number[];
 }
 
 export interface DealerResponse {
@@ -308,15 +311,15 @@ export interface DealerResponse {
   createdAt: string;
 }
 
+export interface DeviceRequest {
+  platform: 'android' | 'ios' | 'other';
+  appVersion: string | null;
+  fcmToken: string | null;
+}
+
 export interface DrugCompanyResponse {
   id: number;
   name: string;
-}
-
-export interface EditorUploadResponse {
-  s3FileId: number;
-  fileName: string;
-  fileUrl: string;
 }
 
 export interface EventBoardCreateRequest {
@@ -417,16 +420,6 @@ export interface KmcAuthResponse {
   requestedAt: string;
 }
 
-export interface KmcCallbackResult {
-  name: string;
-  phone: string;
-  birth: string;
-  gender: string;
-  connectionInfo: string;
-  duplicationInfo: string;
-  resultStatus: string;
-}
-
 export interface LoginRequest {
   userId: string;
   password: string;
@@ -451,7 +444,7 @@ export interface MedicalPersonInfo {
 export interface MedicalPersonWithSignature {
   name: string;
   employeeCode: string;
-  signatureFile: AttachedFileResponse;
+  signatureFile: AttachmentResponse;
 }
 
 export interface MemberDetailsResponse {
@@ -471,6 +464,7 @@ export interface MemberDetailsResponse {
   note: string | null;
   role: 'USER' | 'ADMIN' | 'SUPER_ADMIN';
   nicknameHidden: boolean;
+  contractStatus: ('PENDING' | 'APPROVED' | 'REJECTED') | null;
 }
 
 export interface MemberResponse {
@@ -502,6 +496,7 @@ export interface MemberSignupRequest {
   nickname: string | null;
   referralCode: string | null;
   marketingAgreement: MarketingAgreements;
+  device: DeviceRequest | null;
 }
 
 export interface MemberUpdateRequest {
@@ -884,10 +879,34 @@ export interface PartnerUpdateRequest {
   note: string | null;
 }
 
-export interface PerformanceStatsResponse {
+export interface PerformanceStatsByDrugCompany {
   drugCompany: string | null;
+  prescriptionAmount: number;
+  totalAmount: number;
+  feeAmount: number;
+}
+
+export interface PerformanceStatsByDrugCompanyMonthly {
+  settlementMonth: string;
+  drugCompany: string;
+  prescriptionAmount: number;
+  totalAmount: number;
+  feeAmount: number;
+}
+
+export interface PerformanceStatsByInstitution {
+  institutionCode: string | null;
+  institutionName: string | null;
+  prescriptionAmount: number;
+  totalAmount: number;
+  feeAmount: number;
+}
+
+export interface PerformanceStatsResponse {
+  drugCompany: string;
   companyName: string | null;
   dealerName: string | null;
+  partnerId: number;
   institutionCode: string | null;
   institutionName: string | null;
   settlementMonth: string;
@@ -998,7 +1017,7 @@ export interface ProductBriefingMultiDetailResponse {
   startedAt: string;
   endedAt: string;
   isJoint: boolean;
-  attachedFiles: AttachedFileResponse[];
+  attachedFiles: AttachmentResponse[];
   status: 'PENDING' | 'COMPLETED';
 }
 
@@ -1037,7 +1056,7 @@ export interface ProductBriefingSingleDetailResponse {
   eventAt: string;
   isJoint: boolean;
   medicalPersons: MedicalPersonWithSignature[];
-  attachedFiles: AttachedFileResponse[];
+  attachedFiles: AttachmentResponse[];
   status: 'PENDING' | 'COMPLETED';
 }
 
@@ -1054,6 +1073,7 @@ export interface ProductBriefingSingleUpdateRequest {
 
 export interface ProductDetailsResponse {
   manufacturer: string | null;
+  insurance: string | null;
   productName: string | null;
   composition: string | null;
   price: number | null;
@@ -1067,7 +1087,7 @@ export interface ProductDetailsResponse {
   isStopSelling: boolean | null;
   isAcquisition: boolean | null;
   note: string | null;
-  alternativeProducts: string[];
+  alternativeProducts: AlternativeProductDto[];
   boardDetailsResponse: BoardDetailsResponse;
 }
 
@@ -1152,6 +1172,7 @@ export interface SalesAgencyProductDetailsResponse {
   quantity: number;
   price: number;
   boardPostDetail: BoardDetailsResponse;
+  applied: boolean;
 }
 
 export interface SalesAgencyProductNoteUpdateRequest {
@@ -1202,7 +1223,7 @@ export interface SampleProvideReportDetailResponse {
   institutionName: string;
   institutionCode: string;
   providedAt: DateString;
-  attachedFiles: AttachedFileResponse[];
+  attachedFiles: AttachmentResponse[];
   status: 'PENDING' | 'COMPLETED';
 }
 
@@ -1213,6 +1234,10 @@ export interface SampleProvideReportUpdateRequest {
   institutionCode: string | null;
   providedAt: DateTimeString | null;
   existFileIds: number[];
+}
+
+export interface SettlementNotifyRequest {
+  settlementIds: number[];
 }
 
 export interface SettlementPartnerProductResponse {
@@ -1268,6 +1293,30 @@ export interface UpdateNoticeProperties {
     | null;
   drugCompany: string | null;
   fixedTop: boolean | null;
+}
+
+/**
+ * GET /v1/kmc/auth/callback-page
+ */
+export async function callbackPage(options?: { certNum?: string }): Promise<string> {
+  const response = await axios.request<string>({
+    method: 'GET',
+    url: '/v1/kmc/auth/callback-page',
+    params: options,
+  });
+  return response.data;
+}
+
+/**
+ * POST /v1/kmc/auth/callback-page
+ */
+export async function callbackPage_1(options?: { certNum?: string }): Promise<string> {
+  const response = await axios.request<string>({
+    method: 'POST',
+    url: '/v1/kmc/auth/callback-page',
+    params: options,
+  });
+  return response.data;
 }
 
 /**
@@ -1456,13 +1505,14 @@ export async function uploadSettlementExcel(data: { file: File }): Promise<void>
 }
 
 /**
- * 테스트 데이터 생성용
- * POST /v1/settlements/generate-test-settlements
+ * 정산 알림 전송 (선택된 정산건 관리자에게 이메일)
+ * POST /v1/settlements/notify-admin
  */
-export async function generateSettlements(): Promise<void> {
+export async function notifyAdminForSettlements(data: SettlementNotifyRequest): Promise<void> {
   await axios.request({
     method: 'POST',
-    url: '/v1/settlements/generate-test-settlements',
+    url: '/v1/settlements/notify-admin',
+    data,
   });
 }
 
@@ -1891,8 +1941,8 @@ export async function createAuthRequest(data: KmcAuthRequest): Promise<KmcAuthRe
 /**
  * POST /v1/kmc/auth/callback
  */
-export async function handleCallback(options?: { apiToken?: string; apiCertNum?: string }): Promise<KmcCallbackResult> {
-  const response = await axios.request<KmcCallbackResult>({
+export async function handleCallback(options?: { apiToken?: string; certNum?: string }): Promise<string> {
+  const response = await axios.request<string>({
     method: 'POST',
     url: '/v1/kmc/auth/callback',
     params: options,
@@ -2101,6 +2151,7 @@ export async function getBoards(options?: {
   drugCompany?: string;
   myUserId?: string;
   includeChild?: boolean;
+  noticeType?: 'PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING';
 }): Promise<PageBoardPostResponse> {
   const response = await axios.request<PageBoardPostResponse>({
     method: 'GET',
@@ -2145,10 +2196,10 @@ export async function toggleLike_1(id: number): Promise<void> {
  * 에디터 파일 업로드 API
  * POST /v1/boards/uploads
  */
-export async function uploadEditorFile(data: { file: File }): Promise<EditorUploadResponse> {
+export async function uploadEditorFile(data: { file: File }): Promise<AttachmentResponse> {
   const form = new FormData();
   form.append('file', data.file);
-  const response = await axios.request<EditorUploadResponse>({
+  const response = await axios.request<AttachmentResponse>({
     method: 'POST',
     url: '/v1/boards/uploads',
     data: form,
@@ -2782,10 +2833,11 @@ export async function getLatestTerms(): Promise<string> {
 export async function getSettlements(options?: {
   dealerName?: string;
   dealerId?: number;
+  drugCompanyName?: string;
   companyName?: string;
   status?: 'REQUEST' | 'OBJECTION';
-  startMonth?: number;
-  endMonth?: number;
+  startMonth?: DateString;
+  endMonth?: DateString;
   page?: number;
   size?: number;
 }): Promise<PageSettlementResponse> {
@@ -2818,14 +2870,34 @@ export async function getPerformanceStats(options?: {
   companyName?: string;
   dealerName?: string;
   institutionName?: string;
-  startMonth?: number;
-  endMonth?: number;
+  startMonth?: DateString;
+  endMonth?: DateString;
   page?: number;
   size?: number;
 }): Promise<PagePerformanceStatsResponse> {
   const response = await axios.request<PagePerformanceStatsResponse>({
     method: 'GET',
     url: '/v1/settlements/performance',
+    params: options,
+  });
+  return response.data;
+}
+
+/**
+ * 실적통계 - prescriptionAmount 전체 합계
+ * GET /v1/settlements/performance/total-prescription-amount
+ */
+export async function getPerformanceTotalPrescriptionAmount(options?: {
+  drugCompany?: string;
+  companyName?: string;
+  dealerName?: string;
+  institutionName?: string;
+  startMonth?: DateString;
+  endMonth?: DateString;
+}): Promise<number> {
+  const response = await axios.request<number>({
+    method: 'GET',
+    url: '/v1/settlements/performance/total-prescription-amount',
     params: options,
   });
   return response.data;
@@ -2840,8 +2912,8 @@ export function getDownloadPerformanceExcel(options?: {
   companyName?: string;
   dealerName?: string;
   institutionName?: string;
-  startMonth?: number;
-  endMonth?: number;
+  startMonth?: DateString;
+  endMonth?: DateString;
   page?: number;
   size?: number;
 }): string {
@@ -2851,6 +2923,56 @@ export function getDownloadPerformanceExcel(options?: {
     .map(([key, value]) => [key, String(value)]);
   const params = new URLSearchParams(paramsInit);
   return `${baseUrl}?${params.toString()}`;
+}
+
+/**
+ * 실적통계 - 거래처별 집계
+ * GET /v1/settlements/performance/by-institution
+ */
+export async function getPerformanceByInstitution(options?: {
+  startMonth?: DateString;
+  endMonth?: DateString;
+}): Promise<PerformanceStatsByInstitution[]> {
+  const response = await axios.request<PerformanceStatsByInstitution[]>({
+    method: 'GET',
+    url: '/v1/settlements/performance/by-institution',
+    params: options,
+  });
+  return response.data;
+}
+
+/**
+ * 실적통계 - 제약사별 집계
+ * GET /v1/settlements/performance/by-drug-company
+ */
+export async function getPerformanceByDrugCompany(options?: {
+  partnerId?: number;
+  startMonth?: DateString;
+  endMonth?: DateString;
+}): Promise<PerformanceStatsByDrugCompany[]> {
+  const response = await axios.request<PerformanceStatsByDrugCompany[]>({
+    method: 'GET',
+    url: '/v1/settlements/performance/by-drug-company',
+    params: options,
+  });
+  return response.data;
+}
+
+/**
+ * 실적통계 - 제약사별 월별 집계
+ * GET /v1/settlements/performance/by-drug-company/monthly
+ */
+export async function getPerformanceByDrugCompanyMonthly(options?: {
+  partnerId?: number;
+  startMonth?: DateString;
+  endMonth?: DateString;
+}): Promise<PerformanceStatsByDrugCompanyMonthly[]> {
+  const response = await axios.request<PerformanceStatsByDrugCompanyMonthly[]>({
+    method: 'GET',
+    url: '/v1/settlements/performance/by-drug-company/monthly',
+    params: options,
+  });
+  return response.data;
 }
 
 /**
@@ -2913,9 +3035,10 @@ export function getDownloadSettlementListExcel(options?: {
   dealerName?: string;
   dealerId?: number;
   companyName?: string;
+  drugCompanyName?: string;
   status?: 'REQUEST' | 'OBJECTION';
-  startMonth?: number;
-  endMonth?: number;
+  startMonth?: DateString;
+  endMonth?: DateString;
   page?: number;
   size?: number;
 }): string {
@@ -3139,8 +3262,8 @@ export async function getPartnerProducts(prescriptionPartnerId: number): Promise
  * 거래처별 제품상세 EDI 파일 보기
  * GET /v1/prescriptions/partners/{prescriptionPartnerId}/edi-files/attached
  */
-export async function getAttachedEdiFiles(prescriptionPartnerId: number): Promise<AttachedFileResponse[]> {
-  const response = await axios.request<AttachedFileResponse[]>({
+export async function getAttachedEdiFiles(prescriptionPartnerId: number): Promise<AttachmentResponse[]> {
+  const response = await axios.request<AttachmentResponse[]>({
     method: 'GET',
     url: `/v1/prescriptions/partners/${prescriptionPartnerId}/edi-files/attached`,
   });

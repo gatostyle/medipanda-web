@@ -1,6 +1,8 @@
+import { MedipandaButton } from '@/custom/components/MedipandaButton';
+import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/components/MedipandaTab';
+import { colors } from '@/themes';
 import {
   Alert,
-  Box,
   Button,
   CircularProgress,
   Dialog,
@@ -12,11 +14,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { Link as RouterLink } from 'react-router';
 import { useState } from 'react';
-import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '../custom/components/MedipandaTab.tsx';
-import { MedipandaButton } from '../custom/components/MedipandaButton.tsx';
-import { colors } from '../custom/globalStyles.ts';
+import { Link as RouterLink } from 'react-router';
 
 export default function InquiryNew() {
   const [title, setTitle] = useState('');
@@ -66,19 +65,17 @@ export default function InquiryNew() {
   };
 
   return (
-    <Stack alignItems='center'>
-      <Box sx={{ width: '100%' }}>
-        <Typography variant='heading3M' sx={{ color: colors.gray80, mb: '30px' }}>
-          1:1 문의내역
-        </Typography>
-      </Box>
+    <>
+      <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
+        1:1 문의내역
+      </Typography>
 
-      <MedipandaTabs value={0} sx={{ width: '100%' }}>
+      <MedipandaTabs value={0} sx={{ marginTop: '30px' }}>
         <MedipandaTab label='문의하기' />
         <MedipandaTabElse />
       </MedipandaTabs>
 
-      <Stack gap='20px' sx={{ width: '600px', marginTop: '40px' }}>
+      <Stack gap='20px' sx={{ alignSelf: 'center', width: '600px', marginTop: '40px' }}>
         <Stack direction='row' alignItems='flex=start'>
           <Typography variant='largeTextM' sx={{ color: colors.gray80, lineHeight: '56px' }}>
             제목*
@@ -147,6 +144,7 @@ export default function InquiryNew() {
         direction='row'
         gap='10px'
         sx={{
+          alignSelf: 'center',
           marginTop: '60px',
         }}
       >
@@ -181,9 +179,9 @@ export default function InquiryNew() {
       {/* Success Dialog */}
       <Dialog open={successDialog} onClose={() => setSuccessDialog(false)} maxWidth='sm' fullWidth>
         <DialogTitle sx={{ textAlign: 'center', color: '#6B3AA0', fontWeight: 'bold' }}>문의 접수 완료</DialogTitle>
-        <DialogContent sx={{ textAlign: 'center', py: 3 }}>
-          <Typography sx={{ mb: 2, fontSize: '18px' }}>문의가 성공적으로 접수되었습니다!</Typography>
-          <Typography sx={{ color: '#666', mb: 1 }}>담당자가 확인 후 빠른 시일 내에 답변드리겠습니다.</Typography>
+        <DialogContent sx={{ textAlign: 'center', paddingY: 3 }}>
+          <Typography sx={{ marginBottom: 2, fontSize: '18px' }}>문의가 성공적으로 접수되었습니다!</Typography>
+          <Typography sx={{ color: '#666', marginBottom: 1 }}>담당자가 확인 후 빠른 시일 내에 답변드리겠습니다.</Typography>
           <Typography sx={{ color: '#666' }}>답변은 문의내역 페이지에서 확인하실 수 있습니다.</Typography>
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'center', pb: 3 }}>
@@ -210,10 +208,10 @@ export default function InquiryNew() {
         onClose={() => setSnackbarOpen(false)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity}>
           {snackbarMessage}
         </Alert>
       </Snackbar>
-    </Stack>
+    </>
   );
 }

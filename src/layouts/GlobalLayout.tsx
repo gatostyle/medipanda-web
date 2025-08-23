@@ -1,37 +1,18 @@
-import { Box, Container, Stack, Typography } from '@mui/material';
+import { MedipandaTextLink } from '@/custom/components/MedipandaTextLink';
+import { useSession } from '@/hooks/useSession';
+import { colors, typography } from '@/themes';
+import { Box, Link, Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useSession } from 'hooks/useSession';
 import { memo } from 'react';
 import { Link as RouterLink, Outlet, useLocation } from 'react-router';
-import { MedipandaTextLink } from '../custom/components/MedipandaTextLink.tsx';
-import { colors, typography } from '../custom/globalStyles.ts';
 
-const StyledContainer = styled(Container)({
-  maxWidth: '1224px !important',
-  padding: '0 !important',
-});
+const MaxWidthContainerWrapper = styled(Stack)({
+  justifyContent: 'center',
+  alignItems: 'center',
+}) as typeof Stack;
 
-const NavLink = styled(RouterLink)({
-  textDecoration: 'none',
-  ...typography.heading4B,
-  cursor: 'pointer',
-  '&:hover': {
-    color: colors.vividViolet,
-  },
-});
-
-const FooterLink = styled(RouterLink)({
-  ...typography.mediumTextB,
-  color: colors.white,
-  textDecoration: 'none',
-  '&:hover': {
-    textDecoration: 'underline',
-  },
-});
-
-const Footer = styled('footer')({
-  backgroundColor: colors.gray70,
-  color: '#ffffff',
+const MaxWidthContainer = styled(Stack)({
+  width: '1224px',
 });
 
 const navItems = [
@@ -50,9 +31,9 @@ function GlobalLayout() {
   const { session } = useSession();
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <Box sx={{ height: '150px', display: 'flex', alignItems: 'center', borderBottom: `1px solid ${colors.gray40}` }}>
-        <StyledContainer>
+    <Stack sx={{ minHeight: '100vh' }}>
+      <MaxWidthContainerWrapper component='header' sx={{ height: '150px', borderBottom: `1px solid ${colors.gray40}` }}>
+        <MaxWidthContainer>
           <Stack
             direction='row'
             justifyContent='space-between'
@@ -74,17 +55,25 @@ function GlobalLayout() {
             </Box>
             <Box sx={{ display: 'flex', gap: 4 }}>
               {navItems.map(item => (
-                <NavLink
+                <Link
                   key={item.path}
+                  underline='hover'
+                  component={RouterLink}
                   to={item.path}
                   sx={{
+                    ...typography.heading4B,
+
                     color: [item.path, ...(item.secondaryPaths || [])].some(path => currentPath.startsWith(path))
                       ? colors.vividViolet
                       : colors.gray80,
+
+                    '&:hover': {
+                      color: colors.vividViolet,
+                    },
                   }}
                 >
                   {item.label}
-                </NavLink>
+                </Link>
               ))}
             </Box>
             <Stack direction='row' alignItems='center'>
@@ -115,17 +104,23 @@ function GlobalLayout() {
               </Box>
             </Stack>
           </Stack>
-        </StyledContainer>
-      </Box>
+        </MaxWidthContainer>
+      </MaxWidthContainerWrapper>
 
-      <Box component='main' sx={{ flexGrow: 1, my: '50px' }}>
-        <StyledContainer>
+      <MaxWidthContainerWrapper component='main' sx={{ flexGrow: 1, my: '50px' }}>
+        <MaxWidthContainer sx={{ flexGrow: 1 }}>
           <Outlet />
-        </StyledContainer>
-      </Box>
+        </MaxWidthContainer>
+      </MaxWidthContainerWrapper>
 
-      <Footer>
-        <StyledContainer>
+      <MaxWidthContainerWrapper
+        component='footer'
+        sx={{
+          backgroundColor: colors.gray70,
+          color: '#ffffff',
+        }}
+      >
+        <MaxWidthContainer>
           <Stack
             direction='row'
             alignItems='center'
@@ -137,12 +132,39 @@ function GlobalLayout() {
           >
             <img src='/assets/logo-dark.svg' style={{ height: '34px' }} />
             <Stack sx={{ ml: '104px' }}>
-              <Stack direction='row' sx={{ mb: '20px' }}>
-                <FooterLink to='/terms'>이용약관</FooterLink>
+              <Stack direction='row' sx={{ marginBottom: '20px' }}>
+                <Link
+                  underline='hover'
+                  component={RouterLink}
+                  to='/terms'
+                  sx={{
+                    color: colors.white,
+                  }}
+                >
+                  이용약관
+                </Link>
                 <span style={{ color: colors.white, margin: '0 8px' }}>|</span>
-                <FooterLink to='/privacy'>개인정보처리방침</FooterLink>
+                <Link
+                  underline='hover'
+                  component={RouterLink}
+                  to='/privacy'
+                  sx={{
+                    color: colors.white,
+                  }}
+                >
+                  개인정보처리방침
+                </Link>
                 <span style={{ color: colors.white, margin: '0 8px' }}>|</span>
-                <FooterLink to='/partnership'>제휴문의</FooterLink>
+                <Link
+                  underline='hover'
+                  component={RouterLink}
+                  to='/partnership'
+                  sx={{
+                    color: colors.white,
+                  }}
+                >
+                  제휴문의
+                </Link>
               </Stack>
               <Typography variant='smallTextR' sx={{ color: colors.white }}>
                 법인명 : (주)케이앤메디슨 | 서울시 강남구 논현로 416, 4층 운기빌딩(역삼동) | 대표 : 황혁진 | 사업자등록번호 : 338-81-00767
@@ -156,9 +178,9 @@ function GlobalLayout() {
               </Typography>
             </Stack>
           </Stack>
-        </StyledContainer>
-      </Footer>
-    </Box>
+        </MaxWidthContainer>
+      </MaxWidthContainerWrapper>
+    </Stack>
   );
 }
 

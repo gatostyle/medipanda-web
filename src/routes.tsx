@@ -1,54 +1,56 @@
+import { LazyComponent } from '@/lib/react/LazyComponent';
 import { lazy } from 'react';
-import { createBrowserRouter, type RouteObject, Navigate } from 'react-router';
-import { Loadable } from './components/Loadable';
+import { createBrowserRouter, Navigate, type RouteObject } from 'react-router';
 
-const GlobalLayout = Loadable(lazy(() => import('./layouts/GlobalLayout')));
-const TabbedLayout = Loadable(lazy(() => import('./layouts/TabbedLayout')));
-const SidebarLayout = Loadable(lazy(() => import('./layouts/SidebarLayout')));
+const GlobalLayout = LazyComponent(lazy(() => import('layouts/GlobalLayout')));
+const TabbedLayout = LazyComponent(lazy(() => import('layouts/TabbedLayout')));
+const SidebarLayout = LazyComponent(lazy(() => import('layouts/SidebarLayout')));
 
-const Login = Loadable(lazy(() => import('./pages/Login')));
-const Logout = Loadable(lazy(() => import('./pages/Logout')));
+const Login = LazyComponent(lazy(() => import('pages/Login')));
+const Logout = LazyComponent(lazy(() => import('pages/Logout')));
 
-const Home = Loadable(lazy(() => import('./pages/Home')));
+const Home = LazyComponent(lazy(() => import('pages/Home')));
 
-const ProductList = Loadable(lazy(() => import('./pages/ProductList')));
+const ProductList = LazyComponent(lazy(() => import('pages/ProductList')));
 
-const PrescriptionList = Loadable(lazy(() => import('./pages/PrescriptionList')));
-const DealerList = Loadable(lazy(() => import('./pages/DealerList')));
+const PrescriptionList = LazyComponent(lazy(() => import('pages/PrescriptionList')));
+const DealerList = LazyComponent(lazy(() => import('pages/DealerList')));
 
-const SettlementList = Loadable(lazy(() => import('./pages/./SettlementList')));
-const SalesStatistic = Loadable(lazy(() => import('./pages/SalesStatistic')));
+const SettlementList = LazyComponent(lazy(() => import('pages/./SettlementList')));
+const SalesStatistic = LazyComponent(lazy(() => import('pages/SalesStatistic')));
 
-const AnonymousList = Loadable(lazy(() => import('./pages/AnonymousList')));
-const AnonymousBoardDetail = Loadable(lazy(() => import('./pages/AnonymousBoardDetail')));
-const MrCsoMatchingList = Loadable(lazy(() => import('./pages/MrCsoMatchingList')));
-const MrCsoMatchingNew = Loadable(lazy(() => import('./pages/./MrCsoMatchingNew')));
+const CommunityDetail = LazyComponent(lazy(() => import('pages/CommunityDetail')));
+const CommunityEdit = LazyComponent(lazy(() => import('pages/CommunityEdit')));
 
-const SalesAgencyProductList = Loadable(lazy(() => import('./pages/SalesAgencyProductList')));
-const SalesAgencyProductDetail = Loadable(lazy(() => import('./pages/SalesAgencyProductDetail')));
+const AnonymousList = LazyComponent(lazy(() => import('pages/AnonymousList')));
 
-const EventList = Loadable(lazy(() => import('./pages/EventList')));
-const EventDetail = Loadable(lazy(() => import('./pages/EventDetail')));
+const MrCsoMatchingList = LazyComponent(lazy(() => import('pages/MrCsoMatchingList')));
 
-const NoticeList = Loadable(lazy(() => import('./pages/NoticeList')));
-const NoticeDetail = Loadable(lazy(() => import('./pages/NoticeDetail')));
-const FaqList = Loadable(lazy(() => import('./pages/FaqList')));
-const InquiryList = Loadable(lazy(() => import('./pages/InquiryList')));
-const InquiryDetail = Loadable(lazy(() => import('./pages/InquiryDetail')));
-const InquiryNew = Loadable(lazy(() => import('./pages/InquiryNew')));
+const SalesAgencyProductList = LazyComponent(lazy(() => import('pages/SalesAgencyProductList')));
+const SalesAgencyProductDetail = LazyComponent(lazy(() => import('pages/SalesAgencyProductDetail')));
 
-const MypageGuard = Loadable(lazy(() => import('./pages/MypageGuard')));
-const MypageInfo = Loadable(lazy(() => import('./pages/MypageInfo')));
-const MypageNotification = Loadable(lazy(() => import('./pages/MypageNotification')));
-const MypageWithdraw = Loadable(lazy(() => import('./pages/MypageWithdraw')));
+const EventList = LazyComponent(lazy(() => import('pages/EventList')));
+const EventDetail = LazyComponent(lazy(() => import('pages/EventDetail')));
 
-const PartnerContract = Loadable(lazy(() => import('./pages/PartnerContract')));
+const NoticeList = LazyComponent(lazy(() => import('pages/NoticeList')));
+const NoticeDetail = LazyComponent(lazy(() => import('pages/NoticeDetail')));
+const FaqList = LazyComponent(lazy(() => import('pages/FaqList')));
+const InquiryList = LazyComponent(lazy(() => import('pages/InquiryList')));
+const InquiryDetail = LazyComponent(lazy(() => import('pages/InquiryDetail')));
+const InquiryNew = LazyComponent(lazy(() => import('pages/InquiryNew')));
 
-const Terms = Loadable(lazy(() => import('./pages/Terms')));
-const Privacy = Loadable(lazy(() => import('./pages/Privacy')));
-const Partnership = Loadable(lazy(() => import('./pages/Partnership')));
+const MypageGuard = LazyComponent(lazy(() => import('pages/MypageGuard')));
+const MypageInfo = LazyComponent(lazy(() => import('pages/MypageInfo')));
+const MypageNotification = LazyComponent(lazy(() => import('pages/MypageNotification')));
+const MypageWithdraw = LazyComponent(lazy(() => import('pages/MypageWithdraw')));
 
-const Error404 = Loadable(lazy(() => import('./pages/404')));
+const PartnerContract = LazyComponent(lazy(() => import('pages/PartnerContract')));
+
+const Terms = LazyComponent(lazy(() => import('pages/Terms')));
+const Privacy = LazyComponent(lazy(() => import('pages/Privacy')));
+const Partnership = LazyComponent(lazy(() => import('pages/Partnership')));
+
+const Error404 = LazyComponent(lazy(() => import('pages/404')));
 
 const route: RouteObject[] = [
   {
@@ -194,6 +196,18 @@ const route: RouteObject[] = [
             element: <Navigate to={'anonymous'} />,
           },
           {
+            path: ':communityType/:id',
+            element: <CommunityDetail />,
+          },
+          {
+            path: ':communityType/:id/edit',
+            element: <CommunityEdit />,
+          },
+          {
+            path: ':communityType/new',
+            element: <CommunityEdit />,
+          },
+          {
             path: 'anonymous',
             element: <AnonymousList />,
           },
@@ -202,14 +216,6 @@ const route: RouteObject[] = [
             element: <MrCsoMatchingList />,
           },
         ],
-      },
-      {
-        path: 'community/anonymous/:id',
-        element: <AnonymousBoardDetail />,
-      },
-      {
-        path: 'community/mrcso-matching/new',
-        element: <MrCsoMatchingNew />,
       },
       {
         path: 'sales-agency-products',

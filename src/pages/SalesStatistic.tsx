@@ -1,15 +1,16 @@
+import { DateString, getPerformanceStats, type PerformanceStatsResponse } from '@/backend';
+import { MedipandaButton } from '@/custom/components/MedipandaButton';
+import { MedipandaCheckbox } from '@/custom/components/MedipandaCheckbox';
+import { MedipandaDatePicker } from '@/custom/components/MedipandaDatePicker';
+import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
+import { MedipandaTable } from '@/custom/components/MedipandaTable';
+import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
+import { colors } from '@/themes';
+import { DATEFORMAT_YYYY_MM } from '@/lib/dateFormat';
 import { Search } from '@mui/icons-material';
-import { Checkbox, IconButton, InputAdornment, Stack, Typography } from '@mui/material';
+import { IconButton, InputAdornment, Stack, Typography } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
-import { getPerformanceStats, type PerformanceStatsResponse } from '../backend';
-import { MedipandaButton } from '../custom/components/MedipandaButton.tsx';
-import { MedipandaDatePicker } from '../custom/components/MedipandaDatePicker.tsx';
-import { MedipandaOutlinedInput } from '../custom/components/MedipandaOutlinedInput.tsx';
-import { MedipandaTable } from '../custom/components/MedipandaTable.tsx';
-import { colors } from '../custom/globalStyles.ts';
-import { DATEFORMAT_YYYY_MM, formatYyyyMm } from '../utils/dateFormat.ts';
 
 export default function SalesStatistic() {
   const [currentTab, setCurrentTab] = useState<'ALL' | 'INDIVIDUAL'>('ALL');
@@ -51,41 +52,24 @@ export default function SalesStatistic() {
 }
 
 function TotalSalesStatistic() {
-  const [page, setPage] = useState<PerformanceStatsResponse[]>([]);
-
-  const pageFormik = useFormik({
-    initialValues: {
+  const { content: page, formik: pageFormik } = usePageFetchFormik({
+    initialFormValues: {
       startMonth: null as Date | null,
       endMonth: null as Date | null,
       searchKeyword: '',
-      pageIndex: 0,
-      pageSize: 20,
-      totalPages: 1,
     },
-    onSubmit: async () => {
-      if (pageFormik.values.pageIndex !== 0) {
-        await pageFormik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchPage();
-      }
+    fetcher: values => {
+      return getPerformanceStats({
+        institutionName: values.searchKeyword !== '' ? values.searchKeyword : undefined,
+        startMonth: values.startMonth !== null ? new DateString(values.startMonth) : undefined,
+        endMonth: values.endMonth !== null ? new DateString(values.endMonth) : undefined,
+        page: values.pageIndex,
+        size: values.pageSize,
+      });
     },
+    contentSelector: response => response.content,
+    initialContent: [],
   });
-
-  const fetchPage = async () => {
-    const response = await getPerformanceStats({
-      institutionName: pageFormik.values.searchKeyword !== '' ? pageFormik.values.searchKeyword : undefined,
-      startMonth: pageFormik.values.startMonth !== null ? formatYyyyMm(pageFormik.values.startMonth) : undefined,
-      endMonth: pageFormik.values.endMonth !== null ? formatYyyyMm(pageFormik.values.endMonth) : undefined,
-      page: pageFormik.values.pageIndex,
-      size: pageFormik.values.pageSize,
-    });
-
-    setPage(response.content);
-  };
-
-  useEffect(() => {
-    pageFormik.submitForm();
-  }, [pageFormik.values.pageIndex, pageFormik.values.pageSize]);
 
   return (
     <>
@@ -147,43 +131,25 @@ function TotalSalesStatistic() {
 function PartnerSalesStatistic() {
   const [partnerPage, setPartnerPage] = useState<PerformanceStatsResponse[]>([]);
 
-  const [page, setPage] = useState<PerformanceStatsResponse[]>([]);
-
-  const pageFormik = useFormik({
-    initialValues: {
+  const { content: page, formik: pageFormik } = usePageFetchFormik({
+    initialFormValues: {
       startMonth: null as Date | null,
       endMonth: null as Date | null,
       searchKeyword: '',
-      pageIndex: 0,
-      pageSize: 20,
-      totalPages: 1,
     },
-    onSubmit: async () => {
-      if (pageFormik.values.pageIndex !== 0) {
-        await pageFormik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchPage();
-      }
+    fetcher: async values => {
+      return getPerformanceStats({
+        institutionName: values.searchKeyword !== '' ? values.searchKeyword : undefined,
+        startMonth: values.startMonth !== null ? new DateString(values.startMonth) : undefined,
+        endMonth: values.endMonth !== null ? new DateString(values.endMonth) : undefined,
+        page: 0,
+        size: 1,
+      });
     },
+    contentSelector: response => response.content,
+    initialContent: [],
+    onFetch: () => setPartnerPage([]),
   });
-
-  const fetchPage = async () => {
-    const response = await getPerformanceStats({
-      institutionName: pageFormik.values.searchKeyword !== '' ? pageFormik.values.searchKeyword : undefined,
-      startMonth: pageFormik.values.startMonth !== null ? formatYyyyMm(pageFormik.values.startMonth) : undefined,
-      endMonth: pageFormik.values.endMonth !== null ? formatYyyyMm(pageFormik.values.endMonth) : undefined,
-      page: pageFormik.values.pageIndex,
-      size: pageFormik.values.pageSize,
-    });
-
-    setPage(response.content);
-
-    setPartnerPage([]);
-  };
-
-  useEffect(() => {
-    pageFormik.submitForm();
-  }, [pageFormik.values.pageIndex, pageFormik.values.pageSize]);
 
   const table = useReactTable({
     data: page,
@@ -287,7 +253,7 @@ function ChartView({ data }: { data: PerformanceStatsResponse[] }) {
         id: 'select',
         header: () => {
           return (
-            <Checkbox
+            <MedipandaCheckbox
               checked={checkedIndexes.length === data.length}
               onChange={(_, checked) => {
                 if (checked) {
@@ -296,16 +262,11 @@ function ChartView({ data }: { data: PerformanceStatsResponse[] }) {
                   setCheckedIndexes([]);
                 }
               }}
-              sx={{
-                '& svg': {
-                  color: colors.vividViolet,
-                },
-              }}
             />
           );
         },
         cell: ({ row }) => (
-          <Checkbox
+          <MedipandaCheckbox
             checked={checkedIndexes.includes(row.index)}
             onChange={(_, checked) => {
               if (checked) {
@@ -313,11 +274,6 @@ function ChartView({ data }: { data: PerformanceStatsResponse[] }) {
               } else {
                 setCheckedIndexes(prev => prev.filter(index => index !== row.index));
               }
-            }}
-            sx={{
-              '& svg': {
-                color: colors.vividViolet,
-              },
             }}
           />
         ),
@@ -344,7 +300,6 @@ function ChartView({ data }: { data: PerformanceStatsResponse[] }) {
         justifyContent='center'
         alignItems='center'
         sx={{
-          width: '100%',
           height: '550px',
           backgroundColor: colors.gray30,
         }}

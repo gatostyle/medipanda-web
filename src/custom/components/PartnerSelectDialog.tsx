@@ -1,13 +1,13 @@
+import { getPartners, type PartnerResponse } from '@/backend';
+import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
+import { Search } from '@mui/icons-material';
 import { InputAdornment, Stack, TextField } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { useFormik } from 'formik';
-import { useEffect, useState } from 'react';
-import { getPartners, type PartnerResponse } from '../../backend';
-import { MedipandaButton } from './MedipandaButton.tsx';
-import { MedipandaDialog, MedipandaDialogContent, MedipandaDialogTitle } from './MedipandaDialog.tsx';
-import { Search } from '@mui/icons-material';
-import { MedipandaPagination } from './MedipandaPagination.tsx';
-import { MedipandaTable } from './MedipandaTable.tsx';
+import { useEffect } from 'react';
+import { MedipandaButton } from './MedipandaButton';
+import { MedipandaDialog, MedipandaDialogContent, MedipandaDialogTitle } from './MedipandaDialog';
+import { MedipandaPagination } from './MedipandaPagination';
+import { MedipandaTable } from './MedipandaTable';
 
 export function PartnerSelectDialog({
   open,
@@ -18,39 +18,34 @@ export function PartnerSelectDialog({
   onClose?: () => void;
   onSelect?: (partner: PartnerResponse) => void;
 }) {
-  const [page, setPage] = useState<PartnerResponse[]>([]);
-  const [totalPages, setTotalPages] = useState(0);
-
-  const pageFormik = useFormik({
-    initialValues: {
+  const {
+    content: page,
+    pageCount: totalPages,
+    formik: pageFormik,
+  } = usePageFetchFormik({
+    initialFormValues: {
       searchKeyword: '',
-      pageIndex: 0,
-      pageSize: 10,
-      totalPages: 1,
     },
-    onSubmit: async () => {
-      if (pageFormik.values.pageIndex !== 0) {
-        await pageFormik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchPage();
-      }
+    fetcher: values => {
+      return getPartners({
+        institutionName: values.searchKeyword === '' ? undefined : values.searchKeyword,
+        page: values.pageIndex,
+        size: values.pageSize,
+      });
     },
+    contentSelector: response => response.content,
+    pageCountSelector: response => response.totalPages,
+    initialContent: [],
   });
 
-  const fetchPage = async () => {
-    const response = await getPartners({
-      institutionName: pageFormik.values.searchKeyword === '' ? undefined : pageFormik.values.searchKeyword,
-      page: pageFormik.values.pageIndex,
-      size: pageFormik.values.pageSize,
-    });
-
-    setPage(response.content);
-    setTotalPages(response.totalPages);
-  };
-
   useEffect(() => {
-    pageFormik.submitForm();
-  }, [open, pageFormik.values.pageIndex, pageFormik.values.pageSize]);
+    if (open) {
+      (async () => {
+        await pageFormik.setFieldValue('searchKeyword', '');
+        await pageFormik.submitForm();
+      })();
+    }
+  }, [open]);
 
   const table = useReactTable({
     data: page,

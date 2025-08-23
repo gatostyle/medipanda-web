@@ -1,6 +1,6 @@
+import { colors } from '@/themes';
 import { Button } from '@mui/material';
 import type { ComponentProps } from 'react';
-import { colors } from '../globalStyles.ts';
 
 export function MedipandaFileUploadButton({
   accept,

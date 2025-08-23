@@ -1,15 +1,29 @@
-import { Box, Button, Link, Stack, Typography } from '@mui/material';
+import { type BoardDetailsResponse, getBoardDetails } from '@/backend';
+import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
+import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
+import { Tiptap } from '@/lib/react/Tiptap';
+import { colors, typography } from '@/themes';
+import { formatYyyyMmDd } from '@/lib/dateFormat';
+import { Button, Link, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router';
-import { type BoardDetailsResponse, getBoardDetails } from '../backend';
-import { FixedLoader } from '../components/FixedLoader.tsx';
-import { colors, typography } from '../custom/globalStyles.ts';
-import { formatYyyyMmDd } from '../utils/dateFormat.ts';
 
 export default function NoticeDetail() {
   const { id: paramId } = useParams();
+  const noticeId = Number(paramId);
+
   const navigate = useNavigate();
   const [detail, setDetail] = useState<BoardDetailsResponse | null>(null);
+
+  useEffect(() => {
+    if (Number.isNaN(noticeId)) {
+      alert('잘못된 접근입니다.');
+      navigate('/customer-service/notice', { replace: true });
+      return;
+    }
+
+    fetchDetail(noticeId);
+  }, [noticeId, navigate]);
 
   const fetchDetail = async (id: number) => {
     const response = await getBoardDetails(id);
@@ -17,46 +31,41 @@ export default function NoticeDetail() {
     setDetail(response);
   };
 
+  const { editor } = useMedipandaEditor();
+
   useEffect(() => {
-    const id = Number(paramId);
-    if (isNaN(id)) {
-      alert('잘못된 접근입니다.');
-      navigate('/customer-service/notice', { replace: true });
+    if (detail === null) {
       return;
     }
 
-    fetchDetail(id);
-  }, [paramId]);
+    editor.setEditable(false);
+    editor.commands.setContent(detail.content ?? '');
+  }, [editor, detail]);
 
   if (!detail) {
-    return <FixedLoader />;
+    return <FixedLinearLoader />;
   }
 
   return (
-    <Stack alignItems='center'>
-      <Box sx={{ width: '100%' }}>
-        <Typography variant='heading3M' sx={{ color: colors.gray80, mb: '30px' }}>
-          공지사항
-        </Typography>
-      </Box>
+    <>
+      <Typography variant='heading3M' sx={{ alignSelf: 'flex-start', color: colors.gray80 }}>
+        공지사항
+      </Typography>
 
-      <Stack
-        direction='row'
-        alignItems='center'
+      <Typography
+        variant='mediumTextB'
         sx={{
-          width: '100%',
+          alignSelf: 'flex-end',
+          color: colors.gray50,
           marginTop: '30px',
         }}
       >
-        <Typography variant='mediumTextB' sx={{ color: colors.gray50, marginLeft: 'auto' }}>
-          {detail.noticeProperties?.noticeType} 공지
-        </Typography>
-      </Stack>
+        {detail.noticeProperties?.noticeType} 공지
+      </Typography>
 
       <Stack
         gap='5px'
         sx={{
-          width: '100%',
           padding: '20px',
           marginTop: '20px',
           borderTop: `1px solid ${colors.gray50}`,
@@ -77,15 +86,14 @@ export default function NoticeDetail() {
       {detail.attachments && detail.attachments.length > 0 && (
         <Stack
           sx={{
-            width: '100%',
             padding: '15px 20px',
             backgroundColor: colors.gray30,
             boxSizing: 'border-box',
           }}
         >
-          {detail.attachments.map((file, index) => (
+          {detail.attachments.map(file => (
             <Link
-              key={index}
+              key={file.s3fileId}
               component={RouterLink}
               to={file.fileUrl}
               target='_blank'
@@ -93,37 +101,34 @@ export default function NoticeDetail() {
                 ...typography.largeTextR,
               }}
             >
-              {new URL(file.fileUrl).pathname.split('/').pop()}
+              {file.fileName}
             </Link>
           ))}
         </Stack>
       )}
 
-      <Box
+      <Tiptap
+        editor={editor}
         sx={{
-          width: '100%',
           padding: '50px 20px',
           boxSizing: 'border-box',
         }}
-      >
-        {detail.content}
-      </Box>
+      />
 
-      <Box>
-        <Button
-          variant='outlined'
-          component={RouterLink}
-          to='/customer-service/notice'
-          sx={{
-            width: '160px',
-            height: '50px',
-            borderColor: colors.navy,
-            color: colors.navy,
-          }}
-        >
-          목록
-        </Button>
-      </Box>
-    </Stack>
+      <Button
+        variant='outlined'
+        component={RouterLink}
+        to='/customer-service/notice'
+        sx={{
+          alignSelf: 'center',
+          width: '160px',
+          height: '50px',
+          borderColor: colors.navy,
+          color: colors.navy,
+        }}
+      >
+        목록
+      </Button>
+    </>
   );
 }

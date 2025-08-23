@@ -1,8 +1,7 @@
+import { colors, typography } from '@/themes';
 import { Table, TableBody, TableCell, TableHead, type TableProps, TableRow } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { flexRender } from '@tanstack/react-table';
-import { useReactTable } from '@tanstack/react-table';
-import { colors, typography } from '../globalStyles.ts';
+import { flexRender, useReactTable } from '@tanstack/react-table';
 
 export const MedipandaTableRow = styled(TableRow)({
   '.MuiTableHead-root &': {

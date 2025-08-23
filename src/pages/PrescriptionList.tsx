@@ -1,70 +1,56 @@
-import { Search } from '@mui/icons-material';
-import { Dialog, DialogTitle, FormControl, InputAdornment, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
-import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { useFormik } from 'formik';
-import { useEffect, useState } from 'react';
-import * as Yup from 'yup';
 import {
   DateTimeString,
   type DealerResponse,
   type DrugCompanyResponse,
   type FileValidationErrorDto,
   type PartnerResponse,
-  type PrescriptionResponse,
   searchPrescriptions,
   uploadEdiZip,
   uploadPartnerEdiFiles,
-} from '../backend';
-import { DealerSelectDialog } from '../custom/components/DealerSelectDialog.tsx';
-import { DrugCompanySelectDialog } from '../custom/components/DrugCompanySelectDialog.tsx';
-import { MedipandaDatePicker } from '../custom/components/MedipandaDatePicker.tsx';
-import { MedipandaFileUploadButton } from '../custom/components/MedipandaFileUploadButton.tsx';
-import { MedipandaPagination } from '../custom/components/MedipandaPagination.tsx';
-import { MedipandaButton } from '../custom/components/MedipandaButton.tsx';
-import { MedipandaOutlinedInput } from '../custom/components/MedipandaOutlinedInput.tsx';
-import { MedipandaTable } from '../custom/components/MedipandaTable.tsx';
-import { PartnerSelectDialog } from '../custom/components/PartnerSelectDialog.tsx';
-import { colors } from '../custom/globalStyles.ts';
-import { DATEFORMAT_YYYY_MM, formatYyyyMm, formatYyyyMmDd, formatYyyy년Mm월 } from '../utils/dateFormat.ts';
+} from '@/backend';
+import { DealerSelectDialog } from '@/custom/components/DealerSelectDialog';
+import { DrugCompanySelectDialog } from '@/custom/components/DrugCompanySelectDialog';
+import { MedipandaButton } from '@/custom/components/MedipandaButton';
+import { MedipandaDatePicker } from '@/custom/components/MedipandaDatePicker';
+import { MedipandaFileUploadButton } from '@/custom/components/MedipandaFileUploadButton';
+import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
+import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
+import { MedipandaTable } from '@/custom/components/MedipandaTable';
+import { PartnerSelectDialog } from '@/custom/components/PartnerSelectDialog';
+import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
+import { colors } from '@/themes';
+import { DATEFORMAT_YYYY_MM, formatYyyyMm, formatYyyyMmDd, formatYyyy년Mm월 } from '@/lib/dateFormat';
+import { Search } from '@mui/icons-material';
+import { Dialog, DialogTitle, FormControl, InputAdornment, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { useFormik } from 'formik';
+import { useState } from 'react';
+import * as Yup from 'yup';
 
 export default function PrescriptionList() {
   const [individualUpload, setIndividualUpload] = useState(true);
 
-  const [page, setPage] = useState<PrescriptionResponse[]>([]);
-  const [totalPages, setTotalPages] = useState(0);
-
-  const pageFormik = useFormik({
-    initialValues: {
+  const {
+    content: page,
+    pageCount: totalPages,
+    formik: pageFormik,
+  } = usePageFetchFormik({
+    initialFormValues: {
       searchType: 'companyName' as 'companyName' | 'dealerName',
       searchKeyword: '',
-      pageIndex: 0,
-      pageSize: 10,
-      totalPages: 1,
     },
-    onSubmit: async () => {
-      if (pageFormik.values.pageIndex !== 0) {
-        await pageFormik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchPage();
-      }
+    fetcher: async values => {
+      return searchPrescriptions({
+        companyName: values.searchType === 'companyName' ? values.searchKeyword : undefined,
+        dealerName: values.searchType === 'dealerName' ? values.searchKeyword : undefined,
+        page: values.pageIndex,
+        size: values.pageSize,
+      });
     },
+    contentSelector: response => response.content,
+    pageCountSelector: response => response.totalPages,
+    initialContent: [],
   });
-
-  const fetchPage = async () => {
-    const response = await searchPrescriptions({
-      companyName: pageFormik.values.searchType === 'companyName' ? pageFormik.values.searchKeyword : undefined,
-      dealerName: pageFormik.values.searchType === 'dealerName' ? pageFormik.values.searchKeyword : undefined,
-      page: pageFormik.values.pageIndex,
-      size: pageFormik.values.pageSize,
-    });
-
-    setPage(response.content);
-    setTotalPages(response.totalPages);
-  };
-
-  useEffect(() => {
-    pageFormik.submitForm();
-  }, [pageFormik.values.pageIndex, pageFormik.values.pageSize]);
 
   const table = useReactTable({
     data: page,
@@ -95,97 +81,94 @@ export default function PrescriptionList() {
 
   return (
     <>
+      <Typography variant='heading4B' sx={{ alignSelf: 'center', color: colors.gray80 }}>
+        {formatYyyy년Mm월(new Date())}
+      </Typography>
       <Stack
+        direction='row'
         alignItems='center'
+        gap='10px'
+        component='form'
+        onSubmit={pageFormik.handleSubmit}
         sx={{
-          width: '100%',
+          alignSelf: 'center',
+          marginTop: '40px',
         }}
       >
-        <Typography variant='heading4B' sx={{ color: colors.gray80 }}>
-          {formatYyyy년Mm월(new Date())}
-        </Typography>
-        <Stack
-          direction='row'
-          alignItems='center'
-          gap='10px'
-          component='form'
-          onSubmit={pageFormik.handleSubmit}
+        <FormControl sx={{ width: '320px' }}>
+          <Select value={pageFormik.values.searchType} onChange={pageFormik.handleChange}>
+            <MenuItem value='companyName'>거래처명</MenuItem>
+            <MenuItem value='dealerName'>딜러명</MenuItem>
+          </Select>
+        </FormControl>
+        <TextField
+          name='searchKeyword'
+          value={pageFormik.values.searchKeyword}
+          onChange={pageFormik.handleChange}
+          placeholder='거래처명을 검색하세요.'
           sx={{
-            marginTop: '40px',
+            width: '478px',
+          }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position='end'>
+                <Search />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <button type='submit' hidden />
+      </Stack>
+      <Stack direction='row' alignItems='center' gap='10px' sx={{ marginTop: '40px' }}>
+        <MedipandaButton
+          variant={individualUpload ? 'contained' : 'outlined'}
+          rounded
+          onClick={() => setIndividualUpload(true)}
+          sx={{
+            width: '140px',
+            marginLeft: 'auto',
           }}
         >
-          <FormControl sx={{ width: '320px' }}>
-            <Select value={pageFormik.values.searchType} onChange={pageFormik.handleChange}>
-              <MenuItem value='companyName'>거래처명</MenuItem>
-              <MenuItem value='dealerName'>딜러명</MenuItem>
-            </Select>
-          </FormControl>
-          <TextField
-            name='searchKeyword'
-            value={pageFormik.values.searchKeyword}
-            onChange={pageFormik.handleChange}
-            placeholder='거래처명을 검색하세요.'
-            sx={{
-              width: '478px',
+          거래처별 업로드
+        </MedipandaButton>
+        <MedipandaButton
+          variant={!individualUpload ? 'contained' : 'outlined'}
+          rounded
+          onClick={() => setIndividualUpload(false)}
+          sx={{
+            width: '140px',
+          }}
+        >
+          한번에 업로드
+        </MedipandaButton>
+      </Stack>
+      <Stack direction='row' alignItems='flex-start' gap='24px' sx={{ marginTop: '10px' }}>
+        <Stack sx={{ width: '600px' }}>
+          <MedipandaTable table={table} />
+          <MedipandaPagination
+            count={totalPages}
+            page={pageFormik.values.pageIndex + 1}
+            showFirstButton
+            showLastButton
+            onChange={(_, page) => {
+              pageFormik.setFieldValue('pageIndex', page - 1);
             }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position='end'>
-                  <Search />
-                </InputAdornment>
-              ),
+            sx={{
+              alignSelf: 'center',
+              marginTop: '40px',
             }}
           />
-          <button type='submit' hidden />
         </Stack>
-        <Stack direction='row' alignItems='center' gap='10px' sx={{ width: '100%', marginTop: '40px' }}>
-          <MedipandaButton
-            variant={individualUpload ? 'contained' : 'outlined'}
-            rounded
-            onClick={() => setIndividualUpload(true)}
-            sx={{
-              width: '140px',
-              marginLeft: 'auto',
-            }}
-          >
-            거래처별 업로드
-          </MedipandaButton>
-          <MedipandaButton
-            variant={!individualUpload ? 'contained' : 'outlined'}
-            rounded
-            onClick={() => setIndividualUpload(false)}
-            sx={{
-              width: '140px',
-            }}
-          >
-            한번에 업로드
-          </MedipandaButton>
-        </Stack>
-        <Stack direction='row' alignItems='flex-start' gap='24px' sx={{ width: '100%', marginTop: '10px' }}>
-          <Stack alignItems='center' sx={{ width: '600px' }}>
-            <MedipandaTable table={table} />
-            <MedipandaPagination
-              count={totalPages}
-              page={pageFormik.values.pageIndex + 1}
-              showFirstButton
-              showLastButton
-              onChange={(_, page) => {
-                pageFormik.setFieldValue('pageIndex', page - 1);
-              }}
-              sx={{ marginTop: '40px' }}
-            />
-          </Stack>
-          <Stack
-            gap='10px'
-            sx={{
-              width: '600px',
-              padding: '40px 75px',
-              border: `1px solid ${colors.gray30}`,
-              boxSizing: 'border-box',
-            }}
-          >
-            {individualUpload ? <EdiIndividualUploadForm /> : <EdiBatchUploadForm />}
-          </Stack>
+        <Stack
+          gap='10px'
+          sx={{
+            width: '600px',
+            padding: '40px 75px',
+            border: `1px solid ${colors.gray30}`,
+            boxSizing: 'border-box',
+          }}
+        >
+          {individualUpload ? <EdiIndividualUploadForm /> : <EdiBatchUploadForm />}
         </Stack>
       </Stack>
     </>
@@ -280,7 +263,7 @@ function EdiIndividualUploadForm() {
           }}
         />
       </Stack>
-      <Stack direction='row' alignItems='center' sx={{ width: '100%' }}>
+      <Stack direction='row' alignItems='center'>
         <Typography variant='largeTextM' sx={{ color: colors.gray80, width: '120px' }}>
           거래처명
         </Typography>
@@ -299,7 +282,8 @@ function EdiIndividualUploadForm() {
         </Stack>
       </Stack>
       {(formik.values.drugCompanies as (DrugCompanyResponse | null)[]).concat(null).map((drugCompany, index) => (
-        <Stack key={index} direction='row' alignItems='center'>
+        <Stack key={drugCompany?.id ?? ''} direction='row' alignItems='center'>
+          {JSON.stringify(drugCompany?.id)}
           <Typography variant='largeTextM' sx={{ color: colors.gray80, width: '120px' }}>
             {index === 0 ? '거래제약사' : ''}
           </Typography>
@@ -322,7 +306,7 @@ function EdiIndividualUploadForm() {
         </Stack>
       ))}
       {(formik.values.files as (File | null)[]).concat([null]).map((file, index) => (
-        <Stack key={index} direction='row' alignItems='center'>
+        <Stack key={file?.webkitRelativePath ?? ''} direction='row' alignItems='center'>
           <Typography variant='largeTextM' sx={{ color: colors.gray80, width: '120px' }}>
             {index === 0 ? '파일업로드' : ''}
           </Typography>
@@ -367,7 +351,6 @@ function EdiIndividualUploadForm() {
         justifyContent='center'
         gap='10px'
         sx={{
-          width: '100%',
           marginTop: '10px',
         }}
       >
@@ -615,9 +598,9 @@ function EdiBatchUploadErrorDialog({ open, onClose, errors }: { open?: boolean; 
           파일명
         </Typography>
         <Stack sx={{ marginTop: '20px' }}>
-          {errors.map((error, index) => (
+          {errors.map(error => (
             <Typography
-              key={index}
+              key={error.error}
               variant='heading2R'
               sx={{
                 color: colors.red,

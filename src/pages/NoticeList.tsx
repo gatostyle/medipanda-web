@@ -1,58 +1,41 @@
+import { getBoards } from '@/backend';
+import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
+import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
+import { colors, typography } from '@/themes';
+import { formatYyyyMmDd } from '@/lib/dateFormat';
 import { Search } from '@mui/icons-material';
 import { Box, Button, InputAdornment, Stack, Table, TableBody, TableCell, TableRow, TextField, Typography } from '@mui/material';
-import { useFormik } from 'formik';
-import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router';
-import { type BoardPostResponse, getBoards } from '../backend';
-import { MedipandaPagination } from '../custom/components/MedipandaPagination.tsx';
-import { colors, typography } from '../custom/globalStyles.ts';
-import { formatYyyyMmDd } from '../utils/dateFormat.ts';
 
 const categories = ['전체', '제품현황', '정산 및 생산중단', '신제품 정보', '제약사 정책', '일반공지'];
 
 export default function NoticeList() {
-  const [page, setPage] = useState<BoardPostResponse[]>([]);
-  const [totalPages, setTotalPages] = useState(0);
-
-  const pageFormik = useFormik({
-    initialValues: {
+  const {
+    content: page,
+    pageCount: totalPages,
+    formik: pageFormik,
+  } = usePageFetchFormik({
+    initialFormValues: {
       searchKeyword: '',
-      pageIndex: 0,
-      pageSize: 10,
-      totalPages: 1,
     },
-    onSubmit: async () => {
-      if (pageFormik.values.pageIndex !== 0) {
-        await pageFormik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchPage();
-      }
+    fetcher: values => {
+      return getBoards({
+        boardType: 'NOTICE',
+        boardTitle: values.searchKeyword !== '' ? values.searchKeyword : undefined,
+        page: values.pageIndex,
+        size: values.pageSize,
+      });
     },
+    contentSelector: response => response.content,
+    pageCountSelector: response => response.totalPages,
+    initialContent: [],
   });
 
-  const fetchPage = async () => {
-    const response = await getBoards({
-      boardType: 'NOTICE',
-      boardTitle: pageFormik.values.searchKeyword !== '' ? pageFormik.values.searchKeyword : undefined,
-      page: pageFormik.values.pageIndex,
-      size: pageFormik.values.pageSize,
-    });
-
-    setPage(response.content);
-    setTotalPages(response.totalPages);
-  };
-
-  useEffect(() => {
-    pageFormik.submitForm();
-  }, [pageFormik.values.pageIndex, pageFormik.values.pageSize]);
-
   return (
-    <Stack alignItems='center'>
-      <Box sx={{ width: '100%' }}>
-        <Typography variant='heading3M' sx={{ color: colors.gray80, mb: '30px' }}>
-          공지사항
-        </Typography>
-      </Box>
+    <>
+      <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
+        공지사항
+      </Typography>
 
       <Stack
         direction='row'
@@ -60,7 +43,6 @@ export default function NoticeList() {
         component='form'
         onSubmit={pageFormik.handleSubmit}
         sx={{
-          width: '100%',
           marginTop: '30px',
         }}
       >
@@ -95,7 +77,7 @@ export default function NoticeList() {
           InputProps={{
             endAdornment: (
               <InputAdornment position='end'>
-                <Search sx={{ color: colors.gray500 }} />
+                <Search />
               </InputAdornment>
             ),
           }}
@@ -124,8 +106,11 @@ export default function NoticeList() {
               }}
             >
               <TableCell>
-                <Typography variant='smallTextR' sx={{ color: notice.noticeType === 'GENERAL' ? colors.vividViolet : colors.gray70 }}>
-                  {notice.noticeType}
+                <Typography
+                  variant='smallTextR'
+                  sx={{ color: notice.noticeProperties?.drugCompany === '메디판다' ? colors.vividViolet : colors.gray70 }}
+                >
+                  {notice.noticeProperties?.drugCompany}
                 </Typography>
               </TableCell>
               <TableCell>
@@ -144,6 +129,7 @@ export default function NoticeList() {
 
                       display: 'flex',
                       alignItems: 'center',
+                      gap: '4px',
                     }}
                   >
                     {index < 2 && (
@@ -152,7 +138,6 @@ export default function NoticeList() {
                         style={{
                           width: '16px',
                           height: '16px',
-                          marginRight: '4px',
                         }}
                       />
                     )}
@@ -178,8 +163,11 @@ export default function NoticeList() {
         onChange={(_, page) => {
           pageFormik.setFieldValue('pageIndex', page - 1);
         }}
-        sx={{ marginTop: '40px' }}
+        sx={{
+          alignSelf: 'center',
+          marginTop: '40px',
+        }}
       />
-    </Stack>
+    </>
   );
 }

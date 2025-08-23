@@ -1,22 +1,10 @@
-import { styled } from '@mui/material/styles';
-import { TableCell, TableHead } from '@mui/material';
-
 export const colors = {
   primary: '#6B3AA0',
   primaryDark: '#5a2d8a',
-  primaryLight: 'rgba(107, 58, 160, 0.04)',
-  primaryDarkLight: 'rgba(90, 45, 138, 0.08)',
-  secondary: '#1E1B4B',
   success: '#10B981',
-  error: '#f44336',
-  errorDark: '#d32f2f',
-  warning: '#ff9800',
-  warningLight: 'rgba(255, 152, 0, 0.1)',
   gray100: '#f8f9fa',
-  gray200: '#f0f0f0',
   gray300: '#e0e0e0',
   gray400: '#999',
-  gray500: '#666',
   gray600: '#4B5563',
   gray700: '#333',
 
@@ -25,6 +13,7 @@ export const colors = {
   gray30: '#dddddd',
   gray40: '#cccccc',
   gray50: '#999999',
+  gray60: '#666666',
   gray70: '#333333',
   gray80: '#111111',
   white: '#FFFFFF',
@@ -35,15 +24,6 @@ export const colors = {
   vividViolet: '#4D12EE',
   navy: '#0e2148',
   blue: '#005efe',
-};
-
-export const spacing = {
-  xs: '4px',
-  sm: '8px',
-  md: '16px',
-  lg: '24px',
-  xl: '32px',
-  xxl: '48px',
 };
 
 export const typography = {
@@ -158,21 +138,3 @@ export const typography = {
     lineHeight: 1.5,
   },
 };
-
-export const StyledTableHead = styled(TableHead)({
-  backgroundColor: colors.gray100,
-  '& .MuiTableCell-head': {
-    fontWeight: 600,
-    color: colors.gray600,
-    borderBottom: `1px solid ${colors.gray300}`,
-    fontSize: '14px',
-    padding: spacing.md,
-  },
-});
-
-export const StyledTableCell = styled(TableCell)({
-  padding: spacing.md,
-  borderBottom: `1px solid ${colors.gray200}`,
-  fontSize: '14px',
-  color: colors.gray600,
-});

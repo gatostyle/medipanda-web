@@ -24,7 +24,12 @@
     "noUncheckedSideEffectImports": true,
     "allowSyntheticDefaultImports": true,
 
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "paths": {
+      "@/*": [
+        "*"
+      ]
+    }
   },
   "include": ["src"]
 }

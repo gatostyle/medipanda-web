@@ -1,7 +1,7 @@
+import { colors } from '@/themes';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Box, Button, IconButton, InputAdornment, Stack, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
-import { colors } from '../custom/globalStyles.ts';
 
 export default function MypageGuard() {
   const [password, setPassword] = useState('');

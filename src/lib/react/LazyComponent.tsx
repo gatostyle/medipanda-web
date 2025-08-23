@@ -1,11 +1,11 @@
 import { type ElementType, Suspense } from 'react';
-import { FixedLoader } from './FixedLoader.tsx';
+import { FixedLinearLoader } from './FixedLinearLoader';
 
-export function Loadable(Component: ElementType) {
+export function LazyComponent(Component: ElementType) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any,react/display-name
   return (props: any) => {
     return (
-      <Suspense fallback={<FixedLoader />}>
+      <Suspense fallback={<FixedLinearLoader />}>
         <Component {...props} />
       </Suspense>
     );

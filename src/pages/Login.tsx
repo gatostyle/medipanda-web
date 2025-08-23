@@ -1,12 +1,12 @@
+import { MedipandaButton } from '@/custom/components/MedipandaButton';
+import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
+import { useSession } from '@/hooks/useSession';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Box, Card, FormControl, FormHelperText, IconButton, InputAdornment, Stack, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { type SyntheticEvent, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import * as Yup from 'yup';
-import { MedipandaButton } from '../custom/components/MedipandaButton.tsx';
-import { MedipandaOutlinedInput } from '../custom/components/MedipandaOutlinedInput.tsx';
-import { useSession } from '../hooks/useSession.tsx';
 
 export default function Login() {
   const { login } = useSession();
@@ -123,7 +123,7 @@ export default function Login() {
                 width: '400px',
               }}
             >
-              <Typography variant='heading4B' sx={{ width: '100%', textAlign: 'center' }}>
+              <Typography variant='heading4B' sx={{ alignSelf: 'center' }}>
                 로그인
               </Typography>
               <FormControl>

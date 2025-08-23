@@ -1,14 +1,16 @@
+import { InquiryStatusChip } from '@/components/InquiryStatusChip';
+import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/components/MedipandaTab';
+import { colors } from '@/themes';
+import { formatYyyyMmDdHhMm } from '@/lib/dateFormat';
 import { GetApp } from '@mui/icons-material';
 import { Alert, Box, Button, CircularProgress, Snackbar, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { Link as RouterLink, useParams } from 'react-router';
-import { InquiryStatusChip } from '../components/InquiryStatusChip.tsx';
-import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '../custom/components/MedipandaTab.tsx';
-import { colors } from '../custom/globalStyles.ts';
-import { formatYyyyMmDdHhMm } from '../utils/dateFormat.ts';
 
 export default function InquiryDetail() {
-  const { id } = useParams();
+  const { id: paramId } = useParams();
+  const inquiryId = Number(paramId);
+
   const [loading, setLoading] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -29,7 +31,7 @@ export default function InquiryDetail() {
   };
 
   const mockInquiry = {
-    id: Number(id),
+    id: Number(inquiryId),
     title: '커뮤니티에서 활동중에 답글처리이 안되요',
     question: `안녕하세요
 다음아니라 커뮤니티 활동중에 제가 작성한 글에 대해서
@@ -49,14 +51,12 @@ CSO Link 방식에 ------- 으로 확인이 되고있습니다.
   };
 
   return (
-    <Stack alignItems='center'>
-      <Box sx={{ width: '100%' }}>
-        <Typography variant='heading3M' sx={{ color: colors.gray80, mb: '30px' }}>
-          1:1 문의내엵
-        </Typography>
-      </Box>
+    <>
+      <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
+        1:1 문의내엵
+      </Typography>
 
-      <MedipandaTabs value={0} sx={{ width: '100%' }}>
+      <MedipandaTabs value={0} sx={{ marginTop: '30px' }}>
         <MedipandaTab label='문의내역' />
         <MedipandaTabElse />
       </MedipandaTabs>
@@ -66,7 +66,6 @@ CSO Link 방식에 ------- 으로 확인이 되고있습니다.
         alignItems='center'
         gap='10px'
         sx={{
-          width: '100%',
           padding: '20px',
           marginTop: '40px',
           borderBottom: `1px solid ${colors.gray30}`,
@@ -95,7 +94,6 @@ CSO Link 방식에 ------- 으로 확인이 되고있습니다.
         <Stack
           gap='20px'
           sx={{
-            width: '100%',
             padding: '30px 40px',
             borderBottom: `1px solid ${colors.gray30}`,
             boxSizing: 'border-box',
@@ -169,10 +167,10 @@ CSO Link 방식에 ------- 으로 확인이 되고있습니다.
         onClose={() => setSnackbarOpen(false)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity}>
           {snackbarMessage}
         </Alert>
       </Snackbar>
-    </Stack>
+    </>
   );
 }

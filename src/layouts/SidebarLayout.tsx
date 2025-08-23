@@ -1,8 +1,8 @@
-import { Box, List, ListItemButton, ListItemText, Stack, Typography } from '@mui/material';
+import { colors, typography } from '@/themes';
+import { List, ListItemButton, ListItemText, Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { memo } from 'react';
 import { Link as RouterLink, Outlet, useLocation } from 'react-router';
-import { colors, typography } from '../custom/globalStyles.ts';
 
 const SidebarLink = styled(ListItemButton)({
   color: colors.gray80,
@@ -53,14 +53,14 @@ function SidebarLayout({ title, tabConfig }: SidebarLayoutProps) {
           ))}
         </List>
       </Stack>
-      <Box
+      <Stack
         sx={{
           flexGrow: 1,
           marginLeft: '60px',
         }}
       >
         <Outlet />
-      </Box>
+      </Stack>
     </Stack>
   );
 }

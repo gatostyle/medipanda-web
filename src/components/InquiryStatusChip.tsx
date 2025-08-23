@@ -1,5 +1,5 @@
+import { colors } from '@/themes';
 import { Box } from '@mui/material';
-import { colors } from '../custom/globalStyles.ts';
 
 export function InquiryStatusChip({ responseStatus }: { responseStatus: boolean }) {
   return (

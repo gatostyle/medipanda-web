@@ -1,39 +1,53 @@
+import { type EventBoardDetailsResponse, getEventBoardDetails } from '@/backend';
+import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
+import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
+import { colors } from '@/themes';
+import { formatYyyyMmDd } from '@/lib/dateFormat';
 import { Stack, Typography } from '@mui/material';
+import { EditorContent } from '@tiptap/react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { type EventBoardDetailsResponse, getEventBoardDetails } from '../backend';
-import { FixedLoader } from '../components/FixedLoader.tsx';
-import { colors } from '../custom/globalStyles.ts';
-import { formatYyyyMmDd } from '../utils/dateFormat.ts';
 
 export default function EventDetail() {
   const { id: paramId } = useParams();
+  const eventId = Number(paramId);
+
   const navigate = useNavigate();
-  const [detail, setdetail] = useState<EventBoardDetailsResponse | null>(null);
-
-  const fetchDetail = async (id: number) => {
-    const response = await getEventBoardDetails(id);
-
-    setdetail(response);
-  };
+  const [detail, setDetail] = useState<EventBoardDetailsResponse | null>(null);
 
   useEffect(() => {
-    const id = Number(paramId);
-    if (isNaN(id)) {
+    if (Number.isNaN(eventId)) {
       alert('잘못된 접근입니다.');
       navigate('/events', { replace: true });
       return;
     }
 
-    fetchDetail(id);
-  }, [paramId]);
+    fetchDetail(eventId);
+  }, [eventId, navigate]);
+
+  const fetchDetail = async (id: number) => {
+    const response = await getEventBoardDetails(id);
+
+    setDetail(response);
+  };
+
+  const { editor } = useMedipandaEditor();
+
+  useEffect(() => {
+    if (detail === null) {
+      return;
+    }
+
+    editor.setEditable(false);
+    editor.commands.setContent(detail.boardPostDetail.content);
+  }, [detail, editor]);
 
   if (!detail) {
-    return <FixedLoader />;
+    return <FixedLinearLoader />;
   }
 
   return (
-    <Stack>
+    <>
       <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
         이벤트
       </Typography>
@@ -59,14 +73,12 @@ export default function EventDetail() {
         </Typography>
       </Stack>
 
-      <Stack
-        sx={{
-          width: '912px',
+      <EditorContent
+        editor={editor}
+        style={{
           padding: '50px 20px',
         }}
-      >
-        {detail.boardPostDetail.content}
-      </Stack>
-    </Stack>
+      />
+    </>
   );
 }

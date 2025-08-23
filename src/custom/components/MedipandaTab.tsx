@@ -1,6 +1,6 @@
+import { colors, typography } from '@/themes';
 import { Tab, Tabs } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { colors, typography } from '../globalStyles.ts';
 
 export const MedipandaTabs = styled(Tabs)({
   '& .MuiTabs-indicator': {

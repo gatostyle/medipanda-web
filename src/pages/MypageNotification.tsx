@@ -1,57 +1,39 @@
-import { Box, Button, Checkbox, FormControlLabel, Stack, Switch, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { useState } from 'react';
-import { colors } from '../custom/globalStyles.ts';
-
-const MarketingCheckbox = styled(Checkbox)({
-  color: '#6B3AA0',
-  '&.Mui-checked': {
-    color: '#6B3AA0',
-  },
-});
+import { MedipandaCheckbox } from '@/custom/components/MedipandaCheckbox';
+import { MedipandaSwitch } from '@/custom/components/MedipandaSwitch';
+import { colors } from '@/themes';
+import { Button, FormControlLabel, Stack, Typography } from '@mui/material';
+import { useFormik } from 'formik';
 
 export default function MypageNotification() {
-  const [notifications, setNotifications] = useState({
-    all: true,
-    notice: true,
-    newProducts: true,
-    performance: false,
-    settlement: false,
-    community: false,
+  const formik = useFormik({
+    initialValues: {
+      notice: true,
+      newProduct: true,
+      prescription: true,
+      settlement: true,
+      community: true,
+      marketingSms: true,
+      marketingEmail: true,
+      marketingAppPush: true,
+    },
+    onSubmit: async values => {},
   });
-
-  const [marketing, setMarketing] = useState({
-    sms: true,
-    email: true,
-    appPush: true,
-  });
-
-  const handleNotificationChange = (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNotifications(prev => ({
-      ...prev,
-      [key]: event.target.checked,
-    }));
-  };
-
-  const handleMarketingChange = (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMarketing(prev => ({
-      ...prev,
-      [key]: event.target.checked,
-    }));
-  };
 
   return (
     <>
-      <Stack alignItems='center'>
-        <Box sx={{ width: '100%' }}>
-          <Typography variant='heading3M' sx={{ color: colors.gray80, mb: '30px' }}>
-            수신정보
-          </Typography>
-        </Box>
+      <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
+        수신정보
+      </Typography>
 
+      <Stack
+        sx={{
+          alignSelf: 'center',
+          width: '434px',
+          marginTop: '30px',
+        }}
+      >
         <Stack
           sx={{
-            width: '434px',
             padding: '16px 30px',
             borderRadius: '5px',
             boxSizing: 'border-box',
@@ -62,20 +44,32 @@ export default function MypageNotification() {
             direction='row'
             alignItems='center'
             sx={{
-              width: '100%',
-              py: '10px',
+              paddingY: '10px',
             }}
           >
-            <Typography variant='largeTextB' sx={{ color: colors.white, width: '100%' }}>
+            <Typography variant='largeTextB' sx={{ color: colors.white }}>
               전체 알림 받기
             </Typography>
-            <Switch size='medium' />
+            <MedipandaSwitch
+              checked={(['notice', 'newProduct', 'prescription', 'settlement', 'community'] as const).every(key => formik.values[key])}
+              onChange={(_, checked) => {
+                formik.setValues({
+                  ...formik.values,
+                  notice: checked,
+                  newProduct: checked,
+                  prescription: checked,
+                  settlement: checked,
+                  community: checked,
+                });
+              }}
+              size='medium'
+              sx={{ marginLeft: 'auto' }}
+            />
           </Stack>
         </Stack>
 
         <Stack
           sx={{
-            width: '434px',
             padding: '15px 30px',
             marginTop: '13px',
             boxSizing: 'border-box',
@@ -86,66 +80,86 @@ export default function MypageNotification() {
             direction='row'
             alignItems='center'
             sx={{
-              width: '100%',
-              py: '10px',
+              paddingY: '10px',
             }}
           >
-            <Typography variant='largeTextB' sx={{ color: colors.gray80, width: '100%' }}>
+            <Typography variant='largeTextB' sx={{ color: colors.gray80 }}>
               공지사항 (제약사)
             </Typography>
-            <Switch size='medium' />
+            <MedipandaSwitch
+              checked={formik.values.notice}
+              onChange={(_, checked) => formik.setFieldValue('notice', checked)}
+              size='medium'
+              sx={{ marginLeft: 'auto' }}
+            />
           </Stack>
           <Stack
             direction='row'
             alignItems='center'
             sx={{
-              width: '100%',
-              py: '10px',
+              paddingY: '10px',
             }}
           >
-            <Typography variant='largeTextB' sx={{ color: colors.gray80, width: '100%' }}>
+            <Typography variant='largeTextB' sx={{ color: colors.gray80 }}>
               신규 영업대행상품
             </Typography>
-            <Switch size='medium' />
+            <MedipandaSwitch
+              checked={formik.values.newProduct}
+              onChange={(_, checked) => formik.setFieldValue('newProduct', checked)}
+              size='medium'
+              sx={{ marginLeft: 'auto' }}
+            />
           </Stack>
           <Stack
             direction='row'
             alignItems='center'
             sx={{
-              width: '100%',
-              py: '10px',
+              paddingY: '10px',
             }}
           >
-            <Typography variant='largeTextB' sx={{ color: colors.gray80, width: '100%' }}>
+            <Typography variant='largeTextB' sx={{ color: colors.gray80 }}>
               실적관리
             </Typography>
-            <Switch size='medium' />
+            <MedipandaSwitch
+              checked={formik.values.prescription}
+              onChange={(_, checked) => formik.setFieldValue('prescription', checked)}
+              size='medium'
+              sx={{ marginLeft: 'auto' }}
+            />
           </Stack>
           <Stack
             direction='row'
             alignItems='center'
             sx={{
-              width: '100%',
-              py: '10px',
+              paddingY: '10px',
             }}
           >
-            <Typography variant='largeTextB' sx={{ color: colors.gray80, width: '100%' }}>
+            <Typography variant='largeTextB' sx={{ color: colors.gray80 }}>
               정산
             </Typography>
-            <Switch size='medium' />
+            <MedipandaSwitch
+              checked={formik.values.settlement}
+              onChange={(_, checked) => formik.setFieldValue('settlement', checked)}
+              size='medium'
+              sx={{ marginLeft: 'auto' }}
+            />
           </Stack>
           <Stack
             direction='row'
             alignItems='center'
             sx={{
-              width: '100%',
-              py: '10px',
+              paddingY: '10px',
             }}
           >
-            <Typography variant='largeTextB' sx={{ color: colors.gray80, width: '100%' }}>
+            <Typography variant='largeTextB' sx={{ color: colors.gray80 }}>
               커뮤니티
             </Typography>
-            <Switch size='medium' />
+            <MedipandaSwitch
+              checked={formik.values.community}
+              onChange={(_, checked) => formik.setFieldValue('community', checked)}
+              size='medium'
+              sx={{ marginLeft: 'auto' }}
+            />
           </Stack>
         </Stack>
 
@@ -153,7 +167,6 @@ export default function MypageNotification() {
           direction='row'
           alignItems='center'
           sx={{
-            width: '434px',
             paddingTop: '20px',
             borderTop: `1px solid ${colors.gray30}`,
             marginTop: '40px',
@@ -168,13 +181,31 @@ export default function MypageNotification() {
               marginLeft: 'auto',
             }}
           >
-            <FormControlLabel control={<MarketingCheckbox checked={marketing.sms} onChange={handleMarketingChange('sms')} />} label='SMS' />
             <FormControlLabel
-              control={<MarketingCheckbox checked={marketing.email} onChange={handleMarketingChange('email')} />}
+              control={
+                <MedipandaCheckbox
+                  checked={formik.values.marketingSms}
+                  onChange={(_, checked) => formik.setFieldValue('marketingSms', checked)}
+                />
+              }
+              label='SMS'
+            />
+            <FormControlLabel
+              control={
+                <MedipandaCheckbox
+                  checked={formik.values.marketingEmail}
+                  onChange={(_, checked) => formik.setFieldValue('marketingEmail', checked)}
+                />
+              }
               label='이메일'
             />
             <FormControlLabel
-              control={<MarketingCheckbox checked={marketing.appPush} onChange={handleMarketingChange('appPush')} />}
+              control={
+                <MedipandaCheckbox
+                  checked={formik.values.marketingAppPush}
+                  onChange={(_, checked) => formik.setFieldValue('marketingAppPush', checked)}
+                />
+              }
               label='App Push'
             />
           </Stack>
