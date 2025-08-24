@@ -22,11 +22,10 @@ import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-react';
-import { getDownloadPerformanceExcel, getPerformanceStats, PerformanceStatsResponse } from 'medipanda/backend';
+import { DateString, getDownloadPerformanceExcel, getPerformanceStats, PerformanceStatsResponse } from 'medipanda/backend';
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
-import { mockNumber } from 'medipanda/mockup';
 import { formatYyyyMm } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
@@ -75,8 +74,8 @@ export default function MpAdminStatisticsList() {
         companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
         dealerName: formik.values.searchType === 'dealerName' ? formik.values.searchKeyword : undefined,
         institutionName: formik.values.searchType === 'institutionName' ? formik.values.searchKeyword : undefined,
-        startMonth: formik.values.settlementDate ? mockNumber() : undefined,
-        endMonth: formik.values.settlementDate ? mockNumber() : undefined,
+        startMonth: formik.values.settlementDate ? new DateString(formik.values.settlementDate) : undefined,
+        endMonth: formik.values.settlementDate ? new DateString(formik.values.settlementDate) : undefined,
         page: formik.values.pageIndex,
         size: formik.values.pageSize
       });
@@ -264,8 +263,8 @@ export default function MpAdminStatisticsList() {
                     companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
                     dealerName: formik.values.searchType === 'dealerName' ? formik.values.searchKeyword : undefined,
                     institutionName: formik.values.searchType === 'institutionName' ? formik.values.searchKeyword : undefined,
-                    startMonth: formik.values.settlementDate ? mockNumber() : undefined,
-                    endMonth: formik.values.settlementDate ? mockNumber() : undefined,
+                    startMonth: formik.values.settlementDate ? new DateString(formik.values.settlementDate) : undefined,
+                    endMonth: formik.values.settlementDate ? new DateString(formik.values.settlementDate) : undefined,
                     page: formik.values.pageIndex,
                     size: formik.values.pageSize
                   })}

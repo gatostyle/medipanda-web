@@ -136,6 +136,7 @@ export default function MpAdminSalesAgencyProductEdit() {
               boardType: 'SALES_AGENCY',
               userId: session!.userId,
               nickname: session!.name,
+              hiddenNickname: false,
               title: values.productName,
               content: values.content,
               parentId: null,

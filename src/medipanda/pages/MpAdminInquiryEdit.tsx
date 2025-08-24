@@ -245,37 +245,41 @@ export default function MpAdminInquiryEdit() {
               </Box>
             </Grid>
 
-            <Grid item xs={12}>
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                  답변내용
-                </Typography>
-                <TextField
-                  name="responseContent"
-                  multiline
-                  rows={6}
-                  fullWidth
-                  placeholder=""
-                  value={formik.values.responseContent}
-                  onChange={formik.handleChange}
-                />
-              </Box>
-            </Grid>
+            {formik.values.responseContent && (
+              <Grid item xs={12}>
+                <Box>
+                  <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    답변내용
+                  </Typography>
+                  <TextField
+                    name="responseContent"
+                    multiline
+                    rows={6}
+                    fullWidth
+                    placeholder=""
+                    value={formik.values.responseContent}
+                    onChange={formik.handleChange}
+                  />
+                </Box>
+              </Grid>
+            )}
 
-            <Grid item xs={12}>
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                  답변시간
-                </Typography>
-                <TextField
-                  fullWidth
-                  size="small"
-                  value={formatYyyyMmDdHhMm(inquiry.responseCreatedAt!)}
-                  InputProps={{ readOnly: true }}
-                  sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
-                />
-              </Box>
-            </Grid>
+            {inquiry.responseCreatedAt !== null && (
+              <Grid item xs={12}>
+                <Box>
+                  <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    답변시간
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    value={formatYyyyMmDdHhMm(inquiry.responseCreatedAt)}
+                    InputProps={{ readOnly: true }}
+                    sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
+                  />
+                </Box>
+              </Grid>
+            )}
 
             <Grid item xs={12}>
               <Box>

@@ -25,12 +25,11 @@ import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-react';
 import { mpDownloadSettlementEDI, mpPrintSettlementEDI } from 'medipanda/api-definitions/MpSettlement';
 import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
-import { getDownloadSettlementListExcel, getSettlements, SettlementResponse, uploadSettlementExcel } from 'medipanda/backend';
+import { DateString, getDownloadSettlementListExcel, getSettlements, SettlementResponse, uploadSettlementExcel } from 'medipanda/backend';
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
-import { mockNumber } from 'medipanda/mockup';
 import { formatYyyyMm } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
@@ -196,8 +195,8 @@ export default function MpAdminSettlementList() {
         dealerId: formik.values.searchType === 'dealerId' ? parseInt(formik.values.searchKeyword) : undefined,
         companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
         status: formik.values.status !== '' ? formik.values.status : undefined,
-        startMonth: formik.values.startAt ? mockNumber() : undefined,
-        endMonth: formik.values.endAt ? mockNumber() : undefined,
+        startMonth: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
+        endMonth: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
         page: formik.values.pageIndex,
         size: formik.values.pageSize
       });
@@ -345,8 +344,8 @@ export default function MpAdminSettlementList() {
                     dealerId: formik.values.searchType === 'dealerId' ? parseInt(formik.values.searchKeyword) : undefined,
                     companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
                     status: formik.values.status !== '' ? formik.values.status : undefined,
-                    startMonth: formik.values.startAt ? mockNumber() : undefined,
-                    endMonth: formik.values.endAt ? mockNumber() : undefined,
+                    startMonth: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
+                    endMonth: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
                     page: formik.values.pageIndex,
                     size: formik.values.pageSize
                   })}

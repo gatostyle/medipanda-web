@@ -57,6 +57,7 @@ export default function MpAdminFaqEdit() {
               content: values.content,
               userId: session.userId,
               nickname: session.name,
+              hiddenNickname: false,
               parentId: null,
               isExposed: values.isExposed,
               editorFileIds: null,
@@ -67,7 +68,7 @@ export default function MpAdminFaqEdit() {
           });
           enqueueSnackbar('FAQ가 성공적으로 등록되었습니다.', { variant: 'success' });
         } else {
-          await updateBoardPost(parseInt(id!), {
+          await updateBoardPost(parseInt(id), {
             updateRequest: {
               title: values.title,
               content: values.content,

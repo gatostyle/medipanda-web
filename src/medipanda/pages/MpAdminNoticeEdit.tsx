@@ -92,6 +92,7 @@ export default function MpAdminNoticeEdit() {
               content: values.content,
               userId: session.userId,
               nickname: session.name || session.userId,
+              hiddenNickname: false,
               parentId: null,
               isExposed: values.isExposed,
               editorFileIds: null,

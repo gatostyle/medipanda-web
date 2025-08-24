@@ -131,7 +131,7 @@ export default function MpAdminExpenseReportList() {
       header: '시행일시',
       accessorKey: 'eventStartAt',
       cell: ({ row }) => {
-        return `${formatYyyyMmDd(row.original.eventStartAt!)} ~ ${formatYyyyMmDd(row.original.eventEndAt!)}`;
+        return `${row.original.eventStartAt !== null ? formatYyyyMmDd(row.original.eventStartAt) : '-'} ~ ${row.original.eventEndAt !== null ? formatYyyyMmDd(row.original.eventEndAt) : '-'}`;
       },
       size: 100
     },

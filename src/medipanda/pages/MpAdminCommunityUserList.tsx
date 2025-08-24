@@ -27,21 +27,8 @@ import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
 
-interface BoardMemberStatsResponseWithMockData extends BoardMemberStatsResponse {
-  nickname: string;
-  email: string;
-}
-
-function withMock<T extends BoardMemberStatsResponse>(data: T): T & BoardMemberStatsResponseWithMockData {
-  return {
-    ...data,
-    nickname: '닉네임',
-    email: 'mock001@example.com'
-  };
-}
-
 export default function MpAdminCommunityUserList() {
-  const [data, setData] = useState<Sequenced<BoardMemberStatsResponseWithMockData>[]>([]);
+  const [data, setData] = useState<Sequenced<BoardMemberStatsResponse>[]>([]);
   const [loading, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -50,7 +37,7 @@ export default function MpAdminCommunityUserList() {
   const formik = useFormik({
     initialValues: {
       contractStatus: '' as 'CONTRACT' | 'NON_CONTRACT' | '',
-      searchType: 'userId' as 'userId' | 'nickname',
+      searchType: 'userId' as 'userId',
       searchKeyword: '',
       pageIndex: 0,
       pageSize: 20
@@ -70,9 +57,7 @@ export default function MpAdminCommunityUserList() {
       const response = await getBoardMembers({
         userId: formik.values.searchType === 'userId' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
         name: undefined,
-        nickname: formik.values.searchType === 'nickname' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
         phoneNumber: undefined,
-        email: undefined,
         contractStatus: formik.values.contractStatus !== '' ? formik.values.contractStatus : undefined,
         startAt: undefined,
         endAt: undefined,
@@ -81,7 +66,7 @@ export default function MpAdminCommunityUserList() {
         size: formik.values.pageSize
       });
 
-      setData(withSequence(response).content.map(withMock));
+      setData(withSequence(response).content);
       setTotalElements(response.totalElements);
       setTotalPages(response.totalPages);
     } catch (error) {
@@ -103,7 +88,7 @@ export default function MpAdminCommunityUserList() {
     formik.resetForm();
   };
 
-  const columns: ColumnDef<Sequenced<BoardMemberStatsResponseWithMockData>>[] = [
+  const columns: ColumnDef<Sequenced<BoardMemberStatsResponse>>[] = [
     {
       header: 'No',
       accessorKey: 'sequence',
@@ -129,22 +114,10 @@ export default function MpAdminCommunityUserList() {
       size: 100
     },
     {
-      header: '닉네임',
-      accessorKey: 'nickname',
-      cell: ({ row }) => row.original.nickname,
-      size: 120
-    },
-    {
       header: '휴대폰번호',
       accessorKey: 'phoneNumber',
       cell: ({ row }) => row.original.phoneNumber,
       size: 130
-    },
-    {
-      header: '이메일',
-      accessorKey: 'email',
-      cell: ({ row }) => row.original.email,
-      size: 200
     },
     {
       header: '파트너사 계약여부',
@@ -220,7 +193,6 @@ export default function MpAdminCommunityUserList() {
                     <InputLabel>검색유형</InputLabel>
                     <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'userId'}>아이디</MenuItem>
-                      <MenuItem value={'nickname'}>닉네임</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>

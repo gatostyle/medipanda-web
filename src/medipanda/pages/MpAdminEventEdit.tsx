@@ -54,6 +54,7 @@ export default function MpAdminEventEdit() {
               boardType: 'EVENT',
               userId: session!.userId,
               nickname: session!.name,
+              hiddenNickname: false,
               title: values.title,
               content: values.content,
               parentId: null,
@@ -63,8 +64,8 @@ export default function MpAdminEventEdit() {
               noticeProperties: null
             },
             eventRequest: {
-              startAt: formatYyyyMmDd(values.startDate!),
-              endAt: formatYyyyMmDd(values.endDate!),
+              startAt: formatYyyyMmDd(values.startDate),
+              endAt: formatYyyyMmDd(values.endDate),
               description: values.description,
               videoUrl: values.videoUrl,
               note: values.note
@@ -74,7 +75,7 @@ export default function MpAdminEventEdit() {
           });
           infoDialog.showInfo('이벤트가 등록되었습니다.');
         } else {
-          await updateEventBoard(parseInt(id!), {
+          await updateEventBoard(parseInt(id), {
             request: {
               title: values.title,
               content: values.content,
@@ -86,8 +87,8 @@ export default function MpAdminEventEdit() {
               noticeProperties: null
             },
             eventRequest: {
-              startAt: formatYyyyMmDd(values.startDate!),
-              endAt: formatYyyyMmDd(values.endDate!),
+              startAt: formatYyyyMmDd(values.startDate),
+              endAt: formatYyyyMmDd(values.endDate),
               description: values.description,
               videoUrl: values.videoUrl,
               note: values.note

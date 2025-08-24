@@ -6,6 +6,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  FormControl,
   Grid,
   IconButton,
   InputAdornment,
@@ -23,19 +24,29 @@ import {
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { SearchNormal1 } from 'iconsax-react';
-import { getDrugCompanies, getPartnerDetails, getPartners, PartnerResponse, updatePartner } from 'medipanda/backend';
+import {
+  createPartner,
+  DrugCompanyResponse,
+  getDrugCompanies,
+  getPartnerDetails,
+  getPartners,
+  PartnerResponse,
+  updatePartner
+} from 'medipanda/backend';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useMpSession } from '../hooks/useMpSession';
 
 export default function MpAdminPartnerEdit() {
+  const { session } = useMpSession();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [pharmaceuticalSearchOpen, setPharmaceuticalSearchOpen] = useState(false);
   const [companySearchOpen, setCompanySearchOpen] = useState(false);
-  const [drugCompanies, setDrugCompanies] = useState<string[]>([]);
+  const [drugCompanies, setDrugCompanies] = useState<DrugCompanyResponse[]>([]);
   const [partnerSearchResult, setPartnerSearchResult] = useState<PartnerResponse[]>([]);
   // const [emptyPharmacyRow, setEmptyPharmacyRow] = useState<MpPartnerPharmacyRow | null>(null);
   // const [pharmacyRows, setPharmacyRows] = useState<MpPartnerPharmacyRow[]>([]);
@@ -59,7 +70,7 @@ export default function MpAdminPartnerEdit() {
       // setPharmacyRows([{ ...emptyRow, id: 1 }]);
 
       formik.setValues({
-        drugCompany: partnerDetails.drugCompany,
+        drugCompany: { id: -1, name: partnerDetails.drugCompanyName },
         companyName: partnerDetails.companyName,
         contractType: partnerDetails.contractType,
         institutionCode: partnerDetails.institutionCode,
@@ -81,7 +92,7 @@ export default function MpAdminPartnerEdit() {
 
   const formik = useFormik({
     initialValues: {
-      drugCompany: '',
+      drugCompany: null as DrugCompanyResponse | null,
       companyName: '',
       contractType: null as ('CONTRACT' | 'NON_CONTRACT') | null,
       institutionCode: '',
@@ -94,19 +105,37 @@ export default function MpAdminPartnerEdit() {
       note: ''
     },
     onSubmit: async (values) => {
-      await updatePartner(parseInt(id!), {
-        drugCompany: values.drugCompany,
-        companyName: values.companyName,
-        contractType: values.contractType,
-        institutionCode: values.institutionCode,
-        institutionName: values.institutionName,
-        businessNumber: values.businessNumber,
-        medicalDepartment: values.medicalDepartment,
-        pharmacyName: values.pharmacyName,
-        pharmacyAddress: values.pharmacyAddress,
-        pharmacyStatus: values.pharmacyStatus,
-        note: values.note
-      });
+      if (isNew) {
+        await createPartner({
+          drugCompanyId: values.drugCompany!.id,
+          userId: session!.userId,
+          drugCompany: values.drugCompany!.name,
+          companyName: values.companyName,
+          contractType: values.contractType!,
+          institutionCode: values.institutionCode,
+          institutionName: values.institutionName,
+          businessNumber: values.businessNumber,
+          medicalDepartment: values.medicalDepartment,
+          pharmacyName: values.pharmacyName,
+          pharmacyAddress: values.pharmacyAddress,
+          pharmacyStatus: values.pharmacyStatus!,
+          note: values.note
+        });
+      } else
+        await updatePartner(parseInt(id!), {
+          drugCompanyId: null,
+          drugCompanyName: null,
+          companyName: values.companyName,
+          contractType: values.contractType,
+          institutionCode: values.institutionCode,
+          institutionName: values.institutionName,
+          businessNumber: values.businessNumber,
+          medicalDepartment: values.medicalDepartment,
+          pharmacyName: values.pharmacyName,
+          pharmacyAddress: values.pharmacyAddress,
+          pharmacyStatus: values.pharmacyStatus,
+          note: values.note
+        });
 
       alert('거래선 정보가 저장되었습니다.');
       navigate('/admin/partners');
@@ -133,7 +162,7 @@ export default function MpAdminPartnerEdit() {
     setPharmaceuticalSearchOpen(true);
   };
 
-  const handlePharmaceuticalSelect = (drugCompany: string) => {
+  const handlePharmaceuticalSelect = (drugCompany: DrugCompanyResponse) => {
     formik.setFieldValue('drugCompany', drugCompany);
     setPharmaceuticalSearchOpen(false);
   };
@@ -190,9 +219,9 @@ export default function MpAdminPartnerEdit() {
                 fullWidth
                 label="제약사명"
                 name="drugCompany"
-                value={formik.values.drugCompany}
-                onChange={formik.handleChange}
+                value={formik.values.drugCompany?.name}
                 required
+                disabled
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -311,16 +340,12 @@ export default function MpAdminPartnerEdit() {
                         />
                       </TableCell>
                       <TableCell>
-                        <Select
-                          fullWidth
-                          size="small"
-                          name="pharmacyStatus"
-                          value={formik.values.pharmacyStatus}
-                          onChange={formik.handleChange}
-                        >
-                          <MenuItem value={'NORMAL'}>정상</MenuItem>
-                          <MenuItem value={'CLOSED'}>폐업</MenuItem>
-                        </Select>
+                        <FormControl fullWidth size="small">
+                          <Select name="pharmacyStatus" value={formik.values.pharmacyStatus} onChange={formik.handleChange}>
+                            <MenuItem value={'NORMAL'}>정상</MenuItem>
+                            <MenuItem value={'CLOSED'}>폐업</MenuItem>
+                          </Select>
+                        </FormControl>
                       </TableCell>
                       <TableCell>
                         {/*<Stack direction="row" spacing={1}>*/}
@@ -385,8 +410,8 @@ export default function MpAdminPartnerEdit() {
                 </TableHead>
                 <TableBody>
                   {drugCompanies.map((drugCompany) => (
-                    <TableRow key={drugCompany}>
-                      <TableCell>{drugCompany}</TableCell>
+                    <TableRow key={drugCompany.id}>
+                      <TableCell>{drugCompany.name}</TableCell>
                       <TableCell align="center">
                         <Button variant="contained" size="small" onClick={() => handlePharmaceuticalSelect(drugCompany)}>
                           선택

@@ -156,7 +156,7 @@ export function MpPartnerSearchModal({ open, onClose, onSelect }: MpPartnerSearc
                 ) : (
                   partners.map((partner) => (
                     <TableRow key={partner.id} hover>
-                      <TableCell>{partner.drugCompany}</TableCell>
+                      <TableCell>{partner.drugCompanyName}</TableCell>
                       <TableCell>{partner.companyName}</TableCell>
                       <TableCell>{partner.institutionCode}</TableCell>
                       <TableCell>{partner.institutionName}</TableCell>

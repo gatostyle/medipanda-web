@@ -119,7 +119,7 @@ export default function MpAdminAdminEdit() {
           infoDialog.showInfo('관리자가 등록되었습니다.');
           navigate('/admin/admins');
         } else {
-          await updateByAdmin(userId!, {
+          await updateByAdmin(userId, {
             name: values.name,
             userId: values.userId,
             password: values.password !== '' ? values.password : null,

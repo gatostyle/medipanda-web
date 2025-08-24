@@ -22,7 +22,7 @@ import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReact
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { BoardPostResponse, DateString, deleteBoardPost, getBoards, getDrugCompanies } from 'medipanda/backend';
+import { BoardPostResponse, DateString, deleteBoardPost, DrugCompanyResponse, getBoards, getDrugCompanies } from 'medipanda/backend';
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
@@ -50,7 +50,7 @@ export default function MpAdminNoticeList() {
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const [manufacturerOptions, setManufacturerOptions] = useState<string[]>([]);
+  const [manufacturerOptions, setManufacturerOptions] = useState<DrugCompanyResponse[]>([]);
   const deleteDialog = useMpDeleteDialog();
   const errorDialog = useMpErrorDialog();
 
@@ -118,7 +118,7 @@ export default function MpAdminNoticeList() {
       header: '공지분류',
       accessorKey: 'noticeType',
       cell: ({ row }) => {
-        const noticeType = row.original.noticeType;
+        const noticeType = row.original.noticeProperties!.noticeType;
         if (!noticeType) return '-';
         return NOTICE_TYPE_LABELS[noticeType];
       },
@@ -287,8 +287,8 @@ export default function MpAdminNoticeList() {
                     <InputLabel>제약사명</InputLabel>
                     <Select name="drugCompany" value={formik.values.drugCompany} onChange={formik.handleChange}>
                       {manufacturerOptions.map((manufacturer) => (
-                        <MenuItem key={manufacturer} value={manufacturer}>
-                          {manufacturer}
+                        <MenuItem key={manufacturer.id} value={manufacturer.name}>
+                          {manufacturer.name}
                         </MenuItem>
                       ))}
                     </Select>

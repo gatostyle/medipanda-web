@@ -165,6 +165,10 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
     );
   }
 
+  if (!settlementDetail) {
+    return null;
+  }
+
   if (!settlementPartnerDetail) {
     return null;
   }
@@ -211,15 +215,15 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
             />
           </Grid>
           <Grid item xs={12} md={4}>
-            <TextField label="처방월" value={settlementDetail!.prescriptionMonth} fullWidth size="small" InputProps={{ readOnly: true }} />
+            <TextField label="처방월" value={settlementDetail.prescriptionMonth} fullWidth size="small" InputProps={{ readOnly: true }} />
           </Grid>
           <Grid item xs={12} md={4}>
-            <TextField label="정산월" value={settlementDetail!.settlementMonth} fullWidth size="small" InputProps={{ readOnly: true }} />
+            <TextField label="정산월" value={settlementDetail.settlementMonth} fullWidth size="small" InputProps={{ readOnly: true }} />
           </Grid>
           <Grid item xs={12} md={4}>
             <TextField
               label="처방금액"
-              value={settlementDetail!.prescriptionAmount.toLocaleString()}
+              value={settlementDetail.prescriptionAmount.toLocaleString()}
               fullWidth
               size="small"
               InputProps={{ readOnly: true }}

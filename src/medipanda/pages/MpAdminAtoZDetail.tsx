@@ -13,12 +13,13 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
+import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
 import { BoardDetailsResponse, getBoardDetails } from 'medipanda/backend';
-import { TiptapEditor } from 'medipanda/components/TiptapEditor';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { useMedipandaEditor } from '../components/useMedipandaEditor';
 import { formatYyyyMmDd } from '../utils/dateFormat';
 
 export default function MpAdminAtoZDetail() {
@@ -26,6 +27,11 @@ export default function MpAdminAtoZDetail() {
   const { enqueueSnackbar } = useSnackbar();
   const [data, setData] = useState<BoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
+  const { editor, setAttachments: setEditorAttachments } = useMedipandaEditor();
+
+  useEffect(() => {
+    editor.setEditable(false);
+  }, [editor]);
 
   useEffect(() => {
     if (id) {
@@ -38,6 +44,8 @@ export default function MpAdminAtoZDetail() {
     try {
       const response = await getBoardDetails(itemId);
       setData(response);
+      editor.commands.setContent(response.content);
+      setEditorAttachments(response.attachments.filter((a) => a.type === 'EDITOR'));
     } catch (error) {
       console.error('Failed to fetch CSO A to Z detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -82,7 +90,7 @@ export default function MpAdminAtoZDetail() {
                     내용
                   </TableCell>
                   <TableCell>
-                    <TiptapEditor content={data.content} readOnly />
+                    <EditorContent editor={editor} />
                   </TableCell>
                 </TableRow>
                 <TableRow>

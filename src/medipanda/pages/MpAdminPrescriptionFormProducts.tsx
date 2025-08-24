@@ -21,7 +21,7 @@ import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack
 import { useFormik } from 'formik';
 import { Add, Minus, SearchNormal1 } from 'iconsax-react';
 import {
-  AttachedFileResponse,
+  AttachmentResponse,
   createPartnerProducts,
   getAttachedEdiFiles,
   getPartnerProducts,
@@ -59,7 +59,7 @@ export default function MpAdminPrescriptionFormProducts() {
   const [partnerProducts, setPartnerProducts] = useState<
     Sequenced<PrescriptionPartnerProductResponse & Pick<PrescriptionProductItem, 'ocrItem'>>[]
   >([]);
-  const [attachedFiles, setAttachedFiles] = useState<AttachedFileResponse[]>([]);
+  const [attachedFiles, setAttachedFiles] = useState<AttachmentResponse[]>([]);
 
   const [sendOcrReport, setSendOcrReport] = useState(false);
   const [ocrReportContent, setOcrReportContent] = useState('');
@@ -267,7 +267,7 @@ export default function MpAdminPrescriptionFormProducts() {
   const handlePartnerSelect = (partner: PartnerResponse) => {
     formik.setFieldValue('institutionName', partner.institutionName);
     formik.setFieldValue('institutionCode', partner.institutionCode);
-    formik.setFieldValue('drugCompany', partner.drugCompany);
+    formik.setFieldValue('drugCompany', partner.drugCompanyName);
     formik.setFieldValue('companyName', partner.companyName);
   };
 

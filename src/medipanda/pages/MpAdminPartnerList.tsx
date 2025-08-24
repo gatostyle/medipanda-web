@@ -117,7 +117,7 @@ export default function MpAdminPartnerList() {
     {
       header: '제약사명',
       accessorKey: 'drugCompany',
-      cell: ({ row }) => row.original.drugCompany,
+      cell: ({ row }) => row.original.drugCompanyName,
       size: 150
     },
     {

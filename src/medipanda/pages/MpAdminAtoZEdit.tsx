@@ -11,15 +11,16 @@ import {
   TextField,
   Typography
 } from '@mui/material';
+import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
-import { createBoardPost, getBoardDetails, updateBoardPost } from 'medipanda/backend';
-import { TiptapEditor } from 'medipanda/components/TiptapEditor';
+import { AttachmentResponse, createBoardPost, getBoardDetails, updateBoardPost } from 'medipanda/backend';
 import { useMpSession } from 'medipanda/hooks/useMpSession';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
+import { useMedipandaEditor } from '../components/useMedipandaEditor';
 
 export default function MpAdminAtoZEdit() {
   const { id } = useParams();
@@ -33,13 +34,12 @@ export default function MpAdminAtoZEdit() {
   const formik = useFormik({
     initialValues: {
       title: '',
-      content: '',
-      isExposed: true,
-      attachmentFile: null as File | null
+      attachedFiles: [] as AttachmentResponse[],
+      newFiles: [] as File[],
+      isExposed: true
     },
     validationSchema: Yup.object().shape({
-      title: Yup.string().required('제목을 입력해주세요.').max(100, '제목은 100자를 초과할 수 없습니다.'),
-      content: Yup.string().required('내용을 입력해주세요.')
+      title: Yup.string().required('제목을 입력해주세요.').max(100, '제목은 100자를 초과할 수 없습니다.')
     }),
     onSubmit: async (values, { setSubmitting }) => {
       if (!session?.userId) {
@@ -53,31 +53,32 @@ export default function MpAdminAtoZEdit() {
             request: {
               boardType: 'CSO_A_TO_Z',
               title: values.title,
-              content: values.content,
+              content: editor.getHTML(),
               userId: session.userId,
               nickname: session.name,
+              hiddenNickname: false,
               parentId: null,
               isExposed: values.isExposed,
-              editorFileIds: null,
+              editorFileIds: editorAttachments.map((image) => image.s3fileId),
               exposureRange: 'ALL',
               noticeProperties: null
             },
-            files: values.attachmentFile ? [values.attachmentFile] : undefined
+            files: values.newFiles
           });
           enqueueSnackbar('CSO A to Z가 성공적으로 등록되었습니다.', { variant: 'success' });
         } else {
-          await updateBoardPost(parseInt(id!), {
+          await updateBoardPost(parseInt(id), {
             updateRequest: {
               title: values.title,
-              content: values.content,
+              content: editor.getHTML(),
               isBlind: null,
               isExposed: values.isExposed,
               exposureRange: 'ALL',
-              keepFileIds: [],
-              editorFileIds: [],
+              keepFileIds: values.attachedFiles.map((file) => file.s3fileId),
+              editorFileIds: editorAttachments.map((image) => image.s3fileId),
               noticeProperties: null
             },
-            newFiles: values.attachmentFile ? [values.attachmentFile] : undefined
+            newFiles: values.newFiles
           });
           enqueueSnackbar('CSO A to Z가 성공적으로 수정되었습니다.', { variant: 'success' });
         }
@@ -91,6 +92,8 @@ export default function MpAdminAtoZEdit() {
     }
   });
 
+  const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
+
   useEffect(() => {
     if (!isNew && id) {
       fetchData(parseInt(id, 10));
@@ -103,16 +106,29 @@ export default function MpAdminAtoZEdit() {
       const response = await getBoardDetails(itemId);
       formik.setValues({
         title: response.title,
-        content: response.content,
         isExposed: response.isExposed,
-        attachmentFile: null
+        attachedFiles: response.attachments.filter((a) => a.type === 'ATTACHMENT'),
+        newFiles: []
       });
+      editor.commands.setContent(response.content);
+      setEditorAttachments(response.attachments.filter((a) => a.type === 'EDITOR'));
+      console.log('Fetched CSO A to Z detail:', response);
     } catch (error) {
       console.error('Failed to fetch CSO A to Z detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleFileUpload = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true;
+    input.onchange = async () => {
+      formik.setFieldValue('newFiles', [...formik.values.newFiles, ...(Array.from(input.files ?? []) as File[])]);
+    };
+    input.click();
   };
 
   const handleCancel = () => {
@@ -162,35 +178,30 @@ export default function MpAdminAtoZEdit() {
                 <Typography variant="body2" sx={{ mb: 1 }}>
                   내용 <span style={{ color: 'red' }}>*</span>
                 </Typography>
-                <TiptapEditor
-                  content={formik.values.content}
-                  onChange={(content) => formik.setFieldValue('content', content)}
-                  placeholder="내용을 입력하세요"
-                  error={!!(formik.touched.content && formik.errors.content)}
-                  helperText={formik.touched.content && formik.errors.content ? formik.errors.content : undefined}
-                />
+                <EditorContent editor={editor} />
               </Grid>
 
               <Grid item xs={12}>
                 <Typography variant="body2" sx={{ mb: 1 }}>
                   첨부파일
                 </Typography>
-                <Button variant="contained" color="success" component="label" size="small">
+                <Button onClick={handleFileUpload} variant="contained" color="success" component="label" size="small">
                   파일첨부
-                  <input
-                    type="file"
-                    hidden
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      formik.setFieldValue('attachmentFile', file ?? null);
-                    }}
-                  />
                 </Button>
-                {formik.values.attachmentFile && (
-                  <Typography variant="body2" sx={{ mt: 1 }}>
-                    선택된 파일: {formik.values.attachmentFile.name}
-                  </Typography>
-                )}
+                {formik.values.attachedFiles.map((attachedFile) => {
+                  return (
+                    <Typography variant="body2" sx={{ mt: 1 }}>
+                      {new URL(attachedFile.fileUrl).pathname.split('/').pop()}
+                    </Typography>
+                  );
+                })}
+                {formik.values.newFiles.map((newFile) => {
+                  return (
+                    <Typography variant="body2" sx={{ mt: 1 }}>
+                      {newFile.name}
+                    </Typography>
+                  );
+                })}
               </Grid>
 
               <Grid item xs={12}>

@@ -18,7 +18,6 @@ import {
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import ScrollX from 'components/ScrollX';
 import { BoardReportResponse, CommentResponse, getBoardDetails } from 'medipanda/backend';
-import { TiptapEditor } from 'medipanda/components/TiptapEditor';
 import { BOARD_TYPE_LABELS } from 'medipanda/ui-labels';
 import { formatYyyyMmDd, formatYyyyMmDdHhMm } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
@@ -33,6 +32,12 @@ export default function MpAdminCommunityPostDetail() {
   const [tabValue, setTabValue] = useState(0);
   const [loading, setLoading] = useState(true);
   const { enqueueSnackbar } = useSnackbar();
+
+  // const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments, ...props } = useMedipandaEditor();
+  //
+  // useEffect(() => {
+  //   editor.setEditable(false);
+  // }, [editor]);
 
   const fetchData = async () => {
     if (id === undefined) {
@@ -50,13 +55,14 @@ export default function MpAdminCommunityPostDetail() {
         userId: boardDetail.userId,
         nickname: boardDetail.nickname,
         title: boardDetail.title,
-        content: boardDetail.content,
         likesCount: boardDetail.likesCount,
         commentsCount: boardDetail.commentCount,
         viewsCount: boardDetail.viewsCount,
         isBlind: boardDetail.isBlind,
         registrationDate: boardDetail.createdAt
       });
+
+      // editor.commands.setContent(boardDetail.content);
 
       setComments(withSequence(boardDetail.comments));
       setReports(withSequence(boardDetail.reports));
@@ -90,7 +96,6 @@ export default function MpAdminCommunityPostDetail() {
     userId: '',
     nickname: '',
     title: '',
-    content: '',
     likesCount: 0,
     commentsCount: 0,
     viewsCount: 0,
@@ -277,9 +282,7 @@ export default function MpAdminCommunityPostDetail() {
                 <Typography variant="body2" color="text.secondary">
                   내용
                 </Typography>
-                <Box sx={{ mt: 1 }}>
-                  <TiptapEditor content={postDetail.content} readOnly />
-                </Box>
+                <Box sx={{ mt: 1 }}>{/*<TiptapEditor {...props} editor={editor} />*/}</Box>
               </Box>
 
               <Stack direction="row" spacing={4}>
