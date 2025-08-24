@@ -35,6 +35,7 @@ import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router';
 
 export default function SettlementList() {
+  const today = new Date();
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const {
@@ -45,7 +46,7 @@ export default function SettlementList() {
     initialFormValues: {
       searchType: 'companyName' as 'companyName' | 'dealerName',
       searchKeyword: '',
-      settlementMonth: new Date(formatYyyyMm(new Date())),
+      settlementMonth: new Date(formatYyyyMm(today)),
     },
     fetcher: values => {
       return getSettlements({
@@ -76,7 +77,7 @@ export default function SettlementList() {
           onClick={async () => {
             const prevMonth = new Date(pageFormik.values.settlementMonth);
             prevMonth.setMonth(prevMonth.getMonth() - 1);
-            await pageFormik.setFieldValue('settlementMonth', formatYyyyMm(prevMonth));
+            await pageFormik.setFieldValue('settlementMonth', new Date(formatYyyyMm(prevMonth)));
             pageFormik.submitForm();
           }}
         >
@@ -89,7 +90,7 @@ export default function SettlementList() {
           onClick={async () => {
             const nextMonth = new Date(pageFormik.values.settlementMonth);
             nextMonth.setMonth(nextMonth.getMonth() + 1);
-            await pageFormik.setFieldValue('settlementMonth', formatYyyyMm(nextMonth));
+            await pageFormik.setFieldValue('settlementMonth', new Date(formatYyyyMm(nextMonth)));
             pageFormik.submitForm();
           }}
         >

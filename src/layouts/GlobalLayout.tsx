@@ -87,6 +87,7 @@ function GlobalLayout() {
                         underline='hover'
                         sx={{
                           color: colors.vividViolet,
+                          cursor: 'pointer',
                         }}
                       >
                         <Typography variant='heading5B'>{session.name}</Typography>

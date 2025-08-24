@@ -1,3 +1,4 @@
+import { LoginGuard } from '@/guards/LoginGuard';
 import { LazyComponent } from '@/lib/react/LazyComponent';
 import { lazy } from 'react';
 import { createBrowserRouter, Navigate, type RouteObject } from 'react-router';
@@ -97,25 +98,45 @@ const route: RouteObject[] = [
         children: [
           {
             path: 'info',
-            element: <MypageInfo />,
+            element: (
+              <LoginGuard>
+                <MypageInfo />
+              </LoginGuard>
+            ),
           },
           {
             path: 'notification',
-            element: <MypageNotification />,
+            element: (
+              <LoginGuard>
+                <MypageNotification />
+              </LoginGuard>
+            ),
           },
           {
             path: 'withdraw',
-            element: <MypageWithdraw />,
+            element: (
+              <LoginGuard>
+                <MypageWithdraw />
+              </LoginGuard>
+            ),
           },
         ],
       },
       {
         path: 'partner-contract',
-        element: <PartnerContract />,
+        element: (
+          <LoginGuard>
+            <PartnerContract />
+          </LoginGuard>
+        ),
       },
       {
         path: 'products',
-        element: <ProductList />,
+        element: (
+          <LoginGuard>
+            <ProductList />
+          </LoginGuard>
+        ),
       },
       {
         path: '',
@@ -137,11 +158,19 @@ const route: RouteObject[] = [
         children: [
           {
             path: 'prescriptions',
-            element: <PrescriptionList />,
+            element: (
+              <LoginGuard>
+                <PrescriptionList />
+              </LoginGuard>
+            ),
           },
           {
             path: 'dealers',
-            element: <DealerList />,
+            element: (
+              <LoginGuard>
+                <DealerList />
+              </LoginGuard>
+            ),
           },
         ],
       },
@@ -165,11 +194,19 @@ const route: RouteObject[] = [
         children: [
           {
             path: 'settlement-list',
-            element: <SettlementList />,
+            element: (
+              <LoginGuard>
+                <SettlementList />
+              </LoginGuard>
+            ),
           },
           {
             path: 'sales-statistic',
-            element: <SalesStatistic />,
+            element: (
+              <LoginGuard>
+                <SalesStatistic />
+              </LoginGuard>
+            ),
           },
         ],
       },
@@ -197,41 +234,77 @@ const route: RouteObject[] = [
           },
           {
             path: ':communityType/:id',
-            element: <CommunityDetail />,
+            element: (
+              <LoginGuard>
+                <CommunityDetail />
+              </LoginGuard>
+            ),
           },
           {
             path: ':communityType/:id/edit',
-            element: <CommunityEdit />,
+            element: (
+              <LoginGuard>
+                <CommunityEdit />
+              </LoginGuard>
+            ),
           },
           {
             path: ':communityType/new',
-            element: <CommunityEdit />,
+            element: (
+              <LoginGuard>
+                <CommunityEdit />
+              </LoginGuard>
+            ),
           },
           {
             path: 'anonymous',
-            element: <AnonymousList />,
+            element: (
+              <LoginGuard>
+                <AnonymousList />
+              </LoginGuard>
+            ),
           },
           {
             path: 'mr-cso-matching',
-            element: <MrCsoMatchingList />,
+            element: (
+              <LoginGuard>
+                <MrCsoMatchingList />
+              </LoginGuard>
+            ),
           },
         ],
       },
       {
         path: 'sales-agency-products',
-        element: <SalesAgencyProductList />,
+        element: (
+          <LoginGuard>
+            <SalesAgencyProductList />
+          </LoginGuard>
+        ),
       },
       {
         path: 'sales-agency-products/:id',
-        element: <SalesAgencyProductDetail />,
+        element: (
+          <LoginGuard>
+            <SalesAgencyProductDetail />
+          </LoginGuard>
+        ),
       },
       {
         path: 'events',
-        element: <EventList />,
+        element: (
+          <LoginGuard>
+            <EventList />
+          </LoginGuard>
+        ),
       },
       {
         path: 'events/:id',
-        element: <EventDetail />,
+        element: (
+          <LoginGuard>
+            <EventDetail />
+          </LoginGuard>
+        ),
       },
       {
         path: 'customer-service',
@@ -257,27 +330,51 @@ const route: RouteObject[] = [
         children: [
           {
             path: 'notice',
-            element: <NoticeList />,
+            element: (
+              <LoginGuard>
+                <NoticeList />
+              </LoginGuard>
+            ),
           },
           {
             path: 'notice/:id',
-            element: <NoticeDetail />,
+            element: (
+              <LoginGuard>
+                <NoticeDetail />
+              </LoginGuard>
+            ),
           },
           {
             path: 'faq',
-            element: <FaqList />,
+            element: (
+              <LoginGuard>
+                <FaqList />
+              </LoginGuard>
+            ),
           },
           {
             path: 'inquiry',
-            element: <InquiryList />,
+            element: (
+              <LoginGuard>
+                <InquiryList />
+              </LoginGuard>
+            ),
           },
           {
             path: 'inquiry/:id',
-            element: <InquiryDetail />,
+            element: (
+              <LoginGuard>
+                <InquiryDetail />
+              </LoginGuard>
+            ),
           },
           {
             path: 'inquiry/new',
-            element: <InquiryNew />,
+            element: (
+              <LoginGuard>
+                <InquiryNew />
+              </LoginGuard>
+            ),
           },
         ],
       },

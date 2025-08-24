@@ -82,14 +82,16 @@ export function usePageFetchFormik<Form, Response, Content, InitialContent exten
     onFetch.current?.();
   }, [formik.values]);
 
+  const refresh = useCallback(() => fetchData(), [fetchData]);
+
   useEffect(() => {
     fetchData();
-  }, [fetchData, formik.values.pageIndex, formik.values.pageSize]);
+  }, [formik.values.pageIndex, formik.values.pageSize]);
 
   return {
     formik,
     content: content as Content,
     pageCount,
-    refresh: fetchData,
+    refresh,
   };
 }

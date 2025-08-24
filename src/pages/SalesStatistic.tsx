@@ -1,16 +1,17 @@
-import { DateString, getPerformanceStats, type PerformanceStatsResponse } from '@/backend';
+import { DateString, getPerformanceByDrugCompany, getPerformanceByDrugCompanyMonthly, getPerformanceByInstitution } from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaCheckbox } from '@/custom/components/MedipandaCheckbox';
 import { MedipandaDatePicker } from '@/custom/components/MedipandaDatePicker';
 import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
 import { MedipandaTable } from '@/custom/components/MedipandaTable';
+import { DATEFORMAT_YYYY_MM, formatYyyyMmDd, formatYyyy년Mm월, getMonthRange } from '@/lib/dateFormat';
 import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
 import { colors } from '@/themes';
-import { DATEFORMAT_YYYY_MM } from '@/lib/dateFormat';
 import { Search } from '@mui/icons-material';
 import { IconButton, InputAdornment, Stack, Typography } from '@mui/material';
+import { LineChart } from '@mui/x-charts';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export default function SalesStatistic() {
   const [currentTab, setCurrentTab] = useState<'ALL' | 'INDIVIDUAL'>('ALL');
@@ -52,24 +53,34 @@ export default function SalesStatistic() {
 }
 
 function TotalSalesStatistic() {
-  const { content: page, formik: pageFormik } = usePageFetchFormik({
+  const {
+    content: page,
+    formik: pageFormik,
+    refresh,
+  } = usePageFetchFormik({
     initialFormValues: {
       startMonth: null as Date | null,
       endMonth: null as Date | null,
       searchKeyword: '',
     },
-    fetcher: values => {
-      return getPerformanceStats({
-        institutionName: values.searchKeyword !== '' ? values.searchKeyword : undefined,
+    fetcher: async values => {
+      const response = await getPerformanceByDrugCompany({
         startMonth: values.startMonth !== null ? new DateString(values.startMonth) : undefined,
         endMonth: values.endMonth !== null ? new DateString(values.endMonth) : undefined,
-        page: values.pageIndex,
-        size: values.pageSize,
       });
+
+      return response.filter(item => values.searchKeyword === '' || item.drugCompany?.includes(values.searchKeyword));
     },
-    contentSelector: response => response.content,
     initialContent: [],
   });
+
+  useEffect(() => {
+    if (pageFormik.values.startMonth !== null && pageFormik.values.endMonth !== null) {
+      return;
+    }
+
+    refresh();
+  }, [pageFormik.values.startMonth, pageFormik.values.endMonth, refresh]);
 
   return (
     <>
@@ -102,7 +113,7 @@ function TotalSalesStatistic() {
           placeholder='검색'
           endAdornment={
             <InputAdornment position='end'>
-              <IconButton edge='end'>
+              <IconButton edge='end' onClick={pageFormik.submitForm}>
                 <Search />
               </IconButton>
             </InputAdornment>
@@ -115,8 +126,17 @@ function TotalSalesStatistic() {
         <button type='submit' hidden />
       </Stack>
 
-      {page.length > 0 ? (
-        <ChartView data={page} />
+      {pageFormik.values.startMonth === null || pageFormik.values.endMonth === null ? (
+        <Typography
+          variant='largeTextM'
+          sx={{
+            alignSelf: 'center',
+          }}
+        >
+          조회하고 싶은 기간을 입력해주세요.
+        </Typography>
+      ) : page.length > 0 ? (
+        <ChartView data={page} startMonth={pageFormik.values.startMonth} endMonth={pageFormik.values.endMonth} />
       ) : (
         <Stack alignItems='center'>
           <Typography variant='largeTextM' sx={{ color: colors.gray80 }}>
@@ -129,27 +149,36 @@ function TotalSalesStatistic() {
 }
 
 function PartnerSalesStatistic() {
-  const [partnerPage, setPartnerPage] = useState<PerformanceStatsResponse[]>([]);
+  const [partnerId, setPartnerId] = useState<number | null>(null);
 
-  const { content: page, formik: pageFormik } = usePageFetchFormik({
+  const {
+    content: page,
+    formik: pageFormik,
+    refresh,
+  } = usePageFetchFormik({
     initialFormValues: {
       startMonth: null as Date | null,
       endMonth: null as Date | null,
       searchKeyword: '',
     },
     fetcher: async values => {
-      return getPerformanceStats({
-        institutionName: values.searchKeyword !== '' ? values.searchKeyword : undefined,
+      const response = await getPerformanceByInstitution({
         startMonth: values.startMonth !== null ? new DateString(values.startMonth) : undefined,
         endMonth: values.endMonth !== null ? new DateString(values.endMonth) : undefined,
-        page: 0,
-        size: 1,
       });
+      return response.filter(item => values.searchKeyword === '' || item.institutionName?.includes(values.searchKeyword));
     },
-    contentSelector: response => response.content,
     initialContent: [],
-    onFetch: () => setPartnerPage([]),
+    onFetch: () => setPartnerId(null),
   });
+
+  useEffect(() => {
+    if (pageFormik.values.startMonth !== null && pageFormik.values.endMonth !== null) {
+      return;
+    }
+
+    refresh();
+  }, [pageFormik.values.startMonth, pageFormik.values.endMonth, refresh]);
 
   const table = useReactTable({
     data: page,
@@ -169,7 +198,13 @@ function PartnerSalesStatistic() {
       {
         header: '관리',
         cell: ({ row }) => (
-          <MedipandaButton onClick={() => setPartnerPage([row.original])} size='small' variant='contained' rounded color='secondary'>
+          <MedipandaButton
+            onClick={() => setPartnerId(Number(row.original.institutionCode))}
+            size='small'
+            variant='contained'
+            rounded
+            color='secondary'
+          >
             선택
           </MedipandaButton>
         ),
@@ -222,9 +257,23 @@ function PartnerSalesStatistic() {
         <button type='submit' hidden />
       </Stack>
 
-      {page.length > 0 ? (
-        partnerPage.length > 0 ? (
-          <ChartView data={partnerPage} />
+      {pageFormik.values.startMonth === null || pageFormik.values.endMonth === null ? (
+        <Typography
+          variant='largeTextM'
+          sx={{
+            alignSelf: 'center',
+          }}
+        >
+          조회하고 싶은 기간을 입력해주세요.
+        </Typography>
+      ) : page.length > 0 ? (
+        partnerId !== null ? (
+          <ChartView
+            data={page}
+            startMonth={pageFormik.values.startMonth}
+            endMonth={pageFormik.values.endMonth}
+            partnerId={partnerId ?? undefined}
+          />
         ) : (
           <MedipandaTable table={table} />
         )
@@ -239,8 +288,72 @@ function PartnerSalesStatistic() {
   );
 }
 
-function ChartView({ data }: { data: PerformanceStatsResponse[] }) {
+function ChartView({
+  partnerId,
+  data,
+  startMonth,
+  endMonth,
+}: {
+  partnerId?: number;
+  data: { drugCompany: string | null; prescriptionAmount: number; totalAmount: number }[];
+  startMonth: Date;
+  endMonth: Date;
+}) {
+  console.log(data);
+  const dateRange = useMemo(() => getMonthRange(startMonth, endMonth), [startMonth, endMonth]);
+
   const [checkedIndexes, setCheckedIndexes] = useState<number[]>([]);
+  const [chartSeries, setChartSeries] = useState<{ label: string; data: number[] }[]>([]);
+  const filteredChartSeries = useMemo(() => {
+    return chartSeries.filter((_, index) => checkedIndexes.includes(index));
+  }, [chartSeries, checkedIndexes]);
+
+  const fetchChartData = useCallback(
+    async (startMonth: Date, endMonth: Date, partnerId?: number) => {
+      const data = await getPerformanceByDrugCompanyMonthly({
+        partnerId,
+        startMonth: new DateString(startMonth),
+        endMonth: new DateString(endMonth),
+      });
+
+      const aggregated: Record<string, Record<string, { settlementMonth: string; totalAmount: number }>> = {};
+
+      data.forEach(item => {
+        if (!aggregated[item.drugCompany]) {
+          aggregated[item.drugCompany] = {};
+        }
+
+        aggregated[item.drugCompany][item.settlementMonth] = item;
+      });
+
+      Object.entries(aggregated).forEach(([, months]) => {
+        dateRange.forEach(date => {
+          const monthKey = formatYyyyMmDd(date);
+
+          if (!months[monthKey]) {
+            months[monthKey] = {
+              settlementMonth: monthKey,
+              totalAmount: 0,
+            };
+          }
+        });
+      });
+
+      setChartSeries(
+        Object.entries(aggregated).map(([drugCompany, months]) => ({
+          label: drugCompany,
+          data: Object.values(months)
+            .sort((a, b) => a.settlementMonth.localeCompare(b.settlementMonth))
+            .map(it => it.totalAmount),
+        })),
+      );
+    },
+    [dateRange],
+  );
+
+  useEffect(() => {
+    fetchChartData(startMonth, endMonth, partnerId);
+  }, [fetchChartData, partnerId, startMonth, endMonth]);
 
   useEffect(() => {
     setCheckedIndexes([]);
@@ -296,16 +409,17 @@ function ChartView({ data }: { data: PerformanceStatsResponse[] }) {
 
   return (
     <>
-      <Stack
-        justifyContent='center'
-        alignItems='center'
-        sx={{
-          height: '550px',
-          backgroundColor: colors.gray30,
-        }}
-      >
-        그래프 영역
-      </Stack>
+      <LineChart
+        xAxis={[
+          {
+            scaleType: 'point',
+            data: getMonthRange(startMonth, endMonth).map(date => formatYyyy년Mm월(date)),
+          },
+        ]}
+        series={filteredChartSeries}
+        height={550}
+        sx={{}}
+      />
 
       <Stack gap='10px' alignItems='center'>
         <Typography variant='largeTextR' sx={{ color: colors.red }}>

@@ -425,8 +425,8 @@ function EdiBatchUploadForm() {
     onSubmit: async values => {
       try {
         const result = await uploadEdiZip({
-          settlementMonth: formatYyyyMm(values.prescriptionMonth!),
-          prescriptionMonth: formatYyyyMm(values.prescriptionMonth!),
+          settlementMonth: formatYyyyMmDd(values.prescriptionMonth!),
+          prescriptionMonth: formatYyyyMmDd(values.prescriptionMonth!),
           file: values.file!,
         });
 

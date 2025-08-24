@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 export const DATEFORMAT_YYYY_MM_DD_HH_MM = 'yyyy-MM-dd HH:mm';
 export const DATEFORMAT_YYYY_MM_DD = 'yyyy-MM-dd';
 export const DATEFORMAT_YYYY_MM = 'yyyy-MM';
-export const DATEFORMAT_YYYY년_MM월 = 'yyyy-MM';
+export const DATEFORMAT_YYYY년_MM월 = 'yyyy년 MM월';
 
 export function parseUtcDateString(dateString: string): Date {
   if (dateString.endsWith('Z')) {
@@ -63,4 +63,23 @@ export function isExpired(dateOrString: Date | string): boolean {
   const date = typeof dateOrString === 'string' ? parseUtcDateString(dateOrString) : dateOrString;
   const now = new Date();
   return date < now;
+}
+
+export function getMonthRange(startDateOrString: Date | string, endDateOrString: Date | string): Date[] {
+  const startDate = typeof startDateOrString === 'string' ? parseUtcDateString(startDateOrString) : startDateOrString;
+  const endDate = typeof endDateOrString === 'string' ? parseUtcDateString(endDateOrString) : endDateOrString;
+
+  const result = [];
+
+  const start = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+  const end = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
+
+  const current = new Date(start);
+
+  while (current <= end) {
+    result.push(new Date(current)); // clone
+    current.setMonth(current.getMonth() + 1);
+  }
+
+  return result;
 }

@@ -27,39 +27,11 @@ export interface AdminCreateRequest {
   password: string;
   email: string;
   phoneNumber: string;
-  permissions: (
-    | 'MEMBER_MANAGEMENT'
-    | 'PRODUCT_MANAGEMENT'
-    | 'TRANSACTION_MANAGEMENT'
-    | 'CONTRACT_MANAGEMENT'
-    | 'PRESCRIPTION_MANAGEMENT'
-    | 'SETTLEMENT_MANAGEMENT'
-    | 'EXPENSE_REPORT_MANAGEMENT'
-    | 'COMMUNITY_MANAGEMENT'
-    | 'CONTENT_MANAGEMENT'
-    | 'CUSTOMER_SERVICE'
-    | 'BANNER_MANAGEMENT'
-    | 'PERMISSION_MANAGEMENT'
-    | 'ALL'
-  )[];
+  permissions: ('MEMBER_MANAGEMENT' | 'PRODUCT_MANAGEMENT' | 'TRANSACTION_MANAGEMENT' | 'CONTRACT_MANAGEMENT' | 'PRESCRIPTION_MANAGEMENT' | 'SETTLEMENT_MANAGEMENT' | 'EXPENSE_REPORT_MANAGEMENT' | 'COMMUNITY_MANAGEMENT' | 'CONTENT_MANAGEMENT' | 'CUSTOMER_SERVICE' | 'BANNER_MANAGEMENT' | 'PERMISSION_MANAGEMENT' | 'ALL')[];
 }
 
 export interface AdminPermissionResponse {
-  permissions: (
-    | 'MEMBER_MANAGEMENT'
-    | 'PRODUCT_MANAGEMENT'
-    | 'TRANSACTION_MANAGEMENT'
-    | 'CONTRACT_MANAGEMENT'
-    | 'PRESCRIPTION_MANAGEMENT'
-    | 'SETTLEMENT_MANAGEMENT'
-    | 'EXPENSE_REPORT_MANAGEMENT'
-    | 'COMMUNITY_MANAGEMENT'
-    | 'CONTENT_MANAGEMENT'
-    | 'CUSTOMER_SERVICE'
-    | 'BANNER_MANAGEMENT'
-    | 'PERMISSION_MANAGEMENT'
-    | 'ALL'
-  )[];
+  permissions: ('MEMBER_MANAGEMENT' | 'PRODUCT_MANAGEMENT' | 'TRANSACTION_MANAGEMENT' | 'CONTRACT_MANAGEMENT' | 'PRESCRIPTION_MANAGEMENT' | 'SETTLEMENT_MANAGEMENT' | 'EXPENSE_REPORT_MANAGEMENT' | 'COMMUNITY_MANAGEMENT' | 'CONTENT_MANAGEMENT' | 'CUSTOMER_SERVICE' | 'BANNER_MANAGEMENT' | 'PERMISSION_MANAGEMENT' | 'ALL')[];
 }
 
 export interface AdminUpdateRequest {
@@ -68,23 +40,7 @@ export interface AdminUpdateRequest {
   password: string | null;
   email: string | null;
   phoneNumber: string | null;
-  permissions:
-    | (
-        | 'MEMBER_MANAGEMENT'
-        | 'PRODUCT_MANAGEMENT'
-        | 'TRANSACTION_MANAGEMENT'
-        | 'CONTRACT_MANAGEMENT'
-        | 'PRESCRIPTION_MANAGEMENT'
-        | 'SETTLEMENT_MANAGEMENT'
-        | 'EXPENSE_REPORT_MANAGEMENT'
-        | 'COMMUNITY_MANAGEMENT'
-        | 'CONTENT_MANAGEMENT'
-        | 'CUSTOMER_SERVICE'
-        | 'BANNER_MANAGEMENT'
-        | 'PERMISSION_MANAGEMENT'
-        | 'ALL'
-      )[]
-    | null;
+  permissions: ('MEMBER_MANAGEMENT' | 'PRODUCT_MANAGEMENT' | 'TRANSACTION_MANAGEMENT' | 'CONTRACT_MANAGEMENT' | 'PRESCRIPTION_MANAGEMENT' | 'SETTLEMENT_MANAGEMENT' | 'EXPENSE_REPORT_MANAGEMENT' | 'COMMUNITY_MANAGEMENT' | 'CONTENT_MANAGEMENT' | 'CUSTOMER_SERVICE' | 'BANNER_MANAGEMENT' | 'PERMISSION_MANAGEMENT' | 'ALL')[] | null;
 }
 
 export interface AlternativeProductDto {
@@ -103,15 +59,15 @@ export interface AlternativeProductDto {
 export interface AttachmentResponse {
   s3fileId: number;
   fileUrl: string;
-  type: 'ATTACHMENT' | 'EDITOR';
+  type: ('ATTACHMENT' | 'EDITOR');
   fileName: string;
 }
 
 export interface BannerCreateRequest {
   title: string;
   linkUrl: string;
-  status: 'VISIBLE' | 'HIDDEN';
-  scope: 'ENTIRE' | 'CONTRACT' | 'NON_CONTRACT';
+  status: ('VISIBLE' | 'HIDDEN');
+  scope: ('ENTIRE' | 'CONTRACT' | 'NON_CONTRACT');
   position: string;
   displayOrder: number;
   startAt: DateTimeString;
@@ -122,8 +78,8 @@ export interface BannerResponse {
   id: number;
   title: string;
   linkUrl: string;
-  status: 'VISIBLE' | 'HIDDEN';
-  scope: 'ENTIRE' | 'CONTRACT' | 'NON_CONTRACT';
+  status: ('VISIBLE' | 'HIDDEN');
+  scope: ('ENTIRE' | 'CONTRACT' | 'NON_CONTRACT');
   position: string;
   displayOrder: number;
   viewCount: number;
@@ -153,10 +109,10 @@ export interface BlindPostResponse {
   userId: string;
   likesCount: number;
   blindAt: string;
-  postType: 'BOARD' | 'COMMENT';
-  reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
+  postType: ('BOARD' | 'COMMENT');
+  reportType: ('SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER');
   nickname: string;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  contractStatus: ('CONTRACT' | 'NON_CONTRACT');
 }
 
 export interface BlindUpdateRequest {
@@ -168,7 +124,7 @@ export interface BoardDetailsResponse {
   id: number;
   userId: string;
   name: string;
-  memberType: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
+  memberType: ('NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION');
   boardType: string;
   title: string;
   content: string;
@@ -178,7 +134,7 @@ export interface BoardDetailsResponse {
   viewsCount: number;
   commentCount: number;
   isExposed: boolean;
-  exposureRange: 'ALL' | 'CONTRACTED' | 'UNCONTRACTED';
+  exposureRange: ('ALL' | 'CONTRACTED' | 'UNCONTRACTED');
   createdAt: string;
   children: BoardDetailsResponse[];
   reports: BoardReportResponse[];
@@ -193,14 +149,14 @@ export interface BoardMemberStatsResponse {
   userId: string;
   commentCount: number;
   phoneNumber: string;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  contractStatus: ('CONTRACT' | 'NON_CONTRACT');
   postCount: number;
   totalLikes: number;
   blindPostCount: number;
 }
 
 export interface BoardPostCreateRequest {
-  boardType: 'ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z' | 'EVENT' | 'SALES_AGENCY' | 'PRODUCT';
+  boardType: ('ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z' | 'EVENT' | 'SALES_AGENCY' | 'PRODUCT');
   userId: string;
   nickname: string;
   hiddenNickname: boolean;
@@ -209,7 +165,7 @@ export interface BoardPostCreateRequest {
   parentId: number | null;
   isExposed: boolean;
   editorFileIds: number[] | null;
-  exposureRange: 'ALL' | 'CONTRACTED' | 'UNCONTRACTED';
+  exposureRange: ('ALL' | 'CONTRACTED' | 'UNCONTRACTED');
   noticeProperties: NoticeProperties | null;
 }
 
@@ -217,8 +173,8 @@ export interface BoardPostResponse {
   id: number;
   userId: string;
   name: string;
-  memberType: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
-  boardType: 'ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z' | 'EVENT' | 'SALES_AGENCY' | 'PRODUCT';
+  memberType: ('NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION');
+  boardType: ('ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z' | 'EVENT' | 'SALES_AGENCY' | 'PRODUCT');
   title: string;
   nickname: string;
   isBlind: boolean;
@@ -227,7 +183,7 @@ export interface BoardPostResponse {
   commentCount: number;
   createdAt: string;
   isExposed: boolean;
-  exposureRange: 'ALL' | 'CONTRACTED' | 'UNCONTRACTED';
+  exposureRange: ('ALL' | 'CONTRACTED' | 'UNCONTRACTED');
   noticeProperties: NoticeProperties | null;
   hasChildren: boolean;
 }
@@ -248,8 +204,8 @@ export interface BoardReportResponse {
   userId: string;
   memberName: string;
   nickname: string;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
-  reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
+  contractStatus: ('CONTRACT' | 'NON_CONTRACT');
+  reportType: ('SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER');
   reportContent: string;
   reportDateTime: string;
 }
@@ -277,10 +233,10 @@ export interface CommentMemberResponse {
   content: string;
   userId: string;
   likesCount: number;
-  commentType: 'COMMENT' | 'REPLY';
+  commentType: ('COMMENT' | 'REPLY');
   createdAt: string;
   nickname: string;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  contractStatus: ('CONTRACT' | 'NON_CONTRACT');
   isBlind: boolean;
 }
 
@@ -292,7 +248,7 @@ export interface CommentResponse {
   nickname: string;
   likesCount: number;
   isBlind: boolean;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  contractStatus: ('CONTRACT' | 'NON_CONTRACT');
   parentId: number | null;
   createdAt: string;
   modifiedAt: string;
@@ -320,7 +276,7 @@ export interface DealerResponse {
 }
 
 export interface DeviceRequest {
-  platform: 'android' | 'ios' | 'other';
+  platform: ('android' | 'ios' | 'other');
   appVersion: string | null;
   fcmToken: string | null;
 }
@@ -363,7 +319,7 @@ export interface EventBoardSummaryResponse {
   isExposed: boolean;
   viewCount: number;
   createdDate: string;
-  eventStatus: 'IN_PROGRESS' | 'FINISHED';
+  eventStatus: ('IN_PROGRESS' | 'FINISHED');
 }
 
 export interface EventBoardUpdateRequest {
@@ -380,8 +336,8 @@ export interface ExpenseReportResponse {
   companyName: string | null;
   productName: string | null;
   institutionType: string;
-  reportType: 'SAMPLE_PROVIDE' | 'PRODUCT_BRIEFING_MULTI' | 'PRODUCT_BRIEFING_SINGLE';
-  status: 'PENDING' | 'COMPLETED';
+  reportType: ('SAMPLE_PROVIDE' | 'PRODUCT_BRIEFING_MULTI' | 'PRODUCT_BRIEFING_SINGLE');
+  status: ('PENDING' | 'COMPLETED');
   eventStartAt: string | null;
   eventEndAt: string | null;
   supportAmount: number;
@@ -394,15 +350,7 @@ export interface FcmTokenRequest {
 
 export interface FileValidationErrorDto {
   fileName: string;
-  error:
-    | 'INVALID_EXTENSION'
-    | 'INVALID_FILENAME_FORMAT'
-    | 'DEALER_NOT_FOUND'
-    | 'PARTNER_NOT_FOUND'
-    | 'DRUG_COMPANY_NOT_FOUND'
-    | 'INVALID_MONTH_FORMAT'
-    | 'DUPLICATE_DEALER_PARTNER_DRUG_COMPANY'
-    | 'DRUG_COMPANY_MISMATCH';
+  error: ('INVALID_EXTENSION' | 'INVALID_FILENAME_FORMAT' | 'DEALER_NOT_FOUND' | 'PARTNER_NOT_FOUND' | 'DRUG_COMPANY_NOT_FOUND' | 'INVALID_MONTH_FORMAT' | 'DUPLICATE_DEALER_PARTNER_DRUG_COMPANY' | 'DRUG_COMPANY_MISMATCH');
   message: string;
 }
 
@@ -469,14 +417,14 @@ export interface MemberDetailsResponse {
   phoneNumber: string;
   birthDate: string;
   email: string;
-  partnerContractStatus: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
+  partnerContractStatus: ('NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION');
   marketingAgreements: MarketingAgreements;
   referralCode: string | null;
   csoCertUrl: string | null;
   registrationDate: string;
   lastLoginDate: string;
   note: string | null;
-  role: 'USER' | 'ADMIN' | 'SUPER_ADMIN';
+  role: ('USER' | 'ADMIN' | 'SUPER_ADMIN');
   nicknameHidden: boolean;
   contractStatus: ('PENDING' | 'APPROVED' | 'REJECTED') | null;
 }
@@ -488,13 +436,13 @@ export interface MemberResponse {
   phoneNumber: string;
   birthDate: string;
   email: string;
-  partnerContractStatus: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
+  partnerContractStatus: ('NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION');
   marketingConsent: boolean;
   registrationDate: string;
   lastLoginDate: string;
   hasCsoCert: boolean;
-  accountStatus: 'ACTIVATED' | 'BLOCKED' | 'DELETED';
-  role: 'USER' | 'ADMIN' | 'SUPER_ADMIN';
+  accountStatus: ('ACTIVATED' | 'BLOCKED' | 'DELETED');
+  role: ('USER' | 'ADMIN' | 'SUPER_ADMIN');
   companyName: string | null;
   nicknameHidden: boolean;
   createdAt: string;
@@ -541,7 +489,7 @@ export interface NoteUpdateItem {
 }
 
 export interface NoticeProperties {
-  noticeType: 'PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING';
+  noticeType: ('PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING');
   drugCompany: string | null;
   fixedTop: boolean;
 }
@@ -820,18 +768,18 @@ export interface PageableObject {
 }
 
 export interface PartnerContractDetailsResponse {
-  contractType: 'INDIVIDUAL' | 'ORGANIZATION';
+  contractType: ('INDIVIDUAL' | 'ORGANIZATION');
   companyName: string;
   businessNumber: string;
   bankName: string;
   accountNumber: string;
   contractDate: string;
-  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  status: ('PENDING' | 'APPROVED' | 'REJECTED');
   fileUrls: Record<string, string>;
 }
 
 export interface PartnerContractRequest {
-  contractType: 'INDIVIDUAL' | 'ORGANIZATION';
+  contractType: ('INDIVIDUAL' | 'ORGANIZATION');
   companyName: string;
   businessNumber: string;
   bankName: string;
@@ -851,14 +799,14 @@ export interface PartnerCreateRequest {
   userId: string;
   drugCompany: string;
   companyName: string;
-  contractType: 'CONTRACT' | 'NON_CONTRACT';
+  contractType: ('CONTRACT' | 'NON_CONTRACT');
   institutionCode: string;
   institutionName: string;
   businessNumber: string;
   medicalDepartment: string | null;
   pharmacyName: string | null;
   pharmacyAddress: string | null;
-  pharmacyStatus: 'NORMAL' | 'CLOSED' | 'DELETED' | 'NONE';
+  pharmacyStatus: ('NORMAL' | 'CLOSED' | 'DELETED' | 'NONE');
   note: string | null;
 }
 
@@ -866,7 +814,7 @@ export interface PartnerResponse {
   id: number;
   drugCompanyName: string;
   companyName: string;
-  contractType: 'CONTRACT' | 'NON_CONTRACT';
+  contractType: ('CONTRACT' | 'NON_CONTRACT');
   institutionCode: string;
   institutionName: string;
   businessNumber: string;
@@ -965,7 +913,7 @@ export interface PrescriptionPartnerResponse {
   settlementMonth: string;
   inputDate: string;
   amount: number;
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+  status: ('PENDING' | 'IN_PROGRESS' | 'COMPLETED');
   dealerName: string;
   partnerName: string;
   businessNumber: string;
@@ -993,7 +941,7 @@ export interface PrescriptionResponse {
   prescriptionMonth: string;
   settlementMonth: string;
   submittedAt: string;
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+  status: ('PENDING' | 'IN_PROGRESS' | 'COMPLETED');
   checkedAt: string | null;
   type: string;
 }
@@ -1020,7 +968,7 @@ export interface ProductBriefingMultiCreateRequest {
 
 export interface ProductBriefingMultiDetailResponse {
   reportId: number;
-  reportType: 'SAMPLE_PROVIDE' | 'PRODUCT_BRIEFING_MULTI' | 'PRODUCT_BRIEFING_SINGLE';
+  reportType: ('SAMPLE_PROVIDE' | 'PRODUCT_BRIEFING_MULTI' | 'PRODUCT_BRIEFING_SINGLE');
   productName: string;
   productCode: string;
   institutions: InstitutionInfo[];
@@ -1033,7 +981,7 @@ export interface ProductBriefingMultiDetailResponse {
   endedAt: string;
   isJoint: boolean;
   attachedFiles: AttachmentResponse[];
-  status: 'PENDING' | 'COMPLETED';
+  status: ('PENDING' | 'COMPLETED');
 }
 
 export interface ProductBriefingMultiUpdateRequest {
@@ -1072,7 +1020,7 @@ export interface ProductBriefingSingleDetailResponse {
   isJoint: boolean;
   medicalPersons: MedicalPersonWithSignature[];
   attachedFiles: AttachmentResponse[];
-  status: 'PENDING' | 'COMPLETED';
+  status: ('PENDING' | 'COMPLETED');
 }
 
 export interface ProductBriefingSingleUpdateRequest {
@@ -1092,7 +1040,7 @@ export interface ProductDetailsResponse {
   productName: string | null;
   composition: string | null;
   price: number | null;
-  priceUnit: 'KRW' | 'USD' | 'EUR';
+  priceUnit: ('KRW' | 'USD' | 'EUR');
   feeRate: number | null;
   changedFeeRate: number | null;
   changedMonth: string | null;
@@ -1113,7 +1061,7 @@ export interface ProductExtraInfoRequest {
   productCode: string;
   changedFeeRate: string | null;
   changedMonth: string | null;
-  priceUnit: 'KRW' | 'USD' | 'EUR';
+  priceUnit: ('KRW' | 'USD' | 'EUR');
   feeRate: string | null;
   price: number | null;
   note: string | null;
@@ -1149,7 +1097,7 @@ export interface RefreshTokenRequest {
 export interface ReportCreateRequest {
   postId: number | null;
   commentId: number | null;
-  reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
+  reportType: ('SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER');
   reportContent: string;
 }
 
@@ -1159,7 +1107,7 @@ export interface SalesAgencyProductApplicantResponse {
   memberName: string;
   phoneNumber: string;
   appliedDate: string;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  contractStatus: ('CONTRACT' | 'NON_CONTRACT');
   note: string | null;
 }
 
@@ -1230,7 +1178,7 @@ export interface SampleProvideReportCreateRequest {
 
 export interface SampleProvideReportDetailResponse {
   reportId: number;
-  reportType: 'SAMPLE_PROVIDE' | 'PRODUCT_BRIEFING_MULTI' | 'PRODUCT_BRIEFING_SINGLE';
+  reportType: ('SAMPLE_PROVIDE' | 'PRODUCT_BRIEFING_MULTI' | 'PRODUCT_BRIEFING_SINGLE');
   productName: string;
   productCode: string;
   packCount: number;
@@ -1239,7 +1187,7 @@ export interface SampleProvideReportDetailResponse {
   institutionCode: string;
   providedAt: string;
   attachedFiles: AttachmentResponse[];
-  status: 'PENDING' | 'COMPLETED';
+  status: ('PENDING' | 'COMPLETED');
 }
 
 export interface SampleProvideReportUpdateRequest {
@@ -1303,9 +1251,7 @@ export interface SortObject {
 }
 
 export interface UpdateNoticeProperties {
-  noticeType:
-    | ('PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING')
-    | null;
+  noticeType: ('PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING') | null;
   drugCompany: string | null;
   fixedTop: boolean | null;
 }
@@ -1313,11 +1259,13 @@ export interface UpdateNoticeProperties {
 /**
  * GET /v1/kmc/auth/callback-page
  */
-export async function callbackPage(options?: { certNum?: string }): Promise<string> {
+export async function callbackPage(options?: {
+  certNum?: string;
+}): Promise<string> {
   const response = await axios.request<string>({
     method: 'GET',
-    url: '/v1/kmc/auth/callback-page',
-    params: options,
+    url: "/v1/kmc/auth/callback-page",
+    params: options
   });
   return response.data;
 }
@@ -1325,11 +1273,13 @@ export async function callbackPage(options?: { certNum?: string }): Promise<stri
 /**
  * POST /v1/kmc/auth/callback-page
  */
-export async function callbackPage_1(options?: { certNum?: string }): Promise<string> {
+export async function callbackPage_1(options?: {
+  certNum?: string;
+}): Promise<string> {
   const response = await axios.request<string>({
     method: 'POST',
-    url: '/v1/kmc/auth/callback-page',
-    params: options,
+    url: "/v1/kmc/auth/callback-page",
+    params: options
   });
   return response.data;
 }
@@ -1340,7 +1290,7 @@ export async function callbackPage_1(options?: { certNum?: string }): Promise<st
 export async function exportAll(): Promise<string> {
   const response = await axios.request<string>({
     method: 'PUT',
-    url: '/v1/products/export-to-root-tsv',
+    url: "/v1/products/export-to-root-tsv"
   });
   return response.data;
 }
@@ -1352,7 +1302,7 @@ export async function exportAll(): Promise<string> {
 export async function getPartnerDetails(id: number): Promise<PartnerResponse> {
   const response = await axios.request<PartnerResponse>({
     method: 'GET',
-    url: `/v1/partners/${id}`,
+    url: `/v1/partners/${id}`
   });
   return response.data;
 }
@@ -1365,7 +1315,7 @@ export async function updatePartner(id: number, data: PartnerUpdateRequest): Pro
   await axios.request({
     method: 'PUT',
     url: `/v1/partners/${id}`,
-    data,
+    data
   });
 }
 
@@ -1376,7 +1326,7 @@ export async function updatePartner(id: number, data: PartnerUpdateRequest): Pro
 export async function deletePartner(id: number): Promise<void> {
   await axios.request({
     method: 'DELETE',
-    url: `/v1/partners/${id}`,
+    url: `/v1/partners/${id}`
   });
 }
 
@@ -1389,15 +1339,15 @@ export async function getCommentMembers(options?: {
   nickname?: string;
   startAt?: DateString;
   endAt?: DateString;
-  commentType?: 'COMMENT' | 'REPLY';
+  commentType?: ('COMMENT' | 'REPLY');
   filterDeleted?: boolean;
   page?: number;
   size?: number;
 }): Promise<PageCommentMemberResponse> {
   const response = await axios.request<PageCommentMemberResponse>({
     method: 'GET',
-    url: '/v1/comments',
-    params: options,
+    url: "/v1/comments",
+    params: options
   });
   return response.data;
 }
@@ -1409,8 +1359,8 @@ export async function getCommentMembers(options?: {
 export async function updateComment(data: CommentUpdateRequest): Promise<string> {
   const response = await axios.request<string>({
     method: 'PUT',
-    url: '/v1/comments',
-    data,
+    url: "/v1/comments",
+    data
   });
   return response.data;
 }
@@ -1422,7 +1372,7 @@ export async function updateComment(data: CommentUpdateRequest): Promise<string>
 export async function toggleBlindStatus(id: number): Promise<boolean> {
   const response = await axios.request<boolean>({
     method: 'PUT',
-    url: `/v1/comments/${id}/toggle-blind`,
+    url: `/v1/comments/${id}/toggle-blind`
   });
   return response.data;
 }
@@ -1431,17 +1381,14 @@ export async function toggleBlindStatus(id: number): Promise<boolean> {
  * 게시판 상세 조회
  * GET /v1/boards/{id}
  */
-export async function getBoardDetails(
-  id: number,
-  options?: {
-    filterBlind?: boolean;
-    filterDeleted?: boolean;
-  },
-): Promise<BoardDetailsResponse> {
+export async function getBoardDetails(id: number, options?: {
+  filterBlind?: boolean;
+  filterDeleted?: boolean;
+}): Promise<BoardDetailsResponse> {
   const response = await axios.request<BoardDetailsResponse>({
     method: 'GET',
     url: `/v1/boards/${id}`,
-    params: options,
+    params: options
   });
   return response.data;
 }
@@ -1450,24 +1397,21 @@ export async function getBoardDetails(
  * 게시글 수정
  * PUT /v1/boards/{id}
  */
-export async function updateBoardPost(
-  id: number,
-  data: {
-    updateRequest: BoardPostUpdateRequest;
-    newFiles?: File[];
-  },
-): Promise<string> {
+export async function updateBoardPost(id: number, data: {
+  updateRequest: BoardPostUpdateRequest;
+  newFiles?: File[];
+}): Promise<string> {
   const form = new FormData();
-  form.append('updateRequest', new Blob([JSON.stringify(data.updateRequest)], { type: 'application/json' }));
+  form.append("updateRequest", new Blob([JSON.stringify(data.updateRequest)], { type: 'application/json' }));
   if (data.newFiles !== undefined) {
     for (const v of data.newFiles) {
-      form.append('newFiles', v);
+      form.append("newFiles", v);
     }
   }
   const response = await axios.request<string>({
     method: 'PUT',
     url: `/v1/boards/${id}`,
-    data: form,
+    data: form
   });
   return response.data;
 }
@@ -1479,7 +1423,7 @@ export async function updateBoardPost(
 export async function deleteBoardPost(id: number): Promise<void> {
   await axios.request({
     method: 'DELETE',
-    url: `/v1/boards/${id}`,
+    url: `/v1/boards/${id}`
   });
 }
 
@@ -1490,7 +1434,7 @@ export async function deleteBoardPost(id: number): Promise<void> {
 export async function toggleBlindStatus_1(id: number): Promise<boolean> {
   const response = await axios.request<boolean>({
     method: 'PUT',
-    url: `/v1/boards/${id}/toggle-blind`,
+    url: `/v1/boards/${id}/toggle-blind`
   });
   return response.data;
 }
@@ -1502,8 +1446,8 @@ export async function toggleBlindStatus_1(id: number): Promise<boolean> {
 export async function unblindPost(data: BlindUpdateRequest): Promise<void> {
   await axios.request({
     method: 'PUT',
-    url: '/v1/blind-posts/unblind',
-    data,
+    url: "/v1/blind-posts/unblind",
+    data
   });
 }
 
@@ -1511,11 +1455,13 @@ export async function unblindPost(data: BlindUpdateRequest): Promise<void> {
  * 정산 엑셀 업로드
  * POST /v1/settlements/upload
  */
-export async function uploadSettlementExcel(data: { file: File }): Promise<void> {
+export async function uploadSettlementExcel(data: {
+  file: File;
+}): Promise<void> {
   await axios.request({
     method: 'POST',
-    url: '/v1/settlements/upload',
-    data,
+    url: "/v1/settlements/upload",
+    data
   });
 }
 
@@ -1526,8 +1472,8 @@ export async function uploadSettlementExcel(data: { file: File }): Promise<void>
 export async function notifyAdminForSettlements(data: SettlementNotifyRequest): Promise<void> {
   await axios.request({
     method: 'POST',
-    url: '/v1/settlements/notify-admin',
-    data,
+    url: "/v1/settlements/notify-admin",
+    data
   });
 }
 
@@ -1545,8 +1491,8 @@ export async function getSalesAgencyProducts(options?: {
 }): Promise<PageSalesAgencyProductSummaryResponse> {
   const response = await axios.request<PageSalesAgencyProductSummaryResponse>({
     method: 'GET',
-    url: '/v1/sales-agency-products',
-    params: options,
+    url: "/v1/sales-agency-products",
+    params: options
   });
   return response.data;
 }
@@ -1562,21 +1508,18 @@ export async function createSalesAgencyProductBoard(data: {
   files?: File[];
 }): Promise<string> {
   const form = new FormData();
-  form.append('boardPostCreateRequest', new Blob([JSON.stringify(data.boardPostCreateRequest)], { type: 'application/json' }));
-  form.append(
-    'salesAgencyProductCreateRequest',
-    new Blob([JSON.stringify(data.salesAgencyProductCreateRequest)], { type: 'application/json' }),
-  );
-  form.append('thumbnail', data.thumbnail);
+  form.append("boardPostCreateRequest", new Blob([JSON.stringify(data.boardPostCreateRequest)], { type: 'application/json' }));
+  form.append("salesAgencyProductCreateRequest", new Blob([JSON.stringify(data.salesAgencyProductCreateRequest)], { type: 'application/json' }));
+  form.append("thumbnail", data.thumbnail);
   if (data.files !== undefined) {
     for (const v of data.files) {
-      form.append('files', v);
+      form.append("files", v);
     }
   }
   const response = await axios.request<string>({
     method: 'POST',
-    url: '/v1/sales-agency-products',
-    data: form,
+    url: "/v1/sales-agency-products",
+    data: form
   });
   return response.data;
 }
@@ -1588,7 +1531,7 @@ export async function createSalesAgencyProductBoard(data: {
 export async function applyProduct(id: number): Promise<void> {
   await axios.request({
     method: 'POST',
-    url: `/v1/sales-agency-products/${id}/apply`,
+    url: `/v1/sales-agency-products/${id}/apply`
   });
 }
 
@@ -1600,7 +1543,7 @@ export async function createReport(userId: string, data: ReportCreateRequest): P
   const response = await axios.request<string>({
     method: 'POST',
     url: `/v1/reports/${userId}`,
-    data,
+    data
   });
   return response.data;
 }
@@ -1608,11 +1551,13 @@ export async function createReport(userId: string, data: ReportCreateRequest): P
 /**
  * POST /v1/products/upload-kims-from-s3
  */
-export async function uploadFromS3(options?: { prefix?: string }): Promise<string> {
+export async function uploadFromS3(options?: {
+  prefix?: string;
+}): Promise<string> {
   const response = await axios.request<string>({
     method: 'POST',
-    url: '/v1/products/upload-kims-from-s3',
-    params: options,
+    url: "/v1/products/upload-kims-from-s3",
+    params: options
   });
   return response.data;
 }
@@ -1621,13 +1566,15 @@ export async function uploadFromS3(options?: { prefix?: string }): Promise<strin
  * 제품 엑셀 업로드
  * POST /v1/products/product-extra-info/upload
  */
-export async function uploadProductExtraInfo(data: { file: File }): Promise<void> {
+export async function uploadProductExtraInfo(data: {
+  file: File;
+}): Promise<void> {
   const form = new FormData();
-  form.append('file', data.file);
+  form.append("file", data.file);
   await axios.request({
     method: 'POST',
-    url: '/v1/products/product-extra-info/upload',
-    data: form,
+    url: "/v1/products/product-extra-info/upload",
+    data: form
   });
 }
 
@@ -1641,20 +1588,17 @@ export async function createProductExtraInfo(data: {
   files?: File[];
 }): Promise<void> {
   const form = new FormData();
-  form.append('boardPostCreateRequest', new Blob([JSON.stringify(data.boardPostCreateRequest)], { type: 'application/json' }));
-  form.append(
-    'productExtraInfoCreateRequest',
-    new Blob([JSON.stringify(data.productExtraInfoCreateRequest)], { type: 'application/json' }),
-  );
+  form.append("boardPostCreateRequest", new Blob([JSON.stringify(data.boardPostCreateRequest)], { type: 'application/json' }));
+  form.append("productExtraInfoCreateRequest", new Blob([JSON.stringify(data.productExtraInfoCreateRequest)], { type: 'application/json' }));
   if (data.files !== undefined) {
     for (const v of data.files) {
-      form.append('files', v);
+      form.append("files", v);
     }
   }
   await axios.request({
     method: 'POST',
-    url: '/v1/products/extra-info',
-    data: form,
+    url: "/v1/products/extra-info",
+    data: form
   });
 }
 
@@ -1668,13 +1612,13 @@ export async function uploadEdiZip(data: {
   file: File;
 }): Promise<PrescriptionZipUploadResult> {
   const form = new FormData();
-  form.append('prescriptionMonth', data.prescriptionMonth);
-  form.append('settlementMonth', data.settlementMonth);
-  form.append('file', data.file);
+  form.append("prescriptionMonth", data.prescriptionMonth);
+  form.append("settlementMonth", data.settlementMonth);
+  form.append("file", data.file);
   const response = await axios.request<PrescriptionZipUploadResult>({
     method: 'POST',
-    url: '/v1/prescriptions/zip',
-    data: form,
+    url: "/v1/prescriptions/zip",
+    data: form
   });
   return response.data;
 }
@@ -1686,8 +1630,8 @@ export async function uploadEdiZip(data: {
 export async function createPartnerProducts(data: PrescriptionPartnerProductCreateRequest): Promise<void> {
   await axios.request({
     method: 'POST',
-    url: '/v1/prescriptions/partner-products',
-    data,
+    url: "/v1/prescriptions/partner-products",
+    data
   });
 }
 
@@ -1695,16 +1639,19 @@ export async function createPartnerProducts(data: PrescriptionPartnerProductCrea
  * 거래처별 EDI 파일 업로드
  * POST /v1/prescriptions/partner-files
  */
-export async function uploadPartnerEdiFiles(data: { request: PrescriptionCreateRequest; files: File[] }): Promise<void> {
+export async function uploadPartnerEdiFiles(data: {
+  request: PrescriptionCreateRequest;
+  files: File[];
+}): Promise<void> {
   const form = new FormData();
-  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  for (const v of data.files) {
-    form.append('files', v);
-  }
+  form.append("request", new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+    for (const v of data.files) {
+      form.append("files", v);
+    }
   await axios.request({
     method: 'POST',
-    url: '/v1/prescriptions/partner-files',
-    data: form,
+    url: "/v1/prescriptions/partner-files",
+    data: form
   });
 }
 
@@ -1715,7 +1662,7 @@ export async function uploadPartnerEdiFiles(data: { request: PrescriptionCreateR
 export async function evict(): Promise<void> {
   await axios.request({
     method: 'POST',
-    url: '/v1/prescriptions/cache/evict',
+    url: "/v1/prescriptions/cache/evict"
   });
 }
 
@@ -1727,14 +1674,14 @@ export async function getPartners(options?: {
   companyName?: string;
   institutionName?: string;
   institutionCode?: string;
-  contractType?: 'CONTRACT' | 'NON_CONTRACT';
+  contractType?: ('CONTRACT' | 'NON_CONTRACT');
   page?: number;
   size?: number;
 }): Promise<PagePartnerResponse> {
   const response = await axios.request<PagePartnerResponse>({
     method: 'GET',
-    url: '/v1/partners',
-    params: options,
+    url: "/v1/partners",
+    params: options
   });
   return response.data;
 }
@@ -1746,8 +1693,8 @@ export async function getPartners(options?: {
 export async function createPartner(data: PartnerCreateRequest): Promise<void> {
   await axios.request({
     method: 'POST',
-    url: '/v1/partners',
-    data,
+    url: "/v1/partners",
+    data
   });
 }
 
@@ -1755,18 +1702,15 @@ export async function createPartner(data: PartnerCreateRequest): Promise<void> {
  * 거래선 엑셀 업로드
  * POST /v1/partners/upload/{userId}
  */
-export async function uploadPartnersExcel(
-  userId: string,
-  data: {
-    file: File;
-  },
-): Promise<void> {
+export async function uploadPartnersExcel(userId: string, data: {
+  file: File;
+}): Promise<void> {
   const form = new FormData();
-  form.append('file', data.file);
+  form.append("file", data.file);
   await axios.request({
     method: 'POST',
     url: `/v1/partners/upload/${userId}`,
-    data: form,
+    data: form
   });
 }
 
@@ -1782,15 +1726,15 @@ export async function applyContract(data: {
   education_certificate: File;
 }): Promise<void> {
   const form = new FormData();
-  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  form.append('business_registration', data.business_registration);
-  form.append('subcontract_agreement', data.subcontract_agreement);
-  form.append('cso_certificate', data.cso_certificate);
-  form.append('education_certificate', data.education_certificate);
+  form.append("request", new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  form.append("business_registration", data.business_registration);
+  form.append("subcontract_agreement", data.subcontract_agreement);
+  form.append("cso_certificate", data.cso_certificate);
+  form.append("education_certificate", data.education_certificate);
   await axios.request({
     method: 'POST',
-    url: '/v1/partner-contracts',
-    data: form,
+    url: "/v1/partner-contracts",
+    data: form
   });
 }
 
@@ -1801,7 +1745,7 @@ export async function applyContract(data: {
 export async function rejectContract(contractId: number): Promise<void> {
   await axios.request({
     method: 'POST',
-    url: `/v1/partner-contracts/${contractId}/reject`,
+    url: `/v1/partner-contracts/${contractId}/reject`
   });
 }
 
@@ -1812,7 +1756,7 @@ export async function rejectContract(contractId: number): Promise<void> {
 export async function approveContract(contractId: number): Promise<void> {
   await axios.request({
     method: 'POST',
-    url: `/v1/partner-contracts/${contractId}/approve`,
+    url: `/v1/partner-contracts/${contractId}/approve`
   });
 }
 
@@ -1828,23 +1772,15 @@ export async function updateContract(data: {
   education_certificate?: File;
 }): Promise<void> {
   const form = new FormData();
-  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  if (data.business_registration !== undefined) {
-    form.append('business_registration', data.business_registration);
-  }
-  if (data.subcontract_agreement !== undefined) {
-    form.append('subcontract_agreement', data.subcontract_agreement);
-  }
-  if (data.cso_certificate !== undefined) {
-    form.append('cso_certificate', data.cso_certificate);
-  }
-  if (data.education_certificate !== undefined) {
-    form.append('education_certificate', data.education_certificate);
-  }
+  form.append("request", new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  if (data.business_registration !== undefined) { form.append("business_registration", data.business_registration); }
+  if (data.subcontract_agreement !== undefined) { form.append("subcontract_agreement", data.subcontract_agreement); }
+  if (data.cso_certificate !== undefined) { form.append("cso_certificate", data.cso_certificate); }
+  if (data.education_certificate !== undefined) { form.append("education_certificate", data.education_certificate); }
   await axios.request({
     method: 'POST',
-    url: '/v1/partner-contracts/update',
-    data: form,
+    url: "/v1/partner-contracts/update",
+    data: form
   });
 }
 
@@ -1860,7 +1796,7 @@ export async function getUserMembers(options?: {
   phoneNumber?: string;
   email?: string;
   companyName?: string;
-  contractStatus?: 'CONTRACT' | 'NON_CONTRACT';
+  contractStatus?: ('CONTRACT' | 'NON_CONTRACT');
   startAt?: DateString;
   endAt?: DateString;
   page?: number;
@@ -1868,8 +1804,8 @@ export async function getUserMembers(options?: {
 }): Promise<PageMemberResponse> {
   const response = await axios.request<PageMemberResponse>({
     method: 'GET',
-    url: '/v1/members',
-    params: options,
+    url: "/v1/members",
+    params: options
   });
   return response.data;
 }
@@ -1878,16 +1814,17 @@ export async function getUserMembers(options?: {
  * 회원가입
  * POST /v1/members
  */
-export async function signup(data: { request: MemberSignupRequest; file?: File }): Promise<DeviceUuidResponse> {
+export async function signup(data: {
+  request: MemberSignupRequest;
+  file?: File;
+}): Promise<DeviceUuidResponse> {
   const form = new FormData();
-  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  if (data.file !== undefined) {
-    form.append('file', data.file);
-  }
+  form.append("request", new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  if (data.file !== undefined) { form.append("file", data.file); }
   const response = await axios.request<DeviceUuidResponse>({
     method: 'POST',
-    url: '/v1/members',
-    data: form,
+    url: "/v1/members",
+    data: form
   });
   return response.data;
 }
@@ -1896,11 +1833,13 @@ export async function signup(data: { request: MemberSignupRequest; file?: File }
  * 비밀번호 확인 (현재 로그인 사용자)
  * POST /v1/members/check-password
  */
-export async function checkPassword(options?: { password?: string }): Promise<boolean> {
+export async function checkPassword(options?: {
+  password?: string;
+}): Promise<boolean> {
   const response = await axios.request<boolean>({
     method: 'POST',
-    url: '/v1/members/check-password',
-    params: options,
+    url: "/v1/members/check-password",
+    params: options
   });
   return response.data;
 }
@@ -1909,11 +1848,14 @@ export async function checkPassword(options?: { password?: string }): Promise<bo
  * 관리자 목록 조회
  * GET /v1/members/admins
  */
-export async function getAdminMembers(options?: { page?: number; size?: number }): Promise<PageMemberResponse> {
+export async function getAdminMembers(options?: {
+  page?: number;
+  size?: number;
+}): Promise<PageMemberResponse> {
   const response = await axios.request<PageMemberResponse>({
     method: 'GET',
-    url: '/v1/members/admins',
-    params: options,
+    url: "/v1/members/admins",
+    params: options
   });
   return response.data;
 }
@@ -1925,8 +1867,8 @@ export async function getAdminMembers(options?: { page?: number; size?: number }
 export async function signupByAdmin(data: AdminCreateRequest): Promise<void> {
   await axios.request({
     method: 'POST',
-    url: '/v1/members/admins',
-    data,
+    url: "/v1/members/admins",
+    data
   });
 }
 
@@ -1936,8 +1878,8 @@ export async function signupByAdmin(data: AdminCreateRequest): Promise<void> {
 export async function createAuthRequest(data: KmcAuthRequest): Promise<KmcAuthResponse> {
   const response = await axios.request<KmcAuthResponse>({
     method: 'POST',
-    url: '/v1/kmc/auth/request',
-    data,
+    url: "/v1/kmc/auth/request",
+    data
   });
   return response.data;
 }
@@ -1945,11 +1887,14 @@ export async function createAuthRequest(data: KmcAuthRequest): Promise<KmcAuthRe
 /**
  * POST /v1/kmc/auth/callback
  */
-export async function handleCallback(options?: { apiToken?: string; certNum?: string }): Promise<string> {
+export async function handleCallback(options?: {
+  apiToken?: string;
+  certNum?: string;
+}): Promise<string> {
   const response = await axios.request<string>({
     method: 'POST',
-    url: '/v1/kmc/auth/callback',
-    params: options,
+    url: "/v1/kmc/auth/callback",
+    params: options
   });
   return response.data;
 }
@@ -1958,13 +1903,15 @@ export async function handleCallback(options?: { apiToken?: string; certNum?: st
  * 엑셀 파일 업로드
  * POST /v1/hospitals/upload
  */
-export async function uploadHospitalExcel(data: { file: File }): Promise<string> {
+export async function uploadHospitalExcel(data: {
+  file: File;
+}): Promise<string> {
   const form = new FormData();
-  form.append('file', data.file);
+  form.append("file", data.file);
   const response = await axios.request<string>({
     method: 'POST',
-    url: '/v1/hospitals/upload',
-    data: form,
+    url: "/v1/hospitals/upload",
+    data: form
   });
   return response.data;
 }
@@ -1978,16 +1925,16 @@ export async function createSampleProvideReport(data: {
   attachmentFiles?: File[];
 }): Promise<void> {
   const form = new FormData();
-  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  form.append("request", new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   if (data.attachmentFiles !== undefined) {
     for (const v of data.attachmentFiles) {
-      form.append('attachmentFiles', v);
+      form.append("attachmentFiles", v);
     }
   }
   await axios.request({
     method: 'POST',
-    url: '/v1/expense-reports/sample-provide',
-    data: form,
+    url: "/v1/expense-reports/sample-provide",
+    data: form
   });
 }
 
@@ -2001,19 +1948,19 @@ export async function createProductBriefingSingleReport(data: {
   attachmentFiles?: File[];
 }): Promise<void> {
   const form = new FormData();
-  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  for (const v of data.signatureFiles) {
-    form.append('signatureFiles', v);
-  }
+  form.append("request", new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+    for (const v of data.signatureFiles) {
+      form.append("signatureFiles", v);
+    }
   if (data.attachmentFiles !== undefined) {
     for (const v of data.attachmentFiles) {
-      form.append('attachmentFiles', v);
+      form.append("attachmentFiles", v);
     }
   }
   await axios.request({
     method: 'POST',
-    url: '/v1/expense-reports/product-briefing/single',
-    data: form,
+    url: "/v1/expense-reports/product-briefing/single",
+    data: form
   });
 }
 
@@ -2026,16 +1973,16 @@ export async function createProductBriefingMultiReport(data: {
   attachmentFiles?: File[];
 }): Promise<void> {
   const form = new FormData();
-  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  form.append("request", new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   if (data.attachmentFiles !== undefined) {
     for (const v of data.attachmentFiles) {
-      form.append('attachmentFiles', v);
+      form.append("attachmentFiles", v);
     }
   }
   await axios.request({
     method: 'POST',
-    url: '/v1/expense-reports/product-briefing/multi',
-    data: form,
+    url: "/v1/expense-reports/product-briefing/multi",
+    data: form
   });
 }
 
@@ -2044,7 +1991,7 @@ export async function createProductBriefingMultiReport(data: {
  * GET /v1/events
  */
 export async function getEventBoards(options?: {
-  status?: 'IN_PROGRESS' | 'FINISHED';
+  status?: ('IN_PROGRESS' | 'FINISHED');
   title?: string;
   startAt?: DateString;
   endAt?: DateString;
@@ -2053,8 +2000,8 @@ export async function getEventBoards(options?: {
 }): Promise<PageEventBoardSummaryResponse> {
   const response = await axios.request<PageEventBoardSummaryResponse>({
     method: 'GET',
-    url: '/v1/events',
-    params: options,
+    url: "/v1/events",
+    params: options
   });
   return response.data;
 }
@@ -2070,18 +2017,18 @@ export async function createEventBoard(data: {
   files?: File[];
 }): Promise<string> {
   const form = new FormData();
-  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  form.append('eventRequest', new Blob([JSON.stringify(data.eventRequest)], { type: 'application/json' }));
-  form.append('thumbnail', data.thumbnail);
+  form.append("request", new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  form.append("eventRequest", new Blob([JSON.stringify(data.eventRequest)], { type: 'application/json' }));
+  form.append("thumbnail", data.thumbnail);
   if (data.files !== undefined) {
     for (const v of data.files) {
-      form.append('files', v);
+      form.append("files", v);
     }
   }
   const response = await axios.request<string>({
     method: 'POST',
-    url: '/v1/events',
-    data: form,
+    url: "/v1/events",
+    data: form
   });
   return response.data;
 }
@@ -2090,11 +2037,14 @@ export async function createEventBoard(data: {
  * 내 딜러 목록 조회(현재 로그인 사용자 소속)
  * GET /v1/dealers
  */
-export async function listDealers(options?: { dealerName?: string; drugCompanyName?: string }): Promise<DealerResponse[]> {
+export async function listDealers(options?: {
+  dealerName?: string;
+  drugCompanyName?: string;
+}): Promise<DealerResponse[]> {
   const response = await axios.request<DealerResponse[]>({
     method: 'GET',
-    url: '/v1/dealers',
-    params: options,
+    url: "/v1/dealers",
+    params: options
   });
   return response.data;
 }
@@ -2106,8 +2056,8 @@ export async function listDealers(options?: { dealerName?: string; drugCompanyNa
 export async function createDealer(data: DealerCreateRequest): Promise<void> {
   await axios.request({
     method: 'POST',
-    url: '/v1/dealers',
-    data,
+    url: "/v1/dealers",
+    data
   });
 }
 
@@ -2119,7 +2069,7 @@ export async function createComment(userId: string, data: CommentCreateRequest):
   const response = await axios.request<string>({
     method: 'POST',
     url: `/v1/comments/${userId}`,
-    data,
+    data
   });
   return response.data;
 }
@@ -2130,7 +2080,7 @@ export async function createComment(userId: string, data: CommentCreateRequest):
 export async function toggleLike(id: number): Promise<void> {
   await axios.request({
     method: 'POST',
-    url: `/v1/comments/${id}/like`,
+    url: `/v1/comments/${id}/like`
   });
 }
 
@@ -2141,8 +2091,8 @@ export async function toggleLike(id: number): Promise<void> {
 export async function getBoards(options?: {
   page?: number;
   size?: number;
-  sortType?: 'LATEST' | 'VIEWS' | 'LIKES' | 'COMMENTS';
-  boardType?: 'ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z' | 'EVENT' | 'SALES_AGENCY' | 'PRODUCT';
+  sortType?: ('LATEST' | 'VIEWS' | 'LIKES' | 'COMMENTS');
+  boardType?: ('ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z' | 'EVENT' | 'SALES_AGENCY' | 'PRODUCT');
   userId?: string;
   name?: string;
   nickname?: string;
@@ -2155,12 +2105,12 @@ export async function getBoards(options?: {
   drugCompany?: string;
   myUserId?: string;
   includeChild?: boolean;
-  noticeType?: 'PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING';
+  noticeType?: ('PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING');
 }): Promise<PageBoardPostResponse> {
   const response = await axios.request<PageBoardPostResponse>({
     method: 'GET',
-    url: '/v1/boards',
-    params: options,
+    url: "/v1/boards",
+    params: options
   });
   return response.data;
 }
@@ -2169,18 +2119,21 @@ export async function getBoards(options?: {
  * 게시글 작성
  * POST /v1/boards
  */
-export async function createBoardPost(data: { request: BoardPostCreateRequest; files?: File[] }): Promise<string> {
+export async function createBoardPost(data: {
+  request: BoardPostCreateRequest;
+  files?: File[];
+}): Promise<string> {
   const form = new FormData();
-  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  form.append("request", new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   if (data.files !== undefined) {
     for (const v of data.files) {
-      form.append('files', v);
+      form.append("files", v);
     }
   }
   const response = await axios.request<string>({
     method: 'POST',
-    url: '/v1/boards',
-    data: form,
+    url: "/v1/boards",
+    data: form
   });
   return response.data;
 }
@@ -2192,7 +2145,7 @@ export async function createBoardPost(data: { request: BoardPostCreateRequest; f
 export async function toggleLike_1(id: number): Promise<void> {
   await axios.request({
     method: 'POST',
-    url: `/v1/boards/${id}/like`,
+    url: `/v1/boards/${id}/like`
   });
 }
 
@@ -2200,13 +2153,15 @@ export async function toggleLike_1(id: number): Promise<void> {
  * 에디터 파일 업로드 API
  * POST /v1/boards/uploads
  */
-export async function uploadEditorFile(data: { file: File }): Promise<AttachmentResponse> {
+export async function uploadEditorFile(data: {
+  file: File;
+}): Promise<AttachmentResponse> {
   const form = new FormData();
-  form.append('file', data.file);
+  form.append("file", data.file);
   const response = await axios.request<AttachmentResponse>({
     method: 'POST',
-    url: '/v1/boards/uploads',
-    data: form,
+    url: "/v1/boards/uploads",
+    data: form
   });
   return response.data;
 }
@@ -2221,12 +2176,12 @@ export async function getBanners(options?: {
   startAt?: DateTimeString;
   endAt?: DateTimeString;
   bannerTitle?: string;
-  bannerStatus?: 'VISIBLE' | 'HIDDEN';
+  bannerStatus?: ('VISIBLE' | 'HIDDEN');
 }): Promise<PageBannerResponse> {
   const response = await axios.request<PageBannerResponse>({
     method: 'GET',
-    url: '/v1/banners',
-    params: options,
+    url: "/v1/banners",
+    params: options
   });
   return response.data;
 }
@@ -2235,14 +2190,17 @@ export async function getBanners(options?: {
  * 배너 생성
  * POST /v1/banners
  */
-export async function createBanner(data: { request: BannerCreateRequest; imageFile: File }): Promise<string> {
+export async function createBanner(data: {
+  request: BannerCreateRequest;
+  imageFile: File;
+}): Promise<string> {
   const form = new FormData();
-  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  form.append('imageFile', data.imageFile);
+  form.append("request", new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  form.append("imageFile", data.imageFile);
   const response = await axios.request<string>({
     method: 'POST',
-    url: '/v1/banners',
-    data: form,
+    url: "/v1/banners",
+    data: form
   });
   return response.data;
 }
@@ -2251,16 +2209,13 @@ export async function createBanner(data: { request: BannerCreateRequest; imageFi
  * 휴대폰 인증번호 확인
  * POST /v1/auth/verification-code/verify/{userId}
  */
-export async function verifyCode(
-  userId: string,
-  options?: {
-    verificationCode?: string;
-  },
-): Promise<boolean> {
+export async function verifyCode(userId: string, options?: {
+  verificationCode?: string;
+}): Promise<boolean> {
   const response = await axios.request<boolean>({
     method: 'POST',
     url: `/v1/auth/verification-code/verify/${userId}`,
-    params: options,
+    params: options
   });
   return response.data;
 }
@@ -2269,16 +2224,13 @@ export async function verifyCode(
  * 휴대폰 인증번호 전송
  * POST /v1/auth/verification-code/send/{userId}
  */
-export async function sendVerificationCode(
-  userId: string,
-  options?: {
-    phoneNumber?: string;
-  },
-): Promise<void> {
+export async function sendVerificationCode(userId: string, options?: {
+  phoneNumber?: string;
+}): Promise<void> {
   await axios.request({
     method: 'POST',
     url: `/v1/auth/verification-code/send/${userId}`,
-    params: options,
+    params: options
   });
 }
 
@@ -2293,8 +2245,8 @@ export async function verifyCodeForFindPassword(options?: {
 }): Promise<LoginResponse> {
   const response = await axios.request<LoginResponse>({
     method: 'POST',
-    url: '/v1/auth/verification-code/password/verify',
-    params: options,
+    url: "/v1/auth/verification-code/password/verify",
+    params: options
   });
   return response.data;
 }
@@ -2303,11 +2255,14 @@ export async function verifyCodeForFindPassword(options?: {
  * 아이디 찾기용 휴대폰 인증번호 확인
  * POST /v1/auth/verification-code/id/verify
  */
-export async function verifyCodeForFindId(options?: { phoneNumber?: string; verificationCode?: string }): Promise<string> {
+export async function verifyCodeForFindId(options?: {
+  phoneNumber?: string;
+  verificationCode?: string;
+}): Promise<string> {
   const response = await axios.request<string>({
     method: 'POST',
-    url: '/v1/auth/verification-code/id/verify',
-    params: options,
+    url: "/v1/auth/verification-code/id/verify",
+    params: options
   });
   return response.data;
 }
@@ -2316,11 +2271,13 @@ export async function verifyCodeForFindId(options?: { phoneNumber?: string; veri
  * 아이디 비밀번호 찾기용 휴대폰 인증번호 전송
  * POST /v1/auth/verification-code/account/send
  */
-export async function sendVerificationCodeForFindAccount(options?: { phoneNumber?: string }): Promise<void> {
+export async function sendVerificationCodeForFindAccount(options?: {
+  phoneNumber?: string;
+}): Promise<void> {
   await axios.request({
     method: 'POST',
-    url: '/v1/auth/verification-code/account/send',
-    params: options,
+    url: "/v1/auth/verification-code/account/send",
+    params: options
   });
 }
 
@@ -2331,8 +2288,8 @@ export async function sendVerificationCodeForFindAccount(options?: { phoneNumber
 export async function refreshToken(data: RefreshTokenRequest): Promise<LoginResponse> {
   const response = await axios.request<LoginResponse>({
     method: 'POST',
-    url: '/v1/auth/token/refresh',
-    data,
+    url: "/v1/auth/token/refresh",
+    data
   });
   return response.data;
 }
@@ -2344,8 +2301,8 @@ export async function refreshToken(data: RefreshTokenRequest): Promise<LoginResp
 export async function login(data: LoginRequest): Promise<LoginResponse> {
   const response = await axios.request<LoginResponse>({
     method: 'POST',
-    url: '/v1/auth/login',
-    data,
+    url: "/v1/auth/login",
+    data
   });
   return response.data;
 }
@@ -2357,8 +2314,8 @@ export async function login(data: LoginRequest): Promise<LoginResponse> {
 export async function registerFcmToken(data: FcmTokenRequest): Promise<DeviceUuidResponse> {
   const response = await axios.request<DeviceUuidResponse>({
     method: 'POST',
-    url: '/v1/auth/fcm-token',
-    data,
+    url: "/v1/auth/fcm-token",
+    data
   });
   return response.data;
 }
@@ -2370,7 +2327,7 @@ export async function registerFcmToken(data: FcmTokenRequest): Promise<DeviceUui
 export async function getSalesAgencyProductDetails(id: number): Promise<SalesAgencyProductDetailsResponse> {
   const response = await axios.request<SalesAgencyProductDetailsResponse>({
     method: 'GET',
-    url: `/v1/sales-agency-products/${id}`,
+    url: `/v1/sales-agency-products/${id}`
   });
   return response.data;
 }
@@ -2379,37 +2336,25 @@ export async function getSalesAgencyProductDetails(id: number): Promise<SalesAge
  * 영업 대행 상품 게시글 수정
  * PATCH /v1/sales-agency-products/{id}
  */
-export async function updateSalesAgencyProductBoard(
-  id: number,
-  data: {
-    boardPostUpdateRequest?: BoardPostUpdateRequest;
-    salesAgencyProductUpdateRequest?: SalesAgencyProductUpdateRequest;
-    thumbnail?: File;
-    newFiles?: File[];
-  },
-): Promise<void> {
+export async function updateSalesAgencyProductBoard(id: number, data: {
+  boardPostUpdateRequest?: BoardPostUpdateRequest;
+  salesAgencyProductUpdateRequest?: SalesAgencyProductUpdateRequest;
+  thumbnail?: File;
+  newFiles?: File[];
+}): Promise<void> {
   const form = new FormData();
-  if (data.boardPostUpdateRequest !== undefined) {
-    form.append('boardPostUpdateRequest', new Blob([JSON.stringify(data.boardPostUpdateRequest)], { type: 'application/json' }));
-  }
-  if (data.salesAgencyProductUpdateRequest !== undefined) {
-    form.append(
-      'salesAgencyProductUpdateRequest',
-      new Blob([JSON.stringify(data.salesAgencyProductUpdateRequest)], { type: 'application/json' }),
-    );
-  }
-  if (data.thumbnail !== undefined) {
-    form.append('thumbnail', data.thumbnail);
-  }
+  if (data.boardPostUpdateRequest !== undefined) { form.append("boardPostUpdateRequest", new Blob([JSON.stringify(data.boardPostUpdateRequest)], { type: 'application/json' })); }
+  if (data.salesAgencyProductUpdateRequest !== undefined) { form.append("salesAgencyProductUpdateRequest", new Blob([JSON.stringify(data.salesAgencyProductUpdateRequest)], { type: 'application/json' })); }
+  if (data.thumbnail !== undefined) { form.append("thumbnail", data.thumbnail); }
   if (data.newFiles !== undefined) {
     for (const v of data.newFiles) {
-      form.append('newFiles', v);
+      form.append("newFiles", v);
     }
   }
   await axios.request({
     method: 'PATCH',
     url: `/v1/sales-agency-products/${id}`,
-    data: form,
+    data: form
   });
 }
 
@@ -2420,7 +2365,7 @@ export async function updateSalesAgencyProductBoard(
 export async function deleteSalesAgencyProduct(id: number): Promise<void> {
   await axios.request({
     method: 'DELETE',
-    url: `/v1/sales-agency-products/${id}`,
+    url: `/v1/sales-agency-products/${id}`
   });
 }
 
@@ -2431,8 +2376,8 @@ export async function deleteSalesAgencyProduct(id: number): Promise<void> {
 export async function updateApplicantNotes(data: SalesAgencyProductNoteUpdateRequest): Promise<void> {
   await axios.request({
     method: 'PATCH',
-    url: '/v1/sales-agency-products/applicants/notes',
-    data,
+    url: "/v1/sales-agency-products/applicants/notes",
+    data
   });
 }
 
@@ -2440,29 +2385,23 @@ export async function updateApplicantNotes(data: SalesAgencyProductNoteUpdateReq
  * 제품 추가 정보 update
  * PATCH /v1/products/{id}/extra-info
  */
-export async function updateProductExtraInfo(
-  id: number,
-  data: {
-    boardPostUpdateRequest: BoardPostUpdateRequest;
-    productExtraInfoCreateRequest: ProductExtraInfoRequest;
-    newFiles?: File[];
-  },
-): Promise<void> {
+export async function updateProductExtraInfo(id: number, data: {
+  boardPostUpdateRequest: BoardPostUpdateRequest;
+  productExtraInfoCreateRequest: ProductExtraInfoRequest;
+  newFiles?: File[];
+}): Promise<void> {
   const form = new FormData();
-  form.append('boardPostUpdateRequest', new Blob([JSON.stringify(data.boardPostUpdateRequest)], { type: 'application/json' }));
-  form.append(
-    'productExtraInfoCreateRequest',
-    new Blob([JSON.stringify(data.productExtraInfoCreateRequest)], { type: 'application/json' }),
-  );
+  form.append("boardPostUpdateRequest", new Blob([JSON.stringify(data.boardPostUpdateRequest)], { type: 'application/json' }));
+  form.append("productExtraInfoCreateRequest", new Blob([JSON.stringify(data.productExtraInfoCreateRequest)], { type: 'application/json' }));
   if (data.newFiles !== undefined) {
     for (const v of data.newFiles) {
-      form.append('newFiles', v);
+      form.append("newFiles", v);
     }
   }
   await axios.request({
     method: 'PATCH',
     url: `/v1/products/${id}/extra-info`,
-    data: form,
+    data: form
   });
 }
 
@@ -2473,7 +2412,7 @@ export async function updateProductExtraInfo(
 export async function updateProductExtraInfo_1(id: number): Promise<void> {
   await axios.request({
     method: 'DELETE',
-    url: `/v1/products/${id}/extra-info`,
+    url: `/v1/products/${id}/extra-info`
   });
 }
 
@@ -2484,7 +2423,7 @@ export async function updateProductExtraInfo_1(id: number): Promise<void> {
 export async function confirmPrescription(id: number): Promise<void> {
   await axios.request({
     method: 'PATCH',
-    url: `/v1/prescriptions/${id}/confirm`,
+    url: `/v1/prescriptions/${id}/confirm`
   });
 }
 
@@ -2495,7 +2434,7 @@ export async function confirmPrescription(id: number): Promise<void> {
 export async function completePrescriptionPartner(prescriptionPartnerId: number): Promise<void> {
   await axios.request({
     method: 'PATCH',
-    url: `/v1/prescriptions/partners/${prescriptionPartnerId}/complete`,
+    url: `/v1/prescriptions/partners/${prescriptionPartnerId}/complete`
   });
 }
 
@@ -2503,22 +2442,17 @@ export async function completePrescriptionPartner(prescriptionPartnerId: number)
  * 회원 정보 수정
  * PATCH /v1/members/{userId}
  */
-export async function updateMember(
-  userId: string,
-  data: {
-    request: MemberUpdateRequest;
-    file?: File;
-  },
-): Promise<void> {
+export async function updateMember(userId: string, data: {
+  request: MemberUpdateRequest;
+  file?: File;
+}): Promise<void> {
   const form = new FormData();
-  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  if (data.file !== undefined) {
-    form.append('file', data.file);
-  }
+  form.append("request", new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  if (data.file !== undefined) { form.append("file", data.file); }
   await axios.request({
     method: 'PATCH',
     url: `/v1/members/${userId}`,
-    data: form,
+    data: form
   });
 }
 
@@ -2529,7 +2463,7 @@ export async function updateMember(
 export async function deleteMember(userId: string): Promise<void> {
   await axios.request({
     method: 'DELETE',
-    url: `/v1/members/${userId}`,
+    url: `/v1/members/${userId}`
   });
 }
 
@@ -2541,7 +2475,7 @@ export async function changePassword(userId: string, data: ChangePasswordRequest
   await axios.request({
     method: 'PATCH',
     url: `/v1/members/${userId}/password`,
-    data,
+    data
   });
 }
 
@@ -2553,7 +2487,7 @@ export async function changePassword_1(userId: string, data: ChangePasswordForFi
   await axios.request({
     method: 'PATCH',
     url: `/v1/members/${userId}/password-for-find-account`,
-    data,
+    data
   });
 }
 
@@ -2561,16 +2495,13 @@ export async function changePassword_1(userId: string, data: ChangePasswordForFi
  * 닉네임 변경
  * PATCH /v1/members/{userId}/nickname
  */
-export async function updateNickname(
-  userId: string,
-  options?: {
-    nickname?: string;
-  },
-): Promise<void> {
+export async function updateNickname(userId: string, options?: {
+  nickname?: string;
+}): Promise<void> {
   await axios.request({
     method: 'PATCH',
     url: `/v1/members/${userId}/nickname`,
-    params: options,
+    params: options
   });
 }
 
@@ -2578,16 +2509,13 @@ export async function updateNickname(
  * CSO 신고증 승인/반려 처리
  * PATCH /v1/members/{userId}/cso-approval
  */
-export async function approveOrRejectCso(
-  userId: string,
-  options?: {
-    isApproved?: boolean;
-  },
-): Promise<void> {
+export async function approveOrRejectCso(userId: string, options?: {
+  isApproved?: boolean;
+}): Promise<void> {
   await axios.request({
     method: 'PATCH',
     url: `/v1/members/${userId}/cso-approval`,
-    params: options,
+    params: options
   });
 }
 
@@ -2599,7 +2527,7 @@ export async function updateByAdmin(userId: string, data: AdminUpdateRequest): P
   await axios.request({
     method: 'PATCH',
     url: `/v1/members/admins/${userId}`,
-    data,
+    data
   });
 }
 
@@ -2610,7 +2538,7 @@ export async function updateByAdmin(userId: string, data: AdminUpdateRequest): P
 export async function getSampleProvideReport(id: number): Promise<SampleProvideReportDetailResponse> {
   const response = await axios.request<SampleProvideReportDetailResponse>({
     method: 'GET',
-    url: `/v1/expense-reports/sample-provide/${id}`,
+    url: `/v1/expense-reports/sample-provide/${id}`
   });
   return response.data;
 }
@@ -2619,24 +2547,21 @@ export async function getSampleProvideReport(id: number): Promise<SampleProvideR
  * 지출보고 수정 - 견본품 제공
  * PATCH /v1/expense-reports/sample-provide/{id}
  */
-export async function updateSampleProvideReport(
-  id: number,
-  data: {
-    request: SampleProvideReportUpdateRequest;
-    newFiles?: File[];
-  },
-): Promise<void> {
+export async function updateSampleProvideReport(id: number, data: {
+  request: SampleProvideReportUpdateRequest;
+  newFiles?: File[];
+}): Promise<void> {
   const form = new FormData();
-  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  form.append("request", new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   if (data.newFiles !== undefined) {
     for (const v of data.newFiles) {
-      form.append('newFiles', v);
+      form.append("newFiles", v);
     }
   }
   await axios.request({
     method: 'PATCH',
     url: `/v1/expense-reports/sample-provide/${id}`,
-    data: form,
+    data: form
   });
 }
 
@@ -2647,7 +2572,7 @@ export async function updateSampleProvideReport(
 export async function getProductBriefingSingleReport(id: number): Promise<ProductBriefingSingleDetailResponse> {
   const response = await axios.request<ProductBriefingSingleDetailResponse>({
     method: 'GET',
-    url: `/v1/expense-reports/product-briefing/single/${id}`,
+    url: `/v1/expense-reports/product-briefing/single/${id}`
   });
   return response.data;
 }
@@ -2656,30 +2581,27 @@ export async function getProductBriefingSingleReport(id: number): Promise<Produc
  * 지출보고 수정 - 제품설명회(개별기관)
  * PATCH /v1/expense-reports/product-briefing/single/{id}
  */
-export async function updateProductBriefingSingleReport(
-  id: number,
-  data: {
-    request: ProductBriefingSingleUpdateRequest;
-    signatureFiles?: File[];
-    newFiles?: File[];
-  },
-): Promise<void> {
+export async function updateProductBriefingSingleReport(id: number, data: {
+  request: ProductBriefingSingleUpdateRequest;
+  signatureFiles?: File[];
+  newFiles?: File[];
+}): Promise<void> {
   const form = new FormData();
-  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  form.append("request", new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   if (data.signatureFiles !== undefined) {
     for (const v of data.signatureFiles) {
-      form.append('signatureFiles', v);
+      form.append("signatureFiles", v);
     }
   }
   if (data.newFiles !== undefined) {
     for (const v of data.newFiles) {
-      form.append('newFiles', v);
+      form.append("newFiles", v);
     }
   }
   await axios.request({
     method: 'PATCH',
     url: `/v1/expense-reports/product-briefing/single/${id}`,
-    data: form,
+    data: form
   });
 }
 
@@ -2690,7 +2612,7 @@ export async function updateProductBriefingSingleReport(
 export async function getProductBriefingMultiReport(id: number): Promise<ProductBriefingMultiDetailResponse> {
   const response = await axios.request<ProductBriefingMultiDetailResponse>({
     method: 'GET',
-    url: `/v1/expense-reports/product-briefing/multi/${id}`,
+    url: `/v1/expense-reports/product-briefing/multi/${id}`
   });
   return response.data;
 }
@@ -2699,24 +2621,21 @@ export async function getProductBriefingMultiReport(id: number): Promise<Product
  * 지출보고 수정 - 제품설명회(복수기관)
  * PATCH /v1/expense-reports/product-briefing/multi/{id}
  */
-export async function updateProductBriefingMultiReport(
-  id: number,
-  data: {
-    request: ProductBriefingMultiUpdateRequest;
-    newFiles?: File[];
-  },
-): Promise<void> {
+export async function updateProductBriefingMultiReport(id: number, data: {
+  request: ProductBriefingMultiUpdateRequest;
+  newFiles?: File[];
+}): Promise<void> {
   const form = new FormData();
-  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  form.append("request", new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   if (data.newFiles !== undefined) {
     for (const v of data.newFiles) {
-      form.append('newFiles', v);
+      form.append("newFiles", v);
     }
   }
   await axios.request({
     method: 'PATCH',
     url: `/v1/expense-reports/product-briefing/multi/${id}`,
-    data: form,
+    data: form
   });
 }
 
@@ -2727,7 +2646,7 @@ export async function updateProductBriefingMultiReport(
 export async function getEventBoardDetails(id: number): Promise<EventBoardDetailsResponse> {
   const response = await axios.request<EventBoardDetailsResponse>({
     method: 'GET',
-    url: `/v1/events/${id}`,
+    url: `/v1/events/${id}`
   });
   return response.data;
 }
@@ -2736,34 +2655,25 @@ export async function getEventBoardDetails(id: number): Promise<EventBoardDetail
  * 이벤트 게시글 수정
  * PATCH /v1/events/{id}
  */
-export async function updateEventBoard(
-  id: number,
-  data: {
-    request?: BoardPostUpdateRequest;
-    eventRequest?: EventBoardUpdateRequest;
-    thumbnail?: File;
-    newFiles?: File[];
-  },
-): Promise<void> {
+export async function updateEventBoard(id: number, data: {
+  request?: BoardPostUpdateRequest;
+  eventRequest?: EventBoardUpdateRequest;
+  thumbnail?: File;
+  newFiles?: File[];
+}): Promise<void> {
   const form = new FormData();
-  if (data.request !== undefined) {
-    form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  }
-  if (data.eventRequest !== undefined) {
-    form.append('eventRequest', new Blob([JSON.stringify(data.eventRequest)], { type: 'application/json' }));
-  }
-  if (data.thumbnail !== undefined) {
-    form.append('thumbnail', data.thumbnail);
-  }
+  if (data.request !== undefined) { form.append("request", new Blob([JSON.stringify(data.request)], { type: 'application/json' })); }
+  if (data.eventRequest !== undefined) { form.append("eventRequest", new Blob([JSON.stringify(data.eventRequest)], { type: 'application/json' })); }
+  if (data.thumbnail !== undefined) { form.append("thumbnail", data.thumbnail); }
   if (data.newFiles !== undefined) {
     for (const v of data.newFiles) {
-      form.append('newFiles', v);
+      form.append("newFiles", v);
     }
   }
   await axios.request({
     method: 'PATCH',
     url: `/v1/events/${id}`,
-    data: form,
+    data: form
   });
 }
 
@@ -2774,7 +2684,7 @@ export async function updateEventBoard(
 export async function softDeleteEventBoard(id: number): Promise<void> {
   await axios.request({
     method: 'DELETE',
-    url: `/v1/events/${id}`,
+    url: `/v1/events/${id}`
   });
 }
 
@@ -2785,7 +2695,7 @@ export async function softDeleteEventBoard(id: number): Promise<void> {
 export async function getBanner(id: number): Promise<BannerResponse> {
   const response = await axios.request<BannerResponse>({
     method: 'GET',
-    url: `/v1/banners/${id}`,
+    url: `/v1/banners/${id}`
   });
   return response.data;
 }
@@ -2794,22 +2704,17 @@ export async function getBanner(id: number): Promise<BannerResponse> {
  * 배너 수정
  * PATCH /v1/banners/{id}
  */
-export async function updateBanner(
-  id: number,
-  data: {
-    request: BannerUpdateRequest;
-    imageFile?: File;
-  },
-): Promise<void> {
+export async function updateBanner(id: number, data: {
+  request: BannerUpdateRequest;
+  imageFile?: File;
+}): Promise<void> {
   const form = new FormData();
-  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  if (data.imageFile !== undefined) {
-    form.append('imageFile', data.imageFile);
-  }
+  form.append("request", new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  if (data.imageFile !== undefined) { form.append("imageFile", data.imageFile); }
   await axios.request({
     method: 'PATCH',
     url: `/v1/banners/${id}`,
-    data: form,
+    data: form
   });
 }
 
@@ -2817,11 +2722,14 @@ export async function updateBanner(
  * 문자 전송 테스트
  * GET /v1/test/sms
  */
-export async function tetSms(options?: { message?: string; phoneNumber?: string }): Promise<void> {
+export async function tetSms(options?: {
+  message?: string;
+  phoneNumber?: string;
+}): Promise<void> {
   await axios.request({
     method: 'GET',
-    url: '/v1/test/sms',
-    params: options,
+    url: "/v1/test/sms",
+    params: options
   });
 }
 
@@ -2829,11 +2737,14 @@ export async function tetSms(options?: { message?: string; phoneNumber?: string 
  * 앱 푸시 메시지 전송 테스트
  * GET /v1/test/push
  */
-export async function testPush(options?: { userId?: string; message?: string }): Promise<void> {
+export async function testPush(options?: {
+  userId?: string;
+  message?: string;
+}): Promise<void> {
   await axios.request({
     method: 'GET',
-    url: '/v1/test/push',
-    params: options,
+    url: "/v1/test/push",
+    params: options
   });
 }
 
@@ -2841,11 +2752,15 @@ export async function testPush(options?: { userId?: string; message?: string }):
  * email 전송 테스트
  * GET /v1/test/email
  */
-export async function testEmail(options?: { to?: string; subject?: string; body?: string }): Promise<void> {
+export async function testEmail(options?: {
+  to?: string;
+  subject?: string;
+  body?: string;
+}): Promise<void> {
   await axios.request({
     method: 'GET',
-    url: '/v1/test/email',
-    params: options,
+    url: "/v1/test/email",
+    params: options
   });
 }
 
@@ -2856,7 +2771,7 @@ export async function testEmail(options?: { to?: string; subject?: string; body?
 export async function getTermsByVersion(version: string): Promise<string> {
   const response = await axios.request<string>({
     method: 'GET',
-    url: `/v1/terms/${version}`,
+    url: `/v1/terms/${version}`
   });
   return response.data;
 }
@@ -2868,7 +2783,7 @@ export async function getTermsByVersion(version: string): Promise<string> {
 export async function getPrivacyPolicyByVersion(version: string): Promise<string> {
   const response = await axios.request<string>({
     method: 'GET',
-    url: `/v1/terms/privacy/${version}`,
+    url: `/v1/terms/privacy/${version}`
   });
   return response.data;
 }
@@ -2880,7 +2795,7 @@ export async function getPrivacyPolicyByVersion(version: string): Promise<string
 export async function getLatestPrivacyPolicy(): Promise<string> {
   const response = await axios.request<string>({
     method: 'GET',
-    url: '/v1/terms/privacy/latest',
+    url: "/v1/terms/privacy/latest"
   });
   return response.data;
 }
@@ -2892,7 +2807,7 @@ export async function getLatestPrivacyPolicy(): Promise<string> {
 export async function getLatestTerms(): Promise<string> {
   const response = await axios.request<string>({
     method: 'GET',
-    url: '/v1/terms/latest',
+    url: "/v1/terms/latest"
   });
   return response.data;
 }
@@ -2906,7 +2821,7 @@ export async function getSettlements(options?: {
   dealerId?: number;
   drugCompanyName?: string;
   companyName?: string;
-  status?: 'REQUEST' | 'OBJECTION';
+  status?: ('REQUEST' | 'OBJECTION');
   startMonth?: DateString;
   endMonth?: DateString;
   page?: number;
@@ -2914,8 +2829,8 @@ export async function getSettlements(options?: {
 }): Promise<PageSettlementResponse> {
   const response = await axios.request<PageSettlementResponse>({
     method: 'GET',
-    url: '/v1/settlements',
-    params: options,
+    url: "/v1/settlements",
+    params: options
   });
   return response.data;
 }
@@ -2927,7 +2842,7 @@ export async function getSettlements(options?: {
 export async function getSettlement(id: number): Promise<SettlementResponse> {
   const response = await axios.request<SettlementResponse>({
     method: 'GET',
-    url: `/v1/settlements/${id}`,
+    url: `/v1/settlements/${id}`
   });
   return response.data;
 }
@@ -2948,8 +2863,8 @@ export async function getPerformanceStats(options?: {
 }): Promise<PagePerformanceStatsResponse> {
   const response = await axios.request<PagePerformanceStatsResponse>({
     method: 'GET',
-    url: '/v1/settlements/performance',
-    params: options,
+    url: "/v1/settlements/performance",
+    params: options
   });
   return response.data;
 }
@@ -2968,8 +2883,8 @@ export async function getPerformanceTotalPrescriptionAmount(options?: {
 }): Promise<number> {
   const response = await axios.request<number>({
     method: 'GET',
-    url: '/v1/settlements/performance/total-prescription-amount',
-    params: options,
+    url: "/v1/settlements/performance/total-prescription-amount",
+    params: options
   });
   return response.data;
 }
@@ -2988,7 +2903,7 @@ export function getDownloadPerformanceExcel(options?: {
   page?: number;
   size?: number;
 }): string {
-  const baseUrl = '/v1/settlements/performance/excel-download';
+  const baseUrl = "/v1/settlements/performance/excel-download";
   const paramsInit = Object.entries(options ?? {})
     .filter(([_, value]) => value !== null && value !== undefined)
     .map(([key, value]) => [key, String(value)]);
@@ -3006,8 +2921,8 @@ export async function getPerformanceByInstitution(options?: {
 }): Promise<PerformanceStatsByInstitution[]> {
   const response = await axios.request<PerformanceStatsByInstitution[]>({
     method: 'GET',
-    url: '/v1/settlements/performance/by-institution',
-    params: options,
+    url: "/v1/settlements/performance/by-institution",
+    params: options
   });
   return response.data;
 }
@@ -3023,8 +2938,8 @@ export async function getPerformanceByDrugCompany(options?: {
 }): Promise<PerformanceStatsByDrugCompany[]> {
   const response = await axios.request<PerformanceStatsByDrugCompany[]>({
     method: 'GET',
-    url: '/v1/settlements/performance/by-drug-company',
-    params: options,
+    url: "/v1/settlements/performance/by-drug-company",
+    params: options
   });
   return response.data;
 }
@@ -3040,8 +2955,8 @@ export async function getPerformanceByDrugCompanyMonthly(options?: {
 }): Promise<PerformanceStatsByDrugCompanyMonthly[]> {
   const response = await axios.request<PerformanceStatsByDrugCompanyMonthly[]>({
     method: 'GET',
-    url: '/v1/settlements/performance/by-drug-company/monthly',
-    params: options,
+    url: "/v1/settlements/performance/by-drug-company/monthly",
+    params: options
   });
   return response.data;
 }
@@ -3060,8 +2975,8 @@ export async function getSettlementPartnerSummary(options?: {
 }): Promise<PageSettlementPartnerResponse> {
   const response = await axios.request<PageSettlementPartnerResponse>({
     method: 'GET',
-    url: '/v1/settlements/partners',
-    params: options,
+    url: "/v1/settlements/partners",
+    params: options
   });
   return response.data;
 }
@@ -3073,7 +2988,7 @@ export async function getSettlementPartnerSummary(options?: {
 export async function getSettlementPartnerProducts(settlementPartnerId: number): Promise<SettlementPartnerProductResponse[]> {
   const response = await axios.request<SettlementPartnerProductResponse[]>({
     method: 'GET',
-    url: `/v1/settlements/partners/${settlementPartnerId}/products`,
+    url: `/v1/settlements/partners/${settlementPartnerId}/products`
   });
   return response.data;
 }
@@ -3090,7 +3005,7 @@ export function getDownloadSettlementPartnerSummaryExcel(options?: {
   page?: number;
   size?: number;
 }): string {
-  const baseUrl = '/v1/settlements/partners/excel-download';
+  const baseUrl = "/v1/settlements/partners/excel-download";
   const paramsInit = Object.entries(options ?? {})
     .filter(([_, value]) => value !== null && value !== undefined)
     .map(([key, value]) => [key, String(value)]);
@@ -3107,13 +3022,13 @@ export function getDownloadSettlementListExcel(options?: {
   dealerId?: number;
   companyName?: string;
   drugCompanyName?: string;
-  status?: 'REQUEST' | 'OBJECTION';
+  status?: ('REQUEST' | 'OBJECTION');
   startMonth?: DateString;
   endMonth?: DateString;
   page?: number;
   size?: number;
 }): string {
-  const baseUrl = '/v1/settlements/excel-download';
+  const baseUrl = "/v1/settlements/excel-download";
   const paramsInit = Object.entries(options ?? {})
     .filter(([_, value]) => value !== null && value !== undefined)
     .map(([key, value]) => [key, String(value)]);
@@ -3125,19 +3040,16 @@ export function getDownloadSettlementListExcel(options?: {
  * 영업대행 상품 신청자 목록 조회
  * GET /v1/sales-agency-products/{id}/applicants
  */
-export async function getProductApplicants(
-  id: number,
-  options?: {
-    userId?: string;
-    name?: string;
-    page?: number;
-    size?: number;
-  },
-): Promise<PageSalesAgencyProductApplicantResponse> {
+export async function getProductApplicants(id: number, options?: {
+  userId?: string;
+  name?: string;
+  page?: number;
+  size?: number;
+}): Promise<PageSalesAgencyProductApplicantResponse> {
   const response = await axios.request<PageSalesAgencyProductApplicantResponse>({
     method: 'GET',
     url: `/v1/sales-agency-products/${id}/applicants`,
-    params: options,
+    params: options
   });
   return response.data;
 }
@@ -3146,15 +3058,12 @@ export async function getProductApplicants(
  * 영업대행 상품 신청자 목록 Excel 다운로드 (현재 페이지 기준)
  * GET /v1/sales-agency-products/{id}/applicants/excel-download
  */
-export function getDownloadProductApplicantsExcel(
-  id: number,
-  options?: {
-    userId?: string;
-    name?: string;
-    page?: number;
-    size?: number;
-  },
-): string {
+export function getDownloadProductApplicantsExcel(id: number, options?: {
+  userId?: string;
+  name?: string;
+  page?: number;
+  size?: number;
+}): string {
   const baseUrl = `/v1/sales-agency-products/${id}/applicants/excel-download`;
   const paramsInit = Object.entries(options ?? {})
     .filter(([_, value]) => value !== null && value !== undefined)
@@ -3175,7 +3084,7 @@ export function getDownloadSalesAgencyProductsExcel(options?: {
   page?: number;
   size?: number;
 }): string {
-  const baseUrl = '/v1/sales-agency-products/excel-download';
+  const baseUrl = "/v1/sales-agency-products/excel-download";
   const paramsInit = Object.entries(options ?? {})
     .filter(([_, value]) => value !== null && value !== undefined)
     .map(([key, value]) => [key, String(value)]);
@@ -3197,14 +3106,14 @@ export async function getProductSummaries(options?: {
   isPromotion?: boolean;
   isOutOfStock?: boolean;
   isStopSelling?: boolean;
-  sortType?: 'LATEST' | 'PRICE_ASC' | 'PRICE_DESC' | 'FEE_RATE_ASC' | 'FEE_RATE_DESC';
+  sortType?: ('LATEST' | 'PRICE_ASC' | 'PRICE_DESC' | 'FEE_RATE_ASC' | 'FEE_RATE_DESC');
   page?: number;
   size?: number;
 }): Promise<PageProductSummaryResponse> {
   const response = await axios.request<PageProductSummaryResponse>({
     method: 'GET',
-    url: '/v1/products',
-    params: options,
+    url: "/v1/products",
+    params: options
   });
   return response.data;
 }
@@ -3216,7 +3125,7 @@ export async function getProductSummaries(options?: {
 export async function getProductDetails(id: number): Promise<ProductDetailsResponse> {
   const response = await axios.request<ProductDetailsResponse>({
     method: 'GET',
-    url: `/v1/products/${id}/details`,
+    url: `/v1/products/${id}/details`
   });
   return response.data;
 }
@@ -3235,11 +3144,11 @@ export function getDownloadProductSummariesExcel(options?: {
   isPromotion?: boolean;
   isOutOfStock?: boolean;
   isStopSelling?: boolean;
-  sortType?: 'LATEST' | 'PRICE_ASC' | 'PRICE_DESC' | 'FEE_RATE_ASC' | 'FEE_RATE_DESC';
+  sortType?: ('LATEST' | 'PRICE_ASC' | 'PRICE_DESC' | 'FEE_RATE_ASC' | 'FEE_RATE_DESC');
   page?: number;
   size?: number;
 }): string {
-  const baseUrl = '/v1/products/excel-download';
+  const baseUrl = "/v1/products/excel-download";
   const paramsInit = Object.entries(options ?? {})
     .filter(([_, value]) => value !== null && value !== undefined)
     .map(([key, value]) => [key, String(value)]);
@@ -3252,7 +3161,7 @@ export function getDownloadProductSummariesExcel(options?: {
  * GET /v1/prescriptions
  */
 export async function searchPrescriptions(options?: {
-  status?: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+  status?: ('PENDING' | 'IN_PROGRESS' | 'COMPLETED');
   companyName?: string;
   userId?: string;
   dealerName?: string;
@@ -3265,8 +3174,8 @@ export async function searchPrescriptions(options?: {
 }): Promise<PagePrescriptionResponse> {
   const response = await axios.request<PagePrescriptionResponse>({
     method: 'GET',
-    url: '/v1/prescriptions',
-    params: options,
+    url: "/v1/prescriptions",
+    params: options
   });
   return response.data;
 }
@@ -3276,7 +3185,7 @@ export async function searchPrescriptions(options?: {
  * GET /v1/prescriptions/partners
  */
 export async function getPrescriptionPartnerList(options?: {
-  status?: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+  status?: ('PENDING' | 'IN_PROGRESS' | 'COMPLETED');
   companyName?: string;
   institutionName?: string;
   drugCompany?: string;
@@ -3290,8 +3199,8 @@ export async function getPrescriptionPartnerList(options?: {
 }): Promise<PagePrescriptionPartnerResponse> {
   const response = await axios.request<PagePrescriptionPartnerResponse>({
     method: 'GET',
-    url: '/v1/prescriptions/partners',
-    params: options,
+    url: "/v1/prescriptions/partners",
+    params: options
   });
   return response.data;
 }
@@ -3303,7 +3212,7 @@ export async function getPrescriptionPartnerList(options?: {
 export async function getPrescriptionPartner(prescriptionPartnerId: number): Promise<PrescriptionPartnerResponse> {
   const response = await axios.request<PrescriptionPartnerResponse>({
     method: 'GET',
-    url: `/v1/prescriptions/partners/${prescriptionPartnerId}`,
+    url: `/v1/prescriptions/partners/${prescriptionPartnerId}`
   });
   return response.data;
 }
@@ -3315,7 +3224,7 @@ export async function getPrescriptionPartner(prescriptionPartnerId: number): Pro
 export async function deletePrescriptionPartner(prescriptionPartnerId: number): Promise<void> {
   await axios.request({
     method: 'DELETE',
-    url: `/v1/prescriptions/partners/${prescriptionPartnerId}`,
+    url: `/v1/prescriptions/partners/${prescriptionPartnerId}`
   });
 }
 
@@ -3326,7 +3235,7 @@ export async function deletePrescriptionPartner(prescriptionPartnerId: number): 
 export async function getPartnerProducts(prescriptionPartnerId: number): Promise<PrescriptionPartnerProductResponse[]> {
   const response = await axios.request<PrescriptionPartnerProductResponse[]>({
     method: 'GET',
-    url: `/v1/prescriptions/partners/${prescriptionPartnerId}/products`,
+    url: `/v1/prescriptions/partners/${prescriptionPartnerId}/products`
   });
   return response.data;
 }
@@ -3338,7 +3247,7 @@ export async function getPartnerProducts(prescriptionPartnerId: number): Promise
 export async function getAttachedEdiFiles(prescriptionPartnerId: number): Promise<AttachmentResponse[]> {
   const response = await axios.request<AttachmentResponse[]>({
     method: 'GET',
-    url: `/v1/prescriptions/partners/${prescriptionPartnerId}/edi-files/attached`,
+    url: `/v1/prescriptions/partners/${prescriptionPartnerId}/edi-files/attached`
   });
   return response.data;
 }
@@ -3350,7 +3259,7 @@ export async function getAttachedEdiFiles(prescriptionPartnerId: number): Promis
 export async function downloadZippedEdiFiles(prescriptionId: number): Promise<void> {
   await axios.request({
     method: 'GET',
-    url: `/v1/prescriptions/partners/${prescriptionId}/edi-files/download`,
+    url: `/v1/prescriptions/partners/${prescriptionId}/edi-files/download`
   });
 }
 
@@ -3358,11 +3267,13 @@ export async function downloadZippedEdiFiles(prescriptionId: number): Promise<vo
  * 요청 날짜가 속한 월의 수수료 합계 (submittedDate 기준)
  * GET /v1/prescriptions/monthly-fee
  */
-export async function monthlyFee(options?: { referenceDate?: number }): Promise<MonthlyFeeAmountResponse> {
+export async function monthlyFee(options?: {
+  referenceDate?: number;
+}): Promise<MonthlyFeeAmountResponse> {
   const response = await axios.request<MonthlyFeeAmountResponse>({
     method: 'GET',
-    url: '/v1/prescriptions/monthly-fee',
-    params: options,
+    url: "/v1/prescriptions/monthly-fee",
+    params: options
   });
   return response.data;
 }
@@ -3371,11 +3282,13 @@ export async function monthlyFee(options?: { referenceDate?: number }): Promise<
  * 요청 날짜가 속한 월의 처방전 수 (submittedDate 기준)
  * GET /v1/prescriptions/monthly-count
  */
-export async function monthlyCount(options?: { referenceDate?: number }): Promise<MonthlyPrescriptionCountResponse> {
+export async function monthlyCount(options?: {
+  referenceDate?: number;
+}): Promise<MonthlyPrescriptionCountResponse> {
   const response = await axios.request<MonthlyPrescriptionCountResponse>({
     method: 'GET',
-    url: '/v1/prescriptions/monthly-count',
-    params: options,
+    url: "/v1/prescriptions/monthly-count",
+    params: options
   });
   return response.data;
 }
@@ -3387,7 +3300,7 @@ export async function monthlyCount(options?: { referenceDate?: number }): Promis
 export async function getPartnerIdsByUserId(userId: string): Promise<number[]> {
   const response = await axios.request<number[]>({
     method: 'GET',
-    url: `/v1/partners/ids/${userId}`,
+    url: `/v1/partners/ids/${userId}`
   });
   return response.data;
 }
@@ -3399,7 +3312,7 @@ export async function getPartnerIdsByUserId(userId: string): Promise<number[]> {
 export async function getDrugCompanies(): Promise<DrugCompanyResponse[]> {
   const response = await axios.request<DrugCompanyResponse[]>({
     method: 'GET',
-    url: '/v1/partners/drug-companies',
+    url: "/v1/partners/drug-companies"
   });
   return response.data;
 }
@@ -3411,7 +3324,7 @@ export async function getDrugCompanies(): Promise<DrugCompanyResponse[]> {
 export async function getContractDetails(userId: string): Promise<PartnerContractDetailsResponse> {
   const response = await axios.request<PartnerContractDetailsResponse>({
     method: 'GET',
-    url: `/v1/partner-contracts/${userId}`,
+    url: `/v1/partner-contracts/${userId}`
   });
   return response.data;
 }
@@ -3423,7 +3336,7 @@ export async function getContractDetails(userId: string): Promise<PartnerContrac
 export async function getMemberDetails(userId: string): Promise<MemberDetailsResponse> {
   const response = await axios.request<MemberDetailsResponse>({
     method: 'GET',
-    url: `/v1/members/${userId}/details`,
+    url: `/v1/members/${userId}/details`
   });
   return response.data;
 }
@@ -3435,7 +3348,7 @@ export async function getMemberDetails(userId: string): Promise<MemberDetailsRes
 export async function isUserIdAvailable(userId: string): Promise<boolean> {
   const response = await axios.request<boolean>({
     method: 'GET',
-    url: `/v1/members/${userId}/available`,
+    url: `/v1/members/${userId}/available`
   });
   return response.data;
 }
@@ -3452,13 +3365,13 @@ export function getDownloadUserMembersExcel(options?: {
   phoneNumber?: string;
   email?: string;
   companyName?: string;
-  contractStatus?: 'CONTRACT' | 'NON_CONTRACT';
+  contractStatus?: ('CONTRACT' | 'NON_CONTRACT');
   startAt?: DateString;
   endAt?: DateString;
   page?: number;
   size?: number;
 }): string {
-  const baseUrl = '/v1/members/excel-download';
+  const baseUrl = "/v1/members/excel-download";
   const paramsInit = Object.entries(options ?? {})
     .filter(([_, value]) => value !== null && value !== undefined)
     .map(([key, value]) => [key, String(value)]);
@@ -3470,11 +3383,13 @@ export function getDownloadUserMembersExcel(options?: {
  * 닉네임 중복 확인
  * GET /v1/members/available-nickname
  */
-export async function isAvailableNickname(options?: { nickname?: string }): Promise<boolean> {
+export async function isAvailableNickname(options?: {
+  nickname?: string;
+}): Promise<boolean> {
   const response = await axios.request<boolean>({
     method: 'GET',
-    url: '/v1/members/available-nickname',
-    params: options,
+    url: "/v1/members/available-nickname",
+    params: options
   });
   return response.data;
 }
@@ -3486,7 +3401,7 @@ export async function isAvailableNickname(options?: { nickname?: string }): Prom
 export async function getPermissions(userId: string): Promise<AdminPermissionResponse> {
   const response = await axios.request<AdminPermissionResponse>({
     method: 'GET',
-    url: `/v1/members/admins/${userId}/permissions`,
+    url: `/v1/members/admins/${userId}/permissions`
   });
   return response.data;
 }
@@ -3494,11 +3409,17 @@ export async function getPermissions(userId: string): Promise<AdminPermissionRes
 /**
  * GET /v1/kmc/auth/result
  */
-export async function result(options?: { certNum?: string }): Promise<Record<string, {}>> {
-  const response = await axios.request<Record<string, {}>>({
+export async function result(options?: {
+  certNum?: string;
+}): Promise<Record<string, {
+
+}>> {
+  const response = await axios.request<Record<string, {
+
+}>>({
     method: 'GET',
-    url: '/v1/kmc/auth/result',
-    params: options,
+    url: "/v1/kmc/auth/result",
+    params: options
   });
   return response.data;
 }
@@ -3506,11 +3427,13 @@ export async function result(options?: { certNum?: string }): Promise<Record<str
 /**
  * GET /v1/kmc/auth/launch
  */
-export async function launch(options?: { certNum?: string }): Promise<string> {
+export async function launch(options?: {
+  certNum?: string;
+}): Promise<string> {
   const response = await axios.request<string>({
     method: 'GET',
-    url: '/v1/kmc/auth/launch',
-    params: options,
+    url: "/v1/kmc/auth/launch",
+    params: options
   });
   return response.data;
 }
@@ -3529,8 +3452,8 @@ export async function getHospitals(options?: {
 }): Promise<PageHospitalResponse> {
   const response = await axios.request<PageHospitalResponse>({
     method: 'GET',
-    url: '/v1/hospitals',
-    params: options,
+    url: "/v1/hospitals",
+    params: options
   });
   return response.data;
 }
@@ -3539,11 +3462,13 @@ export async function getHospitals(options?: {
  * 요청 기준일 포함 최근 한 달 사이 오픈한 병원 수
  * GET /v1/hospitals/opened/count
  */
-export async function getRecentlyOpenedCount(options?: { referenceDate?: DateString }): Promise<number> {
+export async function getRecentlyOpenedCount(options?: {
+  referenceDate?: DateString;
+}): Promise<number> {
   const response = await axios.request<number>({
     method: 'GET',
-    url: '/v1/hospitals/opened/count',
-    params: options,
+    url: "/v1/hospitals/opened/count",
+    params: options
   });
   return response.data;
 }
@@ -3553,11 +3478,11 @@ export async function getRecentlyOpenedCount(options?: { referenceDate?: DateStr
  * GET /v1/expense-reports
  */
 export async function getExpenseReportList(options?: {
-  status?: 'PENDING' | 'COMPLETED';
+  status?: ('PENDING' | 'COMPLETED');
   userId?: string;
   productName?: string;
   companyName?: string;
-  reportType?: 'SAMPLE_PROVIDE' | 'PRODUCT_BRIEFING_MULTI' | 'PRODUCT_BRIEFING_SINGLE';
+  reportType?: ('SAMPLE_PROVIDE' | 'PRODUCT_BRIEFING_MULTI' | 'PRODUCT_BRIEFING_SINGLE');
   eventDateFrom?: DateTimeString;
   eventDateTo?: DateTimeString;
   page?: number;
@@ -3565,8 +3490,8 @@ export async function getExpenseReportList(options?: {
 }): Promise<PageExpenseReportResponse> {
   const response = await axios.request<PageExpenseReportResponse>({
     method: 'GET',
-    url: '/v1/expense-reports',
-    params: options,
+    url: "/v1/expense-reports",
+    params: options
   });
   return response.data;
 }
@@ -3575,11 +3500,13 @@ export async function getExpenseReportList(options?: {
  * ExpenseReport 파일 일괄 다운로드
  * GET /v1/expense-reports/files/download
  */
-export async function downloadExpenseReportFiles(options?: { ids?: number[] }): Promise<void> {
+export async function downloadExpenseReportFiles(options?: {
+  ids?: number[];
+}): Promise<void> {
   await axios.request({
     method: 'GET',
-    url: '/v1/expense-reports/files/download',
-    params: options,
+    url: "/v1/expense-reports/files/download",
+    params: options
   });
 }
 
@@ -3588,17 +3515,17 @@ export async function downloadExpenseReportFiles(options?: { ids?: number[] }): 
  * GET /v1/expense-reports/excel-download
  */
 export function getDownloadExpenseReportListExcel(options?: {
-  status?: 'PENDING' | 'COMPLETED';
+  status?: ('PENDING' | 'COMPLETED');
   userId?: string;
   productName?: string;
   companyName?: string;
-  reportType?: 'SAMPLE_PROVIDE' | 'PRODUCT_BRIEFING_MULTI' | 'PRODUCT_BRIEFING_SINGLE';
+  reportType?: ('SAMPLE_PROVIDE' | 'PRODUCT_BRIEFING_MULTI' | 'PRODUCT_BRIEFING_SINGLE');
   eventDateFrom?: DateTimeString;
   eventDateTo?: DateTimeString;
   page?: number;
   size?: number;
 }): string {
-  const baseUrl = '/v1/expense-reports/excel-download';
+  const baseUrl = "/v1/expense-reports/excel-download";
   const paramsInit = Object.entries(options ?? {})
     .filter(([_, value]) => value !== null && value !== undefined)
     .map(([key, value]) => [key, String(value)]);
@@ -3613,7 +3540,7 @@ export function getDownloadExpenseReportListExcel(options?: {
 export async function getDealerIdByUserId(userId: string): Promise<number> {
   const response = await axios.request<number>({
     method: 'GET',
-    url: `/v1/dealers/id/${userId}`,
+    url: `/v1/dealers/id/${userId}`
   });
   return response.data;
 }
@@ -3623,13 +3550,13 @@ export async function getDealerIdByUserId(userId: string): Promise<number> {
  * GET /v1/boards/notices/fixed-top
  */
 export async function getFixedTopNotices(options?: {
-  boardType?: 'ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z' | 'EVENT' | 'SALES_AGENCY' | 'PRODUCT';
-  noticeType?: 'PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING';
+  boardType?: ('ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z' | 'EVENT' | 'SALES_AGENCY' | 'PRODUCT');
+  noticeType?: ('PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING');
 }): Promise<BoardPostResponse[]> {
   const response = await axios.request<BoardPostResponse[]>({
     method: 'GET',
-    url: '/v1/boards/notices/fixed-top',
-    params: options,
+    url: "/v1/boards/notices/fixed-top",
+    params: options
   });
   return response.data;
 }
@@ -3644,7 +3571,7 @@ export async function getBoardMembers(options?: {
   nickname?: string;
   phoneNumber?: string;
   email?: string;
-  contractStatus?: 'CONTRACT' | 'NON_CONTRACT';
+  contractStatus?: ('CONTRACT' | 'NON_CONTRACT');
   startAt?: DateString;
   endAt?: DateString;
   filterDeleted?: boolean;
@@ -3653,8 +3580,8 @@ export async function getBoardMembers(options?: {
 }): Promise<PageBoardMemberStatsResponse> {
   const response = await axios.request<PageBoardMemberStatsResponse>({
     method: 'GET',
-    url: '/v1/boards/members',
-    params: options,
+    url: "/v1/boards/members",
+    params: options
   });
   return response.data;
 }
@@ -3664,7 +3591,7 @@ export async function getBoardMembers(options?: {
  * GET /v1/blind-posts
  */
 export async function getBlindPosts(options?: {
-  postType?: 'BOARD' | 'COMMENT';
+  postType?: ('BOARD' | 'COMMENT');
   memberName?: string;
   startAt?: DateTimeString;
   endAt?: DateTimeString;
@@ -3673,8 +3600,8 @@ export async function getBlindPosts(options?: {
 }): Promise<PageBlindPostResponse> {
   const response = await axios.request<PageBlindPostResponse>({
     method: 'GET',
-    url: '/v1/blind-posts',
-    params: options,
+    url: "/v1/blind-posts",
+    params: options
   });
   return response.data;
 }
@@ -3686,7 +3613,7 @@ export async function getBlindPosts(options?: {
 export async function getPublicKey(): Promise<Record<string, string>> {
   const response = await axios.request<Record<string, string>>({
     method: 'GET',
-    url: '/v1/auth/public-key',
+    url: "/v1/auth/public-key"
   });
   return response.data;
 }
@@ -3698,7 +3625,7 @@ export async function getPublicKey(): Promise<Record<string, string>> {
 export async function whoAmI(): Promise<MemberDetailsResponse> {
   const response = await axios.request<MemberDetailsResponse>({
     method: 'GET',
-    url: '/v1/auth/me',
+    url: "/v1/auth/me"
   });
   return response.data;
 }
@@ -3710,7 +3637,7 @@ export async function whoAmI(): Promise<MemberDetailsResponse> {
 export async function logout(): Promise<void> {
   await axios.request({
     method: 'GET',
-    url: '/v1/auth/logout',
+    url: "/v1/auth/logout"
   });
 }
 
@@ -3721,7 +3648,7 @@ export async function logout(): Promise<void> {
 export async function softDeleteHospital(id: number): Promise<void> {
   await axios.request({
     method: 'DELETE',
-    url: `/v1/hospitals/${id}`,
+    url: `/v1/hospitals/${id}`
   });
 }
 
@@ -3732,6 +3659,6 @@ export async function softDeleteHospital(id: number): Promise<void> {
 export async function deleteComment(id: number): Promise<void> {
   await axios.request({
     method: 'DELETE',
-    url: `/v1/comments/${id}`,
+    url: `/v1/comments/${id}`
   });
 }
