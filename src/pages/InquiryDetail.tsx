@@ -1,54 +1,73 @@
+import { type AttachmentResponse, type BoardDetailsResponse, getBoardDetails } from '@/backend';
 import { InquiryStatusChip } from '@/components/InquiryStatusChip';
 import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/components/MedipandaTab';
+import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
+import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
 import { colors } from '@/themes';
 import { formatYyyyMmDdHhMm } from '@/lib/dateFormat';
-import { GetApp } from '@mui/icons-material';
-import { Alert, Box, Button, CircularProgress, Snackbar, Stack, Typography } from '@mui/material';
-import { useState } from 'react';
-import { Link as RouterLink, useParams } from 'react-router';
+import { Box, Button, Stack, Typography } from '@mui/material';
+import { EditorContent } from '@tiptap/react';
+import { useEffect, useState } from 'react';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router';
 
 export default function InquiryDetail() {
   const { id: paramId } = useParams();
   const inquiryId = Number(paramId);
 
-  const [loading, setLoading] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const navigate = useNavigate();
+  const [detail, setDetail] = useState<BoardDetailsResponse | null>(null);
+  const answer = detail?.children?.[0] ?? null;
 
-  const showSnackbar = (message, severity = 'success') => {
-    setSnackbarMessage(message);
-    setSnackbarSeverity(severity);
-    setSnackbarOpen(true);
+  useEffect(() => {
+    if (Number.isNaN(inquiryId)) {
+      alert('잘못된 접근입니다.');
+      navigate('/customer-service/inquiry', { replace: true });
+      return;
+    }
+
+    fetchDetail(inquiryId);
+  }, [inquiryId, navigate]);
+
+  const fetchDetail = async (id: number) => {
+    const response = await getBoardDetails(id);
+
+    setDetail(response);
   };
 
-  const handleFileDownload = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      showSnackbar('파일이 성공적으로 다운로드되었습니다.', 'success');
-    }, 1500);
+  const { editor } = useMedipandaEditor();
+
+  useEffect(() => {
+    if (detail === null) {
+      return;
+    }
+
+    editor.setEditable(false);
+    editor.commands.setContent(detail.content);
+  }, [detail, editor]);
+
+  const { editor: childEditor } = useMedipandaEditor();
+
+  useEffect(() => {
+    if (answer === null) {
+      return;
+    }
+
+    childEditor.setEditable(false);
+    childEditor.commands.setContent(answer.content);
+  }, [answer, childEditor]);
+
+  const handleFileDownload = (attachment: AttachmentResponse) => {
+    const link = document.createElement('a');
+    link.href = attachment.fileUrl;
+    link.download = attachment.fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
-  const mockInquiry = {
-    id: Number(inquiryId),
-    title: '커뮤니티에서 활동중에 답글처리이 안되요',
-    question: `안녕하세요
-다음아니라 커뮤니티 활동중에 제가 작성한 글에 대해서
-상대방이 작은 답글이 확인이 되지 않습니다.
-해당 건 문의해안 요청드립니다.`,
-    createdAt: '2025-04-01T10:36:00',
-    status: '답변 완료',
-    statusColor: colors.success,
-    answer: {
-      content: `안녕하세요
-CSO Link 방식에 ------- 으로 확인이 되고있습니다.
-감사합니다.
-추가내용이 필요하시다면 고객센터로 연락주시면 감사하겠습니다.`,
-      respondedAt: '2025-02-23T16:34:00',
-      responder: '관리자',
-    },
-  };
+  if (!detail) {
+    return <FixedLinearLoader />;
+  }
 
   return (
     <>
@@ -73,24 +92,23 @@ CSO Link 방식에 ------- 으로 확인이 되고있습니다.
         }}
       >
         <Typography variant='heading4B' sx={{ color: colors.gray80 }}>
-          {mockInquiry.title}
+          {detail.title}
         </Typography>
-        <InquiryStatusChip responseStatus={mockInquiry.status} />
+        <InquiryStatusChip status={detail.children.length > 0} />
         <Typography variant='smallTextR' sx={{ color: colors.gray50, marginLeft: 'auto' }}>
-          {formatYyyyMmDdHhMm(mockInquiry.createdAt)}
+          {formatYyyyMmDdHhMm(detail.createdAt)}
         </Typography>
       </Stack>
 
-      <Box
-        sx={{
+      <EditorContent
+        editor={editor}
+        style={{
           padding: '50px 20px',
           borderBottom: `1px solid ${colors.gray30}`,
         }}
-      >
-        {mockInquiry.question}
-      </Box>
+      />
 
-      {mockInquiry.answer && (
+      {answer !== null && (
         <Stack
           gap='20px'
           sx={{
@@ -107,7 +125,7 @@ CSO Link 방식에 ------- 으로 확인이 되고있습니다.
               관리자
             </Typography>
             <Typography variant='smallTextR' sx={{ color: colors.gray50, marginLeft: '10px' }}>
-              {formatYyyyMmDdHhMm(mockInquiry.answer.respondedAt)}
+              {formatYyyyMmDdHhMm(answer.createdAt)}
             </Typography>
           </Stack>
           <Box
@@ -116,24 +134,24 @@ CSO Link 방식에 ------- 으로 확인이 되고있습니다.
               backgroundColor: colors.gray10,
             }}
           >
-            {mockInquiry.answer.content}
+            {answer.content}
           </Box>
-          <Box>
-            <Button
-              variant='contained'
-              startIcon={loading ? <CircularProgress size={16} /> : <GetApp />}
-              onClick={handleFileDownload}
-              disabled={loading}
-              sx={{
-                width: '160px',
-                height: '50px',
-                backgroundColor: colors.navy,
-                color: colors.white,
-              }}
-            >
-              파일 다운로드
-            </Button>
-          </Box>
+          {answer.attachments.length > 0 && (
+            <Box>
+              <Button
+                variant='contained'
+                onClick={() => answer.attachments.forEach(it => handleFileDownload(it))}
+                sx={{
+                  width: '160px',
+                  height: '50px',
+                  backgroundColor: colors.navy,
+                  color: colors.white,
+                }}
+              >
+                파일 다운로드
+              </Button>
+            </Box>
+          )}
         </Stack>
       )}
 
@@ -159,18 +177,6 @@ CSO Link 방식에 ------- 으로 확인이 되고있습니다.
           목록
         </Button>
       </Stack>
-
-      {/* Snackbar for notifications */}
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </>
   );
 }

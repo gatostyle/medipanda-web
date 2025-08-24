@@ -1,8 +1,4 @@
 export const colors = {
-  primary: '#6B3AA0',
-  primaryDark: '#5a2d8a',
-  success: '#10B981',
-  gray100: '#f8f9fa',
   gray300: '#e0e0e0',
   gray400: '#999',
   gray600: '#4B5563',

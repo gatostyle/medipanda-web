@@ -1,5 +1,6 @@
-import { type AttachmentResponse, createBoardPost, getBoardDetails, getBoards, updateBoardPost } from '@/backend';
+import { type AttachmentResponse, createBoardPost, getBanners, getBoardDetails, getBoards, updateBoardPost } from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
+import { MedipandaCarousel, type MedipandaCarouselHandle } from '@/custom/components/MedipandaCarousel';
 import { MedipandaSwitch } from '@/custom/components/MedipandaSwitch';
 import { MedipandaTable } from '@/custom/components/MedipandaTable';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
@@ -13,7 +14,7 @@ import { withSequence } from '@/lib/withSequence';
 import { KeyboardArrowRight } from '@mui/icons-material';
 import { Box, Button, FormControlLabel, Link, Stack, type TableProps, Typography } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link as RouterLink } from 'react-router';
 
 export default function Home() {
@@ -104,6 +105,22 @@ export default function Home() {
     setLoaded(false);
   };
 
+  const { content: banners } = usePageFetchFormik({
+    initialFormValues: {
+      bannerStatus: 'VISIBLE' as 'VISIBLE' | 'HIDDEN',
+    },
+    fetcher: () => {
+      return getBanners({
+        bannerStatus: 'VISIBLE',
+      });
+    },
+    contentSelector: response => response.content,
+    pageCountSelector: response => response.totalPages,
+    initialContent: [],
+  });
+
+  const carouselRef = useRef<MedipandaCarouselHandle>(null);
+
   return (
     <>
       <Box>
@@ -170,7 +187,7 @@ export default function Home() {
 
       <Stack direction='row' alignItems='center' gap='20px' sx={{ marginBottom: 0 }}>
         <Box>
-          <RouterLink to='/partnership'>
+          <RouterLink to='/partner-contract'>
             <LazyImage
               src='/assets/banner-fixed.svg'
               alt='Banner Fixed'
@@ -183,19 +200,47 @@ export default function Home() {
             />
           </RouterLink>
         </Box>
-        <Box>
-          <RouterLink to='/sales-agency-products'>
-            <LazyImage
-              src='/assets/banner-rolling.svg'
-              alt='Banner Rolling'
-              style={{
-                height: 'auto',
-                borderRadius: '12px',
-                cursor: 'pointer',
-                display: 'block',
-              }}
-            />
-          </RouterLink>
+        <Box
+          sx={{
+            position: 'relative',
+          }}
+        >
+          <MedipandaCarousel ref={carouselRef} interval={5000} width={602}>
+            {banners.map(banner => (
+              <RouterLink key={banner.id} to={banner.linkUrl}>
+                <LazyImage
+                  src={banner.imageUrl}
+                  style={{
+                    width: '602px',
+                    height: '180px',
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                    display: 'block',
+                  }}
+                />
+              </RouterLink>
+            ))}
+          </MedipandaCarousel>
+          <img
+            src='/assets/carousel-left.svg'
+            onClick={carouselRef.current?.prev}
+            style={{
+              position: 'absolute',
+              top: '70px',
+              left: '10px',
+              cursor: 'pointer',
+            }}
+          />
+          <img
+            src='/assets/carousel-right.svg'
+            onClick={carouselRef.current?.next}
+            style={{
+              position: 'absolute',
+              top: '70px',
+              right: '10px',
+              cursor: 'pointer',
+            }}
+          />
         </Box>
       </Stack>
 

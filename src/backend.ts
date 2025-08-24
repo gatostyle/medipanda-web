@@ -150,13 +150,13 @@ export interface BlindPostResponse {
   id: number;
   memberName: string;
   content: string;
-  reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
-  nickname: string;
   userId: string;
   likesCount: number;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
-  postType: 'BOARD' | 'COMMENT';
   blindAt: string;
+  postType: 'BOARD' | 'COMMENT';
+  reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
+  nickname: string;
+  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
 }
 
 export interface BlindUpdateRequest {
@@ -191,12 +191,12 @@ export interface BoardMemberStatsResponse {
   name: string;
   id: number;
   userId: string;
-  phoneNumber: string;
   commentCount: number;
+  phoneNumber: string;
+  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  postCount: number;
   totalLikes: number;
   blindPostCount: number;
-  postCount: number;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
 }
 
 export interface BoardPostCreateRequest {
@@ -254,6 +254,11 @@ export interface BoardReportResponse {
   reportDateTime: string;
 }
 
+export interface ChangePasswordForFindAccountRequest {
+  userId: string;
+  newPassword: string;
+}
+
 export interface ChangePasswordRequest {
   userId: string;
   currentPassword: string;
@@ -270,11 +275,11 @@ export interface CommentMemberResponse {
   name: string;
   id: number;
   content: string;
-  commentType: 'COMMENT' | 'REPLY';
-  nickname: string;
   userId: string;
-  createdAt: string;
   likesCount: number;
+  commentType: 'COMMENT' | 'REPLY';
+  createdAt: string;
+  nickname: string;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   isBlind: boolean;
 }
@@ -309,12 +314,20 @@ export interface DealerResponse {
   id: number;
   dealerName: string;
   createdAt: string;
+  drugCompanyId: number | null;
+  drugCompanyName: string | null;
+  displayName: string;
 }
 
 export interface DeviceRequest {
   platform: 'android' | 'ios' | 'other';
   appVersion: string | null;
   fcmToken: string | null;
+}
+
+export interface DeviceUuidResponse {
+  userId: string;
+  deviceUuid: string | null;
 }
 
 export interface DrugCompanyResponse {
@@ -376,6 +389,7 @@ export interface ExpenseReportResponse {
 
 export interface FcmTokenRequest {
   fcmToken: string;
+  deviceUuid: string | null;
 }
 
 export interface FileValidationErrorDto {
@@ -552,9 +566,9 @@ export interface PageBannerResponse {
   content: BannerResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -566,9 +580,9 @@ export interface PageBlindPostResponse {
   content: BlindPostResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -580,9 +594,9 @@ export interface PageBoardMemberStatsResponse {
   content: BoardMemberStatsResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -594,9 +608,9 @@ export interface PageBoardPostResponse {
   content: BoardPostResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -608,9 +622,9 @@ export interface PageCommentMemberResponse {
   content: CommentMemberResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -622,9 +636,9 @@ export interface PageEventBoardSummaryResponse {
   content: EventBoardSummaryResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -636,9 +650,9 @@ export interface PageExpenseReportResponse {
   content: ExpenseReportResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -650,9 +664,9 @@ export interface PageHospitalResponse {
   content: HospitalResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -664,9 +678,9 @@ export interface PageMemberResponse {
   content: MemberResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -678,9 +692,9 @@ export interface PagePartnerResponse {
   content: PartnerResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -692,9 +706,9 @@ export interface PagePerformanceStatsResponse {
   content: PerformanceStatsResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -706,9 +720,9 @@ export interface PagePrescriptionPartnerResponse {
   content: PrescriptionPartnerResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -720,9 +734,9 @@ export interface PagePrescriptionResponse {
   content: PrescriptionResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -734,9 +748,9 @@ export interface PageProductSummaryResponse {
   content: ProductSummaryResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -748,9 +762,9 @@ export interface PageSalesAgencyProductApplicantResponse {
   content: SalesAgencyProductApplicantResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -762,9 +776,9 @@ export interface PageSalesAgencyProductSummaryResponse {
   content: SalesAgencyProductSummaryResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -776,9 +790,9 @@ export interface PageSettlementPartnerResponse {
   content: SettlementPartnerResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -790,9 +804,9 @@ export interface PageSettlementResponse {
   content: SettlementResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -918,7 +932,7 @@ export interface PerformanceStatsResponse {
 export interface PrescriptionCreateRequest {
   dealerId: number;
   partnerId: number;
-  drugCompanyIds: number[] | null;
+  drugCompanyId: number;
   prescriptionMonth: DateTimeString;
   settlementMonth: DateTimeString;
 }
@@ -945,6 +959,7 @@ export interface PrescriptionPartnerResponse {
   id: number;
   companyName: string;
   drugCompany: string;
+  institutionName: string;
   institutionCode: string;
   prescriptionMonth: string;
   settlementMonth: string;
@@ -1222,7 +1237,7 @@ export interface SampleProvideReportDetailResponse {
   provideCount: number;
   institutionName: string;
   institutionCode: string;
-  providedAt: DateString;
+  providedAt: string;
   attachedFiles: AttachmentResponse[];
   status: 'PENDING' | 'COMPLETED';
 }
@@ -1863,29 +1878,18 @@ export async function getUserMembers(options?: {
  * 회원가입
  * POST /v1/members
  */
-export async function signup(data: { request: MemberSignupRequest; file?: File }): Promise<void> {
+export async function signup(data: { request: MemberSignupRequest; file?: File }): Promise<DeviceUuidResponse> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   if (data.file !== undefined) {
     form.append('file', data.file);
   }
-  await axios.request({
+  const response = await axios.request<DeviceUuidResponse>({
     method: 'POST',
     url: '/v1/members',
     data: form,
   });
-}
-
-/**
- * FCM 토큰 등록
- * POST /v1/members/fcm-token
- */
-export async function registerFcmToken(data: FcmTokenRequest): Promise<void> {
-  await axios.request({
-    method: 'POST',
-    url: '/v1/members/fcm-token',
-    data,
-  });
+  return response.data;
 }
 
 /**
@@ -2086,10 +2090,11 @@ export async function createEventBoard(data: {
  * 내 딜러 목록 조회(현재 로그인 사용자 소속)
  * GET /v1/dealers
  */
-export async function listDealers(): Promise<DealerResponse[]> {
+export async function listDealers(options?: { dealerName?: string; drugCompanyName?: string }): Promise<DealerResponse[]> {
   const response = await axios.request<DealerResponse[]>({
     method: 'GET',
     url: '/v1/dealers',
+    params: options,
   });
   return response.data;
 }
@@ -2098,13 +2103,12 @@ export async function listDealers(): Promise<DealerResponse[]> {
  * 딜러 생성(현재 로그인 사용자 소속)
  * POST /v1/dealers
  */
-export async function createDealer(data: DealerCreateRequest): Promise<DealerResponse> {
-  const response = await axios.request<DealerResponse>({
+export async function createDealer(data: DealerCreateRequest): Promise<void> {
+  await axios.request({
     method: 'POST',
     url: '/v1/dealers',
     data,
   });
-  return response.data;
 }
 
 /**
@@ -2279,6 +2283,48 @@ export async function sendVerificationCode(
 }
 
 /**
+ * 비밀번호 찾기용 휴대폰 인증번호 확인
+ * POST /v1/auth/verification-code/password/verify
+ */
+export async function verifyCodeForFindPassword(options?: {
+  userId?: string;
+  phoneNumber?: string;
+  verificationCode?: string;
+}): Promise<LoginResponse> {
+  const response = await axios.request<LoginResponse>({
+    method: 'POST',
+    url: '/v1/auth/verification-code/password/verify',
+    params: options,
+  });
+  return response.data;
+}
+
+/**
+ * 아이디 찾기용 휴대폰 인증번호 확인
+ * POST /v1/auth/verification-code/id/verify
+ */
+export async function verifyCodeForFindId(options?: { phoneNumber?: string; verificationCode?: string }): Promise<string> {
+  const response = await axios.request<string>({
+    method: 'POST',
+    url: '/v1/auth/verification-code/id/verify',
+    params: options,
+  });
+  return response.data;
+}
+
+/**
+ * 아이디 비밀번호 찾기용 휴대폰 인증번호 전송
+ * POST /v1/auth/verification-code/account/send
+ */
+export async function sendVerificationCodeForFindAccount(options?: { phoneNumber?: string }): Promise<void> {
+  await axios.request({
+    method: 'POST',
+    url: '/v1/auth/verification-code/account/send',
+    params: options,
+  });
+}
+
+/**
  * AccessToken 재발급
  * POST /v1/auth/token/refresh
  */
@@ -2299,6 +2345,19 @@ export async function login(data: LoginRequest): Promise<LoginResponse> {
   const response = await axios.request<LoginResponse>({
     method: 'POST',
     url: '/v1/auth/login',
+    data,
+  });
+  return response.data;
+}
+
+/**
+ * FCM 토큰 등록
+ * POST /v1/auth/fcm-token
+ */
+export async function registerFcmToken(data: FcmTokenRequest): Promise<DeviceUuidResponse> {
+  const response = await axios.request<DeviceUuidResponse>({
+    method: 'POST',
+    url: '/v1/auth/fcm-token',
     data,
   });
   return response.data;
@@ -2482,6 +2541,18 @@ export async function changePassword(userId: string, data: ChangePasswordRequest
   await axios.request({
     method: 'PATCH',
     url: `/v1/members/${userId}/password`,
+    data,
+  });
+}
+
+/**
+ * 비밀번호 변경
+ * PATCH /v1/members/{userId}/password-for-find-account
+ */
+export async function changePassword_1(userId: string, data: ChangePasswordForFindAccountRequest): Promise<void> {
+  await axios.request({
+    method: 'PATCH',
+    url: `/v1/members/${userId}/password-for-find-account`,
     data,
   });
 }
@@ -2746,7 +2817,7 @@ export async function updateBanner(
  * 문자 전송 테스트
  * GET /v1/test/sms
  */
-export async function tetSms(options?: { userId?: string; phoneNumber?: string }): Promise<void> {
+export async function tetSms(options?: { message?: string; phoneNumber?: string }): Promise<void> {
   await axios.request({
     method: 'GET',
     url: '/v1/test/sms',
@@ -3185,6 +3256,7 @@ export async function searchPrescriptions(options?: {
   companyName?: string;
   userId?: string;
   dealerName?: string;
+  drugCompanyName?: string;
   dealerId?: number;
   startAt?: DateTimeString;
   endAt?: DateTimeString;
@@ -3206,6 +3278,7 @@ export async function searchPrescriptions(options?: {
 export async function getPrescriptionPartnerList(options?: {
   status?: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
   companyName?: string;
+  institutionName?: string;
   drugCompany?: string;
   dealerName?: string;
   prescriptionMonthStart?: DateTimeString;
@@ -3541,6 +3614,22 @@ export async function getDealerIdByUserId(userId: string): Promise<number> {
   const response = await axios.request<number>({
     method: 'GET',
     url: `/v1/dealers/id/${userId}`,
+  });
+  return response.data;
+}
+
+/**
+ * 상단 고정 공지사항 게시글 조회
+ * GET /v1/boards/notices/fixed-top
+ */
+export async function getFixedTopNotices(options?: {
+  boardType?: 'ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z' | 'EVENT' | 'SALES_AGENCY' | 'PRODUCT';
+  noticeType?: 'PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING';
+}): Promise<BoardPostResponse[]> {
+  const response = await axios.request<BoardPostResponse[]>({
+    method: 'GET',
+    url: '/v1/boards/notices/fixed-top',
+    params: options,
   });
   return response.data;
 }

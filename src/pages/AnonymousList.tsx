@@ -1,20 +1,29 @@
-import { getBoards } from '@/backend';
+import { getBoards, getFixedTopNotices } from '@/backend';
 import { CommunityBanners } from '@/custom/components/CommunityBanners';
 import { CommunityTrendingList } from '@/custom/components/CommunityTrendingList';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { MedipandaTableCell, MedipandaTableRow } from '@/custom/components/MedipandaTable';
+import { useSession } from '@/hooks/useSession';
 import { formatYyyyMmDdHhMm } from '@/lib/dateFormat';
 import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
 import { colors } from '@/themes';
 import { Search } from '@mui/icons-material';
 import { Box, Button, InputAdornment, Link, Stack, Table, TableBody, TableHead, TextField, Typography } from '@mui/material';
-import { Link as RouterLink } from 'react-router';
+import { useEffect, useRef } from 'react';
+import { Link as RouterLink, useSearchParams } from 'react-router';
 
 export default function AnonymousList() {
+  const [searchParams] = useSearchParams();
+  const filterMine = searchParams.get('filterMine') === 'true';
+  const lastFilterMine = useRef(filterMine);
+
+  const { session } = useSession();
+
   const {
     content: page,
     pageCount,
     formik: pageFormik,
+    refresh,
   } = usePageFetchFormik({
     initialFormValues: {
       searchKeyword: '',
@@ -23,6 +32,7 @@ export default function AnonymousList() {
       return getBoards({
         boardType: 'ANONYMOUS',
         boardTitle: values.searchKeyword !== '' ? values.searchKeyword : undefined,
+        userId: filterMine ? session?.userId : undefined,
         page: values.pageIndex,
         size: values.pageSize,
       });
@@ -32,14 +42,19 @@ export default function AnonymousList() {
     initialContent: [],
   });
 
+  useEffect(() => {
+    if (lastFilterMine.current !== filterMine) {
+      lastFilterMine.current = filterMine;
+      refresh();
+    }
+  }, [filterMine, refresh]);
+
   const { content: noticePage } = usePageFetchFormik({
     fetcher: () => {
-      return getBoards({
+      return getFixedTopNotices({
         boardType: 'NOTICE',
-        size: 2,
       });
     },
-    contentSelector: response => response.content,
     initialContent: [],
   });
 
@@ -87,16 +102,16 @@ export default function AnonymousList() {
                       )}
                       <Link
                         component={RouterLink}
-                        to={`/community/anonymous/${post.id}`}
+                        to={`/customer-service/notice/${post.id}`}
                         underline='hover'
                         sx={{
-                          color: colors.gray70,
+                          color: noticePage.includes(post) ? colors.gray80 : colors.gray70,
                           '&:hover': {
                             color: colors.vividViolet,
                           },
                         }}
                       >
-                        {post.title}
+                        <Typography variant='smallTextB'>{post.title}</Typography>
                       </Link>
                       <img
                         src='/assets/icons/icon-image.svg'
@@ -185,6 +200,8 @@ export default function AnonymousList() {
             <Button
               fullWidth
               variant='contained'
+              component={RouterLink}
+              to={'?filterMine=true'}
               sx={{
                 height: '50px',
                 backgroundColor: colors.gray20,

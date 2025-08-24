@@ -60,7 +60,7 @@ export default function MypageGuard() {
                       borderColor: colors.gray400,
                     },
                     '&.Mui-focused fieldset': {
-                      borderColor: colors.primary,
+                      borderColor: colors.vividViolet,
                       borderWidth: '2px',
                     },
                   },

@@ -2,7 +2,7 @@ import { type BoardDetailsResponse, getBoardDetails } from '@/backend';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
 import { Tiptap } from '@/lib/react/Tiptap';
-import { colors, typography } from '@/themes';
+import { colors } from '@/themes';
 import { formatYyyyMmDd } from '@/lib/dateFormat';
 import { Button, Link, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -94,14 +94,18 @@ export default function NoticeDetail() {
           {detail.attachments.map(file => (
             <Link
               key={file.s3fileId}
+              underline='hover'
               component={RouterLink}
               to={file.fileUrl}
               target='_blank'
-              style={{
-                ...typography.largeTextR,
+              sx={{
+                color: colors.gray80,
+                '&:hover': {
+                  color: colors.vividViolet,
+                },
               }}
             >
-              {file.fileName}
+              <Typography variant='largeTextR'>{file.fileName}</Typography>
             </Link>
           ))}
         </Stack>

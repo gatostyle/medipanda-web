@@ -1,21 +1,7 @@
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaCheckbox } from '@/custom/components/MedipandaCheckbox';
 import { colors, typography } from '@/themes';
-import {
-  Alert,
-  Box,
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControlLabel,
-  OutlinedInput,
-  Snackbar,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Box, Button, CircularProgress, FormControlLabel, OutlinedInput, Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { ArrowDown2 } from 'iconsax-reactjs';
 import { useState } from 'react';
@@ -89,17 +75,7 @@ export default function PartnerContract() {
   });
   const [agreement, setAgreement] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error' | 'warning'>('success');
-  const [successDialog, setSuccessDialog] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<Record<string, string>>({});
-
-  const showSnackbar = (message: string, severity: 'success' | 'error' | 'warning' = 'success') => {
-    setSnackbarMessage(message);
-    setSnackbarSeverity(severity);
-    setSnackbarOpen(true);
-  };
 
   const handleInputChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
@@ -116,7 +92,7 @@ export default function PartnerContract() {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
         setUploadedFiles(prev => ({ ...prev, [fileType]: file.name }));
-        showSnackbar(`${fileType} 파일이 업로드되었습니다.`, 'success');
+        alert(`${fileType} 파일이 업로드되었습니다.`, 'success');
       }
     };
     input.click();
@@ -124,26 +100,26 @@ export default function PartnerContract() {
 
   const handleSubmit = () => {
     if (!formData.companyName.trim()) {
-      showSnackbar('회사명을 입력해주세요.', 'warning');
+      alert('회사명을 입력해주세요.', 'warning');
       return;
     }
     if (!formData.businessNumber.trim()) {
-      showSnackbar('사업자등록번호를 입력해주세요.', 'warning');
+      alert('사업자등록번호를 입력해주세요.', 'warning');
       return;
     }
     if (!formData.bankName) {
-      showSnackbar('정산은행을 선택해주세요.', 'warning');
+      alert('정산은행을 선택해주세요.', 'warning');
       return;
     }
     if (!formData.accountNumber.trim()) {
-      showSnackbar('계좌번호를 입력해주세요.', 'warning');
+      alert('계좌번호를 입력해주세요.', 'warning');
       return;
     }
 
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      setSuccessDialog(true);
+      alert('파트너사 계약 신청이 성공적으로 접수되었습니다.');
     }, 2500);
   };
 
@@ -329,53 +305,6 @@ export default function PartnerContract() {
           </Box>
         </Stack>
       </Stack>
-
-      {/* Success Dialog */}
-      <Dialog open={successDialog} onClose={() => setSuccessDialog(false)} maxWidth='md' fullWidth>
-        <DialogTitle sx={{ textAlign: 'center', color: colors.primary, fontWeight: 'bold', fontSize: '24px' }}>계약 신청 완료!</DialogTitle>
-        <DialogContent sx={{ textAlign: 'center', paddingY: 4 }}>
-          <Typography sx={{ marginBottom: 3, fontSize: '18px', fontWeight: 500 }}>
-            파트너사 계약 신청이 성공적으로 접수되었습니다.
-          </Typography>
-          <Box sx={{ backgroundColor: colors.gray100, borderRadius: '8px', p: 3, marginBottom: 3 }}>
-            <Typography sx={{ color: colors.gray700, marginBottom: 2, fontWeight: 500 }}>다음 단계 안내:</Typography>
-            <Typography sx={{ color: 'colors.gray500', marginBottom: 1, textAlign: 'left' }}>
-              1. 담당자가 제출된 서류를 검토합니다 (2-3일 소요)
-            </Typography>
-            <Typography sx={{ color: 'colors.gray500', marginBottom: 1, textAlign: 'left' }}>
-              2. 검토 완료 후 승인/반려 결과를 알려드립니다
-            </Typography>
-            <Typography sx={{ color: 'colors.gray500', textAlign: 'left' }}>3. 승인 시 바로 서비스 이용이 가능합니다</Typography>
-          </Box>
-          <Typography sx={{ color: 'colors.gray500' }}>문의사항이 있으시면 고객센터로 연락해 주세요.</Typography>
-        </DialogContent>
-        <DialogActions sx={{ justifyContent: 'center', pb: 3 }}>
-          <Button
-            variant='contained'
-            onClick={() => setSuccessDialog(false)}
-            sx={{
-              backgroundColor: colors.primary,
-              px: 6,
-              paddingY: 1.5,
-              '&:hover': { backgroundColor: colors.primaryDark },
-            }}
-          >
-            확인
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Snackbar for notifications */}
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </>
   );
 }

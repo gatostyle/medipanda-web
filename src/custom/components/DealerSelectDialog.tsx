@@ -16,7 +16,7 @@ export function DealerSelectDialog({
   onSelect?: (dealer: DealerResponse) => void;
 }) {
   const { content: page } = usePageFetchFormik({
-    fetcher: listDealers,
+    fetcher: () => listDealers(),
     initialContent: [],
   });
 

@@ -127,6 +127,7 @@ export default function ProductList() {
             >
               {(['composition', 'productName', 'manufacturerName'] as const).map((type, index, arr) => (
                 <Button
+                  key={type}
                   variant='contained'
                   sx={{
                     ...typography.heading5R,

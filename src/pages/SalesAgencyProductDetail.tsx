@@ -1,9 +1,9 @@
-import { getSalesAgencyProductDetails, type SalesAgencyProductDetailsResponse } from '@/backend';
+import { applyProduct, getSalesAgencyProductDetails, type SalesAgencyProductDetailsResponse } from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
 import { colors } from '@/themes';
-import { formatYyyyMmDd } from '@/lib/dateFormat';
+import { formatYyyyMmDd, isExpired } from '@/lib/dateFormat';
 import { Box, Stack, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import { useEffect, useState } from 'react';
@@ -42,6 +42,17 @@ export default function SalesAgencyProductDetail() {
     editor.setEditable(false);
     editor.commands.setContent(detail.boardPostDetail.content);
   }, [detail, editor]);
+
+  const handleApply = async () => {
+    try {
+      await applyProduct(salesAgencyProductId);
+      alert('영업대행 신청이 완료되었습니다.');
+      await fetchDetail(salesAgencyProductId);
+    } catch (e) {
+      console.error(e);
+      alert('영업대행 신청 중 오류가 발생했습니다. 다시 시도해 주세요.');
+    }
+  };
 
   if (!detail) {
     return <FixedLinearLoader />;
@@ -83,14 +94,15 @@ export default function SalesAgencyProductDetail() {
 
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
         <MedipandaButton
-          disabled={detail.applied}
+          onClick={handleApply}
+          disabled={detail.applied || isExpired(detail.endDate)}
           variant='contained'
           size='large'
           sx={{
             width: '287px',
           }}
         >
-          {detail.applied ? '영업대행 신청완료' : '영업대행 신청하기'}
+          {detail.applied ? '영업대행 신청완료' : isExpired(detail.endDate) ? '종료된 상품입니다' : '영업대행 신청하기'}
         </MedipandaButton>
       </Box>
     </>

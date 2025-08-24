@@ -142,6 +142,7 @@ export default function FaqList() {
                       {expandedDetail.attachments.map(file => (
                         <Link
                           key={file.s3fileId}
+                          underline='hover'
                           component={RouterLink}
                           to={file.fileUrl}
                           target='_blank'
@@ -149,8 +150,10 @@ export default function FaqList() {
                             display: 'inline-flex',
                             alignItems: 'center',
                             gap: 0.5,
-                            color: colors.primary,
-                            textDecoration: 'underline',
+                            color: colors.gray80,
+                            '&:hover': {
+                              color: colors.vividViolet,
+                            },
                             fontSize: '14px',
                             marginBottom: 1,
                           }}

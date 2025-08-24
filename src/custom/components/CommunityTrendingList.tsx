@@ -1,6 +1,6 @@
 import { withSequence } from '@/lib/withSequence';
 import { colors, typography } from '@/themes';
-import { Button, Stack, Table, TableBody, TableCell, TableRow, Typography } from '@mui/material';
+import { Button, Link, Stack, Table, TableBody, TableCell, TableRow, Typography } from '@mui/material';
 import { Link as RouterLink } from 'react-router';
 
 export function CommunityTrendingList() {
@@ -78,21 +78,19 @@ export function CommunityTrendingList() {
                   borderBottom: `1px solid ${colors.gray20}`,
                 }}
               >
-                <Typography
+                <Link
+                  underline='hover'
                   component={RouterLink}
                   to={item.url}
-                  variant='smallTextR'
                   sx={{
                     color: colors.gray80,
-                    textDecoration: 'none',
                     '&:hover': {
-                      textDecoration: 'underline',
                       color: colors.vividViolet,
                     },
                   }}
                 >
-                  {item.title}
-                </Typography>
+                  <Typography variant='smallTextR'>{item.title}</Typography>
+                </Link>
               </TableCell>
             </TableRow>
           ))}

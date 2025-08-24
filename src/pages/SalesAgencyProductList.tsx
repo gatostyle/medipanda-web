@@ -3,7 +3,7 @@ import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { LazyImage } from '@/lib/react/LazyImage';
 import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
 import { colors } from '@/themes';
-import { formatYyyyMmDd, parseUtcDateString } from '@/lib/dateFormat';
+import { formatYyyyMmDd, isExpired } from '@/lib/dateFormat';
 import { Box, Stack, Typography } from '@mui/material';
 import { Link as RouterLink } from 'react-router';
 
@@ -59,7 +59,7 @@ export default function SalesAgencyProductList() {
                   borderRadius: '10px',
                 }}
               />
-              {parseUtcDateString(salesAgencyProduct.endAt) < new Date() && (
+              {isExpired(salesAgencyProduct.endAt) && (
                 <Box
                   sx={{
                     position: 'absolute',

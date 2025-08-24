@@ -1,11 +1,8 @@
 import { logout } from '@/backend';
 import { LinearProgress } from '@mui/material';
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router';
 
 export default function Logout() {
-  const navigate = useNavigate();
-
   useEffect(() => {
     doLogout();
   }, []);
@@ -16,7 +13,7 @@ export default function Logout() {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      navigate(`/`, { replace: true });
+      location.replace('/');
     }
   };
 

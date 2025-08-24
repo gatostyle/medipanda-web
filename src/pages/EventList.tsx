@@ -2,7 +2,7 @@ import { getEventBoards } from '@/backend';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
 import { colors } from '@/themes';
-import { formatYyyyMmDd, parseUtcDateString } from '@/lib/dateFormat';
+import { formatYyyyMmDd, isExpired } from '@/lib/dateFormat';
 import { Box, Stack, Typography } from '@mui/material';
 import { Link as RouterLink } from 'react-router';
 
@@ -58,7 +58,7 @@ export default function EventList() {
                   borderRadius: '10px',
                 }}
               />
-              {parseUtcDateString(event.eventEndAt) < new Date() && (
+              {isExpired(event.eventEndAt) && (
                 <Box
                   sx={{
                     position: 'absolute',

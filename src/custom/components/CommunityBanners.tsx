@@ -11,7 +11,7 @@ export function CommunityBanners() {
     },
     fetcher: () => {
       return getBanners({
-        bannerStatus: 'HIDDEN',
+        bannerStatus: 'VISIBLE',
       });
     },
     contentSelector: response => response.content,

@@ -6,10 +6,9 @@ import { MedipandaTableCell, MedipandaTableRow } from '@/custom/components/Medip
 import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
 import { colors } from '@/themes';
 import { formatYyyyMmDdHhMm } from '@/lib/dateFormat';
-import { mockBoolean } from '@/lib/mock';
 import { withSequence } from '@/lib/withSequence';
 import { Search } from '@mui/icons-material';
-import { Fab, InputAdornment, Stack, Table, TableBody, TableHead, TextField, Typography } from '@mui/material';
+import { Fab, InputAdornment, Link, Stack, Table, TableBody, TableHead, TextField, Typography } from '@mui/material';
 import { Link as RouterLink } from 'react-router';
 
 export default function InquiryList() {
@@ -77,10 +76,24 @@ export default function InquiryList() {
           {page.map(inquiry => (
             <MedipandaTableRow key={inquiry.id}>
               <MedipandaTableCell>{`${inquiry.sequence}`}</MedipandaTableCell>
-              <MedipandaTableCell sx={{ textAlign: 'left' }}>{inquiry.title}</MedipandaTableCell>
+              <MedipandaTableCell sx={{ textAlign: 'left' }}>
+                <Link
+                  underline='hover'
+                  component={RouterLink}
+                  to={`/customer-service/inquiry/${inquiry.id}`}
+                  sx={{
+                    color: colors.gray80,
+                    '&:hover': {
+                      color: colors.vividViolet,
+                    },
+                  }}
+                >
+                  {inquiry.title}
+                </Link>
+              </MedipandaTableCell>
               <MedipandaTableCell>{formatYyyyMmDdHhMm(inquiry.createdAt)}</MedipandaTableCell>
               <MedipandaTableCell>
-                <InquiryStatusChip responseStatus={mockBoolean()} />
+                <InquiryStatusChip status={inquiry.hasChildren} />
               </MedipandaTableCell>
             </MedipandaTableRow>
           ))}

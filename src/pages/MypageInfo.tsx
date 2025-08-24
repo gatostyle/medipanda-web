@@ -37,8 +37,8 @@ const FileUploadButton = styled(Button)({
   fontSize: '14px',
   '&:hover': {
     backgroundColor: colors.gray50,
-    borderColor: colors.primary,
-    color: colors.primary,
+    borderColor: colors.vividViolet,
+    color: colors.vividViolet,
   },
 });
 

@@ -1,5 +1,5 @@
 import { useFormik } from 'formik';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const defaultInitialFormValues = {};
 
@@ -58,15 +58,6 @@ export function usePageFetchFormik<Form, Response, Content, InitialContent exten
   const [content, setContent] = useState<Response | Content | null>(initialContent.current);
   const [pageCount, setPageCount] = useState(-1);
 
-  const fetchData = async (form: Form & PageFetchBaseRequest) => {
-    const response: Response = await fetcher.current(form);
-
-    setContent(contentSelector.current(response));
-    setPageCount(pageCountSelector.current(response));
-
-    onFetch.current?.();
-  };
-
   const formik = useFormik({
     initialValues: {
       ...initialFormValues.current,
@@ -77,19 +68,28 @@ export function usePageFetchFormik<Form, Response, Content, InitialContent exten
       if (values.pageIndex !== 0) {
         await setFieldValue('pageIndex', 0);
       } else {
-        await fetchData(values);
+        await fetchData();
       }
     },
   });
 
+  const fetchData = useCallback(async () => {
+    const response: Response = await fetcher.current(formik.values);
+
+    setContent(contentSelector.current(response));
+    setPageCount(pageCountSelector.current(response));
+
+    onFetch.current?.();
+  }, [formik.values]);
+
   useEffect(() => {
-    fetchData(formik.values);
-  }, [formik.values.pageIndex, formik.values.pageSize]);
+    fetchData();
+  }, [fetchData, formik.values.pageIndex, formik.values.pageSize]);
 
   return {
     formik,
     content: content as Content,
     pageCount,
-    refresh: () => fetchData(formik.values),
+    refresh: fetchData,
   };
 }

@@ -58,3 +58,9 @@ export function formatRelativeTime(dateOrString: Date | string): string {
 
   return formatYyyyMmDd(date);
 }
+
+export function isExpired(dateOrString: Date | string): boolean {
+  const date = typeof dateOrString === 'string' ? parseUtcDateString(dateOrString) : dateOrString;
+  const now = new Date();
+  return date < now;
+}

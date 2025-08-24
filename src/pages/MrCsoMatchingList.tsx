@@ -1,4 +1,4 @@
-import { getBoards } from '@/backend';
+import { getBoards, getFixedTopNotices } from '@/backend';
 import { CommunityBanners } from '@/custom/components/CommunityBanners';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { MedipandaTableCell, MedipandaTableRow } from '@/custom/components/MedipandaTable';
@@ -33,12 +33,10 @@ export default function MrCsoMatchingList() {
 
   const { content: noticePage } = usePageFetchFormik({
     fetcher: () => {
-      return getBoards({
+      return getFixedTopNotices({
         boardType: 'NOTICE',
-        size: 2,
       });
     },
-    contentSelector: response => response.content,
     initialContent: [],
   });
 
@@ -86,16 +84,16 @@ export default function MrCsoMatchingList() {
                       )}
                       <Link
                         component={RouterLink}
-                        to={`/community/anonymous/${post.id}`}
+                        to={`/customer-service/notice/${post.id}`}
                         underline='hover'
                         sx={{
-                          color: colors.gray70,
+                          color: noticePage.includes(post) ? colors.gray80 : colors.gray70,
                           '&:hover': {
                             color: colors.vividViolet,
                           },
                         }}
                       >
-                        {post.title}
+                        <Typography variant='smallTextB'>{post.title}</Typography>
                       </Link>
                       <img
                         src='/assets/icons/icon-image.svg'
