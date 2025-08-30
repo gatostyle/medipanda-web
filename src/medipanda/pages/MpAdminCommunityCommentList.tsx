@@ -18,7 +18,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -60,100 +60,98 @@ export default function MpAdminCommunityCommentList() {
     },
   });
 
-  const columns: ColumnDef<Sequenced<CommentMemberResponse>>[] = [
-    {
-      id: 'select',
-      header: () => (
-        <Checkbox
-          checked={selectedItems.length === data.length && data.length > 0}
-          onChange={e => {
-            if (e.target.checked) {
-              setSelectedItems(data.map(item => item.id));
-            } else {
-              setSelectedItems([]);
-            }
-          }}
-        />
-      ),
-      cell: ({ row }) => {
-        return (
+  const table = useReactTable({
+    data,
+    columns: [
+      {
+        id: 'select',
+        header: () => (
           <Checkbox
-            checked={selectedItems.includes(row.original.id)}
+            checked={selectedItems.length === data.length && data.length > 0}
             onChange={e => {
               if (e.target.checked) {
-                setSelectedItems(prev => [...prev, row.original.id]);
+                setSelectedItems(data.map(item => item.id));
               } else {
-                setSelectedItems(prev => prev.filter(id => id !== row.original.id));
+                setSelectedItems([]);
               }
             }}
           />
-        );
+        ),
+        cell: ({ row }) => {
+          return (
+            <Checkbox
+              checked={selectedItems.includes(row.original.id)}
+              onChange={e => {
+                if (e.target.checked) {
+                  setSelectedItems(prev => [...prev, row.original.id]);
+                } else {
+                  setSelectedItems(prev => prev.filter(id => id !== row.original.id));
+                }
+              }}
+            />
+          );
+        },
+        size: 50,
       },
-      size: 50,
-    },
-    {
-      header: 'No',
-      cell: ({ row }) => row.original.sequence,
-      size: 60,
-    },
-    {
-      header: '아이디',
-      cell: ({ row }) => row.original.userId,
-      size: 150,
-    },
-    {
-      header: '회원명',
-      cell: ({ row }) => row.original.name,
-      size: 100,
-    },
-    {
-      header: '닉네임',
-      cell: ({ row }) => row.original.nickname,
-      size: 150,
-    },
-    {
-      header: '계약유무',
-      cell: ({ row }) => CONTRACT_STATUS_LABELS[row.original.contractStatus],
-      size: 100,
-    },
-    {
-      header: '유형',
-      cell: ({ row }) => (row.original.commentType === 'COMMENT' ? '댓글' : '대댓글'),
-      size: 80,
-    },
-    {
-      header: '댓글내용',
-      cell: ({ row }) => {
-        const content = row.original.content;
-        return (
-          <Typography
-            sx={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              maxWidth: 300,
-            }}
-          >
-            {content}
-          </Typography>
-        );
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 60,
       },
-    },
-    {
-      header: '좋아요 수',
-      cell: ({ row }) => row.original.likesCount,
-      size: 100,
-    },
-    {
-      header: '등록일',
-      cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
-      size: 150,
-    },
-  ];
-
-  const table = useReactTable({
-    data,
-    columns,
+      {
+        header: '아이디',
+        cell: ({ row }) => row.original.userId,
+        size: 150,
+      },
+      {
+        header: '회원명',
+        cell: ({ row }) => row.original.name,
+        size: 100,
+      },
+      {
+        header: '닉네임',
+        cell: ({ row }) => row.original.nickname,
+        size: 150,
+      },
+      {
+        header: '계약유무',
+        cell: ({ row }) => CONTRACT_STATUS_LABELS[row.original.contractStatus],
+        size: 100,
+      },
+      {
+        header: '유형',
+        cell: ({ row }) => (row.original.commentType === 'COMMENT' ? '댓글' : '대댓글'),
+        size: 80,
+      },
+      {
+        header: '댓글내용',
+        cell: ({ row }) => {
+          const content = row.original.content;
+          return (
+            <Typography
+              sx={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                maxWidth: 300,
+              }}
+            >
+              {content}
+            </Typography>
+          );
+        },
+      },
+      {
+        header: '좋아요 수',
+        cell: ({ row }) => row.original.likesCount,
+        size: 100,
+      },
+      {
+        header: '등록일',
+        cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
+        size: 150,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
@@ -318,7 +316,7 @@ export default function MpAdminCommunityCommentList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
@@ -326,7 +324,7 @@ export default function MpAdminCommunityCommentList() {
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>

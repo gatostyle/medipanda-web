@@ -20,7 +20,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -68,103 +68,105 @@ export default function MpAdminSalesAgencyProductList() {
     },
   });
 
-  const columns: ColumnDef<Sequenced<SalesAgencyProductSummaryResponse>>[] = [
-    {
-      id: 'select',
-      header: () => (
-        <Checkbox
-          checked={selectedItems.length === data.length && data.length > 0}
-          onChange={e => {
-            if (e.target.checked) {
-              setSelectedItems(data.map(item => item.id));
-            } else {
-              setSelectedItems([]);
-            }
-          }}
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={selectedItems.includes(row.original.id)}
-          onChange={e => {
-            if (e.target.checked) {
-              setSelectedItems(prev => [...prev, row.original.id]);
-            } else {
-              setSelectedItems(prev => prev.filter(id => id !== row.original.id));
-            }
-          }}
-        />
-      ),
-      size: 50,
-    },
-    {
-      header: 'No',
-      cell: ({ row }) => row.original.sequence,
-      size: 60,
-    },
-    {
-      header: '썸네일',
-      cell: ({ row }) => (
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <img src={row.original.thumbnailUrl ?? ''} alt='썸네일' style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 4 }} />
-        </Box>
-      ),
-      size: 80,
-    },
-    {
-      header: '위탁사',
-      cell: ({ row }) => row.original.clientName,
-      size: 150,
-    },
-    {
-      header: '상품명',
-      cell: ({ row }) => (
-        <Link to={`/admin/sales-agency-products/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-          {row.original.productName}
-        </Link>
-      ),
-      size: 300,
-    },
-    {
-      header: '판매가',
-      cell: ({ row }) => row.original.price.toLocaleString(),
-      size: 100,
-    },
-    {
-      header: '계약일',
-      cell: ({ row }) => formatYyyyMmDd(row.original.contractDate),
-      size: 120,
-    },
-    {
-      header: '노출상태',
-      cell: ({ row }) => {
-        const isExposed = row.original.isExposed;
-        return <Chip label={isExposed ? '노출' : '미노출'} size='small' color={isExposed ? 'success' : 'default'} />;
-      },
-      size: 100,
-    },
-    {
-      header: '게시기간',
-      cell: ({ row }) => {
-        return `${formatYyyyMmDd(row.original.startAt)} ~ ${formatYyyyMmDd(row.original.endAt)}`;
-      },
-      size: 200,
-    },
-    {
-      header: '신청자 수',
-      cell: ({ row }) => `${row.original.appliedCount}명`,
-      size: 100,
-    },
-    {
-      header: '판매수량',
-      cell: ({ row }) => row.original.quantity.toLocaleString(),
-      size: 100,
-    },
-  ];
-
   const table = useReactTable({
     data,
-    columns,
+    columns: [
+      {
+        id: 'select',
+        header: () => (
+          <Checkbox
+            checked={selectedItems.length === data.length && data.length > 0}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedItems(data.map(item => item.id));
+              } else {
+                setSelectedItems([]);
+              }
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={selectedItems.includes(row.original.id)}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedItems(prev => [...prev, row.original.id]);
+              } else {
+                setSelectedItems(prev => prev.filter(id => id !== row.original.id));
+              }
+            }}
+          />
+        ),
+        size: 50,
+      },
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 60,
+      },
+      {
+        header: '썸네일',
+        cell: ({ row }) => (
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <img
+              src={row.original.thumbnailUrl ?? ''}
+              alt='썸네일'
+              style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 4 }}
+            />
+          </Box>
+        ),
+        size: 80,
+      },
+      {
+        header: '위탁사',
+        cell: ({ row }) => row.original.clientName,
+        size: 150,
+      },
+      {
+        header: '상품명',
+        cell: ({ row }) => (
+          <Link to={`/admin/sales-agency-products/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+            {row.original.productName}
+          </Link>
+        ),
+        size: 300,
+      },
+      {
+        header: '판매가',
+        cell: ({ row }) => row.original.price.toLocaleString(),
+        size: 100,
+      },
+      {
+        header: '계약일',
+        cell: ({ row }) => formatYyyyMmDd(row.original.contractDate),
+        size: 120,
+      },
+      {
+        header: '노출상태',
+        cell: ({ row }) => {
+          const isExposed = row.original.isExposed;
+          return <Chip label={isExposed ? '노출' : '미노출'} size='small' color={isExposed ? 'success' : 'default'} />;
+        },
+        size: 100,
+      },
+      {
+        header: '게시기간',
+        cell: ({ row }) => {
+          return `${formatYyyyMmDd(row.original.startAt)} ~ ${formatYyyyMmDd(row.original.endAt)}`;
+        },
+        size: 200,
+      },
+      {
+        header: '신청자 수',
+        cell: ({ row }) => `${row.original.appliedCount}명`,
+        size: 100,
+      },
+      {
+        header: '판매수량',
+        cell: ({ row }) => row.original.quantity.toLocaleString(),
+        size: 100,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
@@ -334,7 +336,7 @@ export default function MpAdminSalesAgencyProductList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
@@ -342,7 +344,7 @@ export default function MpAdminSalesAgencyProductList() {
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>

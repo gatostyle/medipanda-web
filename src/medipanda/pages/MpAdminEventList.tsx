@@ -19,7 +19,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -66,115 +66,118 @@ export default function MpAdminEventList() {
     },
   });
 
-  const columns: ColumnDef<Sequenced<EventBoardSummaryResponse>>[] = [
-    {
-      id: 'select',
-      header: () => (
-        <Checkbox
-          checked={selectedItems.length === data.length && data.length > 0}
-          onChange={e => {
-            if (e.target.checked) {
-              setSelectedItems(data.map(item => item.id));
-            } else {
-              setSelectedItems([]);
-            }
-          }}
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={selectedItems.includes(row.original.id)}
-          onChange={e => {
-            if (e.target.checked) {
-              setSelectedItems(prev => [...prev, row.original.id]);
-            } else {
-              setSelectedItems(prev => prev.filter(id => id !== row.original.id));
-            }
-          }}
-        />
-      ),
-      size: 50,
-    },
-    {
-      header: 'No',
-      cell: ({ row }) => row.original.sequence,
-      size: 60,
-    },
-    {
-      header: '이벤트 상태',
-      cell: ({ row }) => {
-        const status = row.original.eventStatus;
-        return (
-          <Chip label={EVENT_STATUS_LABELS[status]} color={status === 'IN_PROGRESS' ? 'success' : 'default'} variant='light' size='small' />
-        );
-      },
-      size: 100,
-    },
-    {
-      header: '썸네일',
-      cell: ({ row }) => {
-        const thumbnail = row.original.thumbnailUrl;
-        if (thumbnail) {
-          return (
-            <Box sx={{ width: 80, height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <img
-                src={thumbnail}
-                alt='썸네일'
-                style={{
-                  maxWidth: '100%',
-                  maxHeight: '100%',
-                  objectFit: 'cover',
-                  borderRadius: '4px',
-                }}
-              />
-            </Box>
-          );
-        }
-        return <Box sx={{ width: 80, height: 60, bgcolor: 'grey.200', borderRadius: 1 }} />;
-      },
-      size: 100,
-    },
-    {
-      header: '제목',
-      cell: ({ row }) => (
-        <Link to={`/admin/events/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-          {row.original.title}
-        </Link>
-      ),
-      size: 300,
-    },
-    {
-      header: '조회 수',
-      cell: ({ row }) => row.original.viewCount.toLocaleString(),
-      size: 100,
-    },
-    {
-      header: '작성일',
-      cell: ({ row }) => {
-        return formatYyyyMmDd(row.original.createdDate);
-      },
-      size: 120,
-    },
-    {
-      header: '노출상태',
-      cell: ({ row }) => {
-        const isExposed = row.original.isExposed;
-        return <Chip label={isExposed ? '노출' : '미노출'} color={isExposed ? 'primary' : 'default'} variant='light' size='small' />;
-      },
-      size: 100,
-    },
-    {
-      header: '이벤트 기간',
-      cell: ({ row }) => {
-        return `${formatYyyyMmDd(row.original.eventStartAt)} ~ ${formatYyyyMmDd(row.original.eventEndAt)}`;
-      },
-      size: 250,
-    },
-  ];
-
   const table = useReactTable({
     data,
-    columns,
+    columns: [
+      {
+        id: 'select',
+        header: () => (
+          <Checkbox
+            checked={selectedItems.length === data.length && data.length > 0}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedItems(data.map(item => item.id));
+              } else {
+                setSelectedItems([]);
+              }
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={selectedItems.includes(row.original.id)}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedItems(prev => [...prev, row.original.id]);
+              } else {
+                setSelectedItems(prev => prev.filter(id => id !== row.original.id));
+              }
+            }}
+          />
+        ),
+        size: 50,
+      },
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 60,
+      },
+      {
+        header: '이벤트 상태',
+        cell: ({ row }) => {
+          const status = row.original.eventStatus;
+          return (
+            <Chip
+              label={EVENT_STATUS_LABELS[status]}
+              color={status === 'IN_PROGRESS' ? 'success' : 'default'}
+              variant='light'
+              size='small'
+            />
+          );
+        },
+        size: 100,
+      },
+      {
+        header: '썸네일',
+        cell: ({ row }) => {
+          const thumbnail = row.original.thumbnailUrl;
+          if (thumbnail) {
+            return (
+              <Box sx={{ width: 80, height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <img
+                  src={thumbnail}
+                  alt='썸네일'
+                  style={{
+                    maxWidth: '100%',
+                    maxHeight: '100%',
+                    objectFit: 'cover',
+                    borderRadius: '4px',
+                  }}
+                />
+              </Box>
+            );
+          }
+          return <Box sx={{ width: 80, height: 60, bgcolor: 'grey.200', borderRadius: 1 }} />;
+        },
+        size: 100,
+      },
+      {
+        header: '제목',
+        cell: ({ row }) => (
+          <Link to={`/admin/events/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+            {row.original.title}
+          </Link>
+        ),
+        size: 300,
+      },
+      {
+        header: '조회 수',
+        cell: ({ row }) => row.original.viewCount.toLocaleString(),
+        size: 100,
+      },
+      {
+        header: '작성일',
+        cell: ({ row }) => {
+          return formatYyyyMmDd(row.original.createdDate);
+        },
+        size: 120,
+      },
+      {
+        header: '노출상태',
+        cell: ({ row }) => {
+          const isExposed = row.original.isExposed;
+          return <Chip label={isExposed ? '노출' : '미노출'} color={isExposed ? 'primary' : 'default'} variant='light' size='small' />;
+        },
+        size: 100,
+      },
+      {
+        header: '이벤트 기간',
+        cell: ({ row }) => {
+          return `${formatYyyyMmDd(row.original.eventStartAt)} ~ ${formatYyyyMmDd(row.original.eventEndAt)}`;
+        },
+        size: 250,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
@@ -334,7 +337,7 @@ export default function MpAdminEventList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
@@ -342,7 +345,7 @@ export default function MpAdminEventList() {
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>

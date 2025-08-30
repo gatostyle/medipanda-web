@@ -26,7 +26,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -107,96 +107,94 @@ export default function MpAdminProductList() {
     return '-';
   };
 
-  const columns: ColumnDef<Sequenced<ProductSummaryResponse>>[] = [
-    {
-      id: 'select',
-      header: () => (
-        <Checkbox
-          checked={selectedItems.length === data.length && data.length > 0}
-          onChange={e => {
-            if (e.target.checked) {
-              setSelectedItems(data.map(item => item.id));
-            } else {
-              setSelectedItems([]);
-            }
-          }}
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={selectedItems.includes(row.original.id)}
-          onChange={e => {
-            if (e.target.checked) {
-              setSelectedItems(prev => [...prev, row.original.id]);
-            } else {
-              setSelectedItems(prev => prev.filter(id => id !== row.original.id));
-            }
-          }}
-        />
-      ),
-      size: 50,
-    },
-    {
-      header: 'No',
-      cell: ({ row }) => row.original.sequence,
-      size: 60,
-    },
-    {
-      header: '제약사',
-      cell: ({ row }) => row.original.manufacturerName ?? '-',
-      size: 150,
-    },
-    {
-      header: '제품명',
-      cell: ({ row }) => (
-        <Link to={`/admin/products/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-          {row.original.productName ?? '-'}
-        </Link>
-      ),
-      size: 300,
-    },
-    {
-      header: '성분명',
-      cell: ({ row }) => row.original.composition ?? '-',
-      size: 250,
-    },
-    {
-      header: '제품코드',
-      cell: ({ row }) => row.original.productCode,
-      size: 120,
-    },
-    {
-      header: '약가',
-      cell: ({ row }) => {
-        return row.original.price !== null ? `${row.original.price.toLocaleString()}` : '-';
-      },
-      size: 100,
-    },
-    {
-      header: '기본수수료율',
-      cell: ({ row }) => (row.original.feeRate !== null ? `${row.original.feeRate}%` : '-'),
-      size: 120,
-    },
-    {
-      header: '변경요율',
-      cell: ({ row }) => getChangedRateDisplay(row.original),
-      size: 120,
-    },
-    {
-      header: '상태',
-      cell: ({ row }) => getStatusDisplay(row.original),
-      size: 200,
-    },
-    {
-      header: '비고',
-      cell: ({ row }) => row.original.note ?? '-',
-      size: 200,
-    },
-  ];
-
   const table = useReactTable({
     data,
-    columns,
+    columns: [
+      {
+        id: 'select',
+        header: () => (
+          <Checkbox
+            checked={selectedItems.length === data.length && data.length > 0}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedItems(data.map(item => item.id));
+              } else {
+                setSelectedItems([]);
+              }
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={selectedItems.includes(row.original.id)}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedItems(prev => [...prev, row.original.id]);
+              } else {
+                setSelectedItems(prev => prev.filter(id => id !== row.original.id));
+              }
+            }}
+          />
+        ),
+        size: 50,
+      },
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 60,
+      },
+      {
+        header: '제약사',
+        cell: ({ row }) => row.original.manufacturerName ?? '-',
+        size: 150,
+      },
+      {
+        header: '제품명',
+        cell: ({ row }) => (
+          <Link to={`/admin/products/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+            {row.original.productName ?? '-'}
+          </Link>
+        ),
+        size: 300,
+      },
+      {
+        header: '성분명',
+        cell: ({ row }) => row.original.composition ?? '-',
+        size: 250,
+      },
+      {
+        header: '제품코드',
+        cell: ({ row }) => row.original.productCode,
+        size: 120,
+      },
+      {
+        header: '약가',
+        cell: ({ row }) => {
+          return row.original.price !== null ? `${row.original.price.toLocaleString()}` : '-';
+        },
+        size: 100,
+      },
+      {
+        header: '기본수수료율',
+        cell: ({ row }) => (row.original.feeRate !== null ? `${row.original.feeRate}%` : '-'),
+        size: 120,
+      },
+      {
+        header: '변경요율',
+        cell: ({ row }) => getChangedRateDisplay(row.original),
+        size: 120,
+      },
+      {
+        header: '상태',
+        cell: ({ row }) => getStatusDisplay(row.original),
+        size: 200,
+      },
+      {
+        header: '비고',
+        cell: ({ row }) => row.original.note ?? '-',
+        size: 200,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
@@ -438,7 +436,7 @@ export default function MpAdminProductList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
@@ -446,7 +444,7 @@ export default function MpAdminProductList() {
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>

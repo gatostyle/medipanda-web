@@ -18,7 +18,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -26,7 +26,7 @@ import { ArrowLeft, DocumentDownload } from 'iconsax-react';
 import { getDownloadSettlementPartnerSummaryExcel, getSettlementPartnerSummary, SettlementPartnerResponse } from 'medipanda/backend';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 export default function MpAdminSettlementEdit() {
@@ -85,8 +85,9 @@ export default function MpAdminSettlementEdit() {
     }
   };
 
-  const columns = useMemo<ColumnDef<Sequenced<SettlementPartnerResponse>>[]>(
-    () => [
+  const table = useReactTable({
+    data,
+    columns: [
       {
         header: 'No',
         cell: ({ row }) => row.original.sequence,
@@ -140,12 +141,6 @@ export default function MpAdminSettlementEdit() {
         size: 130,
       },
     ],
-    [],
-  );
-
-  const table = useReactTable({
-    data,
-    columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {

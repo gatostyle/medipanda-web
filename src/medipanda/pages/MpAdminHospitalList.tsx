@@ -23,7 +23,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -126,96 +126,94 @@ export default function MpAdminHospitalList() {
     });
   };
 
-  const columns: ColumnDef<Sequenced<HospitalResponse>>[] = [
-    {
-      id: 'select',
-      header: () => (
-        <Checkbox
-          checked={selectedItems.length === data.length && data.length > 0}
-          onChange={e => {
-            if (e.target.checked) {
-              setSelectedItems(data.map(item => item.id));
-            } else {
-              setSelectedItems([]);
-            }
-          }}
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={selectedItems.includes(row.original.id)}
-          onChange={e => {
-            if (e.target.checked) {
-              setSelectedItems(prev => [...prev, row.original.id]);
-            } else {
-              setSelectedItems(prev => prev.filter(id => id !== row.original.id));
-            }
-          }}
-        />
-      ),
-      size: 60,
-    },
-    {
-      header: 'No',
-      cell: ({ row }) => row.original.sequence,
-      size: 60,
-    },
-    {
-      header: '지역',
-      cell: ({ row }) => {
-        const value = row.original.sido;
-        const sidoMap: Record<string, string> = {
-          SEOUL: '서울',
-          GYEONGGI: '경기',
-          INCHEON: '인천',
-          BUSAN: '부산',
-          DAEGU: '대구',
-          DAEJEON: '대전',
-          GWANGJU: '광주',
-          ULSAN: '울산',
-          SEJONG: '세종',
-          GANGWON: '강원',
-          CHUNGBUK: '충북',
-          CHUNGNAM: '충남',
-          JEONBUK: '전북',
-          JEONNAM: '전남',
-          GYEONGBUK: '경북',
-          GYEONGNAM: '경남',
-          JEJU: '제주',
-        };
-        return sidoMap[value] ?? value;
-      },
-      size: 80,
-    },
-    {
-      header: '병의원명',
-      cell: ({ row }) => row.original.name,
-      size: 200,
-    },
-    {
-      header: '주소',
-      cell: ({ row }) => row.original.address,
-      size: 400,
-    },
-    {
-      header: '허가예정일',
-      cell: ({ row }) => {
-        const value = row.original.scheduledOpenDate;
-
-        return value !== null ? formatYyyyMmDd(value) : '-';
-      },
-      size: 120,
-    },
-    {
-      header: '분류',
-      cell: ({ row }) => row.original.source,
-      size: 120,
-    },
-  ];
-
   const table = useReactTable({
     data,
-    columns,
+    columns: [
+      {
+        id: 'select',
+        header: () => (
+          <Checkbox
+            checked={selectedItems.length === data.length && data.length > 0}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedItems(data.map(item => item.id));
+              } else {
+                setSelectedItems([]);
+              }
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={selectedItems.includes(row.original.id)}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedItems(prev => [...prev, row.original.id]);
+              } else {
+                setSelectedItems(prev => prev.filter(id => id !== row.original.id));
+              }
+            }}
+          />
+        ),
+        size: 60,
+      },
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 60,
+      },
+      {
+        header: '지역',
+        cell: ({ row }) => {
+          const value = row.original.sido;
+          const sidoMap: Record<string, string> = {
+            SEOUL: '서울',
+            GYEONGGI: '경기',
+            INCHEON: '인천',
+            BUSAN: '부산',
+            DAEGU: '대구',
+            DAEJEON: '대전',
+            GWANGJU: '광주',
+            ULSAN: '울산',
+            SEJONG: '세종',
+            GANGWON: '강원',
+            CHUNGBUK: '충북',
+            CHUNGNAM: '충남',
+            JEONBUK: '전북',
+            JEONNAM: '전남',
+            GYEONGBUK: '경북',
+            GYEONGNAM: '경남',
+            JEJU: '제주',
+          };
+          return sidoMap[value] ?? value;
+        },
+        size: 80,
+      },
+      {
+        header: '병의원명',
+        cell: ({ row }) => row.original.name,
+        size: 200,
+      },
+      {
+        header: '주소',
+        cell: ({ row }) => row.original.address,
+        size: 400,
+      },
+      {
+        header: '허가예정일',
+        cell: ({ row }) => {
+          const value = row.original.scheduledOpenDate;
+
+          return value !== null ? formatYyyyMmDd(value) : '-';
+        },
+        size: 120,
+      },
+      {
+        header: '분류',
+        cell: ({ row }) => row.original.source,
+        size: 120,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
@@ -430,7 +428,7 @@ export default function MpAdminHospitalList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
@@ -438,7 +436,7 @@ export default function MpAdminHospitalList() {
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>

@@ -23,7 +23,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -102,94 +102,92 @@ export default function MpAdminPrescriptionReceptionList() {
     }
   };
 
-  const columns: ColumnDef<Sequenced<PrescriptionResponse>>[] = [
-    {
-      header: 'No',
-      cell: ({ row }) => row.original.sequence,
-      size: 60,
-    },
-    {
-      header: '딜러번호',
-      cell: ({ row }) => row.original.dealerId,
-      size: 100,
-    },
-    {
-      header: '아이디',
-      cell: ({ row }) => row.original.userId,
-      size: 120,
-    },
-    {
-      header: '회사명',
-      cell: ({ row }) => row.original.companyName,
-      size: 150,
-    },
-    {
-      header: '딜러명',
-      cell: ({ row }) => row.original.dealerName,
-      size: 100,
-    },
-    {
-      header: '처방월',
-      cell: ({ row }) => formatYyyyMm(row.original.prescriptionMonth),
-      size: 100,
-    },
-    {
-      header: '정산월',
-      cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
-      size: 100,
-    },
-    {
-      header: '접수신청일',
-      cell: ({ row }) => formatYyyyMmDd(row.original.submittedAt),
-      size: 120,
-    },
-    {
-      header: '접수파일',
-      cell: ({ row }) => (
-        <Button
-          variant='contained'
-          color='success'
-          size='small'
-          href={`/v1/prescriptions/partners/${row.original.id}/edi-files/download`}
-          target='_blank'
-        >
-          다운로드
-        </Button>
-      ),
-      size: 120,
-    },
-    {
-      header: '접수상태',
-      cell: ({ row }) => {
-        const status = row.original.status;
-
-        const labels = {
-          PENDING: '접수대기',
-          IN_PROGRESS: '처리중',
-          COMPLETED: '입력완료',
-        };
-
-        return <Chip label={labels[status]} size='small' sx={{ backgroundColor: '#4caf50', color: 'white' }} />;
-      },
-      size: 100,
-    },
-    {
-      header: '관리자확인',
-      cell: ({ row }) =>
-        row.original.status === 'PENDING' ? (
-          <Button variant='contained' color='success' size='small' onClick={() => handleConfirm(row.original.id)}>
-            접수확인
-          </Button>
-        ) : (
-          <Typography variant='body2'>{row.original.checkedAt ? formatYyyyMmDd(row.original.checkedAt) : '-'}</Typography>
-        ),
-      size: 120,
-    },
-  ];
-
   const table = useReactTable({
     data,
-    columns,
+    columns: [
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 60,
+      },
+      {
+        header: '딜러번호',
+        cell: ({ row }) => row.original.dealerId,
+        size: 100,
+      },
+      {
+        header: '아이디',
+        cell: ({ row }) => row.original.userId,
+        size: 120,
+      },
+      {
+        header: '회사명',
+        cell: ({ row }) => row.original.companyName,
+        size: 150,
+      },
+      {
+        header: '딜러명',
+        cell: ({ row }) => row.original.dealerName,
+        size: 100,
+      },
+      {
+        header: '처방월',
+        cell: ({ row }) => formatYyyyMm(row.original.prescriptionMonth),
+        size: 100,
+      },
+      {
+        header: '정산월',
+        cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
+        size: 100,
+      },
+      {
+        header: '접수신청일',
+        cell: ({ row }) => formatYyyyMmDd(row.original.submittedAt),
+        size: 120,
+      },
+      {
+        header: '접수파일',
+        cell: ({ row }) => (
+          <Button
+            variant='contained'
+            color='success'
+            size='small'
+            href={`/v1/prescriptions/partners/${row.original.id}/edi-files/download`}
+            target='_blank'
+          >
+            다운로드
+          </Button>
+        ),
+        size: 120,
+      },
+      {
+        header: '접수상태',
+        cell: ({ row }) => {
+          const status = row.original.status;
+
+          const labels = {
+            PENDING: '접수대기',
+            IN_PROGRESS: '처리중',
+            COMPLETED: '입력완료',
+          };
+
+          return <Chip label={labels[status]} size='small' sx={{ backgroundColor: '#4caf50', color: 'white' }} />;
+        },
+        size: 100,
+      },
+      {
+        header: '관리자확인',
+        cell: ({ row }) =>
+          row.original.status === 'PENDING' ? (
+            <Button variant='contained' color='success' size='small' onClick={() => handleConfirm(row.original.id)}>
+              접수확인
+            </Button>
+          ) : (
+            <Typography variant='body2'>{row.original.checkedAt ? formatYyyyMmDd(row.original.checkedAt) : '-'}</Typography>
+          ),
+        size: 120,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
@@ -355,7 +353,7 @@ export default function MpAdminPrescriptionReceptionList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
@@ -363,7 +361,7 @@ export default function MpAdminPrescriptionReceptionList() {
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>

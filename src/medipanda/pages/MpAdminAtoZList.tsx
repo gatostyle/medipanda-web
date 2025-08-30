@@ -19,7 +19,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -61,71 +61,69 @@ export default function MpAdminAtoZList() {
     },
   });
 
-  const columns: ColumnDef<Sequenced<BoardPostResponse>>[] = [
-    {
-      id: 'select',
-      header: () => (
-        <Checkbox
-          checked={selectedItems.length === data.length && data.length > 0}
-          onChange={e => {
-            if (e.target.checked) {
-              setSelectedItems(data.map(item => item.id));
-            } else {
-              setSelectedItems([]);
-            }
-          }}
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={selectedItems.includes(row.original.id)}
-          onChange={e => {
-            if (e.target.checked) {
-              setSelectedItems(prev => [...prev, row.original.id]);
-            } else {
-              setSelectedItems(prev => prev.filter(id => id !== row.original.id));
-            }
-          }}
-        />
-      ),
-      size: 50,
-    },
-    {
-      header: 'No',
-      cell: ({ row }) => row.original.sequence,
-      size: 80,
-    },
-    {
-      header: '제목',
-      cell: ({ row }) => (
-        <Link to={`/admin/atoz/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-          {row.original.title}
-        </Link>
-      ),
-    },
-    {
-      header: '상태',
-      cell: ({ row }) => {
-        const isExposed = row.original.isExposed;
-        return <Chip label={isExposed ? '노출' : '미노출'} color={isExposed ? 'success' : 'default'} variant='light' size='small' />;
-      },
-      size: 100,
-    },
-    {
-      header: '조회 수',
-      cell: ({ row }) => row.original.viewsCount.toLocaleString(),
-      size: 100,
-    },
-    {
-      header: '작성일',
-      cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
-      size: 120,
-    },
-  ];
-
   const table = useReactTable({
     data,
-    columns,
+    columns: [
+      {
+        id: 'select',
+        header: () => (
+          <Checkbox
+            checked={selectedItems.length === data.length && data.length > 0}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedItems(data.map(item => item.id));
+              } else {
+                setSelectedItems([]);
+              }
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={selectedItems.includes(row.original.id)}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedItems(prev => [...prev, row.original.id]);
+              } else {
+                setSelectedItems(prev => prev.filter(id => id !== row.original.id));
+              }
+            }}
+          />
+        ),
+        size: 50,
+      },
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 80,
+      },
+      {
+        header: '제목',
+        cell: ({ row }) => (
+          <Link to={`/admin/atoz/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+            {row.original.title}
+          </Link>
+        ),
+      },
+      {
+        header: '상태',
+        cell: ({ row }) => {
+          const isExposed = row.original.isExposed;
+          return <Chip label={isExposed ? '노출' : '미노출'} color={isExposed ? 'success' : 'default'} variant='light' size='small' />;
+        },
+        size: 100,
+      },
+      {
+        header: '조회 수',
+        cell: ({ row }) => row.original.viewsCount.toLocaleString(),
+        size: 100,
+      },
+      {
+        header: '작성일',
+        cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
+        size: 120,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
@@ -300,7 +298,7 @@ export default function MpAdminAtoZList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
@@ -308,7 +306,7 @@ export default function MpAdminAtoZList() {
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>

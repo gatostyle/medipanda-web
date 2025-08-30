@@ -13,7 +13,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { ArrowLeft } from 'iconsax-react';
@@ -26,7 +26,7 @@ import {
   SettlementResponse,
 } from 'medipanda/backend';
 import { useSnackbar } from 'notistack';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 interface SettlementResponseWithMockData extends SettlementResponse {
@@ -76,8 +76,9 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
     fetchData();
   }, [id]);
 
-  const columns = useMemo<ColumnDef<SettlementPartnerProductResponse>[]>(
-    () => [
+  const table = useReactTable({
+    data: products,
+    columns: [
       {
         header: 'No',
         accessorFn: (_, index) => index + 1,
@@ -134,12 +135,6 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
         size: 200,
       },
     ],
-    [],
-  );
-
-  const table = useReactTable({
-    data: products,
-    columns,
     getCoreRowModel: getCoreRowModel(),
   });
 

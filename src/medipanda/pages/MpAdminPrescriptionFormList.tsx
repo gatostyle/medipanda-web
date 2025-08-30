@@ -18,7 +18,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -89,109 +89,107 @@ export default function MpAdminPrescriptionFormList() {
     }
   };
 
-  const columns: ColumnDef<Sequenced<PrescriptionPartnerResponse>>[] = [
-    {
-      id: 'select',
-      header: () => (
-        <Checkbox
-          checked={selectedItems.length === data.length && data.length > 0}
-          onChange={e => {
-            if (e.target.checked) {
-              setSelectedItems(data.map(item => item.id));
-            } else {
-              setSelectedItems([]);
-            }
-          }}
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={selectedItems.includes(row.original.id)}
-          onChange={e => {
-            if (e.target.checked) {
-              setSelectedItems(prev => [...prev, row.original.id]);
-            } else {
-              setSelectedItems(prev => prev.filter(id => id !== row.original.id));
-            }
-          }}
-        />
-      ),
-      size: 50,
-    },
-    {
-      header: 'No',
-      cell: ({ row }) => row.original.sequence,
-      size: 60,
-    },
-    {
-      header: '제약사명',
-      cell: ({ row }) => row.original.drugCompany,
-      size: 120,
-    },
-    {
-      header: '회사명',
-      cell: ({ row }) => row.original.companyName,
-      size: 120,
-    },
-    {
-      header: '거래처코드',
-      cell: ({ row }) => row.original.institutionCode,
-      size: 100,
-    },
-    {
-      header: '거래처명',
-      cell: ({ row }) => (
-        <Link to={`/admin/prescription-forms/${row.original.id}/products`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-          {row.original.dealerName}
-        </Link>
-      ),
-      size: 100,
-    },
-    {
-      header: '사업자등록번호',
-      cell: ({ row }) => row.original.businessNumber,
-      size: 130,
-    },
-    {
-      header: '처방일',
-      cell: ({ row }) => formatYyyyMm(row.original.prescriptionMonth),
-      size: 100,
-    },
-    {
-      header: '접수일',
-      cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
-      size: 100,
-    },
-    {
-      header: '입력일',
-      cell: ({ row }) => formatYyyyMmDd(row.original.inputDate),
-      size: 100,
-    },
-    {
-      header: '처방금액',
-      cell: ({ row }) => `${row.original.amount.toLocaleString()}`,
-      size: 100,
-    },
-    {
-      header: '승인상태',
-      cell: ({ row }) => {
-        const status = row.original.status;
-
-        const labels = {
-          PENDING: '승인대기',
-          IN_PROGRESS: '승인진행중',
-          COMPLETED: '승인완료',
-        };
-
-        return labels[status];
-      },
-      size: 80,
-    },
-  ];
-
   const table = useReactTable({
     data,
-    columns,
+    columns: [
+      {
+        id: 'select',
+        header: () => (
+          <Checkbox
+            checked={selectedItems.length === data.length && data.length > 0}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedItems(data.map(item => item.id));
+              } else {
+                setSelectedItems([]);
+              }
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={selectedItems.includes(row.original.id)}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedItems(prev => [...prev, row.original.id]);
+              } else {
+                setSelectedItems(prev => prev.filter(id => id !== row.original.id));
+              }
+            }}
+          />
+        ),
+        size: 50,
+      },
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 60,
+      },
+      {
+        header: '제약사명',
+        cell: ({ row }) => row.original.drugCompany,
+        size: 120,
+      },
+      {
+        header: '회사명',
+        cell: ({ row }) => row.original.companyName,
+        size: 120,
+      },
+      {
+        header: '거래처코드',
+        cell: ({ row }) => row.original.institutionCode,
+        size: 100,
+      },
+      {
+        header: '거래처명',
+        cell: ({ row }) => (
+          <Link to={`/admin/prescription-forms/${row.original.id}/products`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+            {row.original.dealerName}
+          </Link>
+        ),
+        size: 100,
+      },
+      {
+        header: '사업자등록번호',
+        cell: ({ row }) => row.original.businessNumber,
+        size: 130,
+      },
+      {
+        header: '처방일',
+        cell: ({ row }) => formatYyyyMm(row.original.prescriptionMonth),
+        size: 100,
+      },
+      {
+        header: '접수일',
+        cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
+        size: 100,
+      },
+      {
+        header: '입력일',
+        cell: ({ row }) => formatYyyyMmDd(row.original.inputDate),
+        size: 100,
+      },
+      {
+        header: '처방금액',
+        cell: ({ row }) => `${row.original.amount.toLocaleString()}`,
+        size: 100,
+      },
+      {
+        header: '승인상태',
+        cell: ({ row }) => {
+          const status = row.original.status;
+
+          const labels = {
+            PENDING: '승인대기',
+            IN_PROGRESS: '승인진행중',
+            COMPLETED: '승인완료',
+          };
+
+          return labels[status];
+        },
+        size: 80,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
@@ -366,7 +364,7 @@ export default function MpAdminPrescriptionFormList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
@@ -374,7 +372,7 @@ export default function MpAdminPrescriptionFormList() {
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>

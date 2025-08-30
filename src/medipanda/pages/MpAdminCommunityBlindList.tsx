@@ -18,7 +18,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -59,92 +59,90 @@ export default function MpAdminCommunityBlindList() {
     },
   });
 
-  const columns: ColumnDef<Sequenced<BlindPostResponse>>[] = [
-    {
-      id: 'select',
-      header: () => (
-        <Checkbox
-          checked={selectedItems.length === data.length && data.length > 0}
-          onChange={e => {
-            if (e.target.checked) {
-              setSelectedItems(data.map(item => item.id));
-            } else {
-              setSelectedItems([]);
-            }
-          }}
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={selectedItems.includes(row.original.id)}
-          onChange={e => {
-            if (e.target.checked) {
-              setSelectedItems(prev => [...prev, row.original.id]);
-            } else {
-              setSelectedItems(prev => prev.filter(id => id !== row.original.id));
-            }
-          }}
-        />
-      ),
-      size: 50,
-    },
-    {
-      header: 'No',
-      cell: ({ row }) => row.original.sequence,
-      size: 60,
-    },
-    {
-      header: '아이디',
-      cell: ({ row }) => row.original.userId,
-      size: 120,
-    },
-    {
-      header: '회원명',
-      cell: ({ row }) => row.original.memberName,
-      size: 100,
-    },
-    {
-      header: '닉네임',
-      cell: ({ row }) => row.original.nickname,
-      size: 100,
-    },
-    {
-      header: '글 유형',
-      cell: ({ row }) => {
-        const postType = row.original.postType;
-        const label = postType === 'BOARD' ? '포스트' : '댓글';
-        return label;
-      },
-      size: 80,
-    },
-    {
-      header: '글 내용',
-      cell: ({ row }) => {
-        const content = row.original.content;
-        return (
-          <Typography
-            sx={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              maxWidth: 300,
-            }}
-          >
-            {content}
-          </Typography>
-        );
-      },
-    },
-    {
-      header: '블라인드 처리일',
-      cell: ({ row }) => formatYyyyMmDdHhMm(row.original.blindAt),
-      size: 150,
-    },
-  ];
-
   const table = useReactTable({
     data,
-    columns,
+    columns: [
+      {
+        id: 'select',
+        header: () => (
+          <Checkbox
+            checked={selectedItems.length === data.length && data.length > 0}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedItems(data.map(item => item.id));
+              } else {
+                setSelectedItems([]);
+              }
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={selectedItems.includes(row.original.id)}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedItems(prev => [...prev, row.original.id]);
+              } else {
+                setSelectedItems(prev => prev.filter(id => id !== row.original.id));
+              }
+            }}
+          />
+        ),
+        size: 50,
+      },
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 60,
+      },
+      {
+        header: '아이디',
+        cell: ({ row }) => row.original.userId,
+        size: 120,
+      },
+      {
+        header: '회원명',
+        cell: ({ row }) => row.original.memberName,
+        size: 100,
+      },
+      {
+        header: '닉네임',
+        cell: ({ row }) => row.original.nickname,
+        size: 100,
+      },
+      {
+        header: '글 유형',
+        cell: ({ row }) => {
+          const postType = row.original.postType;
+          const label = postType === 'BOARD' ? '포스트' : '댓글';
+          return label;
+        },
+        size: 80,
+      },
+      {
+        header: '글 내용',
+        cell: ({ row }) => {
+          const content = row.original.content;
+          return (
+            <Typography
+              sx={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                maxWidth: 300,
+              }}
+            >
+              {content}
+            </Typography>
+          );
+        },
+      },
+      {
+        header: '블라인드 처리일',
+        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.blindAt),
+        size: 150,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
@@ -313,7 +311,7 @@ export default function MpAdminCommunityBlindList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
@@ -321,7 +319,7 @@ export default function MpAdminCommunityBlindList() {
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>

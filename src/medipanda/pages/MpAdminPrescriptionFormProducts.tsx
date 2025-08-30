@@ -17,7 +17,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { Add, Minus, SearchNormal1 } from 'iconsax-react';
 import {
@@ -36,10 +36,9 @@ import { MpChangeHistoryDialog } from 'medipanda/components/MpChangeHistoryDialo
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
 import { MpOcrRequestModal } from 'medipanda/components/MpOcrRequestModal';
 import { MpPartnerSearchModal } from 'medipanda/components/MpPartnerSearchModal';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
 import { Sequenced } from 'medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MpPartnerProductSelectModal } from '../components/MpPartnerProductSelectModal';
 import { DateFix } from '../utils/dateFormat';
@@ -47,7 +46,6 @@ import { DateFix } from '../utils/dateFormat';
 export default function MpAdminPrescriptionFormProducts() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const notImplementedDialog = useMpNotImplementedDialog();
   const { enqueueSnackbar } = useSnackbar();
   const [changeHistoryOpen, setChangeHistoryOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -104,8 +102,9 @@ export default function MpAdminPrescriptionFormProducts() {
     );
   }, []);
 
-  const columns = useMemo<ColumnDef<Sequenced<PrescriptionPartnerProductResponse>>[]>(
-    () => [
+  const table = useReactTable({
+    data: partnerProducts,
+    columns: [
       {
         header: 'No',
         cell: ({ row }) => row.original.sequence,
@@ -213,12 +212,6 @@ export default function MpAdminPrescriptionFormProducts() {
         size: 150,
       },
     ],
-    [handleProductChange, notImplementedDialog],
-  );
-
-  const table = useReactTable({
-    data: partnerProducts,
-    columns,
     getCoreRowModel: getCoreRowModel(),
   });
 

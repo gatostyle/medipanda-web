@@ -15,14 +15,14 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import ScrollX from 'components/ScrollX';
 import { BoardReportResponse, CommentResponse, getBoardDetails } from 'medipanda/backend';
 import { BOARD_TYPE_LABELS } from 'medipanda/ui-labels';
 import { formatYyyyMmDd, formatYyyyMmDdHhMm } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 export default function MpAdminCommunityPostDetail() {
@@ -106,8 +106,9 @@ export default function MpAdminCommunityPostDetail() {
   const [comments, setComments] = useState<Sequenced<CommentResponse>[]>([]);
   const [reports, setReports] = useState<Sequenced<BoardReportResponse>[]>([]);
 
-  const commentColumns = useMemo<ColumnDef<Sequenced<CommentResponse>>[]>(
-    () => [
+  const commentTable = useReactTable({
+    data: comments,
+    columns: [
       {
         header: 'No',
         cell: ({ row }) => row.original.sequence,
@@ -139,11 +140,18 @@ export default function MpAdminCommunityPostDetail() {
         size: 160,
       },
     ],
-    [],
-  );
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    state: {
+      pagination: { pageIndex: 0, pageSize: 20 },
+    },
+    pageCount: 1,
+    manualPagination: true,
+  });
 
-  const reportColumns = useMemo<ColumnDef<Sequenced<BoardReportResponse>>[]>(
-    () => [
+  const reportTable = useReactTable({
+    data: reports,
+    columns: [
       {
         header: 'No',
         cell: ({ row }) => row.original.sequence,
@@ -175,24 +183,6 @@ export default function MpAdminCommunityPostDetail() {
         size: 160,
       },
     ],
-    [],
-  );
-
-  const commentTable = useReactTable({
-    data: comments,
-    columns: commentColumns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      pagination: { pageIndex: 0, pageSize: 20 },
-    },
-    pageCount: 1,
-    manualPagination: true,
-  });
-
-  const reportTable = useReactTable({
-    data: reports,
-    columns: reportColumns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {

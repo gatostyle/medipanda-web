@@ -18,7 +18,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -66,105 +66,103 @@ export default function MpAdminSettlementList() {
     },
   });
 
-  const columns: ColumnDef<Sequenced<SettlementResponse>>[] = [
-    {
-      id: 'select',
-      header: () => (
-        <Checkbox
-          checked={selectedItems.length === data.length && data.length > 0}
-          onChange={e => {
-            if (e.target.checked) {
-              setSelectedItems(data.map(item => item.id));
-            } else {
-              setSelectedItems([]);
-            }
-          }}
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={selectedItems.includes(row.original.id)}
-          onChange={e => {
-            if (e.target.checked) {
-              setSelectedItems(prev => [...prev, row.original.id]);
-            } else {
-              setSelectedItems(prev => prev.filter(id => id !== row.original.id));
-            }
-          }}
-        />
-      ),
-      size: 50,
-    },
-    {
-      header: 'No',
-      cell: ({ row }) => row.original.sequence,
-      size: 60,
-    },
-    {
-      header: '딜러번호',
-      cell: ({ row }) => row.original.dealerId,
-      size: 100,
-    },
-    {
-      header: '정산월',
-      cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
-      size: 100,
-    },
-    {
-      header: '회사명',
-      cell: ({ row }) => row.original.companyName,
-      size: 150,
-    },
-    {
-      header: '딜러명',
-      cell: ({ row }) => (
-        <Link to={`/admin/settlements/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-          {row.original.dealerName}
-        </Link>
-      ),
-      size: 100,
-    },
-    {
-      header: '처방금액',
-      cell: ({ row }) => row.original.prescriptionAmount.toLocaleString(),
-      size: 120,
-    },
-    {
-      header: '공급가액',
-      cell: ({ row }) => row.original.supplyAmount.toLocaleString(),
-      size: 120,
-    },
-    {
-      header: '세액',
-      cell: ({ row }) => row.original.taxAmount.toLocaleString(),
-      size: 100,
-    },
-    {
-      header: '합계금액',
-      cell: ({ row }) => row.original.totalAmount.toLocaleString(),
-      size: 120,
-    },
-    {
-      header: '사용자확인',
-      cell: ({ row }) => {
-        const value = row.original.status;
-
-        switch (value) {
-          case 'REQUEST':
-            return '정산요청';
-          case 'OBJECTION':
-            return '이의신청';
-          default:
-            return '-';
-        }
-      },
-      size: 100,
-    },
-  ];
-
   const table = useReactTable({
     data,
-    columns,
+    columns: [
+      {
+        id: 'select',
+        header: () => (
+          <Checkbox
+            checked={selectedItems.length === data.length && data.length > 0}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedItems(data.map(item => item.id));
+              } else {
+                setSelectedItems([]);
+              }
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={selectedItems.includes(row.original.id)}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedItems(prev => [...prev, row.original.id]);
+              } else {
+                setSelectedItems(prev => prev.filter(id => id !== row.original.id));
+              }
+            }}
+          />
+        ),
+        size: 50,
+      },
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 60,
+      },
+      {
+        header: '딜러번호',
+        cell: ({ row }) => row.original.dealerId,
+        size: 100,
+      },
+      {
+        header: '정산월',
+        cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
+        size: 100,
+      },
+      {
+        header: '회사명',
+        cell: ({ row }) => row.original.companyName,
+        size: 150,
+      },
+      {
+        header: '딜러명',
+        cell: ({ row }) => (
+          <Link to={`/admin/settlements/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+            {row.original.dealerName}
+          </Link>
+        ),
+        size: 100,
+      },
+      {
+        header: '처방금액',
+        cell: ({ row }) => row.original.prescriptionAmount.toLocaleString(),
+        size: 120,
+      },
+      {
+        header: '공급가액',
+        cell: ({ row }) => row.original.supplyAmount.toLocaleString(),
+        size: 120,
+      },
+      {
+        header: '세액',
+        cell: ({ row }) => row.original.taxAmount.toLocaleString(),
+        size: 100,
+      },
+      {
+        header: '합계금액',
+        cell: ({ row }) => row.original.totalAmount.toLocaleString(),
+        size: 120,
+      },
+      {
+        header: '사용자확인',
+        cell: ({ row }) => {
+          const value = row.original.status;
+
+          switch (value) {
+            case 'REQUEST':
+              return '정산요청';
+            case 'OBJECTION':
+              return '이의신청';
+            default:
+              return '-';
+          }
+        },
+        size: 100,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
@@ -373,7 +371,7 @@ export default function MpAdminSettlementList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
@@ -381,7 +379,7 @@ export default function MpAdminSettlementList() {
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>

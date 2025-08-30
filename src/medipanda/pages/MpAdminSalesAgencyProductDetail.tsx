@@ -17,7 +17,7 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import ScrollX from 'components/ScrollX';
 import {
   getProductApplicants,
@@ -29,7 +29,7 @@ import { TiptapEditor } from 'medipanda/components/TiptapEditor';
 import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export default function MpAdminSalesAgencyProductDetail() {
@@ -43,8 +43,9 @@ export default function MpAdminSalesAgencyProductDetail() {
 
   const [applicants, setApplicants] = useState<Sequenced<SalesAgencyProductApplicantResponse>[]>([]);
 
-  const columns = useMemo<ColumnDef<Sequenced<SalesAgencyProductApplicantResponse>>[]>(
-    () => [
+  const table = useReactTable({
+    data: applicants,
+    columns: [
       {
         header: 'No',
         cell: ({ row }) => row.original.sequence,
@@ -92,12 +93,6 @@ export default function MpAdminSalesAgencyProductDetail() {
         size: 100,
       },
     ],
-    [],
-  );
-
-  const table = useReactTable({
-    data: applicants,
-    columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {

@@ -18,7 +18,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -59,60 +59,58 @@ export default function MpAdminAdminList() {
     formik.resetForm();
   };
 
-  const columns: ColumnDef<Sequenced<MemberResponse>>[] = [
-    {
-      header: 'No',
-      cell: ({ row }) => row.original.sequence,
-      size: 60,
-    },
-    {
-      header: '아이디',
-      cell: ({ row }) => row.original.userId,
-      size: 120,
-    },
-    {
-      header: '관리자',
-      cell: ({ row }) => (
-        <Link to={`/admin/admins/${row.original.userId}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-          {row.original.name}
-        </Link>
-      ),
-      size: 120,
-    },
-    {
-      header: '이메일',
-      cell: ({ row }) => row.original.email,
-      size: 200,
-    },
-    {
-      header: '연락처',
-      cell: ({ row }) => row.original.phoneNumber,
-      size: 150,
-    },
-    {
-      header: '권한',
-      cell: ({ row }) => {
-        return MEMBER_ROLE_LABELS[row.original.role];
-      },
-      size: 100,
-    },
-    {
-      header: '상태',
-      cell: ({ row }) => {
-        return <Chip label={MEMBER_ACCOUNT_STATUS_LABELS[row.original.accountStatus]} color='success' variant='light' size='small' />;
-      },
-      size: 80,
-    },
-    {
-      header: '등록일',
-      cell: ({ row }) => formatYyyyMmDdHhMm(row.original.registrationDate),
-      size: 150,
-    },
-  ];
-
   const table = useReactTable({
     data,
-    columns,
+    columns: [
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 60,
+      },
+      {
+        header: '아이디',
+        cell: ({ row }) => row.original.userId,
+        size: 120,
+      },
+      {
+        header: '관리자',
+        cell: ({ row }) => (
+          <Link to={`/admin/admins/${row.original.userId}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+            {row.original.name}
+          </Link>
+        ),
+        size: 120,
+      },
+      {
+        header: '이메일',
+        cell: ({ row }) => row.original.email,
+        size: 200,
+      },
+      {
+        header: '연락처',
+        cell: ({ row }) => row.original.phoneNumber,
+        size: 150,
+      },
+      {
+        header: '권한',
+        cell: ({ row }) => {
+          return MEMBER_ROLE_LABELS[row.original.role];
+        },
+        size: 100,
+      },
+      {
+        header: '상태',
+        cell: ({ row }) => {
+          return <Chip label={MEMBER_ACCOUNT_STATUS_LABELS[row.original.accountStatus]} color='success' variant='light' size='small' />;
+        },
+        size: 80,
+      },
+      {
+        header: '등록일',
+        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.registrationDate),
+        size: 150,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
@@ -231,7 +229,7 @@ export default function MpAdminAdminList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
@@ -239,7 +237,7 @@ export default function MpAdminAdminList() {
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>

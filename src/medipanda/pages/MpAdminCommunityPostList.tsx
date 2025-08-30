@@ -19,7 +19,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -74,106 +74,104 @@ export default function MpAdminCommunityPostList() {
     },
   });
 
-  const columns: ColumnDef<Sequenced<BoardPostResponse>>[] = [
-    {
-      id: 'select',
-      header: () => (
-        <Checkbox
-          checked={selectedItems.length === data.length && data.length > 0}
-          onChange={e => {
-            if (e.target.checked) {
-              setSelectedItems(data.map(item => item.id));
-            } else {
-              setSelectedItems([]);
-            }
-          }}
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={selectedItems.includes(row.original.id)}
-          onChange={e => {
-            if (e.target.checked) {
-              setSelectedItems(prev => [...prev, row.original.id]);
-            } else {
-              setSelectedItems(prev => prev.filter(id => id !== row.original.id));
-            }
-          }}
-        />
-      ),
-      size: 50,
-    },
-    {
-      header: 'No',
-      cell: ({ row }) => row.original.sequence,
-      size: 60,
-    },
-    {
-      header: '게시판유형',
-      cell: ({ row }) => {
-        const boardType = row.original.boardType;
-        return <Chip label={BOARD_TYPE_LABELS[boardType]} color='primary' variant='light' size='small' />;
-      },
-      size: 120,
-    },
-    {
-      header: '아이디',
-      cell: ({ row }) => row.original.userId,
-      size: 100,
-    },
-    {
-      header: '회원명',
-      cell: ({ row }) => row.original.name,
-      size: 100,
-    },
-    {
-      header: '닉네임',
-      cell: ({ row }) => row.original.nickname,
-      size: 100,
-    },
-    {
-      header: '파트너사 계약여부',
-      cell: ({ row }) => (row.original.memberType !== 'NONE' ? 'Y' : 'N'),
-      size: 120,
-    },
-    {
-      header: '제목',
-      cell: ({ row }) => (
-        <Link to={`/admin/community-posts/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-          {row.original.title}
-        </Link>
-      ),
-    },
-    {
-      header: '좋아요 수',
-      cell: ({ row }) => row.original.likesCount,
-      size: 100,
-    },
-    {
-      header: '댓글 수',
-      cell: ({ row }) => row.original.commentCount,
-      size: 100,
-    },
-    {
-      header: '조회수',
-      cell: ({ row }) => row.original.viewsCount,
-      size: 100,
-    },
-    {
-      header: '블라인드 여부',
-      cell: ({ row }) => (row.original.isBlind ? 'Y' : 'N'),
-      size: 120,
-    },
-    {
-      header: '등록일',
-      cell: ({ row }) => formatYyyyMmDdHhMm(row.original.createdAt),
-      size: 150,
-    },
-  ];
-
   const table = useReactTable({
     data,
-    columns,
+    columns: [
+      {
+        id: 'select',
+        header: () => (
+          <Checkbox
+            checked={selectedItems.length === data.length && data.length > 0}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedItems(data.map(item => item.id));
+              } else {
+                setSelectedItems([]);
+              }
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={selectedItems.includes(row.original.id)}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedItems(prev => [...prev, row.original.id]);
+              } else {
+                setSelectedItems(prev => prev.filter(id => id !== row.original.id));
+              }
+            }}
+          />
+        ),
+        size: 50,
+      },
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 60,
+      },
+      {
+        header: '게시판유형',
+        cell: ({ row }) => {
+          const boardType = row.original.boardType;
+          return <Chip label={BOARD_TYPE_LABELS[boardType]} color='primary' variant='light' size='small' />;
+        },
+        size: 120,
+      },
+      {
+        header: '아이디',
+        cell: ({ row }) => row.original.userId,
+        size: 100,
+      },
+      {
+        header: '회원명',
+        cell: ({ row }) => row.original.name,
+        size: 100,
+      },
+      {
+        header: '닉네임',
+        cell: ({ row }) => row.original.nickname,
+        size: 100,
+      },
+      {
+        header: '파트너사 계약여부',
+        cell: ({ row }) => (row.original.memberType !== 'NONE' ? 'Y' : 'N'),
+        size: 120,
+      },
+      {
+        header: '제목',
+        cell: ({ row }) => (
+          <Link to={`/admin/community-posts/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+            {row.original.title}
+          </Link>
+        ),
+      },
+      {
+        header: '좋아요 수',
+        cell: ({ row }) => row.original.likesCount,
+        size: 100,
+      },
+      {
+        header: '댓글 수',
+        cell: ({ row }) => row.original.commentCount,
+        size: 100,
+      },
+      {
+        header: '조회수',
+        cell: ({ row }) => row.original.viewsCount,
+        size: 100,
+      },
+      {
+        header: '블라인드 여부',
+        cell: ({ row }) => (row.original.isBlind ? 'Y' : 'N'),
+        size: 120,
+      },
+      {
+        header: '등록일',
+        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.createdAt),
+        size: 150,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
@@ -348,7 +346,7 @@ export default function MpAdminCommunityPostList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
@@ -356,7 +354,7 @@ export default function MpAdminCommunityPostList() {
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>

@@ -17,7 +17,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -93,57 +93,55 @@ export default function MpAdminExpenseReportList() {
     formik.resetForm();
   };
 
-  const columns: ColumnDef<Sequenced<ExpenseReportResponse>>[] = [
-    {
-      header: 'No',
-      cell: ({ row }) => row.original.sequence,
-      size: 60,
-    },
-    {
-      header: '아이디',
-      cell: ({ row }) => row.original.userId,
-      size: 100,
-    },
-    {
-      header: '회사명',
-      cell: ({ row }) => row.original.companyName,
-      size: 120,
-    },
-    {
-      header: '제품명',
-      cell: ({ row }) => row.original.productName,
-      size: 150,
-    },
-    {
-      header: '유형',
-      cell: ({ row }) => {
-        const value = row.original.reportType;
-        return EXPENSE_REPORT_CLASSIFICATION_LABELS[value];
-      },
-      size: 150,
-    },
-    {
-      header: '시행일시',
-      cell: ({ row }) => {
-        return `${row.original.eventStartAt !== null ? formatYyyyMmDd(row.original.eventStartAt) : '-'} ~ ${row.original.eventEndAt !== null ? formatYyyyMmDd(row.original.eventEndAt) : '-'}`;
-      },
-      size: 100,
-    },
-    {
-      header: '지원금액',
-      cell: ({ row }) => `${row.original.supportAmount.toLocaleString()}원`,
-      size: 120,
-    },
-    {
-      header: '신고상태',
-      cell: ({ row }) => EXPENSE_REPORT_STATUS_LABELS[row.original.status],
-      size: 100,
-    },
-  ];
-
   const table = useReactTable({
     data,
-    columns,
+    columns: [
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 60,
+      },
+      {
+        header: '아이디',
+        cell: ({ row }) => row.original.userId,
+        size: 100,
+      },
+      {
+        header: '회사명',
+        cell: ({ row }) => row.original.companyName,
+        size: 120,
+      },
+      {
+        header: '제품명',
+        cell: ({ row }) => row.original.productName,
+        size: 150,
+      },
+      {
+        header: '유형',
+        cell: ({ row }) => {
+          const value = row.original.reportType;
+          return EXPENSE_REPORT_CLASSIFICATION_LABELS[value];
+        },
+        size: 150,
+      },
+      {
+        header: '시행일시',
+        cell: ({ row }) => {
+          return `${row.original.eventStartAt !== null ? formatYyyyMmDd(row.original.eventStartAt) : '-'} ~ ${row.original.eventEndAt !== null ? formatYyyyMmDd(row.original.eventEndAt) : '-'}`;
+        },
+        size: 100,
+      },
+      {
+        header: '지원금액',
+        cell: ({ row }) => `${row.original.supportAmount.toLocaleString()}원`,
+        size: 120,
+      },
+      {
+        header: '신고상태',
+        cell: ({ row }) => EXPENSE_REPORT_STATUS_LABELS[row.original.status],
+        size: 100,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
@@ -264,7 +262,7 @@ export default function MpAdminExpenseReportList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
@@ -272,7 +270,7 @@ export default function MpAdminExpenseReportList() {
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>

@@ -17,7 +17,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -58,81 +58,79 @@ export default function MpAdminMemberList() {
     },
   });
 
-  const columns: ColumnDef<Sequenced<MemberResponse>>[] = [
-    {
-      header: 'No',
-      cell: ({ row }) => row.original.sequence,
-      size: 60,
-    },
-    {
-      header: '회원번호',
-      cell: ({ row }) => row.original.id,
-      size: 80,
-    },
-    {
-      header: '아이디',
-      cell: ({ row }) => row.original.userId,
-      size: 120,
-    },
-    {
-      header: '회원명',
-      cell: ({ row }) => (
-        <Link to={`/admin/members/${row.original.userId}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-          {row.original.name}
-        </Link>
-      ),
-      size: 100,
-    },
-    {
-      header: '회사명',
-      cell: ({ row }) => row.original.companyName,
-      size: 150,
-    },
-    {
-      header: '휴대폰번호',
-      cell: ({ row }) => row.original.phoneNumber,
-      size: 130,
-    },
-    {
-      header: '이메일',
-      cell: ({ row }) => row.original.email,
-      size: 200,
-    },
-    {
-      header: '파트너사 계약여부',
-      cell: ({ row }) => (row.original.partnerContractStatus !== 'NONE' ? '계약' : '미계약'),
-      size: 130,
-    },
-    {
-      header: 'CSO신고증 유무',
-      cell: ({ row }) => (row.original.hasCsoCert ? 'Y' : 'N'),
-      size: 120,
-    },
-    {
-      header: '계정상태',
-      cell: ({ row }) => MEMBER_ACCOUNT_STATUS_LABELS[row.original.accountStatus],
-      size: 90,
-    },
-    {
-      header: '마케팅수신동의',
-      cell: ({ row }) => CONSENT_LABELS[String(row.original.marketingConsent)],
-      size: 120,
-    },
-    {
-      header: '가입일',
-      cell: ({ row }) => formatYyyyMmDd(row.original.registrationDate),
-      size: 150,
-    },
-    {
-      header: '최종접속일',
-      cell: ({ row }) => formatYyyyMmDd(row.original.lastLoginDate),
-      size: 110,
-    },
-  ];
-
   const table = useReactTable({
     data,
-    columns,
+    columns: [
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 60,
+      },
+      {
+        header: '회원번호',
+        cell: ({ row }) => row.original.id,
+        size: 80,
+      },
+      {
+        header: '아이디',
+        cell: ({ row }) => row.original.userId,
+        size: 120,
+      },
+      {
+        header: '회원명',
+        cell: ({ row }) => (
+          <Link to={`/admin/members/${row.original.userId}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+            {row.original.name}
+          </Link>
+        ),
+        size: 100,
+      },
+      {
+        header: '회사명',
+        cell: ({ row }) => row.original.companyName,
+        size: 150,
+      },
+      {
+        header: '휴대폰번호',
+        cell: ({ row }) => row.original.phoneNumber,
+        size: 130,
+      },
+      {
+        header: '이메일',
+        cell: ({ row }) => row.original.email,
+        size: 200,
+      },
+      {
+        header: '파트너사 계약여부',
+        cell: ({ row }) => (row.original.partnerContractStatus !== 'NONE' ? '계약' : '미계약'),
+        size: 130,
+      },
+      {
+        header: 'CSO신고증 유무',
+        cell: ({ row }) => (row.original.hasCsoCert ? 'Y' : 'N'),
+        size: 120,
+      },
+      {
+        header: '계정상태',
+        cell: ({ row }) => MEMBER_ACCOUNT_STATUS_LABELS[row.original.accountStatus],
+        size: 90,
+      },
+      {
+        header: '마케팅수신동의',
+        cell: ({ row }) => CONSENT_LABELS[String(row.original.marketingConsent)],
+        size: 120,
+      },
+      {
+        header: '가입일',
+        cell: ({ row }) => formatYyyyMmDd(row.original.registrationDate),
+        size: 150,
+      },
+      {
+        header: '최종접속일',
+        cell: ({ row }) => formatYyyyMmDd(row.original.lastLoginDate),
+        size: 110,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
@@ -304,7 +302,7 @@ export default function MpAdminMemberList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
@@ -312,7 +310,7 @@ export default function MpAdminMemberList() {
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>

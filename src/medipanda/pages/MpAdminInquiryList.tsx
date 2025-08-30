@@ -17,7 +17,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -74,72 +74,70 @@ export default function MpAdminInquiryList() {
     },
   });
 
-  const columns: ColumnDef<Sequenced<BoardPostResponseWithMockData>>[] = [
-    {
-      header: 'No',
-      cell: ({ row }) => row.original.sequence,
-      size: 60,
-    },
-    {
-      header: '회원번호',
-      cell: ({ row }) => row.original.id,
-      size: 100,
-    },
-    {
-      header: '아이디',
-      cell: ({ row }) => row.original.userId,
-      size: 120,
-    },
-    {
-      header: '회원명',
-      cell: ({ row }) => row.original.name,
-      size: 100,
-    },
-    {
-      header: '회사명',
-      cell: ({ row }) => row.original.drugCompany,
-      size: 150,
-    },
-    {
-      header: '제목',
-      cell: ({ row }) => (
-        <Link to={`/admin/inquiries/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-          {row.original.title}
-        </Link>
-      ),
-      size: 250,
-    },
-    {
-      header: '문의일',
-      cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
-      size: 100,
-    },
-    {
-      header: '답변일',
-      cell: ({ row }) => {
-        const value = row.original.responseCreatedAt;
-
-        return value !== null ? formatYyyyMmDd(value) : '-';
-      },
-      size: 100,
-    },
-    {
-      header: '처리상태',
-      cell: ({ row }) => {
-        switch (row.original.responseStatus) {
-          case 'PENDING':
-            return '처리중';
-          case 'COMPLETED':
-            return '처리완료';
-        }
-      },
-      size: 100,
-    },
-  ];
-
   const table = useReactTable({
     data,
-    columns,
+    columns: [
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 60,
+      },
+      {
+        header: '회원번호',
+        cell: ({ row }) => row.original.id,
+        size: 100,
+      },
+      {
+        header: '아이디',
+        cell: ({ row }) => row.original.userId,
+        size: 120,
+      },
+      {
+        header: '회원명',
+        cell: ({ row }) => row.original.name,
+        size: 100,
+      },
+      {
+        header: '회사명',
+        cell: ({ row }) => row.original.drugCompany,
+        size: 150,
+      },
+      {
+        header: '제목',
+        cell: ({ row }) => (
+          <Link to={`/admin/inquiries/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+            {row.original.title}
+          </Link>
+        ),
+        size: 250,
+      },
+      {
+        header: '문의일',
+        cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
+        size: 100,
+      },
+      {
+        header: '답변일',
+        cell: ({ row }) => {
+          const value = row.original.responseCreatedAt;
+
+          return value !== null ? formatYyyyMmDd(value) : '-';
+        },
+        size: 100,
+      },
+      {
+        header: '처리상태',
+        cell: ({ row }) => {
+          switch (row.original.responseStatus) {
+            case 'PENDING':
+              return '처리중';
+            case 'COMPLETED':
+              return '처리완료';
+          }
+        },
+        size: 100,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
@@ -277,7 +275,7 @@ export default function MpAdminInquiryList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
@@ -285,7 +283,7 @@ export default function MpAdminInquiryList() {
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
                           <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>
