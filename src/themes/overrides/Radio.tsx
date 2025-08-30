@@ -18,18 +18,18 @@ function getColorStyle({ color, theme }: ExtendedStyleProps) {
 
   return {
     '& .dot': {
-      backgroundColor: main
+      backgroundColor: main,
     },
     '&:hover': {
       backgroundColor: color === 'secondary' ? lighter : lighter + 50,
       ...(theme.palette.mode === ThemeMode.DARK && {
-        backgroundColor: color === 'secondary' ? lighter + 50 : lighter + 20
-      })
+        backgroundColor: color === 'secondary' ? lighter + 50 : lighter + 20,
+      }),
     },
     '&.Mui-focusVisible': {
       outline: `2px solid ${dark}`,
-      outlineOffset: -4
-    }
+      outlineOffset: -4,
+    },
   };
 }
 
@@ -66,9 +66,9 @@ function radioStyle(size?: CheckboxProps['size']) {
         width: sizes.dotSize,
         height: sizes.dotSize,
         top: sizes.position,
-        left: sizes.position
-      }
-    }
+        left: sizes.position,
+      },
+    },
   };
 }
 
@@ -81,21 +81,21 @@ export default function Radio(theme: Theme) {
     MuiRadio: {
       defaultProps: {
         className: 'size-medium',
-        icon: <Box className="icon" sx={{ width: 16, height: 16, border: '1px solid', borderColor: 'inherit', borderRadius: '50%' }} />,
+        icon: <Box className='icon' sx={{ width: 16, height: 16, border: '1px solid', borderColor: 'inherit', borderRadius: '50%' }} />,
         checkedIcon: (
           <Box
-            className="icon"
+            className='icon'
             sx={{
               width: 16,
               height: 16,
               border: '1px solid',
               borderColor: 'inherit',
               borderRadius: '50%',
-              position: 'relative'
+              position: 'relative',
             }}
           >
             <Box
-              className="dot"
+              className='dot'
               sx={{
                 width: 8,
                 height: 8,
@@ -103,32 +103,32 @@ export default function Radio(theme: Theme) {
                 borderRadius: '50%',
                 position: 'absolute',
                 top: 3,
-                left: 3
+                left: 3,
               }}
             />
           </Box>
-        )
+        ),
       },
       styleOverrides: {
         root: {
           color: palette.secondary[300],
           '&.size-small': {
-            ...radioStyle('small')
+            ...radioStyle('small'),
           },
           '&.size-medium': {
-            ...radioStyle('medium')
+            ...radioStyle('medium'),
           },
           '&.size-large': {
-            ...radioStyle('large')
-          }
+            ...radioStyle('large'),
+          },
         },
         colorPrimary: getColorStyle({ color: 'primary', theme }),
         colorSecondary: getColorStyle({ color: 'secondary', theme }),
         colorSuccess: getColorStyle({ color: 'success', theme }),
         colorWarning: getColorStyle({ color: 'warning', theme }),
         colorInfo: getColorStyle({ color: 'info', theme }),
-        colorError: getColorStyle({ color: 'error', theme })
-      }
-    }
+        colorError: getColorStyle({ color: 'error', theme }),
+      },
+    },
   };
 }

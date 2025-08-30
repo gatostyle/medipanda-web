@@ -22,7 +22,7 @@ const createData = (badgeText: string, badgeType: string, subject: string, dept:
   badgeType,
   subject,
   dept,
-  date
+  date,
 });
 
 const rows = [
@@ -33,7 +33,7 @@ const rows = [
   createData('Progress', 'primary', 'Loosing control on server', 'Support', 'Yesterday'),
   createData('Closed', 'secondary', 'Authorizations keys', 'Support', '27, Aug'),
   createData('Open', 'default', 'Restoring default settings', 'Support', 'Today 9:00'),
-  createData('Closed', 'secondary', 'Authorizations keys', 'Support', '27, Aug')
+  createData('Closed', 'secondary', 'Authorizations keys', 'Support', '27, Aug'),
 ];
 
 // ==========================|| DATA WIDGET - RECENT TICKETS ||========================== //
@@ -41,10 +41,10 @@ const rows = [
 export default function RecentTickets() {
   return (
     <MainCard
-      title="Recent Tickets"
+      title='Recent Tickets'
       content={false}
       secondary={
-        <Link component={RouterLink} to="#" color="primary">
+        <Link component={RouterLink} to='#' color='primary'>
           View all
         </Link>
       }
@@ -56,7 +56,7 @@ export default function RecentTickets() {
               <TableCell sx={{ pl: 3 }}>Subject</TableCell>
               <TableCell>Department</TableCell>
               <TableCell>Date</TableCell>
-              <TableCell align="right" sx={{ pr: 3 }}>
+              <TableCell align='right' sx={{ pr: 3 }}>
                 Status
               </TableCell>
             </TableRow>
@@ -80,8 +80,8 @@ export default function RecentTickets() {
                   <TableCell sx={{ pl: 3 }}>{row.subject}</TableCell>
                   <TableCell>{row.dept}</TableCell>
                   <TableCell>{row.date}</TableCell>
-                  <TableCell align="right" sx={{ pr: 3 }}>
-                    <Chip color={color} label={row.badgeText.toLowerCase()} size="small" variant="light" sx={{ borderRadius: 1 }} />
+                  <TableCell align='right' sx={{ pr: 3 }}>
+                    <Chip color={color} label={row.badgeText.toLowerCase()} size='small' variant='light' sx={{ borderRadius: 1 }} />
                   </TableCell>
                 </TableRow>
               );

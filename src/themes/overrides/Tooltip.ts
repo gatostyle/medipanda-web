@@ -8,9 +8,9 @@ export default function Tooltip(theme: Theme) {
     MuiTooltip: {
       styleOverrides: {
         tooltip: {
-          color: theme.palette.background.paper
-        }
-      }
-    }
+          color: theme.palette.background.paper,
+        },
+      },
+    },
   };
 }

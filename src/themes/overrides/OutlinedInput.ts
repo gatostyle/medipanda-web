@@ -24,15 +24,15 @@ function getColor({ variant, theme }: Props) {
 
   return {
     '&:hover .MuiOutlinedInput-notchedOutline': {
-      borderColor: light
+      borderColor: light,
     },
     '&.Mui-focused': {
       boxShadow: shadows,
       '& .MuiOutlinedInput-notchedOutline': {
         border: '1px solid',
-        borderColor: light
-      }
-    }
+        borderColor: light,
+      },
+    },
   };
 }
 
@@ -43,32 +43,32 @@ export default function OutlinedInput(theme: Theme) {
     MuiOutlinedInput: {
       styleOverrides: {
         input: {
-          padding: 14
+          padding: 14,
         },
         notchedOutline: {
-          borderColor: theme.palette.mode === ThemeMode.DARK ? theme.palette.secondary[200] : theme.palette.secondary[400]
+          borderColor: theme.palette.mode === ThemeMode.DARK ? theme.palette.secondary[200] : theme.palette.secondary[400],
         },
         root: {
           '& svg': {
-            color: theme.palette.secondary.main
+            color: theme.palette.secondary.main,
           },
           ...getColor({ variant: 'primary', theme }),
           '&.Mui-error': {
-            ...getColor({ variant: 'error', theme })
-          }
+            ...getColor({ variant: 'error', theme }),
+          },
         },
         inputSizeSmall: {
-          padding: '10px 10px 10px 12px'
+          padding: '10px 10px 10px 12px',
         },
         inputMultiline: {
-          padding: 0
+          padding: 0,
         },
         colorSecondary: getColor({ variant: 'secondary', theme }),
         colorError: getColor({ variant: 'error', theme }),
         colorWarning: getColor({ variant: 'warning', theme }),
         colorInfo: getColor({ variant: 'info', theme }),
-        colorSuccess: getColor({ variant: 'success', theme })
-      }
-    }
+        colorSuccess: getColor({ variant: 'success', theme }),
+      },
+    },
   };
 }

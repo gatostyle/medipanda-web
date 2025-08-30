@@ -30,13 +30,13 @@ export default function DropzonePage() {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <MainCard
-          title="Upload Multiple File"
+          title='Upload Multiple File'
           secondary={
-            <Stack direction="row" alignItems="center" spacing={1.25}>
-              <IconButton color={list ? 'secondary' : 'primary'} size="small" onClick={() => setList(false)}>
+            <Stack direction='row' alignItems='center' spacing={1.25}>
+              <IconButton color={list ? 'secondary' : 'primary'} size='small' onClick={() => setList(false)}>
                 <TableDocument style={{ fontSize: '1.15rem' }} />
               </IconButton>
-              <IconButton color={list ? 'primary' : 'secondary'} size="small" onClick={() => setList(true)}>
+              <IconButton color={list ? 'primary' : 'secondary'} size='small' onClick={() => setList(true)}>
                 <Category style={{ fontSize: '1.15rem' }} />
               </IconButton>
             </Stack>
@@ -48,14 +48,14 @@ export default function DropzonePage() {
               // submit form
             }}
             validationSchema={yup.object().shape({
-              files: yup.mixed().required('Avatar is a required.')
+              files: yup.mixed().required('Avatar is a required.'),
             })}
           >
             {({ values, handleSubmit, setFieldValue, touched, errors }) => (
               <form onSubmit={handleSubmit}>
                 <Grid container spacing={3}>
                   <Grid item xs={12}>
-                    <Stack spacing={1.5} alignItems="center">
+                    <Stack spacing={1.5} alignItems='center'>
                       <UploadMultiFile
                         showList={list}
                         setFieldValue={setFieldValue}
@@ -64,7 +64,7 @@ export default function DropzonePage() {
                       />
                     </Stack>
                     {touched.files && errors.files && (
-                      <FormHelperText error id="standard-weight-helper-text-password-login">
+                      <FormHelperText error id='standard-weight-helper-text-password-login'>
                         {errors.files as string}
                       </FormHelperText>
                     )}
@@ -76,25 +76,25 @@ export default function DropzonePage() {
         </MainCard>
       </Grid>
       <Grid item xs={12}>
-        <MainCard title="Upload Single File">
+        <MainCard title='Upload Single File'>
           <Formik
             initialValues={{ files: null }}
             onSubmit={() => {
               // submit form
             }}
             validationSchema={yup.object().shape({
-              files: yup.mixed().required('Avatar is a required.')
+              files: yup.mixed().required('Avatar is a required.'),
             })}
           >
             {({ values, handleSubmit, setFieldValue, touched, errors }) => (
               <form onSubmit={handleSubmit}>
                 <Grid container spacing={3}>
                   <Grid item xs={12}>
-                    <Stack spacing={1.5} alignItems="center">
+                    <Stack spacing={1.5} alignItems='center'>
                       <UploadSingleFile setFieldValue={setFieldValue} file={values.files} error={touched.files && !!errors.files} />
                     </Stack>
                     {touched.files && errors.files && (
-                      <FormHelperText error id="standard-weight-helper-text-password-login">
+                      <FormHelperText error id='standard-weight-helper-text-password-login'>
                         {errors.files as string}
                       </FormHelperText>
                     )}
@@ -106,45 +106,45 @@ export default function DropzonePage() {
         </MainCard>
       </Grid>
       <Grid item xs={12}>
-        <MainCard title="Upload Avatar">
+        <MainCard title='Upload Avatar'>
           <Formik
             initialValues={{ files: null }}
             onSubmit={() => {
               // submit form
             }}
             validationSchema={yup.object().shape({
-              files: yup.mixed().required('Avatar is a required.')
+              files: yup.mixed().required('Avatar is a required.'),
             })}
           >
             {({ values, handleSubmit, setFieldValue, touched, errors }) => (
               <form onSubmit={handleSubmit}>
                 <Grid container spacing={3}>
                   <Grid item xs={12}>
-                    <Stack alignItems="center">
-                      <Stack spacing={1.5} alignItems="center">
+                    <Stack alignItems='center'>
+                      <Stack spacing={1.5} alignItems='center'>
                         <UploadAvatar setFieldValue={setFieldValue} file={values.files} error={touched.files && !!errors.files} />
                         <Stack spacing={0}>
-                          <Typography align="center" variant="caption" color="secondary">
+                          <Typography align='center' variant='caption' color='secondary'>
                             Allowed &apos;image/*&apos;
                           </Typography>
-                          <Typography align="center" variant="caption" color="secondary">
+                          <Typography align='center' variant='caption' color='secondary'>
                             *.png, *.jpeg, *.jpg, *.gif
                           </Typography>
                         </Stack>
                       </Stack>
                       {touched.files && errors.files && (
-                        <FormHelperText error id="standard-weight-helper-text-password-login">
+                        <FormHelperText error id='standard-weight-helper-text-password-login'>
                           {errors.files as string}
                         </FormHelperText>
                       )}
                     </Stack>
                   </Grid>
                   <Grid item xs={12}>
-                    <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2}>
-                      <Button color="error" onClick={() => setFieldValue('files', null)}>
+                    <Stack direction='row' justifyContent='flex-end' alignItems='center' spacing={2}>
+                      <Button color='error' onClick={() => setFieldValue('files', null)}>
                         Cancel
                       </Button>
-                      <Button type="submit" variant="contained">
+                      <Button type='submit' variant='contained'>
                         Submit
                       </Button>
                     </Stack>

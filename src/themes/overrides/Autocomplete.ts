@@ -6,18 +6,18 @@ export default function Autocomplete() {
       styleOverrides: {
         root: {
           '& .MuiOutlinedInput-root': {
-            padding: '3px 9px'
-          }
+            padding: '3px 9px',
+          },
         },
         popupIndicator: {
           width: 'auto',
-          height: 'auto'
+          height: 'auto',
         },
         clearIndicator: {
           width: 'auto',
-          height: 'auto'
-        }
-      }
-    }
+          height: 'auto',
+        },
+      },
+    },
   };
 }

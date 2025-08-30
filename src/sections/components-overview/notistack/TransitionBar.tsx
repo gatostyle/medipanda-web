@@ -64,22 +64,22 @@ export default function TransitionBar() {
 </Button>`;
 
   return (
-    <MainCard title="Animation" codeString={NotiStackSnackbarCodeString}>
+    <MainCard title='Animation' codeString={NotiStackSnackbarCodeString}>
       <FormControl>
         <RadioGroup
           row
-          aria-labelledby="demo-row-radio-buttons-group-label"
+          aria-labelledby='demo-row-radio-buttons-group-label'
           value={value}
           onChange={handleChange}
-          name="row-radio-buttons-group"
+          name='row-radio-buttons-group'
         >
-          <FormControlLabel value="slide" control={<Radio />} label="Slide" />
-          <FormControlLabel value="grow" control={<Radio />} label="Grow" />
-          <FormControlLabel value="fade" control={<Radio />} label="Fade" />
-          <FormControlLabel value="zoom" control={<Radio />} label="Zoom" />
+          <FormControlLabel value='slide' control={<Radio />} label='Slide' />
+          <FormControlLabel value='grow' control={<Radio />} label='Grow' />
+          <FormControlLabel value='fade' control={<Radio />} label='Fade' />
+          <FormControlLabel value='zoom' control={<Radio />} label='Zoom' />
         </RadioGroup>
       </FormControl>
-      <Button variant="contained" fullWidth sx={{ marginBlockStart: 2 }} onClick={() => handleClick()}>
+      <Button variant='contained' fullWidth sx={{ marginBlockStart: 2 }} onClick={() => handleClick()}>
         Show Snackbar
       </Button>
     </MainCard>

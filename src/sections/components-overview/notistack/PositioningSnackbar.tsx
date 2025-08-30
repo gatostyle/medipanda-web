@@ -91,11 +91,11 @@ export default function PositioningSnackbar() {
 </Button>`;
 
   return (
-    <MainCard title="Positioning" codeString={NotiStackPositioningCodeString}>
+    <MainCard title='Positioning' codeString={NotiStackPositioningCodeString}>
       <Grid container spacing={2}>
         <Grid item>
           <Button
-            variant="contained"
+            variant='contained'
             onClick={() => enqueueSnackbar('This is default message.', { anchorOrigin: { vertical: 'top', horizontal: 'left' } })}
           >
             Top-Left
@@ -103,13 +103,13 @@ export default function PositioningSnackbar() {
         </Grid>
         <Grid item>
           <Button
-            variant="contained"
+            variant='contained'
             onClick={() =>
               enqueueSnackbar('This is success message', {
                 anchorOrigin: {
                   vertical: 'top',
-                  horizontal: 'center'
-                }
+                  horizontal: 'center',
+                },
               })
             }
           >
@@ -118,13 +118,13 @@ export default function PositioningSnackbar() {
         </Grid>
         <Grid item>
           <Button
-            variant="contained"
+            variant='contained'
             onClick={() =>
               enqueueSnackbar('This is warning message', {
                 anchorOrigin: {
                   vertical: 'top',
-                  horizontal: 'right'
-                }
+                  horizontal: 'right',
+                },
               })
             }
           >
@@ -133,13 +133,13 @@ export default function PositioningSnackbar() {
         </Grid>
         <Grid item>
           <Button
-            variant="contained"
+            variant='contained'
             onClick={() =>
               enqueueSnackbar('This is info message', {
                 anchorOrigin: {
                   vertical: 'bottom',
-                  horizontal: 'left'
-                }
+                  horizontal: 'left',
+                },
               })
             }
           >
@@ -148,13 +148,13 @@ export default function PositioningSnackbar() {
         </Grid>
         <Grid item>
           <Button
-            variant="contained"
+            variant='contained'
             onClick={() =>
               enqueueSnackbar('This is info message', {
                 anchorOrigin: {
                   vertical: 'bottom',
-                  horizontal: 'center'
-                }
+                  horizontal: 'center',
+                },
               })
             }
           >
@@ -163,13 +163,13 @@ export default function PositioningSnackbar() {
         </Grid>
         <Grid item>
           <Button
-            variant="contained"
+            variant='contained'
             onClick={() =>
               enqueueSnackbar('This is info message', {
                 anchorOrigin: {
                   vertical: 'bottom',
-                  horizontal: 'right'
-                }
+                  horizontal: 'right',
+                },
               })
             }
           >

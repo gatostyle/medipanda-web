@@ -15,22 +15,22 @@ const redialBarChartOptions = {
     radialBar: {
       hollow: {
         margin: 0,
-        size: '75%'
+        size: '75%',
       },
       track: {
-        margin: 0
+        margin: 0,
       },
       dataLabels: {
         name: {
-          show: false
+          show: false,
         },
         value: {
-          offsetY: 5
-        }
-      }
-    }
+          offsetY: 5,
+        },
+      },
+    },
   },
-  labels: ['Vimeo']
+  labels: ['Vimeo'],
 };
 
 // ==============================|| TOP CARD - RADIAL BAR CHART ||============================== //
@@ -49,33 +49,33 @@ export default function ProfileRadialChart() {
   const [options, setOptions] = useState<ChartProps>(redialBarChartOptions);
 
   useEffect(() => {
-    setOptions((prevState) => ({
+    setOptions(prevState => ({
       ...prevState,
       colors: [primary],
       plotOptions: {
         radialBar: {
           track: {
-            background: mode === ThemeMode.DARK ? grey200 : grey0
+            background: mode === ThemeMode.DARK ? grey200 : grey0,
           },
           dataLabels: {
             value: {
               fontSize: '1rem',
               fontWeight: 600,
               offsetY: 5,
-              color: textPrimary
-            }
-          }
-        }
+              color: textPrimary,
+            },
+          },
+        },
       },
       theme: {
-        mode: mode === ThemeMode.DARK ? 'dark' : 'light'
-      }
+        mode: mode === ThemeMode.DARK ? 'dark' : 'light',
+      },
     }));
   }, [mode, grey200, grey0, grey500, textPrimary, primary]);
 
   return (
-    <div id="chart">
-      <ReactApexChart options={options} series={series} type="radialBar" width={136} height={136} />
+    <div id='chart'>
+      <ReactApexChart options={options} series={series} type='radialBar' width={136} height={136} />
     </div>
   );
 }

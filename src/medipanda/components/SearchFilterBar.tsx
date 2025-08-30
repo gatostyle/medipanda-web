@@ -32,9 +32,9 @@ const FilterContainer = styled(Box)(({ theme }) => ({
     '& > *': {
       minWidth: 'auto',
       maxWidth: 'none',
-      width: '100%'
-    }
-  }
+      width: '100%',
+    },
+  },
 }));
 
 const FilterItem = styled(Box)<{ flexGrow?: number; minWidth?: number; maxWidth?: number }>(({ theme, flexGrow, minWidth, maxWidth }) => ({
@@ -45,8 +45,8 @@ const FilterItem = styled(Box)<{ flexGrow?: number; minWidth?: number; maxWidth?
 
   [theme.breakpoints.up('md')]: {
     minWidth: minWidth || 'auto',
-    maxWidth: maxWidth || 'none'
-  }
+    maxWidth: maxWidth || 'none',
+  },
 }));
 
 const FilterActions = styled(Stack)(({ theme }) => ({
@@ -55,8 +55,8 @@ const FilterActions = styled(Stack)(({ theme }) => ({
 
   [theme.breakpoints.down('md')]: {
     marginLeft: 0,
-    justifyContent: 'center'
-  }
+    justifyContent: 'center',
+  },
 }));
 
 export function SearchFilterBar({ children, spacing = 2 }: SearchFilterBarProps) {
@@ -73,7 +73,7 @@ export function SearchFilterItem({ children, flexGrow, minWidth, maxWidth }: Sea
 
 export function SearchFilterActions({ children }: SearchFilterActionsProps) {
   return (
-    <FilterActions direction="row" spacing={1}>
+    <FilterActions direction='row' spacing={1}>
       {children}
     </FilterActions>
   );

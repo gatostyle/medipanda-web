@@ -46,34 +46,34 @@ export default function FirebaseSocial() {
 
   return (
     <Stack
-      direction="row"
+      direction='row'
       spacing={matchDownSM ? 1 : 2}
       justifyContent={matchDownSM ? 'space-around' : 'space-between'}
       sx={{ '& .MuiButton-startIcon': { mr: matchDownSM ? 0 : 1, ml: matchDownSM ? 0 : -0.5 } }}
     >
       <Button
-        variant="outlined"
-        color="secondary"
+        variant='outlined'
+        color='secondary'
         fullWidth={!matchDownSM}
-        startIcon={<img src={Google} alt="Google" />}
+        startIcon={<img src={Google} alt='Google' />}
         onClick={googleHandler}
       >
         {!matchDownSM && 'Google'}
       </Button>
       <Button
-        variant="outlined"
-        color="secondary"
+        variant='outlined'
+        color='secondary'
         fullWidth={!matchDownSM}
-        startIcon={<img src={Twitter} alt="Twitter" />}
+        startIcon={<img src={Twitter} alt='Twitter' />}
         onClick={twitterHandler}
       >
         {!matchDownSM && 'Twitter'}
       </Button>
       <Button
-        variant="outlined"
-        color="secondary"
+        variant='outlined'
+        color='secondary'
         fullWidth={!matchDownSM}
-        startIcon={<img src={Facebook} alt="Facebook" />}
+        startIcon={<img src={Facebook} alt='Facebook' />}
         onClick={facebookHandler}
       >
         {!matchDownSM && 'Facebook'}

@@ -41,21 +41,21 @@ export default function BasicSelect() {
 </FormControl>`;
 
   return (
-    <MainCard title="Basic" codeHighlight codeString={basicSelectCodeString}>
+    <MainCard title='Basic' codeHighlight codeString={basicSelectCodeString}>
       <Grid container spacing={2.5}>
         <Grid item xs={12}>
           <Stack spacing={1}>
             <InputLabel>Age</InputLabel>
             <FormControl fullWidth>
               <Select
-                labelId="demo-simple-select-label"
+                labelId='demo-simple-select-label'
                 displayEmpty
-                id="demo-simple-select"
+                id='demo-simple-select'
                 value={age}
-                placeholder="Age"
+                placeholder='Age'
                 onChange={handleChange}
               >
-                <MenuItem disabled value="" sx={{ color: 'text.secondary' }}>
+                <MenuItem disabled value='' sx={{ color: 'text.secondary' }}>
                   Select Age
                 </MenuItem>
                 <MenuItem value={10}>Ten</MenuItem>
@@ -68,7 +68,7 @@ export default function BasicSelect() {
         <Grid item xs={12}>
           <FormControl fullWidth>
             <Select value={age} onChange={handleChange} displayEmpty inputProps={{ 'aria-label': 'Without label' }}>
-              <MenuItem disabled value="" sx={{ color: 'text.secondary' }}>
+              <MenuItem disabled value='' sx={{ color: 'text.secondary' }}>
                 Without label
               </MenuItem>
               <MenuItem value={10}>Ten</MenuItem>

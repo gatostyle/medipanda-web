@@ -33,15 +33,15 @@ export default function AddressModal({ open, setOpen, handlerAddress }: AddressM
 
   return (
     <Dialog
-      maxWidth="sm"
+      maxWidth='sm'
       open={open}
       onClose={closeAddressModal}
       sx={{ '& .MuiDialog-paper': { p: 0 }, '& .MuiBackdrop-root': { opacity: '0.5 !important' } }}
     >
       <DialogTitle>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography variant="h5">Select Address</Typography>
-          <Button startIcon={<Add />} onClick={closeAddressModal} color="primary">
+        <Stack direction='row' justifyContent='space-between' alignItems='center'>
+          <Typography variant='h5'>Select Address</Typography>
+          <Button startIcon={<Add />} onClick={closeAddressModal} color='primary'>
             Add New
           </Button>
         </Stack>
@@ -51,15 +51,15 @@ export default function AddressModal({ open, setOpen, handlerAddress }: AddressM
         <FormControl sx={{ width: '100%', pb: 2 }}>
           <TextField
             autoFocus
-            id="name"
+            id='name'
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">
+                <InputAdornment position='start'>
                   <SearchNormal1 size={18} />
                 </InputAdornment>
-              )
+              ),
             }}
-            placeholder="Search"
+            placeholder='Search'
             fullWidth
           />
         </FormControl>
@@ -69,10 +69,10 @@ export default function AddressModal({ open, setOpen, handlerAddress }: AddressM
       </DialogContent>
       <Divider />
       <DialogActions sx={{ p: 2.5 }}>
-        <Button color="error" onClick={closeAddressModal}>
+        <Button color='error' onClick={closeAddressModal}>
           Cancel
         </Button>
-        <Button onClick={closeAddressModal} color="primary" variant="contained">
+        <Button onClick={closeAddressModal} color='primary' variant='contained'>
           Add
         </Button>
       </DialogActions>
@@ -92,7 +92,7 @@ function Address({ handlerAddress }: AddressProps) {
       name: 'Ian Carpenter',
       address: '1754 Ureate, RhodSA5 5BO',
       phone: '+91 1234567890',
-      email: 'iacrpt65@gmail.com'
+      email: 'iacrpt65@gmail.com',
     },
     { name: 'Belle J. Richter', address: '1300 Mine RoadQuemado, NM 87829', phone: '305-829-7809', email: 'belljrc23@gmail.com' },
     { name: 'Ritika Yohannan', address: '3488 Arbutus DriveMiami, FL', phone: '+91 1234567890', email: 'rtyhn65@gmail.com' },
@@ -101,9 +101,9 @@ function Address({ handlerAddress }: AddressProps) {
       name: 'Christopher P. Iacovelli',
       address: '4388 House DriveWesrville, OH',
       phone: '+91 1234567890',
-      email: 'crpthl643@gmail.com'
+      email: 'crpthl643@gmail.com',
     },
-    { name: 'Thomas D. Johnson', address: '4388 House DriveWestville, OH +91', phone: '1234567890', email: 'thomshj56@gmail.com' }
+    { name: 'Thomas D. Johnson', address: '4388 House DriveWestville, OH +91', phone: '1234567890', email: 'thomshj56@gmail.com' },
   ];
 
   return (
@@ -118,18 +118,18 @@ function Address({ handlerAddress }: AddressProps) {
             borderColor: 'secondary.200',
             borderRadius: 1,
             p: 1.25,
-            '&:hover': { bgcolor: theme.palette.primary.lighter, borderColor: theme.palette.primary.lighter }
+            '&:hover': { bgcolor: theme.palette.primary.lighter, borderColor: theme.palette.primary.lighter },
           }}
         >
-          <Typography variant="subtitle1">{address.name}</Typography>
+          <Typography variant='subtitle1'>{address.name}</Typography>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
-            <Typography variant="body2" color="secondary">
+            <Typography variant='body2' color='secondary'>
               {address.address}
             </Typography>
-            <Typography variant="body2" color="secondary">
+            <Typography variant='body2' color='secondary'>
               {address.phone}
             </Typography>
-            <Typography variant="body2" color="secondary">
+            <Typography variant='body2' color='secondary'>
               {address.email}
             </Typography>
           </Stack>

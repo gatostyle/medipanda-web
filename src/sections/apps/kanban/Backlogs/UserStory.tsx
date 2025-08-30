@@ -77,20 +77,20 @@ export default function UserStory({ story, index }: Props) {
   // drawer
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const handleDrawerOpen = () => {
-    setOpenDrawer((prevState) => !prevState);
+    setOpenDrawer(prevState => !prevState);
   };
 
   const addItem = () => {
-    setOpenDrawer((prevState) => !prevState);
+    setOpenDrawer(prevState => !prevState);
   };
 
   const [openStoryDrawer, setOpenStoryDrawer] = useState<boolean>(false);
   const handleStoryDrawerOpen = () => {
-    setOpenStoryDrawer((prevState) => !prevState);
+    setOpenStoryDrawer(prevState => !prevState);
   };
 
   const editStory = () => {
-    setOpenStoryDrawer((prevState) => !prevState);
+    setOpenStoryDrawer(prevState => !prevState);
   };
 
   const [anchorEl, setAnchorEl] = useState<Element | (() => Element) | null | undefined>(null);
@@ -113,7 +113,7 @@ export default function UserStory({ story, index }: Props) {
         message: 'Task Deleted successfully',
         anchorOrigin: { vertical: 'top', horizontal: 'right' },
         variant: 'alert',
-        alert: { color: 'success' }
+        alert: { color: 'success' },
       } as SnackbarProps);
     }
   };
@@ -130,31 +130,31 @@ export default function UserStory({ story, index }: Props) {
               ref={provided.innerRef}
               sx={{
                 ...getDragWrapper(snapshot.isDragging, theme, open),
-                ...(!open && { '& .MuiTableCell-root': { border: 'none' } })
+                ...(!open && { '& .MuiTableCell-root': { border: 'none' } }),
               }}
             >
               <TableCell sx={{ pl: 3, minWidth: 120, width: 120, height: 46 }}>
-                <Stack direction="row" spacing={0.5} alignItems="center">
-                  <Tooltip title="Add Task">
-                    <IconButton aria-label="expand row" onClick={addItem} size="small" sx={{ fontSize: '1.15rem' }}>
+                <Stack direction='row' spacing={0.5} alignItems='center'>
+                  <Tooltip title='Add Task'>
+                    <IconButton aria-label='expand row' onClick={addItem} size='small' sx={{ fontSize: '1.15rem' }}>
                       <AddSquare color={theme.palette.primary.main} />
                     </IconButton>
                   </Tooltip>
-                  <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)} color="secondary">
+                  <IconButton aria-label='expand row' size='small' onClick={() => setOpen(!open)} color='secondary'>
                     {open ? <ArrowDown2 /> : <ArrowRight2 />}
                   </IconButton>
                 </Stack>
               </TableCell>
               <TableCell sx={{ width: 110, minWidth: 110 }}>
-                <Stack direction="row" spacing={0.75} alignItems="center">
+                <Stack direction='row' spacing={0.75} alignItems='center'>
                   <Hierarchy size={16} style={{ color: theme.palette.primary.main, marginTop: -2 }} />
-                  <Typography variant="subtitle2">{story.id}</Typography>
+                  <Typography variant='subtitle2'>{story.id}</Typography>
                 </Stack>
               </TableCell>
-              <TableCell sx={{ maxWidth: 'calc(100vw - 850px)', minWidth: 140 }} component="th" scope="row">
+              <TableCell sx={{ maxWidth: 'calc(100vw - 850px)', minWidth: 140 }} component='th' scope='row'>
                 <Link
-                  underline="hover"
-                  color="default"
+                  underline='hover'
+                  color='default'
                   onClick={editStory}
                   sx={{
                     overflow: 'hidden',
@@ -162,7 +162,7 @@ export default function UserStory({ story, index }: Props) {
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
                     ':hover': { color: 'primary.main' },
-                    cursor: 'pointer'
+                    cursor: 'pointer',
                   }}
                 >
                   {story.title}
@@ -170,22 +170,22 @@ export default function UserStory({ story, index }: Props) {
               </TableCell>
               <TableCell sx={{ width: 60, minWidth: 60 }}>
                 <IconButton
-                  size="small"
-                  aria-controls="menu-comment"
+                  size='small'
+                  aria-controls='menu-comment'
                   onClick={handleClick}
-                  aria-haspopup="true"
-                  color="secondary"
+                  aria-haspopup='true'
+                  color='secondary'
                   sx={{ color: 'text.secondary' }}
                 >
                   <MoreIcon />
                 </IconButton>
                 <Menu
-                  id="menu-comment"
+                  id='menu-comment'
                   anchorEl={anchorEl}
                   keepMounted
                   open={Boolean(anchorEl)}
                   onClose={handleClose}
-                  variant="selectedMenu"
+                  variant='selectedMenu'
                   anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                   transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                 >
@@ -214,15 +214,15 @@ export default function UserStory({ story, index }: Props) {
               <TableCell sx={{ width: 120, minWidth: 120 }}>{story.dueDate ? format(new Date(story.dueDate), 'd MMM yyyy') : ''}</TableCell>
             </TableRow>
 
-            <Droppable droppableId={story.id} type="item">
-              {(providedDrop) => (
+            <Droppable droppableId={story.id} type='item'>
+              {providedDrop => (
                 <TableRow ref={providedDrop.innerRef} {...providedDrop.droppableProps} sx={getDropWrapper()}>
                   <TableCell sx={{ padding: 0 }} colSpan={8}>
-                    <Collapse in={open} timeout="auto" unmountOnExit>
+                    <Collapse in={open} timeout='auto' unmountOnExit>
                       {open && (
                         <Box sx={{ margin: 0 }}>
                           <TableContainer>
-                            <Table size="small" aria-label="purchases">
+                            <Table size='small' aria-label='purchases'>
                               <TableBody>
                                 {story.itemIds?.map((itemId: string, i: number) => <Items key={itemId} itemId={itemId} index={i} />)}
                                 {providedDrop.placeholder}

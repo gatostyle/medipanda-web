@@ -12,7 +12,7 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-  Typography
+  Typography,
 } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { BoardDetailsResponse, getBoardDetails } from 'medipanda/backend';
@@ -50,7 +50,7 @@ export default function MpAdminNoticeDetail() {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+      <Box display='flex' justifyContent='center' alignItems='center' minHeight='400px'>
         <CircularProgress />
       </Box>
     );
@@ -63,7 +63,7 @@ export default function MpAdminNoticeDetail() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant='h4' gutterBottom>
           공지사항 상세
         </Typography>
       </Grid>
@@ -74,13 +74,13 @@ export default function MpAdminNoticeDetail() {
             <Table>
               <TableBody>
                 <TableRow>
-                  <TableCell component="th" scope="row" sx={{ width: 150, fontWeight: 'bold' }}>
+                  <TableCell component='th' scope='row' sx={{ width: 150, fontWeight: 'bold' }}>
                     노출게시판 <span style={{ color: 'red' }}>*</span>
                   </TableCell>
                   <TableCell colSpan={5}>공지사항</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell component="th" scope="row" sx={{ fontWeight: 'bold' }}>
+                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     공지분류 <span style={{ color: 'red' }}>*</span>
                   </TableCell>
                   <TableCell colSpan={5}>
@@ -90,19 +90,19 @@ export default function MpAdminNoticeDetail() {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell component="th" scope="row" sx={{ fontWeight: 'bold' }}>
+                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     제약사명
                   </TableCell>
                   <TableCell colSpan={5}>{data.noticeProperties?.drugCompany}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell component="th" scope="row" sx={{ fontWeight: 'bold' }}>
+                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     노출상태 <span style={{ color: 'red' }}>*</span>
                   </TableCell>
                   <TableCell colSpan={5}>{data.isExposed ? '노출' : '미노출'}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell component="th" scope="row" sx={{ fontWeight: 'bold' }}>
+                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     노출범위 <span style={{ color: 'red' }}>*</span>
                   </TableCell>
                   <TableCell colSpan={5}>
@@ -110,7 +110,7 @@ export default function MpAdminNoticeDetail() {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell component="th" scope="row" sx={{ fontWeight: 'bold' }}>
+                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     상단고정
                   </TableCell>
                   <TableCell colSpan={5}>
@@ -121,13 +121,13 @@ export default function MpAdminNoticeDetail() {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell component="th" scope="row" sx={{ fontWeight: 'bold' }}>
+                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     제목 <span style={{ color: 'red' }}>*</span>
                   </TableCell>
                   <TableCell colSpan={5}>{data.title}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell component="th" scope="row" sx={{ fontWeight: 'bold' }}>
+                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     내용 <span style={{ color: 'red' }}>*</span>
                   </TableCell>
                   <TableCell colSpan={5}>
@@ -135,7 +135,7 @@ export default function MpAdminNoticeDetail() {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell component="th" scope="row" sx={{ fontWeight: 'bold' }}>
+                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     첨부파일
                   </TableCell>
                   <TableCell colSpan={5}>
@@ -147,12 +147,12 @@ export default function MpAdminNoticeDetail() {
                               key={index}
                               href={file.fileUrl}
                               download
-                              target="_blank"
-                              rel="noopener noreferrer"
+                              target='_blank'
+                              rel='noopener noreferrer'
                               sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
-                              underline="hover"
+                              underline='hover'
                             >
-                              <AttachFileIcon fontSize="small" />
+                              <AttachFileIcon fontSize='small' />
                               {new URL(file.fileUrl).pathname.split('/').pop()}
                             </MuiLink>
                           );
@@ -170,12 +170,12 @@ export default function MpAdminNoticeDetail() {
           <Box sx={{ mt: 3, borderTop: 1, borderColor: 'divider', pt: 2 }}>
             <Grid container spacing={2}>
               <Grid item xs={6}>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant='body2' color='text.secondary'>
                   조회수: {data.viewsCount.toLocaleString()}
                 </Typography>
               </Grid>
-              <Grid item xs={6} textAlign="right">
-                <Typography variant="body2" color="text.secondary">
+              <Grid item xs={6} textAlign='right'>
+                <Typography variant='body2' color='text.secondary'>
                   작성일: {formatYyyyMmDd(data.createdAt)}
                 </Typography>
               </Grid>
@@ -183,10 +183,10 @@ export default function MpAdminNoticeDetail() {
           </Box>
 
           <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', gap: 2 }}>
-            <Button variant="outlined" component={Link} to="/admin/notices" sx={{ minWidth: 120 }}>
+            <Button variant='outlined' component={Link} to='/admin/notices' sx={{ minWidth: 120 }}>
               취소
             </Button>
-            <Button variant="contained" color="success" component={Link} to={`/admin/notices/${id}/edit`} sx={{ minWidth: 120 }}>
+            <Button variant='contained' color='success' component={Link} to={`/admin/notices/${id}/edit`} sx={{ minWidth: 120 }}>
               수정
             </Button>
           </Box>

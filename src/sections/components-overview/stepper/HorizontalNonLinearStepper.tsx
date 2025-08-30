@@ -22,7 +22,7 @@ interface StepWrapperProps {
 
 function StepWrapper({ children, value, index, ...other }: StepWrapperProps) {
   return (
-    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+    <div role='tabpanel' hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   );
@@ -50,7 +50,7 @@ export default function HorizontalNonLinearStepper() {
   };
 
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    setActiveStep(prevActiveStep => prevActiveStep - 1);
   };
 
   const handleStep = (step: number) => () => {
@@ -141,11 +141,11 @@ export default function HorizontalNonLinearStepper() {
 </div>`;
 
   return (
-    <MainCard title="Non - Linear" codeString={hnlStepperCodeString}>
+    <MainCard title='Non - Linear' codeString={hnlStepperCodeString}>
       <Stepper nonLinear activeStep={activeStep}>
         {steps.map((label, index) => (
           <Step key={label} completed={completed[index]}>
-            <StepButton color="inherit" onClick={handleStep(index)}>
+            <StepButton color='inherit' onClick={handleStep(index)}>
               {label}
             </StepButton>
           </Step>
@@ -157,7 +157,7 @@ export default function HorizontalNonLinearStepper() {
             <Alert sx={{ my: 3 }}>All steps completed - you&apos;re finished</Alert>
             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
               <Box sx={{ flex: '1 1 auto' }} />
-              <Button onClick={handleReset} color="error" variant="contained">
+              <Button onClick={handleReset} color='error' variant='contained'>
                 Reset
               </Button>
             </Box>
@@ -192,19 +192,19 @@ export default function HorizontalNonLinearStepper() {
               </Typography>
             </StepWrapper>
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-              <Button variant="outlined" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
+              <Button variant='outlined' disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
                 Back
               </Button>
               <Box sx={{ flex: '1 1 auto' }} />
               {activeStep !== steps.length &&
                 (completed[activeStep] ? (
-                  <Button color="success">Step {activeStep + 1} already completed</Button>
+                  <Button color='success'>Step {activeStep + 1} already completed</Button>
                 ) : (
-                  <Button onClick={handleComplete} color="success" variant={activeStep === totalSteps() - 1 ? 'contained' : 'outlined'}>
+                  <Button onClick={handleComplete} color='success' variant={activeStep === totalSteps() - 1 ? 'contained' : 'outlined'}>
                     {completedSteps() === totalSteps() - 1 ? 'Finish' : 'Complete Step'}
                   </Button>
                 ))}
-              <Button disabled={activeStep === steps.length - 1} onClick={handleNext} sx={{ ml: 1 }} variant="contained" color="primary">
+              <Button disabled={activeStep === steps.length - 1} onClick={handleNext} sx={{ ml: 1 }} variant='contained' color='primary'>
                 Next
               </Button>
             </Box>

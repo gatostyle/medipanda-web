@@ -24,7 +24,7 @@ import {
   IconButton,
   Paper,
   TextField,
-  Tooltip
+  Tooltip,
 } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
 import Image from '@tiptap/extension-image';
@@ -49,12 +49,12 @@ const StyledPaper = styled(Paper)<{ error?: boolean; readOnly?: boolean }>(({ th
   transition: 'all 0.2s ease',
   backgroundColor: readOnly ? theme.palette.grey[50] : theme.palette.background.paper,
   '&:hover': {
-    borderColor: readOnly ? theme.palette.divider : error ? theme.palette.error.main : alpha(theme.palette.primary.main, 0.3)
+    borderColor: readOnly ? theme.palette.divider : error ? theme.palette.error.main : alpha(theme.palette.primary.main, 0.3),
   },
   '&:focus-within': {
     borderColor: readOnly ? theme.palette.divider : error ? theme.palette.error.main : theme.palette.primary.main,
-    boxShadow: readOnly ? 'none' : `0 0 0 3px ${error ? alpha(theme.palette.error.main, 0.1) : alpha(theme.palette.primary.main, 0.1)}`
-  }
+    boxShadow: readOnly ? 'none' : `0 0 0 3px ${error ? alpha(theme.palette.error.main, 0.1) : alpha(theme.palette.primary.main, 0.1)}`,
+  },
 }));
 
 const Toolbar = styled(Box)(({ theme }) => ({
@@ -63,7 +63,7 @@ const Toolbar = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   gap: theme.spacing(0.5),
   flexWrap: 'wrap',
-  backgroundColor: theme.palette.background.default
+  backgroundColor: theme.palette.background.default,
 }));
 
 const ToolbarIconButton = styled(IconButton)<{ active?: boolean }>(({ theme, active }) => ({
@@ -74,11 +74,11 @@ const ToolbarIconButton = styled(IconButton)<{ active?: boolean }>(({ theme, act
   color: active ? theme.palette.primary.main : theme.palette.text.secondary,
   '&:hover': {
     backgroundColor: active ? alpha(theme.palette.primary.main, 0.2) : alpha(theme.palette.action.hover, 0.08),
-    color: active ? theme.palette.primary.main : theme.palette.text.primary
+    color: active ? theme.palette.primary.main : theme.palette.text.primary,
   },
   '&:disabled': {
-    opacity: 0.5
-  }
+    opacity: 0.5,
+  },
 }));
 
 const EditorContent2 = styled(EditorContent)<{ readOnly?: boolean }>(({ theme, readOnly }) => ({
@@ -92,69 +92,69 @@ const EditorContent2 = styled(EditorContent)<{ readOnly?: boolean }>(({ theme, r
       content: 'attr(data-placeholder)',
       position: 'absolute',
       color: theme.palette.text.disabled,
-      pointerEvents: 'none'
+      pointerEvents: 'none',
     },
     '& p': {
       margin: 0,
       marginBottom: theme.spacing(1),
       '&:last-child': {
-        marginBottom: 0
-      }
+        marginBottom: 0,
+      },
     },
     '& h1, & h2, & h3': {
       margin: 0,
       marginBottom: theme.spacing(1.5),
-      fontWeight: 600
+      fontWeight: 600,
     },
     '& h1': {
-      fontSize: '2rem'
+      fontSize: '2rem',
     },
     '& h2': {
-      fontSize: '1.5rem'
+      fontSize: '1.5rem',
     },
     '& h3': {
-      fontSize: '1.25rem'
+      fontSize: '1.25rem',
     },
     '& ul, & ol': {
       paddingLeft: theme.spacing(3),
-      marginBottom: theme.spacing(1)
+      marginBottom: theme.spacing(1),
     },
     '& li': {
-      marginBottom: theme.spacing(0.5)
+      marginBottom: theme.spacing(0.5),
     },
     '& a': {
       color: theme.palette.primary.main,
       textDecoration: 'underline',
-      cursor: 'pointer'
+      cursor: 'pointer',
     },
     '& img': {
       maxWidth: '100%',
       height: 'auto',
       borderRadius: theme.shape.borderRadius,
       marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(1)
+      marginBottom: theme.spacing(1),
     },
     '& code': {
       backgroundColor: alpha(theme.palette.grey[500], 0.1),
       borderRadius: 4,
       padding: '2px 4px',
       fontFamily: 'Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace',
-      fontSize: '0.875em'
+      fontSize: '0.875em',
     },
     '& pre': {
       backgroundColor: alpha(theme.palette.grey[900], 0.05),
       borderRadius: theme.shape.borderRadius,
       padding: theme.spacing(2),
       overflow: 'auto',
-      marginBottom: theme.spacing(1)
-    }
-  }
+      marginBottom: theme.spacing(1),
+    },
+  },
 }));
 
 const VerticalDivider = styled(Divider)(({ theme }) => ({
   height: 24,
   margin: theme.spacing(0, 0.5),
-  backgroundColor: theme.palette.divider
+  backgroundColor: theme.palette.divider,
 }));
 
 export function TiptapEditor({
@@ -163,7 +163,7 @@ export function TiptapEditor({
   placeholder = '내용을 입력하세요',
   error = false,
   helperText,
-  readOnly = false
+  readOnly = false,
 }: TiptapEditorProps) {
   const [linkDialogOpen, setLinkDialogOpen] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
@@ -176,18 +176,18 @@ export function TiptapEditor({
         HTMLAttributes: {
           class: 'tiptap-link',
           target: '_blank',
-          rel: 'noopener noreferrer'
-        }
+          rel: 'noopener noreferrer',
+        },
       }),
       Image.configure({
         HTMLAttributes: {
-          class: 'tiptap-image'
+          class: 'tiptap-image',
         },
-        allowBase64: true
+        allowBase64: true,
       }),
       TextAlign.configure({
-        types: ['heading', 'paragraph']
-      })
+        types: ['heading', 'paragraph'],
+      }),
     ],
     content,
     editable: !readOnly,
@@ -198,20 +198,20 @@ export function TiptapEditor({
     },
     editorProps: {
       attributes: {
-        'data-placeholder': readOnly ? '' : placeholder
+        'data-placeholder': readOnly ? '' : placeholder,
       },
       handlePaste: (view, event) => {
         if (readOnly) return false;
 
         const items = Array.from(event.clipboardData?.items || []);
-        const imageItem = items.find((item) => item.type.indexOf('image') !== -1);
+        const imageItem = items.find(item => item.type.indexOf('image') !== -1);
 
         if (imageItem) {
           event.preventDefault();
           const file = imageItem.getAsFile();
           if (file) {
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = e => {
               const src = e.target?.result as string;
               const { state, dispatch } = view;
               const node = state.schema.nodes.image.create({ src });
@@ -230,7 +230,7 @@ export function TiptapEditor({
           const doc = parser.parseFromString(html, 'text/html');
 
           const images = doc.querySelectorAll('img');
-          images.forEach((img) => {
+          images.forEach(img => {
             const src = img.src;
             if (src && !src.startsWith('data:')) {
               img.setAttribute('src', src);
@@ -250,14 +250,14 @@ export function TiptapEditor({
         if (!coordinates) return false;
 
         const items = Array.from(event.dataTransfer?.items || []);
-        const imageItem = items.find((item) => item.type.indexOf('image') !== -1);
+        const imageItem = items.find(item => item.type.indexOf('image') !== -1);
 
         if (imageItem) {
           event.preventDefault();
           const file = imageItem.getAsFile();
           if (file) {
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = e => {
               const src = e.target?.result as string;
               const { state, dispatch } = view;
               const node = state.schema.nodes.image.create({ src });
@@ -270,8 +270,8 @@ export function TiptapEditor({
         }
 
         return false;
-      }
-    }
+      },
+    },
   });
 
   React.useEffect(() => {
@@ -344,160 +344,160 @@ export function TiptapEditor({
         {!readOnly && (
           <>
             <Toolbar>
-              <Tooltip title="굵게">
+              <Tooltip title='굵게'>
                 <ToolbarIconButton
                   active={editor.isActive('bold')}
                   onClick={() => editor.chain().focus().toggleBold().run()}
                   disabled={!editor.can().chain().focus().toggleBold().run()}
-                  size="small"
+                  size='small'
                 >
-                  <FormatBoldIcon fontSize="small" />
+                  <FormatBoldIcon fontSize='small' />
                 </ToolbarIconButton>
               </Tooltip>
 
-              <Tooltip title="기울임">
+              <Tooltip title='기울임'>
                 <ToolbarIconButton
                   active={editor.isActive('italic')}
                   onClick={() => editor.chain().focus().toggleItalic().run()}
                   disabled={!editor.can().chain().focus().toggleItalic().run()}
-                  size="small"
+                  size='small'
                 >
-                  <FormatItalicIcon fontSize="small" />
+                  <FormatItalicIcon fontSize='small' />
                 </ToolbarIconButton>
               </Tooltip>
 
-              <Tooltip title="취소선">
+              <Tooltip title='취소선'>
                 <ToolbarIconButton
                   active={editor.isActive('strike')}
                   onClick={() => editor.chain().focus().toggleStrike().run()}
                   disabled={!editor.can().chain().focus().toggleStrike().run()}
-                  size="small"
+                  size='small'
                 >
-                  <FormatStrikethroughIcon fontSize="small" />
+                  <FormatStrikethroughIcon fontSize='small' />
                 </ToolbarIconButton>
               </Tooltip>
 
-              <Tooltip title="코드">
+              <Tooltip title='코드'>
                 <ToolbarIconButton
                   active={editor.isActive('code')}
                   onClick={() => editor.chain().focus().toggleCode().run()}
                   disabled={!editor.can().chain().focus().toggleCode().run()}
-                  size="small"
+                  size='small'
                 >
-                  <CodeIcon fontSize="small" />
+                  <CodeIcon fontSize='small' />
                 </ToolbarIconButton>
               </Tooltip>
 
-              <VerticalDivider orientation="vertical" flexItem />
+              <VerticalDivider orientation='vertical' flexItem />
 
-              <Tooltip title="제목 1">
+              <Tooltip title='제목 1'>
                 <ToolbarIconButton
                   active={editor.isActive('heading', { level: 1 })}
                   onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                  size="small"
+                  size='small'
                 >
-                  <FormatSizeIcon fontSize="small" />
+                  <FormatSizeIcon fontSize='small' />
                 </ToolbarIconButton>
               </Tooltip>
 
-              <Tooltip title="제목 2">
+              <Tooltip title='제목 2'>
                 <ToolbarIconButton
                   active={editor.isActive('heading', { level: 2 })}
                   onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                  size="small"
+                  size='small'
                   sx={{ fontSize: '0.9rem' }}
                 >
                   H2
                 </ToolbarIconButton>
               </Tooltip>
 
-              <VerticalDivider orientation="vertical" flexItem />
+              <VerticalDivider orientation='vertical' flexItem />
 
-              <Tooltip title="글머리 기호">
+              <Tooltip title='글머리 기호'>
                 <ToolbarIconButton
                   active={editor.isActive('bulletList')}
                   onClick={() => editor.chain().focus().toggleBulletList().run()}
-                  size="small"
+                  size='small'
                 >
-                  <FormatListBulletedIcon fontSize="small" />
+                  <FormatListBulletedIcon fontSize='small' />
                 </ToolbarIconButton>
               </Tooltip>
 
-              <Tooltip title="번호 목록">
+              <Tooltip title='번호 목록'>
                 <ToolbarIconButton
                   active={editor.isActive('orderedList')}
                   onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                  size="small"
+                  size='small'
                 >
-                  <FormatListNumberedIcon fontSize="small" />
+                  <FormatListNumberedIcon fontSize='small' />
                 </ToolbarIconButton>
               </Tooltip>
 
-              <VerticalDivider orientation="vertical" flexItem />
+              <VerticalDivider orientation='vertical' flexItem />
 
-              <Tooltip title="왼쪽 정렬">
+              <Tooltip title='왼쪽 정렬'>
                 <ToolbarIconButton
                   active={editor.isActive({ textAlign: 'left' })}
                   onClick={() => editor.chain().focus().setTextAlign('left').run()}
-                  size="small"
+                  size='small'
                 >
-                  <FormatAlignLeftIcon fontSize="small" />
+                  <FormatAlignLeftIcon fontSize='small' />
                 </ToolbarIconButton>
               </Tooltip>
 
-              <Tooltip title="가운데 정렬">
+              <Tooltip title='가운데 정렬'>
                 <ToolbarIconButton
                   active={editor.isActive({ textAlign: 'center' })}
                   onClick={() => editor.chain().focus().setTextAlign('center').run()}
-                  size="small"
+                  size='small'
                 >
-                  <FormatAlignCenterIcon fontSize="small" />
+                  <FormatAlignCenterIcon fontSize='small' />
                 </ToolbarIconButton>
               </Tooltip>
 
-              <Tooltip title="오른쪽 정렬">
+              <Tooltip title='오른쪽 정렬'>
                 <ToolbarIconButton
                   active={editor.isActive({ textAlign: 'right' })}
                   onClick={() => editor.chain().focus().setTextAlign('right').run()}
-                  size="small"
+                  size='small'
                 >
-                  <FormatAlignRightIcon fontSize="small" />
+                  <FormatAlignRightIcon fontSize='small' />
                 </ToolbarIconButton>
               </Tooltip>
 
-              <VerticalDivider orientation="vertical" flexItem />
+              <VerticalDivider orientation='vertical' flexItem />
 
-              <Tooltip title="링크">
-                <ToolbarIconButton active={editor.isActive('link')} onClick={openLinkDialog} size="small">
-                  <LinkIcon fontSize="small" />
+              <Tooltip title='링크'>
+                <ToolbarIconButton active={editor.isActive('link')} onClick={openLinkDialog} size='small'>
+                  <LinkIcon fontSize='small' />
                 </ToolbarIconButton>
               </Tooltip>
 
-              <Tooltip title="이미지">
-                <ToolbarIconButton onClick={addImage} size="small">
-                  <ImageIcon fontSize="small" />
+              <Tooltip title='이미지'>
+                <ToolbarIconButton onClick={addImage} size='small'>
+                  <ImageIcon fontSize='small' />
                 </ToolbarIconButton>
               </Tooltip>
 
-              <VerticalDivider orientation="vertical" flexItem />
+              <VerticalDivider orientation='vertical' flexItem />
 
-              <Tooltip title="실행 취소">
+              <Tooltip title='실행 취소'>
                 <ToolbarIconButton
                   onClick={() => editor.chain().focus().undo().run()}
                   disabled={!editor.can().chain().focus().undo().run()}
-                  size="small"
+                  size='small'
                 >
-                  <UndoIcon fontSize="small" />
+                  <UndoIcon fontSize='small' />
                 </ToolbarIconButton>
               </Tooltip>
 
-              <Tooltip title="다시 실행">
+              <Tooltip title='다시 실행'>
                 <ToolbarIconButton
                   onClick={() => editor.chain().focus().redo().run()}
                   disabled={!editor.can().chain().focus().redo().run()}
-                  size="small"
+                  size='small'
                 >
-                  <RedoIcon fontSize="small" />
+                  <RedoIcon fontSize='small' />
                 </ToolbarIconButton>
               </Tooltip>
             </Toolbar>
@@ -515,33 +515,33 @@ export function TiptapEditor({
         </Box>
       )}
 
-      <Dialog open={linkDialogOpen} onClose={closeLinkDialog} maxWidth="sm" fullWidth>
+      <Dialog open={linkDialogOpen} onClose={closeLinkDialog} maxWidth='sm' fullWidth>
         <DialogTitle>링크 설정</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
-            margin="dense"
-            label="URL"
-            type="url"
+            margin='dense'
+            label='URL'
+            type='url'
             fullWidth
-            variant="outlined"
+            variant='outlined'
             value={linkUrl}
-            onChange={(e) => setLinkUrl(e.target.value)}
-            placeholder="https://example.com"
+            onChange={e => setLinkUrl(e.target.value)}
+            placeholder='https://example.com'
             sx={{ mt: 1 }}
           />
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between' }}>
           <Box>
             {editor.isActive('link') && (
-              <Button onClick={handleLinkRemove} color="error">
+              <Button onClick={handleLinkRemove} color='error'>
                 링크 제거
               </Button>
             )}
           </Box>
           <Box>
             <Button onClick={closeLinkDialog}>취소</Button>
-            <Button onClick={handleLinkSave} variant="contained">
+            <Button onClick={handleLinkSave} variant='contained'>
               저장
             </Button>
           </Box>

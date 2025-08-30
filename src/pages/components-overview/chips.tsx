@@ -26,7 +26,7 @@ interface ChipData {
 }
 
 const ListItem = styled('li')(({ theme }) => ({
-  margin: theme.spacing(0.5)
+  margin: theme.spacing(0.5),
 }));
 
 ListItem.displayName = 'ListItem';
@@ -41,10 +41,10 @@ export default function ComponentChip() {
     { key: 1, label: 'jQuery' },
     { key: 2, label: 'Polymer' },
     { key: 3, label: 'React' },
-    { key: 4, label: 'Vue.js' }
+    { key: 4, label: 'Vue.js' },
   ]);
   const handleDelete = (chipToDelete: ChipData) => () => {
-    setChipData((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
+    setChipData(chips => chips.filter(chip => chip.key !== chipToDelete.key));
   };
 
   const basicChipCodeString = `<Chip label="Default" />
@@ -154,160 +154,160 @@ export default function ComponentChip() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Chips"
-        caption="Chips are compact elements that represent an input, attribute, or action."
-        directory="src/pages/components-overview/chips"
-        link="https://mui.com/material-ui/react-chip/"
+        title='Chips'
+        caption='Chips are compact elements that represent an input, attribute, or action.'
+        directory='src/pages/components-overview/chips'
+        link='https://mui.com/material-ui/react-chip/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Basic" codeHighlight codeString={basicChipCodeString}>
+            <MainCard title='Basic' codeHighlight codeString={basicChipCodeString}>
               <Grid container spacing={2}>
                 <Grid item>
-                  <Chip label="Default" />
+                  <Chip label='Default' />
                 </Grid>
                 <Grid item>
-                  <Chip label="Color" color="primary" />
+                  <Chip label='Color' color='primary' />
                 </Grid>
                 <Grid item>
-                  <Chip label="Disabled" color="primary" disabled />
+                  <Chip label='Disabled' color='primary' disabled />
                 </Grid>
                 <Grid item>
-                  <Chip label="Clickable" color="primary" onClick={() => {}} />
+                  <Chip label='Clickable' color='primary' onClick={() => {}} />
                 </Grid>
                 <Grid item>
-                  <Chip label="Deletable" color="primary" onDelete={() => {}} />
+                  <Chip label='Deletable' color='primary' onDelete={() => {}} />
                 </Grid>
                 <Grid item>
-                  <Chip avatar={<Avatar alt="Natacha" src={avatar} />} label="Avatar" color="primary" />
+                  <Chip avatar={<Avatar alt='Natacha' src={avatar} />} label='Avatar' color='primary' />
                 </Grid>
               </Grid>
             </MainCard>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Outlined" codeString={outlinedChipCodeString}>
+            <MainCard title='Outlined' codeString={outlinedChipCodeString}>
               <Grid container spacing={2}>
                 <Grid item>
-                  <Chip label="Default" variant="outlined" />
+                  <Chip label='Default' variant='outlined' />
                 </Grid>
                 <Grid item>
-                  <Chip label="Color" variant="outlined" color="primary" />
+                  <Chip label='Color' variant='outlined' color='primary' />
                 </Grid>
                 <Grid item>
-                  <Chip label="Disabled" variant="outlined" color="primary" disabled />
+                  <Chip label='Disabled' variant='outlined' color='primary' disabled />
                 </Grid>
                 <Grid item>
-                  <Chip label="Clickable" variant="outlined" color="primary" onClick={() => {}} />
+                  <Chip label='Clickable' variant='outlined' color='primary' onClick={() => {}} />
                 </Grid>
                 <Grid item>
-                  <Chip label="Deletable" variant="outlined" color="primary" onDelete={() => {}} />
+                  <Chip label='Deletable' variant='outlined' color='primary' onDelete={() => {}} />
                 </Grid>
                 <Grid item>
-                  <Chip variant="outlined" avatar={<Avatar alt="Natacha" src={avatarDark} />} label="Avatar" color="primary" />
+                  <Chip variant='outlined' avatar={<Avatar alt='Natacha' src={avatarDark} />} label='Avatar' color='primary' />
                 </Grid>
               </Grid>
             </MainCard>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Lighter" codeString={lighterChipCodeString}>
+            <MainCard title='Lighter' codeString={lighterChipCodeString}>
               <Grid container spacing={2}>
                 <Grid item>
-                  <Chip label="Default" variant="light" />
+                  <Chip label='Default' variant='light' />
                 </Grid>
                 <Grid item>
-                  <Chip label="Color" variant="light" color="primary" />
+                  <Chip label='Color' variant='light' color='primary' />
                 </Grid>
                 <Grid item>
-                  <Chip label="Disabled" variant="light" color="primary" disabled />
+                  <Chip label='Disabled' variant='light' color='primary' disabled />
                 </Grid>
                 <Grid item>
-                  <Chip label="Clickable" variant="light" color="primary" onClick={() => {}} />
+                  <Chip label='Clickable' variant='light' color='primary' onClick={() => {}} />
                 </Grid>
                 <Grid item>
-                  <Chip label="Deletable" variant="light" color="primary" onDelete={() => {}} />
+                  <Chip label='Deletable' variant='light' color='primary' onDelete={() => {}} />
                 </Grid>
                 <Grid item>
-                  <Chip variant="light" avatar={<Avatar alt="Natacha" src={avatarDark} />} label="Avatar" color="primary" />
+                  <Chip variant='light' avatar={<Avatar alt='Natacha' src={avatarDark} />} label='Avatar' color='primary' />
                 </Grid>
               </Grid>
             </MainCard>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Combined" codeString={combineChipCodeString}>
+            <MainCard title='Combined' codeString={combineChipCodeString}>
               <Grid container spacing={2}>
                 <Grid item>
-                  <Chip label="Default" variant="combined" />
+                  <Chip label='Default' variant='combined' />
                 </Grid>
                 <Grid item>
-                  <Chip label="Color" variant="combined" color="primary" />
+                  <Chip label='Color' variant='combined' color='primary' />
                 </Grid>
                 <Grid item>
-                  <Chip label="Disabled" variant="combined" color="primary" disabled />
+                  <Chip label='Disabled' variant='combined' color='primary' disabled />
                 </Grid>
                 <Grid item>
-                  <Chip label="Clickable" variant="combined" color="primary" onClick={() => {}} />
+                  <Chip label='Clickable' variant='combined' color='primary' onClick={() => {}} />
                 </Grid>
                 <Grid item>
-                  <Chip label="Deletable" variant="combined" color="primary" onDelete={() => {}} />
+                  <Chip label='Deletable' variant='combined' color='primary' onDelete={() => {}} />
                 </Grid>
                 <Grid item>
-                  <Chip variant="combined" avatar={<Avatar alt="Natacha" src={avatarDark} />} label="Avatar" color="primary" />
+                  <Chip variant='combined' avatar={<Avatar alt='Natacha' src={avatarDark} />} label='Avatar' color='primary' />
                 </Grid>
               </Grid>
             </MainCard>
           </Grid>
 
           <Grid item xs={12} lg={6}>
-            <MainCard title="Deletable Icon" codeString={deleteChipCodeString}>
+            <MainCard title='Deletable Icon' codeString={deleteChipCodeString}>
               <Grid container spacing={2}>
                 <Grid item>
-                  <Chip label="Default" onDelete={() => {}} color="error" />
+                  <Chip label='Default' onDelete={() => {}} color='error' />
                 </Grid>
                 <Grid item>
-                  <Chip label="Custom Icon" onDelete={() => {}} color="error" deleteIcon={<MinusSquare />} />
+                  <Chip label='Custom Icon' onDelete={() => {}} color='error' deleteIcon={<MinusSquare />} />
                 </Grid>
                 <Grid item>
-                  <Chip variant="outlined" label="Custom Icon" onDelete={() => {}} color="error" deleteIcon={<Trash variant="Bold" />} />
+                  <Chip variant='outlined' label='Custom Icon' onDelete={() => {}} color='error' deleteIcon={<Trash variant='Bold' />} />
                 </Grid>
               </Grid>
             </MainCard>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Avatar & Icon" codeString={avatarChipCodeString}>
+            <MainCard title='Avatar & Icon' codeString={avatarChipCodeString}>
               <Grid container spacing={2}>
                 <Grid item>
-                  <Chip color="secondary" variant="light" icon={<PlayCircle />} label="Play" />
+                  <Chip color='secondary' variant='light' icon={<PlayCircle />} label='Play' />
                 </Grid>
                 <Grid item>
-                  <Chip variant="combined" color="primary" avatar={<Avatar alt="Natacha" src={avatarDark} />} label="Avatar" />
+                  <Chip variant='combined' color='primary' avatar={<Avatar alt='Natacha' src={avatarDark} />} label='Avatar' />
                 </Grid>
                 <Grid item>
-                  <Chip color="warning" variant="outlined" icon={<EmojiHappy variant="Bold" />} label="Smile" />
+                  <Chip color='warning' variant='outlined' icon={<EmojiHappy variant='Bold' />} label='Smile' />
                 </Grid>
                 <Grid item>
-                  <Chip icon={<Heart variant="Bold" />} color="error" label="Like" />
+                  <Chip icon={<Heart variant='Bold' />} color='error' label='Like' />
                 </Grid>
               </Grid>
             </MainCard>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Size" codeString={sizeChipCodeString}>
+            <MainCard title='Size' codeString={sizeChipCodeString}>
               <Grid container spacing={2}>
                 <Grid item>
-                  <Chip color="primary" label="Small" size="small" />
+                  <Chip color='primary' label='Small' size='small' />
                 </Grid>
                 <Grid item>
-                  <Chip color="primary" label="Default" />
+                  <Chip color='primary' label='Default' />
                 </Grid>
                 <Grid item>
-                  <Chip color="primary" label="Large" size="large" />
+                  <Chip color='primary' label='Large' size='large' />
                 </Grid>
               </Grid>
             </MainCard>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Array" codeString={arrayChipCodeString}>
+            <MainCard title='Array' codeString={arrayChipCodeString}>
               <Box
                 sx={{
                   display: 'flex',
@@ -317,15 +317,15 @@ export default function ComponentChip() {
                   borderColor: theme.palette.secondary.light,
                   borderRadius: 1,
                   p: 0.5,
-                  m: 0
+                  m: 0,
                 }}
-                component="ul"
+                component='ul'
               >
-                {chipData.map((data) => (
+                {chipData.map(data => (
                   <ListItem key={data.key}>
                     <Chip
-                      size="small"
-                      variant="combined"
+                      size='small'
+                      variant='combined'
                       label={data.label}
                       onDelete={data.label === 'React' ? undefined : handleDelete(data)}
                     />
@@ -335,25 +335,25 @@ export default function ComponentChip() {
             </MainCard>
           </Grid>
           <Grid item xs={12}>
-            <MainCard title="Color" codeString={colorChipCodeString}>
+            <MainCard title='Color' codeString={colorChipCodeString}>
               <Grid container spacing={2}>
                 <Grid item>
-                  <Chip label="Primary" color="primary" />
+                  <Chip label='Primary' color='primary' />
                 </Grid>
                 <Grid item>
-                  <Chip label="Secondary" color="secondary" sx={{ color: 'secondary.lighter' }} />
+                  <Chip label='Secondary' color='secondary' sx={{ color: 'secondary.lighter' }} />
                 </Grid>
                 <Grid item>
-                  <Chip label="Success" color="success" />
+                  <Chip label='Success' color='success' />
                 </Grid>
                 <Grid item>
-                  <Chip label="Warning" color="warning" />
+                  <Chip label='Warning' color='warning' />
                 </Grid>
                 <Grid item>
-                  <Chip label="Info" color="info" />
+                  <Chip label='Info' color='info' />
                 </Grid>
                 <Grid item>
-                  <Chip label="Error" color="error" />
+                  <Chip label='Error' color='error' />
                 </Grid>
               </Grid>
             </MainCard>

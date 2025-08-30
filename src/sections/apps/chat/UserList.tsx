@@ -54,7 +54,7 @@ export default function UserList({ setUser, search, selectedUser }: UserListProp
           const properties: string[] = ['name'];
           let containsQuery = false;
 
-          properties.forEach((property) => {
+          properties.forEach(property => {
             if (row[property].toString().toLowerCase().includes(search.toString().toLowerCase())) {
               containsQuery = true;
             }
@@ -77,11 +77,11 @@ export default function UserList({ setUser, search, selectedUser }: UserListProp
         {[1, 2, 3, 4, 5].map((index: number) => (
           <ListItem key={index} divider>
             <ListItemAvatar>
-              <Skeleton variant="circular" width={40} height={40} />
+              <Skeleton variant='circular' width={40} height={40} />
             </ListItemAvatar>
             <ListItemText
-              primary={<Skeleton animation="wave" height={24} />}
-              secondary={<Skeleton animation="wave" height={16} width="60%" />}
+              primary={<Skeleton animation='wave' height={24} />}
+              secondary={<Skeleton animation='wave' height={16} width='60%' />}
             />
           </ListItem>
         ))}
@@ -89,8 +89,8 @@ export default function UserList({ setUser, search, selectedUser }: UserListProp
     );
 
   return (
-    <List component="nav">
-      {data.map((user) => (
+    <List component='nav'>
+      {data.map(user => (
         <Fragment key={user.id}>
           <ListItemButton
             sx={{ pl: 1, borderRadius: 0, '&:hover': { borderRadius: 1 } }}
@@ -104,29 +104,29 @@ export default function UserList({ setUser, search, selectedUser }: UserListProp
             </ListItemAvatar>
             <ListItemText
               primary={
-                <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
+                <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1}>
                   <Typography
-                    variant="subtitle1"
-                    color="text.primary"
+                    variant='subtitle1'
+                    color='text.primary'
                     sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                   >
                     {user.name}
                   </Typography>
-                  <Typography color="text.secondary" variant="caption">
+                  <Typography color='text.secondary' variant='caption'>
                     {user.lastMessage}
                   </Typography>
                 </Stack>
               }
               secondary={
                 <Typography
-                  color="text.secondary"
+                  color='text.secondary'
                   sx={{
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
                     display: 'flex',
                     justifyContent: 'space-between',
-                    alignItems: 'center'
+                    alignItems: 'center',
                   }}
                 >
                   <>{user.status}</>

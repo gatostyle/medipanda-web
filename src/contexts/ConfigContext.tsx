@@ -18,7 +18,7 @@ const initialState: CustomizationProps = {
   onChangeMiniDrawer: () => {},
   onChangeMenuCaption: () => {},
   onChangeFontFamily: () => {},
-  onChangeContrast: () => {}
+  onChangeContrast: () => {},
 };
 
 // ==============================|| CONFIG CONTEXT & PROVIDER ||============================== //
@@ -35,63 +35,63 @@ function ConfigProvider({ children }: ConfigProviderProps) {
   const onChangeContainer = () => {
     setConfig({
       ...config,
-      container: !config.container
+      container: !config.container,
     });
   };
 
   const onChangeLocalization = (lang: I18n) => {
     setConfig({
       ...config,
-      i18n: lang
+      i18n: lang,
     });
   };
 
   const onChangeMode = (mode: ThemeMode) => {
     setConfig({
       ...config,
-      mode
+      mode,
     });
   };
 
   const onChangePresetColor = (theme: PresetColor) => {
     setConfig({
       ...config,
-      presetColor: theme
+      presetColor: theme,
     });
   };
 
   const onChangeDirection = (direction: ThemeDirection) => {
     setConfig({
       ...config,
-      themeDirection: direction
+      themeDirection: direction,
     });
   };
 
   const onChangeMiniDrawer = (miniDrawer: boolean) => {
     setConfig({
       ...config,
-      miniDrawer
+      miniDrawer,
     });
   };
 
   const onChangeContrast = () => {
     setConfig({
       ...config,
-      themeContrast: !config.themeContrast
+      themeContrast: !config.themeContrast,
     });
   };
 
   const onChangeMenuCaption = () => {
     setConfig({
       ...config,
-      menuCaption: !config.menuCaption
+      menuCaption: !config.menuCaption,
     });
   };
 
   const onChangeFontFamily = (fontFamily: FontFamily) => {
     setConfig({
       ...config,
-      fontFamily
+      fontFamily,
     });
   };
 
@@ -107,7 +107,7 @@ function ConfigProvider({ children }: ConfigProviderProps) {
         onChangeMiniDrawer,
         onChangeMenuCaption,
         onChangeFontFamily,
-        onChangeContrast
+        onChangeContrast,
       }}
     >
       {children}

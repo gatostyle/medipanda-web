@@ -21,31 +21,31 @@ export default function ProductView({ data }: any) {
         <Box sx={{ position: 'relative' }}>
           <img
             src={data.image && getImageUrl(`${data.image}`, ImagePath.ECOMMERCE)}
-            alt="product"
+            alt='product'
             style={{ background: theme.palette.secondary[200], width: '100%' }}
           />
           <Chip
             label={data.isStock ? 'In Stock' : 'Out of Stock'}
             color={data.isStock ? 'success' : 'error'}
-            size="small"
+            size='small'
             sx={{ position: 'absolute', right: 8, top: 8 }}
           />
         </Box>
       </Grid>
       <Grid item xs={12} sm={7} md={8} lg={9}>
         <Stack spacing={1} sx={{ px: 2 }}>
-          <Typography variant="h5">{data?.name}</Typography>
-          <Typography color="text.secondary">{data?.about}</Typography>
-          <Rating name="read-only" value={data.rating} readOnly />
+          <Typography variant='h5'>{data?.name}</Typography>
+          <Typography color='text.secondary'>{data?.about}</Typography>
+          <Rating name='read-only' value={data.rating} readOnly />
           <Box sx={{ width: '80%', pt: 2 }}>
             <Grid container spacing={1}>
               <Grid item xs={4} md={3}>
-                <Typography color="text.secondary">Categories</Typography>
+                <Typography color='text.secondary'>Categories</Typography>
               </Grid>
               <Grid item xs={8} md={9}>
-                <Stack direction="row" spacing={0.5}>
+                <Stack direction='row' spacing={0.5}>
                   {data?.categories?.map((item: any, index: number) => (
-                    <Typography key={index} variant="h6" sx={{ textTransform: 'capitalize' }}>
+                    <Typography key={index} variant='h6' sx={{ textTransform: 'capitalize' }}>
                       {item}
                       {data?.categories.length > index + 1 ? ',' : ''}
                     </Typography>
@@ -53,16 +53,16 @@ export default function ProductView({ data }: any) {
                 </Stack>
               </Grid>
               <Grid item xs={4} md={3}>
-                <Typography color="text.secondary">Qty</Typography>
+                <Typography color='text.secondary'>Qty</Typography>
               </Grid>
               <Grid item xs={8} md={9}>
-                <Typography variant="h6">{data?.quantity}</Typography>
+                <Typography variant='h6'>{data?.quantity}</Typography>
               </Grid>
               <Grid item xs={4} md={3}>
-                <Typography color="text.secondary">Price</Typography>
+                <Typography color='text.secondary'>Price</Typography>
               </Grid>
               <Grid item xs={8} md={9}>
-                <Typography variant="h5">{data?.salePrice ? `$${data?.salePrice}` : `$${data?.offerPrice}`}</Typography>
+                <Typography variant='h5'>{data?.salePrice ? `$${data?.salePrice}` : `$${data?.offerPrice}`}</Typography>
               </Grid>
             </Grid>
           </Box>

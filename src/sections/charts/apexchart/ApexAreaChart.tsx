@@ -13,14 +13,14 @@ import { ThemeMode } from 'config';
 const areaChartOptions = {
   chart: {
     height: 350,
-    type: 'area'
+    type: 'area',
   },
   colors: ['primary.700', 'primary.main'],
   dataLabels: {
-    enabled: false
+    enabled: false,
   },
   stroke: {
-    curve: 'smooth'
+    curve: 'smooth',
   },
   xaxis: {
     type: 'datetime',
@@ -31,13 +31,13 @@ const areaChartOptions = {
       '2018-09-19T03:30:00.000Z',
       '2018-09-19T04:30:00.000Z',
       '2018-09-19T05:30:00.000Z',
-      '2018-09-19T06:30:00.000Z'
-    ]
+      '2018-09-19T06:30:00.000Z',
+    ],
   },
   tooltip: {
     x: {
-      format: 'dd/MM/yy HH:mm'
-    }
+      format: 'dd/MM/yy HH:mm',
+    },
   },
   legend: {
     show: true,
@@ -46,18 +46,18 @@ const areaChartOptions = {
     offsetX: 10,
     offsetY: 10,
     labels: {
-      useSeriesColors: false
+      useSeriesColors: false,
     },
     markers: {
       width: 16,
       height: 16,
-      radius: 5
+      radius: 5,
     },
     itemMargin: {
       horizontal: 15,
-      vertical: 8
-    }
-  }
+      vertical: 8,
+    },
+  },
 };
 
 // ==============================|| APEXCHART - AREA ||============================== //
@@ -72,50 +72,50 @@ export default function ApexAreaChart() {
   const [series] = useState([
     {
       name: 'Series 1',
-      data: [31, 40, 28, 51, 42, 109, 100]
+      data: [31, 40, 28, 51, 42, 109, 100],
     },
     {
       name: 'Series 2',
-      data: [11, 32, 45, 32, 34, 52, 41]
-    }
+      data: [11, 32, 45, 32, 34, 52, 41],
+    },
   ]);
 
   const [options, setOptions] = useState<ChartProps>(areaChartOptions);
   useEffect(() => {
-    setOptions((prevState) => ({
+    setOptions(prevState => ({
       ...prevState,
       colors: [theme.palette.primary[700], theme.palette.primary.main],
       xaxis: {
         labels: {
           style: {
-            colors: [primary, primary, primary, primary, primary, primary, primary]
-          }
-        }
+            colors: [primary, primary, primary, primary, primary, primary, primary],
+          },
+        },
       },
       yaxis: {
         labels: {
           style: {
-            colors: [primary]
-          }
-        }
+            colors: [primary],
+          },
+        },
       },
       grid: {
-        borderColor: line
+        borderColor: line,
       },
       legend: {
         labels: {
-          colors: 'secondary.main'
-        }
+          colors: 'secondary.main',
+        },
       },
       theme: {
-        mode: mode === ThemeMode.DARK ? 'dark' : 'light'
-      }
+        mode: mode === ThemeMode.DARK ? 'dark' : 'light',
+      },
     }));
   }, [mode, primary, secondary, line, theme]);
 
   return (
-    <div id="chart">
-      <ReactApexChart options={options} series={series} type="area" height={350} />
+    <div id='chart'>
+      <ReactApexChart options={options} series={series} type='area' height={350} />
     </div>
   );
 }

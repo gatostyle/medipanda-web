@@ -19,40 +19,40 @@ export default function ComponentTabs() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Tabs"
-        caption="Tabs make it easy to explore and switch between different views."
-        directory="src/pages/components-overview/tabs"
-        link="https://mui.com/material-ui/react-tabs/"
+        title='Tabs'
+        caption='Tabs make it easy to explore and switch between different views.'
+        directory='src/pages/components-overview/tabs'
+        link='https://mui.com/material-ui/react-tabs/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={6}>
             <Stack spacing={1}>
-              <Typography variant="h5">Basic</Typography>
+              <Typography variant='h5'>Basic</Typography>
               <BasicTabs />
             </Stack>
           </Grid>
           <Grid item xs={12} lg={6}>
             <Stack spacing={1}>
-              <Typography variant="h5">Color Tab with Disabled Tab + Scrollable Tabs</Typography>
+              <Typography variant='h5'>Color Tab with Disabled Tab + Scrollable Tabs</Typography>
               <ScrollableTabs />
             </Stack>
           </Grid>
           <Grid item xs={12} lg={6}>
             <Stack spacing={1}>
-              <Typography variant="h5">Icon Tabs</Typography>
+              <Typography variant='h5'>Icon Tabs</Typography>
               <IconTabs />
             </Stack>
           </Grid>
           <Grid item xs={12} lg={6}>
             <Stack spacing={1}>
-              <Typography variant="h5">Centered Tabs</Typography>
+              <Typography variant='h5'>Centered Tabs</Typography>
               <CenteredTabs />
             </Stack>
           </Grid>
           <Grid item xs={12} lg={6}>
             <Stack spacing={1}>
-              <Typography variant="h5">Vertical Tabs</Typography>
+              <Typography variant='h5'>Vertical Tabs</Typography>
               <VerticalTabs />
             </Stack>
           </Grid>

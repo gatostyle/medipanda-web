@@ -33,9 +33,9 @@ export const data = [
             avatar: Avatar2,
             linkedin: 'https://www.linkedin.com/',
             facebook: 'https://www.facebook.com/',
-            skype: 'https://www.skype.com/en/'
-          }
-        ]
+            skype: 'https://www.skype.com/en/',
+          },
+        ],
       },
       {
         name: 'Jen Tile',
@@ -61,7 +61,7 @@ export const data = [
                 avatar: Avatar6,
                 linkedin: 'https://www.linkedin.com/',
                 facebook: 'https://www.facebook.com/',
-                skype: 'https://www.skype.com/en/'
+                skype: 'https://www.skype.com/en/',
               },
               {
                 name: 'Percy Vere',
@@ -69,11 +69,11 @@ export const data = [
                 avatar: Avatar7,
                 linkedin: 'https://www.linkedin.com/',
                 facebook: 'https://www.facebook.com/',
-                skype: 'https://www.skype.com/en/'
-              }
-            ]
-          }
-        ]
+                skype: 'https://www.skype.com/en/',
+              },
+            ],
+          },
+        ],
       },
       {
         name: 'Harriet Upp',
@@ -90,7 +90,7 @@ export const data = [
             avatar: Avatar5,
             linkedin: 'https://www.linkedin.com/',
             facebook: 'https://www.facebook.com/',
-            skype: 'https://www.skype.com/en/'
+            skype: 'https://www.skype.com/en/',
           },
           {
             name: 'Dave Allippa',
@@ -98,10 +98,10 @@ export const data = [
             avatar: Avatar10,
             linkedin: 'https://www.linkedin.com/',
             facebook: 'https://www.facebook.com/',
-            skype: 'https://www.skype.com/en/'
-          }
-        ]
-      }
-    ]
-  }
+            skype: 'https://www.skype.com/en/',
+          },
+        ],
+      },
+    ],
+  },
 ];

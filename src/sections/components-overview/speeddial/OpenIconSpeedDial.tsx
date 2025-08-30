@@ -22,7 +22,7 @@ export default function OpenIconSpeedDial() {
     { icon: <Save2 />, name: 'Save' },
     { icon: <Printer />, name: 'Print' },
     { icon: <Share />, name: 'Share' },
-    { icon: <Heart />, name: 'Like' }
+    { icon: <Heart />, name: 'Like' },
   ];
 
   const [open, setOpen] = useState(false);
@@ -36,7 +36,7 @@ export default function OpenIconSpeedDial() {
 
   const [hidden, setHidden] = useState(false);
   const handleVisibility = () => {
-    setHidden((prevHidden) => !prevHidden);
+    setHidden(prevHidden => !prevHidden);
   };
 
   const customSpeeddialCodeString = `<Box sx={{ height: 430, transform: 'translateZ(0px)', flexGrow: 1 }}>
@@ -57,11 +57,11 @@ export default function OpenIconSpeedDial() {
 </Box>`;
 
   return (
-    <MainCard title="Custom Close Icon" codeString={customSpeeddialCodeString}>
+    <MainCard title='Custom Close Icon' codeString={customSpeeddialCodeString}>
       <Box sx={{ height: 430, transform: 'translateZ(0px)', flexGrow: 1 }}>
         <Button onClick={handleVisibility}>Toggle Speed Dial</Button>
         <SpeedDial
-          ariaLabel="SpeedDial openIcon example"
+          ariaLabel='SpeedDial openIcon example'
           hidden={hidden}
           icon={<SpeedDialIcon openIcon={<Edit style={{ fontSize: '1.3rem' }} />} />}
           onClose={handleClose}
@@ -69,7 +69,7 @@ export default function OpenIconSpeedDial() {
           open={open}
           sx={{ position: 'absolute', bottom: 16, right: 16, '& .MuiSpeedDialAction-fab': { bgcolor: 'secondary.200' } }}
         >
-          {actions.map((action) => (
+          {actions.map(action => (
             <SpeedDialAction key={action.name} icon={action.icon} tooltipTitle={action.name} onClick={handleClose} />
           ))}
         </SpeedDial>

@@ -14,16 +14,16 @@ const mixedChartOptions = {
   chart: {
     type: 'line',
     stacked: false,
-    height: 450
+    height: 450,
   },
   dataLabels: {
-    enabled: false
+    enabled: false,
   },
   stroke: {
-    width: [1, 1, 4]
+    width: [1, 1, 4],
   },
   xaxis: {
-    categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016]
+    categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
   },
   legend: {
     show: true,
@@ -32,87 +32,87 @@ const mixedChartOptions = {
     offsetX: 10,
     offsetY: 10,
     labels: {
-      useSeriesColors: false
+      useSeriesColors: false,
     },
     markers: {
       width: 16,
       height: 16,
-      radius: 5
+      radius: 5,
     },
     itemMargin: {
       horizontal: 15,
-      vertical: 8
-    }
+      vertical: 8,
+    },
   },
   yaxis: [
     {
       axisTicks: {
-        show: true
+        show: true,
       },
       axisBorder: {
         show: true,
-        color: '#008FFB'
+        color: '#008FFB',
       },
       labels: {
         style: {
-          colors: '#008FFB'
-        }
+          colors: '#008FFB',
+        },
       },
       title: {
         text: 'Income (thousand crores)',
         style: {
-          color: '#008FFB'
-        }
+          color: '#008FFB',
+        },
       },
       tooltip: {
-        enabled: true
-      }
+        enabled: true,
+      },
     },
     {
       seriesName: 'Income',
       opposite: true,
       axisTicks: {
-        show: true
+        show: true,
       },
       axisBorder: {
         show: true,
-        color: '#00E396'
+        color: '#00E396',
       },
       labels: {
         style: {
-          colors: '#00E396'
-        }
+          colors: '#00E396',
+        },
       },
       title: {
         text: 'Operating Cashflow (thousand crores)',
         style: {
-          color: '#00E396'
-        }
-      }
+          color: '#00E396',
+        },
+      },
     },
     {
       seriesName: 'Revenue',
       opposite: true,
       axisTicks: {
-        show: true
+        show: true,
       },
       axisBorder: {
         show: true,
-        color: '#FEB019'
+        color: '#FEB019',
       },
       labels: {
         style: {
-          colors: '#FEB019'
-        }
+          colors: '#FEB019',
+        },
       },
       title: {
         text: 'Revenue (thousand crores)',
         style: {
-          color: '#FEB019'
-        }
-      }
-    }
-  ]
+          color: '#FEB019',
+        },
+      },
+    },
+  ],
 };
 
 // ==============================|| APEXCHART - MIXED ||============================== //
@@ -133,57 +133,57 @@ export default function ApexMixedChart() {
     {
       name: 'Income',
       type: 'column',
-      data: [14, 2, 25, 15, 25, 28, 38, 46]
+      data: [14, 2, 25, 15, 25, 28, 38, 46],
     },
     {
       name: 'Cashflow',
       type: 'column',
-      data: [11, 3, 31, 4, 41, 49, 65, 85]
+      data: [11, 3, 31, 4, 41, 49, 65, 85],
     },
     {
       name: 'Revenue',
       type: 'line',
-      data: [20, 29, 37, 36, 44, 45, 50, 58]
-    }
+      data: [20, 29, 37, 36, 44, 45, 50, 58],
+    },
   ]);
 
   const [options, setOptions] = useState<ChartProps>({ ...mixedChartOptions, yaxis: [...mixedChartOptions.yaxis, { logarithmic: true }] });
 
   useEffect(() => {
-    setOptions((prevState) => ({
+    setOptions(prevState => ({
       ...prevState,
       colors: [secondary, primaryMain, successDark],
       xaxis: {
         labels: {
           style: {
-            colors: [primary, primary, primary, primary, primary, primary, primary, primary]
-          }
-        }
+            colors: [primary, primary, primary, primary, primary, primary, primary, primary],
+          },
+        },
       },
       yaxis: {
         labels: {
           style: {
-            colors: [primary]
-          }
-        }
+            colors: [primary],
+          },
+        },
       },
       grid: {
-        borderColor: line
+        borderColor: line,
       },
       legend: {
         labels: {
-          colors: 'secondary.main'
-        }
+          colors: 'secondary.main',
+        },
       },
       theme: {
-        mode: mode === ThemeMode.DARK ? 'dark' : 'light'
-      }
+        mode: mode === ThemeMode.DARK ? 'dark' : 'light',
+      },
     }));
   }, [mode, primary, line, grey200, secondary, primaryMain, successDark]);
 
   return (
-    <div id="chart">
-      <ReactApexChart options={options} series={series} type="line" height={350} />
+    <div id='chart'>
+      <ReactApexChart options={options} series={series} type='line' height={350} />
     </div>
   );
 }

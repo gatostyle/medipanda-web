@@ -22,44 +22,44 @@ const border = '#f0f0f0';
 
 const styles = StyleSheet.create({
   page: {
-    padding: 30
+    padding: 30,
   },
   container: {
     border: `1px solid ${border}`,
     padding: 18,
     flexDirection: 'column',
     '@media max-width: 400': {
-      flexDirection: 'column'
-    }
+      flexDirection: 'column',
+    },
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16
+    gap: 16,
   },
   image: {
     width: 40,
     height: 40,
     borderRadius: '50%',
-    objectFit: 'cover'
+    objectFit: 'cover',
   },
   CardInfo: {
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   title: {
     fontSize: 14,
     lineHeight: 1.57,
-    color: textPrimary
+    color: textPrimary,
   },
   role: {
     fontSize: 10,
     lineHeight: 1.66,
-    color: textSecondary
+    color: textSecondary,
   },
   hr: {
     borderBottom: `1px solid ${border}`,
-    paddingTop: 18
+    paddingTop: 18,
     // paddingBottom: 18
   },
   about: {
@@ -68,26 +68,26 @@ const styles = StyleSheet.create({
     lineHeight: 1.57,
     fontWeight: 'demibold',
     color: textPrimary,
-    paddingBottom: 18
+    paddingBottom: 18,
   },
   IconContainer: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   IconRow: {
     width: '48%',
     gap: 10,
-    paddingBottom: 10
+    paddingBottom: 10,
   },
   icon: {
     width: 12,
-    height: 10
+    height: 10,
   },
   iconTitle: {
     fontSize: 10,
     lineHeight: 1.57,
-    color: textSecondary
+    color: textSecondary,
   },
   chip: {
     border: `1px solid ${textSecondary}`,
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     borderRadius: '4px',
     marginLeft: 4,
     marginRight: 4,
-    marginBottom: 8
+    marginBottom: 8,
   },
   chipTitle: {
     color: textSecondary,
@@ -103,11 +103,11 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     paddingRight: 8,
     paddingBottom: 4,
-    paddingTop: 4
+    paddingTop: 4,
   },
   timer: {
-    marginTop: 25
-  }
+    marginTop: 25,
+  },
 });
 
 interface Props {
@@ -120,7 +120,7 @@ export default function ListSmallCard({ customer }: Props) {
   const theme = useTheme();
   return (
     <Document title={`${customer?.fatherName}`}>
-      <Page size="A4" style={styles.page}>
+      <Page size='A4' style={styles.page}>
         <View style={styles.container}>
           <View style={styles.row}>
             <Image style={styles.image} src={getImageUrl(`avatar-${!customer.avatar ? 1 : customer.avatar}.png`, ImagePath.USERS)} />

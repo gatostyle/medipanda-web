@@ -86,11 +86,11 @@ export default function ChatDrawer({ handleDrawerOpen, openChatDrawer, setUser, 
           boxSizing: 'border-box',
           position: 'relative',
           border: 'none',
-          ...(!matchDownLG && { borderRadius: '12px 0 0 12px' })
-        }
+          ...(!matchDownLG && { borderRadius: '12px 0 0 12px' }),
+        },
       }}
       variant={matchDownLG ? 'temporary' : 'persistent'}
-      anchor="left"
+      anchor='left'
       open={openChatDrawer}
       ModalProps={{ keepMounted: true }}
       onClose={handleDrawerOpen}
@@ -102,12 +102,12 @@ export default function ChatDrawer({ handleDrawerOpen, openChatDrawer, setUser, 
       >
         <Box sx={{ p: 3, pb: 1 }}>
           <Stack spacing={2}>
-            <Stack direction="row" spacing={0.5} alignItems="center">
-              <Typography variant="h5" color="inherit">
+            <Stack direction='row' spacing={0.5} alignItems='center'>
+              <Typography variant='h5' color='inherit'>
                 Messages
               </Typography>
               <Chip
-                label="9"
+                label='9'
                 color={theme.palette.mode === ThemeMode.DARK ? 'default' : 'secondary'}
                 sx={{ width: 20, height: 20, borderRadius: '50%', '& .MuiChip-label': { px: 0.5 } }}
               />
@@ -115,13 +115,13 @@ export default function ChatDrawer({ handleDrawerOpen, openChatDrawer, setUser, 
 
             <OutlinedInput
               fullWidth
-              id="input-search-header"
-              placeholder="Search"
+              id='input-search-header'
+              placeholder='Search'
               value={search}
               onChange={handleSearch}
               sx={{ '& .MuiOutlinedInput-input': { p: '10.5px 0px 12px' } }}
               startAdornment={
-                <InputAdornment position="start">
+                <InputAdornment position='start'>
                   <SearchNormal1 style={{ fontSize: 'small' }} />
                 </InputAdornment>
               }
@@ -133,7 +133,7 @@ export default function ChatDrawer({ handleDrawerOpen, openChatDrawer, setUser, 
           sx={{
             overflowX: 'hidden',
             height: matchDownLG ? 'calc(100vh - 120px)' : 'calc(100vh - 428px)',
-            minHeight: matchDownLG ? 0 : 420
+            minHeight: matchDownLG ? 0 : 420,
           }}
         >
           <Box sx={{ p: 3, pt: 0 }}>
@@ -144,15 +144,15 @@ export default function ChatDrawer({ handleDrawerOpen, openChatDrawer, setUser, 
           <List sx={{ '& .MuiListItemIcon-root': { minWidth: 32 } }}>
             <ListItemButton>
               <ListItemIcon>
-                <Logout variant="Bulk" />
+                <Logout variant='Bulk' />
               </ListItemIcon>
-              <ListItemText primary="LogOut" />
+              <ListItemText primary='LogOut' />
             </ListItemButton>
             <ListItemButton>
               <ListItemIcon>
-                <Setting3 variant="Bulk" />
+                <Setting3 variant='Bulk' />
               </ListItemIcon>
-              <ListItemText primary="Settings" />
+              <ListItemText primary='Settings' />
             </ListItemButton>
           </List>
         </Box>
@@ -160,58 +160,58 @@ export default function ChatDrawer({ handleDrawerOpen, openChatDrawer, setUser, 
         <Box sx={{ p: 3, pt: 1, pl: 5 }}>
           <Grid container>
             <Grid item xs={12}>
-              <Grid container spacing={1} alignItems="center" sx={{ flexWrap: 'nowrap' }}>
+              <Grid container spacing={1} alignItems='center' sx={{ flexWrap: 'nowrap' }}>
                 <Grid item>
                   <UserAvatar user={{ online_status: status, avatar: 'avatar-1.png', name: 'User 1' }} />
                 </Grid>
                 <Grid item xs zeroMinWidth>
-                  <Stack sx={{ cursor: 'pointer', textDecoration: 'none' }} component={Link} to="/apps/profiles/user/personal">
-                    <Typography variant="h5" color="text.primary">
+                  <Stack sx={{ cursor: 'pointer', textDecoration: 'none' }} component={Link} to='/apps/profiles/user/personal'>
+                    <Typography variant='h5' color='text.primary'>
                       {user ? user?.name : ''}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant='caption' color='text.secondary'>
                       {user ? user?.role : ''}
                     </Typography>
                   </Stack>
                 </Grid>
                 <Grid item>
-                  <IconButton onClick={handleClickRightMenu} size="small" color="secondary">
+                  <IconButton onClick={handleClickRightMenu} size='small' color='secondary'>
                     <ArrowRight2 />
                   </IconButton>
                   <Menu
-                    id="simple-menu"
+                    id='simple-menu'
                     anchorEl={anchorEl}
                     keepMounted
                     open={Boolean(anchorEl)}
                     onClose={handleCloseRightMenu}
                     anchorOrigin={{
                       vertical: 'top',
-                      horizontal: 'right'
+                      horizontal: 'right',
                     }}
                     transformOrigin={{
                       vertical: 'bottom',
-                      horizontal: 'right'
+                      horizontal: 'right',
                     }}
                     sx={{ '& .MuiMenu-list': { p: 0 }, '& .MuiMenuItem-root': { pl: '6px', py: '3px' } }}
                   >
                     <MenuItem onClick={handleRightMenuItemClick('available')}>
                       <IconButton
-                        size="small"
+                        size='small'
                         sx={{
                           color: 'success.main',
-                          '&:hover': { color: 'success.main', bgcolor: 'transparent', transition: 'none', padding: 0 }
+                          '&:hover': { color: 'success.main', bgcolor: 'transparent', transition: 'none', padding: 0 },
                         }}
                       >
-                        <TickCircle variant="Bold" />
+                        <TickCircle variant='Bold' />
                       </IconButton>
                       <Typography>Active</Typography>
                     </MenuItem>
                     <MenuItem onClick={handleRightMenuItemClick('offline')}>
                       <IconButton
-                        size="small"
+                        size='small'
                         sx={{
                           color: 'warning.main',
-                          '&:hover': { color: 'warning.main', bgcolor: 'transparent', transition: 'none', padding: 0 }
+                          '&:hover': { color: 'warning.main', bgcolor: 'transparent', transition: 'none', padding: 0 },
                         }}
                       >
                         <Clock />
@@ -220,10 +220,10 @@ export default function ChatDrawer({ handleDrawerOpen, openChatDrawer, setUser, 
                     </MenuItem>
                     <MenuItem onClick={handleRightMenuItemClick('do_not_disturb')}>
                       <IconButton
-                        size="small"
+                        size='small'
                         sx={{
                           color: 'secondary.400',
-                          '&:hover': { color: 'secondary.400', bgcolor: 'transparent', transition: 'none', padding: 0 }
+                          '&:hover': { color: 'secondary.400', bgcolor: 'transparent', transition: 'none', padding: 0 },
                         }}
                       >
                         <MinusCirlce />

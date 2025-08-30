@@ -24,7 +24,7 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
@@ -36,7 +36,7 @@ import {
   getProductSummaries,
   ProductSummaryResponse,
   updateProductExtraInfo_1,
-  uploadProductExtraInfo
+  uploadProductExtraInfo,
 } from 'medipanda/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
@@ -78,7 +78,7 @@ export default function MpAdminProductList() {
       isOutOfStock: false,
       isStopSelling: false,
       pageIndex: 0,
-      pageSize: 20
+      pageSize: 20,
     },
     onSubmit: async () => {
       if (formik.values.pageIndex !== 0) {
@@ -86,7 +86,7 @@ export default function MpAdminProductList() {
       } else {
         await fetchData();
       }
-    }
+    },
   });
 
   const getStatusDisplay = (product: ProductSummaryResponse): string => {
@@ -113,9 +113,9 @@ export default function MpAdminProductList() {
       header: () => (
         <Checkbox
           checked={selectedItems.length === data.length && data.length > 0}
-          onChange={(e) => {
+          onChange={e => {
             if (e.target.checked) {
-              setSelectedItems(data.map((item) => item.id));
+              setSelectedItems(data.map(item => item.id));
             } else {
               setSelectedItems([]);
             }
@@ -125,28 +125,28 @@ export default function MpAdminProductList() {
       cell: ({ row }) => (
         <Checkbox
           checked={selectedItems.includes(row.original.id)}
-          onChange={(e) => {
+          onChange={e => {
             if (e.target.checked) {
-              setSelectedItems((prev) => [...prev, row.original.id]);
+              setSelectedItems(prev => [...prev, row.original.id]);
             } else {
-              setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
+              setSelectedItems(prev => prev.filter(id => id !== row.original.id));
             }
           }}
         />
       ),
-      size: 50
+      size: 50,
     },
     {
       header: 'No',
       accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
-      size: 60
+      size: 60,
     },
     {
       header: '제약사',
       accessorKey: 'manufacturerName',
       cell: ({ row }) => row.original.manufacturerName ?? '-',
-      size: 150
+      size: 150,
     },
     {
       header: '제품명',
@@ -156,19 +156,19 @@ export default function MpAdminProductList() {
           {row.original.productName ?? '-'}
         </Link>
       ),
-      size: 300
+      size: 300,
     },
     {
       header: '성분명',
       accessorKey: 'composition',
       cell: ({ row }) => row.original.composition ?? '-',
-      size: 250
+      size: 250,
     },
     {
       header: '제품코드',
       accessorKey: 'productCode',
       cell: ({ row }) => row.original.productCode,
-      size: 120
+      size: 120,
     },
     {
       header: '약가',
@@ -176,32 +176,32 @@ export default function MpAdminProductList() {
       cell: ({ row }) => {
         return row.original.price !== null ? `${row.original.price.toLocaleString()}` : '-';
       },
-      size: 100
+      size: 100,
     },
     {
       header: '기본수수료율',
       accessorKey: 'feeRate',
       cell: ({ row }) => (row.original.feeRate !== null ? `${row.original.feeRate}%` : '-'),
-      size: 120
+      size: 120,
     },
     {
       header: '변경요율',
       accessorKey: 'changedFeeRate',
       cell: ({ row }) => getChangedRateDisplay(row.original),
-      size: 120
+      size: 120,
     },
     {
       header: '상태',
       accessorKey: 'status',
       cell: ({ row }) => getStatusDisplay(row.original),
-      size: 200
+      size: 200,
     },
     {
       header: '비고',
       accessorKey: 'note',
       cell: ({ row }) => row.original.note ?? '-',
-      size: 200
-    }
+      size: 200,
+    },
   ];
 
   const table = useReactTable({
@@ -212,11 +212,11 @@ export default function MpAdminProductList() {
     state: {
       pagination: {
         pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize
-      }
+        pageSize: formik.values.pageSize,
+      },
     },
     pageCount: totalPages,
-    manualPagination: true
+    manualPagination: true,
   });
 
   const fetchData = async () => {
@@ -233,7 +233,7 @@ export default function MpAdminProductList() {
         isOutOfStock: formik.values.isOutOfStock || undefined,
         isStopSelling: formik.values.isStopSelling || undefined,
         page: formik.values.pageIndex,
-        size: formik.values.pageSize
+        size: formik.values.pageSize,
       });
 
       setData(withSequence(response).content);
@@ -262,20 +262,20 @@ export default function MpAdminProductList() {
     const count = selectedItems.length;
     const message =
       count === 1
-        ? `제품 ${data.find((item) => item.id === selectedItems[0])?.productName}을 삭제하시겠습니까?`
+        ? `제품 ${data.find(item => item.id === selectedItems[0])?.productName}을 삭제하시겠습니까?`
         : `${count}건이 선택되었습니다. 삭제하시겠습니까?`;
 
     deleteDialog.open({
       message,
       onConfirm: async () => {
         try {
-          await Promise.all(selectedItems.map((id) => updateProductExtraInfo_1(id)));
+          await Promise.all(selectedItems.map(id => updateProductExtraInfo_1(id)));
           setSelectedItems([]);
           fetchData();
         } catch (error) {
           console.error('Failed to delete products:', error);
         }
-      }
+      },
     });
   };
 
@@ -299,7 +299,7 @@ export default function MpAdminProductList() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant='h4' gutterBottom>
           제품관리
         </Typography>
       </Grid>
@@ -310,9 +310,9 @@ export default function MpAdminProductList() {
             <form onSubmit={formik.handleSubmit}>
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size="small">
+                  <FormControl fullWidth size='small'>
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
+                    <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'productName'}>제품명</MenuItem>
                       <MenuItem value={'productCode'}>제품코드</MenuItem>
                       <MenuItem value={'manufacturerName'}>제약사</MenuItem>
@@ -323,9 +323,9 @@ export default function MpAdminProductList() {
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
-                    name="searchKeyword"
-                    size="small"
-                    placeholder="검색어를 입력하세요"
+                    name='searchKeyword'
+                    size='small'
+                    placeholder='검색어를 입력하세요'
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
@@ -336,50 +336,50 @@ export default function MpAdminProductList() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          size="small"
+                          size='small'
                           checked={formik.values.isAcquisition}
-                          onChange={(e) => formik.setFieldValue('isAcquisition', e.target.checked)}
+                          onChange={e => formik.setFieldValue('isAcquisition', e.target.checked)}
                         />
                       }
-                      label="취급품목"
+                      label='취급품목'
                     />
                     <FormControlLabel
                       control={
                         <Checkbox
-                          size="small"
+                          size='small'
                           checked={formik.values.isPromotion}
-                          onChange={(e) => formik.setFieldValue('isPromotion', e.target.checked)}
+                          onChange={e => formik.setFieldValue('isPromotion', e.target.checked)}
                         />
                       }
-                      label="프로모션"
+                      label='프로모션'
                     />
                     <FormControlLabel
                       control={
                         <Checkbox
-                          size="small"
+                          size='small'
                           checked={formik.values.isOutOfStock}
-                          onChange={(e) => formik.setFieldValue('isOutOfStock', e.target.checked)}
+                          onChange={e => formik.setFieldValue('isOutOfStock', e.target.checked)}
                         />
                       }
-                      label="품절"
+                      label='품절'
                     />
                     <FormControlLabel
                       control={
                         <Checkbox
-                          size="small"
+                          size='small'
                           checked={formik.values.isStopSelling}
-                          onChange={(e) => formik.setFieldValue('isStopSelling', e.target.checked)}
+                          onChange={e => formik.setFieldValue('isStopSelling', e.target.checked)}
                         />
                       }
-                      label="판매중단"
+                      label='판매중단'
                     />
                   </FormGroup>
                 </SearchFilterItem>
                 <SearchFilterActions>
-                  <Button variant="contained" size="small" type="submit">
+                  <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant="outlined" size="small" onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={handleReset}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -392,15 +392,15 @@ export default function MpAdminProductList() {
       <Grid item xs={12}>
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Stack direction="row" spacing={2}>
-                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+            <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+              <Stack direction='row' spacing={2}>
+                <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
-              <Stack direction="row" spacing={1}>
+              <Stack direction='row' spacing={1}>
                 <Button
-                  variant="contained"
-                  color="success"
-                  size="small"
+                  variant='contained'
+                  color='success'
+                  size='small'
                   href={getDownloadProductSummariesExcel({
                     productName: formik.values.searchType === 'productName' ? formik.values.searchKeyword : undefined,
                     composition: formik.values.searchType === 'composition' ? formik.values.searchKeyword : undefined,
@@ -412,20 +412,20 @@ export default function MpAdminProductList() {
                     isOutOfStock: formik.values.isOutOfStock || undefined,
                     isStopSelling: formik.values.isStopSelling || undefined,
                     page: formik.values.pageIndex,
-                    size: formik.values.pageSize
+                    size: formik.values.pageSize,
                   })}
-                  target="_blank"
+                  target='_blank'
                   startIcon={<DocumentDownload size={16} />}
                 >
                   Excel
                 </Button>
-                <Button variant="contained" color="success" size="small" onClick={() => setRateTableDialogOpen(true)}>
+                <Button variant='contained' color='success' size='small' onClick={() => setRateTableDialogOpen(true)}>
                   요율표 업로드
                 </Button>
-                <Button variant="contained" color="error" size="small" disabled={selectedItems.length === 0} onClick={handleDelete}>
+                <Button variant='contained' color='error' size='small' disabled={selectedItems.length === 0} onClick={handleDelete}>
                   삭제
                 </Button>
-                <Button variant="contained" color="success" size="small" component={Link} to="/admin/products/new">
+                <Button variant='contained' color='success' size='small' component={Link} to='/admin/products/new'>
                   등록
                 </Button>
               </Stack>
@@ -433,11 +433,11 @@ export default function MpAdminProductList() {
 
             <ScrollX>
               <TableContainer>
-                <Table size="small">
+                <Table size='small'>
                   <TableHead>
-                    {table.getHeaderGroups().map((headerGroup) => (
+                    {table.getHeaderGroups().map(headerGroup => (
                       <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => (
+                        {headerGroup.headers.map(header => (
                           <TableCell key={header.id} style={{ width: header.getSize() }}>
                             {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                           </TableCell>
@@ -448,24 +448,24 @@ export default function MpAdminProductList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : (
-                      table.getRowModel().rows.map((row) => (
+                      table.getRowModel().rows.map(row => (
                         <TableRow key={row.id}>
-                          {row.getVisibleCells().map((cell) => (
+                          {row.getVisibleCells().map(cell => (
                             <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                           ))}
                         </TableRow>
@@ -476,13 +476,13 @@ export default function MpAdminProductList() {
               </TableContainer>
             </ScrollX>
 
-            <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
+            <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
                 page={formik.values.pageIndex + 1}
                 onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
-                color="primary"
-                variant="outlined"
+                color='primary'
+                variant='outlined'
                 showFirstButton
                 showLastButton
               />
@@ -491,16 +491,16 @@ export default function MpAdminProductList() {
         </MainCard>
       </Grid>
 
-      <Dialog open={rateTableDialogOpen} onClose={() => setRateTableDialogOpen(false)} maxWidth="sm" fullWidth>
+      <Dialog open={rateTableDialogOpen} onClose={() => setRateTableDialogOpen(false)} maxWidth='sm' fullWidth>
         <DialogTitle sx={{ fontSize: '1.25rem', fontWeight: 600 }}>요율표 업로드</DialogTitle>
         <DialogContent sx={{ pt: 3, pb: 3 }}>
           <Box sx={{ textAlign: 'right', mb: 2 }}>
             <Button
               href={import.meta.env.VITE_APP_URL_FILE_PRODUCT_RATE_TABLE}
-              target="_blank"
-              variant="contained"
-              color="success"
-              size="small"
+              target='_blank'
+              variant='contained'
+              color='success'
+              size='small'
               startIcon={<AttachFileIcon />}
             >
               양식 다운로드
@@ -516,17 +516,17 @@ export default function MpAdminProductList() {
               cursor: 'pointer',
               bgcolor: isDragActive ? 'action.hover' : 'transparent',
               '&:hover': {
-                borderColor: 'primary.main'
-              }
+                borderColor: 'primary.main',
+              },
             }}
           >
             <input {...getInputProps()} />
             <UploadFile sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
-            <Typography variant="h6" color="text.secondary">
+            <Typography variant='h6' color='text.secondary'>
               여기에 파일을 드래그하거나 클릭하여 업로드하세요.
             </Typography>
             {rateTableFile && (
-              <Typography variant="body2" sx={{ mt: 1 }}>
+              <Typography variant='body2' sx={{ mt: 1 }}>
                 선택된 파일: {rateTableFile.name}
               </Typography>
             )}
@@ -534,7 +534,7 @@ export default function MpAdminProductList() {
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'center', pb: 3 }}>
           <Button
-            variant="outlined"
+            variant='outlined'
             onClick={() => {
               setRateTableDialogOpen(false);
               setRateTableFile(null);
@@ -543,7 +543,7 @@ export default function MpAdminProductList() {
           >
             취소
           </Button>
-          <Button variant="contained" color="success" onClick={handleRateTableUpload} disabled={!rateTableFile} sx={{ minWidth: 100 }}>
+          <Button variant='contained' color='success' onClick={handleRateTableUpload} disabled={!rateTableFile} sx={{ minWidth: 100 }}>
             업데이트
           </Button>
         </DialogActions>

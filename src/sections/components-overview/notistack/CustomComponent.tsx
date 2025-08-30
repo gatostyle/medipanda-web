@@ -22,8 +22,8 @@ import { Add, ArrowDown2, TickCircle } from 'iconsax-react';
 
 const SnackbarBox = styled(SnackbarContent)({
   '@media (min-width:600px)': {
-    minWidth: '344px !important'
-  }
+    minWidth: '344px !important',
+  },
 });
 
 // ==============================|| NOTISTACK - CUSTOM ||============================== //
@@ -44,10 +44,10 @@ function CustomNotistackExtended({ id, message }: any, ref: any) {
     <SnackbarBox ref={ref}>
       <Card sx={{ bgcolor: 'warning.light', width: '100%' }}>
         <CardActions sx={{ padding: '8px 8px 8px 16px', justifyContent: 'space-between' }}>
-          <Typography variant="subtitle2">{message}</Typography>
+          <Typography variant='subtitle2'>{message}</Typography>
           <Box sx={{ marginLeft: 'auto' }}>
             <IconButton
-              aria-label="Show more"
+              aria-label='Show more'
               sx={{ p: 1, transition: 'all .2s', transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
               onClick={handleExpandClick}
             >
@@ -58,12 +58,12 @@ function CustomNotistackExtended({ id, message }: any, ref: any) {
             </IconButton>
           </Box>
         </CardActions>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <Collapse in={expanded} timeout='auto' unmountOnExit>
           <Paper sx={{ padding: 2, borderTopLeftRadius: 0, borderTopRightRadius: 0, bgcolor: 'warning.lighter' }}>
             <Typography gutterBottom>PDF ready</Typography>
             <Button
-              size="small"
-              startIcon={<TickCircle variant="Bold" style={{ fontSize: 16, marginTop: -2 }} />}
+              size='small'
+              startIcon={<TickCircle variant='Bold' style={{ fontSize: 16, marginTop: -2 }} />}
               sx={{ '&:hover': { bgcolor: 'transparent' } }}
             >
               Download now
@@ -99,18 +99,18 @@ export default function CustomComponent() {
 </Button>`;
 
   return (
-    <MainCard title="Custom Component" codeString={NotistackCustomCodeString}>
+    <MainCard title='Custom Component' codeString={NotistackCustomCodeString}>
       <Button
-        variant="outlined"
+        variant='outlined'
         fullWidth
         sx={{ marginBlockStart: 2 }}
         onClick={() => {
           enqueueSnackbar("You're report is ready", {
             anchorOrigin: {
               vertical: 'bottom',
-              horizontal: 'right'
+              horizontal: 'right',
             },
-            content: (key: SnackbarKey, message: SnackbarMessage) => <CustomNotistack id={key} message={message} />
+            content: (key: SnackbarKey, message: SnackbarMessage) => <CustomNotistack id={key} message={message} />,
           });
         }}
       >

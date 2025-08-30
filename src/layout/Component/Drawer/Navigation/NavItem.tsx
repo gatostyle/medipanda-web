@@ -53,7 +53,7 @@ export default function NavItem({ item }: Props) {
     >
       <ListItemText
         primary={
-          <Typography variant="h6" sx={{ color: isSelectedItem ? iconSelectedColor : textColor, fontWeight: 500 }}>
+          <Typography variant='h6' sx={{ color: isSelectedItem ? iconSelectedColor : textColor, fontWeight: 500 }}>
             {item.title}
           </Typography>
         }

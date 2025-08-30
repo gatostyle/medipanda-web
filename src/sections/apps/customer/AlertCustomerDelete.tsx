@@ -36,8 +36,8 @@ export default function AlertCustomerDelete({ id, title, open, handleClose }: Pr
         anchorOrigin: { vertical: 'top', horizontal: 'right' },
         variant: 'alert',
         alert: {
-          color: 'success'
-        }
+          color: 'success',
+        },
       } as SnackbarProps);
       handleClose();
     });
@@ -49,22 +49,22 @@ export default function AlertCustomerDelete({ id, title, open, handleClose }: Pr
       onClose={handleClose}
       keepMounted
       TransitionComponent={PopupTransition}
-      maxWidth="xs"
-      aria-labelledby="column-delete-title"
-      aria-describedby="column-delete-description"
+      maxWidth='xs'
+      aria-labelledby='column-delete-title'
+      aria-describedby='column-delete-description'
     >
       <DialogContent sx={{ mt: 2, my: 1 }}>
-        <Stack alignItems="center" spacing={3.5}>
-          <Avatar color="error" sx={{ width: 72, height: 72, fontSize: '1.75rem' }}>
-            <Trash variant="Bold" />
+        <Stack alignItems='center' spacing={3.5}>
+          <Avatar color='error' sx={{ width: 72, height: 72, fontSize: '1.75rem' }}>
+            <Trash variant='Bold' />
           </Avatar>
           <Stack spacing={2}>
-            <Typography variant="h4" align="center">
+            <Typography variant='h4' align='center'>
               Are you sure you want to delete?
             </Typography>
-            <Typography align="center">
+            <Typography align='center'>
               By deleting
-              <Typography variant="subtitle1" component="span">
+              <Typography variant='subtitle1' component='span'>
                 {' '}
                 &quot;{title}&quot;{' '}
               </Typography>
@@ -72,11 +72,11 @@ export default function AlertCustomerDelete({ id, title, open, handleClose }: Pr
             </Typography>
           </Stack>
 
-          <Stack direction="row" spacing={2} sx={{ width: 1 }}>
-            <Button fullWidth onClick={handleClose} color="secondary" variant="outlined">
+          <Stack direction='row' spacing={2} sx={{ width: 1 }}>
+            <Button fullWidth onClick={handleClose} color='secondary' variant='outlined'>
               Cancel
             </Button>
-            <Button fullWidth color="error" variant="contained" onClick={deletehandler} autoFocus>
+            <Button fullWidth color='error' variant='contained' onClick={deletehandler} autoFocus>
               Delete
             </Button>
           </Stack>

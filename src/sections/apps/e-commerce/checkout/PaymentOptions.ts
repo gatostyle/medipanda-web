@@ -16,8 +16,8 @@ const PaymentOptions: PaymentOptionsProps[] = [
     image: card,
     size: {
       width: 72,
-      height: 24
-    }
+      height: 24,
+    },
   },
   {
     id: 1,
@@ -27,8 +27,8 @@ const PaymentOptions: PaymentOptionsProps[] = [
     image: paypal,
     size: {
       width: 50,
-      height: 14
-    }
+      height: 14,
+    },
   },
   {
     id: 3,
@@ -37,9 +37,9 @@ const PaymentOptions: PaymentOptionsProps[] = [
     caption: 'When you use this payment',
     size: {
       width: 46,
-      height: 28
-    }
-  }
+      height: 28,
+    },
+  },
 ];
 
 export default PaymentOptions;

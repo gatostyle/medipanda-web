@@ -29,13 +29,13 @@ export default function PartnerPage() {
     { image: client5 },
     { image: client6 },
     { image: client7 },
-    { image: client8 }
+    { image: client8 },
   ];
   return (
     <Container>
-      <Grid container spacing={3} alignItems="center" justifyContent="center" sx={{ mt: { md: 15, xs: 2.5 }, mb: { md: 10, xs: 2.5 } }}>
+      <Grid container spacing={3} alignItems='center' justifyContent='center' sx={{ mt: { md: 15, xs: 2.5 }, mb: { md: 10, xs: 2.5 } }}>
         <Grid item xs={12}>
-          <Grid container spacing={2} justifyContent="center" sx={{ textAlign: 'center', marginBottom: 3 }}>
+          <Grid container spacing={2} justifyContent='center' sx={{ textAlign: 'center', marginBottom: 3 }}>
             <Grid item xs={12}>
               <motion.div
                 initial={{ opacity: 0, translateY: 550 }}
@@ -44,10 +44,10 @@ export default function PartnerPage() {
                   type: 'spring',
                   stiffness: 150,
                   damping: 30,
-                  delay: 0.2
+                  delay: 0.2,
                 }}
               >
-                <Typography variant="h2">Trusted By</Typography>
+                <Typography variant='h2'>Trusted By</Typography>
               </motion.div>
             </Grid>
             <Grid item xs={12} md={7}>
@@ -58,7 +58,7 @@ export default function PartnerPage() {
                   type: 'spring',
                   stiffness: 150,
                   damping: 30,
-                  delay: 0.4
+                  delay: 0.4,
                 }}
               >
                 <Typography>From Startups to Fortune 500 companies using our Template for their product.</Typography>
@@ -67,7 +67,7 @@ export default function PartnerPage() {
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <Grid container spacing={3} alignItems="center" justifyContent="center">
+          <Grid container spacing={3} alignItems='center' justifyContent='center'>
             {items.map((item, index) => (
               <Grid item key={index}>
                 <FadeInWhenVisible>
@@ -77,12 +77,12 @@ export default function PartnerPage() {
                         transition: 'all 0.08s cubic-bezier(0.37, 0.24, 0.53, 0.99)',
                         filter: 'grayscale(1)',
                         opacity: 0.4,
-                        cursor: 'pointer'
+                        cursor: 'pointer',
                       },
-                      '&:hover img': { filter: 'grayscale(0)', opacity: 1 }
+                      '&:hover img': { filter: 'grayscale(0)', opacity: 1 },
                     }}
                   >
-                    <CardMedia component="img" image={item.image} sx={{ width: 'auto' }} />
+                    <CardMedia component='img' image={item.image} sx={{ width: 'auto' }} />
                   </Box>
                 </FadeInWhenVisible>
               </Grid>

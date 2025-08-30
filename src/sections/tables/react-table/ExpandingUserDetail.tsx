@@ -35,23 +35,23 @@ export default function ExpandingUserDetail({ data }: any) {
         <MainCard>
           <Chip
             label={data.status}
-            size="small"
+            size='small'
             sx={{
               position: 'absolute',
               right: -1,
               top: -1,
-              borderRadius: '0 4px 0 4px'
+              borderRadius: '0 4px 0 4px',
             }}
           />
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <Stack spacing={2.5} alignItems="center">
-                <Avatar alt="Avatar 1" size="xl" src={getImageUrl(`avatar-${data.avatar}.png`, ImagePath.USERS)} />
-                <Stack spacing={0.5} alignItems="center">
-                  <Typography variant="h5">
+              <Stack spacing={2.5} alignItems='center'>
+                <Avatar alt='Avatar 1' size='xl' src={getImageUrl(`avatar-${data.avatar}.png`, ImagePath.USERS)} />
+                <Stack spacing={0.5} alignItems='center'>
+                  <Typography variant='h5'>
                     {data.firstName} {data.lastName}
                   </Typography>
-                  <Typography color="secondary">{data.role}</Typography>
+                  <Typography color='secondary'>{data.role}</Typography>
                 </Stack>
               </Stack>
             </Grid>
@@ -59,20 +59,20 @@ export default function ExpandingUserDetail({ data }: any) {
               <Divider />
             </Grid>
             <Grid item xs={12}>
-              <Stack direction="row" justifyContent="space-around" alignItems="center">
-                <Stack spacing={0.5} alignItems="center">
-                  <Typography variant="h5">{data.age}</Typography>
-                  <Typography color="secondary">Age</Typography>
+              <Stack direction='row' justifyContent='space-around' alignItems='center'>
+                <Stack spacing={0.5} alignItems='center'>
+                  <Typography variant='h5'>{data.age}</Typography>
+                  <Typography color='secondary'>Age</Typography>
                 </Stack>
-                <Divider orientation="vertical" flexItem />
-                <Stack spacing={0.5} alignItems="center">
-                  <Typography variant="h5">{data.progress}%</Typography>
-                  <Typography color="secondary">Progress</Typography>
+                <Divider orientation='vertical' flexItem />
+                <Stack spacing={0.5} alignItems='center'>
+                  <Typography variant='h5'>{data.progress}%</Typography>
+                  <Typography color='secondary'>Progress</Typography>
                 </Stack>
-                <Divider orientation="vertical" flexItem />
-                <Stack spacing={0.5} alignItems="center">
-                  <Typography variant="h5">{data.visits}</Typography>
-                  <Typography color="secondary">Visits</Typography>
+                <Divider orientation='vertical' flexItem />
+                <Stack spacing={0.5} alignItems='center'>
+                  <Typography variant='h5'>{data.visits}</Typography>
+                  <Typography color='secondary'>Visits</Typography>
                 </Stack>
               </Stack>
             </Grid>
@@ -80,43 +80,43 @@ export default function ExpandingUserDetail({ data }: any) {
               <Divider />
             </Grid>
             <Grid item xs={12}>
-              <List component="nav" aria-label="main mailbox folders" sx={{ py: 0, '& .MuiListItem-root': { p: 0 } }}>
+              <List component='nav' aria-label='main mailbox folders' sx={{ py: 0, '& .MuiListItem-root': { p: 0 } }}>
                 <ListItem>
                   <ListItemIcon>
-                    <Sms size="15" />
+                    <Sms size='15' />
                   </ListItemIcon>
-                  <ListItemText primary={<Typography color="secondary">Email</Typography>} />
+                  <ListItemText primary={<Typography color='secondary'>Email</Typography>} />
                   <ListItemSecondaryAction>
-                    <Typography align="right">{data.email}</Typography>
+                    <Typography align='right'>{data.email}</Typography>
                   </ListItemSecondaryAction>
                 </ListItem>
                 <ListItem>
                   <ListItemIcon>
-                    <Call size="15" />
+                    <Call size='15' />
                   </ListItemIcon>
-                  <ListItemText primary={<Typography color="secondary">Phone</Typography>} />
+                  <ListItemText primary={<Typography color='secondary'>Phone</Typography>} />
                   <ListItemSecondaryAction>
-                    <Typography align="right">
-                      <PatternFormat displayType="text" format="+1 (###) ###-####" mask="_" defaultValue={data.contact} />
+                    <Typography align='right'>
+                      <PatternFormat displayType='text' format='+1 (###) ###-####' mask='_' defaultValue={data.contact} />
                     </Typography>
                   </ListItemSecondaryAction>
                 </ListItem>
                 <ListItem>
                   <ListItemIcon>
-                    <Location size="15" />
+                    <Location size='15' />
                   </ListItemIcon>
-                  <ListItemText primary={<Typography color="secondary">Location</Typography>} />
+                  <ListItemText primary={<Typography color='secondary'>Location</Typography>} />
                   <ListItemSecondaryAction>
-                    <Typography align="right">{data.country}</Typography>
+                    <Typography align='right'>{data.country}</Typography>
                   </ListItemSecondaryAction>
                 </ListItem>
                 <ListItem>
                   <ListItemIcon>
-                    <Location size="15" />
+                    <Location size='15' />
                   </ListItemIcon>
-                  <ListItemText primary={<Typography color="secondary">Portfolio</Typography>} />
+                  <ListItemText primary={<Typography color='secondary'>Portfolio</Typography>} />
                   <ListItemSecondaryAction>
-                    <Link align="right" href="https://google.com" target="_blank">
+                    <Link align='right' href='https://google.com' target='_blank'>
                       https://anshan.dh.url
                     </Link>
                   </ListItemSecondaryAction>
@@ -128,13 +128,13 @@ export default function ExpandingUserDetail({ data }: any) {
       </Grid>
       <Grid item xs={12} sm={7} md={8} xl={8.5}>
         <Stack spacing={2.5}>
-          <MainCard title="Personal Details">
+          <MainCard title='Personal Details'>
             <List sx={{ py: 0 }}>
               <ListItem divider={!matchDownMD}>
                 <Grid container spacing={3}>
                   <Grid item xs={12} md={6}>
                     <Stack spacing={0.5}>
-                      <Typography color="secondary">Full Name</Typography>
+                      <Typography color='secondary'>Full Name</Typography>
                       <Typography>
                         {data.firstName} {data.lastName}
                       </Typography>
@@ -142,7 +142,7 @@ export default function ExpandingUserDetail({ data }: any) {
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <Stack spacing={0.5}>
-                      <Typography color="secondary">Father Name</Typography>
+                      <Typography color='secondary'>Father Name</Typography>
                       <Typography>Mr. {data.fatherName}</Typography>
                     </Stack>
                   </Grid>
@@ -152,15 +152,15 @@ export default function ExpandingUserDetail({ data }: any) {
                 <Grid container spacing={3}>
                   <Grid item xs={12} md={6}>
                     <Stack spacing={0.5}>
-                      <Typography color="secondary">Country</Typography>
+                      <Typography color='secondary'>Country</Typography>
                       <Typography>{data.country}</Typography>
                     </Stack>
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <Stack spacing={0.5}>
-                      <Typography color="secondary">Zip Code</Typography>
+                      <Typography color='secondary'>Zip Code</Typography>
                       <Typography>
-                        <PatternFormat displayType="text" format="### ###" mask="_" defaultValue={data.contact} />
+                        <PatternFormat displayType='text' format='### ###' mask='_' defaultValue={data.contact} />
                       </Typography>
                     </Stack>
                   </Grid>
@@ -168,14 +168,14 @@ export default function ExpandingUserDetail({ data }: any) {
               </ListItem>
               <ListItem>
                 <Stack spacing={0.5}>
-                  <Typography color="secondary">Address</Typography>
+                  <Typography color='secondary'>Address</Typography>
                   <Typography>{data.address}</Typography>
                 </Stack>
               </ListItem>
             </List>
           </MainCard>
-          <MainCard title="About me">
-            <Typography color="secondary">
+          <MainCard title='About me'>
+            <Typography color='secondary'>
               Hello, I’m {data.firstName} {data.lastName} {data.role} based in international company, {data.about}
             </Typography>
           </MainCard>

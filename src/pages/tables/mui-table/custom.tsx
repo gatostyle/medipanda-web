@@ -17,21 +17,21 @@ import { CSVExport } from 'components/third-party/react-table';
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white
+    color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
-    fontSize: 14
-  }
+    fontSize: 14,
+  },
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
-    backgroundColor: theme.palette.action.hover
+    backgroundColor: theme.palette.action.hover,
   },
   // hide last border
   '&:last-of-type td, &:last-of-type th': {
-    border: 0
-  }
+    border: 0,
+  },
 }));
 
 // table data
@@ -44,7 +44,7 @@ const rows = [
   createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
   createData('Eclair', 262, 16.0, 24, 6.0),
   createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9)
+  createData('Gingerbread', 356, 16.0, 49, 3.9),
 ];
 
 // ==============================|| MUI TABLE - CUSTOMIZED ||============================== //
@@ -53,32 +53,32 @@ export default function CustomizedTables() {
   return (
     <MainCard
       content={false}
-      title="Customized Tables"
+      title='Customized Tables'
       secondary={<CSVExport data={rows} headers={header} filename={'customized-table-data.csv'} />}
     >
       <TableContainer>
-        <Table sx={{ minWidth: 320 }} aria-label="customized table">
+        <Table sx={{ minWidth: 320 }} aria-label='customized table'>
           <TableHead>
             <TableRow>
               <StyledTableCell sx={{ pl: 3 }}>Dessert (100g serving)</StyledTableCell>
-              <StyledTableCell align="right">Calories</StyledTableCell>
-              <StyledTableCell align="right">Fat&nbsp;(g)</StyledTableCell>
-              <StyledTableCell align="right">Carbs&nbsp;(g)</StyledTableCell>
-              <StyledTableCell sx={{ pr: 3 }} align="right">
+              <StyledTableCell align='right'>Calories</StyledTableCell>
+              <StyledTableCell align='right'>Fat&nbsp;(g)</StyledTableCell>
+              <StyledTableCell align='right'>Carbs&nbsp;(g)</StyledTableCell>
+              <StyledTableCell sx={{ pr: 3 }} align='right'>
                 Protein&nbsp;(g)
               </StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {rows.map(row => (
               <StyledTableRow hover key={row.name}>
-                <StyledTableCell sx={{ pl: 3 }} component="th" scope="row">
+                <StyledTableCell sx={{ pl: 3 }} component='th' scope='row'>
                   {row.name}
                 </StyledTableCell>
-                <StyledTableCell align="right">{row.calories}</StyledTableCell>
-                <StyledTableCell align="right">{row.fat}</StyledTableCell>
-                <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-                <StyledTableCell sx={{ pr: 3 }} align="right">
+                <StyledTableCell align='right'>{row.calories}</StyledTableCell>
+                <StyledTableCell align='right'>{row.fat}</StyledTableCell>
+                <StyledTableCell align='right'>{row.carbs}</StyledTableCell>
+                <StyledTableCell sx={{ pr: 3 }} align='right'>
                   {row.protein}
                 </StyledTableCell>
               </StyledTableRow>

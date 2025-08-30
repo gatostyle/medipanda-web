@@ -105,6 +105,6 @@ export default function ComponentsOverrides(theme: Theme) {
     ToggleButton(theme),
     Tooltip(theme),
     TreeItem(),
-    Typography()
+    Typography(),
   );
 }

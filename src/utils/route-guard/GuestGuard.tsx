@@ -19,7 +19,7 @@ export default function GuestGuard({ children }: GuardProps) {
     if (isLoggedIn) {
       navigate(location?.state?.from ? location?.state?.from : APP_DEFAULT_PATH, {
         state: { from: '' },
-        replace: true
+        replace: true,
       });
     }
   }, [isLoggedIn, navigate, location]);

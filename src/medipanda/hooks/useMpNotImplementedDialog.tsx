@@ -2,7 +2,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography }
 import { createContext, ReactNode, useContext, useState } from 'react';
 
 const initialState = {
-  open: (name: string) => {}
+  open: (name: string) => {},
 };
 
 export const MpNotImplementedDialogContext = createContext(initialState);
@@ -21,17 +21,17 @@ export function MpNotImplementedDialogProvider({ children }: MpMenuProviderProps
         open: (name: string) => {
           setName(name);
           setOpen(true);
-        }
+        },
       }}
     >
       {children}
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+      <Dialog open={open} onClose={() => setOpen(false)} maxWidth='sm' fullWidth>
         <DialogTitle>알림</DialogTitle>
         <DialogContent>
           <Typography>{name}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)} variant="contained" sx={{ bgcolor: '#10B981' }}>
+          <Button onClick={() => setOpen(false)} variant='contained' sx={{ bgcolor: '#10B981' }}>
             확인
           </Button>
         </DialogActions>

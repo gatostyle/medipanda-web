@@ -25,7 +25,7 @@ export default function AuthBackground() {
     infinite: true,
     speed: 500,
     slidesToShow: 1,
-    slidesToScroll: 1
+    slidesToScroll: 1,
   };
   const usercomment = [
     {
@@ -34,7 +34,7 @@ export default function AuthBackground() {
       designation: '@alliegrater',
       rating: 4,
       comment:
-        'Very good customer service!👌 I liked the design and there was nothing wrong, but found out after testing that it did not quite match the functionality and overall design that I needed for my type of software. I therefore contacted customer service and it was no problem even though the deadline for refund had actually expired.😍'
+        'Very good customer service!👌 I liked the design and there was nothing wrong, but found out after testing that it did not quite match the functionality and overall design that I needed for my type of software. I therefore contacted customer service and it was no problem even though the deadline for refund had actually expired.😍',
     },
     {
       image: Avatar2,
@@ -42,7 +42,7 @@ export default function AuthBackground() {
       designation: '@alliegrater',
       rating: 3,
       comment:
-        'Very good customer service!👌 I liked the design and there was nothing wrong, but found out after testing that it did not quite match the functionality and overall design that I needed for my type of software. I therefore contacted customer service and it was no problem even though the deadline for refund had actually expired.😍'
+        'Very good customer service!👌 I liked the design and there was nothing wrong, but found out after testing that it did not quite match the functionality and overall design that I needed for my type of software. I therefore contacted customer service and it was no problem even though the deadline for refund had actually expired.😍',
     },
     {
       image: Avatar3,
@@ -50,7 +50,7 @@ export default function AuthBackground() {
       designation: '@alliegrater',
       rating: 5,
       comment:
-        'Very good customer service!👌 I liked the design and there was nothing wrong, but found out after testing that it did not quite match the functionality and overall design that I needed for my type of software. I therefore contacted customer service and it was no problem even though the deadline for refund had actually expired.😍'
+        'Very good customer service!👌 I liked the design and there was nothing wrong, but found out after testing that it did not quite match the functionality and overall design that I needed for my type of software. I therefore contacted customer service and it was no problem even though the deadline for refund had actually expired.😍',
     },
     {
       image: Avatar4,
@@ -58,8 +58,8 @@ export default function AuthBackground() {
       designation: '@alliegrater',
       rating: 4,
       comment:
-        'Very good customer service!👌 I liked the design and there was nothing wrong, but found out after testing that it did not quite match the functionality and overall design that I needed for my type of software. I therefore contacted customer service and it was no problem even though the deadline for refund had actually expired.😍'
-    }
+        'Very good customer service!👌 I liked the design and there was nothing wrong, but found out after testing that it did not quite match the functionality and overall design that I needed for my type of software. I therefore contacted customer service and it was no problem even though the deadline for refund had actually expired.😍',
+    },
   ];
   return (
     <Box
@@ -74,8 +74,8 @@ export default function AuthBackground() {
           position: 'absolute',
           top: 0,
           right: 0,
-          background: 'linear-gradient(338deg, rgba(0, 0, 0, 0.3), transparent)'
-        }
+          background: 'linear-gradient(338deg, rgba(0, 0, 0, 0.3), transparent)',
+        },
       }}
     >
       <Box
@@ -97,30 +97,30 @@ export default function AuthBackground() {
                   width: 6,
                   height: 6,
                   borderRadius: 1,
-                  bgcolor: 'common.white'
-                }
+                  bgcolor: 'common.white',
+                },
               },
-              '&.slick-active button:before': { width: 30 }
-            }
-          }
+              '&.slick-active button:before': { width: 30 },
+            },
+          },
         }}
       >
         <Slider {...settings}>
           {usercomment.map((item, index) => (
             <Box key={index} sx={{ width: '100%', textAlign: 'center' }}>
-              <Grid container spacing={3} direction="column">
+              <Grid container spacing={3} direction='column'>
                 <Grid item>
-                  <Avatar alt="User 1" src={item.image} variant="circular" size="lg" sx={{ m: '0 auto' }} />
+                  <Avatar alt='User 1' src={item.image} variant='circular' size='lg' sx={{ m: '0 auto' }} />
                 </Grid>
                 <Grid item>
-                  <Typography variant="h5">{item.name}</Typography>
-                  <Typography variant="body2">{item.designation}</Typography>
+                  <Typography variant='h5'>{item.name}</Typography>
+                  <Typography variant='body2'>{item.designation}</Typography>
                 </Grid>
                 <Grid item>
-                  <Rating name="disabled" value={item.rating} readOnly />
+                  <Rating name='disabled' value={item.rating} readOnly />
                 </Grid>
                 <Grid item>
-                  <Typography variant="body1">{item.comment}</Typography>
+                  <Typography variant='body1'>{item.comment}</Typography>
                 </Grid>
               </Grid>
             </Box>

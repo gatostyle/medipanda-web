@@ -38,18 +38,18 @@ export default function AutoWidthSelect() {
 </FormControl>`;
 
   return (
-    <MainCard title="Auto Width" codeString={widthSelectCodeString}>
+    <MainCard title='Auto Width' codeString={widthSelectCodeString}>
       <FormControl sx={{ minWidth: 80 }}>
-        <InputLabel id="demo-simple-select-autowidth-label">Auto</InputLabel>
+        <InputLabel id='demo-simple-select-autowidth-label'>Auto</InputLabel>
         <Select
-          labelId="demo-simple-select-autowidth-label"
-          id="demo-simple-select-autowidth"
+          labelId='demo-simple-select-autowidth-label'
+          id='demo-simple-select-autowidth'
           value={age}
           onChange={handleChange}
           autoWidth
-          placeholder="Age"
+          placeholder='Age'
         >
-          <MenuItem value="">
+          <MenuItem value=''>
             <em>None</em>
           </MenuItem>
           <MenuItem value={10}>Twenty</MenuItem>

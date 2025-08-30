@@ -71,13 +71,13 @@ export default function Details() {
   const today = new Date(`${list?.date}`).toLocaleDateString('en-GB', {
     month: 'numeric',
     day: 'numeric',
-    year: 'numeric'
+    year: 'numeric',
   });
 
   const due_dates = new Date(`${list?.due_date}`).toLocaleDateString('en-GB', {
     month: 'numeric',
     day: 'numeric',
-    year: 'numeric'
+    year: 'numeric',
   });
 
   const subtotal = list?.invoice_detail?.reduce((prev: any, curr: any) => {
@@ -95,19 +95,19 @@ export default function Details() {
   let breadcrumbLinks = [
     { title: 'Home', to: APP_DEFAULT_PATH },
     { title: 'Invoice', to: '/apps/invoice/dashboard' },
-    { title: 'Details' }
+    { title: 'Details' },
   ];
 
   const iconColor = theme.palette.mode === ThemeMode.DARK ? theme.palette.background.paper : theme.palette.text.secondary;
 
   return (
     <>
-      <Breadcrumbs custom heading="Invoice Summary" links={breadcrumbLinks} />
+      <Breadcrumbs custom heading='Invoice Summary' links={breadcrumbLinks} />
       <MainCard content={false}>
         <Stack spacing={2.5}>
           <Box sx={{ p: 2.5, pb: 0 }}>
             <MainCard content={false} border={false} sx={{ p: 1.25, bgcolor: 'secondary.lighter' }}>
-              <Stack direction="row" justifyContent="flex-end" spacing={1}>
+              <Stack direction='row' justifyContent='flex-end' spacing={1}>
                 <IconButton onClick={() => navigation(`/apps/invoice/edit/${id}`)}>
                   <Edit color={iconColor} />
                 </IconButton>
@@ -126,27 +126,27 @@ export default function Details() {
               </Stack>
             </MainCard>
           </Box>
-          <Box sx={{ p: 2.5 }} id="print" ref={componentRef}>
+          <Box sx={{ p: 2.5 }} id='print' ref={componentRef}>
             <Grid container spacing={2.5}>
               <Grid item xs={12}>
-                <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between">
+                <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent='space-between'>
                   <Stack spacing={0.5}>
-                    <Stack direction="row" spacing={2}>
+                    <Stack direction='row' spacing={2}>
                       <LogoSection />
-                      <Chip label="Paid" variant="light" color="success" size="small" />
+                      <Chip label='Paid' variant='light' color='success' size='small' />
                     </Stack>
-                    <Typography color="secondary">{isLoader ? <Skeleton /> : `#${list.invoice_id}`}</Typography>
+                    <Typography color='secondary'>{isLoader ? <Skeleton /> : `#${list.invoice_id}`}</Typography>
                   </Stack>
                   <Box>
-                    <Stack direction="row" spacing={1} justifyContent="flex-end">
-                      <Typography variant="subtitle1">Date</Typography>
-                      <Typography color="secondary">{today}</Typography>
+                    <Stack direction='row' spacing={1} justifyContent='flex-end'>
+                      <Typography variant='subtitle1'>Date</Typography>
+                      <Typography color='secondary'>{today}</Typography>
                     </Stack>
-                    <Stack direction="row" spacing={1} justifyContent="flex-end">
-                      <Typography sx={{ overflow: 'hidden' }} variant="subtitle1">
+                    <Stack direction='row' spacing={1} justifyContent='flex-end'>
+                      <Typography sx={{ overflow: 'hidden' }} variant='subtitle1'>
                         Due Date
                       </Typography>
-                      <Typography color="secondary">{due_dates}</Typography>
+                      <Typography color='secondary'>{due_dates}</Typography>
                     </Stack>
                   </Box>
                 </Stack>
@@ -154,7 +154,7 @@ export default function Details() {
               <Grid item xs={12} sm={6}>
                 <MainCard>
                   <Stack spacing={1}>
-                    <Typography variant="h5">From:</Typography>
+                    <Typography variant='h5'>From:</Typography>
                     {isLoader ? (
                       <Stack spacing={0.5}>
                         <Skeleton />
@@ -163,10 +163,10 @@ export default function Details() {
                       </Stack>
                     ) : (
                       <FormControl sx={{ width: '100%' }}>
-                        <Typography color="secondary">{list.cashierInfo.name}</Typography>
-                        <Typography color="secondary">{list.cashierInfo.address}</Typography>
-                        <Typography color="secondary">{list.cashierInfo.phone}</Typography>
-                        <Typography color="secondary">{list.cashierInfo.email}</Typography>
+                        <Typography color='secondary'>{list.cashierInfo.name}</Typography>
+                        <Typography color='secondary'>{list.cashierInfo.address}</Typography>
+                        <Typography color='secondary'>{list.cashierInfo.phone}</Typography>
+                        <Typography color='secondary'>{list.cashierInfo.email}</Typography>
                       </FormControl>
                     )}
                   </Stack>
@@ -175,7 +175,7 @@ export default function Details() {
               <Grid item xs={12} sm={6}>
                 <MainCard>
                   <Stack spacing={1}>
-                    <Typography variant="h5">To:</Typography>
+                    <Typography variant='h5'>To:</Typography>
                     {isLoader ? (
                       <Stack spacing={0.5}>
                         <Skeleton />
@@ -184,10 +184,10 @@ export default function Details() {
                       </Stack>
                     ) : (
                       <FormControl sx={{ width: '100%' }}>
-                        <Typography color="secondary">{list.customerInfo.name}</Typography>
-                        <Typography color="secondary">{list.customerInfo.address}</Typography>
-                        <Typography color="secondary">{list.customerInfo.phone}</Typography>
-                        <Typography color="secondary">{list.customerInfo.email}</Typography>
+                        <Typography color='secondary'>{list.customerInfo.name}</Typography>
+                        <Typography color='secondary'>{list.customerInfo.address}</Typography>
+                        <Typography color='secondary'>{list.customerInfo.phone}</Typography>
+                        <Typography color='secondary'>{list.customerInfo.email}</Typography>
                       </FormControl>
                     )}
                   </Stack>
@@ -201,9 +201,9 @@ export default function Details() {
                         <TableCell>#</TableCell>
                         <TableCell>Name</TableCell>
                         <TableCell>Description</TableCell>
-                        <TableCell align="right">Qty</TableCell>
-                        <TableCell align="right">Price</TableCell>
-                        <TableCell align="right">Amount</TableCell>
+                        <TableCell align='right'>Qty</TableCell>
+                        <TableCell align='right'>Price</TableCell>
+                        <TableCell align='right'>Amount</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -236,9 +236,9 @@ export default function Details() {
                             <TableCell>{index + 1}</TableCell>
                             <TableCell>{row.name}</TableCell>
                             <TableCell>{row.description}</TableCell>
-                            <TableCell align="right">{row.qty}</TableCell>
-                            <TableCell align="right">{invoiceMaster.country?.prefix + '' + Number(row.price).toFixed(2)}</TableCell>
-                            <TableCell align="right">
+                            <TableCell align='right'>{row.qty}</TableCell>
+                            <TableCell align='right'>{invoiceMaster.country?.prefix + '' + Number(row.price).toFixed(2)}</TableCell>
+                            <TableCell align='right'>
                               {invoiceMaster.country?.prefix + '' + Number(row.price * row.qty).toFixed(2)}
                             </TableCell>
                           </TableRow>
@@ -253,25 +253,25 @@ export default function Details() {
               <Grid item xs={12} sm={6} md={8}></Grid>
               <Grid item xs={12} sm={6} md={4}>
                 <Stack spacing={2}>
-                  <Stack direction="row" justifyContent="space-between">
+                  <Stack direction='row' justifyContent='space-between'>
                     <Typography color={theme.palette.secondary.main}>Sub Total:</Typography>
                     <Typography>
                       {isLoader ? <Skeleton width={80} /> : invoiceMaster.country?.prefix + '' + subtotal?.toFixed(2)}
                     </Typography>
                   </Stack>
-                  <Stack direction="row" justifyContent="space-between">
+                  <Stack direction='row' justifyContent='space-between'>
                     <Typography color={theme.palette.secondary.main}>Discount:</Typography>
-                    <Typography variant="h6" color={theme.palette.success.main}>
+                    <Typography variant='h6' color={theme.palette.success.main}>
                       {isLoader ? <Skeleton width={50} /> : invoiceMaster.country?.prefix + '' + discountRate?.toFixed(2)}
                     </Typography>
                   </Stack>
-                  <Stack direction="row" justifyContent="space-between">
+                  <Stack direction='row' justifyContent='space-between'>
                     <Typography color={theme.palette.secondary.main}>Tax:</Typography>
                     <Typography>{isLoader ? <Skeleton width={60} /> : invoiceMaster.country?.prefix + '' + taxRate?.toFixed(2)}</Typography>
                   </Stack>
-                  <Stack direction="row" justifyContent="space-between">
-                    <Typography variant="subtitle1">Grand Total:</Typography>
-                    <Typography variant="subtitle1">
+                  <Stack direction='row' justifyContent='space-between'>
+                    <Typography variant='subtitle1'>Grand Total:</Typography>
+                    <Typography variant='subtitle1'>
                       {isLoader ? (
                         <Skeleton width={100} />
                       ) : total % 1 === 0 ? (
@@ -284,8 +284,8 @@ export default function Details() {
                 </Stack>
               </Grid>
               <Grid item xs={12}>
-                <Stack direction="row" spacing={1}>
-                  <Typography color="secondary">Notes: </Typography>
+                <Stack direction='row' spacing={1}>
+                  <Typography color='secondary'>Notes: </Typography>
                   <Typography>
                     It was a pleasure working with you and your team. We hope you will keep us in mind for future freelance projects. Thank
                     You!
@@ -294,13 +294,13 @@ export default function Details() {
               </Grid>
             </Grid>
           </Box>
-          <Stack direction="row" justifyContent="flex-end" spacing={2} sx={{ p: 2.5, a: { textDecoration: 'none', color: 'inherit' } }}>
+          <Stack direction='row' justifyContent='flex-end' spacing={2} sx={{ p: 2.5, a: { textDecoration: 'none', color: 'inherit' } }}>
             <PDFDownloadLink document={<ExportPDFView list={list} />} fileName={`${list?.invoice_id}-${list?.customer_name}.pdf`}>
               <LoadingButton
                 loading={isLoader}
-                color="primary"
-                variant="contained"
-                loadingPosition="center"
+                color='primary'
+                variant='contained'
+                loadingPosition='center'
                 sx={{ color: 'secondary.lighter' }}
               >
                 Download

@@ -25,26 +25,26 @@ function getColorStyle({ theme, color, type }: AvatarStyleProps) {
     case 'filled':
       return {
         color: color === 'secondary' && theme.palette.mode === ThemeMode.DARK ? lighter : contrastText,
-        backgroundColor: main
+        backgroundColor: main,
       };
     case 'outlined':
       return {
         color: main,
         border: '1px solid',
         borderColor: main,
-        backgroundColor: 'transparent'
+        backgroundColor: 'transparent',
       };
     case 'combined':
       return {
         color: main,
         border: '1px solid',
         borderColor: light,
-        backgroundColor: lighter + 80
+        backgroundColor: lighter + 80,
       };
     default:
       return {
         color: main,
-        backgroundColor: lighter + 80
+        backgroundColor: lighter + 80,
       };
   }
 }
@@ -61,8 +61,8 @@ function getSizeStyle(size?: SizeProps) {
         height: 20,
         '& svg': {
           width: 10,
-          height: 10
-        }
+          height: 10,
+        },
       };
     case 'xs':
       return {
@@ -71,8 +71,8 @@ function getSizeStyle(size?: SizeProps) {
         height: 24,
         '& svg': {
           width: 14,
-          height: 14
-        }
+          height: 14,
+        },
       };
     case 'sm':
       return {
@@ -81,8 +81,8 @@ function getSizeStyle(size?: SizeProps) {
         height: 32,
         '& svg': {
           width: 18,
-          height: 18
-        }
+          height: 18,
+        },
       };
     case 'lg':
       return {
@@ -91,8 +91,8 @@ function getSizeStyle(size?: SizeProps) {
         height: 52,
         '& svg': {
           width: 28,
-          height: 28
-        }
+          height: 28,
+        },
       };
     case 'xl':
       return {
@@ -101,8 +101,8 @@ function getSizeStyle(size?: SizeProps) {
         height: 64,
         '& svg': {
           width: 36,
-          height: 36
-        }
+          height: 36,
+        },
       };
     case 'md':
     default:
@@ -112,8 +112,8 @@ function getSizeStyle(size?: SizeProps) {
         height: 40,
         '& svg': {
           width: 20,
-          height: 20
-        }
+          height: 20,
+        },
       };
   }
 }
@@ -127,14 +127,14 @@ interface StyleProps {
   size?: SizeProps;
 }
 
-const AvatarStyle = styled(MuiAvatar, { shouldForwardProp: (prop) => prop !== 'color' && prop !== 'type' && prop !== 'size' })(
+const AvatarStyle = styled(MuiAvatar, { shouldForwardProp: prop => prop !== 'color' && prop !== 'type' && prop !== 'size' })(
   ({ theme, color, type, size }: StyleProps) => ({
     ...getSizeStyle(size),
     ...getColorStyle({ theme, color, type }),
     ...(size === 'badge' && {
-      borderColor: theme.palette.background.default
-    })
-  })
+      borderColor: theme.palette.background.default,
+    }),
+  }),
 );
 
 // ==============================|| AVATAR - EXTENDED ||============================== //

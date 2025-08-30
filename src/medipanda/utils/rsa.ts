@@ -38,10 +38,10 @@ export async function encryptRSA(plaintext: string) {
     keyBuffer,
     {
       name: 'RSA-OAEP',
-      hash: 'SHA-256'
+      hash: 'SHA-256',
     },
     false,
-    ['encrypt']
+    ['encrypt'],
   );
 
   const encoded = new TextEncoder().encode(plaintext);

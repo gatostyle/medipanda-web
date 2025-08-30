@@ -27,26 +27,26 @@ const Technologies = [
     image: featureChat,
     title: 'Chat',
     href: 'chat',
-    description: 'Power your web apps with the conceptual chat app of Able Pro Dashboard Template.'
+    description: 'Power your web apps with the conceptual chat app of Able Pro Dashboard Template.',
   },
   {
     image: featureEcommerce,
     title: 'E-commerce',
     href: 'ecommerce',
-    description: 'Collection, Filter, Product Detail, Add New Product, and Checkout pages makes your e-commerce app complete.'
+    description: 'Collection, Filter, Product Detail, Add New Product, and Checkout pages makes your e-commerce app complete.',
   },
   {
     image: featureMail,
     title: 'Inbox',
     href: 'mail',
-    description: 'Compose Message, List Message (email), Detailed Inbox pages well suited for any conversation based web apps.'
+    description: 'Compose Message, List Message (email), Detailed Inbox pages well suited for any conversation based web apps.',
   },
   {
     image: featureSocial,
     title: 'User Management',
     href: 'social',
-    description: 'Detailed pages for User Management like Profile settings, role, account settings, social profile and more to explore.'
-  }
+    description: 'Detailed pages for User Management like Profile settings, role, account settings, social profile and more to explore.',
+  },
 ];
 // ==============================|| LANDING - AppsPage ||============================== //
 
@@ -80,22 +80,22 @@ export default function AppsPage() {
     slidesToScroll: 1,
     beforeChange: function (currentSlide: number, next: number) {
       setSlideIndex(next);
-    }
+    },
   };
 
   return (
     <Box sx={{ bgcolor: theme.palette.primary.main, overflow: 'hidden', pt: { md: 10, xs: 5 } }}>
       <Container>
-        <Grid container spacing={3} alignItems="center" justifyContent="center">
+        <Grid container spacing={3} alignItems='center' justifyContent='center'>
           <Grid item xs={12}>
-            <Grid container spacing={2} justifyContent="center" sx={{ textAlign: 'center', marginBottom: 3 }}>
+            <Grid container spacing={2} justifyContent='center' sx={{ textAlign: 'center', marginBottom: 3 }}>
               <Grid item xs={12}>
-                <Typography variant="h2" color="white">
+                <Typography variant='h2' color='white'>
                   Working Conceptual Apps
                 </Typography>
               </Grid>
               <Grid item xs={12} md={7}>
-                <Typography color="white">
+                <Typography color='white'>
                   Each App is carefully crafted to achieve the best feature rich working concept for your project
                 </Typography>
               </Grid>
@@ -104,12 +104,12 @@ export default function AppsPage() {
         </Grid>
       </Container>
       <Container>
-        <Grid container spacing={3} alignItems="center" justifyContent="center" sx={{ pt: { md: 10, xs: 2.5 } }}>
+        <Grid container spacing={3} alignItems='center' justifyContent='center' sx={{ pt: { md: 10, xs: 2.5 } }}>
           <Grid item xs={12}>
-            <Grid container spacing={3} alignItems="start">
+            <Grid container spacing={3} alignItems='start'>
               <Grid item xs={12} md={6}>
                 <Box pb={{ xs: 0, md: 10 }}>
-                  <Grid container spacing={1.5} alignItems="center">
+                  <Grid container spacing={1.5} alignItems='center'>
                     {Technologies.map((tech, index) => (
                       <Grid item xs={12} key={index}>
                         <FadeInWhenVisible>
@@ -117,7 +117,7 @@ export default function AppsPage() {
                             onClick={() => {
                               handleChange(index);
                             }}
-                            role="link"
+                            role='link'
                             href={`#${tech.href}`}
                             sx={{
                               p: 3,
@@ -125,19 +125,19 @@ export default function AppsPage() {
                               ...(slideIndex === index && {
                                 background: alpha(theme.palette.secondary.lighter, 0.13),
                                 boxShadow: theme.customShadows.z1,
-                                '&:hover': { background: alpha(theme.palette.secondary.lighter, 0.13), boxShadow: theme.customShadows.z1 }
-                              })
+                                '&:hover': { background: alpha(theme.palette.secondary.lighter, 0.13), boxShadow: theme.customShadows.z1 },
+                              }),
                             }}
-                            variant="light"
+                            variant='light'
                           >
-                            <Grid container textAlign="start" spacing={2}>
+                            <Grid container textAlign='start' spacing={2}>
                               <Grid item xs={12}>
-                                <Typography variant="h4" color="white">
+                                <Typography variant='h4' color='white'>
                                   {tech.title}
                                 </Typography>
                               </Grid>
                               <Grid item xs={12}>
-                                <Typography color="white">{tech.description}</Typography>
+                                <Typography color='white'>{tech.description}</Typography>
                               </Grid>
                             </Grid>
                           </Button>
@@ -156,14 +156,14 @@ export default function AppsPage() {
                     width: '100%',
                     pointerEvents: 'none',
                     ...(theme.direction === ThemeDirection.RTL && {
-                      '& .slick-slider > .slick-list > .slick-track > .slick-slide': { float: 'right !important' }
-                    })
+                      '& .slick-slider > .slick-list > .slick-track > .slick-slide': { float: 'right !important' },
+                    }),
                   }}
                 >
                   <Slider ref={sliderRef} {...settings}>
                     {Technologies.map((tech, index) => (
                       <Box key={index + state}>
-                        <CardMedia component="img" image={tech.image} sx={{ width: '100%', minHeight: '100%' }} />
+                        <CardMedia component='img' image={tech.image} sx={{ width: '100%', minHeight: '100%' }} />
                       </Box>
                     ))}
                   </Slider>

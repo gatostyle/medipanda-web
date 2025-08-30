@@ -45,28 +45,28 @@ export default function AssignUsers() {
     <MainCard>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between">
-            <Stack direction="row" alignItems="center" spacing={2}>
-              <Avatar variant="rounded">
-                <Profile variant="Bold" />
+          <Stack direction='row' alignItems='center' justifyContent='space-between'>
+            <Stack direction='row' alignItems='center' spacing={2}>
+              <Avatar variant='rounded'>
+                <Profile variant='Bold' />
               </Avatar>
               <Stack>
-                <Typography variant="subtitle1">Able pro</Typography>
-                <Typography variant="caption">@ableprodevelop</Typography>
+                <Typography variant='subtitle1'>Able pro</Typography>
+                <Typography variant='caption'>@ableprodevelop</Typography>
               </Stack>
             </Stack>
             <IconButton
-              color="secondary"
-              id="wallet-button"
+              color='secondary'
+              id='wallet-button'
               aria-controls={open ? 'wallet-menu' : undefined}
-              aria-haspopup="true"
+              aria-haspopup='true'
               aria-expanded={open ? 'true' : undefined}
               onClick={handleClick}
             >
               <MoreIcon />
             </IconButton>
             <Menu
-              id="wallet-menu"
+              id='wallet-menu'
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
@@ -81,15 +81,15 @@ export default function AssignUsers() {
           </Stack>
         </Grid>
         <Grid item xs={12}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={3}>
+          <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={3}>
             <Box sx={{ width: 186 }}>
               <Tooltip
                 open={show}
-                placement="top-end"
+                placement='top-end'
                 title={
                   <AvatarGroup max={10}>
-                    <Avatar alt="Agnes Walker" src={avatar4} />
-                    <Avatar alt="Trevor Henderson" src={avatar5} />
+                    <Avatar alt='Agnes Walker' src={avatar4} />
+                    <Avatar alt='Trevor Henderson' src={avatar5} />
                   </AvatarGroup>
                 }
               >
@@ -103,8 +103,8 @@ export default function AssignUsers() {
                       fontSize: '0.875rem',
                       bgcolor: 'primary.lighter',
                       color: 'primary.main',
-                      ml: -1.25
-                    }
+                      ml: -1.25,
+                    },
                   }}
                   max={4}
                   componentsProps={{
@@ -114,19 +114,19 @@ export default function AssignUsers() {
                       },
                       onMouseLeave: () => {
                         setShow(false);
-                      }
-                    }
+                      },
+                    },
                   }}
                 >
-                  <Avatar alt="Remy Sharp" src={avatar1} />
-                  <Avatar alt="Travis Howard" src={avatar2} />
-                  <Avatar alt="Cindy Baker" src={avatar3} />
-                  <Avatar alt="Agnes Walker" src={avatar4} />
-                  <Avatar alt="Trevor Henderson" src={avatar5} />
+                  <Avatar alt='Remy Sharp' src={avatar1} />
+                  <Avatar alt='Travis Howard' src={avatar2} />
+                  <Avatar alt='Cindy Baker' src={avatar3} />
+                  <Avatar alt='Agnes Walker' src={avatar4} />
+                  <Avatar alt='Trevor Henderson' src={avatar5} />
                 </AvatarGroup>
               </Tooltip>
             </Box>
-            <IconButton shape="rounded" variant="contained">
+            <IconButton shape='rounded' variant='contained'>
               <Add />
             </IconButton>
           </Stack>

@@ -43,7 +43,7 @@ import {
   Table as TableProps,
   FilterFn,
   SortingFn,
-  sortingFns
+  sortingFns,
 } from '@tanstack/react-table';
 import { compareItems, rankItem, RankingInfo } from '@tanstack/match-sorter-utils';
 
@@ -67,7 +67,7 @@ import {
   RowEditable,
   DraggableRow,
   DraggableColumnHeader,
-  SelectColumnVisibility
+  SelectColumnVisibility,
 } from 'components/third-party/react-table';
 
 import { getImageUrl, ImagePath } from 'utils/getImageUrl';
@@ -109,7 +109,7 @@ function EditAction({ row, table }: { row: Row<TableDataProps>; table: TableProp
   const setSelectedRow = (e: MouseEvent<HTMLButtonElement> | undefined) => {
     meta?.setSelectedRow((old: TableDataProps[]) => ({
       ...old,
-      [row.id]: !old[row.id as any]
+      [row.id]: !old[row.id as any],
     }));
 
     // @ts-ignore
@@ -117,17 +117,17 @@ function EditAction({ row, table }: { row: Row<TableDataProps>; table: TableProp
   };
 
   return (
-    <Stack direction="row" spacing={1} alignItems="center">
+    <Stack direction='row' spacing={1} alignItems='center'>
       {meta?.selectedRow[row.id] && (
-        <Tooltip title="Cancel">
-          <IconButton color="error" name="cancel" onClick={setSelectedRow}>
-            <CloseCircle size="15" variant="Outline" />
+        <Tooltip title='Cancel'>
+          <IconButton color='error' name='cancel' onClick={setSelectedRow}>
+            <CloseCircle size='15' variant='Outline' />
           </IconButton>
         </Tooltip>
       )}
       <Tooltip title={meta?.selectedRow[row.id] ? 'Save' : 'Edit'}>
         <IconButton color={meta?.selectedRow[row.id] ? 'success' : 'primary'} onClick={setSelectedRow}>
-          {meta?.selectedRow[row.id] ? <Send size="15" variant="Bold" /> : <Edit2 variant="Outline" />}
+          {meta?.selectedRow[row.id] ? <Send size='15' variant='Bold' /> : <Edit2 variant='Outline' />}
         </IconButton>
       </Tooltip>
     </Stack>
@@ -158,7 +158,7 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
   const [columns] = useState(() => [...defaultColumns]);
 
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
-    columns.map((column) => column.id as string) // must start out with populated columnOrder so we can splice
+    columns.map(column => column.id as string), // must start out with populated columnOrder so we can splice
   );
 
   const reorderRow = (draggedRowIndex: number, targetRowIndex: number) => {
@@ -179,7 +179,7 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
       sorting,
       grouping,
       columnOrder,
-      columnVisibility
+      columnVisibility,
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
@@ -200,7 +200,7 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
     globalFilterFn: fuzzyFilter,
-    getRowId: (row) => row.id.toString(), // good to have guaranteed unique row ids/keys for rendering
+    getRowId: row => row.id.toString(), // good to have guaranteed unique row ids/keys for rendering
     debugTable: true,
     debugHeaders: true,
     debugColumns: true,
@@ -211,7 +211,7 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
         if (revert) {
           setData((old: TableDataProps[]) => old.map((row, index) => (index === rowIndex ? originalData[rowIndex] : row)));
         } else {
-          setOriginalData((old) => old.map((row, index) => (index === rowIndex ? data[rowIndex] : row)));
+          setOriginalData(old => old.map((row, index) => (index === rowIndex ? data[rowIndex] : row)));
         }
       },
       updateData: (rowIndex, columnId, value) => {
@@ -220,14 +220,14 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
             if (index === rowIndex) {
               return {
                 ...old[rowIndex]!,
-                [columnId]: value
+                [columnId]: value,
               };
             }
             return row;
-          })
+          }),
         );
-      }
-    }
+      },
+    },
   });
 
   useEffect(() => setColumnVisibility({ id: false, role: false, contact: false, country: false, progress: false }), []);
@@ -236,14 +236,14 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
 
   let headers: LabelKeyObject[] = [];
   table.getVisibleLeafColumns().map(
-    (columns) =>
+    columns =>
       // @ts-ignore
       columns.columnDef.accessorKey &&
       headers.push({
         label: typeof columns.columnDef.header === 'string' ? columns.columnDef.header : '#',
         // @ts-ignore
-        key: columns.columnDef.accessorKey
-      })
+        key: columns.columnDef.accessorKey,
+      }),
   );
 
   return (
@@ -251,31 +251,31 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
         spacing={2}
-        justifyContent="space-between"
+        justifyContent='space-between'
         sx={{ padding: 2, ...(matchDownSM && { '& .MuiOutlinedInput-root, & .MuiFormControl-root': { width: '100%' } }) }}
       >
         <DebouncedInput
           value={globalFilter ?? ''}
-          onFilterChange={(value) => setGlobalFilter(String(value))}
+          onFilterChange={value => setGlobalFilter(String(value))}
           placeholder={`Search ${data.length} records...`}
         />
-        <Stack direction="row" spacing={2} alignItems="center" sx={{ width: { xs: '100%', sm: 'auto' } }}>
+        <Stack direction='row' spacing={2} alignItems='center' sx={{ width: { xs: '100%', sm: 'auto' } }}>
           <SelectColumnVisibility
             {...{
               getVisibleLeafColumns: table.getVisibleLeafColumns,
               getIsAllColumnsVisible: table.getIsAllColumnsVisible,
               getToggleAllColumnsVisibilityHandler: table.getToggleAllColumnsVisibilityHandler,
-              getAllColumns: table.getAllColumns
+              getAllColumns: table.getAllColumns,
             }}
           />
           <CSVExport
             {...{
               data:
-                table.getSelectedRowModel().flatRows.map((row) => row.original).length === 0
+                table.getSelectedRowModel().flatRows.map(row => row.original).length === 0
                   ? data
-                  : table.getSelectedRowModel().flatRows.map((row) => row.original),
+                  : table.getSelectedRowModel().flatRows.map(row => row.original),
               headers,
-              filename: 'umbrella.csv'
+              filename: 'umbrella.csv',
             }}
           />
         </Stack>
@@ -289,10 +289,10 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
               {table.getHeaderGroups().map((headerGroup: HeaderGroup<any>) => (
                 <TableRow key={headerGroup.id}>
                   <TableCell />
-                  {headerGroup.headers.map((header) => {
+                  {headerGroup.headers.map(header => {
                     if (header.column.columnDef.meta !== undefined && header.column.getCanSort()) {
                       Object.assign(header.column.columnDef.meta, {
-                        className: header.column.columnDef.meta.className + ' cursor-pointer prevent-select'
+                        className: header.column.columnDef.meta.className + ' cursor-pointer prevent-select',
                       });
                     }
 
@@ -300,18 +300,18 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
                       <DraggableColumnHeader key={header.id} header={header} table={table}>
                         <>
                           {header.isPlaceholder ? null : (
-                            <Stack direction="row" spacing={1} alignItems="center">
+                            <Stack direction='row' spacing={1} alignItems='center'>
                               {header.column.getCanGroup() && (
                                 <IconButton
                                   color={header.column.getIsGrouped() ? 'error' : 'primary'}
                                   onClick={header.column.getToggleGroupingHandler()}
-                                  size="small"
+                                  size='small'
                                   sx={{ p: 0, width: 24, height: 24, fontSize: '1rem', mr: 0.75 }}
                                 >
                                   {header.column.getIsGrouped() ? (
-                                    <Command size="32" color="#FF8A65" variant="Bold" />
+                                    <Command size='32' color='#FF8A65' variant='Bold' />
                                   ) : (
-                                    <TableDocument size="32" variant="Outline" />
+                                    <TableDocument size='32' variant='Outline' />
                                   )}
                                 </IconButton>
                               )}
@@ -330,7 +330,7 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
               {table.getHeaderGroups().map((headerGroup: HeaderGroup<any>) => (
                 <TableRow key={headerGroup.id}>
                   <TableCell />
-                  {headerGroup.headers.map((header) => (
+                  {headerGroup.headers.map(header => (
                     <TableCell key={header.id} {...header.column.columnDef.meta}>
                       {header.column.getCanFilter() && <Filter column={header.column} table={table} />}
                     </TableCell>
@@ -340,11 +340,11 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
             </TableHead>
             <TableBody>
               {table.getRowModel().rows.length > 0 ? (
-                table.getRowModel().rows.map((row) => (
+                table.getRowModel().rows.map(row => (
                   <Fragment key={row.id}>
                     <DraggableRow row={row} reorderRow={reorderRow}>
                       <>
-                        {row.getVisibleCells().map((cell) => {
+                        {row.getVisibleCells().map(cell => {
                           let bgcolor = 'background.paper';
                           if (cell.getIsGrouped()) bgcolor = 'primary.lighter';
                           if (cell.getIsAggregated()) bgcolor = 'warning.lighter';
@@ -352,7 +352,7 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
 
                           if (cell.column.columnDef.meta !== undefined && cell.column.getCanSort()) {
                             Object.assign(cell.column.columnDef.meta, {
-                              style: { backgroundColor: bgcolor }
+                              style: { backgroundColor: bgcolor },
                             });
                           }
 
@@ -363,21 +363,21 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
                               sx={{ bgcolor }}
                               {...(cell.getIsGrouped() &&
                                 cell.column.columnDef.meta === undefined && {
-                                  style: { backgroundColor: bgcolor }
+                                  style: { backgroundColor: bgcolor },
                                 })}
                             >
                               {cell.getIsGrouped() ? (
-                                <Stack direction="row" alignItems="center" spacing={0.5}>
+                                <Stack direction='row' alignItems='center' spacing={0.5}>
                                   <IconButton
-                                    color="secondary"
+                                    color='secondary'
                                     onClick={row.getToggleExpandedHandler()}
-                                    size="small"
+                                    size='small'
                                     sx={{ p: 0, width: 24, height: 24 }}
                                   >
                                     {row.getIsExpanded() ? (
-                                      <ArrowDown2 size="32" variant="Outline" />
+                                      <ArrowDown2 size='32' variant='Outline' />
                                     ) : (
-                                      <ArrowRight2 size="32" variant="Outline" />
+                                      <ArrowRight2 size='32' variant='Outline' />
                                     )}
                                   </IconButton>
                                   <Box>{flexRender(cell.column.columnDef.cell, cell.getContext())}</Box> <Box>({row.subRows.length})</Box>
@@ -404,16 +404,16 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
               ) : (
                 <TableRow>
                   <TableCell colSpan={table.getAllColumns().length}>
-                    <EmptyTable msg="No Data" />
+                    <EmptyTable msg='No Data' />
                   </TableCell>
                 </TableRow>
               )}
             </TableBody>
             <TableFooter>
-              {table.getFooterGroups().map((footerGroup) => (
+              {table.getFooterGroups().map(footerGroup => (
                 <TableRow key={footerGroup.id}>
                   <TableCell />
-                  {footerGroup.headers.map((footer) => (
+                  {footerGroup.headers.map(footer => (
                     <TableCell key={footer.id} {...footer.column.columnDef.meta}>
                       {footer.isPlaceholder ? null : flexRender(footer.column.columnDef.header, footer.getContext())}
                     </TableCell>
@@ -430,7 +430,7 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
               setPageSize: table.setPageSize,
               setPageIndex: table.setPageIndex,
               getState: table.getState,
-              getPageCount: table.getPageCount
+              getPageCount: table.getPageCount,
             }}
           />
         </Box>
@@ -452,15 +452,15 @@ export default function UmbrellaTable() {
         header: () => null,
         cell: ({ row }) => {
           return row.getCanExpand() ? (
-            <IconButton color={row.getIsExpanded() ? 'primary' : 'secondary'} onClick={row.getToggleExpandedHandler()} size="small">
-              {row.getIsExpanded() ? <ArrowDown2 size="32" variant="Outline" /> : <ArrowRight2 size="32" variant="Outline" />}
+            <IconButton color={row.getIsExpanded() ? 'primary' : 'secondary'} onClick={row.getToggleExpandedHandler()} size='small'>
+              {row.getIsExpanded() ? <ArrowDown2 size='32' variant='Outline' /> : <ArrowRight2 size='32' variant='Outline' />}
             </IconButton>
           ) : (
-            <IconButton color="secondary" size="small" disabled>
+            <IconButton color='secondary' size='small' disabled>
               <CloseCircle />
             </IconButton>
           );
-        }
+        },
       },
       {
         id: 'select',
@@ -470,7 +470,7 @@ export default function UmbrellaTable() {
             {...{
               checked: table.getIsAllRowsSelected(),
               indeterminate: table.getIsSomeRowsSelected(),
-              onChange: table.getToggleAllRowsSelectedHandler()
+              onChange: table.getToggleAllRowsSelectedHandler(),
             }}
           />
         ),
@@ -480,10 +480,10 @@ export default function UmbrellaTable() {
               checked: row.getIsSelected(),
               disabled: !row.getCanSelect(),
               indeterminate: row.getIsSomeSelected(),
-              onChange: row.getToggleSelectedHandler()
+              onChange: row.getToggleSelectedHandler(),
             }}
           />
-        )
+        ),
       },
       {
         id: 'id',
@@ -493,7 +493,7 @@ export default function UmbrellaTable() {
         dataType: 'text',
         enableColumnFilter: false,
         enableGrouping: false,
-        meta: { className: 'cell-center' }
+        meta: { className: 'cell-center' },
       },
       {
         id: 'avatar',
@@ -501,8 +501,8 @@ export default function UmbrellaTable() {
         accessorKey: 'avatar',
         enableColumnFilter: false,
         enableGrouping: false,
-        cell: (cell) => <Avatar alt="Avatar 1" size="sm" src={getImageUrl(`avatar-${cell.getValue()}.png`, ImagePath.USERS)} />,
-        meta: { className: 'cell-center' }
+        cell: cell => <Avatar alt='Avatar 1' size='sm' src={getImageUrl(`avatar-${cell.getValue()}.png`, ImagePath.USERS)} />,
+        meta: { className: 'cell-center' },
       },
       {
         id: 'firstName',
@@ -510,7 +510,7 @@ export default function UmbrellaTable() {
         footer: 'First Name',
         accessorKey: 'firstName',
         dataType: 'text',
-        enableGrouping: false
+        enableGrouping: false,
       },
       {
         id: 'lastName',
@@ -518,7 +518,7 @@ export default function UmbrellaTable() {
         footer: 'Last Name',
         accessorKey: 'lastName',
         dataType: 'text',
-        enableGrouping: false
+        enableGrouping: false,
       },
       {
         id: 'email',
@@ -526,7 +526,7 @@ export default function UmbrellaTable() {
         footer: 'Email',
         accessorKey: 'email',
         dataType: 'text',
-        enableGrouping: false
+        enableGrouping: false,
       },
       {
         id: 'age',
@@ -534,7 +534,7 @@ export default function UmbrellaTable() {
         footer: 'Age',
         accessorKey: 'age',
         dataType: 'text',
-        meta: { className: 'cell-right' }
+        meta: { className: 'cell-right' },
       },
       {
         id: 'role',
@@ -544,7 +544,7 @@ export default function UmbrellaTable() {
         dataType: 'text',
         enableGrouping: false,
         filterFn: fuzzyFilter,
-        sortingFn: fuzzySort
+        sortingFn: fuzzySort,
       },
       {
         id: 'contact',
@@ -552,7 +552,7 @@ export default function UmbrellaTable() {
         footer: 'Contact',
         accessorKey: 'contact',
         dataType: 'text',
-        enableGrouping: false
+        enableGrouping: false,
       },
       {
         id: 'country',
@@ -560,7 +560,7 @@ export default function UmbrellaTable() {
         footer: 'Country',
         accessorKey: 'country',
         dataType: 'text',
-        enableGrouping: false
+        enableGrouping: false,
       },
       {
         id: 'visits',
@@ -569,14 +569,14 @@ export default function UmbrellaTable() {
         accessorKey: 'visits',
         dataType: 'text',
         enableGrouping: false,
-        meta: { className: 'cell-right' }
+        meta: { className: 'cell-right' },
       },
       {
         id: 'status',
         header: 'Status',
         footer: 'Status',
         accessorKey: 'status',
-        dataType: 'select'
+        dataType: 'select',
       },
       {
         id: 'progress',
@@ -584,17 +584,17 @@ export default function UmbrellaTable() {
         footer: 'Profile Progress',
         accessorKey: 'progress',
         dataType: 'progress',
-        enableGrouping: false
+        enableGrouping: false,
       },
       {
         id: 'edit',
         header: 'Actions',
         cell: EditAction,
         enableGrouping: false,
-        meta: { className: 'cell-center' }
-      }
+        meta: { className: 'cell-center' },
+      },
     ],
-    []
+    [],
   );
 
   return (

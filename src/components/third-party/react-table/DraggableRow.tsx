@@ -22,7 +22,7 @@ import { TableDataProps } from 'types/table';
 export default function DraggableRow({
   row,
   reorderRow,
-  children
+  children,
 }: {
   row: Row<TableDataProps>;
   reorderRow: (draggedRowIndex: number, targetRowIndex: number) => void;
@@ -31,13 +31,13 @@ export default function DraggableRow({
   const [{ isOverCurrent }, dropRef] = useDrop({
     accept: 'row',
     drop: (draggedRow: Row<TableDataProps>) => reorderRow(draggedRow.index, row.index),
-    collect: (monitor) => ({ isOver: monitor.isOver(), isOverCurrent: monitor.isOver({ shallow: true }) })
+    collect: monitor => ({ isOver: monitor.isOver(), isOverCurrent: monitor.isOver({ shallow: true }) }),
   });
 
   const [{ isDragging }, dragRef, previewRef] = useDrag({
-    collect: (monitor) => ({ isDragging: monitor.isDragging() }),
+    collect: monitor => ({ isDragging: monitor.isDragging() }),
     item: () => row,
-    type: 'row'
+    type: 'row',
   });
 
   return (
@@ -48,12 +48,12 @@ export default function DraggableRow({
       <TableCell ref={dropRef}>
         <IconButton
           ref={dragRef}
-          size="small"
+          size='small'
           sx={{ p: 0, width: 24, height: 24, fontSize: '1rem', mr: 0.75 }}
-          color="secondary"
+          color='secondary'
           disabled={row.getIsGrouped()}
         >
-          <HambergerMenu size="32" variant="Outline" />
+          <HambergerMenu size='32' variant='Outline' />
         </IconButton>
       </TableCell>
       {children}

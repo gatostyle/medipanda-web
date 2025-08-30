@@ -14,14 +14,14 @@ const areaChartOptions = {
   chart: {
     type: 'area',
     toolbar: {
-      show: false
-    }
+      show: false,
+    },
   },
   dataLabels: {
-    enabled: false
+    enabled: false,
   },
   stroke: {
-    width: 1
+    width: 1,
   },
   fill: {
     type: 'gradient',
@@ -30,18 +30,18 @@ const areaChartOptions = {
       type: 'vertical',
       inverseColors: false,
       opacityFrom: 0.5,
-      opacityTo: 0
-    }
+      opacityTo: 0,
+    },
   },
   plotOptions: {
     bar: {
       columnWidth: '45%',
-      borderRadius: 4
-    }
+      borderRadius: 4,
+    },
   },
   grid: {
-    strokeDashArray: 4
-  }
+    strokeDashArray: 4,
+  },
 };
 
 // ==============================|| CHART - REPEAT CUSTOMER CHART ||============================== //
@@ -56,7 +56,7 @@ export default function RepeatCustomerChart() {
   const [options, setOptions] = useState<ChartProps>(areaChartOptions);
 
   useEffect(() => {
-    setOptions((prevState) => ({
+    setOptions(prevState => ({
       ...prevState,
       colors: [theme.palette.primary.main, theme.palette.primary[700]],
       xaxis: {
@@ -75,41 +75,41 @@ export default function RepeatCustomerChart() {
               secondary,
               secondary,
               secondary,
-              secondary
-            ]
-          }
+              secondary,
+            ],
+          },
         },
         axisBorder: {
           show: false,
-          color: line
+          color: line,
         },
         axisTicks: {
-          show: false
+          show: false,
         },
-        tickAmount: 11
+        tickAmount: 11,
       },
       yaxis: {
         labels: {
           style: {
-            colors: [secondary]
-          }
-        }
+            colors: [secondary],
+          },
+        },
       },
       grid: {
-        borderColor: line
+        borderColor: line,
       },
       theme: {
-        mode: mode === ThemeMode.DARK ? 'dark' : 'light'
-      }
+        mode: mode === ThemeMode.DARK ? 'dark' : 'light',
+      },
     }));
   }, [mode, primary, secondary, line, theme]);
 
   const [series] = useState([
     {
       name: 'Page Views',
-      data: [30, 60, 40, 70, 50, 90, 50, 55, 45, 60, 50, 65]
-    }
+      data: [30, 60, 40, 70, 50, 90, 50, 55, 45, 60, 50, 65],
+    },
   ]);
 
-  return <ReactApexChart options={options} series={series} type="area" height={260} />;
+  return <ReactApexChart options={options} series={series} type='area' height={260} />;
 }

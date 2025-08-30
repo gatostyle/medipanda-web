@@ -86,9 +86,9 @@ export default function DisabledPickers() {
 </MainCard>`;
 
   return (
-    <MainCard title="Disabled Pickers" codeString={disabledDatepickerCodeString}>
+    <MainCard title='Disabled Pickers' codeString={disabledDatepickerCodeString}>
       <Stack spacing={3} sx={{ '& .MuiInputLabel-root': { overflow: 'visible' } }}>
-        <Typography variant="h6">Date Picker</Typography>
+        <Typography variant='h6'>Date Picker</Typography>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
             disabled
@@ -108,7 +108,7 @@ export default function DisabledPickers() {
           />
         </LocalizationProvider>
 
-        <Typography variant="h6">Date Time Picker</Typography>
+        <Typography variant='h6'>Date Time Picker</Typography>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DateTimePicker
             disabled
@@ -127,7 +127,7 @@ export default function DisabledPickers() {
             slotProps={{ textField: { placeholder: 'read-only' } }}
           />
 
-          <Typography variant="h6">Time Picker</Typography>
+          <Typography variant='h6'>Time Picker</Typography>
           <TimePicker
             disabled
             value={value}

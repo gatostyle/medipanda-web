@@ -14,7 +14,7 @@ const ControlPanelStyled = styled(Box)(({ theme }) => ({
   top: 8,
   right: 8,
   padding: 20,
-  borderRadius: 4
+  borderRadius: 4,
 }));
 
 export default ControlPanelStyled;

@@ -47,36 +47,36 @@ function RenderSubComponent({ row }: { row: Row<TableDataProps> }) {
       {
         header: 'Avatar',
         accessorKey: 'avatar',
-        cell: (cell) => <Avatar alt="Avatar 1" size="sm" src={getImageUrl(`avatar-${cell.getValue()}.png`, ImagePath.USERS)} />,
+        cell: cell => <Avatar alt='Avatar 1' size='sm' src={getImageUrl(`avatar-${cell.getValue()}.png`, ImagePath.USERS)} />,
         meta: {
-          className: 'cell-center'
-        }
+          className: 'cell-center',
+        },
       },
       {
         header: 'Name',
-        accessorKey: 'fullName'
+        accessorKey: 'fullName',
       },
       {
         header: 'Email',
-        accessorKey: 'email'
+        accessorKey: 'email',
       },
       {
         header: 'Role',
-        accessorKey: 'role'
+        accessorKey: 'role',
       },
       {
         header: 'Contact',
         accessorKey: 'contact',
         meta: {
-          className: 'cell-right'
-        }
+          className: 'cell-right',
+        },
       },
       {
         header: 'Country',
-        accessorKey: 'country'
-      }
+        accessorKey: 'country',
+      },
     ],
-    []
+    [],
   );
 
   useEffect(() => {
@@ -94,14 +94,14 @@ function RenderSubComponent({ row }: { row: Row<TableDataProps> }) {
 
   let headers: LabelKeyObject[] = [];
   columns.map(
-    (columns) =>
+    columns =>
       // @ts-ignore
       columns.accessorKey &&
       headers.push({
         label: typeof columns.header === 'string' ? columns.header : '#',
         // @ts-ignore
-        key: columns.accessorKey
-      })
+        key: columns.accessorKey,
+      }),
   );
 
   return (
@@ -133,7 +133,7 @@ function ReactTable({ columns, data, loading, isList }: ReactTableProps) {
     columns,
     getRowCanExpand: () => true,
     getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel()
+    getExpandedRowModel: getExpandedRowModel(),
   });
 
   const backColor = alpha(theme.palette.primary.lighter, 0.1);
@@ -144,7 +144,7 @@ function ReactTable({ columns, data, loading, isList }: ReactTableProps) {
         <TableHead>
           {table.getHeaderGroups().map((headerGroup: HeaderGroup<any>) => (
             <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
+              {headerGroup.headers.map(header => (
                 <TableCell key={header.id} {...header.column.columnDef.meta}>
                   {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                 </TableCell>
@@ -157,7 +157,7 @@ function ReactTable({ columns, data, loading, isList }: ReactTableProps) {
             <TableRow key={item}>
               {[0, 1, 2, 3, 4, 5].map((col: number) => (
                 <TableCell key={col}>
-                  <Skeleton animation="wave" />
+                  <Skeleton animation='wave' />
                 </TableCell>
               ))}
             </TableRow>
@@ -169,14 +169,14 @@ function ReactTable({ columns, data, loading, isList }: ReactTableProps) {
 
   let headers: LabelKeyObject[] = [];
   table.getAllColumns().map(
-    (columns) =>
+    columns =>
       // @ts-ignore
       columns.columnDef.accessorKey &&
       headers.push({
         label: typeof columns.columnDef.header === 'string' ? columns.columnDef.header : '#',
         // @ts-ignore
-        key: columns.columnDef.accessorKey
-      })
+        key: columns.columnDef.accessorKey,
+      }),
   );
 
   return (
@@ -191,7 +191,7 @@ function ReactTable({ columns, data, loading, isList }: ReactTableProps) {
             <TableHead>
               {table.getHeaderGroups().map((headerGroup: HeaderGroup<any>) => (
                 <TableRow key={headerGroup.id} sx={{ '& > th:first-of-type': { width: isList ? 'auto' : 58 } }}>
-                  {headerGroup.headers.map((header) => (
+                  {headerGroup.headers.map(header => (
                     <TableCell key={header.id} {...header.column.columnDef.meta}>
                       {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableCell>
@@ -200,10 +200,10 @@ function ReactTable({ columns, data, loading, isList }: ReactTableProps) {
               ))}
             </TableHead>
             <TableBody>
-              {table.getRowModel().rows.map((row) => (
+              {table.getRowModel().rows.map(row => (
                 <Fragment key={row.id}>
                   <TableRow>
-                    {row.getVisibleCells().map((cell) => (
+                    {row.getVisibleCells().map(cell => (
                       <TableCell key={cell.id} {...cell.column.columnDef.meta}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
@@ -239,62 +239,62 @@ export default function ExpandingSubTable() {
         header: () => null,
         cell: ({ row }) => {
           return row.getCanExpand() ? (
-            <IconButton color={row.getIsExpanded() ? 'primary' : 'secondary'} onClick={row.getToggleExpandedHandler()} size="small">
-              {row.getIsExpanded() ? <ArrowDown2 size="32" variant="Outline" /> : <ArrowRight2 size="32" variant="Outline" />}
+            <IconButton color={row.getIsExpanded() ? 'primary' : 'secondary'} onClick={row.getToggleExpandedHandler()} size='small'>
+              {row.getIsExpanded() ? <ArrowDown2 size='32' variant='Outline' /> : <ArrowRight2 size='32' variant='Outline' />}
             </IconButton>
           ) : (
-            <MinusCirlce style={{ color: theme.palette.text.secondary }} size="32" />
+            <MinusCirlce style={{ color: theme.palette.text.secondary }} size='32' />
           );
-        }
+        },
       },
       {
         header: 'First Name',
-        accessorKey: 'firstName'
+        accessorKey: 'firstName',
       },
       {
         header: 'Last Name',
-        accessorKey: 'lastName'
+        accessorKey: 'lastName',
       },
       {
         header: 'Email',
-        accessorKey: 'email'
+        accessorKey: 'email',
       },
       {
         header: 'Age',
         accessorKey: 'age',
         meta: {
-          className: 'cell-right'
-        }
+          className: 'cell-right',
+        },
       },
       {
         header: 'Visits',
         accessorKey: 'visits',
         meta: {
-          className: 'cell-right'
-        }
+          className: 'cell-right',
+        },
       },
       {
         header: 'Status',
         accessorKey: 'status',
-        cell: (cell) => {
+        cell: cell => {
           switch (cell.getValue()) {
             case 'Complicated':
-              return <Chip color="error" label="Complicated" size="small" variant="light" />;
+              return <Chip color='error' label='Complicated' size='small' variant='light' />;
             case 'Relationship':
-              return <Chip color="success" label="Relationship" size="small" variant="light" />;
+              return <Chip color='success' label='Relationship' size='small' variant='light' />;
             case 'Single':
             default:
-              return <Chip color="info" label="Single" size="small" variant="light" />;
+              return <Chip color='info' label='Single' size='small' variant='light' />;
           }
-        }
+        },
       },
       {
         header: 'Profile Progress',
         accessorKey: 'progress',
-        cell: (cell) => <LinearWithLabel value={cell.getValue() as number} sx={{ minWidth: 75 }} />
-      }
+        cell: cell => <LinearWithLabel value={cell.getValue() as number} sx={{ minWidth: 75 }} />,
+      },
     ],
-    [theme.palette.text.secondary]
+    [theme.palette.text.secondary],
   );
 
   return <ReactTable {...{ columns, data }} />;

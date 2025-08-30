@@ -15,7 +15,7 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
@@ -40,7 +40,7 @@ export default function MpAdminCommunityUserList() {
       searchType: 'userId' as 'userId',
       searchKeyword: '',
       pageIndex: 0,
-      pageSize: 20
+      pageSize: 20,
     },
     onSubmit: async () => {
       if (formik.values.pageIndex !== 0) {
@@ -48,7 +48,7 @@ export default function MpAdminCommunityUserList() {
       } else {
         await fetchData();
       }
-    }
+    },
   });
 
   const fetchData = async () => {
@@ -63,7 +63,7 @@ export default function MpAdminCommunityUserList() {
         endAt: undefined,
         filterDeleted: undefined,
         page: formik.values.pageIndex,
-        size: formik.values.pageSize
+        size: formik.values.pageSize,
       });
 
       setData(withSequence(response).content);
@@ -93,62 +93,62 @@ export default function MpAdminCommunityUserList() {
       header: 'No',
       accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
-      size: 60
+      size: 60,
     },
     {
       header: '회원번호',
       accessorKey: 'id',
       cell: ({ row }) => row.original.id,
-      size: 100
+      size: 100,
     },
     {
       header: '아이디',
       accessorKey: 'userId',
       cell: ({ row }) => row.original.userId,
-      size: 120
+      size: 120,
     },
     {
       header: '회원명',
       accessorKey: 'name',
       cell: ({ row }) => row.original.name,
-      size: 100
+      size: 100,
     },
     {
       header: '휴대폰번호',
       accessorKey: 'phoneNumber',
       cell: ({ row }) => row.original.phoneNumber,
-      size: 130
+      size: 130,
     },
     {
       header: '파트너사 계약여부',
       accessorKey: 'contractStatus',
       cell: ({ row }) => (row.original.contractStatus === 'CONTRACT' ? '계약' : '미계약'),
-      size: 130
+      size: 130,
     },
     {
       header: '작성글 수',
       accessorKey: 'postCount',
       cell: ({ row }) => row.original.postCount,
-      size: 100
+      size: 100,
     },
     {
       header: '댓글 수',
       accessorKey: 'commentCount',
       cell: ({ row }) => row.original.commentCount,
-      size: 100
+      size: 100,
     },
     {
       header: '좋아요 수',
       accessorKey: 'totalLikes',
       cell: ({ row }) => row.original.totalLikes,
-      size: 100
+      size: 100,
     },
     {
       header: '블라인드 글 수',
       accessorKey: 'blindPostCount',
       cell: ({ row }) => row.original.blindPostCount,
-      size: 120
-    }
+      size: 120,
+    },
   ];
 
   const table = useReactTable({
@@ -159,17 +159,17 @@ export default function MpAdminCommunityUserList() {
     state: {
       pagination: {
         pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize
-      }
+        pageSize: formik.values.pageSize,
+      },
     },
     pageCount: totalPages,
-    manualPagination: true
+    manualPagination: true,
   });
 
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant='h4' gutterBottom>
           이용자 관리
         </Typography>
       </Grid>
@@ -180,18 +180,18 @@ export default function MpAdminCommunityUserList() {
             <form onSubmit={formik.handleSubmit}>
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size="small">
+                  <FormControl fullWidth size='small'>
                     <InputLabel>파트너사 계약여부</InputLabel>
-                    <Select name="contractStatus" value={formik.values.contractStatus} onChange={formik.handleChange} size="small">
+                    <Select name='contractStatus' value={formik.values.contractStatus} onChange={formik.handleChange} size='small'>
                       <MenuItem value={'CONTRACT'}>계약</MenuItem>
                       <MenuItem value={'NON_CONTRACT'}>미계약</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size="small">
+                  <FormControl fullWidth size='small'>
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
+                    <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'userId'}>아이디</MenuItem>
                     </Select>
                   </FormControl>
@@ -199,18 +199,18 @@ export default function MpAdminCommunityUserList() {
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
                     fullWidth
-                    name="searchKeyword"
+                    name='searchKeyword'
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
-                    placeholder="검색어를 입력하세요"
-                    size="small"
+                    placeholder='검색어를 입력하세요'
+                    size='small'
                   />
                 </SearchFilterItem>
                 <SearchFilterActions>
-                  <Button type="submit" variant="contained" size="small">
+                  <Button type='submit' variant='contained' size='small'>
                     검색
                   </Button>
-                  <Button variant="outlined" size="small" onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={handleReset}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -223,19 +223,19 @@ export default function MpAdminCommunityUserList() {
       <Grid item xs={12}>
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Stack direction="row" spacing={2}>
-                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+            <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+              <Stack direction='row' spacing={2}>
+                <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
             </Stack>
 
             <ScrollX>
               <TableContainer>
-                <Table size="small">
+                <Table size='small'>
                   <TableHead>
-                    {table.getHeaderGroups().map((headerGroup) => (
+                    {table.getHeaderGroups().map(headerGroup => (
                       <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => (
+                        {headerGroup.headers.map(header => (
                           <TableCell key={header.id} style={{ width: header.getSize() }}>
                             {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                           </TableCell>
@@ -246,24 +246,24 @@ export default function MpAdminCommunityUserList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : (
-                      table.getRowModel().rows.map((row) => (
+                      table.getRowModel().rows.map(row => (
                         <TableRow key={row.id}>
-                          {row.getVisibleCells().map((cell) => (
+                          {row.getVisibleCells().map(cell => (
                             <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                           ))}
                         </TableRow>
@@ -274,13 +274,13 @@ export default function MpAdminCommunityUserList() {
               </TableContainer>
             </ScrollX>
 
-            <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
+            <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
                 page={formik.values.pageIndex + 1}
                 onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
-                color="primary"
-                variant="outlined"
+                color='primary'
+                variant='outlined'
                 showFirstButton
                 showLastButton
               />

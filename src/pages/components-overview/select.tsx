@@ -19,10 +19,10 @@ export default function ComponentSelect() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Select"
-        caption="Select components are used for collecting user provided information from a list of options."
-        directory="src/pages/components-overview/select"
-        link="https://mui.com/material-ui/react-select/"
+        title='Select'
+        caption='Select components are used for collecting user provided information from a list of options.'
+        directory='src/pages/components-overview/select'
+        link='https://mui.com/material-ui/react-select/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>

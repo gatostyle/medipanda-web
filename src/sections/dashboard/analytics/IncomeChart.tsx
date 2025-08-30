@@ -15,8 +15,8 @@ const areaChartOptions = {
     height: 355,
     type: 'area',
     toolbar: {
-      show: false
-    }
+      show: false,
+    },
   },
   fill: {
     type: 'gradient',
@@ -25,15 +25,15 @@ const areaChartOptions = {
       type: 'vertical',
       inverseColors: false,
       opacityFrom: 0.5,
-      opacityTo: 0
-    }
+      opacityTo: 0,
+    },
   },
   dataLabels: {
-    enabled: false
+    enabled: false,
   },
   stroke: {
     curve: 'straight',
-    width: 1
+    width: 1,
   },
   grid: {
     show: true,
@@ -42,15 +42,15 @@ const areaChartOptions = {
     position: 'back',
     xaxis: {
       lines: {
-        show: true
-      }
+        show: true,
+      },
     },
     yaxis: {
       lines: {
-        show: true
-      }
-    }
-  }
+        show: true,
+      },
+    },
+  },
 };
 
 interface Props {
@@ -70,7 +70,7 @@ export default function IncomeAreaChart({ slot, quantity }: Props) {
   const [options, setOptions] = useState<ChartProps>(areaChartOptions);
 
   useEffect(() => {
-    setOptions((prevState) => ({
+    setOptions(prevState => ({
       ...prevState,
       colors: [theme.palette.primary.main, theme.palette.primary[700]],
       xaxis: {
@@ -92,44 +92,44 @@ export default function IncomeAreaChart({ slot, quantity }: Props) {
               secondary,
               secondary,
               secondary,
-              secondary
-            ]
-          }
+              secondary,
+            ],
+          },
         },
         axisBorder: {
           show: true,
-          color: line
+          color: line,
         },
-        tickAmount: slot === 'month' ? 11 : 7
+        tickAmount: slot === 'month' ? 11 : 7,
       },
       yaxis: {
         labels: {
           style: {
-            colors: [secondary]
-          }
-        }
+            colors: [secondary],
+          },
+        },
       },
       grid: {
-        borderColor: line
+        borderColor: line,
       },
       tooltip: {
         y: {
           formatter(val: number) {
             return `$ ${val}`;
-          }
-        }
+          },
+        },
       },
       theme: {
-        mode: mode === ThemeMode.DARK ? 'dark' : 'light'
-      }
+        mode: mode === ThemeMode.DARK ? 'dark' : 'light',
+      },
     }));
   }, [mode, primary, secondary, line, theme, slot]);
 
   const [series, setSeries] = useState([
     {
       name: 'Income',
-      data: [0, 86, 28, 115, 48, 210, 136]
-    }
+      data: [0, 86, 28, 115, 48, 210, 136],
+    },
   ]);
 
   useEffect(() => {
@@ -138,8 +138,8 @@ export default function IncomeAreaChart({ slot, quantity }: Props) {
         setSeries([
           {
             name: 'Income',
-            data: slot === 'month' ? [100, 40, 60, 40, 40, 40, 80, 40, 40, 50, 40, 40] : [100, 20, 60, 20, 20, 80, 20]
-          }
+            data: slot === 'month' ? [100, 40, 60, 40, 40, 40, 80, 40, 40, 50, 40, 40] : [100, 20, 60, 20, 20, 80, 20],
+          },
         ]);
         break;
 
@@ -147,16 +147,16 @@ export default function IncomeAreaChart({ slot, quantity }: Props) {
         setSeries([
           {
             name: 'Income',
-            data: slot === 'month' ? [120, 85, 101, 98, 87, 105, 91, 114, 94, 86, 115, 35] : [51, 40, 28, 51, 42, 109, 100]
-          }
+            data: slot === 'month' ? [120, 85, 101, 98, 87, 105, 91, 114, 94, 86, 115, 35] : [51, 40, 28, 51, 42, 109, 100],
+          },
         ]);
         break;
       case 'By sales':
         setSeries([
           {
             name: 'Income',
-            data: slot === 'month' ? [90, 85, 101, 98, 87, 105, 91, 114, 94, 86, 115, 35] : [21, 40, 28, 51, 42, 109, 100]
-          }
+            data: slot === 'month' ? [90, 85, 101, 98, 87, 105, 91, 114, 94, 86, 115, 35] : [21, 40, 28, 51, 42, 109, 100],
+          },
         ]);
         break;
       default:
@@ -164,5 +164,5 @@ export default function IncomeAreaChart({ slot, quantity }: Props) {
     }
   }, [slot, quantity]);
 
-  return <ReactApexChart options={options} series={series} type="area" height={355} />;
+  return <ReactApexChart options={options} series={series} type='area' height={355} />;
 }

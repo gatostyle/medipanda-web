@@ -108,7 +108,7 @@ export default function CustomizedAccordion() {
 </Box>`;
 
   return (
-    <MainCard title="Customized" codeString={customAccordionCodeString}>
+    <MainCard title='Customized' codeString={customAccordionCodeString}>
       <Box
         sx={{
           '& .MuiAccordion-root': {
@@ -116,23 +116,23 @@ export default function CustomizedAccordion() {
             '& .MuiAccordionSummary-root': {
               bgcolor: 'transparent',
               flexDirection: 'row',
-              '&:focus-visible': { bgcolor: 'primary.lighter' }
+              '&:focus-visible': { bgcolor: 'primary.lighter' },
             },
             '& .MuiAccordionDetails-root': { borderColor: theme.palette.divider },
-            '& .Mui-expanded': { color: 'primary.main' }
-          }
+            '& .Mui-expanded': { color: 'primary.main' },
+          },
         }}
       >
         <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
-          <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-            <Stack direction="row" spacing={1.5} alignItems="center">
+          <AccordionSummary aria-controls='panel1d-content' id='panel1d-header'>
+            <Stack direction='row' spacing={1.5} alignItems='center'>
               <EmojiHappy size={18} />
-              <Typography variant="h6">Accordion 01</Typography>
+              <Typography variant='h6'>Accordion 01</Typography>
             </Stack>
           </AccordionSummary>
           <AccordionDetails>
             <Stack spacing={2}>
-              <Typography variant="h5">Lorem ipsum dolor sit amet,</Typography>
+              <Typography variant='h5'>Lorem ipsum dolor sit amet,</Typography>
               <Typography>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.
@@ -145,10 +145,10 @@ export default function CustomizedAccordion() {
           </AccordionDetails>
         </Accordion>
         <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
-          <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-            <Stack direction="row" spacing={1.5} alignItems="center">
+          <AccordionSummary aria-controls='panel2d-content' id='panel2d-header'>
+            <Stack direction='row' spacing={1.5} alignItems='center'>
               <Profile size={18} />
-              <Typography variant="h6">Accordion 02</Typography>
+              <Typography variant='h6'>Accordion 02</Typography>
             </Stack>
           </AccordionSummary>
           <AccordionDetails>
@@ -159,10 +159,10 @@ export default function CustomizedAccordion() {
           </AccordionDetails>
         </Accordion>
         <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
-          <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
-            <Stack direction="row" spacing={1.5} alignItems="center">
+          <AccordionSummary aria-controls='panel3d-content' id='panel3d-header'>
+            <Stack direction='row' spacing={1.5} alignItems='center'>
               <Clock size={18} />
-              <Typography variant="h6">Accordion 03</Typography>
+              <Typography variant='h6'>Accordion 03</Typography>
             </Stack>
           </AccordionSummary>
           <AccordionDetails>
@@ -173,10 +173,10 @@ export default function CustomizedAccordion() {
           </AccordionDetails>
         </Accordion>
         <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
-          <AccordionSummary aria-controls="panel4d-content" id="panel4d-header">
-            <Stack direction="row" spacing={1.5} alignItems="center">
+          <AccordionSummary aria-controls='panel4d-content' id='panel4d-header'>
+            <Stack direction='row' spacing={1.5} alignItems='center'>
               <Image size={18} />
-              <Typography variant="h6">Accordion 04</Typography>
+              <Typography variant='h6'>Accordion 04</Typography>
             </Stack>
           </AccordionSummary>
           <AccordionDetails>

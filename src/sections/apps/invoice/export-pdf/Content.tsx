@@ -18,53 +18,53 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     '@media max-width: 400': {
       paddingTop: 10,
-      paddingLeft: 0
-    }
+      paddingLeft: 0,
+    },
   },
   card: {
     border: `1px solid ${border}`,
     borderRadius: '2px',
     padding: '20px',
-    width: '48%'
+    width: '48%',
   },
   title: {
     color: textPrimary,
     fontSize: '12px',
-    fontWeight: 500
+    fontWeight: 500,
   },
   caption: {
     color: textSecondary,
-    fontSize: '10px'
+    fontSize: '10px',
   },
   tableTitle: {
     color: textPrimary,
     fontSize: '10px',
-    fontWeight: 500
+    fontWeight: 500,
   },
   tableCell: {
     color: textPrimary,
-    fontSize: '10px'
+    fontSize: '10px',
   },
 
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 24
+    marginBottom: 24,
   },
 
   subRow: {
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     margin: 0,
-    paddingBottom: 20
+    paddingBottom: 20,
   },
   column: {
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
 
   paragraph: {
     color: '#1F2937',
-    fontSize: '12px'
+    fontSize: '12px',
   },
 
   tableHeader: {
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     paddingTop: '10px',
     paddingBottom: '10px',
     margin: 0,
-    paddingLeft: 10
+    paddingLeft: 10,
   },
   tableRow: {
     alignItems: 'center',
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     paddingTop: 10,
     margin: 0,
-    paddingLeft: 10
+    paddingLeft: 10,
   },
   amountSection: { margin: 0, paddingRight: 25, paddingTop: 16, justifyContent: 'flex-end' },
   amountRow: { margin: 0, width: '40%', justifyContent: 'space-between' },
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   flex03: { flex: '0.3 1 0px' },
   flex07: { flex: '0.7 1 0px' },
   flex17: { flex: '1.7 1 0px' },
-  flex20: { flex: '2 1 0px' }
+  flex20: { flex: '2 1 0px' },
 });
 
 interface Props {

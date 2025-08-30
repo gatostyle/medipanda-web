@@ -19,7 +19,7 @@ const data: RenderTree = {
   children: [
     {
       id: '1',
-      name: 'Child - 1'
+      name: 'Child - 1',
     },
     {
       id: '3',
@@ -27,11 +27,11 @@ const data: RenderTree = {
       children: [
         {
           id: '4',
-          name: 'Child - 4'
-        }
-      ]
-    }
-  ]
+          name: 'Child - 4',
+        },
+      ],
+    },
+  ],
 };
 
 // ==============================|| TREE VIEW - RICH OBJECT ||============================== //
@@ -39,7 +39,7 @@ const data: RenderTree = {
 export default function RichObjectTreeView() {
   const renderTree = (nodes: RenderTree) => (
     <TreeItem key={nodes.id} itemId={nodes.id} label={nodes.name}>
-      {Array.isArray(nodes.children) ? nodes.children.map((node) => renderTree(node)) : null}
+      {Array.isArray(nodes.children) ? nodes.children.map(node => renderTree(node)) : null}
     </TreeItem>
   );
 
@@ -54,9 +54,9 @@ export default function RichObjectTreeView() {
 </SimpleTreeView>`;
 
   return (
-    <MainCard title="Rich Object" codeString={richTreeviewCodeString}>
+    <MainCard title='Rich Object' codeString={richTreeviewCodeString}>
       <SimpleTreeView
-        aria-label="rich object"
+        aria-label='rich object'
         slots={{ collapseIcon: ArrowDown2, expandIcon: ArrowRight2 }}
         defaultExpandedItems={['root']}
         sx={{ height: 180, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}

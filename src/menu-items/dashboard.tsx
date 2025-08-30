@@ -14,18 +14,18 @@ const icons = {
   navigation: Home3,
   dashboard: HomeTrendUp,
   components: Box1,
-  loading: Refresh
+  loading: Refresh,
 };
 
 const loadingMenu: NavItemType = {
   id: 'group-dashboard-loading',
-  title: <FormattedMessage id="dashboard" />,
+  title: <FormattedMessage id='dashboard' />,
   type: 'group',
   icon: icons.loading,
   children: [
     {
       id: 'dashboard1',
-      title: <FormattedMessage id="dashboard" />,
+      title: <FormattedMessage id='dashboard' />,
       type: 'collapse',
       icon: icons.loading,
       children: [
@@ -34,18 +34,18 @@ const loadingMenu: NavItemType = {
           title: 'loading',
           type: 'item',
           url: '/dashboard/default',
-          breadcrumbs: false
+          breadcrumbs: false,
         },
         {
           id: 'analytics1',
           title: 'loading',
           type: 'item',
           url: '/dashboard/analytics',
-          breadcrumbs: false
-        }
-      ]
-    }
-  ]
+          breadcrumbs: false,
+        },
+      ],
+    },
+  ],
 };
 
 // ==============================|| MENU ITEMS - API ||============================== //
@@ -85,6 +85,6 @@ function fillItem(item: NavItemType, children?: NavItemType[] | undefined) {
     title: <FormattedMessage id={`${item?.title}`} />,
     // @ts-ignore
     icon: icons[item?.icon],
-    ...(children && { children })
+    ...(children && { children }),
   };
 }

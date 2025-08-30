@@ -26,7 +26,7 @@ export default function AddCustomer() {
 
   useEffect(() => {
     if (customerMaster?.modal && typeof customerMaster.modal === 'number') {
-      const newList = customers.filter((info) => info.id === isModal && info)[0];
+      const newList = customers.filter(info => info.id === isModal && info)[0];
       setList(newList);
     } else {
       setList(null);
@@ -39,7 +39,7 @@ export default function AddCustomer() {
   // eslint-disable-next-line
   const customerForm = useMemo(
     () => !loading && !customerMasterLoading && <FormCustomerAdd customer={list} closeModal={closeModal} />,
-    [list, loading, customerMasterLoading]
+    [list, loading, customerMasterLoading],
   );
 
   return (
@@ -48,8 +48,8 @@ export default function AddCustomer() {
         <Modal
           open={true}
           onClose={closeModal}
-          aria-labelledby="modal-customer-add-label"
-          aria-describedby="modal-customer-add-description"
+          aria-labelledby='modal-customer-add-label'
+          aria-describedby='modal-customer-add-description'
           sx={{ '& .MuiPaper-root:focus': { outline: 'none' } }}
         >
           <MainCard
@@ -60,12 +60,12 @@ export default function AddCustomer() {
             <SimpleBar
               sx={{
                 maxHeight: `calc(100vh - 48px)`,
-                '& .simplebar-content': { display: 'flex', flexDirection: 'column' }
+                '& .simplebar-content': { display: 'flex', flexDirection: 'column' },
               }}
             >
               {loading && customerMasterLoading ? (
                 <Box sx={{ p: 5 }}>
-                  <Stack direction="row" justifyContent="center">
+                  <Stack direction='row' justifyContent='center'>
                     <CircularWithPath />
                   </Stack>
                 </Box>

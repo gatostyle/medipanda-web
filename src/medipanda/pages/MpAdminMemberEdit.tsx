@@ -14,7 +14,7 @@ import {
   Select,
   Stack,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { mpUpdateMemberFile } from 'medipanda/api-definitions/MpMember';
@@ -69,13 +69,13 @@ export default function MpAdminMemberEdit() {
       marketingAgreements: {
         sms: false,
         email: false,
-        push: false
-      }
+        push: false,
+      },
     },
-    onSubmit: async (values) => {
+    onSubmit: async values => {
       console.log('Form submitted:', values);
       navigate('/admin/members');
-    }
+    },
   });
 
   useEffect(() => {
@@ -109,8 +109,8 @@ export default function MpAdminMemberEdit() {
           marketingAgreements: memberDetail.marketingAgreements || {
             sms: false,
             email: false,
-            push: false
-          }
+            push: false,
+          },
         };
 
         try {
@@ -128,7 +128,7 @@ export default function MpAdminMemberEdit() {
             subcontractFile: contractData.fileUrls?.subcontractAgreement ?? '',
             educationCertificate: contractData.fileUrls?.educationCertificate ?? '',
             contractDate: contractData.contractDate?.toString() ?? '',
-            commissionRate: 0
+            commissionRate: 0,
           };
         } catch (e) {
           setHasPartnerContract(false);
@@ -199,9 +199,9 @@ export default function MpAdminMemberEdit() {
           email: formik.values.email,
           referralCode: formik.values.referralCode || null,
           marketingAgreement: formik.values.marketingAgreements,
-          note: mockString(`${field} 파일 업데이트`)
+          note: mockString(`${field} 파일 업데이트`),
         },
-        file
+        file,
       );
       infoDialog.showInfo('파일이 변경되었습니다.');
     } catch (error) {
@@ -224,7 +224,7 @@ export default function MpAdminMemberEdit() {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
+      <Typography variant='h4' gutterBottom sx={{ mb: 3 }}>
         회원정보
       </Typography>
 
@@ -234,72 +234,72 @@ export default function MpAdminMemberEdit() {
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <Card sx={{ p: 3 }}>
-                  <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
+                  <Typography variant='h6' gutterBottom sx={{ mb: 3 }}>
                     기본정보
                   </Typography>
 
                   <Grid container spacing={2}>
                     <Grid item xs={6}>
-                      <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                      <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         회원번호
                       </Typography>
-                      <Typography variant="body1">{formik.values.memberId}</Typography>
+                      <Typography variant='body1'>{formik.values.memberId}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
-                      <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                      <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         아이디
                       </Typography>
-                      <Typography variant="body1">{formik.values.userId}</Typography>
+                      <Typography variant='body1'>{formik.values.userId}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
                       <TextField
                         fullWidth
-                        label="비밀번호"
-                        name="password"
-                        type="password"
+                        label='비밀번호'
+                        name='password'
+                        type='password'
                         value={formik.values.password}
                         onChange={formik.handleChange}
-                        size="small"
+                        size='small'
                       />
                     </Grid>
 
                     <Grid item xs={6}>
                       <TextField
                         fullWidth
-                        label="비밀번호 확인"
-                        name="confirmPassword"
-                        type="password"
+                        label='비밀번호 확인'
+                        name='confirmPassword'
+                        type='password'
                         value={formik.values.confirmPassword}
                         onChange={formik.handleChange}
-                        size="small"
+                        size='small'
                       />
                     </Grid>
 
                     <Grid item xs={6}>
-                      <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                      <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         회원명
                       </Typography>
-                      <Typography variant="body1">{formik.values.name}</Typography>
+                      <Typography variant='body1'>{formik.values.name}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
                       <TextField
                         fullWidth
-                        label="휴대폰번호"
-                        name="phoneNumber"
+                        label='휴대폰번호'
+                        name='phoneNumber'
                         value={formik.values.phoneNumber}
                         onChange={formik.handleChange}
-                        size="small"
+                        size='small'
                       />
                     </Grid>
 
                     <Grid item xs={6}>
-                      <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                      <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         생년월일
                       </Typography>
-                      <Typography variant="body1">
+                      <Typography variant='body1'>
                         {formatYyyyMmDd(formik.values.birthDate)} {formik.values.gender}
                       </Typography>
                     </Grid>
@@ -307,39 +307,39 @@ export default function MpAdminMemberEdit() {
                     <Grid item xs={6}>
                       <TextField
                         fullWidth
-                        label="E-mail"
-                        name="email"
+                        label='E-mail'
+                        name='email'
                         value={formik.values.email}
                         onChange={formik.handleChange}
-                        size="small"
+                        size='small'
                       />
                     </Grid>
 
                     <Grid item xs={6}>
-                      <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                      <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         추천코드
                       </Typography>
-                      <Typography variant="body1">{formik.values.referralCode}</Typography>
+                      <Typography variant='body1'>{formik.values.referralCode}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
-                      <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                      <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         가입일
                       </Typography>
-                      <Typography variant="body1">{formatYyyyMmDd(formik.values.registrationDate)}</Typography>
+                      <Typography variant='body1'>{formatYyyyMmDd(formik.values.registrationDate)}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
-                      <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                      <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         최종접속일
                       </Typography>
-                      <Typography variant="body1">{formatYyyyMmDd(formik.values.lastLoginDate)}</Typography>
+                      <Typography variant='body1'>{formatYyyyMmDd(formik.values.lastLoginDate)}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
-                      <FormControl fullWidth size="small">
+                      <FormControl fullWidth size='small'>
                         <InputLabel>계정상태</InputLabel>
-                        <Select name="accountStatus" value={formik.values.accountStatus} onChange={formik.handleChange}>
+                        <Select name='accountStatus' value={formik.values.accountStatus} onChange={formik.handleChange}>
                           <MenuItem value={'ACTIVATED'}>활성</MenuItem>
                           <MenuItem value={'BLOCKED'}>비활성</MenuItem>
                         </Select>
@@ -348,18 +348,18 @@ export default function MpAdminMemberEdit() {
 
                     {formik.values.csoLicenseFile !== '' && (
                       <Grid item xs={12}>
-                        <Stack direction="row" spacing={2} alignItems="center">
-                          <Typography variant="subtitle2" color="text.secondary">
+                        <Stack direction='row' spacing={2} alignItems='center'>
+                          <Typography variant='subtitle2' color='text.secondary'>
                             CSO 신고증
                           </Typography>
-                          <MuiLink href={formik.values.csoLicenseFile} download target="_blank" rel="noopener noreferrer" underline="hover">
+                          <MuiLink href={formik.values.csoLicenseFile} download target='_blank' rel='noopener noreferrer' underline='hover'>
                             {new URL(formik.values.csoLicenseFile).pathname.split('/').pop()}
                           </MuiLink>
-                          <Button variant="text" color="primary" size="small"></Button>
-                          <Button variant="outlined" color="error" size="small" onClick={handleCsoReject}>
+                          <Button variant='text' color='primary' size='small'></Button>
+                          <Button variant='outlined' color='error' size='small' onClick={handleCsoReject}>
                             반려
                           </Button>
-                          <Button variant="contained" color="success" size="small" onClick={handleCsoApprove}>
+                          <Button variant='contained' color='success' size='small' onClick={handleCsoApprove}>
                             승인
                           </Button>
                         </Stack>
@@ -373,21 +373,21 @@ export default function MpAdminMemberEdit() {
                 <Stack spacing={3}>
                   {hasPartnerContract && (
                     <Card sx={{ p: 3 }}>
-                      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
-                        <Typography variant="h6">파트너사 계약</Typography>
+                      <Stack direction='row' justifyContent='space-between' alignItems='center' sx={{ mb: 3 }}>
+                        <Typography variant='h6'>파트너사 계약</Typography>
                         {!isContractApproved && (
-                          <Button variant="contained" color="success" size="small" onClick={handleContractApprove}>
+                          <Button variant='contained' color='success' size='small' onClick={handleContractApprove}>
                             승인
                           </Button>
                         )}
-                        {isContractApproved && <Chip label="승인" color="success" size="small" />}
+                        {isContractApproved && <Chip label='승인' color='success' size='small' />}
                       </Stack>
 
                       <Grid container spacing={2}>
                         <Grid item xs={6}>
-                          <FormControl fullWidth size="small">
+                          <FormControl fullWidth size='small'>
                             <InputLabel>유형</InputLabel>
-                            <Select name="contractType" value={formik.values.contractType} onChange={formik.handleChange}>
+                            <Select name='contractType' value={formik.values.contractType} onChange={formik.handleChange}>
                               <MenuItem value={'ORGANIZATION'}>법인계약</MenuItem>
                               <MenuItem value={'INDIVIDUAL'}>개인계약</MenuItem>
                             </Select>
@@ -395,83 +395,83 @@ export default function MpAdminMemberEdit() {
                         </Grid>
 
                         <Grid item xs={6}>
-                          <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                          <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                             계약상태
                           </Typography>
-                          <Typography variant="body1">{formik.values.contractStatus}</Typography>
+                          <Typography variant='body1'>{formik.values.contractStatus}</Typography>
                         </Grid>
 
                         <Grid item xs={6}>
-                          <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                          <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                             회사명
                           </Typography>
-                          <Typography variant="body1">{formik.values.companyName}</Typography>
+                          <Typography variant='body1'>{formik.values.companyName}</Typography>
                         </Grid>
 
                         <Grid item xs={6}>
-                          <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                          <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                             사업자등록번호
                           </Typography>
-                          <Typography variant="body1">{formik.values.businessNumber}</Typography>
+                          <Typography variant='body1'>{formik.values.businessNumber}</Typography>
                         </Grid>
 
                         <Grid item xs={12}>
                           <TextField
                             fullWidth
-                            label="정산은행"
-                            name="settlementBank"
+                            label='정산은행'
+                            name='settlementBank'
                             value={formik.values.settlementBank}
                             onChange={formik.handleChange}
-                            size="small"
+                            size='small'
                           />
                         </Grid>
 
                         <Grid item xs={12}>
-                          <Stack direction="row" spacing={2} alignItems="center">
-                            <Typography variant="subtitle2" color="text.secondary">
+                          <Stack direction='row' spacing={2} alignItems='center'>
+                            <Typography variant='subtitle2' color='text.secondary'>
                               재위탁계약서
                             </Typography>
-                            <Button variant="text" color="primary" size="small">
+                            <Button variant='text' color='primary' size='small'>
                               {formik.values.subcontractFile}
                             </Button>
-                            <Button variant="outlined" size="small" onClick={() => handleFileChange('subcontractFile')}>
+                            <Button variant='outlined' size='small' onClick={() => handleFileChange('subcontractFile')}>
                               파일변경
                             </Button>
                           </Stack>
                         </Grid>
 
                         <Grid item xs={12}>
-                          <Stack direction="row" spacing={2} alignItems="center">
-                            <Typography variant="subtitle2" color="text.secondary">
+                          <Stack direction='row' spacing={2} alignItems='center'>
+                            <Typography variant='subtitle2' color='text.secondary'>
                               판매위수탁 교육이수증
                             </Typography>
-                            <Button variant="text" color="primary" size="small">
+                            <Button variant='text' color='primary' size='small'>
                               {formik.values.educationCertificate}
                             </Button>
-                            <Button variant="outlined" size="small" onClick={() => handleFileChange('educationCertificate')}>
+                            <Button variant='outlined' size='small' onClick={() => handleFileChange('educationCertificate')}>
                               파일변경
                             </Button>
                           </Stack>
                         </Grid>
 
                         <Grid item xs={6}>
-                          <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                          <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                             계약일
                           </Typography>
-                          <Typography variant="body1">{formatYyyyMmDd(formik.values.contractDate)}</Typography>
+                          <Typography variant='body1'>{formatYyyyMmDd(formik.values.contractDate)}</Typography>
                         </Grid>
 
                         <Grid item xs={6}>
                           <TextField
                             fullWidth
-                            label="구간수수료"
-                            name="commissionRate"
-                            type="number"
+                            label='구간수수료'
+                            name='commissionRate'
+                            type='number'
                             value={formik.values.commissionRate}
                             onChange={formik.handleChange}
-                            size="small"
+                            size='small'
                             InputProps={{
-                              endAdornment: <Typography>%</Typography>
+                              endAdornment: <Typography>%</Typography>,
                             }}
                           />
                         </Grid>
@@ -480,17 +480,17 @@ export default function MpAdminMemberEdit() {
                   )}
 
                   <Card sx={{ p: 3 }}>
-                    <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
+                    <Typography variant='h6' gutterBottom sx={{ mb: 2 }}>
                       비고
                     </Typography>
                     <TextField
                       fullWidth
                       multiline
                       rows={4}
-                      name="note"
+                      name='note'
                       value={formik.values.note}
                       onChange={formik.handleChange}
-                      placeholder="메모를 입력하세요"
+                      placeholder='메모를 입력하세요'
                     />
                   </Card>
                 </Stack>
@@ -500,7 +500,7 @@ export default function MpAdminMemberEdit() {
 
           <Grid item xs={12}>
             <Card sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
+              <Typography variant='h6' gutterBottom sx={{ mb: 2 }}>
                 마케팅 수신동의
               </Typography>
               <Stack spacing={1}>
@@ -508,25 +508,25 @@ export default function MpAdminMemberEdit() {
                   control={
                     <Checkbox
                       checked={formik.values.marketingAgreements.sms}
-                      onChange={(e) => formik.setFieldValue('marketingAgreements.sms', e.target.checked)}
+                      onChange={e => formik.setFieldValue('marketingAgreements.sms', e.target.checked)}
                     />
                   }
-                  label="SMS"
+                  label='SMS'
                 />
                 <FormControlLabel
                   control={
                     <Checkbox
                       checked={formik.values.marketingAgreements.email}
-                      onChange={(e) => formik.setFieldValue('marketingAgreements.email', e.target.checked)}
+                      onChange={e => formik.setFieldValue('marketingAgreements.email', e.target.checked)}
                     />
                   }
-                  label="이메일"
+                  label='이메일'
                 />
                 <FormControlLabel
                   control={
                     <Checkbox
                       checked={formik.values.marketingAgreements.push}
-                      onChange={(e) => formik.setFieldValue('marketingAgreements.push', e.target.checked)}
+                      onChange={e => formik.setFieldValue('marketingAgreements.push', e.target.checked)}
                     />
                   }
                   label={`App Push`}
@@ -536,11 +536,11 @@ export default function MpAdminMemberEdit() {
           </Grid>
 
           <Grid item xs={12}>
-            <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
-              <Button variant="outlined" size="large" onClick={handleCancel} sx={{ minWidth: 120 }}>
+            <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 3 }}>
+              <Button variant='outlined' size='large' onClick={handleCancel} sx={{ minWidth: 120 }}>
                 취소
               </Button>
-              <Button variant="contained" size="large" color="success" type="submit" sx={{ minWidth: 120 }}>
+              <Button variant='contained' size='large' color='success' type='submit' sx={{ minWidth: 120 }}>
                 저장
               </Button>
             </Stack>

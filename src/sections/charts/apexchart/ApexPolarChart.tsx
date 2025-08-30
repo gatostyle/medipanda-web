@@ -15,10 +15,10 @@ const polarChartOptions = {
   chart: {
     width: 450,
     height: 450,
-    type: 'polarArea'
+    type: 'polarArea',
   },
   fill: {
-    opacity: 1
+    opacity: 1,
   },
   legend: {
     show: true,
@@ -26,32 +26,32 @@ const polarChartOptions = {
     offsetX: 10,
     offsetY: 10,
     labels: {
-      useSeriesColors: false
+      useSeriesColors: false,
     },
     markers: {
       width: 12,
       height: 12,
-      radius: 5
+      radius: 5,
     },
     itemMargin: {
       horizontal: 25,
-      vertical: 4
-    }
+      vertical: 4,
+    },
   },
   responsive: [
     {
       breakpoint: 450,
       chart: {
         width: 280,
-        height: 280
+        height: 280,
       },
       options: {
         legend: {
-          show: false
-        }
-      }
-    }
-  ]
+          show: false,
+        },
+      },
+    },
+  ],
 };
 
 // ==============================|| APEXCHART - POLAR ||============================== //
@@ -75,53 +75,53 @@ export default function ApexPolarChart() {
   const warningDark = theme.palette.warning.main;
 
   useEffect(() => {
-    setOptions((prevState) => ({
+    setOptions(prevState => ({
       ...prevState,
       colors: [secondary, primaryMain, successDark, error, warningDark, error],
       xaxis: {
         labels: {
           style: {
-            colors: [primary, primary, primary, primary, primary, primary, primary]
-          }
-        }
+            colors: [primary, primary, primary, primary, primary, primary, primary],
+          },
+        },
       },
       yaxis: {
         labels: {
           style: {
-            colors: [primary]
-          }
-        }
+            colors: [primary],
+          },
+        },
       },
       grid: {
-        borderColor: line
+        borderColor: line,
       },
       legend: {
         labels: {
-          colors: 'secondary.main'
-        }
+          colors: 'secondary.main',
+        },
       },
       stroke: {
-        colors: [backColor]
+        colors: [backColor],
       },
       plotOptions: {
         polarArea: {
           rings: {
-            strokeColor: line
+            strokeColor: line,
           },
           spokes: {
-            connectorColors: line
-          }
-        }
+            connectorColors: line,
+          },
+        },
       },
       theme: {
-        mode: mode === ThemeMode.DARK ? 'dark' : 'light'
-      }
+        mode: mode === ThemeMode.DARK ? 'dark' : 'light',
+      },
     }));
   }, [mode, primary, line, grey200, backColor, secondary, primaryMain, successDark, error, warningDark]);
 
   return (
-    <Box id="chart" sx={{ bgcolor: 'transparent' }}>
-      <ReactApexChart options={options} series={series} type="polarArea" />
+    <Box id='chart' sx={{ bgcolor: 'transparent' }}>
+      <ReactApexChart options={options} series={series} type='polarArea' />
     </Box>
   );
 }

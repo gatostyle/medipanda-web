@@ -29,11 +29,11 @@ export default function InvoiceChart({ color, data }: InvoiceChartProps) {
       height: 100,
       type: 'area',
       toolbar: {
-        show: false
+        show: false,
       },
       sparkline: {
-        enabled: true
-      }
+        enabled: true,
+      },
     },
     fill: {
       type: 'gradient',
@@ -42,59 +42,59 @@ export default function InvoiceChart({ color, data }: InvoiceChartProps) {
         type: 'vertical',
         inverseColors: false,
         opacityFrom: 0.5,
-        opacityTo: 0
-      }
+        opacityTo: 0,
+      },
     },
     plotOptions: {
       bar: {
-        borderRadius: 0
-      }
+        borderRadius: 0,
+      },
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     xaxis: {
       axisBorder: {
-        show: false
+        show: false,
       },
       axisTicks: {
-        show: false
+        show: false,
       },
       labels: {
-        show: false
+        show: false,
       },
       tooltip: {
-        enabled: false
-      }
+        enabled: false,
+      },
     },
     stroke: {
       width: 1,
-      curve: 'smooth'
+      curve: 'smooth',
     },
     grid: {
-      show: false
+      show: false,
     },
     yaxis: {
       axisBorder: {
-        show: false
+        show: false,
       },
       axisTicks: {
-        show: false
+        show: false,
       },
       labels: {
-        show: false
-      }
+        show: false,
+      },
     },
     tooltip: {
       x: {
-        show: false
+        show: false,
       },
       y: {
         formatter(val: number) {
           return `$ ${val}`;
-        }
-      }
-    }
+        },
+      },
+    },
   };
 
   const { primary, secondary } = theme.palette.text;
@@ -103,25 +103,25 @@ export default function InvoiceChart({ color, data }: InvoiceChartProps) {
   const [options, setOptions] = useState<ChartProps>(areaChartOptions);
 
   useEffect(() => {
-    setOptions((prevState) => ({
+    setOptions(prevState => ({
       ...prevState,
       chart: {
         ...prevState.chart,
-        offsetX: downMD ? -2 : 8
+        offsetX: downMD ? -2 : 8,
       },
       colors: [color.main],
       theme: {
-        mode: mode === ThemeMode.DARK ? 'dark' : 'light'
-      }
+        mode: mode === ThemeMode.DARK ? 'dark' : 'light',
+      },
     }));
   }, [mode, primary, secondary, line, theme, color, downMD]);
 
   const [series] = useState([
     {
       name: 'Sales',
-      data: data
-    }
+      data: data,
+    },
   ]);
 
-  return <ReactApexChart options={options} series={series} type="area" height={80} />;
+  return <ReactApexChart options={options} series={series} type='area' height={80} />;
 }

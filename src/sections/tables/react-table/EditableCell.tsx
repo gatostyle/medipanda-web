@@ -35,7 +35,7 @@ function ReactTable({ columns, data, setData }: ReactTableProps) {
     data,
     columns,
     defaultColumn: {
-      cell: CellEditable
+      cell: CellEditable,
     },
     getCoreRowModel: getCoreRowModel(),
     meta: {
@@ -45,36 +45,34 @@ function ReactTable({ columns, data, setData }: ReactTableProps) {
             if (index === rowIndex) {
               return {
                 ...old[rowIndex]!,
-                [columnId]: value
+                [columnId]: value,
               };
             }
             return row;
-          })
+          }),
         );
-      }
+      },
     },
-    debugTable: true
+    debugTable: true,
   });
 
   let headers: LabelKeyObject[] = [];
   table.getAllColumns().map(
-    (columns) =>
+    columns =>
       // @ts-ignore
       columns.columnDef.accessorKey &&
       headers.push({
         label: typeof columns.columnDef.header === 'string' ? columns.columnDef.header : '#',
         // @ts-ignore
-        key: columns.columnDef.accessorKey
-      })
+        key: columns.columnDef.accessorKey,
+      }),
   );
 
   return (
     <MainCard
       content={false}
-      title="Editable Cell"
-      secondary={
-        <CSVExport {...{ data: table.getRowModel().flatRows.map((row) => row.original), headers, filename: 'editable-cell.csv' }} />
-      }
+      title='Editable Cell'
+      secondary={<CSVExport {...{ data: table.getRowModel().flatRows.map(row => row.original), headers, filename: 'editable-cell.csv' }} />}
     >
       <ScrollX>
         <TableContainer>
@@ -82,7 +80,7 @@ function ReactTable({ columns, data, setData }: ReactTableProps) {
             <TableHead>
               {table.getHeaderGroups().map((headerGroup: HeaderGroup<any>) => (
                 <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
+                  {headerGroup.headers.map(header => (
                     <TableCell key={header.id} {...header.column.columnDef.meta}>
                       {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableCell>
@@ -91,9 +89,9 @@ function ReactTable({ columns, data, setData }: ReactTableProps) {
               ))}
             </TableHead>
             <TableBody>
-              {table.getRowModel().rows.map((row) => (
+              {table.getRowModel().rows.map(row => (
                 <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
+                  {row.getVisibleCells().map(cell => (
                     <TableCell key={cell.id} {...cell.column.columnDef.meta}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
@@ -118,46 +116,46 @@ export default function EditableCell() {
       {
         header: 'First Name',
         accessorKey: 'firstName',
-        dataType: 'text'
+        dataType: 'text',
       },
       {
         header: 'Last Name',
         accessorKey: 'lastName',
-        dataType: 'text'
+        dataType: 'text',
       },
       {
         header: 'Email',
         accessorKey: 'email',
-        dataType: 'text'
+        dataType: 'text',
       },
       {
         header: 'Age',
         accessorKey: 'age',
         dataType: 'text',
         meta: {
-          className: 'cell-right'
-        }
+          className: 'cell-right',
+        },
       },
       {
         header: 'Visits',
         accessorKey: 'visits',
         dataType: 'text',
         meta: {
-          className: 'cell-right'
-        }
+          className: 'cell-right',
+        },
       },
       {
         header: 'Status',
         accessorKey: 'status',
-        dataType: 'select'
+        dataType: 'select',
       },
       {
         header: 'Profile Progress',
         accessorKey: 'progress',
-        dataType: 'progress'
-      }
+        dataType: 'progress',
+      },
     ],
-    []
+    [],
   );
 
   return <ReactTable {...{ data, columns, setData }} />;

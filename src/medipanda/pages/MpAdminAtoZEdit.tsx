@@ -9,7 +9,7 @@ import {
   Radio,
   RadioGroup,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
@@ -36,10 +36,10 @@ export default function MpAdminAtoZEdit() {
       title: '',
       attachedFiles: [] as AttachmentResponse[],
       newFiles: [] as File[],
-      isExposed: true
+      isExposed: true,
     },
     validationSchema: Yup.object().shape({
-      title: Yup.string().required('제목을 입력해주세요.').max(100, '제목은 100자를 초과할 수 없습니다.')
+      title: Yup.string().required('제목을 입력해주세요.').max(100, '제목은 100자를 초과할 수 없습니다.'),
     }),
     onSubmit: async (values, { setSubmitting }) => {
       if (!session?.userId) {
@@ -59,11 +59,11 @@ export default function MpAdminAtoZEdit() {
               hiddenNickname: false,
               parentId: null,
               isExposed: values.isExposed,
-              editorFileIds: editorAttachments.map((image) => image.s3fileId),
+              editorFileIds: editorAttachments.map(image => image.s3fileId),
               exposureRange: 'ALL',
-              noticeProperties: null
+              noticeProperties: null,
             },
-            files: values.newFiles
+            files: values.newFiles,
           });
           enqueueSnackbar('CSO A to Z가 성공적으로 등록되었습니다.', { variant: 'success' });
         } else {
@@ -74,11 +74,11 @@ export default function MpAdminAtoZEdit() {
               isBlind: null,
               isExposed: values.isExposed,
               exposureRange: 'ALL',
-              keepFileIds: values.attachedFiles.map((file) => file.s3fileId),
-              editorFileIds: editorAttachments.map((image) => image.s3fileId),
-              noticeProperties: null
+              keepFileIds: values.attachedFiles.map(file => file.s3fileId),
+              editorFileIds: editorAttachments.map(image => image.s3fileId),
+              noticeProperties: null,
             },
-            newFiles: values.newFiles
+            newFiles: values.newFiles,
           });
           enqueueSnackbar('CSO A to Z가 성공적으로 수정되었습니다.', { variant: 'success' });
         }
@@ -89,7 +89,7 @@ export default function MpAdminAtoZEdit() {
       } finally {
         setSubmitting(false);
       }
-    }
+    },
   });
 
   const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
@@ -107,11 +107,11 @@ export default function MpAdminAtoZEdit() {
       formik.setValues({
         title: response.title,
         isExposed: response.isExposed,
-        attachedFiles: response.attachments.filter((a) => a.type === 'ATTACHMENT'),
-        newFiles: []
+        attachedFiles: response.attachments.filter(a => a.type === 'ATTACHMENT'),
+        newFiles: [],
       });
       editor.commands.setContent(response.content);
-      setEditorAttachments(response.attachments.filter((a) => a.type === 'EDITOR'));
+      setEditorAttachments(response.attachments.filter(a => a.type === 'EDITOR'));
       console.log('Fetched CSO A to Z detail:', response);
     } catch (error) {
       console.error('Failed to fetch CSO A to Z detail:', error);
@@ -141,7 +141,7 @@ export default function MpAdminAtoZEdit() {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+      <Box display='flex' justifyContent='center' alignItems='center' minHeight='400px'>
         <CircularProgress />
       </Box>
     );
@@ -151,7 +151,7 @@ export default function MpAdminAtoZEdit() {
     <form onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Typography variant="h4" gutterBottom>
+          <Typography variant='h4' gutterBottom>
             CSO A TO Z {isNew ? '등록' : '상세'}
           </Typography>
         </Grid>
@@ -162,9 +162,9 @@ export default function MpAdminAtoZEdit() {
               <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  name="title"
-                  label="제목"
-                  placeholder=""
+                  name='title'
+                  label='제목'
+                  placeholder=''
                   required
                   value={formik.values.title}
                   onChange={formik.handleChange}
@@ -175,29 +175,29 @@ export default function MpAdminAtoZEdit() {
               </Grid>
 
               <Grid item xs={12}>
-                <Typography variant="body2" sx={{ mb: 1 }}>
+                <Typography variant='body2' sx={{ mb: 1 }}>
                   내용 <span style={{ color: 'red' }}>*</span>
                 </Typography>
                 <EditorContent editor={editor} />
               </Grid>
 
               <Grid item xs={12}>
-                <Typography variant="body2" sx={{ mb: 1 }}>
+                <Typography variant='body2' sx={{ mb: 1 }}>
                   첨부파일
                 </Typography>
-                <Button onClick={handleFileUpload} variant="contained" color="success" component="label" size="small">
+                <Button onClick={handleFileUpload} variant='contained' color='success' component='label' size='small'>
                   파일첨부
                 </Button>
-                {formik.values.attachedFiles.map((attachedFile) => {
+                {formik.values.attachedFiles.map(attachedFile => {
                   return (
-                    <Typography variant="body2" sx={{ mt: 1 }}>
+                    <Typography variant='body2' sx={{ mt: 1 }}>
                       {new URL(attachedFile.fileUrl).pathname.split('/').pop()}
                     </Typography>
                   );
                 })}
-                {formik.values.newFiles.map((newFile) => {
+                {formik.values.newFiles.map(newFile => {
                   return (
-                    <Typography variant="body2" sx={{ mt: 1 }}>
+                    <Typography variant='body2' sx={{ mt: 1 }}>
                       {newFile.name}
                     </Typography>
                   );
@@ -205,28 +205,28 @@ export default function MpAdminAtoZEdit() {
               </Grid>
 
               <Grid item xs={12}>
-                <FormControl component="fieldset">
-                  <FormLabel component="legend">노출상태</FormLabel>
+                <FormControl component='fieldset'>
+                  <FormLabel component='legend'>노출상태</FormLabel>
                   <RadioGroup
                     row
                     value={formik.values.isExposed ? 'true' : 'false'}
-                    onChange={(e) => formik.setFieldValue('isExposed', e.target.value === 'true')}
+                    onChange={e => formik.setFieldValue('isExposed', e.target.value === 'true')}
                   >
-                    <FormControlLabel value="true" control={<Radio />} label="노출" />
-                    <FormControlLabel value="false" control={<Radio />} label="미노출" />
+                    <FormControlLabel value='true' control={<Radio />} label='노출' />
+                    <FormControlLabel value='false' control={<Radio />} label='미노출' />
                   </RadioGroup>
                 </FormControl>
               </Grid>
             </Grid>
 
             <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
-              <Button variant="outlined" onClick={handleCancel} sx={{ minWidth: 120 }} disabled={formik.isSubmitting}>
+              <Button variant='outlined' onClick={handleCancel} sx={{ minWidth: 120 }} disabled={formik.isSubmitting}>
                 취소
               </Button>
               <Button
-                variant="contained"
-                color="success"
-                type="submit"
+                variant='contained'
+                color='success'
+                type='submit'
                 sx={{ minWidth: 120 }}
                 disabled={formik.isSubmitting}
                 startIcon={formik.isSubmitting ? <CircularProgress size={20} /> : null}

@@ -37,16 +37,16 @@ function ApexPieChart() {
 
   const pieChartOptions = {
     chart: {
-      type: 'pie'
+      type: 'pie',
     },
     tooltip: {
       enabled: true,
-      fillSeriesColor: true
+      fillSeriesColor: true,
     },
     labels: ['Components', 'Widgets', 'Pages', 'Forms', 'Other', 'Apps'],
     legend: {
-      show: false
-    }
+      show: false,
+    },
   };
 
   const [series] = useState([40, 20, 10, 15, 5, 10]);
@@ -60,42 +60,42 @@ function ApexPieChart() {
     const secondaryDark = theme.palette.secondary.dark;
     const secondaryDarker = theme.palette.secondary.darker;
 
-    setOptions((prevState) => ({
+    setOptions(prevState => ({
       ...prevState,
       colors: [primaryMain, primaryLight, secondaryLight, secondary, secondaryDark, secondaryDarker],
       xaxis: {
         labels: {
           style: {
-            colors: [primary, primary, primary, primary, primary, primary, primary]
-          }
-        }
+            colors: [primary, primary, primary, primary, primary, primary, primary],
+          },
+        },
       },
       yaxis: {
         labels: {
           style: {
-            colors: [primary]
-          }
-        }
+            colors: [primary],
+          },
+        },
       },
       tooltip: {
         enabled: true,
-        fillSeriesColor: false
+        fillSeriesColor: false,
       },
       grid: {
-        borderColor: line
+        borderColor: line,
       },
       stroke: {
-        colors: [backColor]
+        colors: [backColor],
       },
       theme: {
-        mode: mode === ThemeMode.DARK ? 'dark' : 'light'
-      }
+        mode: mode === ThemeMode.DARK ? 'dark' : 'light',
+      },
     }));
   }, [mode, primary, line, grey200, backColor, theme]);
 
   return (
-    <div id="chart">
-      <ReactApexChart options={options} series={series} type="pie" height={downSM ? 280 : 350} />
+    <div id='chart'>
+      <ReactApexChart options={options} series={series} type='pie' height={downSM ? 280 : 350} />
     </div>
   );
 }
@@ -119,20 +119,20 @@ export default function ProductOverview() {
     <MainCard>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
-            <Typography variant="h5">Project overview</Typography>
+          <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1}>
+            <Typography variant='h5'>Project overview</Typography>
             <IconButton
-              color="secondary"
-              id="wallet-button"
+              color='secondary'
+              id='wallet-button'
               aria-controls={open ? 'wallet-menu' : undefined}
-              aria-haspopup="true"
+              aria-haspopup='true'
               aria-expanded={open ? 'true' : undefined}
               onClick={handleClick}
             >
               <MoreIcon />
             </IconButton>
             <Menu
-              id="wallet-menu"
+              id='wallet-menu'
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
@@ -151,76 +151,76 @@ export default function ProductOverview() {
         </Grid>
         <Grid item xs={6} md={4}>
           <MainCard content={false}>
-            <Stack alignItems="center" sx={{ py: 1.5 }}>
-              <Stack direction="row" alignItems="center" spacing={1}>
+            <Stack alignItems='center' sx={{ py: 1.5 }}>
+              <Stack direction='row' alignItems='center' spacing={1}>
                 <Dot size={6} componentDiv sx={{ bgcolor: 'secondary.darker' }} />
                 <Typography>Apps</Typography>
               </Stack>
-              <Typography variant="subtitle1">10+</Typography>
+              <Typography variant='subtitle1'>10+</Typography>
             </Stack>
           </MainCard>
         </Grid>
         <Grid item xs={6} md={4}>
           <MainCard content={false}>
-            <Stack alignItems="center" sx={{ py: 1.5 }}>
-              <Stack direction="row" alignItems="center" spacing={1}>
+            <Stack alignItems='center' sx={{ py: 1.5 }}>
+              <Stack direction='row' alignItems='center' spacing={1}>
                 <Dot size={6} componentDiv sx={{ bgcolor: 'secondary.darker' }} />
                 <Typography>Other</Typography>
               </Stack>
-              <Typography variant="subtitle1">5+</Typography>
+              <Typography variant='subtitle1'>5+</Typography>
             </Stack>
           </MainCard>
         </Grid>
         <Grid item xs={6} md={4}>
           <MainCard content={false}>
-            <Stack alignItems="center" sx={{ py: 1.5 }}>
-              <Stack direction="row" alignItems="center" spacing={1}>
+            <Stack alignItems='center' sx={{ py: 1.5 }}>
+              <Stack direction='row' alignItems='center' spacing={1}>
                 <Dot size={6} componentDiv sx={{ bgcolor: 'secondary.darker' }} />
                 <Typography>Widgets</Typography>
               </Stack>
-              <Typography variant="subtitle1">150+</Typography>
+              <Typography variant='subtitle1'>150+</Typography>
             </Stack>
           </MainCard>
         </Grid>
         <Grid item xs={6} md={4}>
           <MainCard content={false}>
-            <Stack alignItems="center" sx={{ py: 1.5 }}>
-              <Stack direction="row" alignItems="center" spacing={1}>
+            <Stack alignItems='center' sx={{ py: 1.5 }}>
+              <Stack direction='row' alignItems='center' spacing={1}>
                 <Dot size={6} componentDiv sx={{ bgcolor: 'secondary.darker' }} />
                 <Typography>Forms</Typography>
               </Stack>
-              <Typography variant="subtitle1">50+</Typography>
+              <Typography variant='subtitle1'>50+</Typography>
             </Stack>
           </MainCard>
         </Grid>
         <Grid item xs={6} md={4}>
           <MainCard content={false}>
-            <Stack alignItems="center" sx={{ py: 1.5 }}>
-              <Stack direction="row" alignItems="center" spacing={1}>
+            <Stack alignItems='center' sx={{ py: 1.5 }}>
+              <Stack direction='row' alignItems='center' spacing={1}>
                 <Dot size={6} componentDiv sx={{ bgcolor: 'secondary.darker' }} />
                 <Typography>Components</Typography>
               </Stack>
-              <Typography variant="subtitle1">200+</Typography>
+              <Typography variant='subtitle1'>200+</Typography>
             </Stack>
           </MainCard>
         </Grid>
         <Grid item xs={6} md={4}>
           <MainCard content={false}>
-            <Stack alignItems="center" sx={{ py: 1.5 }}>
-              <Stack direction="row" alignItems="center" spacing={1}>
+            <Stack alignItems='center' sx={{ py: 1.5 }}>
+              <Stack direction='row' alignItems='center' spacing={1}>
                 <Dot size={6} componentDiv sx={{ bgcolor: 'secondary.darker' }} />
                 <Typography>Pages</Typography>
               </Stack>
-              <Typography variant="subtitle1">150+</Typography>
+              <Typography variant='subtitle1'>150+</Typography>
             </Stack>
           </MainCard>
         </Grid>
         <Grid item xs={12}>
-          <Stack direction="row" alignItems="center" spacing={1.25}>
-            <Button variant="outlined" fullWidth color="secondary">
+          <Stack direction='row' alignItems='center' spacing={1.25}>
+            <Button variant='outlined' fullWidth color='secondary'>
               View all
             </Button>
-            <Button variant="contained" fullWidth>
+            <Button variant='contained' fullWidth>
               Create new page
             </Button>
           </Stack>

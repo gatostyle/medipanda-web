@@ -15,13 +15,13 @@ interface Props {
 // ==============================|| NAVIGATION - GROUP ||============================== //
 
 export default function NavGroup({ item }: Props) {
-  const navCollapse = item.children?.map((menu) => {
+  const navCollapse = item.children?.map(menu => {
     switch (menu.type) {
       case 'item':
         return <NavItem key={menu.id} item={menu} />;
       default:
         return (
-          <Typography key={menu.id} variant="h6" color="error" align="center">
+          <Typography key={menu.id} variant='h6' color='error' align='center'>
             Fix - Group Collapse or Items
           </Typography>
         );
@@ -32,7 +32,7 @@ export default function NavGroup({ item }: Props) {
     <List
       subheader={
         item.title && (
-          <Typography variant="h5" color="text.primary" sx={{ mb: 1.5 }}>
+          <Typography variant='h5' color='text.primary' sx={{ mb: 1.5 }}>
             {item.title}
           </Typography>
         )

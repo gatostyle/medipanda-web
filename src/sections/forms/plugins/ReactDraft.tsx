@@ -20,9 +20,9 @@ export default function ReactDraft() {
   return (
     <Editor
       editorState={editorState}
-      toolbarClassName="toolbarClassName"
-      wrapperClassName="wrapperClassName"
-      editorClassName="editorClassName"
+      toolbarClassName='toolbarClassName'
+      wrapperClassName='wrapperClassName'
+      editorClassName='editorClassName'
       onEditorStateChange={onEditorStateChange}
     />
   );

@@ -9,9 +9,9 @@ export default function DialogContentText(theme: Theme) {
       styleOverrides: {
         root: {
           fontSize: '0.875rem',
-          color: theme.palette.text.primary
-        }
-      }
-    }
+          color: theme.palette.text.primary,
+        },
+      },
+    },
   };
 }

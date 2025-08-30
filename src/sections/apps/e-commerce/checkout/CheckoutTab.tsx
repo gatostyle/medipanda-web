@@ -41,7 +41,7 @@ interface TabOptionProps {
   label: string;
 }
 
-const StyledTab = styled((props) => <Tab {...props} />)(({ theme }: StyledProps) => ({
+const StyledTab = styled(props => <Tab {...props} />)(({ theme }: StyledProps) => ({
   minHeight: 'auto',
   minWidth: 250,
   padding: 16,
@@ -56,9 +56,9 @@ const StyledTab = styled((props) => <Tab {...props} />)(({ theme }: StyledProps)
     marginRight: 10,
     marginTop: 2,
     height: 20,
-    width: 20
+    width: 20,
   },
-  [theme.breakpoints.down('md')]: { minWidth: 'auto' }
+  [theme.breakpoints.down('md')]: { minWidth: 'auto' },
 }));
 
 // tabs option
@@ -67,7 +67,7 @@ const tabsOption: TabOptionProps[] = [{ label: 'Cart' }, { label: 'Shipping Info
 // tabs
 function TabPanel({ children, value, index, ...other }: TabsProps) {
   return (
-    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+    <div role='tabpanel' hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
       {value === index && <div>{children}</div>}
     </div>
   );
@@ -103,7 +103,7 @@ export default function CheckoutTab({ cart }: { cart: CartCheckoutStateProps }) 
       open: true,
       message: 'Update Cart Success',
       variant: 'alert',
-      alert: { color: 'success' }
+      alert: { color: 'success' },
     } as SnackbarProps);
   };
 
@@ -132,7 +132,7 @@ export default function CheckoutTab({ cart }: { cart: CartCheckoutStateProps }) 
         open: true,
         message: 'Please select delivery address',
         variant: 'alert',
-        alert: { color: 'error' }
+        alert: { color: 'error' },
       } as SnackbarProps);
     }
   };
@@ -145,8 +145,8 @@ export default function CheckoutTab({ cart }: { cart: CartCheckoutStateProps }) 
             <Tabs
               value={value}
               onChange={(e, newValue) => handleChange(newValue)}
-              aria-label="icon label tabs example"
-              variant="scrollable"
+              aria-label='icon label tabs example'
+              variant='scrollable'
               sx={{
                 '& .MuiTabs-flexContainer': { borderBottom: 'none' },
                 '& .MuiTabs-indicator': { display: 'none' },
@@ -161,9 +161,9 @@ export default function CheckoutTab({ cart }: { cart: CartCheckoutStateProps }) 
                     height: 'calc(100% - 16px)',
                     position: 'absolute',
                     top: 8,
-                    left: -8
-                  }
-                }
+                    left: -8,
+                  },
+                },
               }}
             >
               {tabsOption.map((tab, index) => (
@@ -175,10 +175,10 @@ export default function CheckoutTab({ cart }: { cart: CartCheckoutStateProps }) 
                   key={index}
                   label={
                     <Grid container>
-                      <Stack direction="row" alignItems="center" spacing={1}>
+                      <Stack direction='row' alignItems='center' spacing={1}>
                         <Avatar
                           type={index !== cart.step ? 'combined' : 'filled'}
-                          size="xs"
+                          size='xs'
                           color={index > cart.step ? 'secondary' : 'primary'}
                           sx={{ p: 0, border: 'none', '& svg': { width: 24, height: 24 } }}
                         >

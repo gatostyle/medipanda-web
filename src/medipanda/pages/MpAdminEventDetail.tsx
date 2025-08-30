@@ -44,7 +44,7 @@ export default function MpAdminEventDetail() {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+      <Box display='flex' justifyContent='center' alignItems='center' minHeight='400px'>
         <CircularProgress />
       </Box>
     );
@@ -57,7 +57,7 @@ export default function MpAdminEventDetail() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant='h4' gutterBottom>
           이벤트 상세
         </Typography>
       </Grid>
@@ -67,15 +67,15 @@ export default function MpAdminEventDetail() {
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <Stack spacing={1}>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant='subtitle2' color='text.secondary'>
                   노출상태
                 </Typography>
                 <Box>
                   <Chip
                     label={event.boardPostDetail.isExposed ? '노출' : '미노출'}
                     color={event.boardPostDetail.isExposed ? 'success' : 'default'}
-                    variant="light"
-                    size="small"
+                    variant='light'
+                    size='small'
                   />
                 </Box>
               </Stack>
@@ -83,7 +83,7 @@ export default function MpAdminEventDetail() {
 
             <Grid item xs={12} sm={6}>
               <Stack spacing={1}>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant='subtitle2' color='text.secondary'>
                   노출범위
                 </Typography>
                 <Box>
@@ -95,9 +95,9 @@ export default function MpAdminEventDetail() {
                           ? '계약'
                           : '미계약'
                     }
-                    color="primary"
-                    variant="light"
-                    size="small"
+                    color='primary'
+                    variant='light'
+                    size='small'
                   />
                 </Box>
               </Stack>
@@ -105,10 +105,10 @@ export default function MpAdminEventDetail() {
 
             <Grid item xs={12}>
               <Stack spacing={1}>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant='subtitle2' color='text.secondary'>
                   이벤트기간
                 </Typography>
-                <Typography variant="body1">
+                <Typography variant='body1'>
                   {formatYyyyMmDd(event.eventStartDate)} ~ {formatYyyyMmDd(event.eventEndDate)}
                 </Typography>
               </Stack>
@@ -116,38 +116,38 @@ export default function MpAdminEventDetail() {
 
             <Grid item xs={12}>
               <Stack spacing={1}>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant='subtitle2' color='text.secondary'>
                   제목
                 </Typography>
-                <Typography variant="body1">{event.boardPostDetail.title}</Typography>
+                <Typography variant='body1'>{event.boardPostDetail.title}</Typography>
               </Stack>
             </Grid>
 
             <Grid item xs={12}>
               <Stack spacing={1}>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant='subtitle2' color='text.secondary'>
                   이벤트 썸네일
                 </Typography>
-                <Typography variant="body1">{event.description}</Typography>
+                <Typography variant='body1'>{event.description}</Typography>
               </Stack>
             </Grid>
 
             {event.thumbnailUrl && (
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <Typography variant="subtitle2" color="text.secondary">
+                  <Typography variant='subtitle2' color='text.secondary'>
                     썸네일
                   </Typography>
                   <Box>
                     <img
                       src={event.thumbnailUrl}
-                      alt="썸네일"
+                      alt='썸네일'
                       style={{
                         maxWidth: '300px',
                         maxHeight: '200px',
                         objectFit: 'contain',
                         border: '1px solid #e0e0e0',
-                        borderRadius: '4px'
+                        borderRadius: '4px',
                       }}
                     />
                   </Box>
@@ -161,7 +161,7 @@ export default function MpAdminEventDetail() {
 
             <Grid item xs={12}>
               <Stack spacing={1}>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant='subtitle2' color='text.secondary'>
                   내용
                 </Typography>
                 <TiptapEditor content={event.boardPostDetail.content} readOnly />
@@ -171,15 +171,15 @@ export default function MpAdminEventDetail() {
             {event.videoUrl && (
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <Typography variant="subtitle2" color="text.secondary">
+                  <Typography variant='subtitle2' color='text.secondary'>
                     영상url
                   </Typography>
                   <Typography
-                    variant="body1"
-                    component="a"
+                    variant='body1'
+                    component='a'
                     href={event.videoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    target='_blank'
+                    rel='noopener noreferrer'
                     sx={{ color: 'primary.main', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
                   >
                     {event.videoUrl}
@@ -191,20 +191,20 @@ export default function MpAdminEventDetail() {
             {event.note && (
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <Typography variant="subtitle2" color="text.secondary">
+                  <Typography variant='subtitle2' color='text.secondary'>
                     비고
                   </Typography>
-                  <Typography variant="body1">{event.note}</Typography>
+                  <Typography variant='body1'>{event.note}</Typography>
                 </Stack>
               </Grid>
             )}
 
             <Grid item xs={12}>
               <Stack spacing={1}>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant='subtitle2' color='text.secondary'>
                   조회수
                 </Typography>
-                <Typography variant="body1">{event.boardPostDetail.viewsCount.toLocaleString()}</Typography>
+                <Typography variant='body1'>{event.boardPostDetail.viewsCount.toLocaleString()}</Typography>
               </Stack>
             </Grid>
 
@@ -213,11 +213,11 @@ export default function MpAdminEventDetail() {
             </Grid>
 
             <Grid item xs={12}>
-              <Stack direction="row" spacing={2} justifyContent="center">
-                <Button variant="outlined" size="large" onClick={handleCancel}>
+              <Stack direction='row' spacing={2} justifyContent='center'>
+                <Button variant='outlined' size='large' onClick={handleCancel}>
                   취소
                 </Button>
-                <Button variant="contained" size="large" color="success" onClick={handleEdit}>
+                <Button variant='contained' size='large' color='success' onClick={handleEdit}>
                   수정
                 </Button>
               </Stack>

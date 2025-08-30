@@ -26,7 +26,7 @@ export default function SpeedDialTooltipOpen() {
     { icon: <Save2 />, name: 'Save' },
     { icon: <Printer />, name: 'Print' },
     { icon: <Share />, name: 'Share' },
-    { icon: <Heart />, name: 'Like' }
+    { icon: <Heart />, name: 'Like' },
   ];
 
   const handleOpen = () => {
@@ -39,7 +39,7 @@ export default function SpeedDialTooltipOpen() {
 
   const [hidden, setHidden] = useState(false);
   const handleVisibility = () => {
-    setHidden((prevHidden) => !prevHidden);
+    setHidden(prevHidden => !prevHidden);
   };
 
   const persistSpeeddialCodeString = `<Box sx={{ height: 430, transform: 'translateZ(0px)', flexGrow: 1 }}>
@@ -67,12 +67,12 @@ export default function SpeedDialTooltipOpen() {
 </Box>`;
 
   return (
-    <MainCard title="Persistent Icon" codeString={persistSpeeddialCodeString}>
+    <MainCard title='Persistent Icon' codeString={persistSpeeddialCodeString}>
       <Box sx={{ height: 430, transform: 'translateZ(0px)', flexGrow: 1 }}>
         <Button onClick={handleVisibility}>Toggle Speed Dial</Button>
         <Backdrop open={open} />
         <SpeedDial
-          ariaLabel="SpeedDial tooltip example"
+          ariaLabel='SpeedDial tooltip example'
           hidden={hidden}
           icon={<SpeedDialIcon />}
           onClose={handleClose}
@@ -80,11 +80,11 @@ export default function SpeedDialTooltipOpen() {
           open={open}
           sx={{ position: 'absolute', bottom: 16, right: 16, '& .MuiSpeedDialAction-fab': { bgcolor: 'secondary.200' } }}
         >
-          {actions.map((action) => (
+          {actions.map(action => (
             <SpeedDialAction
               key={action.name}
               icon={action.icon}
-              tooltipTitle={<Typography variant="subtitle1">{action.name}</Typography>}
+              tooltipTitle={<Typography variant='subtitle1'>{action.name}</Typography>}
               tooltipOpen
               onClick={handleClose}
             />

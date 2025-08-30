@@ -15,7 +15,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import Draggable from 'react-draggable';
 
 const PaperComponent = forwardRef((props: PaperProps, ref: Ref<HTMLDivElement>) => (
-  <Draggable handle="#draggable-dialog-title" cancel={'[class*="MuiDialogContent-root"]'}>
+  <Draggable handle='#draggable-dialog-title' cancel={'[class*="MuiDialogContent-root"]'}>
     <Paper ref={ref} {...props} />
   </Draggable>
 ));
@@ -35,25 +35,25 @@ export default function DraggableDialog() {
 
   return (
     <>
-      <Button variant="contained" onClick={handleClickOpen}>
+      <Button variant='contained' onClick={handleClickOpen}>
         Open draggable dialog
       </Button>
-      <Dialog open={open} onClose={handleClose} PaperComponent={PaperComponent} aria-labelledby="draggable-dialog-title">
+      <Dialog open={open} onClose={handleClose} PaperComponent={PaperComponent} aria-labelledby='draggable-dialog-title'>
         <Box sx={{ p: 1, py: 1.5 }}>
-          <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+          <DialogTitle style={{ cursor: 'move' }} id='draggable-dialog-title'>
             Subscribe
           </DialogTitle>
           <DialogContent>
             <DialogContentText sx={{ mb: 2 }}>
               To subscribe to this website, please enter your email address here. We will send updates occasionally.
             </DialogContentText>
-            <TextField id="name" placeholder="Email Address" type="email" fullWidth variant="outlined" />
+            <TextField id='name' placeholder='Email Address' type='email' fullWidth variant='outlined' />
           </DialogContent>
           <DialogActions>
-            <Button color="error" onClick={handleClose}>
+            <Button color='error' onClick={handleClose}>
               Cancel
             </Button>
-            <Button variant="contained" onClick={handleClose}>
+            <Button variant='contained' onClick={handleClose}>
               Subscribe
             </Button>
           </DialogActions>

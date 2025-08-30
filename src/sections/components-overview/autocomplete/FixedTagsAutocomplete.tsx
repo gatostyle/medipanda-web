@@ -50,26 +50,26 @@ export default function FixedTagsAutocomplete() {
 />`;
 
   return (
-    <MainCard title="Fixed Options" codeString={fixedAutocompleteCodeString}>
+    <MainCard title='Fixed Options' codeString={fixedAutocompleteCodeString}>
       <Autocomplete
         multiple
         fullWidth
-        id="fixed-tags-demo"
+        id='fixed-tags-demo'
         value={value}
         onChange={(event, newValue) => {
-          setValue([...fixedOptions, ...newValue.filter((option) => fixedOptions.indexOf(option) === -1)]);
+          setValue([...fixedOptions, ...newValue.filter(option => fixedOptions.indexOf(option) === -1)]);
         }}
         options={data}
-        getOptionLabel={(option) => option.label}
+        getOptionLabel={option => option.label}
         renderTags={(tagValue, getTagProps) =>
           tagValue.map((option, index) => (
             <Chip label={option.label} {...getTagProps({ index })} disabled={fixedOptions.indexOf(option) !== -1} key={index} />
           ))
         }
-        renderInput={(params) => <TextField {...params} placeholder="Fixed Tag" />}
+        renderInput={params => <TextField {...params} placeholder='Fixed Tag' />}
         sx={{
           '& .MuiOutlinedInput-root': {
-            p: 1
+            p: 1,
           },
           '& .MuiAutocomplete-tag': {
             bgcolor: 'primary.lighter',
@@ -78,10 +78,10 @@ export default function FixedTagsAutocomplete() {
             '& .MuiSvgIcon-root': {
               color: 'primary.main',
               '&:hover': {
-                color: 'primary.dark'
-              }
-            }
-          }
+                color: 'primary.dark',
+              },
+            },
+          },
         }}
       />
     </MainCard>

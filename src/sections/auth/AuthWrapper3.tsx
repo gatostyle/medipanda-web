@@ -18,11 +18,11 @@ export default function AuthWrapper3({ children }: Props) {
     <Box sx={{ minHeight: '100vh' }}>
       <Grid
         container
-        direction="column"
-        justifyContent="center"
+        direction='column'
+        justifyContent='center'
         sx={{
           minHeight: '100vh',
-          bgcolor: 'background.paper'
+          bgcolor: 'background.paper',
         }}
       >
         <Grid item xs={12}>
@@ -30,8 +30,8 @@ export default function AuthWrapper3({ children }: Props) {
             item
             xs={12}
             container
-            justifyContent="center"
-            alignItems="center"
+            justifyContent='center'
+            alignItems='center'
             sx={{ minHeight: { xs: 'calc(100vh - 210px)', sm: 'calc(100vh - 134px)', md: 'calc(100vh - 112px)' } }}
           >
             <Grid
@@ -43,7 +43,7 @@ export default function AuthWrapper3({ children }: Props) {
                 flex: 1,
                 padding: 4,
                 minHeight: '100vh',
-                '& > .MuiPaper-root > .MuiBox-root': { minHeight: '100%', display: 'flex' }
+                '& > .MuiPaper-root > .MuiBox-root': { minHeight: '100%', display: 'flex' },
               }}
             >
               {children}
@@ -57,7 +57,7 @@ export default function AuthWrapper3({ children }: Props) {
                 overflow: 'hidden',
                 alignSelf: 'stretch',
                 position: 'relative',
-                bgcolor: 'primary.main'
+                bgcolor: 'primary.main',
               }}
             >
               <AuthSlider />

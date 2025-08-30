@@ -31,7 +31,7 @@ import {
   Facebook,
   Gps,
   ShoppingCart,
-  Youtube
+  Youtube,
 } from 'iconsax-react';
 
 // ===========================|| WIDGET - STATISTICS ||=========================== //
@@ -42,47 +42,47 @@ export default function WidgetStatistics() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} md={4} lg={3} sm={6}>
-        <ReportCard primary="$30200" secondary="All Earnings" color={theme.palette.secondary.main} iconPrimary={Chart} />
+        <ReportCard primary='$30200' secondary='All Earnings' color={theme.palette.secondary.main} iconPrimary={Chart} />
       </Grid>
       <Grid item xs={12} md={4} lg={3} sm={6}>
-        <ReportCard primary="145" secondary="Task" color={theme.palette.error.main} iconPrimary={Calendar} />
+        <ReportCard primary='145' secondary='Task' color={theme.palette.error.main} iconPrimary={Calendar} />
       </Grid>
       <Grid item xs={12} md={4} lg={3} sm={6}>
-        <ReportCard primary="290+" secondary="Page Views" color={theme.palette.success.main} iconPrimary={DocumentText} />
+        <ReportCard primary='290+' secondary='Page Views' color={theme.palette.success.main} iconPrimary={DocumentText} />
       </Grid>
       <Grid item xs={12} md={4} lg={3} sm={6}>
-        <ReportCard primary="500" secondary="Downloads" color={theme.palette.primary.main} iconPrimary={DocumentDownload} />
+        <ReportCard primary='500' secondary='Downloads' color={theme.palette.primary.main} iconPrimary={DocumentDownload} />
       </Grid>
 
       <Grid item xs={12} md={4} lg={3} sm={6}>
-        <HoverSocialCard primary="Facebook Users" secondary="1165 +" iconPrimary={Facebook} color={theme.palette.primary.main} />
+        <HoverSocialCard primary='Facebook Users' secondary='1165 +' iconPrimary={Facebook} color={theme.palette.primary.main} />
       </Grid>
       <Grid item xs={12} md={4} lg={3} sm={6}>
-        <HoverSocialCard primary="Dribbble Posts" secondary="780 +" iconPrimary={Dribbble} color={theme.palette.info.main} />
+        <HoverSocialCard primary='Dribbble Posts' secondary='780 +' iconPrimary={Dribbble} color={theme.palette.info.main} />
       </Grid>
       <Grid item xs={12} md={4} lg={3} sm={6}>
         <HoverSocialCard
-          primary="iOS Users"
-          secondary="998 +"
+          primary='iOS Users'
+          secondary='998 +'
           iconPrimary={Apple}
           color={theme.palette.mode === ThemeMode.DARK ? theme.palette.secondary[200] : theme.palette.secondary.dark}
         />
       </Grid>
       <Grid item xs={12} md={4} lg={3} sm={6}>
-        <HoverSocialCard primary="Youtube Videos" secondary="650 +" iconPrimary={Youtube} color={theme.palette.error.main} />
+        <HoverSocialCard primary='Youtube Videos' secondary='650 +' iconPrimary={Youtube} color={theme.palette.error.main} />
       </Grid>
 
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce title="Total Page Views" count="4,42,236" percentage={59.3} extra="35,000" />
+        <AnalyticEcommerce title='Total Page Views' count='4,42,236' percentage={59.3} extra='35,000' />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce title="Total Users" count="78,250" percentage={70.5} color="success" extra="8,900" />
+        <AnalyticEcommerce title='Total Users' count='78,250' percentage={70.5} color='success' extra='8,900' />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce title="Total Order" count="18,800" percentage={27.4} isLoss color="warning" extra="1,943" />
+        <AnalyticEcommerce title='Total Order' count='18,800' percentage={27.4} isLoss color='warning' extra='1,943' />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce title="Total Sales" count="$35,078" percentage={27.4} isLoss color="error" extra="$20,395" />
+        <AnalyticEcommerce title='Total Sales' count='$35,078' percentage={27.4} isLoss color='error' extra='$20,395' />
       </Grid>
 
       <Grid item xs={12} sm={6} md={4}>
@@ -111,27 +111,27 @@ export default function WidgetStatistics() {
 
       <Grid item xs={12} lg={4} sm={6}>
         <EcommerceMetrix
-          primary="Revenue"
-          secondary="$4,500"
-          content="$50,032 Last Month"
+          primary='Revenue'
+          secondary='$4,500'
+          content='$50,032 Last Month'
           color={theme.palette.primary.main}
           iconPrimary={DollarCircle}
         />
       </Grid>
       <Grid item xs={12} lg={4} sm={6}>
         <EcommerceMetrix
-          primary="Orders Received"
-          secondary="486"
-          content="20% Increase"
+          primary='Orders Received'
+          secondary='486'
+          content='20% Increase'
           color={theme.palette.warning.main}
           iconPrimary={CalendarAdd}
         />
       </Grid>
       <Grid item xs={12} lg={4} sm={12}>
         <EcommerceMetrix
-          primary="Total Sales"
-          secondary="1641"
-          content="$1,055 Revenue Generated"
+          primary='Total Sales'
+          secondary='1641'
+          content='$1,055 Revenue Generated'
           color={theme.palette.success.main}
           iconPrimary={ShoppingCart}
         />
@@ -139,32 +139,32 @@ export default function WidgetStatistics() {
 
       <Grid item xs={12} lg={4} sm={6}>
         <RoundIconCard
-          primary="Impressions"
-          secondary="1,563"
-          content="May 23 - June 01 (2018)"
+          primary='Impressions'
+          secondary='1,563'
+          content='May 23 - June 01 (2018)'
           iconPrimary={Eye}
-          color="primary.darker"
-          bgcolor="primary.lighter"
+          color='primary.darker'
+          bgcolor='primary.lighter'
         />
       </Grid>
       <Grid item xs={12} lg={4} sm={6}>
         <RoundIconCard
-          primary="Goal"
-          secondary="30,564"
-          content="May 28 - June 01 (2018)"
+          primary='Goal'
+          secondary='30,564'
+          content='May 28 - June 01 (2018)'
           iconPrimary={Gps}
-          color="success.darker"
-          bgcolor="success.lighter"
+          color='success.darker'
+          bgcolor='success.lighter'
         />
       </Grid>
       <Grid item xs={12} lg={4} md={12}>
         <RoundIconCard
-          primary="Impact"
-          secondary="42.6%"
-          content="May 30 - June 01 (2018)"
+          primary='Impact'
+          secondary='42.6%'
+          content='May 30 - June 01 (2018)'
           iconPrimary={Clock}
-          color="warning.darker"
-          bgcolor="warning.lighter"
+          color='warning.darker'
+          bgcolor='warning.lighter'
         />
       </Grid>
     </Grid>

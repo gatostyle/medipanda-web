@@ -5,15 +5,15 @@ export default function TreeItem() {
     MuiTreeItem: {
       styleOverrides: {
         content: {
-          padding: 8
+          padding: 8,
         },
         label: {
           '& svg': {
             width: 20,
-            height: 20
-          }
-        }
-      }
-    }
+            height: 20,
+          },
+        },
+      },
+    },
   };
 }

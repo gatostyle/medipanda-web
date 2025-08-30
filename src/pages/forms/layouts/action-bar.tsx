@@ -28,13 +28,13 @@ export default function ActionBar() {
       <Grid item xs={12} md={6} lg={6}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <MainCard title="Simple Action Bar" content={false}>
+            <MainCard title='Simple Action Bar' content={false}>
               <CardContent>
-                <Grid container spacing={2} alignItems="center">
+                <Grid container spacing={2} alignItems='center'>
                   <Grid item xs={12}>
                     <Stack spacing={1}>
                       <InputLabel>Name</InputLabel>
-                      <TextField fullWidth placeholder="Enter full name" />
+                      <TextField fullWidth placeholder='Enter full name' />
                     </Stack>
                     <FormHelperText>Please enter your full name</FormHelperText>
                   </Grid>
@@ -42,11 +42,11 @@ export default function ActionBar() {
               </CardContent>
               <Divider />
               <CardActions>
-                <Stack direction="row" spacing={1} justifyContent="flex-end" sx={{ width: 1, px: 1.5, py: 0.75 }}>
-                  <Button color="error" size="small">
+                <Stack direction='row' spacing={1} justifyContent='flex-end' sx={{ width: 1, px: 1.5, py: 0.75 }}>
+                  <Button color='error' size='small'>
                     Cancel
                   </Button>
-                  <Button variant="contained" size="small">
+                  <Button variant='contained' size='small'>
                     Submit
                   </Button>
                 </Stack>
@@ -54,13 +54,13 @@ export default function ActionBar() {
             </MainCard>
           </Grid>
           <Grid item xs={12}>
-            <MainCard title="Action Button with Link" content={false}>
+            <MainCard title='Action Button with Link' content={false}>
               <CardContent>
-                <Grid container spacing={2} alignItems="center">
+                <Grid container spacing={2} alignItems='center'>
                   <Grid item xs={12}>
                     <Stack spacing={1}>
                       <InputLabel>Name</InputLabel>
-                      <TextField fullWidth placeholder="Enter full name" />
+                      <TextField fullWidth placeholder='Enter full name' />
                     </Stack>
                     <FormHelperText>Please enter your full name</FormHelperText>
                   </Grid>
@@ -68,14 +68,14 @@ export default function ActionBar() {
               </CardContent>
               <Divider />
               <CardActions>
-                <Stack direction="row" spacing={1} alignItems="center" justifyContent="flex-end" sx={{ width: 1, px: 1.5, py: 0.75 }}>
-                  <Button color="error" size="small">
+                <Stack direction='row' spacing={1} alignItems='center' justifyContent='flex-end' sx={{ width: 1, px: 1.5, py: 0.75 }}>
+                  <Button color='error' size='small'>
                     Cancel
                   </Button>
-                  <Typography variant="body2" sx={{ mr: '8px !important' }}>
+                  <Typography variant='body2' sx={{ mr: '8px !important' }}>
                     or
                   </Typography>
-                  <Button variant="contained" size="small">
+                  <Button variant='contained' size='small'>
                     Submit
                   </Button>
                 </Stack>
@@ -83,13 +83,13 @@ export default function ActionBar() {
             </MainCard>
           </Grid>
           <Grid item xs={12}>
-            <MainCard title="With side action button" content={false}>
+            <MainCard title='With side action button' content={false}>
               <CardContent>
-                <Grid container spacing={2} alignItems="center">
+                <Grid container spacing={2} alignItems='center'>
                   <Grid item xs={12}>
                     <Stack spacing={1}>
                       <InputLabel>Name</InputLabel>
-                      <TextField fullWidth placeholder="Enter full name" />
+                      <TextField fullWidth placeholder='Enter full name' />
                     </Stack>
                     <FormHelperText>Please enter your full name</FormHelperText>
                   </Grid>
@@ -97,17 +97,17 @@ export default function ActionBar() {
               </CardContent>
               <Divider />
               <CardActions>
-                <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ width: 1 }}>
-                  <Tooltip title="Delete Event" placement="top">
-                    <IconButton size="large" color="error">
-                      <Trash variant="Bold" />
+                <Stack direction='row' alignItems='center' justifyContent='space-between' sx={{ width: 1 }}>
+                  <Tooltip title='Delete Event' placement='top'>
+                    <IconButton size='large' color='error'>
+                      <Trash variant='Bold' />
                     </IconButton>
                   </Tooltip>
-                  <Stack direction="row" spacing={1} sx={{ px: 1.5, py: 0.75 }}>
-                    <Button color="error" size="small">
+                  <Stack direction='row' spacing={1} sx={{ px: 1.5, py: 0.75 }}>
+                    <Button color='error' size='small'>
                       Cancel
                     </Button>
-                    <Button variant="contained" size="small">
+                    <Button variant='contained' size='small'>
                       Submit
                     </Button>
                   </Stack>
@@ -120,13 +120,13 @@ export default function ActionBar() {
       <Grid item xs={12} md={6} lg={6}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <MainCard title="Left Align Action Bar" content={false}>
+            <MainCard title='Left Align Action Bar' content={false}>
               <CardContent>
-                <Grid container spacing={2} alignItems="center">
+                <Grid container spacing={2} alignItems='center'>
                   <Grid item xs={12}>
                     <Stack spacing={1}>
                       <InputLabel>Name</InputLabel>
-                      <TextField fullWidth placeholder="Enter full name" />
+                      <TextField fullWidth placeholder='Enter full name' />
                     </Stack>
                     <FormHelperText>Please enter your full name</FormHelperText>
                   </Grid>
@@ -134,11 +134,11 @@ export default function ActionBar() {
               </CardContent>
               <Divider />
               <CardActions>
-                <Stack direction="row" spacing={1} sx={{ px: 1.5, py: 0.75 }}>
-                  <Button color="error" size="small">
+                <Stack direction='row' spacing={1} sx={{ px: 1.5, py: 0.75 }}>
+                  <Button color='error' size='small'>
                     Cancel
                   </Button>
-                  <Button variant="contained" size="small">
+                  <Button variant='contained' size='small'>
                     Submit
                   </Button>
                 </Stack>
@@ -146,25 +146,25 @@ export default function ActionBar() {
             </MainCard>
           </Grid>
           <Grid item xs={12}>
-            <MainCard title="Horizontal Form" content={false}>
+            <MainCard title='Horizontal Form' content={false}>
               <CardContent>
-                <Grid container spacing={2} alignItems="center">
+                <Grid container spacing={2} alignItems='center'>
                   <Grid item xs={12} sm={3} lg={4} sx={{ pt: { xs: 2, sm: '0 !important' } }}>
                     <InputLabel sx={{ textAlign: { xs: 'left', sm: 'right' } }}>Name :</InputLabel>
                   </Grid>
                   <Grid item xs={12} sm={9} lg={8}>
-                    <TextField fullWidth placeholder="Enter full name" />
+                    <TextField fullWidth placeholder='Enter full name' />
                     <FormHelperText>Please enter your full name</FormHelperText>
                   </Grid>
                 </Grid>
               </CardContent>
               <Divider />
               <CardActions>
-                <Stack direction="row" spacing={1} justifyContent="center" sx={{ width: 1, px: 1.5, py: 0.75 }}>
-                  <Button color="error" size="small">
+                <Stack direction='row' spacing={1} justifyContent='center' sx={{ width: 1, px: 1.5, py: 0.75 }}>
+                  <Button color='error' size='small'>
                     Cancel
                   </Button>
-                  <Button variant="contained" size="small">
+                  <Button variant='contained' size='small'>
                     Submit
                   </Button>
                 </Stack>
@@ -173,7 +173,7 @@ export default function ActionBar() {
           </Grid>
           <Grid item xs={12}>
             <MainCard
-              title="Top & Bottom Actions Bars"
+              title='Top & Bottom Actions Bars'
               content={false}
               secondary={
                 <IconButton>
@@ -184,17 +184,17 @@ export default function ActionBar() {
               <CardContent>
                 <Stack spacing={1}>
                   <InputLabel>Name</InputLabel>
-                  <TextField fullWidth placeholder="Enter full name" />
+                  <TextField fullWidth placeholder='Enter full name' />
                 </Stack>
                 <FormHelperText>Please enter your full name</FormHelperText>
               </CardContent>
               <Divider />
               <CardActions>
-                <Stack direction="row" spacing={1} sx={{ width: 1, px: 1.5, py: 0.75 }}>
-                  <Button color="error" size="small">
+                <Stack direction='row' spacing={1} sx={{ width: 1, px: 1.5, py: 0.75 }}>
+                  <Button color='error' size='small'>
                     Cancel
                   </Button>
-                  <Button variant="contained" size="small">
+                  <Button variant='contained' size='small'>
                     Submit
                   </Button>
                 </Stack>

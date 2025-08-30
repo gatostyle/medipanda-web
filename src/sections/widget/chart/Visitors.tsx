@@ -34,19 +34,19 @@ function DataChart() {
       type: 'rangeBar',
       sparkline: { enabled: true },
       toolbar: {
-        show: false
+        show: false,
       },
-      offsetX: -2
+      offsetX: -2,
     },
     plotOptions: {
       bar: {
         columnWidth: '30%',
         borderRadius: 5,
-        horizontal: false
-      }
+        horizontal: false,
+      },
     },
     yaxis: {
-      show: false
+      show: false,
     },
     grid: {
       show: false,
@@ -54,12 +54,12 @@ function DataChart() {
         top: 0,
         right: 0,
         bottom: 0,
-        left: 0
-      }
+        left: 0,
+      },
     },
     dataLabels: {
-      enabled: false
-    }
+      enabled: false,
+    },
   };
   const { primary, secondary } = theme.palette.text;
   const line = theme.palette.divider;
@@ -67,12 +67,12 @@ function DataChart() {
   const [options, setOptions] = useState<ChartProps>(areaChartOptions);
 
   useEffect(() => {
-    setOptions((prevState) => ({
+    setOptions(prevState => ({
       ...prevState,
       colors: [theme.palette.warning.main],
       theme: {
-        mode: mode === ThemeMode.DARK ? 'dark' : 'light'
-      }
+        mode: mode === ThemeMode.DARK ? 'dark' : 'light',
+      },
     }));
   }, [mode, primary, secondary, line, theme]);
 
@@ -81,37 +81,37 @@ function DataChart() {
       data: [
         {
           x: 'Rejected',
-          y: [1, 6]
+          y: [1, 6],
         },
         {
           x: 'Pending',
-          y: [3, 7]
+          y: [3, 7],
         },
         {
           x: 'New',
-          y: [4, 8]
+          y: [4, 8],
         },
         {
           x: 'Verified',
-          y: [5, 9]
+          y: [5, 9],
         },
         {
           x: 'Store',
-          y: [4, 8]
+          y: [4, 8],
         },
         {
           x: 'Deleted',
-          y: [4, 7]
+          y: [4, 7],
         },
         {
           x: 'Block',
-          y: [2, 5]
-        }
-      ]
-    }
+          y: [2, 5],
+        },
+      ],
+    },
   ]);
 
-  return <ReactApexChart options={options} series={series} type="rangeBar" height={80} />;
+  return <ReactApexChart options={options} series={series} type='rangeBar' height={80} />;
 }
 
 // ==============================|| CHART WIDGETS - VISITORS ||============================== //
@@ -126,11 +126,11 @@ export default function Visitors() {
     <MainCard>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
-            <Typography variant="h5">New Users</Typography>
+          <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1}>
+            <Typography variant='h5'>New Users</Typography>
             <Box sx={{ minWidth: 120 }}>
-              <FormControl fullWidth size="small">
-                <Select id="demo-simple-select" value={age} onChange={handleChange}>
+              <FormControl fullWidth size='small'>
+                <Select id='demo-simple-select' value={age} onChange={handleChange}>
                   <MenuItem value={10}>Today</MenuItem>
                   <MenuItem value={20}>Weekly</MenuItem>
                   <MenuItem value={30}>Monthly</MenuItem>
@@ -143,16 +143,16 @@ export default function Visitors() {
           <DataChart />
         </Grid>
         <Grid item xs={12}>
-          <Stack direction="row" alignItems="center" justifyContent="center" spacing={1}>
-            <Typography variant="subtitle1">$30,200</Typography>
-            <Typography color="error.dark" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, fontWeight: 500 }}>
+          <Stack direction='row' alignItems='center' justifyContent='center' spacing={1}>
+            <Typography variant='subtitle1'>$30,200</Typography>
+            <Typography color='error.dark' sx={{ display: 'flex', alignItems: 'center', gap: 0.5, fontWeight: 500 }}>
               <ArrowDown size={14} style={{ transform: 'rotate(-45deg)' }} />
               30.6%
             </Typography>
           </Stack>
         </Grid>
         <Grid item xs={12}>
-          <Button fullWidth variant="outlined" color="secondary">
+          <Button fullWidth variant='outlined' color='secondary'>
             View more
           </Button>
         </Grid>

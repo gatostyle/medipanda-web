@@ -14,8 +14,8 @@ export default function AuthCard({ children, ...other }: MainCardProps) {
         margin: { xs: 2.5, md: 3 },
         '& > *': {
           flexGrow: 1,
-          flexBasis: '50%'
-        }
+          flexBasis: '50%',
+        },
       }}
       content={false}
       {...other}

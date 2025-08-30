@@ -9,7 +9,7 @@ export default function useScriptRef() {
     () => () => {
       scripted.current = false;
     },
-    []
+    [],
   );
 
   return scripted;

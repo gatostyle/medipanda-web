@@ -6,8 +6,8 @@ import { Theme } from '@mui/material/styles';
 export default function TableBody(theme: Theme) {
   const hoverStyle = {
     '&:hover': {
-      backgroundColor: theme.palette.secondary.lighter
-    }
+      backgroundColor: theme.palette.secondary.lighter,
+    },
   };
 
   return {
@@ -16,15 +16,15 @@ export default function TableBody(theme: Theme) {
         root: {
           '&.striped .MuiTableRow-root': {
             '&:nth-of-type(even)': {
-              backgroundColor: theme.palette.secondary.lighter
+              backgroundColor: theme.palette.secondary.lighter,
             },
-            ...hoverStyle
+            ...hoverStyle,
           },
           '& .MuiTableRow-root': {
-            ...hoverStyle
-          }
-        }
-      }
-    }
+            ...hoverStyle,
+          },
+        },
+      },
+    },
   };
 }

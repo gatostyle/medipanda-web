@@ -15,7 +15,7 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
@@ -44,7 +44,7 @@ function withMock<T extends BoardPostResponse>(data: T): T & BoardPostResponseWi
     name: '사용자명',
     drugCompany: '제약사명',
     responseCreatedAt: '2025-01-01',
-    responseStatus: Math.random() > 0.5 ? 'PENDING' : 'COMPLETED'
+    responseStatus: Math.random() > 0.5 ? 'PENDING' : 'COMPLETED',
   };
 }
 
@@ -63,7 +63,7 @@ export default function MpAdminInquiryList() {
       startAt: null as Date | null,
       endAt: null as Date | null,
       pageIndex: 0,
-      pageSize: 20
+      pageSize: 20,
     },
     onSubmit: async () => {
       if (formik.values.pageIndex !== 0) {
@@ -71,7 +71,7 @@ export default function MpAdminInquiryList() {
       } else {
         await fetchData();
       }
-    }
+    },
   });
 
   const columns: ColumnDef<Sequenced<BoardPostResponseWithMockData>>[] = [
@@ -79,31 +79,31 @@ export default function MpAdminInquiryList() {
       header: 'No',
       accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
-      size: 60
+      size: 60,
     },
     {
       header: '회원번호',
       accessorKey: 'id',
       cell: ({ row }) => row.original.id,
-      size: 100
+      size: 100,
     },
     {
       header: '아이디',
       accessorKey: 'userId',
       cell: ({ row }) => row.original.userId,
-      size: 120
+      size: 120,
     },
     {
       header: '회원명',
       accessorKey: 'name',
       cell: ({ row }) => row.original.name,
-      size: 100
+      size: 100,
     },
     {
       header: '회사명',
       accessorKey: 'drugCompany',
       cell: ({ row }) => row.original.drugCompany,
-      size: 150
+      size: 150,
     },
     {
       header: '제목',
@@ -113,13 +113,13 @@ export default function MpAdminInquiryList() {
           {row.original.title}
         </Link>
       ),
-      size: 250
+      size: 250,
     },
     {
       header: '문의일',
       accessorKey: 'createdAt',
       cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
-      size: 100
+      size: 100,
     },
     {
       header: '답변일',
@@ -129,7 +129,7 @@ export default function MpAdminInquiryList() {
 
         return value !== null ? formatYyyyMmDd(value) : '-';
       },
-      size: 100
+      size: 100,
     },
     {
       header: '처리상태',
@@ -142,8 +142,8 @@ export default function MpAdminInquiryList() {
             return '처리완료';
         }
       },
-      size: 100
-    }
+      size: 100,
+    },
   ];
 
   const table = useReactTable({
@@ -154,11 +154,11 @@ export default function MpAdminInquiryList() {
     state: {
       pagination: {
         pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize
-      }
+        pageSize: formik.values.pageSize,
+      },
     },
     pageCount: totalPages,
-    manualPagination: true
+    manualPagination: true,
   });
 
   const fetchData = async () => {
@@ -171,7 +171,7 @@ export default function MpAdminInquiryList() {
         // responseStatusFilter: formik.values.responseStatusFilter,
         name: formik.values.searchType === InquirySearchType.MEMBER_NAME ? formik.values.searchKeyword : undefined,
         drugCompany: formik.values.searchType === InquirySearchType.COMPANY_NAME ? formik.values.searchKeyword : undefined,
-        userId: formik.values.searchType === InquirySearchType.USER_ID ? formik.values.searchKeyword : undefined
+        userId: formik.values.searchType === InquirySearchType.USER_ID ? formik.values.searchKeyword : undefined,
         // startDate: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
         // endDate: formik.values.endAt ? new DateString(formik.values.endAt) : undefined
       });
@@ -200,7 +200,7 @@ export default function MpAdminInquiryList() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant='h4' gutterBottom>
           1:1 문의내역
         </Typography>
       </Grid>
@@ -211,9 +211,9 @@ export default function MpAdminInquiryList() {
             <form onSubmit={formik.handleSubmit}>
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size="small">
+                  <FormControl fullWidth size='small'>
                     <InputLabel>처리상태</InputLabel>
-                    <Select name="responseStatusFilter" value={formik.values.responseStatusFilter} onChange={formik.handleChange}>
+                    <Select name='responseStatusFilter' value={formik.values.responseStatusFilter} onChange={formik.handleChange}>
                       <MenuItem value={InquiryResponseStatusFilter.ALL}>처리상태(전체)</MenuItem>
                       <MenuItem value={InquiryResponseStatusFilter.WAITING}>답변대기중</MenuItem>
                       <MenuItem value={InquiryResponseStatusFilter.COMPLETED}>답변완료</MenuItem>
@@ -221,9 +221,9 @@ export default function MpAdminInquiryList() {
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size="small">
+                  <FormControl fullWidth size='small'>
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
+                    <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={InquirySearchType.MEMBER_NAME}>회원명</MenuItem>
                       <MenuItem value={InquirySearchType.COMPANY_NAME}>회사명</MenuItem>
                       <MenuItem value={InquirySearchType.USER_ID}>아이디</MenuItem>
@@ -231,26 +231,26 @@ export default function MpAdminInquiryList() {
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="startAt" label="시작일" formik={formik} />
+                  <MpFormikDatePicker name='startAt' label='시작일' formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="endAt" label="종료일" formik={formik} />
+                  <MpFormikDatePicker name='endAt' label='종료일' formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
-                    name="searchKeyword"
-                    size="small"
-                    placeholder="검색어를 입력하세요"
+                    name='searchKeyword'
+                    size='small'
+                    placeholder='검색어를 입력하세요'
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
                   />
                 </SearchFilterItem>
                 <SearchFilterActions>
-                  <Button variant="contained" size="small" type="submit">
+                  <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant="outlined" size="small" onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={handleReset}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -263,19 +263,19 @@ export default function MpAdminInquiryList() {
       <Grid item xs={12}>
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Stack direction="row" spacing={2}>
-                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+            <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+              <Stack direction='row' spacing={2}>
+                <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
             </Stack>
 
             <ScrollX>
               <TableContainer>
-                <Table size="small">
+                <Table size='small'>
                   <TableHead>
-                    {table.getHeaderGroups().map((headerGroup) => (
+                    {table.getHeaderGroups().map(headerGroup => (
                       <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => (
+                        {headerGroup.headers.map(header => (
                           <TableCell key={header.id} style={{ width: header.getSize() }}>
                             {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                           </TableCell>
@@ -286,24 +286,24 @@ export default function MpAdminInquiryList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : (
-                      table.getRowModel().rows.map((row) => (
+                      table.getRowModel().rows.map(row => (
                         <TableRow key={row.id}>
-                          {row.getVisibleCells().map((cell) => (
+                          {row.getVisibleCells().map(cell => (
                             <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                           ))}
                         </TableRow>
@@ -314,13 +314,13 @@ export default function MpAdminInquiryList() {
               </TableContainer>
             </ScrollX>
 
-            <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
+            <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
                 page={formik.values.pageIndex + 1}
                 onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
-                color="primary"
-                variant="outlined"
+                color='primary'
+                variant='outlined'
                 showFirstButton
                 showLastButton
               />

@@ -37,37 +37,37 @@ export default function StickyActionBar() {
               bgcolor: 'background.default',
               zIndex: 1,
               borderBottom: '1px solid',
-              borderBottomColor: theme.palette.divider
+              borderBottomColor: theme.palette.divider,
             }}
           >
-            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ width: 1 }}>
-              <Typography variant="h5" sx={{ m: 0, pl: 1.5 }}>
+            <Stack direction='row' alignItems='center' justifyContent='space-between' sx={{ width: 1 }}>
+              <Typography variant='h5' sx={{ m: 0, pl: 1.5 }}>
                 Sticky Action Bar:
               </Typography>
-              <Stack direction="row" spacing={1} sx={{ px: 1.5, py: 0.75 }}>
-                <Button color="error" size="small">
+              <Stack direction='row' spacing={1} sx={{ px: 1.5, py: 0.75 }}>
+                <Button color='error' size='small'>
                   Cancel
                 </Button>
-                <Button variant="contained" size="small">
+                <Button variant='contained' size='small'>
                   Submit
                 </Button>
               </Stack>
             </Stack>
           </CardActions>
           <CardContent>
-            <Grid container spacing={3} alignItems="center">
+            <Grid container spacing={3} alignItems='center'>
               <Grid item xs={12}>
-                <Grid container spacing={2} alignItems="center">
+                <Grid container spacing={2} alignItems='center'>
                   <Grid item xs={12} sm={3} lg={4} sx={{ pt: { xs: 2, sm: '0 !important' } }}>
-                    <Avatar variant="rounded" color="inherit" sx={{ bgcolor: 'secondary.main', ml: 'auto' }}>
+                    <Avatar variant='rounded' color='inherit' sx={{ bgcolor: 'secondary.main', ml: 'auto' }}>
                       <Personalcard />
                     </Avatar>
                   </Grid>
                   <Grid item xs={12} sm={9} lg={6}>
-                    <Typography variant="h3" sx={{ mb: 0 }}>
+                    <Typography variant='h3' sx={{ mb: 0 }}>
                       Personal Information
                     </Typography>
-                    <Typography variant="body2" sx={{ mb: 2 }}>
+                    <Typography variant='body2' sx={{ mb: 2 }}>
                       Sticky Action Bar Lorem Ipsum is simply
                     </Typography>
                   </Grid>
@@ -77,10 +77,10 @@ export default function StickyActionBar() {
                 <Divider />
               </Grid>
               <Grid item xs={12}>
-                <Grid container spacing={2} alignItems="center">
+                <Grid container spacing={2} alignItems='center'>
                   <Grid item xs={12} sm={3} lg={4} />
                   <Grid item xs={12} sm={9} lg={6}>
-                    <Typography variant="h5" sx={{ mb: 3 }}>
+                    <Typography variant='h5' sx={{ mb: 3 }}>
                       A. Personal Info:
                     </Typography>
                   </Grid>
@@ -88,21 +88,21 @@ export default function StickyActionBar() {
                     <InputLabel sx={{ textAlign: { xs: 'left', sm: 'right' } }}>Name :</InputLabel>
                   </Grid>
                   <Grid item xs={12} sm={9} lg={6}>
-                    <TextField fullWidth placeholder="Enter full name" />
+                    <TextField fullWidth placeholder='Enter full name' />
                     <FormHelperText>Please enter your full name</FormHelperText>
                   </Grid>
                   <Grid item xs={12} sm={3} lg={4} sx={{ pt: { xs: 2, sm: '0 !important' } }}>
                     <InputLabel sx={{ textAlign: { xs: 'left', sm: 'right' } }}>Email :</InputLabel>
                   </Grid>
                   <Grid item xs={12} sm={9} lg={6}>
-                    <TextField fullWidth placeholder="Enter email" />
+                    <TextField fullWidth placeholder='Enter email' />
                     <FormHelperText>Please enter your Email</FormHelperText>
                   </Grid>
                   <Grid item xs={12} sm={3} lg={4} sx={{ pt: { xs: 2, sm: '0 !important' } }}>
                     <InputLabel sx={{ textAlign: { xs: 'left', sm: 'right' } }}>Password :</InputLabel>
                   </Grid>
                   <Grid item xs={12} sm={9} lg={6}>
-                    <TextField fullWidth placeholder="Enter Password" />
+                    <TextField fullWidth placeholder='Enter Password' />
                     <FormHelperText>Please enter your Password</FormHelperText>
                   </Grid>
                 </Grid>
@@ -111,10 +111,10 @@ export default function StickyActionBar() {
                 <Divider />
               </Grid>
               <Grid item xs={12}>
-                <Grid container spacing={2} alignItems="center">
+                <Grid container spacing={2} alignItems='center'>
                   <Grid item xs={12} sm={3} lg={4} />
                   <Grid item xs={12} sm={9} lg={6}>
-                    <Typography variant="h5" sx={{ mb: 3 }}>
+                    <Typography variant='h5' sx={{ mb: 3 }}>
                       B. Educational Info:
                     </Typography>
                   </Grid>
@@ -122,45 +122,45 @@ export default function StickyActionBar() {
                     <InputLabel sx={{ textAlign: { xs: 'left', sm: 'right' } }}>Degree Name :</InputLabel>
                   </Grid>
                   <Grid item xs={12} sm={9} lg={6}>
-                    <TextField fullWidth placeholder="Enter Degree name" />
+                    <TextField fullWidth placeholder='Enter Degree name' />
                     <FormHelperText>Please enter your Degree name</FormHelperText>
                   </Grid>
                   <Grid item xs={12} sm={3} lg={4} sx={{ pt: { xs: 2, sm: '0 !important' } }}>
                     <InputLabel sx={{ textAlign: { xs: 'left', sm: 'right' } }}>Passing Year :</InputLabel>
                   </Grid>
                   <Grid item xs={12} sm={9} lg={6}>
-                    <TextField fullWidth placeholder="Enter Passing Year" />
+                    <TextField fullWidth placeholder='Enter Passing Year' />
                     <FormHelperText>Please enter Passing Year</FormHelperText>
                   </Grid>
                   <Grid item xs={12} sm={3} lg={4} sx={{ pt: { xs: 2, sm: '0 !important' } }}>
                     <InputLabel sx={{ textAlign: { xs: 'left', sm: 'right' } }}>College Name :</InputLabel>
                   </Grid>
                   <Grid item xs={12} sm={9} lg={6}>
-                    <TextField fullWidth placeholder="Enter College name" />
+                    <TextField fullWidth placeholder='Enter College name' />
                     <FormHelperText>Please enter your College name</FormHelperText>
                   </Grid>
                   <Grid item xs={12} sm={3} lg={4} sx={{ pt: { xs: 2, sm: '0 !important' } }}>
                     <InputLabel sx={{ textAlign: { xs: 'left', sm: 'right' } }}>Work Experience :</InputLabel>
                   </Grid>
                   <Grid item xs={12} sm={9} lg={6}>
-                    <TextField fullWidth placeholder="Enter Work Experience" />
+                    <TextField fullWidth placeholder='Enter Work Experience' />
                     <FormHelperText>Please enter your Work Experience</FormHelperText>
                   </Grid>
                   <Grid item xs={12} sm={3} lg={4} sx={{ pt: { xs: 2, sm: '1 !important' } }}>
                     <InputLabel sx={{ textAlign: { xs: 'left', sm: 'right' } }}>Language :</InputLabel>
                   </Grid>
                   <Grid item xs={12} sm={9} lg={6}>
-                    <FormControlLabel control={<Checkbox defaultChecked />} label="English" />
-                    <FormControlLabel control={<Checkbox />} label="French" />
-                    <FormControlLabel control={<Checkbox />} label="Dutch" />
+                    <FormControlLabel control={<Checkbox defaultChecked />} label='English' />
+                    <FormControlLabel control={<Checkbox />} label='French' />
+                    <FormControlLabel control={<Checkbox />} label='Dutch' />
                   </Grid>
                   <Grid item xs={12} sm={3} lg={4} sx={{ pt: { xs: 2, sm: '1 !important' } }}>
                     <InputLabel sx={{ textAlign: { xs: 'left', sm: 'right' } }}>Hobby :</InputLabel>
                   </Grid>
                   <Grid item xs={12} sm={9} lg={6}>
-                    <FormControlLabel control={<Checkbox />} label="Reading" />
-                    <FormControlLabel control={<Checkbox />} label="Dancing" />
-                    <FormControlLabel control={<Checkbox />} label="Swimming" />
+                    <FormControlLabel control={<Checkbox />} label='Reading' />
+                    <FormControlLabel control={<Checkbox />} label='Dancing' />
+                    <FormControlLabel control={<Checkbox />} label='Swimming' />
                   </Grid>
                 </Grid>
               </Grid>
@@ -168,11 +168,11 @@ export default function StickyActionBar() {
           </CardContent>
           <Divider />
           <CardActions>
-            <Stack direction="row" spacing={1} justifyContent="center" sx={{ width: 1, px: 1.5, py: 0.75 }}>
-              <Button color="error" size="small">
+            <Stack direction='row' spacing={1} justifyContent='center' sx={{ width: 1, px: 1.5, py: 0.75 }}>
+              <Button color='error' size='small'>
                 Cancel
               </Button>
-              <Button variant="contained" size="small">
+              <Button variant='contained' size='small'>
                 Submit
               </Button>
             </Stack>

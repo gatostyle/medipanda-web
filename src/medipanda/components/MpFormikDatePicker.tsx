@@ -17,14 +17,14 @@ export const MpFormikDatePicker: React.FC<MpFormikDatePickerProps> = ({ name, fo
   return (
     <MpDatePicker
       value={field.value || null}
-      onChange={(newValue) => {
+      onChange={newValue => {
         formik.setFieldValue(name, newValue);
         formik.setFieldTouched(name, true);
       }}
       textFieldProps={{
         ...rest.textFieldProps,
         error: !!hasError,
-        helperText: hasError ? meta.error : helperText
+        helperText: hasError ? meta.error : helperText,
       }}
       {...rest}
     />

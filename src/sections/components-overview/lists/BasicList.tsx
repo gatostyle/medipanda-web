@@ -56,12 +56,12 @@ export default function BasicList() {
       <List sx={{ p: 0, '& .MuiListItemButton-root': { borderRadius: 0, my: 0 } }}>
         <ListItem disablePadding divider>
           <ListItemButton>
-            <ListItemText primary="List item 01" />
+            <ListItemText primary='List item 01' />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding divider>
           <ListItemButton>
-            <ListItemText primary="List item 02" />
+            <ListItemText primary='List item 02' />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding divider>
@@ -69,7 +69,7 @@ export default function BasicList() {
             <ListItemIcon>
               <Grid5 size={18} />
             </ListItemIcon>
-            <ListItemText primary="Sample" />
+            <ListItemText primary='Sample' />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding divider>
@@ -77,7 +77,7 @@ export default function BasicList() {
             <ListItemIcon>
               <DocumentSketch size={18} />
             </ListItemIcon>
-            <ListItemText primary="Page" />
+            <ListItemText primary='Page' />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
@@ -85,7 +85,7 @@ export default function BasicList() {
             <ListItemIcon>
               <Element size={18} />
             </ListItemIcon>
-            <ListItemText primary="UI Elements" />
+            <ListItemText primary='UI Elements' />
           </ListItemButton>
         </ListItem>
       </List>

@@ -28,22 +28,22 @@ export default function ResponsiveDialog() {
 
   return (
     <>
-      <Button variant="contained" onClick={handleClickOpen}>
+      <Button variant='contained' onClick={handleClickOpen}>
         Open responsive dialog
       </Button>
-      <Dialog fullScreen={fullScreen} open={open} onClose={handleClose} aria-labelledby="responsive-dialog-title">
+      <Dialog fullScreen={fullScreen} open={open} onClose={handleClose} aria-labelledby='responsive-dialog-title'>
         <Box sx={{ p: 1, py: 1.5 }}>
-          <DialogTitle id="responsive-dialog-title">Use Google&apos;s location service?</DialogTitle>
+          <DialogTitle id='responsive-dialog-title'>Use Google&apos;s location service?</DialogTitle>
           <DialogContent>
             <DialogContentText>
               Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button color="error" onClick={handleClose}>
+            <Button color='error' onClick={handleClose}>
               Disagree
             </Button>
-            <Button variant="contained" onClick={handleClose}>
+            <Button variant='contained' onClick={handleClose}>
               Agree
             </Button>
           </DialogActions>

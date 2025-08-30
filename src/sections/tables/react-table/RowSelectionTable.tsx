@@ -35,42 +35,42 @@ function ReactTable({ data, columns }: { data: TableDataProps[]; columns: Column
     data,
     columns,
     state: {
-      rowSelection
+      rowSelection,
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    debugTable: true
+    debugTable: true,
   });
 
   useEffect(() => setRowSelection({ 5: true }), []);
 
   let headers: LabelKeyObject[] = [];
   columns.map(
-    (columns) =>
+    columns =>
       // @ts-ignore
       columns.accessorKey &&
       headers.push({
         label: typeof columns.header === 'string' ? columns.header : '#',
         // @ts-ignore
-        key: columns.accessorKey
-      })
+        key: columns.accessorKey,
+      }),
   );
 
   return (
     <MainCard
-      title="Row Selection"
+      title='Row Selection'
       content={false}
       secondary={
         <CSVExport
           {...{
             data:
-              table.getSelectedRowModel().flatRows.map((row) => row.original).length === 0
+              table.getSelectedRowModel().flatRows.map(row => row.original).length === 0
                 ? data
-                : table.getSelectedRowModel().flatRows.map((row) => row.original),
+                : table.getSelectedRowModel().flatRows.map(row => row.original),
             headers,
-            filename: 'row-selection.csv'
+            filename: 'row-selection.csv',
           }}
         />
       }
@@ -78,10 +78,10 @@ function ReactTable({ data, columns }: { data: TableDataProps[]; columns: Column
       codeString={JSON.stringify(
         {
           rowSelection: rowSelection,
-          'flatRows[].original': table.getSelectedRowModel().flatRows.map((row) => row.original)
+          'flatRows[].original': table.getSelectedRowModel().flatRows.map(row => row.original),
         },
         null,
-        2
+        2,
       )}
     >
       <ScrollX>
@@ -92,7 +92,7 @@ function ReactTable({ data, columns }: { data: TableDataProps[]; columns: Column
               <TableHead>
                 {table.getHeaderGroups().map((headerGroup: HeaderGroup<any>) => (
                   <TableRow key={headerGroup.id} sx={{ '& > th:first-of-type': { width: '58px' } }}>
-                    {headerGroup.headers.map((header) => (
+                    {headerGroup.headers.map(header => (
                       <TableCell key={header.id} {...header.column.columnDef.meta}>
                         {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                       </TableCell>
@@ -101,9 +101,9 @@ function ReactTable({ data, columns }: { data: TableDataProps[]; columns: Column
                 ))}
               </TableHead>
               <TableBody>
-                {table.getRowModel().rows.map((row) => (
+                {table.getRowModel().rows.map(row => (
                   <TableRow key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
+                    {row.getVisibleCells().map(cell => (
                       <TableCell key={cell.id} {...cell.column.columnDef.meta}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
@@ -121,7 +121,7 @@ function ReactTable({ data, columns }: { data: TableDataProps[]; columns: Column
                   setPageSize: table.setPageSize,
                   setPageIndex: table.setPageIndex,
                   getState: table.getState,
-                  getPageCount: table.getPageCount
+                  getPageCount: table.getPageCount,
                 }}
               />
             </Box>
@@ -146,7 +146,7 @@ export default function RowSelectionTable() {
             {...{
               checked: table.getIsAllRowsSelected(),
               indeterminate: table.getIsSomeRowsSelected(),
-              onChange: table.getToggleAllRowsSelectedHandler()
+              onChange: table.getToggleAllRowsSelectedHandler(),
             }}
           />
         ),
@@ -156,59 +156,59 @@ export default function RowSelectionTable() {
               checked: row.getIsSelected(),
               disabled: !row.getCanSelect(),
               indeterminate: row.getIsSomeSelected(),
-              onChange: row.getToggleSelectedHandler()
+              onChange: row.getToggleSelectedHandler(),
             }}
           />
-        )
+        ),
       },
       {
         header: 'First Name',
-        accessorKey: 'firstName'
+        accessorKey: 'firstName',
       },
       {
         header: 'Last Name',
-        accessorKey: 'lastName'
+        accessorKey: 'lastName',
       },
       {
         header: 'Email',
-        accessorKey: 'email'
+        accessorKey: 'email',
       },
       {
         header: 'Age',
         accessorKey: 'age',
         meta: {
-          className: 'cell-right'
-        }
+          className: 'cell-right',
+        },
       },
       {
         header: 'Visits',
         accessorKey: 'visits',
         meta: {
-          className: 'cell-right'
-        }
+          className: 'cell-right',
+        },
       },
       {
         header: 'Status',
         accessorKey: 'status',
-        cell: (cell) => {
+        cell: cell => {
           switch (cell.getValue()) {
             case 'Complicated':
-              return <Chip color="error" label="Complicated" size="small" variant="light" />;
+              return <Chip color='error' label='Complicated' size='small' variant='light' />;
             case 'Relationship':
-              return <Chip color="success" label="Relationship" size="small" variant="light" />;
+              return <Chip color='success' label='Relationship' size='small' variant='light' />;
             case 'Single':
             default:
-              return <Chip color="info" label="Single" size="small" variant="light" />;
+              return <Chip color='info' label='Single' size='small' variant='light' />;
           }
-        }
+        },
       },
       {
         header: 'Profile Progress',
         accessorKey: 'progress',
-        cell: (cell) => <LinearWithLabel value={cell.getValue() as number} sx={{ minWidth: 75 }} />
-      }
+        cell: cell => <LinearWithLabel value={cell.getValue() as number} sx={{ minWidth: 75 }} />,
+      },
     ],
-    []
+    [],
   );
 
   return <ReactTable {...{ data, columns }} />;

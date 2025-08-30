@@ -47,7 +47,7 @@ import {
   insertInvoice,
   selectCountry,
   useGetInvoice,
-  useGetInvoiceMaster
+  useGetInvoiceMaster,
 } from 'api/invoice';
 import { APP_DEFAULT_PATH } from 'config';
 
@@ -67,7 +67,7 @@ const validationSchema = yup.object({
     .required('Due date is required'),
   customerInfo: yup
     .object({
-      name: yup.string().required('Invoice receiver information is required')
+      name: yup.string().required('Invoice receiver information is required'),
     })
     .required('Invoice receiver information is required'),
   status: yup.string().required('Status selection is required'),
@@ -76,10 +76,10 @@ const validationSchema = yup.object({
     .required('Invoice details is required')
     .of(
       yup.object().shape({
-        name: yup.string().required('Product name is required')
-      })
+        name: yup.string().required('Product name is required'),
+      }),
     )
-    .min(1, 'Invoice must have at least 1 items')
+    .min(1, 'Invoice must have at least 1 items'),
 });
 
 interface FormProps {
@@ -108,13 +108,13 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
       quantity: Number(
         values.invoice_detail?.reduce((sum: any, i: any) => {
           return sum + i.qty;
-        }, 0)
+        }, 0),
       ),
       status: values.status,
       cashierInfo: values.cashierInfo,
       customerInfo: values.customerInfo,
       invoice_detail: values.invoice_detail,
-      notes: values.notes
+      notes: values.notes,
     };
 
     insertInvoice(newList);
@@ -124,8 +124,8 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
       anchorOrigin: { vertical: 'top', horizontal: 'right' },
       variant: 'alert',
       alert: {
-        color: 'success'
-      }
+        color: 'success',
+      },
     } as SnackbarProps);
     navigation('/apps/invoice/list');
   };
@@ -142,13 +142,13 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
           name: 'Belle J. Richter',
           address: '1300 Cooks Mine, NM 87829',
           phone: '305-829-7809',
-          email: 'belljrc23@gmail.com'
+          email: 'belljrc23@gmail.com',
         },
         customerInfo: {
           address: '',
           email: '',
           name: '',
-          phone: ''
+          phone: '',
         },
         invoice_detail: [
           {
@@ -156,15 +156,15 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
             name: '',
             description: '',
             qty: 1,
-            price: '1.00'
-          }
+            price: '1.00',
+          },
         ],
         discount: 0,
         tax: 0,
-        notes: ''
+        notes: '',
       }}
       validationSchema={validationSchema}
-      onSubmit={(values) => {
+      onSubmit={values => {
         handlerCreate(values);
       }}
     >
@@ -186,9 +186,9 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
                     <TextField
                       required
                       disabled
-                      type="number"
-                      name="invoice_id"
-                      id="invoice_id"
+                      type='number'
+                      name='invoice_id'
+                      id='invoice_id'
                       value={values.invoice_id}
                       onChange={handleChange}
                     />
@@ -202,8 +202,8 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
                     <Select
                       value={values.status}
                       displayEmpty
-                      name="status"
-                      renderValue={(selected) => {
+                      name='status'
+                      renderValue={selected => {
                         if (selected.length === 0) {
                           return <Box sx={{ color: 'secondary.400' }}>Select status</Box>;
                         }
@@ -213,12 +213,12 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
                       onChange={handleChange}
                       error={Boolean(errors.status && touched.status)}
                     >
-                      <MenuItem disabled value="">
+                      <MenuItem disabled value=''>
                         Select status
                       </MenuItem>
-                      <MenuItem value="Paid">Paid</MenuItem>
-                      <MenuItem value="Unpaid">Unpaid</MenuItem>
-                      <MenuItem value="Cancelled">Cancelled</MenuItem>
+                      <MenuItem value='Paid'>Paid</MenuItem>
+                      <MenuItem value='Unpaid'>Unpaid</MenuItem>
+                      <MenuItem value='Cancelled'>Cancelled</MenuItem>
                     </Select>
                   </FormControl>
                 </Stack>
@@ -229,7 +229,7 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
                   <InputLabel>Date</InputLabel>
                   <FormControl sx={{ width: '100%' }} error={Boolean(touched.date && errors.date)}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <DatePicker format="dd/MM/yyyy" value={values.date} onChange={(newValue) => setFieldValue('date', newValue)} />
+                      <DatePicker format='dd/MM/yyyy' value={values.date} onChange={newValue => setFieldValue('date', newValue)} />
                     </LocalizationProvider>
                   </FormControl>
                 </Stack>
@@ -240,11 +240,7 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
                   <InputLabel>Due Date</InputLabel>
                   <FormControl sx={{ width: '100%' }} error={Boolean(touched.due_date && errors.due_date)}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <DatePicker
-                        format="dd/MM/yyyy"
-                        value={values.due_date}
-                        onChange={(newValue) => setFieldValue('due_date', newValue)}
-                      />
+                      <DatePicker format='dd/MM/yyyy' value={values.due_date} onChange={newValue => setFieldValue('due_date', newValue)} />
                     </LocalizationProvider>
                   </FormControl>
                 </Stack>
@@ -256,30 +252,30 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={8}>
                       <Stack spacing={2}>
-                        <Typography variant="h5">From:</Typography>
+                        <Typography variant='h5'>From:</Typography>
                         <Stack sx={{ width: '100%' }}>
-                          <Typography variant="subtitle1">{values?.cashierInfo?.name}</Typography>
-                          <Typography color="secondary">{values?.cashierInfo?.address}</Typography>
-                          <Typography color="secondary">{values?.cashierInfo?.phone}</Typography>
-                          <Typography color="secondary">{values?.cashierInfo?.email}</Typography>
+                          <Typography variant='subtitle1'>{values?.cashierInfo?.name}</Typography>
+                          <Typography color='secondary'>{values?.cashierInfo?.address}</Typography>
+                          <Typography color='secondary'>{values?.cashierInfo?.phone}</Typography>
+                          <Typography color='secondary'>{values?.cashierInfo?.email}</Typography>
                         </Stack>
                       </Stack>
                     </Grid>
                     <Grid item xs={12} sm={4}>
-                      <Box textAlign={{ xs: 'left', sm: 'right' }} color="secondary.200">
+                      <Box textAlign={{ xs: 'left', sm: 'right' }} color='secondary.200'>
                         <Button
-                          variant="outlined"
+                          variant='outlined'
                           startIcon={<Edit />}
-                          color="secondary"
+                          color='secondary'
                           onClick={() => handlerCustomerFrom(true)}
-                          size="small"
+                          size='small'
                         >
                           Change
                         </Button>
                         <AddressModal
                           open={invoiceMaster.open}
-                          setOpen={(value) => handlerCustomerFrom(value as boolean)}
-                          handlerAddress={(address) => setFieldValue('cashierInfo', address)}
+                          setOpen={value => handlerCustomerFrom(value as boolean)}
+                          handlerAddress={address => setFieldValue('cashierInfo', address)}
                         />
                       </Box>
                     </Grid>
@@ -291,30 +287,30 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={8}>
                       <Stack spacing={2}>
-                        <Typography variant="h5">To:</Typography>
+                        <Typography variant='h5'>To:</Typography>
                         <Stack sx={{ width: '100%' }}>
-                          <Typography variant="subtitle1">{values?.customerInfo?.name}</Typography>
-                          <Typography color="secondary">{values?.customerInfo?.address}</Typography>
-                          <Typography color="secondary">{values?.customerInfo?.phone}</Typography>
-                          <Typography color="secondary">{values?.customerInfo?.email}</Typography>
+                          <Typography variant='subtitle1'>{values?.customerInfo?.name}</Typography>
+                          <Typography color='secondary'>{values?.customerInfo?.address}</Typography>
+                          <Typography color='secondary'>{values?.customerInfo?.phone}</Typography>
+                          <Typography color='secondary'>{values?.customerInfo?.email}</Typography>
                         </Stack>
                       </Stack>
                     </Grid>
                     <Grid item xs={12} sm={4}>
-                      <Box textAlign="right" color="grey.200">
+                      <Box textAlign='right' color='grey.200'>
                         <Button
-                          size="small"
+                          size='small'
                           startIcon={<Add />}
-                          color="secondary"
-                          variant="outlined"
+                          color='secondary'
+                          variant='outlined'
                           onClick={() => handlerCustomerTo(true)}
                         >
                           Add
                         </Button>
                         <AddressModal
                           open={invoiceMaster.isCustomerOpen}
-                          setOpen={(value) => handlerCustomerTo(value as boolean)}
-                          handlerAddress={(value) => setFieldValue('customerInfo', value)}
+                          setOpen={value => handlerCustomerTo(value as boolean)}
+                          handlerAddress={value => setFieldValue('customerInfo', value)}
                         />
                       </Box>
                     </Grid>
@@ -326,11 +322,11 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
               </Grid>
 
               <Grid item xs={12}>
-                <Typography variant="h5">Detail</Typography>
+                <Typography variant='h5'>Detail</Typography>
               </Grid>
               <Grid item xs={12}>
                 <FieldArray
-                  name="invoice_detail"
+                  name='invoice_detail'
                   render={({ remove, push }) => {
                     return (
                       <>
@@ -343,8 +339,8 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
                                 <TableCell>Description</TableCell>
                                 <TableCell>Qty</TableCell>
                                 <TableCell>Price</TableCell>
-                                <TableCell align="right">Amount</TableCell>
-                                <TableCell align="center">Action</TableCell>
+                                <TableCell align='right'>Amount</TableCell>
+                                <TableCell align='center'>Action</TableCell>
                               </TableRow>
                             </TableHead>
                             <TableBody>
@@ -372,15 +368,15 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
                         </TableContainer>
                         <Divider />
                         {touched.invoice_detail && errors.invoice_detail && !Array.isArray(errors?.invoice_detail) && (
-                          <Stack direction="row" justifyContent="center" sx={{ p: 1.5 }}>
+                          <Stack direction='row' justifyContent='center' sx={{ p: 1.5 }}>
                             <FormHelperText error={true}>{errors.invoice_detail as string}</FormHelperText>
                           </Stack>
                         )}
-                        <Grid container justifyContent="space-between">
+                        <Grid container justifyContent='space-between'>
                           <Grid item xs={12} md={8}>
                             <Box sx={{ pt: 2.5, pr: 2.5, pb: 2.5, pl: 0 }}>
                               <Button
-                                color="primary"
+                                color='primary'
                                 startIcon={<Add />}
                                 onClick={() =>
                                   push({
@@ -388,10 +384,10 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
                                     name: '',
                                     description: '',
                                     qty: 1,
-                                    price: '1.00'
+                                    price: '1.00',
                                   })
                                 }
-                                variant="dashed"
+                                variant='dashed'
                                 sx={{ bgcolor: 'transparent !important' }}
                               >
                                 Add Item
@@ -399,20 +395,20 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
                             </Box>
                           </Grid>
                           <Grid item xs={12} md={4}>
-                            <Grid container justifyContent="space-between" spacing={2} sx={{ pt: 2.5, pb: 2.5 }}>
+                            <Grid container justifyContent='space-between' spacing={2} sx={{ pt: 2.5, pb: 2.5 }}>
                               <Grid item xs={6}>
                                 <Stack spacing={1}>
                                   <InputLabel>Discount(%)</InputLabel>
                                   <TextField
-                                    type="number"
+                                    type='number'
                                     fullWidth
-                                    name="discount"
-                                    id="discount"
-                                    placeholder="0.0"
+                                    name='discount'
+                                    id='discount'
+                                    placeholder='0.0'
                                     value={values.discount}
                                     onChange={handleChange}
                                     inputProps={{
-                                      min: 0
+                                      min: 0,
                                     }}
                                   />
                                 </Stack>
@@ -421,15 +417,15 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
                                 <Stack spacing={1}>
                                   <InputLabel>Tax(%)</InputLabel>
                                   <TextField
-                                    type="number"
+                                    type='number'
                                     fullWidth
-                                    name="tax"
-                                    id="tax"
-                                    placeholder="0.0"
+                                    name='tax'
+                                    id='tax'
+                                    placeholder='0.0'
                                     value={values.tax}
                                     onChange={handleChange}
                                     inputProps={{
-                                      min: 0
+                                      min: 0,
                                     }}
                                   />
                                 </Stack>
@@ -437,23 +433,23 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
                             </Grid>
                             <Grid item xs={12}>
                               <Stack spacing={2}>
-                                <Stack direction="row" justifyContent="space-between">
+                                <Stack direction='row' justifyContent='space-between'>
                                   <Typography color={theme.palette.secondary.main}>Sub Total:</Typography>
                                   <Typography>{invoiceMaster.country?.prefix + '' + subtotal.toFixed(2)}</Typography>
                                 </Stack>
-                                <Stack direction="row" justifyContent="space-between">
+                                <Stack direction='row' justifyContent='space-between'>
                                   <Typography color={theme.palette.secondary.main}>Discount:</Typography>
-                                  <Typography variant="h6" color="success.main">
+                                  <Typography variant='h6' color='success.main'>
                                     {invoiceMaster.country?.prefix + '' + discountRate.toFixed(2)}
                                   </Typography>
                                 </Stack>
-                                <Stack direction="row" justifyContent="space-between">
+                                <Stack direction='row' justifyContent='space-between'>
                                   <Typography color={theme.palette.secondary.main}>Tax:</Typography>
                                   <Typography>{invoiceMaster.country?.prefix + '' + taxRate.toFixed(2)}</Typography>
                                 </Stack>
-                                <Stack direction="row" justifyContent="space-between">
-                                  <Typography variant="subtitle1">Grand Total:</Typography>
-                                  <Typography variant="subtitle1">
+                                <Stack direction='row' justifyContent='space-between'>
+                                  <Typography variant='subtitle1'>Grand Total:</Typography>
+                                  <Typography variant='subtitle1'>
                                     {' '}
                                     {total % 1 === 0
                                       ? invoiceMaster.country?.prefix + '' + total
@@ -473,14 +469,14 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
                 <Stack spacing={1}>
                   <InputLabel>Notes</InputLabel>
                   <TextField
-                    placeholder="Address"
+                    placeholder='Address'
                     rows={3}
                     value={values.notes}
                     multiline
-                    name="notes"
+                    name='notes'
                     onChange={handleChange}
                     inputProps={{
-                      maxLength: notesLimit
+                      maxLength: notesLimit,
                     }}
                     helperText={`${values.notes.length} / ${notesLimit}`}
                     sx={{
@@ -488,8 +484,8 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
                       '& .MuiFormHelperText-root': {
                         mr: 0,
                         display: 'flex',
-                        justifyContent: 'flex-end'
-                      }
+                        justifyContent: 'flex-end',
+                      },
                     }}
                   />
                 </Stack>
@@ -499,35 +495,35 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
                   <InputLabel>Set Currency*</InputLabel>
                   <FormControl sx={{ width: { xs: '100%', sm: 250 } }}>
                     <Autocomplete
-                      id="country-select-demo"
+                      id='country-select-demo'
                       fullWidth
                       options={invoiceMaster.countries}
                       defaultValue={invoiceMaster.countries[2]}
                       value={invoiceMaster.countries.find((option: CountryType) => option.code === invoiceMaster.country?.code)}
                       onChange={(event, value) => selectCountry(value)}
                       autoHighlight
-                      getOptionLabel={(option) => option.label}
+                      getOptionLabel={option => option.label}
                       renderOption={(props, option) => (
-                        <Box component="li" sx={{ display: 'flex', direction: 'row', alignItems: 'center', gap: 1 }} {...props}>
+                        <Box component='li' sx={{ display: 'flex', direction: 'row', alignItems: 'center', gap: 1 }} {...props}>
                           {option.code && (
                             <img
-                              loading="lazy"
-                              width="20"
+                              loading='lazy'
+                              width='20'
                               src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
                               srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-                              alt=""
+                              alt=''
                             />
                           )}
                           {option.label}
                         </Box>
                       )}
-                      renderInput={(params) => {
+                      renderInput={params => {
                         const selected = invoiceMaster.countries.find((option: CountryType) => option.code === invoiceMaster.country?.code);
                         return (
                           <TextField
                             {...params}
-                            name="phoneCode"
-                            placeholder="Select"
+                            name='phoneCode'
+                            placeholder='Select'
                             InputProps={{
                               ...params.InputProps,
                               startAdornment: (
@@ -535,19 +531,19 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
                                   {selected && selected.code !== '' && (
                                     <img
                                       style={{ marginRight: 6 }}
-                                      loading="lazy"
-                                      width="20"
+                                      loading='lazy'
+                                      width='20'
                                       src={`https://flagcdn.com/w20/${selected.code.toLowerCase()}.png`}
                                       srcSet={`https://flagcdn.com/w40/${selected.code.toLowerCase()}.png 2x`}
-                                      alt=""
+                                      alt=''
                                     />
                                   )}
                                 </>
-                              )
+                              ),
                             }}
                             inputProps={{
                               ...params.inputProps,
-                              autoComplete: 'new-password' // disable autocomplete and autofill
+                              autoComplete: 'new-password', // disable autocomplete and autofill
                             }}
                           />
                         );
@@ -557,20 +553,20 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
                 </Stack>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Stack direction="row" justifyContent="flex-end" alignItems="flex-end" spacing={2} sx={{ height: '100%' }}>
+                <Stack direction='row' justifyContent='flex-end' alignItems='flex-end' spacing={2} sx={{ height: '100%' }}>
                   <Button
-                    variant="outlined"
-                    color="secondary"
+                    variant='outlined'
+                    color='secondary'
                     disabled={values.status === '' || !isValid}
                     sx={{ color: 'secondary.dark' }}
                     onClick={() => handlerPreview(true)}
                   >
                     Preview
                   </Button>
-                  <Button variant="outlined" color="secondary" sx={{ color: 'secondary.dark' }}>
+                  <Button variant='outlined' color='secondary' sx={{ color: 'secondary.dark' }}>
                     Save
                   </Button>
-                  <Button color="primary" variant="contained" type="submit">
+                  <Button color='primary' variant='contained' type='submit'>
                     Create & Send
                   </Button>
                   <InvoiceModal
@@ -582,7 +578,7 @@ function CreateForm({ lists, invoiceMaster }: FormProps) {
                       subtotal,
                       taxRate,
                       discountRate,
-                      total
+                      total,
                     }}
                     items={values?.invoice_detail}
                     onAddNextInvoice={() => handlerPreview(false)}
@@ -613,12 +609,12 @@ export default function Create() {
   let breadcrumbLinks = [
     { title: 'Home', to: APP_DEFAULT_PATH },
     { title: 'Invoice', to: '/apps/invoice/dashboard' },
-    { title: 'Create Invoice' }
+    { title: 'Create Invoice' },
   ];
 
   return (
     <>
-      <Breadcrumbs custom heading="New Invoice" links={breadcrumbLinks} />
+      <Breadcrumbs custom heading='New Invoice' links={breadcrumbLinks} />
       <MainCard>{isLoader ? loader : <CreateForm {...{ lists: invoice, invoiceMaster }} />}</MainCard>
     </>
   );

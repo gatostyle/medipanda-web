@@ -25,32 +25,32 @@ export default function UnderConstruction() {
         <Grid
           container
           spacing={3}
-          alignItems="center"
-          justifyContent="center"
+          alignItems='center'
+          justifyContent='center'
           sx={{
             py: 2,
             backgroundImage: `url(${constructionbottom})`,
             backgroundSize: '100%',
             backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'bottom'
+            backgroundPosition: 'bottom',
           }}
         >
           <Grid item md={6}>
-            <Stack spacing={2} justifyContent="center" alignItems="center">
-              <Typography align="center" variant="h1">
+            <Stack spacing={2} justifyContent='center' alignItems='center'>
+              <Typography align='center' variant='h1'>
                 Under Construction
               </Typography>
-              <Typography color="text.secondary" align="center" sx={{ width: '85%' }}>
+              <Typography color='text.secondary' align='center' sx={{ width: '85%' }}>
                 Hey! Please check out this site later. We are doing some maintenance on it right now.
               </Typography>
-              <Button component={Link} to={APP_DEFAULT_PATH} variant="contained">
+              <Button component={Link} to={APP_DEFAULT_PATH} variant='contained'>
                 Back To Home
               </Button>
             </Stack>
           </Grid>
           <Grid item md={6}>
             <Box sx={{ width: { xs: 300, sm: 374 } }}>
-              <img src={construction} alt="under construction" style={{ width: '100%', height: 'auto' }} />
+              <img src={construction} alt='under construction' style={{ width: '100%', height: 'auto' }} />
             </Box>
           </Grid>
         </Grid>

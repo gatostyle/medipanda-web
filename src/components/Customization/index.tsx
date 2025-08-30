@@ -63,10 +63,10 @@ export default function Customization() {
   return (
     <>
       <Fab
-        component="div"
+        component='div'
         onClick={handleToggle}
-        size="large"
-        variant="circular"
+        size='large'
+        variant='circular'
         sx={{
           borderRadius: 0,
           borderTopLeftRadius: '50%',
@@ -82,36 +82,36 @@ export default function Customization() {
           border: '4px solid ',
           borderColor: 'background.paper',
           borderRight: 'none',
-          '&:hover': { bgcolor: 'primary.lighter' }
+          '&:hover': { bgcolor: 'primary.lighter' },
         }}
       >
         <IconButton
           onClick={handleToggle}
-          aria-label="settings toggler"
-          size="large"
+          aria-label='settings toggler'
+          size='large'
           sx={{ p: 0, '& :hover': { bgcolor: 'red' }, '& svg': { width: 28, height: 28 } }}
         >
-          <Setting2 variant="Bulk" />
+          <Setting2 variant='Bulk' />
         </IconButton>
       </Fab>
       <Drawer
         sx={{
-          zIndex: 2001
+          zIndex: 2001,
         }}
-        anchor="right"
+        anchor='right'
         onClose={handleToggle}
         open={open}
         PaperProps={{
           sx: {
-            width: 350
-          }
+            width: 350,
+          },
         }}
       >
         {open && (
           <MainCard content={false} border={false}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1.5} sx={{ p: 2.5 }}>
-              <Typography variant="h5">Settings</Typography>
-              <IconButton color="error" sx={{ p: 0 }} onClick={handleToggle}>
+            <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1.5} sx={{ p: 2.5 }}>
+              <Typography variant='h5'>Settings</Typography>
+              <IconButton color='error' sx={{ p: 0 }} onClick={handleToggle}>
                 <Add size={28} style={{ transform: 'rotate(45deg)' }} />
               </IconButton>
             </Stack>
@@ -119,8 +119,8 @@ export default function Customization() {
               sx={{
                 '& .simplebar-content': {
                   display: 'flex',
-                  flexDirection: 'column'
-                }
+                  flexDirection: 'column',
+                },
               }}
             >
               <Box sx={{ p: 3, height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
@@ -128,10 +128,10 @@ export default function Customization() {
                   {/* theme-mode */}
                   <Grid item xs={12}>
                     <Stack>
-                      <Typography variant="subtitle1" color="text.primary">
+                      <Typography variant='subtitle1' color='text.primary'>
                         Theme Mode
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant='caption' color='text.secondary'>
                         Choose light or dark mode
                       </Typography>
                     </Stack>
@@ -146,10 +146,10 @@ export default function Customization() {
                   {/* theme-contrast */}
                   <Grid item xs={12}>
                     <Stack>
-                      <Typography variant="subtitle1" color="text.primary">
+                      <Typography variant='subtitle1' color='text.primary'>
                         Theme Contrast
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant='caption' color='text.secondary'>
                         Choose theme contrast/shadow
                       </Typography>
                     </Stack>
@@ -164,10 +164,10 @@ export default function Customization() {
                   {/* custom-theme */}
                   <Grid item xs={12}>
                     <Stack>
-                      <Typography variant="subtitle1" color="text.primary">
+                      <Typography variant='subtitle1' color='text.primary'>
                         Custom Theme
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant='caption' color='text.secondary'>
                         Choose your primary theme color
                       </Typography>
                     </Stack>
@@ -182,10 +182,10 @@ export default function Customization() {
                   {/* menu-caption */}
                   <Grid item xs={12}>
                     <Stack>
-                      <Typography variant="subtitle1" color="text.primary">
+                      <Typography variant='subtitle1' color='text.primary'>
                         Sidebar Caption
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant='caption' color='text.secondary'>
                         Hide your sidebar caption
                       </Typography>
                     </Stack>
@@ -200,10 +200,10 @@ export default function Customization() {
                   {/* theme-layout */}
                   <Grid item xs={12}>
                     <Stack>
-                      <Typography variant="subtitle1" color="text.primary">
+                      <Typography variant='subtitle1' color='text.primary'>
                         Theme Layout
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant='caption' color='text.secondary'>
                         Choose your layout
                       </Typography>
                     </Stack>
@@ -218,10 +218,10 @@ export default function Customization() {
                   {/* theme-orientation */}
                   <Grid item xs={12}>
                     <Stack>
-                      <Typography variant="subtitle1" color="text.primary">
+                      <Typography variant='subtitle1' color='text.primary'>
                         Menu Orientation
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant='caption' color='text.secondary'>
                         Choose Vertical or Horizontal Menu Orientation
                       </Typography>
                     </Stack>
@@ -236,10 +236,10 @@ export default function Customization() {
                   {/* theme-container */}
                   <Grid item xs={12}>
                     <Stack>
-                      <Typography variant="subtitle1" color="text.primary">
+                      <Typography variant='subtitle1' color='text.primary'>
                         Layout Width
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant='caption' color='text.secondary'>
                         Choose fluid or container layout
                       </Typography>
                     </Stack>
@@ -254,10 +254,10 @@ export default function Customization() {
                   {/* theme-font-family */}
                   <Grid item xs={12}>
                     <Stack>
-                      <Typography variant="subtitle1" color="text.primary">
+                      <Typography variant='subtitle1' color='text.primary'>
                         Font Family
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant='caption' color='text.secondary'>
                         Choose your font family.
                       </Typography>
                     </Stack>

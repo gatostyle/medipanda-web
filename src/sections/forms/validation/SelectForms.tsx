@@ -24,7 +24,7 @@ import { SnackbarProps } from 'types/snackbar';
  * 'Enter your age'
  * yup.number Expected 0 arguments, but got 1 */
 const validationSchema = yup.object({
-  age: yup.number().required('Age selection is required.')
+  age: yup.number().required('Age selection is required.'),
 });
 
 // ==============================|| FORM VALIDATION - SELECT  ||============================== //
@@ -32,7 +32,7 @@ const validationSchema = yup.object({
 export default function SelectForms() {
   const formik = useFormik({
     initialValues: {
-      age: ''
+      age: '',
     },
     validationSchema,
     onSubmit: () => {
@@ -41,22 +41,22 @@ export default function SelectForms() {
         message: 'Select - Submit Success',
         variant: 'alert',
         alert: {
-          color: 'success'
-        }
+          color: 'success',
+        },
       } as SnackbarProps);
-    }
+    },
   });
 
   return (
-    <MainCard title="Select">
+    <MainCard title='Select'>
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Stack spacing={1}>
-              <InputLabel htmlFor="age">Age</InputLabel>
+              <InputLabel htmlFor='age'>Age</InputLabel>
               <FormControl sx={{ m: 1, minWidth: 120 }}>
-                <Select id="age" name="age" value={formik.values.age} onChange={formik.handleChange}>
-                  <MenuItem value="">
+                <Select id='age' name='age' value={formik.values.age} onChange={formik.handleChange}>
+                  <MenuItem value=''>
                     <em>Select age</em>
                   </MenuItem>
                   <MenuItem value={10}>Ten</MenuItem>
@@ -64,7 +64,7 @@ export default function SelectForms() {
                   <MenuItem value={30}>Thirty</MenuItem>
                 </Select>
                 {formik.errors.age && (
-                  <FormHelperText error id="standard-weight-helper-text-email-login">
+                  <FormHelperText error id='standard-weight-helper-text-email-login'>
                     {' '}
                     {formik.errors.age}{' '}
                   </FormHelperText>
@@ -73,9 +73,9 @@ export default function SelectForms() {
             </Stack>
           </Grid>
           <Grid item xs={12}>
-            <Stack direction="row" justifyContent="flex-end">
+            <Stack direction='row' justifyContent='flex-end'>
               <AnimateButton>
-                <Button variant="contained" type="submit">
+                <Button variant='contained' type='submit'>
                   Submit
                 </Button>
               </AnimateButton>

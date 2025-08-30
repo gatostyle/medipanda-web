@@ -30,7 +30,7 @@ import { resetCart, useGetCart } from 'api/cart';
 function TabPanel({ children, value, index, ...other }: TabsProps) {
   return (
     <div
-      role="tabpanel"
+      role='tabpanel'
       hidden={value !== index}
       id={`product-details-tabpanel-${index}`}
       aria-labelledby={`product-details-tab-${index}`}
@@ -44,7 +44,7 @@ function TabPanel({ children, value, index, ...other }: TabsProps) {
 function a11yProps(index: number) {
   return {
     id: `product-details-tab-${index}`,
-    'aria-controls': `product-details-tabpanel-${index}`
+    'aria-controls': `product-details-tabpanel-${index}`,
   };
 }
 
@@ -97,28 +97,28 @@ export default function ProductDetails() {
                 <Stack>
                   <Tabs
                     value={value}
-                    indicatorColor="primary"
+                    indicatorColor='primary'
                     onChange={handleChange}
-                    aria-label="product description tabs example"
-                    variant="scrollable"
+                    aria-label='product description tabs example'
+                    variant='scrollable'
                   >
-                    <Tab component={Link} to="#" label="Features" {...a11yProps(0)} />
-                    <Tab component={Link} to="#" label="Specifications" {...a11yProps(1)} />
-                    <Tab component={Link} to="#" label="Overview" {...a11yProps(2)} />
+                    <Tab component={Link} to='#' label='Features' {...a11yProps(0)} />
+                    <Tab component={Link} to='#' label='Specifications' {...a11yProps(1)} />
+                    <Tab component={Link} to='#' label='Overview' {...a11yProps(2)} />
                     <Tab
                       component={Link}
-                      to="#"
+                      to='#'
                       label={
-                        <Stack direction="row" alignItems="center">
+                        <Stack direction='row' alignItems='center'>
                           Reviews{' '}
                           <Chip
                             label={String(product.offerPrice?.toFixed(0))}
-                            size="small"
+                            size='small'
                             sx={{
                               ml: 0.5,
                               color: value === 3 ? 'primary.main' : 'common.white',
                               bgcolor: value === 3 ? 'primary.lighter' : 'secondary.400',
-                              borderRadius: '10px'
+                              borderRadius: '10px',
                             }}
                           />
                         </Stack>
@@ -136,10 +136,10 @@ export default function ProductDetails() {
                 </TabPanel>
                 <TabPanel value={value} index={2}>
                   <Stack spacing={2.5}>
-                    <Typography color="text.secondary">
+                    <Typography color='text.secondary'>
                       Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard
                       dummy text ever since the 1500s,{' '}
-                      <Typography component="span" variant="subtitle1">
+                      <Typography component='span' variant='subtitle1'>
                         {' '}
                         &ldquo;When an unknown printer took a galley of type and scrambled it to make a type specimen book.&rdquo;
                       </Typography>{' '}
@@ -147,7 +147,7 @@ export default function ProductDetails() {
                       unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and
                       more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
                     </Typography>
-                    <Typography color="text.secondary">
+                    <Typography color='text.secondary'>
                       It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently
                       with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
                     </Typography>
@@ -161,13 +161,13 @@ export default function ProductDetails() {
           </Grid>
           <Grid item xs={12} md={5} xl={4} sx={{ position: 'relative' }}>
             <MainCard
-              title="Related Products"
+              title='Related Products'
               sx={{
                 height: 'calc(100% - 16px)',
                 position: { xs: 'relative', md: 'absolute' },
                 top: '16px',
                 left: { xs: 0, md: 16 },
-                right: 0
+                right: 0,
               }}
               content={false}
             >

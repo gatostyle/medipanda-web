@@ -27,20 +27,20 @@ interface Props {
 
 export default function ChatHeader({ loading, user, handleDrawerOpen }: Props) {
   return (
-    <Stack direction="row" alignItems="center" spacing={1}>
-      <IconButton onClick={handleDrawerOpen} color="secondary" size="large">
+    <Stack direction='row' alignItems='center' spacing={1}>
+      <IconButton onClick={handleDrawerOpen} color='secondary' size='large'>
         <HambergerMenu />
       </IconButton>
       {loading && Object.keys(user).length === 0 ? (
         <List disablePadding>
           <ListItem disablePadding disableGutters>
             <ListItemAvatar>
-              <Skeleton variant="circular" width={40} height={40} />
+              <Skeleton variant='circular' width={40} height={40} />
             </ListItemAvatar>
             <ListItemText
               sx={{ my: 0 }}
-              primary={<Skeleton animation="wave" height={24} width={50} />}
-              secondary={<Skeleton animation="wave" height={16} width={80} />}
+              primary={<Skeleton animation='wave' height={24} width={50} />}
+              secondary={<Skeleton animation='wave' height={16} width={80} />}
             />
           </ListItem>
         </List>
@@ -50,12 +50,12 @@ export default function ChatHeader({ loading, user, handleDrawerOpen }: Props) {
             user={{
               online_status: user.online_status,
               avatar: user.avatar,
-              name: user.name
+              name: user.name,
             }}
           />
           <Stack>
-            <Typography variant="subtitle1">{user.name}</Typography>
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant='subtitle1'>{user.name}</Typography>
+            <Typography variant='caption' color='text.secondary'>
               Active {user.lastMessage} ago
             </Typography>
           </Stack>

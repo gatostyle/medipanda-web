@@ -36,23 +36,23 @@ export default function MultipleAutocomplete() {
 />`;
 
   return (
-    <MainCard title="Multiple Tags" codeString={multiAutocompleteCodeString}>
+    <MainCard title='Multiple Tags' codeString={multiAutocompleteCodeString}>
       <Autocomplete
         multiple
-        id="tags-outlined"
+        id='tags-outlined'
         options={data}
-        getOptionLabel={(option) => option.label}
+        getOptionLabel={option => option.label}
         defaultValue={[data[7], data[13]]}
         filterSelectedOptions
-        renderInput={(params) => <TextField {...params} placeholder="Favorites" />}
+        renderInput={params => <TextField {...params} placeholder='Favorites' />}
         sx={{
           '& .MuiOutlinedInput-root': { p: 1 },
           '& .MuiAutocomplete-tag': {
             bgcolor: 'primary.lighter',
             border: '1px solid',
             borderColor: 'primary.light',
-            '& .MuiSvgIcon-root': { color: 'primary.main', '&:hover': { color: 'primary.dark' } }
-          }
+            '& .MuiSvgIcon-root': { color: 'primary.main', '&:hover': { color: 'primary.dark' } },
+          },
         }}
       />
     </MainCard>

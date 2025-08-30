@@ -21,8 +21,8 @@ export default function CheckMail() {
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Box sx={{ mb: { xs: -0.5, sm: 0.5 } }}>
-            <Typography variant="h3">Hi, Check Your Mail</Typography>
-            <Typography color="secondary" sx={{ mb: 0.5, mt: 1.25 }}>
+            <Typography variant='h3'>Hi, Check Your Mail</Typography>
+            <Typography color='secondary' sx={{ mb: 0.5, mt: 1.25 }}>
               We have sent a password recover instructions to your email.
             </Typography>
           </Box>
@@ -34,10 +34,10 @@ export default function CheckMail() {
               to={isLoggedIn ? '/auth/login2' : '/login2'}
               disableElevation
               fullWidth
-              size="large"
-              type="submit"
-              variant="contained"
-              color="primary"
+              size='large'
+              type='submit'
+              variant='contained'
+              color='primary'
             >
               Sign in
             </Button>

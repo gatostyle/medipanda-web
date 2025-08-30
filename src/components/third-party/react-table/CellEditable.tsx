@@ -35,7 +35,7 @@ export default function CellEditable<T extends RowData>({
   getValue: initialValue,
   row: { index },
   column: { id, columnDef },
-  table
+  table,
 }: CellEditProps<T>) {
   const [value, setValue] = useState(initialValue);
   const [showSelect, setShowSelect] = useState(false);
@@ -57,7 +57,7 @@ export default function CellEditable<T extends RowData>({
   switch (id) {
     case 'email':
       userInfoSchema = yup.object().shape({
-        userInfo: yup.string().email('Enter valid email ').required('Email is a required field')
+        userInfo: yup.string().email('Enter valid email ').required('Email is a required field'),
       });
       break;
     case 'age':
@@ -67,17 +67,17 @@ export default function CellEditable<T extends RowData>({
           .typeError('Age must be number')
           .required('Age is required')
           .min(18, 'You must be at least 18 years')
-          .max(65, 'You must be at most 65 years')
+          .max(65, 'You must be at most 65 years'),
       });
       break;
     case 'visits':
       userInfoSchema = yup.object().shape({
-        userInfo: yup.number().typeError('Visits must be number').required('Required')
+        userInfo: yup.number().typeError('Visits must be number').required('Required'),
       });
       break;
     default:
       userInfoSchema = yup.object().shape({
-        userInfo: yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Name is Required')
+        userInfo: yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Name is Required'),
       });
       break;
   }
@@ -88,7 +88,7 @@ export default function CellEditable<T extends RowData>({
         <>
           <Formik
             initialValues={{
-              userInfo: value
+              userInfo: value,
             }}
             enableReinitialize
             validationSchema={userInfoSchema}
@@ -100,8 +100,8 @@ export default function CellEditable<T extends RowData>({
                   fullWidth
                   value={values.userInfo}
                   id={`${index}-${id}`}
-                  name="userInfo"
-                  onChange={(e) => {
+                  name='userInfo'
+                  onChange={e => {
                     handleChange(e);
                     onChange(e);
                   }}
@@ -110,7 +110,7 @@ export default function CellEditable<T extends RowData>({
                   helperText={touched.userInfo && errors.userInfo && (errors.userInfo as string)}
                   sx={{
                     '& .MuiOutlinedInput-input': { py: 0.75, px: 1, minWidth: { xs: 100 } },
-                    '& .MuiOutlinedInput-notchedOutline': { border: 'none' }
+                    '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
                   }}
                 />
               </Form>
@@ -123,21 +123,21 @@ export default function CellEditable<T extends RowData>({
       element = (
         <>
           <Select
-            labelId="editable-select-status-label"
+            labelId='editable-select-status-label'
             sx={{ boxShadow: 'none', '.MuiOutlinedInput-notchedOutline': { border: 0 }, svg: { display: 'none' } }}
-            id="editable-select-status"
+            id='editable-select-status'
             value={value}
             onChange={onChange}
             onBlur={onBlur}
           >
-            <MenuItem value="Complicated">
-              <Chip color="error" label="Complicated" size="small" variant="light" />
+            <MenuItem value='Complicated'>
+              <Chip color='error' label='Complicated' size='small' variant='light' />
             </MenuItem>
-            <MenuItem value="Relationship">
-              <Chip color="success" label="Relationship" size="small" variant="light" />
+            <MenuItem value='Relationship'>
+              <Chip color='success' label='Relationship' size='small' variant='light' />
             </MenuItem>
-            <MenuItem value="Single">
-              <Chip color="info" label="Single" size="small" variant="light" />
+            <MenuItem value='Single'>
+              <Chip color='info' label='Single' size='small' variant='light' />
             </MenuItem>
           </Select>
         </>
@@ -152,7 +152,7 @@ export default function CellEditable<T extends RowData>({
             </Box>
           ) : (
             <>
-              <Stack direction="row" alignItems="center" spacing={1} sx={{ pl: 1, minWidth: 120 }}>
+              <Stack direction='row' alignItems='center' spacing={1} sx={{ pl: 1, minWidth: 120 }}>
                 <Slider
                   value={value}
                   min={0}
@@ -162,12 +162,12 @@ export default function CellEditable<T extends RowData>({
                   onChange={(event: Event, newValue: number | number[]) => {
                     setValue(newValue);
                   }}
-                  valueLabelDisplay="auto"
-                  aria-labelledby="non-linear-slider"
+                  valueLabelDisplay='auto'
+                  aria-labelledby='non-linear-slider'
                 />
                 <Tooltip title={'Submit'}>
-                  <IconButton color="success" onClick={() => setShowSelect(false)}>
-                    <Send variant="Outline" />
+                  <IconButton color='success' onClick={() => setShowSelect(false)}>
+                    <Send variant='Outline' />
                   </IconButton>
                 </Tooltip>
               </Stack>

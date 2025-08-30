@@ -26,7 +26,7 @@ const names = [
   'Miriam Wagner',
   'Bradley Wilkerson',
   'Virginia Andrews',
-  'Kelly Snyder'
+  'Kelly Snyder',
 ];
 
 // ==============================|| SELECT - CHECKMARKERS ||============================== //
@@ -36,11 +36,11 @@ export default function CheckmarksSelect() {
 
   const handleChange = (event: SelectChangeEvent<typeof personName>) => {
     const {
-      target: { value }
+      target: { value },
     } = event;
     setPersonName(
       // On autofill we get a the stringified value.
-      typeof value === 'string' ? value.split(',') : value
+      typeof value === 'string' ? value.split(',') : value,
     );
   };
 
@@ -67,20 +67,20 @@ export default function CheckmarksSelect() {
 </FormControl>`;
 
   return (
-    <MainCard title="With Checkmarks" codeString={checkmarkSelectCodeString}>
+    <MainCard title='With Checkmarks' codeString={checkmarkSelectCodeString}>
       <FormControl fullWidth>
-        <InputLabel id="demo-multiple-checkbox-label">Checkmarks</InputLabel>
+        <InputLabel id='demo-multiple-checkbox-label'>Checkmarks</InputLabel>
         <Select
-          labelId="demo-multiple-checkbox-label"
-          id="demo-multiple-checkbox"
+          labelId='demo-multiple-checkbox-label'
+          id='demo-multiple-checkbox'
           multiple
           value={personName}
           onChange={handleChange}
-          input={<OutlinedInput placeholder="Tag" />}
-          renderValue={(selected) => selected.join(', ')}
+          input={<OutlinedInput placeholder='Tag' />}
+          renderValue={selected => selected.join(', ')}
           MenuProps={MenuProps}
         >
-          {names.map((name) => (
+          {names.map(name => (
             <MenuItem key={name} value={name}>
               <Checkbox checked={personName.indexOf(name) > -1} />
               <ListItemText primary={name} />

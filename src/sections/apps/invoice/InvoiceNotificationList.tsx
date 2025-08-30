@@ -21,34 +21,34 @@ import { DocumentDownload, DocumentText, Link1, Setting3 } from 'iconsax-react';
 export default function InvoiceNotificationList() {
   const theme = useTheme();
   const iconSX = {
-    color: theme.palette.text.secondary
+    color: theme.palette.text.secondary,
   };
 
   return (
     <MainCard
-      title="Notification"
+      title='Notification'
       secondary={
-        <IconButton edge="end" aria-label="comments" color="secondary" sx={{ transform: 'rotate(90deg)' }}>
+        <IconButton edge='end' aria-label='comments' color='secondary' sx={{ transform: 'rotate(90deg)' }}>
           <MoreIcon />
         </IconButton>
       }
     >
-      <Grid container spacing={3} alignItems="center">
+      <Grid container spacing={3} alignItems='center'>
         <Grid item xs={12}>
-          <Grid container spacing={2} alignItems="center">
+          <Grid container spacing={2} alignItems='center'>
             <Grid item>
-              <Avatar alt="User 1" color="success">
+              <Avatar alt='User 1' color='success'>
                 <DocumentDownload />
               </Avatar>
             </Grid>
             <Grid item xs zeroMinWidth>
-              <Typography variant="subtitle1">
+              <Typography variant='subtitle1'>
                 Johnny sent you an invoice billed{' '}
-                <Link component={RouterLink} to="#" underline="hover">
+                <Link component={RouterLink} to='#' underline='hover'>
                   $1,000.
                 </Link>
               </Typography>
-              <Typography variant="caption" color="secondary">
+              <Typography variant='caption' color='secondary'>
                 2 August
               </Typography>
             </Grid>
@@ -58,20 +58,20 @@ export default function InvoiceNotificationList() {
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <Grid container spacing={2} alignItems="center">
+          <Grid container spacing={2} alignItems='center'>
             <Grid item>
-              <Avatar alt="User 2">
+              <Avatar alt='User 2'>
                 <DocumentText />
               </Avatar>
             </Grid>
             <Grid item xs zeroMinWidth>
-              <Typography variant="subtitle1">
+              <Typography variant='subtitle1'>
                 Sent an invoice to Aida Bugg amount of{' '}
-                <Link component={RouterLink} to="#" underline="hover">
+                <Link component={RouterLink} to='#' underline='hover'>
                   $200.
                 </Link>
               </Typography>
-              <Typography variant="caption" color="secondary">
+              <Typography variant='caption' color='secondary'>
                 7 hours ago
               </Typography>
             </Grid>
@@ -81,15 +81,15 @@ export default function InvoiceNotificationList() {
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <Grid container spacing={2} alignItems="center">
+          <Grid container spacing={2} alignItems='center'>
             <Grid item>
-              <Avatar alt="User 2" color="error">
+              <Avatar alt='User 2' color='error'>
                 <Setting3 />
               </Avatar>
             </Grid>
             <Grid item xs zeroMinWidth>
-              <Typography variant="subtitle1">There was a failure to your setup</Typography>
-              <Typography variant="caption" color="secondary">
+              <Typography variant='subtitle1'>There was a failure to your setup</Typography>
+              <Typography variant='caption' color='secondary'>
                 7 hours ago
               </Typography>
             </Grid>
@@ -99,13 +99,13 @@ export default function InvoiceNotificationList() {
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <Grid container spacing={2} alignItems="center">
+          <Grid container spacing={2} alignItems='center'>
             <Grid item>
-              <Avatar alt="User 2">C</Avatar>
+              <Avatar alt='User 2'>C</Avatar>
             </Grid>
             <Grid item xs zeroMinWidth>
-              <Typography variant="subtitle1">Cristina danny invited to you join Meeting</Typography>
-              <Typography variant="caption" color="secondary">
+              <Typography variant='subtitle1'>Cristina danny invited to you join Meeting</Typography>
+              <Typography variant='caption' color='secondary'>
                 7 hours ago
               </Typography>
             </Grid>
@@ -115,13 +115,13 @@ export default function InvoiceNotificationList() {
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <Grid container spacing={2} alignItems="center">
+          <Grid container spacing={2} alignItems='center'>
             <Grid item>
-              <Avatar alt="User 2">C</Avatar>
+              <Avatar alt='User 2'>C</Avatar>
             </Grid>
             <Grid item xs zeroMinWidth>
-              <Typography variant="subtitle1">Cristina danny invited to you join Meeting</Typography>
-              <Typography variant="caption" color="secondary">
+              <Typography variant='subtitle1'>Cristina danny invited to you join Meeting</Typography>
+              <Typography variant='caption' color='secondary'>
                 7 hours ago
               </Typography>
             </Grid>
@@ -132,7 +132,7 @@ export default function InvoiceNotificationList() {
         </Grid>
 
         <Grid item xs={12}>
-          <Button fullWidth variant="outlined" color="secondary">
+          <Button fullWidth variant='outlined' color='secondary'>
             View All
           </Button>
         </Grid>

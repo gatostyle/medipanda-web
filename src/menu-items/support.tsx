@@ -14,7 +14,7 @@ const icons = {
   disabledMenu: ShieldCross,
   chipMenu: InfoCircle,
   documentation: I24Support,
-  roadmap: Driving
+  roadmap: Driving,
 };
 
 // ==============================|| MENU ITEMS - SUPPORT ||============================== //
@@ -25,7 +25,7 @@ const support: NavItemType = {
   children: [
     {
       id: 'menu-level',
-      title: <FormattedMessage id="menu-level" />,
+      title: <FormattedMessage id='menu-level' />,
       type: 'collapse',
       icon: icons.menuLevel,
       children: [
@@ -33,17 +33,17 @@ const support: NavItemType = {
           id: 'menu-level-1.1',
           title: (
             <>
-              <FormattedMessage id="level" /> 1
+              <FormattedMessage id='level' /> 1
             </>
           ),
           type: 'item',
-          url: '#'
+          url: '#',
         },
         {
           id: 'menu-level-1.2',
           title: (
             <>
-              <FormattedMessage id="level" /> 1
+              <FormattedMessage id='level' /> 1
             </>
           ),
           type: 'collapse',
@@ -52,17 +52,17 @@ const support: NavItemType = {
               id: 'menu-level-2.1',
               title: (
                 <>
-                  <FormattedMessage id="level" /> 2
+                  <FormattedMessage id='level' /> 2
                 </>
               ),
               type: 'item',
-              url: '#'
+              url: '#',
             },
             {
               id: 'menu-level-2.2',
               title: (
                 <>
-                  <FormattedMessage id="level" /> 2
+                  <FormattedMessage id='level' /> 2
                 </>
               ),
               type: 'collapse',
@@ -71,32 +71,32 @@ const support: NavItemType = {
                   id: 'menu-level-3.1',
                   title: (
                     <>
-                      <FormattedMessage id="level" /> 3
+                      <FormattedMessage id='level' /> 3
                     </>
                   ),
                   type: 'item',
-                  url: '#'
+                  url: '#',
                 },
                 {
                   id: 'menu-level-3.2',
                   title: (
                     <>
-                      <FormattedMessage id="level" /> 3
+                      <FormattedMessage id='level' /> 3
                     </>
                   ),
                   type: 'item',
-                  url: '#'
-                }
-              ]
-            }
-          ]
-        }
-      ]
+                  url: '#',
+                },
+              ],
+            },
+          ],
+        },
+      ],
     },
     {
       id: 'menu-level-subtitle',
-      title: <FormattedMessage id="menu-level-subtitle" />,
-      caption: <FormattedMessage id="menu-level-subtitle-caption" />,
+      title: <FormattedMessage id='menu-level-subtitle' />,
+      caption: <FormattedMessage id='menu-level-subtitle-caption' />,
       type: 'collapse',
       icon: icons.menuLevelSubtitle,
       children: [
@@ -104,49 +104,49 @@ const support: NavItemType = {
           id: 'sub-menu-level-1.1',
           title: (
             <>
-              <FormattedMessage id="level" /> 1
+              <FormattedMessage id='level' /> 1
             </>
           ),
-          caption: <FormattedMessage id="menu-level-subtitle-item" />,
+          caption: <FormattedMessage id='menu-level-subtitle-item' />,
           type: 'item',
-          url: '#'
+          url: '#',
         },
         {
           id: 'sub-menu-level-1.2',
           title: (
             <>
-              <FormattedMessage id="level" /> 1
+              <FormattedMessage id='level' /> 1
             </>
           ),
-          caption: <FormattedMessage id="menu-level-subtitle-collapse" />,
+          caption: <FormattedMessage id='menu-level-subtitle-collapse' />,
           type: 'collapse',
           children: [
             {
               id: 'sub-menu-level-2.1',
               title: (
                 <>
-                  <FormattedMessage id="level" /> 2
+                  <FormattedMessage id='level' /> 2
                 </>
               ),
-              caption: <FormattedMessage id="menu-level-subtitle-sub-item" />,
+              caption: <FormattedMessage id='menu-level-subtitle-sub-item' />,
               type: 'item',
-              url: '#'
-            }
-          ]
-        }
-      ]
+              url: '#',
+            },
+          ],
+        },
+      ],
     },
     {
       id: 'disabled-menu',
-      title: <FormattedMessage id="disabled-menu" />,
+      title: <FormattedMessage id='disabled-menu' />,
       type: 'item',
       url: '#',
       icon: icons.disabledMenu,
-      disabled: true
+      disabled: true,
     },
     {
       id: 'oval-chip-menu',
-      title: <FormattedMessage id="oval-chip-menu" />,
+      title: <FormattedMessage id='oval-chip-menu' />,
       type: 'item',
       url: '#',
       icon: icons.chipMenu,
@@ -154,12 +154,12 @@ const support: NavItemType = {
         label: 'Fire',
         color: 'error',
         variant: 'outlined',
-        size: 'small'
-      }
+        size: 'small',
+      },
     },
     {
       id: 'documentation',
-      title: <FormattedMessage id="documentation" />,
+      title: <FormattedMessage id='documentation' />,
       type: 'item',
       url: 'https://phoenixcoded.gitbook.io/able-pro/v/react/',
       icon: icons.documentation,
@@ -168,19 +168,19 @@ const support: NavItemType = {
       chip: {
         label: 'gitbook',
         color: 'info',
-        size: 'small'
-      }
+        size: 'small',
+      },
     },
     {
       id: 'roadmap',
-      title: <FormattedMessage id="roadmap" />,
+      title: <FormattedMessage id='roadmap' />,
       type: 'item',
       url: 'https://phoenixcoded.gitbook.io/able-pro/v/react/roadmap',
       icon: icons.roadmap,
       external: true,
-      target: true
-    }
-  ]
+      target: true,
+    },
+  ],
 };
 
 export default support;

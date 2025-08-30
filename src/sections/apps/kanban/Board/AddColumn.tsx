@@ -40,7 +40,7 @@ export default function AddColumn() {
   const [isAddColumn, setIsAddColumn] = useState(false);
 
   const handleAddColumnChange = () => {
-    setIsAddColumn((prev) => !prev);
+    setIsAddColumn(prev => !prev);
   };
 
   const addNewColumn = () => {
@@ -48,7 +48,7 @@ export default function AddColumn() {
       const newColumn = {
         id: `${chance.integer({ min: 1000, max: 9999 })}`,
         title,
-        itemIds: []
+        itemIds: [],
       };
 
       addColumn(newColumn);
@@ -57,9 +57,9 @@ export default function AddColumn() {
         message: 'Column Added successfully',
         anchorOrigin: { vertical: 'top', horizontal: 'right' },
         variant: 'alert',
-        alert: { color: 'success' }
+        alert: { color: 'success' },
       } as SnackbarProps);
-      setIsAddColumn((prev) => !prev);
+      setIsAddColumn(prev => !prev);
       setTitle('');
     } else {
       setIsTitle(true);
@@ -88,20 +88,20 @@ export default function AddColumn() {
         minWidth: 250,
         backgroundColor: theme.palette.mode === ThemeMode.DARK ? theme.palette.background.default : theme.palette.secondary[200],
         height: '100%',
-        borderColor: theme.palette.divider
+        borderColor: theme.palette.divider,
       }}
       contentSX={{ p: 1.5, '&:last-of-type': { pb: 1.5 } }}
     >
-      <Grid container alignItems="center" spacing={1}>
+      <Grid container alignItems='center' spacing={1}>
         {isAddColumn && (
           <Grid item xs={12}>
             <SubCard content={false}>
               <Box sx={{ p: 2, pb: 1.5, transition: 'background-color 0.25s ease-out' }}>
-                <Grid container alignItems="center" spacing={0.5}>
+                <Grid container alignItems='center' spacing={0.5}>
                   <Grid item xs={12}>
                     <TextField
                       fullWidth
-                      placeholder="Add Column"
+                      placeholder='Add Column'
                       value={title}
                       onChange={handleColumnTitle}
                       sx={{
@@ -109,7 +109,7 @@ export default function AddColumn() {
                         '& input': { bgcolor: 'transparent', p: 0, borderRadius: '0px' },
                         '& fieldset': { display: 'none' },
                         '& .MuiFormHelperText-root': { ml: 0 },
-                        '& .MuiOutlinedInput-root': { bgcolor: 'transparent', '&.Mui-focused': { boxShadow: 'none' } }
+                        '& .MuiOutlinedInput-root': { bgcolor: 'transparent', '&.Mui-focused': { boxShadow: 'none' } },
                       }}
                       onKeyUp={handleAddColumn}
                       helperText={isTitle ? 'Column title is required.' : ''}
@@ -118,13 +118,13 @@ export default function AddColumn() {
                   </Grid>
                   <Grid item xs zeroMinWidth />
                   <Grid item>
-                    <Stack direction="row" alignItems="center" spacing={1}>
-                      <Tooltip title="Cancel">
-                        <IconButton size="small" color="error" onClick={handleAddColumnChange}>
+                    <Stack direction='row' alignItems='center' spacing={1}>
+                      <Tooltip title='Cancel'>
+                        <IconButton size='small' color='error' onClick={handleAddColumnChange}>
                           <Add style={{ transform: 'rotate(45deg)' }} />
                         </IconButton>
                       </Tooltip>
-                      <Button variant="contained" color="primary" onClick={addNewColumn} size="small">
+                      <Button variant='contained' color='primary' onClick={addNewColumn} size='small'>
                         Add
                       </Button>
                     </Stack>
@@ -136,7 +136,7 @@ export default function AddColumn() {
         )}
         {!isAddColumn && (
           <Grid item xs={12}>
-            <Button variant="dashed" color="secondary" fullWidth onClick={handleAddColumnChange}>
+            <Button variant='dashed' color='secondary' fullWidth onClick={handleAddColumnChange}>
               Add Column
             </Button>
           </Grid>

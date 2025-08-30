@@ -31,29 +31,29 @@ export default function ItemComment({ comment, profile }: Props) {
       sx={{
         bgcolor: theme.palette.mode === ThemeMode.DARK ? 'secondary.100' : 'secondary.lighter',
         p: 1.5,
-        mt: 1.25
+        mt: 1.25,
       }}
     >
       <Grid container spacing={1}>
         <Grid item xs={12}>
-          <Grid container wrap="nowrap" alignItems="center" spacing={1}>
+          <Grid container wrap='nowrap' alignItems='center' spacing={1}>
             <Grid item>
               <Avatar
                 sx={{ width: 24, height: 24 }}
-                size="sm"
-                alt="User 1"
+                size='sm'
+                alt='User 1'
                 src={profile && profile.avatar && getImageUrl(`${profile.avatar}`, ImagePath.USERS)}
               />
             </Grid>
             <Grid item xs zeroMinWidth>
-              <Grid container alignItems="center" spacing={1} justifyContent="space-between">
+              <Grid container alignItems='center' spacing={1} justifyContent='space-between'>
                 <Grid item>
-                  <Typography variant="subtitle1">{profile.name}</Typography>
+                  <Typography variant='subtitle1'>{profile.name}</Typography>
                 </Grid>
                 <Grid item>
-                  <Stack direction="row" alignItems="center" spacing={0.5}>
-                    <Dot size={6} sx={{ mt: -0.25 }} color="secondary" />
-                    <Typography variant="caption" color="secondary">
+                  <Stack direction='row' alignItems='center' spacing={0.5}>
+                    <Dot size={6} sx={{ mt: -0.25 }} color='secondary' />
+                    <Typography variant='caption' color='secondary'>
                       {profile.time}
                     </Typography>
                   </Stack>
@@ -63,7 +63,7 @@ export default function ItemComment({ comment, profile }: Props) {
           </Grid>
         </Grid>
         <Grid item xs={12} sx={{ '&.MuiGrid-root': { pt: 1.5 } }}>
-          <Typography variant="body2">{comment?.comment}</Typography>
+          <Typography variant='body2'>{comment?.comment}</Typography>
         </Grid>
       </Grid>
     </MainCard>

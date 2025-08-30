@@ -49,9 +49,9 @@ export const MpDatePicker: React.FC<MpDatePickerProps> = ({
               ? slotProps.textField.InputProps
               : {}),
             ...textFieldProps?.InputProps,
-            ...(endAdornment !== undefined && { endAdornment })
-          }
-        }
+            ...(endAdornment !== undefined && { endAdornment }),
+          },
+        },
       }}
       {...rest}
     />

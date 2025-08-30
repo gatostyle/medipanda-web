@@ -8,7 +8,7 @@ export interface DeleteDialogConfig {
 }
 
 const initialState = {
-  open: (config: DeleteDialogConfig) => {}
+  open: (config: DeleteDialogConfig) => {},
 };
 
 export const MpDeleteDialogContext = createContext(initialState);
@@ -49,11 +49,11 @@ export function MpDeleteDialogProvider({ children }: MpDeleteDialogProviderProps
         open: (deleteConfig: DeleteDialogConfig) => {
           setConfig(deleteConfig);
           setOpen(true);
-        }
+        },
       }}
     >
       {children}
-      <Dialog open={open} onClose={handleCancel} maxWidth="sm" fullWidth>
+      <Dialog open={open} onClose={handleCancel} maxWidth='sm' fullWidth>
         <DialogTitle>{config?.title || '삭제 확인'}</DialogTitle>
         <DialogContent>
           <Typography>{config?.message}</Typography>
@@ -62,7 +62,7 @@ export function MpDeleteDialogProvider({ children }: MpDeleteDialogProviderProps
           <Button onClick={handleCancel} disabled={loading}>
             취소
           </Button>
-          <Button onClick={handleConfirm} variant="contained" color="error" disabled={loading}>
+          <Button onClick={handleConfirm} variant='contained' color='error' disabled={loading}>
             {loading ? '삭제 중...' : '삭제'}
           </Button>
         </DialogActions>

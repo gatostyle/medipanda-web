@@ -30,13 +30,13 @@ export default function RepeatCustomerRate() {
 
   return (
     <MainCard>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
-        <Typography variant="h5">Repeat customer rate</Typography>
+      <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1}>
+        <Typography variant='h5'>Repeat customer rate</Typography>
         <IconButton
-          color="secondary"
-          id="wallet-button"
+          color='secondary'
+          id='wallet-button'
           aria-controls={open ? 'wallet-menu' : undefined}
-          aria-haspopup="true"
+          aria-haspopup='true'
           aria-expanded={open ? 'true' : undefined}
           onClick={handleClick}
           sx={{ transform: 'rotate(90deg)' }}
@@ -44,21 +44,21 @@ export default function RepeatCustomerRate() {
           <MoreIcon />
         </IconButton>
         <Menu
-          id="wallet-menu"
+          id='wallet-menu'
           anchorEl={anchorEl}
           open={open}
           onClose={handleClose}
           MenuListProps={{
             'aria-labelledby': 'wallet-button',
-            sx: { p: 1.25, minWidth: 150 }
+            sx: { p: 1.25, minWidth: 150 },
           }}
           anchorOrigin={{
             vertical: 'bottom',
-            horizontal: 'right'
+            horizontal: 'right',
           }}
           transformOrigin={{
             vertical: 'top',
-            horizontal: 'right'
+            horizontal: 'right',
           }}
         >
           <ListItemButton onClick={handleClose}>Today</ListItemButton>
@@ -66,9 +66,9 @@ export default function RepeatCustomerRate() {
           <ListItemButton onClick={handleClose}>Monthly</ListItemButton>
         </Menu>
       </Stack>
-      <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing={0.5} sx={{ mt: 1 }}>
-        <Typography variant="subtitle1">5.44%</Typography>
-        <Chip color="success" variant="filled" label="+2.6%" size="small" sx={{ bgcolor: 'success.main', borderRadius: 1 }} />
+      <Stack direction='row' alignItems='center' justifyContent='flex-end' spacing={0.5} sx={{ mt: 1 }}>
+        <Typography variant='subtitle1'>5.44%</Typography>
+        <Chip color='success' variant='filled' label='+2.6%' size='small' sx={{ bgcolor: 'success.main', borderRadius: 1 }} />
       </Stack>
       <RepeatCustomerChart />
     </MainCard>

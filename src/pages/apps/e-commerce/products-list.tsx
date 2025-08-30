@@ -31,7 +31,7 @@ import {
   getExpandedRowModel,
   useReactTable,
   SortingState,
-  FilterFn
+  FilterFn,
 } from '@tanstack/react-table';
 import { rankItem } from '@tanstack/match-sorter-utils';
 
@@ -48,7 +48,7 @@ import {
   IndeterminateCheckbox,
   RowSelection,
   SelectColumnSorting,
-  TablePagination
+  TablePagination,
 } from 'components/third-party/react-table';
 
 import { APP_DEFAULT_PATH } from 'config';
@@ -85,8 +85,8 @@ function ReactTable({ data, columns }: Props) {
   const [sorting, setSorting] = useState<SortingState>([
     {
       id: 'name',
-      desc: false
-    }
+      desc: false,
+    },
   ]);
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState('');
@@ -97,7 +97,7 @@ function ReactTable({ data, columns }: Props) {
     state: {
       sorting,
       rowSelection,
-      globalFilter
+      globalFilter,
     },
     enableRowSelection: true,
     onSortingChange: setSorting,
@@ -110,20 +110,20 @@ function ReactTable({ data, columns }: Props) {
     getPaginationRowModel: getPaginationRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     globalFilterFn: fuzzyFilter,
-    debugTable: true
+    debugTable: true,
   });
 
   const backColor = alpha(theme.palette.primary.lighter, 0.1);
   let headers: LabelKeyObject[] = [];
   columns.map(
-    (columns) =>
+    columns =>
       // @ts-ignore
       columns.accessorKey &&
       headers.push({
         label: typeof columns.header === 'string' ? columns.header : '#',
         // @ts-ignore
-        key: columns.accessorKey
-      })
+        key: columns.accessorKey,
+      }),
   );
 
   const history = useNavigate();
@@ -134,16 +134,16 @@ function ReactTable({ data, columns }: Props) {
 
   return (
     <MainCard content={false}>
-      <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between" sx={{ p: 3 }}>
+      <Stack direction='row' spacing={2} alignItems='center' justifyContent='space-between' sx={{ p: 3 }}>
         <DebouncedInput
           value={globalFilter ?? ''}
-          onFilterChange={(value) => setGlobalFilter(String(value))}
+          onFilterChange={value => setGlobalFilter(String(value))}
           placeholder={`Search ${data.length} records...`}
         />
 
-        <Stack direction="row" spacing={1} alignItems="center">
+        <Stack direction='row' spacing={1} alignItems='center'>
           <SelectColumnSorting {...{ getState: table.getState, getAllColumns: table.getAllColumns, setSorting }} />
-          <Button variant="contained" startIcon={<Add />} onClick={handleAddProduct} size="large">
+          <Button variant='contained' startIcon={<Add />} onClick={handleAddProduct} size='large'>
             Add Product
           </Button>
         </Stack>
@@ -156,10 +156,10 @@ function ReactTable({ data, columns }: Props) {
               <TableHead>
                 {table.getHeaderGroups().map((headerGroup: HeaderGroup<any>) => (
                   <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
+                    {headerGroup.headers.map(header => {
                       if (header.column.columnDef.meta !== undefined && header.column.getCanSort()) {
                         Object.assign(header.column.columnDef.meta, {
-                          className: header.column.columnDef.meta.className + ' cursor-pointer prevent-select'
+                          className: header.column.columnDef.meta.className + ' cursor-pointer prevent-select',
                         });
                       }
 
@@ -170,11 +170,11 @@ function ReactTable({ data, columns }: Props) {
                           onClick={header.column.getToggleSortingHandler()}
                           {...(header.column.getCanSort() &&
                             header.column.columnDef.meta === undefined && {
-                              className: 'cursor-pointer prevent-select'
+                              className: 'cursor-pointer prevent-select',
                             })}
                         >
                           {header.isPlaceholder ? null : (
-                            <Stack direction="row" spacing={1} alignItems="center">
+                            <Stack direction='row' spacing={1} alignItems='center'>
                               <Box>{flexRender(header.column.columnDef.header, header.getContext())}</Box>
                               {header.column.getCanSort() && <HeaderSort column={header.column} />}
                             </Stack>
@@ -186,10 +186,10 @@ function ReactTable({ data, columns }: Props) {
                 ))}
               </TableHead>
               <TableBody>
-                {table.getRowModel().rows.map((row) => (
+                {table.getRowModel().rows.map(row => (
                   <Fragment key={row.id}>
                     <TableRow>
-                      {row.getVisibleCells().map((cell) => (
+                      {row.getVisibleCells().map(cell => (
                         <TableCell key={cell.id} {...cell.column.columnDef.meta}>
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </TableCell>
@@ -216,7 +216,7 @@ function ReactTable({ data, columns }: Props) {
                   setPageIndex: table.setPageIndex,
                   getState: table.getState,
                   getPageCount: table.getPageCount,
-                  initialPageSize: 10
+                  initialPageSize: 10,
                 }}
               />
             </Box>
@@ -241,7 +241,7 @@ export default function ProductList() {
             {...{
               checked: table.getIsAllRowsSelected(),
               indeterminate: table.getIsSomeRowsSelected(),
-              onChange: table.getToggleAllRowsSelectedHandler()
+              onChange: table.getToggleAllRowsSelectedHandler(),
             }}
           />
         ),
@@ -251,96 +251,96 @@ export default function ProductList() {
               checked: row.getIsSelected(),
               disabled: !row.getCanSelect(),
               indeterminate: row.getIsSomeSelected(),
-              onChange: row.getToggleSelectedHandler()
+              onChange: row.getToggleSelectedHandler(),
             }}
           />
-        )
+        ),
       },
       {
         header: '#',
         accessorKey: 'id',
         meta: {
-          className: 'cell-center'
-        }
+          className: 'cell-center',
+        },
       },
       {
         header: 'Product Detail',
         accessorKey: 'name',
         cell: ({ row, getValue }) => (
-          <Stack direction="row" spacing={1.5} alignItems="center">
+          <Stack direction='row' spacing={1.5} alignItems='center'>
             <Avatar
-              variant="rounded"
+              variant='rounded'
               alt={getValue() as string}
-              color="secondary"
-              size="sm"
+              color='secondary'
+              size='sm'
               src={getImageUrl(`thumbs/${!row.original.image ? 'prod-11.png' : row.original.image}`, ImagePath.ECOMMERCE)}
             />
             <Stack spacing={0}>
-              <Typography variant="subtitle1">{getValue() as string}</Typography>
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant='subtitle1'>{getValue() as string}</Typography>
+              <Typography variant='caption' color='text.secondary'>
                 {row.original.description}
               </Typography>
             </Stack>
           </Stack>
-        )
+        ),
       },
       {
         header: 'Categories',
         accessorKey: 'categories',
         cell: ({ row }) => {
           return row.original.categories ? (
-            <Stack direction="row" spacing={0.25}>
+            <Stack direction='row' spacing={0.25}>
               {row.original?.categories.map((item: string, index: number) => (
-                <Typography variant="h6" key={index} sx={{ textTransform: 'capitalize' }}>
+                <Typography variant='h6' key={index} sx={{ textTransform: 'capitalize' }}>
                   {capitalize(item)}
                   {row.original.categories!.length > index + 1 ? ',' : ''}
                 </Typography>
               ))}
             </Stack>
           ) : (
-            <Typography variant="h6">-</Typography>
+            <Typography variant='h6'>-</Typography>
           );
-        }
+        },
       },
       {
         header: 'Price',
         accessorKey: 'offerPrice',
-        cell: ({ getValue }) => <NumericFormat value={getValue() as number} displayType="text" thousandSeparator prefix="$" />,
+        cell: ({ getValue }) => <NumericFormat value={getValue() as number} displayType='text' thousandSeparator prefix='$' />,
         meta: {
-          className: 'cell-right'
-        }
+          className: 'cell-right',
+        },
       },
       {
         header: 'Qty',
         accessorKey: 'quantity',
         meta: {
-          className: 'cell-right'
-        }
+          className: 'cell-right',
+        },
       },
       {
         header: 'Status',
         accessorKey: 'isStock',
         cell: ({ getValue }) => (
-          <Chip color={getValue() ? 'success' : 'error'} label={getValue() ? 'In Stock' : 'Out of Stock'} size="small" variant="light" />
-        )
+          <Chip color={getValue() ? 'success' : 'error'} label={getValue() ? 'In Stock' : 'Out of Stock'} size='small' variant='light' />
+        ),
       },
       {
         header: 'Actions',
         meta: {
-          className: 'cell-center'
+          className: 'cell-center',
         },
         cell: ({ row }) => {
           const collapseIcon = row.getCanExpand() && row.getIsExpanded() ? <Add style={{ transform: 'rotate(45deg)' }} /> : <Eye />;
           return (
-            <Stack direction="row" alignItems="center" justifyContent="center" spacing={0}>
-              <Tooltip title="View">
+            <Stack direction='row' alignItems='center' justifyContent='center' spacing={0}>
+              <Tooltip title='View'>
                 <IconButton color={row.getIsExpanded() ? 'error' : 'secondary'} onClick={row.getToggleExpandedHandler()}>
                   {collapseIcon}
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Edit">
+              <Tooltip title='Edit'>
                 <IconButton
-                  color="primary"
+                  color='primary'
                   onClick={(e: MouseEvent<HTMLButtonElement>) => {
                     e.stopPropagation();
                   }}
@@ -348,9 +348,9 @@ export default function ProductList() {
                   <Edit />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Delete">
+              <Tooltip title='Delete'>
                 <IconButton
-                  color="error"
+                  color='error'
                   onClick={(e: MouseEvent<HTMLButtonElement>) => {
                     e.stopPropagation();
                   }}
@@ -360,16 +360,16 @@ export default function ProductList() {
               </Tooltip>
             </Stack>
           );
-        }
-      }
+        },
+      },
     ],
-    []
+    [],
   );
   let breadcrumbLinks = [{ title: 'Home', to: APP_DEFAULT_PATH }, { title: 'Product List' }];
 
   return (
     <>
-      <Breadcrumbs custom heading="Product List" links={breadcrumbLinks} />
+      <Breadcrumbs custom heading='Product List' links={breadcrumbLinks} />
       <ReactTable {...{ data: products, columns }} />
     </>
   );

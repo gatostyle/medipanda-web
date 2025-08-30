@@ -17,7 +17,7 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
@@ -63,7 +63,7 @@ export default function MpAdminCommunityPostList() {
       startAt: null as Date | null,
       endAt: null as Date | null,
       pageIndex: 0,
-      pageSize: 20
+      pageSize: 20,
     },
     onSubmit: async () => {
       if (formik.values.pageIndex !== 0) {
@@ -71,7 +71,7 @@ export default function MpAdminCommunityPostList() {
       } else {
         await fetchData();
       }
-    }
+    },
   });
 
   const columns: ColumnDef<Sequenced<BoardPostResponse>>[] = [
@@ -80,9 +80,9 @@ export default function MpAdminCommunityPostList() {
       header: () => (
         <Checkbox
           checked={selectedItems.length === data.length && data.length > 0}
-          onChange={(e) => {
+          onChange={e => {
             if (e.target.checked) {
-              setSelectedItems(data.map((item) => item.id));
+              setSelectedItems(data.map(item => item.id));
             } else {
               setSelectedItems([]);
             }
@@ -92,55 +92,55 @@ export default function MpAdminCommunityPostList() {
       cell: ({ row }) => (
         <Checkbox
           checked={selectedItems.includes(row.original.id)}
-          onChange={(e) => {
+          onChange={e => {
             if (e.target.checked) {
-              setSelectedItems((prev) => [...prev, row.original.id]);
+              setSelectedItems(prev => [...prev, row.original.id]);
             } else {
-              setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
+              setSelectedItems(prev => prev.filter(id => id !== row.original.id));
             }
           }}
         />
       ),
-      size: 50
+      size: 50,
     },
     {
       header: 'No',
       accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
-      size: 60
+      size: 60,
     },
     {
       header: '게시판유형',
       accessorKey: 'boardType',
       cell: ({ row }) => {
         const boardType = row.original.boardType;
-        return <Chip label={BOARD_TYPE_LABELS[boardType]} color="primary" variant="light" size="small" />;
+        return <Chip label={BOARD_TYPE_LABELS[boardType]} color='primary' variant='light' size='small' />;
       },
-      size: 120
+      size: 120,
     },
     {
       header: '아이디',
       accessorKey: 'userId',
       cell: ({ row }) => row.original.userId,
-      size: 100
+      size: 100,
     },
     {
       header: '회원명',
       accessorKey: 'name',
       cell: ({ row }) => row.original.name,
-      size: 100
+      size: 100,
     },
     {
       header: '닉네임',
       accessorKey: 'nickname',
       cell: ({ row }) => row.original.nickname,
-      size: 100
+      size: 100,
     },
     {
       header: '파트너사 계약여부',
       accessorKey: 'memberType',
       cell: ({ row }) => (row.original.memberType !== 'NONE' ? 'Y' : 'N'),
-      size: 120
+      size: 120,
     },
     {
       header: '제목',
@@ -149,38 +149,38 @@ export default function MpAdminCommunityPostList() {
         <Link to={`/admin/community-posts/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
           {row.original.title}
         </Link>
-      )
+      ),
     },
     {
       header: '좋아요 수',
       accessorKey: 'likesCount',
       cell: ({ row }) => row.original.likesCount,
-      size: 100
+      size: 100,
     },
     {
       header: '댓글 수',
       accessorKey: 'commentCount',
       cell: ({ row }) => row.original.commentCount,
-      size: 100
+      size: 100,
     },
     {
       header: '조회수',
       accessorKey: 'viewsCount',
       cell: ({ row }) => row.original.viewsCount,
-      size: 100
+      size: 100,
     },
     {
       header: '블라인드 여부',
       accessorKey: 'isBlind',
       cell: ({ row }) => (row.original.isBlind ? 'Y' : 'N'),
-      size: 120
+      size: 120,
     },
     {
       header: '등록일',
       accessorKey: 'createdAt',
       cell: ({ row }) => formatYyyyMmDdHhMm(row.original.createdAt),
-      size: 150
-    }
+      size: 150,
+    },
   ];
 
   const table = useReactTable({
@@ -191,11 +191,11 @@ export default function MpAdminCommunityPostList() {
     state: {
       pagination: {
         pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize
-      }
+        pageSize: formik.values.pageSize,
+      },
     },
     pageCount: totalPages,
-    manualPagination: true
+    manualPagination: true,
   });
 
   const fetchData = async () => {
@@ -211,7 +211,7 @@ export default function MpAdminCommunityPostList() {
         page: formik.values.pageIndex,
         size: formik.values.pageSize,
         filterBlind: undefined,
-        boardTitle: formik.values.searchType === 'title' ? formik.values.searchKeyword : undefined
+        boardTitle: formik.values.searchType === 'title' ? formik.values.searchKeyword : undefined,
       });
 
       setData(withSequence(response).content);
@@ -245,7 +245,7 @@ export default function MpAdminCommunityPostList() {
     const count = selectedItems.length;
     const message =
       count === 1
-        ? `포스트 ${data.find((item) => item.id === selectedItems[0])?.title}를 블라인드 처리하시겠습니까?`
+        ? `포스트 ${data.find(item => item.id === selectedItems[0])?.title}를 블라인드 처리하시겠습니까?`
         : `${count}건이 선택되었습니다. 블라인드 처리하시겠습니까?`;
 
     deleteDialog.open({
@@ -262,14 +262,14 @@ export default function MpAdminCommunityPostList() {
           console.error('Failed to blind posts:', error);
           errorDialog.showError('블라인드 처리 중 오류가 발생했습니다.');
         }
-      }
+      },
     });
   };
 
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant='h4' gutterBottom>
           포스트 관리
         </Typography>
       </Grid>
@@ -280,18 +280,18 @@ export default function MpAdminCommunityPostList() {
             <form onSubmit={formik.handleSubmit}>
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size="small">
+                  <FormControl fullWidth size='small'>
                     <InputLabel>게시판유형</InputLabel>
-                    <Select name="boardType" value={formik.values.boardType} onChange={formik.handleChange}>
+                    <Select name='boardType' value={formik.values.boardType} onChange={formik.handleChange}>
                       <MenuItem value={'ANONYMOUS'}>익명게시판</MenuItem>
                       <MenuItem value={'MR_CSO_MATCHING'}>MR-CSO 매칭</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size="small">
+                  <FormControl fullWidth size='small'>
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
+                    <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'title'}>제목</MenuItem>
                       <MenuItem value={'userId'}>아이디</MenuItem>
                       <MenuItem value={'name'}>회원명</MenuItem>
@@ -300,26 +300,26 @@ export default function MpAdminCommunityPostList() {
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="startAt" label="시작일" formik={formik} />
+                  <MpFormikDatePicker name='startAt' label='시작일' formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="endAt" label="종료일" formik={formik} />
+                  <MpFormikDatePicker name='endAt' label='종료일' formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
-                    name="searchKeyword"
-                    size="small"
-                    placeholder="검색어를 입력하세요"
+                    name='searchKeyword'
+                    size='small'
+                    placeholder='검색어를 입력하세요'
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
                   />
                 </SearchFilterItem>
                 <SearchFilterActions>
-                  <Button variant="contained" size="small" type="submit">
+                  <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant="outlined" size="small" onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={handleReset}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -332,12 +332,12 @@ export default function MpAdminCommunityPostList() {
       <Grid item xs={12}>
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Stack direction="row" spacing={2}>
-                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+            <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+              <Stack direction='row' spacing={2}>
+                <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
-              <Stack direction="row" spacing={1}>
-                <Button variant="contained" color="success" size="small" disabled={selectedItems.length === 0} onClick={handleBlind}>
+              <Stack direction='row' spacing={1}>
+                <Button variant='contained' color='success' size='small' disabled={selectedItems.length === 0} onClick={handleBlind}>
                   블라인드
                 </Button>
               </Stack>
@@ -345,11 +345,11 @@ export default function MpAdminCommunityPostList() {
 
             <ScrollX>
               <TableContainer>
-                <Table size="small">
+                <Table size='small'>
                   <TableHead>
-                    {table.getHeaderGroups().map((headerGroup) => (
+                    {table.getHeaderGroups().map(headerGroup => (
                       <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => (
+                        {headerGroup.headers.map(header => (
                           <TableCell key={header.id} style={{ width: header.getSize() }}>
                             {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                           </TableCell>
@@ -360,24 +360,24 @@ export default function MpAdminCommunityPostList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : (
-                      table.getRowModel().rows.map((row) => (
+                      table.getRowModel().rows.map(row => (
                         <TableRow key={row.id}>
-                          {row.getVisibleCells().map((cell) => (
+                          {row.getVisibleCells().map(cell => (
                             <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                           ))}
                         </TableRow>
@@ -388,13 +388,13 @@ export default function MpAdminCommunityPostList() {
               </TableContainer>
             </ScrollX>
 
-            <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
+            <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
                 page={formik.values.pageIndex + 1}
                 onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
-                color="primary"
-                variant="outlined"
+                color='primary'
+                variant='outlined'
                 showFirstButton
                 showLastButton
               />

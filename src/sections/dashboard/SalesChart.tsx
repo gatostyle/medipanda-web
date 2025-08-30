@@ -26,54 +26,54 @@ const columnChartOptions = {
     type: 'bar',
     height: 430,
     toolbar: {
-      show: false
-    }
+      show: false,
+    },
   },
   plotOptions: {
     bar: {
       columnWidth: '30%',
-      borderRadius: 4
-    }
+      borderRadius: 4,
+    },
   },
   dataLabels: {
-    enabled: false
+    enabled: false,
   },
   stroke: {
     show: true,
     width: 8,
-    colors: ['transparent']
+    colors: ['transparent'],
   },
   xaxis: {
-    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
+    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
   },
   yaxis: {
     title: {
-      text: '$ (thousands)'
-    }
+      text: '$ (thousands)',
+    },
   },
   fill: {
-    opacity: 1
+    opacity: 1,
   },
   tooltip: {
     y: {
       formatter(val: number) {
         return `$ ${val} thousands`;
-      }
-    }
+      },
+    },
   },
   legend: {
-    show: false
+    show: false,
   },
   responsive: [
     {
       breakpoint: 600,
       options: {
         yaxis: {
-          show: false
-        }
-      }
-    }
-  ]
+          show: false,
+        },
+      },
+    },
+  ],
 };
 
 // ==============================|| DASHBOARD - SALES COLUMN CHART ||============================== //
@@ -88,7 +88,7 @@ export default function SalesChart() {
 
   const [legend, setLegend] = useState({
     income: true,
-    cos: true
+    cos: true,
   });
 
   const { income, cos } = legend;
@@ -104,12 +104,12 @@ export default function SalesChart() {
   const initialSeries = [
     {
       name: 'Income',
-      data: [180, 90, 135, 114, 120, 145]
+      data: [180, 90, 135, 114, 120, 145],
     },
     {
       name: 'Cost Of Sales',
-      data: [120, 45, 78, 150, 168, 99]
-    }
+      data: [120, 45, 78, 150, 168, 99],
+    },
   ];
 
   const [series, setSeries] = useState(initialSeries);
@@ -128,15 +128,15 @@ export default function SalesChart() {
       setSeries([
         {
           name: 'Income',
-          data: [180, 90, 135, 114, 120, 145]
-        }
+          data: [180, 90, 135, 114, 120, 145],
+        },
       ]);
     } else if (cos) {
       setSeries([
         {
           name: 'Cost Of Sales',
-          data: [120, 45, 78, 150, 168, 99]
-        }
+          data: [120, 45, 78, 150, 168, 99],
+        },
       ]);
     } else {
       setSeries([]);
@@ -145,44 +145,44 @@ export default function SalesChart() {
   }, [income, cos]);
 
   useEffect(() => {
-    setOptions((prevState) => ({
+    setOptions(prevState => ({
       ...prevState,
       colors: !(income && cos) && cos ? [primaryMain] : [warning, primaryMain],
       xaxis: {
         labels: {
           style: {
-            colors: [secondary, secondary, secondary, secondary, secondary, secondary]
-          }
-        }
+            colors: [secondary, secondary, secondary, secondary, secondary, secondary],
+          },
+        },
       },
       yaxis: {
         labels: {
           style: {
-            colors: [secondary]
-          }
-        }
+            colors: [secondary],
+          },
+        },
       },
       grid: {
-        borderColor: line
+        borderColor: line,
       },
       plotOptions: {
         bar: {
-          columnWidth: xsDown ? '60%' : '30%'
-        }
+          columnWidth: xsDown ? '60%' : '30%',
+        },
       },
       theme: {
-        mode: mode === ThemeMode.DARK ? 'dark' : 'light'
-      }
+        mode: mode === ThemeMode.DARK ? 'dark' : 'light',
+      },
     }));
   }, [mode, primary, secondary, line, warning, primaryMain, successDark, income, cos, xsDown]);
 
   return (
     <MainCard>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
-        <Typography variant="h5">Sales Report</Typography>
+      <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1}>
+        <Typography variant='h5'>Sales Report</Typography>
         <Box sx={{ minWidth: 120 }}>
           <FormControl fullWidth>
-            <Select id="demo-simple-select" value={age} onChange={handleChange}>
+            <Select id='demo-simple-select' value={age} onChange={handleChange}>
               <MenuItem value={10}>Today</MenuItem>
               <MenuItem value={20}>Weekly</MenuItem>
               <MenuItem value={30}>Monthly</MenuItem>
@@ -190,25 +190,25 @@ export default function SalesChart() {
           </FormControl>
         </Box>
       </Stack>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mt: 1.5 }}>
+      <Stack direction='row' alignItems='center' justifyContent='space-between' sx={{ mt: 1.5 }}>
         <Stack>
-          <Typography variant="h6" color="secondary">
+          <Typography variant='h6' color='secondary'>
             Net Profit
           </Typography>
-          <Typography variant="h4">$1560</Typography>
+          <Typography variant='h4'>$1560</Typography>
         </Stack>
-        <FormControl component="fieldset" sx={{ width: 136 }}>
+        <FormControl component='fieldset' sx={{ width: 136 }}>
           <FormGroup row>
             <FormControlLabel
-              control={<Checkbox color="warning" checked={income} onChange={handleLegendChange} name="income" />}
-              label="Income"
+              control={<Checkbox color='warning' checked={income} onChange={handleLegendChange} name='income' />}
+              label='Income'
             />
-            <FormControlLabel control={<Checkbox checked={cos} onChange={handleLegendChange} name="cos" />} label="Cost of Sales" />
+            <FormControlLabel control={<Checkbox checked={cos} onChange={handleLegendChange} name='cos' />} label='Cost of Sales' />
           </FormGroup>
         </FormControl>
       </Stack>
-      <div id="chart">
-        <ReactApexChart options={options} series={series} type="bar" height={360} />
+      <div id='chart'>
+        <ReactApexChart options={options} series={series} type='bar' height={360} />
       </div>
     </MainCard>
   );

@@ -33,13 +33,13 @@ function TableWidgetCard({ color, title, count, percentage, isLoss, invoice, isA
     <MainCard {...(isActive && { sx: { bgcolor: 'secondary.lighter', borderColor: 'secondary.lighter' } })}>
       <Grid container spacing={1.25}>
         <Grid item xs={12}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between">
-            <Typography variant="subtitle1">{title}</Typography>
+          <Stack direction='row' alignItems='center' justifyContent='space-between'>
+            <Typography variant='subtitle1'>{title}</Typography>
             {percentage && (
-              <Stack sx={{ ml: 1, pl: 0.5 }} direction="row" alignItems="center" spacing={0.5}>
-                {!isLoss && <ArrowUp2 variant="Bold" size={16} style={{ color }} />}
-                {isLoss && <ArrowDown2 variant="Bold" size={16} style={{ color }} />}
-                <Typography color="secondary" sx={{ fontWeight: 500 }}>
+              <Stack sx={{ ml: 1, pl: 0.5 }} direction='row' alignItems='center' spacing={0.5}>
+                {!isLoss && <ArrowUp2 variant='Bold' size={16} style={{ color }} />}
+                {isLoss && <ArrowDown2 variant='Bold' size={16} style={{ color }} />}
+                <Typography color='secondary' sx={{ fontWeight: 500 }}>
                   {percentage}%
                 </Typography>
               </Stack>
@@ -48,10 +48,10 @@ function TableWidgetCard({ color, title, count, percentage, isLoss, invoice, isA
         </Grid>
         <Grid item xs={12}>
           <Stack spacing={0.25}>
-            <Typography variant="h5">{count}</Typography>
-            <Stack direction="row" spacing={1} alignItems="center">
-              <Typography variant="h5">{invoice}</Typography>
-              <Typography color="secondary">invoices</Typography>
+            <Typography variant='h5'>{count}</Typography>
+            <Stack direction='row' spacing={1} alignItems='center'>
+              <Typography variant='h5'>{invoice}</Typography>
+              <Typography color='secondary'>invoices</Typography>
             </Stack>
           </Stack>
         </Grid>
@@ -73,11 +73,11 @@ export const WidgetChart = ({ color, data }: any) => {
       height: 100,
       type: 'area',
       toolbar: {
-        show: false
+        show: false,
       },
       sparkline: {
-        enabled: true
-      }
+        enabled: true,
+      },
     },
     fill: {
       type: 'gradient',
@@ -86,59 +86,59 @@ export const WidgetChart = ({ color, data }: any) => {
         type: 'vertical',
         inverseColors: false,
         opacityFrom: 0.5,
-        opacityTo: 0
-      }
+        opacityTo: 0,
+      },
     },
     plotOptions: {
       bar: {
-        borderRadius: 0
-      }
+        borderRadius: 0,
+      },
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     xaxis: {
       axisBorder: {
-        show: false
+        show: false,
       },
       axisTicks: {
-        show: false
+        show: false,
       },
       labels: {
-        show: false
+        show: false,
       },
       tooltip: {
-        enabled: false
-      }
+        enabled: false,
+      },
     },
     stroke: {
       width: 1,
-      curve: 'smooth'
+      curve: 'smooth',
     },
     grid: {
-      show: false
+      show: false,
     },
     yaxis: {
       axisBorder: {
-        show: false
+        show: false,
       },
       axisTicks: {
-        show: false
+        show: false,
       },
       labels: {
-        show: false
-      }
+        show: false,
+      },
     },
     tooltip: {
       x: {
-        show: false
+        show: false,
       },
       y: {
         formatter(val: number) {
           return `$ ${val}`;
-        }
-      }
-    }
+        },
+      },
+    },
   };
 
   const { primary, secondary } = theme.palette.text;
@@ -147,23 +147,23 @@ export const WidgetChart = ({ color, data }: any) => {
   const [options, setOptions] = useState<ChartProps>(areaChartOptions);
 
   useEffect(() => {
-    setOptions((prevState) => ({
+    setOptions(prevState => ({
       ...prevState,
       colors: [color.main],
       theme: {
-        mode: mode === ThemeMode.DARK ? 'dark' : 'light'
-      }
+        mode: mode === ThemeMode.DARK ? 'dark' : 'light',
+      },
     }));
   }, [mode, primary, secondary, line, theme, color]);
 
   const [series] = useState([
     {
       name: 'Sales',
-      data: data
-    }
+      data: data,
+    },
   ]);
 
-  return <ReactApexChart options={options} series={series} type="area" height={80} />;
+  return <ReactApexChart options={options} series={series} type='area' height={80} />;
 };
 
 export default TableWidgetCard;

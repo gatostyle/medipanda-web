@@ -43,32 +43,32 @@ export default function AlternateTimeline() {
 </Timeline>`;
 
   return (
-    <MainCard title="Alternating Positioned" codeString={altTimelineCodeString}>
-      <Timeline position="alternate">
+    <MainCard title='Alternating Positioned' codeString={altTimelineCodeString}>
+      <Timeline position='alternate'>
         <TimelineItem>
           <TimelineSeparator>
-            <TimelineDot variant="outlined" color="primary" />
+            <TimelineDot variant='outlined' color='primary' />
             <TimelineConnector />
           </TimelineSeparator>
           <TimelineContent>Eat</TimelineContent>
         </TimelineItem>
         <TimelineItem>
           <TimelineSeparator>
-            <TimelineDot variant="outlined" color="primary" />
+            <TimelineDot variant='outlined' color='primary' />
             <TimelineConnector />
           </TimelineSeparator>
           <TimelineContent>Code</TimelineContent>
         </TimelineItem>
         <TimelineItem>
           <TimelineSeparator>
-            <TimelineDot variant="outlined" color="primary" />
+            <TimelineDot variant='outlined' color='primary' />
             <TimelineConnector />
           </TimelineSeparator>
           <TimelineContent>Sleep</TimelineContent>
         </TimelineItem>
         <TimelineItem sx={{ minHeight: 'auto' }}>
           <TimelineSeparator>
-            <TimelineDot variant="outlined" color="primary" />
+            <TimelineDot variant='outlined' color='primary' />
           </TimelineSeparator>
           <TimelineContent>Repeat</TimelineContent>
         </TimelineItem>

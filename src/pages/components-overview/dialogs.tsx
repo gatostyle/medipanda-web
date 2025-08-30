@@ -396,65 +396,65 @@ export default function Dialogs() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Dialog"
-        caption="Dialogs inform users about a task and can contain critical information, require decisions, or involve multiple tasks."
-        directory="src/pages/components-overview/dialogs"
-        link="https://mui.com/material-ui/react-dialog/"
+        title='Dialog'
+        caption='Dialogs inform users about a task and can contain critical information, require decisions, or involve multiple tasks.'
+        directory='src/pages/components-overview/dialogs'
+        link='https://mui.com/material-ui/react-dialog/'
       />
       <ComponentWrapper sx={{ '& .MuiCardContent-root': { textAlign: 'center' } }}>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} lg={4}>
-            <MainCard title="Basic" codeString={basicDialogCodeString}>
+            <MainCard title='Basic' codeString={basicDialogCodeString}>
               <SimpleDialog />
             </MainCard>
           </Grid>
           <Grid item xs={12} sm={6} lg={4}>
-            <MainCard title="Alert" codeString={alertcDialogCodeString}>
+            <MainCard title='Alert' codeString={alertcDialogCodeString}>
               <AlertDialog />
             </MainCard>
           </Grid>
           <Grid item xs={12} sm={6} lg={4}>
-            <MainCard title="Form" codeString={formDialogCodeString}>
+            <MainCard title='Form' codeString={formDialogCodeString}>
               <FormDialog />
             </MainCard>
           </Grid>
           <Grid item xs={12} sm={6} lg={4}>
-            <MainCard title="Transitions" codeString={transitionsDialogCodeString}>
+            <MainCard title='Transitions' codeString={transitionsDialogCodeString}>
               <TransitionsDialog />
             </MainCard>
           </Grid>
           <Grid item xs={12} sm={6} lg={4}>
-            <MainCard title="Customized" codeString={customizedDialogCodeString}>
+            <MainCard title='Customized' codeString={customizedDialogCodeString}>
               <CustomizedDialog />
             </MainCard>
           </Grid>
           <Grid item xs={12} sm={6} lg={4}>
-            <MainCard title="Full Screen" codeString={fullscreenDialogCodeString}>
+            <MainCard title='Full Screen' codeString={fullscreenDialogCodeString}>
               <FullScreenDialog />
             </MainCard>
           </Grid>
           <Grid item xs={12} sm={6} lg={4}>
-            <MainCard title="Sizes" codeString={sizesDialogCodeString}>
+            <MainCard title='Sizes' codeString={sizesDialogCodeString}>
               <SizesDialog />
             </MainCard>
           </Grid>
           <Grid item xs={12} sm={6} lg={4}>
-            <MainCard title="Responsive" codeString={responsiveDialogCodeString}>
+            <MainCard title='Responsive' codeString={responsiveDialogCodeString}>
               <ResponsiveDialog />
             </MainCard>
           </Grid>
           <Grid item xs={12} sm={6} lg={4}>
-            <MainCard title="Draggable" codeString={draggaleDialogCodeString}>
+            <MainCard title='Draggable' codeString={draggaleDialogCodeString}>
               <DraggableDialog />
             </MainCard>
           </Grid>
           <Grid item xs={12} sm={6} lg={4}>
-            <MainCard title="Scrolling" codeString={scrollingDialogCodeString}>
+            <MainCard title='Scrolling' codeString={scrollingDialogCodeString}>
               <ScrollDialog />
             </MainCard>
           </Grid>
           <Grid item xs={12} sm={6} lg={4}>
-            <MainCard title="Confirmation" codeString={confirmDialogCodeString}>
+            <MainCard title='Confirmation' codeString={confirmDialogCodeString}>
               <ConfirmationDialog />
             </MainCard>
           </Grid>

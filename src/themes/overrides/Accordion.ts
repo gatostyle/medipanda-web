@@ -9,23 +9,23 @@ export default function Accordion(theme: Theme) {
       defaultProps: {
         disableGutters: true,
         square: true,
-        elevation: 0
+        elevation: 0,
       },
       styleOverrides: {
         root: {
           border: '1px solid',
           borderColor: theme.palette.divider,
           '&:not(:last-child)': {
-            borderBottom: 0
+            borderBottom: 0,
           },
           '&:before': {
-            display: 'none'
+            display: 'none',
           },
           '&.Mui-disabled': {
-            backgroundColor: theme.palette.secondary.lighter
-          }
-        }
-      }
-    }
+            backgroundColor: theme.palette.secondary.lighter,
+          },
+        },
+      },
+    },
   };
 }

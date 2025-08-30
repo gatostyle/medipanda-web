@@ -29,7 +29,7 @@ export default function MobileSection() {
   const anchorRef = useRef<any>(null);
 
   const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
+    setOpen(prevOpen => !prevOpen);
   };
 
   const handleClose = (event: MouseEvent | TouchEvent) => {
@@ -56,21 +56,21 @@ export default function MobileSection() {
     <>
       <Box sx={{ flexShrink: 0, ml: 0.75 }}>
         <IconButton
-          aria-label="open more menu"
+          aria-label='open more menu'
           ref={anchorRef}
           aria-controls={open ? 'menu-list-grow' : undefined}
-          aria-haspopup="true"
+          aria-haspopup='true'
           onClick={handleToggle}
-          color="secondary"
-          variant="light"
-          size="large"
+          color='secondary'
+          variant='light'
+          size='large'
           sx={{ color: 'secondary.main', bgcolor: open ? iconBackColorOpen : iconBackColor, p: 1 }}
         >
-          <MoreSquare variant="Bulk" style={{ transform: 'rotate(90deg)' }} />
+          <MoreSquare variant='Bulk' style={{ transform: 'rotate(90deg)' }} />
         </IconButton>
       </Box>
       <Popper
-        placement="bottom-end"
+        placement='bottom-end'
         open={open}
         anchorEl={anchorRef.current}
         role={undefined}
@@ -80,10 +80,10 @@ export default function MobileSection() {
         popperOptions={{ modifiers: [{ name: 'offset', options: { offset: [0, 9] } }] }}
       >
         {({ TransitionProps }) => (
-          <Transitions type="fade" in={open} {...TransitionProps}>
+          <Transitions type='fade' in={open} {...TransitionProps}>
             <Paper sx={{ boxShadow: theme.customShadows.z1 }}>
               <ClickAwayListener onClickAway={handleClose}>
-                <AppBar color="inherit">
+                <AppBar color='inherit'>
                   <Toolbar>
                     <Search />
                     <Localization />

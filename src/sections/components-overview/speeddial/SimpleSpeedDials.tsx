@@ -31,7 +31,7 @@ export default function SimpleSpeedDials() {
     { icon: <Save2 />, name: 'Save' },
     { icon: <Printer />, name: 'Print' },
     { icon: <Share />, name: 'Share' },
-    { icon: <Heart />, name: 'Like' }
+    { icon: <Heart />, name: 'Like' },
   ];
 
   const handleClose = () => {
@@ -92,18 +92,18 @@ export default function SimpleSpeedDials() {
 </Box>`;
 
   return (
-    <MainCard title="Basic" codeString={basicSpeeddialCodeString}>
+    <MainCard title='Basic' codeString={basicSpeeddialCodeString}>
       <>
-        <FormControlLabel control={<Switch checked={hidden} onChange={handleHiddenChange} color="primary" />} label="Hidden" />
-        <FormLabel component="legend">Direction</FormLabel>
-        <RadioGroup sx={{ mt: 1 }} aria-label="direction" name="direction" value={direction} onChange={handleDirectionChange} row>
-          <FormControlLabel value="up" control={<Radio />} label="Up" />
+        <FormControlLabel control={<Switch checked={hidden} onChange={handleHiddenChange} color='primary' />} label='Hidden' />
+        <FormLabel component='legend'>Direction</FormLabel>
+        <RadioGroup sx={{ mt: 1 }} aria-label='direction' name='direction' value={direction} onChange={handleDirectionChange} row>
+          <FormControlLabel value='up' control={<Radio />} label='Up' />
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            <FormControlLabel value="right" control={<Radio />} label="Right" />
+            <FormControlLabel value='right' control={<Radio />} label='Right' />
           </Box>
-          <FormControlLabel value="down" control={<Radio />} label="Down" />
+          <FormControlLabel value='down' control={<Radio />} label='Down' />
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            <FormControlLabel value="left" control={<Radio />} label="Left" />
+            <FormControlLabel value='left' control={<Radio />} label='Left' />
           </Box>
         </RadioGroup>
         <Box sx={{ position: 'relative', marginTop: theme.spacing(3), height: 300 }}>
@@ -112,9 +112,9 @@ export default function SimpleSpeedDials() {
               position: 'absolute',
               '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': { bottom: theme.spacing(2), right: theme.spacing(2) },
               '&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight': { top: theme.spacing(2), left: theme.spacing(2) },
-              '& .MuiSpeedDialAction-fab': { bgcolor: 'secondary.200' }
+              '& .MuiSpeedDialAction-fab': { bgcolor: 'secondary.200' },
             }}
-            ariaLabel="SpeedDial example"
+            ariaLabel='SpeedDial example'
             hidden={hidden}
             icon={<SpeedDialIcon />}
             onClose={handleClose}
@@ -122,7 +122,7 @@ export default function SimpleSpeedDials() {
             open={open}
             direction={direction}
           >
-            {actions.map((action) => (
+            {actions.map(action => (
               <SpeedDialAction key={action.name} icon={action.icon} tooltipTitle={action.name} onClick={handleClose} />
             ))}
           </SpeedDial>

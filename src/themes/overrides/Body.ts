@@ -5,9 +5,9 @@ export default function Body() {
     MuiCssBaseline: {
       styleOverrides: {
         body: {
-          fontFeatureSettings: '"salt"'
-        }
-      }
-    }
+          fontFeatureSettings: '"salt"',
+        },
+      },
+    },
   };
 }

@@ -14,9 +14,9 @@ export default function TableCell(theme: Theme) {
         width: 1,
         height: 'calc(100% - 30px)',
         right: 0,
-        top: 16
-      }
-    }
+        top: 16,
+      },
+    },
   };
 
   return {
@@ -25,23 +25,23 @@ export default function TableCell(theme: Theme) {
         root: {
           fontSize: '0.875rem',
           padding: 12,
-          borderColor: theme.palette.divider
+          borderColor: theme.palette.divider,
         },
         sizeSmall: {
-          padding: 8
+          padding: 8,
         },
         head: {
           fontSize: '0.75rem',
           fontWeight: 700,
           textTransform: 'uppercase',
-          ...commonCell
+          ...commonCell,
         },
         footer: {
           fontSize: '0.75rem',
           textTransform: 'uppercase',
-          ...commonCell
-        }
-      }
-    }
+          ...commonCell,
+        },
+      },
+    },
   };
 }

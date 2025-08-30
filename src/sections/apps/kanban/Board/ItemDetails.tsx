@@ -41,7 +41,7 @@ export default function ItemDetails() {
   // drawer
   const [open, setOpen] = useState<boolean>(selectedItem !== false);
   const handleDrawerOpen = () => {
-    setOpen((prevState) => !prevState);
+    setOpen(prevState => !prevState);
     handlerKanbanDialog(false);
   };
 
@@ -72,7 +72,7 @@ export default function ItemDetails() {
         message: 'Task Deleted successfully',
         anchorOrigin: { vertical: 'top', horizontal: 'right' },
         variant: 'alert',
-        alert: { color: 'success' }
+        alert: { color: 'success' },
       } as SnackbarProps);
     }
   };
@@ -88,11 +88,11 @@ export default function ItemDetails() {
         '& .MuiDrawer-paper': {
           width: { xs: 320, md: 450 },
           border: 'none',
-          borderRadius: '0px'
-        }
+          borderRadius: '0px',
+        },
       }}
-      variant="temporary"
-      anchor="right"
+      variant='temporary'
+      anchor='right'
       open={open}
       ModalProps={{ keepMounted: true }}
       onClose={handleDrawerOpen}
@@ -102,18 +102,18 @@ export default function ItemDetails() {
           {selectedData! && (
             <>
               <Box sx={{ p: 3 }}>
-                <Grid container alignItems="center" spacing={0.5} justifyContent="space-between">
+                <Grid container alignItems='center' spacing={0.5} justifyContent='space-between'>
                   <Grid item sx={{ width: 'calc(100% - 64px)' }}>
-                    <Stack direction="row" spacing={0.5} alignItems="center" justifyContent="space-between">
+                    <Stack direction='row' spacing={0.5} alignItems='center' justifyContent='space-between'>
                       <Typography
-                        variant="h4"
+                        variant='h4'
                         sx={{
                           display: 'inline-block',
                           width: 'calc(100% - 34px)',
                           textOverflow: 'ellipsis',
                           whiteSpace: 'nowrap',
                           overflow: 'hidden',
-                          verticalAlign: 'middle'
+                          verticalAlign: 'middle',
                         }}
                       >
                         {selectedData.title}
@@ -122,14 +122,14 @@ export default function ItemDetails() {
                   </Grid>
 
                   <Grid item>
-                    <Stack direction="row" alignItems="center">
-                      <Tooltip title="Delete Task">
-                        <IconButton color="error" onClick={() => setOpenModal(true)} size="small" sx={{ fontSize: '0.875rem' }}>
-                          <Trash variant="Bold" />
+                    <Stack direction='row' alignItems='center'>
+                      <Tooltip title='Delete Task'>
+                        <IconButton color='error' onClick={() => setOpenModal(true)} size='small' sx={{ fontSize: '0.875rem' }}>
+                          <Trash variant='Bold' />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip title="Close">
-                        <IconButton color="secondary" onClick={handleDrawerOpen} size="small" sx={{ fontSize: '0.875rem' }}>
+                      <Tooltip title='Close'>
+                        <IconButton color='secondary' onClick={handleDrawerOpen} size='small' sx={{ fontSize: '0.875rem' }}>
                           <Add style={{ transform: 'rotate(45deg)' }} />
                         </IconButton>
                       </Tooltip>
@@ -161,8 +161,8 @@ export default function ItemDetails() {
             </>
           )}
           {!selectedData! && (
-            <Stack justifyContent="center" alignItems="center" sx={{ height: '100vh' }}>
-              <Typography variant="h5" color="error">
+            <Stack justifyContent='center' alignItems='center' sx={{ height: '100vh' }}>
+              <Typography variant='h5' color='error'>
                 No item found
               </Typography>
             </Stack>

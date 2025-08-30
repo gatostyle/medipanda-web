@@ -13,7 +13,7 @@ const Root = styled('div')(
   ({ theme }) => `
   color: ${theme.palette.text.primary};
   font-size: 14px;
-`
+`,
 );
 Root.displayName = 'Root';
 
@@ -48,7 +48,7 @@ const InputWrapper = styled('div')(
     margin: 0;
     outline: 0;
   }
-`
+`,
 );
 
 interface TagProps extends ReturnType<AutocompleteGetTagProps> {
@@ -64,7 +64,7 @@ function Tag({ label, onDelete, ...other }: TagProps) {
   return (
     <div {...other}>
       <span>{label}</span>
-      <CloseCircle onClick={onDelete} variant="Bold" size={18} />
+      <CloseCircle onClick={onDelete} variant='Bold' size={18} />
     </div>
   );
 }
@@ -95,7 +95,7 @@ const StyledTag = styled(Tag)<TagProps>(
     cursor: pointer;
     padding: 4px;
   }
-`
+`,
 );
 
 const Listbox = styled('ul')(
@@ -142,7 +142,7 @@ const Listbox = styled('ul')(
       color: currentColor;
     }
   }
-`
+`,
 );
 
 // ==============================|| AUTOCOMPLETE - CUSTOMIZED ||============================== //
@@ -154,7 +154,7 @@ export default function CustomizedAutocomplete() {
       defaultValue: [data[1], data[3], data[8]],
       multiple: true,
       options: data,
-      getOptionLabel: (option) => option.label
+      getOptionLabel: option => option.label,
     });
 
   const customAutocompleteCodeString = `// CustomizedAutocomplete.tsx
@@ -180,7 +180,7 @@ export default function CustomizedAutocomplete() {
 </Root>`;
 
   return (
-    <MainCard title="Customized" sx={{ overflow: 'visible' }} codeString={customAutocompleteCodeString}>
+    <MainCard title='Customized' sx={{ overflow: 'visible' }} codeString={customAutocompleteCodeString}>
       <Root>
         <div {...getRootProps()}>
           <InputWrapper ref={setAnchorEl} className={focused ? 'focused' : ''}>
@@ -195,7 +195,7 @@ export default function CustomizedAutocomplete() {
             {(groupedOptions as typeof data).map((option, index) => (
               <li {...getOptionProps({ option, index })} key={index}>
                 <span>{option.label}</span>
-                <TickSquare variant="Bold" size={16} style={{ marginTop: 2 }} />
+                <TickSquare variant='Bold' size={16} style={{ marginTop: 2 }} />
               </li>
             ))}
           </Listbox>

@@ -20,11 +20,11 @@ export default function FadeInWhenVisible({ children }: { children: ReactElement
     <motion.div
       ref={ref}
       animate={controls}
-      initial="hidden"
+      initial='hidden'
       transition={{ duration: 0.4 }}
       variants={{
         visible: { opacity: 1, translateY: 0 },
-        hidden: { opacity: 0, translateY: 200 }
+        hidden: { opacity: 0, translateY: 200 },
       }}
     >
       {children}

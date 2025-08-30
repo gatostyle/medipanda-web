@@ -61,7 +61,7 @@ export default function ProductImages({ product }: { product: Products }) {
       open: true,
       message: 'Added to favourites',
       variant: 'alert',
-      alert: { color: 'success' }
+      alert: { color: 'success' },
     } as SnackbarProps);
   };
 
@@ -71,9 +71,9 @@ export default function ProductImages({ product }: { product: Products }) {
     <Box
       {...props}
       className={'prev' + (currentSlide === 0 ? ' slick-disabled' : '')}
-      aria-hidden="true"
+      aria-hidden='true'
       aria-disabled={currentSlide === 0 && slideCount !== 0 ? true : false}
-      color="secondary"
+      color='secondary'
       sx={{ cursor: 'pointer', borderRadius: 1 }}
     >
       <ArrowLeft2 style={{ color: theme.palette.secondary.light }} />
@@ -83,9 +83,9 @@ export default function ProductImages({ product }: { product: Products }) {
   const ArrowDown = ({ currentSlide, slideCount, ...props }: any) => (
     <Box
       {...props}
-      color="secondary"
+      color='secondary'
       className={'next' + (currentSlide === slideCount - 1 ? ' slick-disabled' : '')}
-      aria-hidden="true"
+      aria-hidden='true'
       aria-disabled={currentSlide === slideCount - 1 ? true : false}
       sx={{ cursor: 'pointer', borderRadius: 1, p: 0.75 }}
     >
@@ -104,7 +104,7 @@ export default function ProductImages({ product }: { product: Products }) {
     centerPadding: '0px',
     slidesToShow: products.length > 3 ? lgNo : products.length,
     prevArrow: <ArrowUp />,
-    nextArrow: <ArrowDown />
+    nextArrow: <ArrowDown />,
   };
 
   return (
@@ -122,7 +122,7 @@ export default function ProductImages({ product }: { product: Products }) {
               alignItems: 'center',
               bgcolor: theme.palette.mode === ThemeMode.DARK ? 'secondary.lighter' : 'secondary.200',
               '& .react-transform-wrapper': { cursor: 'crosshair', height: '100%' },
-              '& .react-transform-component': { height: '100%' }
+              '& .react-transform-component': { height: '100%' },
             }}
           >
             <TransformWrapper initialScale={1}>
@@ -131,20 +131,20 @@ export default function ProductImages({ product }: { product: Products }) {
                   <TransformComponent>
                     <CardMedia
                       onClick={() => setModal(!modal)}
-                      component="img"
+                      component='img'
                       image={selected}
-                      title="Scroll Zoom"
+                      title='Scroll Zoom'
                       sx={{ borderRadius: `4px`, position: 'relative' }}
                     />
                   </TransformComponent>
-                  <Stack direction="row" className="tools" sx={{ position: 'absolute', bottom: 10, right: 10, zIndex: 1 }}>
-                    <IconButton color="secondary" onClick={() => zoomIn()}>
+                  <Stack direction='row' className='tools' sx={{ position: 'absolute', bottom: 10, right: 10, zIndex: 1 }}>
+                    <IconButton color='secondary' onClick={() => zoomIn()}>
                       <SearchZoomIn style={{ fontSize: '1.15rem' }} />
                     </IconButton>
-                    <IconButton color="secondary" onClick={() => zoomOut()}>
+                    <IconButton color='secondary' onClick={() => zoomOut()}>
                       <SearchZoomOut style={{ fontSize: '1.15rem' }} />
                     </IconButton>
-                    <IconButton color="secondary" onClick={() => resetTransform()}>
+                    <IconButton color='secondary' onClick={() => resetTransform()}>
                       <ArrowRotateRight style={{ fontSize: '1.15rem' }} />
                     </IconButton>
                   </Stack>
@@ -152,11 +152,11 @@ export default function ProductImages({ product }: { product: Products }) {
               )}
             </TransformWrapper>
             <IconButton
-              color="secondary"
+              color='secondary'
               sx={{ ml: 'auto', position: 'absolute', top: 12, right: 12, '&:hover': { bgcolor: 'transparent' } }}
               onClick={addToFavourite}
             >
-              {wishlisted ? <Heart variant="Bold" style={{ color: theme.palette.error.main }} /> : <Heart />}
+              {wishlisted ? <Heart variant='Bold' style={{ color: theme.palette.error.main }} /> : <Heart />}
             </IconButton>
           </MainCard>
         </Grid>
@@ -168,7 +168,7 @@ export default function ProductImages({ product }: { product: Products }) {
                   <Avatar
                     size={matchDownLG ? 'xl' : 'md'}
                     src={getImageUrl(`thumbs/prod-${item}.png`, ImagePath.ECOMMERCE)}
-                    variant="rounded"
+                    variant='rounded'
                     sx={{ m: '0 auto', cursor: 'pointer', bgcolor: theme.palette.secondary[200] }}
                   />
                 </Box>

@@ -19,10 +19,10 @@ import { TickCircle } from 'iconsax-react';
 export default function TasksCard() {
   return (
     <MainCard
-      title="Tasks"
+      title='Tasks'
       content={false}
       secondary={
-        <Link component={RouterLink} to="#" color="primary">
+        <Link component={RouterLink} to='#' color='primary'>
           View all
         </Link>
       }
@@ -31,7 +31,7 @@ export default function TasksCard() {
         <Grid
           container
           spacing={3.5}
-          alignItems="center"
+          alignItems='center'
           sx={{
             position: 'relative',
             '&>*': { position: 'relative', zIndex: '5' },
@@ -43,15 +43,15 @@ export default function TasksCard() {
               width: 2,
               height: `calc(100% - 30px)`,
               bgcolor: 'divider',
-              zIndex: '1'
-            }
+              zIndex: '1',
+            },
           }}
         >
           <Grid item xs={12}>
             <Grid container spacing={2}>
               <Grid item>
                 <Box sx={{ color: 'success.main', marginLeft: -0.5 }}>
-                  <TickCircle variant="Bold" />
+                  <TickCircle variant='Bold' />
                 </Box>
               </Grid>
               <Grid item xs zeroMinWidth>
@@ -60,7 +60,7 @@ export default function TasksCard() {
                     <Typography>8:50</Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Typography variant="h5" color="text.secondary">
+                    <Typography variant='h5' color='text.secondary'>
                       You’re getting more and more followers, keep it up!
                     </Typography>
                   </Grid>
@@ -71,7 +71,7 @@ export default function TasksCard() {
           <Grid item xs={12}>
             <Grid container spacing={2}>
               <Grid item>
-                <Dot size={14} color="primary" componentDiv sx={{ mt: 0.5 }} />
+                <Dot size={14} color='primary' componentDiv sx={{ mt: 0.5 }} />
               </Grid>
               <Grid item xs zeroMinWidth>
                 <Grid container spacing={0}>
@@ -79,7 +79,7 @@ export default function TasksCard() {
                     <Typography>Sat, 5 Mar</Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Typography variant="h5" color="text.secondary">
+                    <Typography variant='h5' color='text.secondary'>
                       Design mobile Application
                     </Typography>
                   </Grid>
@@ -90,7 +90,7 @@ export default function TasksCard() {
           <Grid item xs={12}>
             <Grid container spacing={2}>
               <Grid item>
-                <Dot size={14} color="error" componentDiv sx={{ mt: 0.5 }} />
+                <Dot size={14} color='error' componentDiv sx={{ mt: 0.5 }} />
               </Grid>
               <Grid item xs zeroMinWidth>
                 <Grid container spacing={0}>
@@ -98,12 +98,12 @@ export default function TasksCard() {
                     <Typography>Sun, 17 Feb</Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Typography variant="h5" color="text.secondary">
-                      <Link component={RouterLink} to="#" underline="hover">
+                    <Typography variant='h5' color='text.secondary'>
+                      <Link component={RouterLink} to='#' underline='hover'>
                         Jenny
                       </Link>{' '}
                       assign you a task{' '}
-                      <Link component={RouterLink} to="#" underline="hover">
+                      <Link component={RouterLink} to='#' underline='hover'>
                         Mockup Design
                       </Link>
                       .
@@ -116,7 +116,7 @@ export default function TasksCard() {
           <Grid item xs={12}>
             <Grid container spacing={2}>
               <Grid item>
-                <Dot size={14} color="warning" componentDiv sx={{ mt: 0.5 }} />
+                <Dot size={14} color='warning' componentDiv sx={{ mt: 0.5 }} />
               </Grid>
               <Grid item xs zeroMinWidth>
                 <Grid container spacing={0}>
@@ -124,7 +124,7 @@ export default function TasksCard() {
                     <Typography>Sat, 18 Mar</Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Typography variant="h5" color="text.secondary">
+                    <Typography variant='h5' color='text.secondary'>
                       Design logo
                     </Typography>
                   </Grid>
@@ -135,7 +135,7 @@ export default function TasksCard() {
           <Grid item xs={12}>
             <Grid container spacing={2}>
               <Grid item>
-                <Dot size={14} color="success" componentDiv sx={{ mt: 0.5 }} />
+                <Dot size={14} color='success' componentDiv sx={{ mt: 0.5 }} />
               </Grid>
               <Grid item xs zeroMinWidth>
                 <Grid container spacing={0}>
@@ -143,7 +143,7 @@ export default function TasksCard() {
                     <Typography>Sat, 22 Mar</Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Typography variant="h5" color="text.secondary">
+                    <Typography variant='h5' color='text.secondary'>
                       Design mobile Application
                     </Typography>
                   </Grid>
@@ -154,7 +154,7 @@ export default function TasksCard() {
           <Grid item xs={12}>
             <Grid container spacing={2}>
               <Grid item>
-                <Dot size={14} color="secondary" componentDiv sx={{ mt: -1.5 }} />
+                <Dot size={14} color='secondary' componentDiv sx={{ mt: -1.5 }} />
               </Grid>
             </Grid>
           </Grid>

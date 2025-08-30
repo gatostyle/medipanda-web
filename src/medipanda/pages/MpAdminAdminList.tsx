@@ -16,7 +16,7 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
@@ -44,7 +44,7 @@ export default function MpAdminAdminList() {
       type: 'name',
       keyword: '',
       pageIndex: 0,
-      pageSize: 20
+      pageSize: 20,
     },
     onSubmit: async () => {
       if (formik.values.pageIndex !== 0) {
@@ -52,7 +52,7 @@ export default function MpAdminAdminList() {
       } else {
         await fetchData();
       }
-    }
+    },
   });
 
   const handleReset = () => {
@@ -64,13 +64,13 @@ export default function MpAdminAdminList() {
       header: 'No',
       accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
-      size: 60
+      size: 60,
     },
     {
       header: '아이디',
       accessorKey: 'userId',
       cell: ({ row }) => row.original.userId,
-      size: 120
+      size: 120,
     },
     {
       header: '관리자',
@@ -80,40 +80,40 @@ export default function MpAdminAdminList() {
           {row.original.name}
         </Link>
       ),
-      size: 120
+      size: 120,
     },
     {
       header: '이메일',
       accessorKey: 'email',
       cell: ({ row }) => row.original.email,
-      size: 200
+      size: 200,
     },
     {
       header: '연락처',
       accessorKey: 'phoneNumber',
       cell: ({ row }) => row.original.phoneNumber,
-      size: 150
+      size: 150,
     },
     {
       header: '권한',
       cell: ({ row }) => {
         return MEMBER_ROLE_LABELS[row.original.role];
       },
-      size: 100
+      size: 100,
     },
     {
       header: '상태',
       cell: ({ row }) => {
-        return <Chip label={MEMBER_ACCOUNT_STATUS_LABELS[row.original.accountStatus]} color="success" variant="light" size="small" />;
+        return <Chip label={MEMBER_ACCOUNT_STATUS_LABELS[row.original.accountStatus]} color='success' variant='light' size='small' />;
       },
-      size: 80
+      size: 80,
     },
     {
       header: '등록일',
       accessorKey: 'registrationDate',
       cell: ({ row }) => formatYyyyMmDdHhMm(row.original.registrationDate),
-      size: 150
-    }
+      size: 150,
+    },
   ];
 
   const table = useReactTable({
@@ -124,11 +124,11 @@ export default function MpAdminAdminList() {
     state: {
       pagination: {
         pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize
-      }
+        pageSize: formik.values.pageSize,
+      },
     },
     pageCount: totalPages,
-    manualPagination: true
+    manualPagination: true,
   });
 
   const fetchData = async () => {
@@ -161,7 +161,7 @@ export default function MpAdminAdminList() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant='h4' gutterBottom>
           관리자 권한
         </Typography>
       </Grid>
@@ -172,9 +172,9 @@ export default function MpAdminAdminList() {
             <form onSubmit={formik.handleSubmit}>
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size="small">
+                  <FormControl fullWidth size='small'>
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="type" value={formik.values.type} onChange={formik.handleChange}>
+                    <Select name='type' value={formik.values.type} onChange={formik.handleChange}>
                       <MenuItem value={'name'}>관리자명</MenuItem>
                       <MenuItem value={'userId'}>아이디</MenuItem>
                       <MenuItem value={'email'}>이메일</MenuItem>
@@ -184,19 +184,19 @@ export default function MpAdminAdminList() {
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
-                    name="keyword"
-                    size="small"
-                    placeholder="검색어를 입력하세요"
+                    name='keyword'
+                    size='small'
+                    placeholder='검색어를 입력하세요'
                     fullWidth
                     value={formik.values.keyword}
                     onChange={formik.handleChange}
                   />
                 </SearchFilterItem>
                 <SearchFilterActions>
-                  <Button variant="contained" size="small" type="submit">
+                  <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant="outlined" size="small" onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={handleReset}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -209,12 +209,12 @@ export default function MpAdminAdminList() {
       <Grid item xs={12}>
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Stack direction="row" spacing={2}>
-                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+            <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+              <Stack direction='row' spacing={2}>
+                <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
-              <Stack direction="row" spacing={1}>
-                <Button variant="contained" size="small" color="success" component={Link} to="/admin/admins/new">
+              <Stack direction='row' spacing={1}>
+                <Button variant='contained' size='small' color='success' component={Link} to='/admin/admins/new'>
                   등록
                 </Button>
               </Stack>
@@ -222,11 +222,11 @@ export default function MpAdminAdminList() {
 
             <ScrollX>
               <TableContainer>
-                <Table size="small">
+                <Table size='small'>
                   <TableHead>
-                    {table.getHeaderGroups().map((headerGroup) => (
+                    {table.getHeaderGroups().map(headerGroup => (
                       <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => (
+                        {headerGroup.headers.map(header => (
                           <TableCell key={header.id} style={{ width: header.getSize() }}>
                             {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                           </TableCell>
@@ -237,24 +237,24 @@ export default function MpAdminAdminList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : (
-                      table.getRowModel().rows.map((row) => (
+                      table.getRowModel().rows.map(row => (
                         <TableRow key={row.id}>
-                          {row.getVisibleCells().map((cell) => (
+                          {row.getVisibleCells().map(cell => (
                             <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                           ))}
                         </TableRow>
@@ -265,13 +265,13 @@ export default function MpAdminAdminList() {
               </TableContainer>
             </ScrollX>
 
-            <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
+            <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
                 page={formik.values.pageIndex + 1}
                 onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
-                color="primary"
-                variant="outlined"
+                color='primary'
+                variant='outlined'
                 showFirstButton
                 showLastButton
               />

@@ -29,30 +29,30 @@ export default function ColorVariants() {
 `;
 
   return (
-    <MainCard title="Color Variants" codeString={NotiStackSnackbarCodeString}>
+    <MainCard title='Color Variants' codeString={NotiStackSnackbarCodeString}>
       <Grid container spacing={2}>
         <Grid item>
-          <Button variant="contained" onClick={() => enqueueSnackbar('This is default message.')}>
+          <Button variant='contained' onClick={() => enqueueSnackbar('This is default message.')}>
             Default
           </Button>
         </Grid>
         <Grid item>
-          <Button variant="contained" color="success" onClick={() => enqueueSnackbar('This is success message', { variant: 'success' })}>
+          <Button variant='contained' color='success' onClick={() => enqueueSnackbar('This is success message', { variant: 'success' })}>
             Success
           </Button>
         </Grid>
         <Grid item>
-          <Button variant="contained" color="warning" onClick={() => enqueueSnackbar('This is warning message', { variant: 'warning' })}>
+          <Button variant='contained' color='warning' onClick={() => enqueueSnackbar('This is warning message', { variant: 'warning' })}>
             Warning
           </Button>
         </Grid>
         <Grid item>
-          <Button variant="contained" color="info" onClick={() => enqueueSnackbar('This is info message', { variant: 'info' })}>
+          <Button variant='contained' color='info' onClick={() => enqueueSnackbar('This is info message', { variant: 'info' })}>
             Info
           </Button>
         </Grid>
         <Grid item>
-          <Button variant="contained" color="error" onClick={() => enqueueSnackbar('This is info message', { variant: 'error' })}>
+          <Button variant='contained' color='error' onClick={() => enqueueSnackbar('This is info message', { variant: 'error' })}>
             Error
           </Button>
         </Grid>

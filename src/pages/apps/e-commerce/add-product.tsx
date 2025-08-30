@@ -20,46 +20,46 @@ import { DocumentUpload } from 'iconsax-react';
 const prices = [
   {
     value: '1',
-    label: '$ 100'
+    label: '$ 100',
   },
   {
     value: '2',
-    label: '$ 200'
+    label: '$ 200',
   },
   {
     value: '3',
-    label: '$ 300'
+    label: '$ 300',
   },
   {
     value: '4',
-    label: '$ 400'
-  }
+    label: '$ 400',
+  },
 ];
 
 const quantities = [
   {
     value: 'one',
-    label: '1'
+    label: '1',
   },
   {
     value: 'two',
-    label: '2'
+    label: '2',
   },
   {
     value: 'three',
-    label: '3'
-  }
+    label: '3',
+  },
 ];
 
 const statuss = [
   {
     value: 'in stock',
-    label: 'In Stock'
+    label: 'In Stock',
   },
   {
     value: 'out of stock',
-    label: 'Out of Stock'
-  }
+    label: 'Out of Stock',
+  },
 ];
 
 // ==============================|| ECOMMERCE - ADD PRODUCT ||============================== //
@@ -93,23 +93,23 @@ export default function AddNewProduct() {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <MainCard>
-              <Grid container spacing={1} direction="column">
+              <Grid container spacing={1} direction='column'>
                 <Grid item xs={12}>
                   <InputLabel sx={{ mb: 1 }}>Product Name</InputLabel>
-                  <TextField placeholder="Enter product name" fullWidth />
+                  <TextField placeholder='Enter product name' fullWidth />
                 </Grid>
                 <Grid item xs={12}>
                   <InputLabel sx={{ mb: 1 }}>Product Description</InputLabel>
-                  <TextField placeholder="Enter product description" fullWidth />
+                  <TextField placeholder='Enter product description' fullWidth />
                 </Grid>
                 <Grid item xs={12}>
                   <InputLabel sx={{ mb: 1 }}>Category</InputLabel>
-                  <TextField placeholder="Enter your category" fullWidth />
+                  <TextField placeholder='Enter your category' fullWidth />
                 </Grid>
                 <Grid item xs={12}>
                   <InputLabel sx={{ mb: 1 }}>Price</InputLabel>
-                  <TextField placeholder="Select Price" fullWidth select value={price} onChange={handlePrice}>
-                    {prices.map((option) => (
+                  <TextField placeholder='Select Price' fullWidth select value={price} onChange={handlePrice}>
+                    {prices.map(option => (
                       <MenuItem key={option.value} value={option.value}>
                         {option.label}
                       </MenuItem>
@@ -121,11 +121,11 @@ export default function AddNewProduct() {
           </Grid>
           <Grid item xs={12} sm={6}>
             <MainCard>
-              <Grid container direction="column" spacing={2}>
+              <Grid container direction='column' spacing={2}>
                 <Grid item xs={12}>
                   <InputLabel sx={{ mb: 1 }}>Qty</InputLabel>
-                  <TextField placeholder="Select quantity" fullWidth select value={quantity} onChange={handleQuantity}>
-                    {quantities.map((option) => (
+                  <TextField placeholder='Select quantity' fullWidth select value={quantity} onChange={handleQuantity}>
+                    {quantities.map(option => (
                       <MenuItem key={option.value} value={option.value}>
                         {option.label}
                       </MenuItem>
@@ -134,8 +134,8 @@ export default function AddNewProduct() {
                 </Grid>
                 <Grid item xs={12}>
                   <InputLabel sx={{ mb: 1 }}>Status</InputLabel>
-                  <TextField placeholder="Select status" fullWidth select value={status} onChange={handleStatus}>
-                    {statuss.map((option) => (
+                  <TextField placeholder='Select status' fullWidth select value={status} onChange={handleStatus}>
+                    {statuss.map(option => (
                       <MenuItem key={option.value} value={option.value}>
                         {option.label}
                       </MenuItem>
@@ -143,22 +143,22 @@ export default function AddNewProduct() {
                   </TextField>
                 </Grid>
                 <Grid item xs={12}>
-                  <Typography color="error.main">
+                  <Typography color='error.main'>
                     *{' '}
-                    <Typography component="span" color="text.secondary">
+                    <Typography component='span' color='text.secondary'>
                       Recommended resolution is 640*640 with file size
                     </Typography>
                   </Typography>
-                  <Button variant="outlined" color="secondary" startIcon={<DocumentUpload />} sx={{ mt: 1, textTransform: 'none' }}>
+                  <Button variant='outlined' color='secondary' startIcon={<DocumentUpload />} sx={{ mt: 1, textTransform: 'none' }}>
                     Click to Upload
                   </Button>
                 </Grid>
                 <Grid item xs={12}>
-                  <Stack direction="row" spacing={2} justifyContent="right" alignItems="center" sx={{ mt: 6 }}>
-                    <Button variant="outlined" color="secondary" onClick={handleCancel}>
+                  <Stack direction='row' spacing={2} justifyContent='right' alignItems='center' sx={{ mt: 6 }}>
+                    <Button variant='outlined' color='secondary' onClick={handleCancel}>
                       Cancel
                     </Button>
-                    <Button variant="contained" sx={{ textTransform: 'none' }}>
+                    <Button variant='contained' sx={{ textTransform: 'none' }}>
                       Add new Product
                     </Button>
                   </Stack>

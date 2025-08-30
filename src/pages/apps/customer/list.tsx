@@ -28,7 +28,7 @@ import {
   getFilteredRowModel,
   useReactTable,
   SortingState,
-  ColumnFiltersState
+  ColumnFiltersState,
 } from '@tanstack/react-table';
 import { LabelKeyObject } from 'react-csv/lib/core';
 
@@ -50,7 +50,7 @@ import {
   IndeterminateCheckbox,
   RowSelection,
   SelectColumnSorting,
-  TablePagination
+  TablePagination,
 } from 'components/third-party/react-table';
 
 import { useGetCustomer } from 'api/customer';
@@ -84,7 +84,7 @@ function ReactTable({ data, columns, modalToggler }: Props) {
       columnFilters,
       sorting,
       rowSelection,
-      globalFilter
+      globalFilter,
     },
     enableRowSelection: true,
     onSortingChange: setSorting,
@@ -96,39 +96,37 @@ function ReactTable({ data, columns, modalToggler }: Props) {
     getFilteredRowModel: getFilteredRowModel(),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    debugTable: true
+    debugTable: true,
   });
   const backColor = alpha(theme.palette.primary.lighter, 0.1);
 
   let headers: LabelKeyObject[] = [];
   columns.map(
-    (columns) =>
+    columns =>
       // @ts-ignore
       columns.accessorKey &&
       headers.push({
         label: typeof columns.header === 'string' ? columns.header : '#',
         // @ts-ignore
-        key: columns.accessorKey
-      })
+        key: columns.accessorKey,
+      }),
   );
 
   return (
     <MainCard content={false}>
-      <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between" sx={{ padding: 3 }}>
+      <Stack direction='row' spacing={2} alignItems='center' justifyContent='space-between' sx={{ padding: 3 }}>
         <DebouncedInput
           value={globalFilter ?? ''}
-          onFilterChange={(value) => setGlobalFilter(String(value))}
+          onFilterChange={value => setGlobalFilter(String(value))}
           placeholder={`Search ${data.length} records...`}
         />
 
-        <Stack direction="row" alignItems="center" spacing={2}>
+        <Stack direction='row' alignItems='center' spacing={2}>
           <SelectColumnSorting {...{ getState: table.getState, getAllColumns: table.getAllColumns, setSorting }} />
-          <Button variant="contained" startIcon={<Add />} onClick={modalToggler} size="large">
+          <Button variant='contained' startIcon={<Add />} onClick={modalToggler} size='large'>
             Add Customer
           </Button>
-          <CSVExport
-            {...{ data: table.getSelectedRowModel().flatRows.map((row) => row.original), headers, filename: 'customer-list.csv' }}
-          />
+          <CSVExport {...{ data: table.getSelectedRowModel().flatRows.map(row => row.original), headers, filename: 'customer-list.csv' }} />
         </Stack>
       </Stack>
       <ScrollX>
@@ -139,10 +137,10 @@ function ReactTable({ data, columns, modalToggler }: Props) {
               <TableHead>
                 {table.getHeaderGroups().map((headerGroup: HeaderGroup<any>) => (
                   <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
+                    {headerGroup.headers.map(header => {
                       if (header.column.columnDef.meta !== undefined && header.column.getCanSort()) {
                         Object.assign(header.column.columnDef.meta, {
-                          className: header.column.columnDef.meta.className + ' cursor-pointer prevent-select'
+                          className: header.column.columnDef.meta.className + ' cursor-pointer prevent-select',
                         });
                       }
 
@@ -153,11 +151,11 @@ function ReactTable({ data, columns, modalToggler }: Props) {
                           onClick={header.column.getToggleSortingHandler()}
                           {...(header.column.getCanSort() &&
                             header.column.columnDef.meta === undefined && {
-                              className: 'cursor-pointer prevent-select'
+                              className: 'cursor-pointer prevent-select',
                             })}
                         >
                           {header.isPlaceholder ? null : (
-                            <Stack direction="row" spacing={1} alignItems="center">
+                            <Stack direction='row' spacing={1} alignItems='center'>
                               <Box>{flexRender(header.column.columnDef.header, header.getContext())}</Box>
                               {header.column.getCanSort() && <HeaderSort column={header.column} />}
                             </Stack>
@@ -169,10 +167,10 @@ function ReactTable({ data, columns, modalToggler }: Props) {
                 ))}
               </TableHead>
               <TableBody>
-                {table.getRowModel().rows.map((row) => (
+                {table.getRowModel().rows.map(row => (
                   <Fragment key={row.id}>
                     <TableRow>
-                      {row.getVisibleCells().map((cell) => (
+                      {row.getVisibleCells().map(cell => (
                         <TableCell key={cell.id} {...cell.column.columnDef.meta}>
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </TableCell>
@@ -198,7 +196,7 @@ function ReactTable({ data, columns, modalToggler }: Props) {
                   setPageSize: table.setPageSize,
                   setPageIndex: table.setPageIndex,
                   getState: table.getState,
-                  getPageCount: table.getPageCount
+                  getPageCount: table.getPageCount,
                 }}
               />
             </Box>
@@ -234,7 +232,7 @@ export default function CustomerListPage() {
             {...{
               checked: table.getIsAllRowsSelected(),
               indeterminate: table.getIsSomeRowsSelected(),
-              onChange: table.getToggleAllRowsSelectedHandler()
+              onChange: table.getToggleAllRowsSelectedHandler(),
             }}
           />
         ),
@@ -244,70 +242,72 @@ export default function CustomerListPage() {
               checked: row.getIsSelected(),
               disabled: !row.getCanSelect(),
               indeterminate: row.getIsSomeSelected(),
-              onChange: row.getToggleSelectedHandler()
+              onChange: row.getToggleSelectedHandler(),
             }}
           />
-        )
+        ),
       },
       {
         header: '#',
         accessorKey: 'id',
         meta: {
-          className: 'cell-center'
-        }
+          className: 'cell-center',
+        },
       },
       {
         header: 'Customer Name',
         accessorKey: 'name',
         cell: ({ row, getValue }) => (
-          <Stack direction="row" spacing={1.5} alignItems="center">
+          <Stack direction='row' spacing={1.5} alignItems='center'>
             <Avatar
-              alt="Avatar"
-              size="sm"
+              alt='Avatar'
+              size='sm'
               src={getImageUrl(`avatar-${!row.original.avatar ? 1 : row.original.avatar}.png`, ImagePath.USERS)}
             />
             <Stack spacing={0}>
-              <Typography variant="subtitle1">{getValue() as string}</Typography>
-              <Typography color="text.secondary">{row.original.email as string}</Typography>
+              <Typography variant='subtitle1'>{getValue() as string}</Typography>
+              <Typography color='text.secondary'>{row.original.email as string}</Typography>
             </Stack>
           </Stack>
-        )
+        ),
       },
       {
         header: 'Contact',
         accessorKey: 'contact',
-        cell: ({ getValue }) => <PatternFormat displayType="text" format="+1 (###) ###-####" mask="_" defaultValue={getValue() as number} />
+        cell: ({ getValue }) => (
+          <PatternFormat displayType='text' format='+1 (###) ###-####' mask='_' defaultValue={getValue() as number} />
+        ),
       },
       {
         header: 'Age',
         accessorKey: 'age',
         meta: {
-          className: 'cell-right'
-        }
+          className: 'cell-right',
+        },
       },
       {
         header: 'Country',
-        accessorKey: 'country'
+        accessorKey: 'country',
       },
       {
         header: 'Status',
         accessorKey: 'status',
-        cell: (cell) => {
+        cell: cell => {
           switch (cell.getValue()) {
             case 3:
-              return <Chip color="error" label="Rejected" size="small" variant="light" />;
+              return <Chip color='error' label='Rejected' size='small' variant='light' />;
             case 1:
-              return <Chip color="success" label="Verified" size="small" variant="light" />;
+              return <Chip color='success' label='Verified' size='small' variant='light' />;
             case 2:
             default:
-              return <Chip color="info" label="Pending" size="small" variant="light" />;
+              return <Chip color='info' label='Pending' size='small' variant='light' />;
           }
-        }
+        },
       },
       {
         header: 'Actions',
         meta: {
-          className: 'cell-center'
+          className: 'cell-center',
         },
         disableSortBy: true,
         cell: ({ row }) => {
@@ -318,15 +318,15 @@ export default function CustomerListPage() {
               <Eye />
             );
           return (
-            <Stack direction="row" alignItems="center" justifyContent="center" spacing={0}>
-              <Tooltip title="View">
-                <IconButton color="secondary" onClick={row.getToggleExpandedHandler()}>
+            <Stack direction='row' alignItems='center' justifyContent='center' spacing={0}>
+              <Tooltip title='View'>
+                <IconButton color='secondary' onClick={row.getToggleExpandedHandler()}>
                   {collapseIcon}
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Edit">
+              <Tooltip title='Edit'>
                 <IconButton
-                  color="primary"
+                  color='primary'
                   onClick={(e: MouseEvent<HTMLButtonElement>) => {
                     e.stopPropagation();
                     setSelectedCustomer(row.original);
@@ -336,9 +336,9 @@ export default function CustomerListPage() {
                   <Edit />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Delete">
+              <Tooltip title='Delete'>
                 <IconButton
-                  color="error"
+                  color='error'
                   onClick={(e: MouseEvent<HTMLButtonElement>) => {
                     e.stopPropagation();
                     handleClose();
@@ -350,8 +350,8 @@ export default function CustomerListPage() {
               </Tooltip>
             </Stack>
           );
-        }
-      }
+        },
+      },
     ],
     // eslint-disable-next-line
     [theme]
@@ -368,7 +368,7 @@ export default function CustomerListPage() {
           modalToggler: () => {
             setCustomerModal(true);
             setSelectedCustomer(null);
-          }
+          },
         }}
       />
       <AlertCustomerDelete id={Number(customerDeleteId)} title={customerDeleteId} open={open} handleClose={handleClose} />

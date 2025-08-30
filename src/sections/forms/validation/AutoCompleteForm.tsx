@@ -52,11 +52,11 @@ const validationSchema = yup.object({
         .trim()
         .required('Leading spaces found in your tag')
         .matches(/^[a-z\d\-/#.&_\s]+$/i, 'Only alphanumerics are allowed')
-        .max(50, 'Skill tag field must be at most 50 characters')
+        .max(50, 'Skill tag field must be at most 50 characters'),
     )
     .required('Skill selection is required')
     .min(3, 'Skill tags field must have at least 3 items')
-    .max(15, 'Please select a maximum of 15 skills.')
+    .max(15, 'Please select a maximum of 15 skills.'),
 });
 
 // ==============================|| FORM VALIDATION - AUTOCOMPLETE  ||============================== //
@@ -65,7 +65,7 @@ export default function AutocompleteForms() {
   const formik = useFormik({
     initialValues: {
       role: '',
-      skills: []
+      skills: [],
     },
     validationSchema,
     onSubmit: () => {
@@ -74,10 +74,10 @@ export default function AutocompleteForms() {
         message: 'Autocomplete - Submit Success',
         variant: 'alert',
         alert: {
-          color: 'success'
-        }
+          color: 'success',
+        },
       } as SnackbarProps);
-    }
+    },
   });
 
   let TagsError: boolean | string | undefined = false;
@@ -87,7 +87,7 @@ export default function AutocompleteForms() {
     } else {
       formik.errors.skills &&
         typeof formik.errors.skills !== 'string' &&
-        formik.errors.skills.map((item) => {
+        formik.errors.skills.map(item => {
           // @ts-ignore
           if (typeof item === 'object') TagsError = item.label;
           return item;
@@ -96,7 +96,7 @@ export default function AutocompleteForms() {
   }
 
   return (
-    <MainCard title="Autocomplete">
+    <MainCard title='Autocomplete'>
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
@@ -116,7 +116,7 @@ export default function AutocompleteForms() {
               filterOptions={(options, params) => {
                 const filtered = filter(options, params);
                 const { inputValue } = params;
-                const isExisting = options.some((option) => inputValue === option);
+                const isExisting = options.some(option => inputValue === option);
                 if (inputValue !== '' && !isExisting) {
                   filtered.push(`Add "${inputValue}"`);
                 }
@@ -126,9 +126,9 @@ export default function AutocompleteForms() {
               clearOnBlur
               autoHighlight
               handleHomeEndKeys
-              id="free-solo-with-text-demo"
+              id='free-solo-with-text-demo'
               options={roles}
-              getOptionLabel={(option) => {
+              getOptionLabel={option => {
                 let value = option;
                 const jobExist = roles.includes(option);
                 if (!jobExist) {
@@ -139,27 +139,27 @@ export default function AutocompleteForms() {
               }}
               renderOption={(props, option) => {
                 return (
-                  <Box component="li" {...props}>
+                  <Box component='li' {...props}>
                     {option}
                   </Box>
                 );
               }}
               freeSolo
-              renderInput={(params) => (
+              renderInput={params => (
                 <TextField
                   {...params}
-                  name="role"
+                  name='role'
                   error={formik.touched.role && Boolean(formik.errors.role)}
                   helperText={formik.touched.role && formik.errors.role && formik.errors.role}
-                  placeholder="Select Role"
+                  placeholder='Select Role'
                   InputProps={{
                     ...params.InputProps,
                     endAdornment: (
-                      <InputAdornment position="end">
+                      <InputAdornment position='end'>
                         <ArrowDown2 />
                         {/* <ArrowDropDown sx={{ color: 'text.primary' }} /> */}
                       </InputAdornment>
-                    )
+                    ),
                   }}
                 />
               )}
@@ -167,7 +167,7 @@ export default function AutocompleteForms() {
           </Grid>
           <Grid item xs={12}>
             <Autocomplete
-              id="skills"
+              id='skills'
               multiple
               fullWidth
               autoHighlight
@@ -176,7 +176,7 @@ export default function AutocompleteForms() {
               options={skills}
               value={formik.values.skills}
               onBlur={formik.handleBlur}
-              getOptionLabel={(option) => option}
+              getOptionLabel={option => option}
               onChange={(event, newValue) => {
                 const jobExist = skills.includes(newValue[newValue.length - 1]);
                 if (!jobExist) {
@@ -188,7 +188,7 @@ export default function AutocompleteForms() {
               filterOptions={(options, params) => {
                 const filtered = filterSkills(options, params);
                 const { inputValue } = params;
-                const isExisting = options.some((option) => inputValue === option);
+                const isExisting = options.some(option => inputValue === option);
                 if (inputValue !== '' && !isExisting) {
                   filtered.push(inputValue);
                 }
@@ -197,16 +197,16 @@ export default function AutocompleteForms() {
               }}
               renderOption={(props, option) => {
                 return (
-                  <Box component="li" {...props}>
-                    {!skills.some((v) => option.includes(v)) ? `Add "${option}"` : option}
+                  <Box component='li' {...props}>
+                    {!skills.some(v => option.includes(v)) ? `Add "${option}"` : option}
                   </Box>
                 );
               }}
-              renderInput={(params) => (
+              renderInput={params => (
                 <TextField
                   {...params}
-                  name="skills"
-                  placeholder="Write your skills"
+                  name='skills'
+                  placeholder='Write your skills'
                   error={formik.touched.skills && Boolean(formik.errors.skills)}
                   helperText={TagsError}
                 />
@@ -221,46 +221,46 @@ export default function AutocompleteForms() {
                   return (
                     <Chip
                       {...getTagProps({ index })}
-                      variant="combined"
+                      variant='combined'
                       key={index}
                       color={error ? 'error' : 'secondary'}
                       label={
-                        <Typography variant="caption" color="secondary.dark">
+                        <Typography variant='caption' color='secondary.dark'>
                           {option}
                         </Typography>
                       }
                       deleteIcon={<Add style={{ fontSize: '0.875rem', transform: 'rotate(45deg)' }} />}
-                      size="small"
+                      size='small'
                     />
                   );
                 })
               }
             />
             <Stack
-              direction="row"
+              direction='row'
               spacing={1}
-              alignItems="center"
+              alignItems='center'
               sx={{ mt: 1.5, flexWrap: { xs: 'wrap', sm: 'inherit' }, gap: { xs: 1, sm: 0 } }}
             >
-              <Typography variant="caption">Suggestion:</Typography>
+              <Typography variant='caption'>Suggestion:</Typography>
               {skills
-                .filter((skill: string) => formik.values.skills && !formik.values.skills.map((item) => item).includes(skill as never))
+                .filter((skill: string) => formik.values.skills && !formik.values.skills.map(item => item).includes(skill as never))
                 .slice(0, 5)
                 .map((option, index) => (
                   <Chip
                     key={index}
-                    variant="outlined"
+                    variant='outlined'
                     onClick={() => formik.setFieldValue('skills', [...formik.values.skills, option])}
-                    label={<Typography variant="caption">{option}</Typography>}
-                    size="small"
+                    label={<Typography variant='caption'>{option}</Typography>}
+                    size='small'
                   />
                 ))}
             </Stack>
           </Grid>
           <Grid item xs={12}>
-            <Stack direction="row" justifyContent="flex-end">
+            <Stack direction='row' justifyContent='flex-end'>
               <AnimateButton>
-                <Button variant="contained" type="submit">
+                <Button variant='contained' type='submit'>
                   Submit
                 </Button>
               </AnimateButton>

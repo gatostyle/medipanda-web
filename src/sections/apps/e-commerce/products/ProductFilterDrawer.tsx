@@ -34,7 +34,7 @@ export default function ProductFilterDrawer({
   handleDrawerOpen,
   openFilterDrawer,
   setFilter,
-  setLoading
+  setLoading,
 }: FilterDrawerProps) {
   const theme = useTheme();
 
@@ -58,16 +58,16 @@ export default function ProductFilterDrawer({
     setLoading(true);
     switch (type) {
       case 'gender':
-        if (filter.gender.some((item) => item === params)) {
-          setFilter({ ...filter, gender: filter.gender.filter((item) => item !== params) });
+        if (filter.gender.some(item => item === params)) {
+          setFilter({ ...filter, gender: filter.gender.filter(item => item !== params) });
         } else {
           setFilter({ ...filter, gender: [...filter.gender, params] });
         }
         break;
       case 'categories':
-        if (filter.categories.some((item) => item === params)) {
-          setFilter({ ...filter, categories: filter.categories.filter((item) => item !== params) });
-        } else if (filter.categories.some((item) => item === 'all') || params === 'all') {
+        if (filter.categories.some(item => item === params)) {
+          setFilter({ ...filter, categories: filter.categories.filter(item => item !== params) });
+        } else if (filter.categories.some(item => item === 'all') || params === 'all') {
           setFilter({ ...filter, categories: [params] });
         } else {
           setFilter({ ...filter, categories: [...filter.categories, params] });
@@ -75,8 +75,8 @@ export default function ProductFilterDrawer({
 
         break;
       case 'colors':
-        if (filter.colors.some((item) => item === params)) {
-          setFilter({ ...filter, colors: filter.colors.filter((item) => item !== params) });
+        if (filter.colors.some(item => item === params)) {
+          setFilter({ ...filter, colors: filter.colors.filter(item => item !== params) });
         } else {
           setFilter({ ...filter, colors: [...filter.colors, params] });
         }
@@ -120,17 +120,17 @@ export default function ProductFilterDrawer({
           width: container && matchLG ? 240 : 320,
           boxSizing: 'border-box',
           position: 'relative',
-          boxShadow: 'none'
-        }
+          boxShadow: 'none',
+        },
       }}
       variant={matchDownLG ? 'temporary' : 'persistent'}
-      anchor="left"
+      anchor='left'
       open={openFilterDrawer}
       ModalProps={{ keepMounted: true }}
       onClose={handleDrawerOpen}
     >
       <MainCard
-        title="Filter"
+        title='Filter'
         sx={{ bgcolor: matchDownLG ? 'transparent' : drawerBG, borderRadius: '4px 0 0 4px', borderRight: 'none' }}
         border={!matchDownLG}
         content={false}

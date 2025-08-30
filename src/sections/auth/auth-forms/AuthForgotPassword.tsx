@@ -35,10 +35,10 @@ export default function AuthForgotPassword() {
       <Formik
         initialValues={{
           email: '',
-          submit: null
+          submit: null,
         }}
         validationSchema={Yup.object().shape({
-          email: Yup.string().email('Must be a valid email').max(255).required('Email is required')
+          email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
@@ -51,8 +51,8 @@ export default function AuthForgotPassword() {
                   message: 'Check mail for reset password link',
                   variant: 'alert',
                   alert: {
-                    color: 'success'
-                  }
+                    color: 'success',
+                  },
                 } as SnackbarProps);
                 setTimeout(() => {
                   navigate(isLoggedIn ? '/auth/check-mail' : '/check-mail', { replace: true });
@@ -67,7 +67,7 @@ export default function AuthForgotPassword() {
                 setStatus({ success: false });
                 setErrors({ submit: err.message });
                 setSubmitting(false);
-              }
+              },
             );
           } catch (err: any) {
             console.error(err);
@@ -84,22 +84,22 @@ export default function AuthForgotPassword() {
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="email-forgot">Email Address</InputLabel>
+                  <InputLabel htmlFor='email-forgot'>Email Address</InputLabel>
                   <OutlinedInput
                     fullWidth
                     error={Boolean(touched.email && errors.email)}
-                    id="email-forgot"
-                    type="email"
+                    id='email-forgot'
+                    type='email'
                     value={values.email}
-                    name="email"
+                    name='email'
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="Enter email address"
+                    placeholder='Enter email address'
                     inputProps={{}}
                   />
                 </Stack>
                 {touched.email && errors.email && (
-                  <FormHelperText error id="helper-text-email-forgot">
+                  <FormHelperText error id='helper-text-email-forgot'>
                     {errors.email}
                   </FormHelperText>
                 )}
@@ -110,11 +110,11 @@ export default function AuthForgotPassword() {
                 </Grid>
               )}
               <Grid item xs={12} sx={{ mb: -2 }}>
-                <Typography variant="caption">Do not forgot to check SPAM box.</Typography>
+                <Typography variant='caption'>Do not forgot to check SPAM box.</Typography>
               </Grid>
               <Grid item xs={12}>
                 <AnimateButton>
-                  <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
+                  <Button disableElevation disabled={isSubmitting} fullWidth size='large' type='submit' variant='contained' color='primary'>
                     Send Password Reset Email
                   </Button>
                 </AnimateButton>

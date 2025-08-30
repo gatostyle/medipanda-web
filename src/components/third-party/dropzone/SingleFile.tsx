@@ -24,7 +24,7 @@ const DropzoneWrapper = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   border: '1px dashed',
   borderColor: theme.palette.secondary.main,
-  '&:hover': { opacity: 0.72, cursor: 'pointer' }
+  '&:hover': { opacity: 0.72, cursor: 'pointer' },
 }));
 
 // ==============================|| UPLOAD - SINGLE FILE ||============================== //
@@ -38,9 +38,9 @@ export default function SingleFileUpload({ error, file, setFieldValue, sx }: Upl
     onDrop: (acceptedFiles: CustomFile[]) => {
       setFieldValue(
         'files',
-        acceptedFiles.map((file: CustomFile) => Object.assign(file, { preview: URL.createObjectURL(file) }))
+        acceptedFiles.map((file: CustomFile) => Object.assign(file, { preview: URL.createObjectURL(file) })),
       );
-    }
+    },
   });
 
   const thumbs =
@@ -57,7 +57,7 @@ export default function SingleFileUpload({ error, file, setFieldValue, sx }: Upl
           position: 'absolute',
           width: 'calc(100% - 16px)',
           height: 'calc(100% - 16px)',
-          background: theme.palette.background.paper
+          background: theme.palette.background.paper,
         }}
         onLoad={() => {
           URL.revokeObjectURL(item.preview!);
@@ -76,7 +76,7 @@ export default function SingleFileUpload({ error, file, setFieldValue, sx }: Upl
         sx={{
           ...(isDragActive && { opacity: 0.72 }),
           ...((isDragReject || error) && { color: 'error.main', borderColor: 'error.light', bgcolor: 'error.lighter' }),
-          ...(file && { padding: '12% 0' })
+          ...(file && { padding: '12% 0' }),
         }}
       >
         <input {...getInputProps()} />
@@ -87,8 +87,8 @@ export default function SingleFileUpload({ error, file, setFieldValue, sx }: Upl
       {fileRejections.length > 0 && <RejectionFiles fileRejections={fileRejections} />}
 
       {file && file.length > 0 && (
-        <Stack direction="row" justifyContent="flex-end" sx={{ mt: 1.5 }}>
-          <Button variant="contained" color="error" onClick={onRemove}>
+        <Stack direction='row' justifyContent='flex-end' sx={{ mt: 1.5 }}>
+          <Button variant='contained' color='error' onClick={onRemove}>
             Remove
           </Button>
         </Stack>

@@ -17,7 +17,7 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { SearchNormal1 } from 'iconsax-react';
 import { getPartners, PartnerResponse } from 'medipanda/backend';
@@ -45,7 +45,7 @@ export function MpPartnerSearchModal({ open, onClose, onSelect }: MpPartnerSearc
     try {
       setLoading(true);
       const results = await getPartners({
-        institutionName: searchKeyword
+        institutionName: searchKeyword,
       });
 
       setPartners(results.content);
@@ -63,7 +63,7 @@ export function MpPartnerSearchModal({ open, onClose, onSelect }: MpPartnerSearc
       onSelect(partner);
       onClose();
     },
-    [onSelect, onClose]
+    [onSelect, onClose],
   );
 
   const handleClose = useCallback(() => {
@@ -79,7 +79,7 @@ export function MpPartnerSearchModal({ open, onClose, onSelect }: MpPartnerSearc
         handleSearch();
       }
     },
-    [handleSearch]
+    [handleSearch],
   );
 
   React.useEffect(() => {
@@ -89,36 +89,36 @@ export function MpPartnerSearchModal({ open, onClose, onSelect }: MpPartnerSearc
   }, [open, hasSearched, handleSearch]);
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth='md' fullWidth>
       <DialogTitle>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6">거래처명 조회</Typography>
-          <IconButton onClick={handleClose} size="small">
+        <Box display='flex' justifyContent='space-between' alignItems='center'>
+          <Typography variant='h6'>거래처명 조회</Typography>
+          <IconButton onClick={handleClose} size='small'>
             <CloseIcon />
           </IconButton>
         </Box>
       </DialogTitle>
       <DialogContent>
         <Box sx={{ mb: 3 }}>
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction='row' spacing={1} alignItems='center'>
             <TextField
-              size="small"
+              size='small'
               fullWidth
-              placeholder="거래처명, 제약사명, 회사명, 거래처코드로 검색"
+              placeholder='거래처명, 제약사명, 회사명, 거래처코드로 검색'
               value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
+              onChange={e => setSearchKeyword(e.target.value)}
               onKeyPress={handleKeyPress}
               InputProps={{
                 endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton edge="end" size="small" onClick={handleSearch} disabled={loading}>
+                  <InputAdornment position='end'>
+                    <IconButton edge='end' size='small' onClick={handleSearch} disabled={loading}>
                       <SearchNormal1 size={16} />
                     </IconButton>
                   </InputAdornment>
-                )
+                ),
               }}
             />
-            <Button variant="contained" color="primary" onClick={handleSearch} disabled={loading} sx={{ minWidth: 80 }}>
+            <Button variant='contained' color='primary' onClick={handleSearch} disabled={loading} sx={{ minWidth: 80 }}>
               검색
             </Button>
           </Stack>
@@ -132,14 +132,14 @@ export function MpPartnerSearchModal({ open, onClose, onSelect }: MpPartnerSearc
 
         {!loading && hasSearched && (
           <TableContainer sx={{ maxHeight: 400 }}>
-            <Table size="small" stickyHeader>
+            <Table size='small' stickyHeader>
               <TableHead>
                 <TableRow>
                   <TableCell>제약사명</TableCell>
                   <TableCell>회사명</TableCell>
                   <TableCell>거래처코드</TableCell>
                   <TableCell>거래처명</TableCell>
-                  <TableCell align="center" sx={{ width: 100 }}>
+                  <TableCell align='center' sx={{ width: 100 }}>
                     선택
                   </TableCell>
                 </TableRow>
@@ -147,21 +147,21 @@ export function MpPartnerSearchModal({ open, onClose, onSelect }: MpPartnerSearc
               <TableBody>
                 {partners.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} align="center" sx={{ py: 3 }}>
-                      <Typography variant="body2" color="text.secondary">
+                    <TableCell colSpan={5} align='center' sx={{ py: 3 }}>
+                      <Typography variant='body2' color='text.secondary'>
                         검색 결과가 없습니다.
                       </Typography>
                     </TableCell>
                   </TableRow>
                 ) : (
-                  partners.map((partner) => (
+                  partners.map(partner => (
                     <TableRow key={partner.id} hover>
                       <TableCell>{partner.drugCompanyName}</TableCell>
                       <TableCell>{partner.companyName}</TableCell>
                       <TableCell>{partner.institutionCode}</TableCell>
                       <TableCell>{partner.institutionName}</TableCell>
-                      <TableCell align="center">
-                        <Button variant="contained" color="success" size="small" onClick={() => handleSelectPartner(partner)}>
+                      <TableCell align='center'>
+                        <Button variant='contained' color='success' size='small' onClick={() => handleSelectPartner(partner)}>
                           선택
                         </Button>
                       </TableCell>
@@ -174,7 +174,7 @@ export function MpPartnerSearchModal({ open, onClose, onSelect }: MpPartnerSearc
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="inherit">
+        <Button onClick={handleClose} color='inherit'>
           취소
         </Button>
       </DialogActions>

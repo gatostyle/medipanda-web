@@ -33,7 +33,7 @@ export default function MaxWidthDialog() {
   const handleMaxWidthChange = (event: SelectChangeEvent<typeof maxWidth>) => {
     setMaxWidth(
       // @ts-expect-error autofill of arbitrary value is not handled.
-      event.target.value
+      event.target.value,
     );
   };
 
@@ -43,7 +43,7 @@ export default function MaxWidthDialog() {
 
   return (
     <>
-      <Button variant="contained" onClick={handleClickOpen}>
+      <Button variant='contained' onClick={handleClickOpen}>
         Open max-width dialog
       </Button>
       <Dialog fullWidth={fullWidth} maxWidth={maxWidth} open={open} onClose={handleClose}>
@@ -51,9 +51,9 @@ export default function MaxWidthDialog() {
           <DialogTitle>Optional sizes</DialogTitle>
           <DialogContent>
             <DialogContentText>You can set my maximum width and whether to adapt or not.</DialogContentText>
-            <Grid container spacing={1.5} alignItems="center" sx={{ mt: 1 }}>
+            <Grid container spacing={1.5} alignItems='center' sx={{ mt: 1 }}>
               <Grid item>
-                <Typography variant="h6">Max Width :</Typography>
+                <Typography variant='h6'>Max Width :</Typography>
               </Grid>
               <Grid item>
                 <FormControl sx={{ minWidth: 120 }}>
@@ -63,22 +63,22 @@ export default function MaxWidthDialog() {
                     onChange={handleMaxWidthChange}
                     inputProps={{
                       name: 'max-width',
-                      id: 'max-width'
+                      id: 'max-width',
                     }}
                   >
                     <MenuItem value={false as any}>false</MenuItem>
-                    <MenuItem value="xs">xs</MenuItem>
-                    <MenuItem value="sm">sm</MenuItem>
-                    <MenuItem value="md">md</MenuItem>
-                    <MenuItem value="lg">lg</MenuItem>
-                    <MenuItem value="xl">xl</MenuItem>
+                    <MenuItem value='xs'>xs</MenuItem>
+                    <MenuItem value='sm'>sm</MenuItem>
+                    <MenuItem value='md'>md</MenuItem>
+                    <MenuItem value='lg'>lg</MenuItem>
+                    <MenuItem value='xl'>xl</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
             </Grid>
-            <Grid container spacing={1.5} alignItems="center" sx={{ mt: 0.25 }}>
+            <Grid container spacing={1.5} alignItems='center' sx={{ mt: 0.25 }}>
               <Grid item>
-                <Typography variant="h6">Full Width:</Typography>
+                <Typography variant='h6'>Full Width:</Typography>
               </Grid>
               <Grid item>
                 <Switch checked={fullWidth} onChange={handleFullWidthChange} />
@@ -86,7 +86,7 @@ export default function MaxWidthDialog() {
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button variant="outlined" color="error" onClick={handleClose}>
+            <Button variant='outlined' color='error' onClick={handleClose}>
               Close
             </Button>
           </DialogActions>

@@ -33,7 +33,7 @@ import {
   useReactTable,
   SortingState,
   FilterFn,
-  ColumnFiltersState
+  ColumnFiltersState,
 } from '@tanstack/react-table';
 import { rankItem } from '@tanstack/match-sorter-utils';
 import { LabelKeyObject } from 'react-csv/lib/core';
@@ -61,7 +61,7 @@ import {
   IndeterminateCheckbox,
   RowSelection,
   SelectColumnSorting,
-  TablePagination
+  TablePagination,
 } from 'components/third-party/react-table';
 
 // types
@@ -106,9 +106,9 @@ function ReactTable({ data, columns }: Props) {
   const counts = countGroup.reduce(
     (acc: any, value: any) => ({
       ...acc,
-      [value]: (acc[value] || 0) + 1
+      [value]: (acc[value] || 0) + 1,
     }),
-    {}
+    {},
   );
 
   const [activeTab, setActiveTab] = useState(groups[0]);
@@ -124,7 +124,7 @@ function ReactTable({ data, columns }: Props) {
       columnFilters,
       sorting,
       rowSelection,
-      globalFilter
+      globalFilter,
     },
     enableRowSelection: true,
     onSortingChange: setSorting,
@@ -137,19 +137,19 @@ function ReactTable({ data, columns }: Props) {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     globalFilterFn: fuzzyFilter,
-    debugTable: true
+    debugTable: true,
   });
 
   let headers: LabelKeyObject[] = [];
   columns.map(
-    (columns) =>
+    columns =>
       // @ts-ignore
       columns.accessorKey &&
       headers.push({
         label: typeof columns.header === 'string' ? columns.header : '#',
         // @ts-ignore
-        key: columns.accessorKey
-      })
+        key: columns.accessorKey,
+      }),
   );
 
   useEffect(() => {
@@ -181,27 +181,25 @@ function ReactTable({ data, columns }: Props) {
                           : counts.Cancelled
                   }
                   color={status === 'All' ? 'primary' : status === 'Paid' ? 'success' : status === 'Unpaid' ? 'warning' : 'error'}
-                  variant="light"
-                  size="small"
+                  variant='light'
+                  size='small'
                 />
               }
-              iconPosition="end"
+              iconPosition='end'
             />
           ))}
         </Tabs>
       </Box>
-      <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between" sx={{ padding: 2.5 }}>
+      <Stack direction='row' spacing={2} alignItems='center' justifyContent='space-between' sx={{ padding: 2.5 }}>
         <DebouncedInput
           value={globalFilter ?? ''}
-          onFilterChange={(value) => setGlobalFilter(String(value))}
+          onFilterChange={value => setGlobalFilter(String(value))}
           placeholder={`Search ${data.length} records...`}
         />
 
-        <Stack direction="row" alignItems="center" spacing={2}>
+        <Stack direction='row' alignItems='center' spacing={2}>
           <SelectColumnSorting {...{ getState: table.getState, getAllColumns: table.getAllColumns, setSorting }} />
-          <CSVExport
-            {...{ data: table.getSelectedRowModel().flatRows.map((row) => row.original), headers, filename: 'customer-list.csv' }}
-          />
+          <CSVExport {...{ data: table.getSelectedRowModel().flatRows.map(row => row.original), headers, filename: 'customer-list.csv' }} />
         </Stack>
       </Stack>
       <ScrollX>
@@ -212,10 +210,10 @@ function ReactTable({ data, columns }: Props) {
               <TableHead>
                 {table.getHeaderGroups().map((headerGroup: HeaderGroup<any>) => (
                   <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
+                    {headerGroup.headers.map(header => {
                       if (header.column.columnDef.meta !== undefined && header.column.getCanSort()) {
                         Object.assign(header.column.columnDef.meta, {
-                          className: header.column.columnDef.meta.className + ' cursor-pointer prevent-select'
+                          className: header.column.columnDef.meta.className + ' cursor-pointer prevent-select',
                         });
                       }
 
@@ -226,11 +224,11 @@ function ReactTable({ data, columns }: Props) {
                           onClick={header.column.getToggleSortingHandler()}
                           {...(header.column.getCanSort() &&
                             header.column.columnDef.meta === undefined && {
-                              className: 'cursor-pointer prevent-select'
+                              className: 'cursor-pointer prevent-select',
                             })}
                         >
                           {header.isPlaceholder ? null : (
-                            <Stack direction="row" spacing={1} alignItems="center">
+                            <Stack direction='row' spacing={1} alignItems='center'>
                               <Box>{flexRender(header.column.columnDef.header, header.getContext())}</Box>
                               {header.column.getCanSort() && <HeaderSort column={header.column} />}
                             </Stack>
@@ -242,9 +240,9 @@ function ReactTable({ data, columns }: Props) {
                 ))}
               </TableHead>
               <TableBody>
-                {table.getRowModel().rows.map((row) => (
+                {table.getRowModel().rows.map(row => (
                   <TableRow key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
+                    {row.getVisibleCells().map(cell => (
                       <TableCell key={cell.id} {...cell.column.columnDef.meta}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
@@ -263,7 +261,7 @@ function ReactTable({ data, columns }: Props) {
                   setPageIndex: table.setPageIndex,
                   getState: table.getState,
                   getPageCount: table.getPageCount,
-                  initialPageSize: 5
+                  initialPageSize: 5,
                 }}
               />
             </Box>
@@ -290,7 +288,7 @@ export default function List() {
         message: 'Column deleted successfully',
         anchorOrigin: { vertical: 'top', horizontal: 'right' },
         variant: 'alert',
-        alert: { color: 'success' }
+        alert: { color: 'success' },
       } as SnackbarProps);
     }
     handlerDelete(false);
@@ -305,7 +303,7 @@ export default function List() {
             {...{
               checked: table.getIsAllRowsSelected(),
               indeterminate: table.getIsSomeRowsSelected(),
-              onChange: table.getToggleAllRowsSelectedHandler()
+              onChange: table.getToggleAllRowsSelectedHandler(),
             }}
           />
         ),
@@ -315,59 +313,59 @@ export default function List() {
               checked: row.getIsSelected(),
               disabled: !row.getCanSelect(),
               indeterminate: row.getIsSomeSelected(),
-              onChange: row.getToggleSelectedHandler()
+              onChange: row.getToggleSelectedHandler(),
             }}
           />
-        )
+        ),
       },
       {
         header: 'Invoice Id',
         accessorKey: 'id',
-        meta: { className: 'cell-center' }
+        meta: { className: 'cell-center' },
       },
       {
         header: 'User Info',
         accessorKey: 'customer_name',
         cell: ({ row, getValue }) => (
-          <Stack direction="row" spacing={1.5} alignItems="center">
+          <Stack direction='row' spacing={1.5} alignItems='center'>
             <Avatar
-              alt="Avatar"
-              size="sm"
+              alt='Avatar'
+              size='sm'
               src={getImageUrl(`avatar-${!row.original.avatar ? 1 : row.original.avatar}.png`, ImagePath.USERS)}
             />
             <Stack spacing={0}>
-              <Typography variant="subtitle1">{getValue() as string}</Typography>
-              <Typography color="text.secondary">{row.original.email as string}</Typography>
+              <Typography variant='subtitle1'>{getValue() as string}</Typography>
+              <Typography color='text.secondary'>{row.original.email as string}</Typography>
             </Stack>
           </Stack>
-        )
+        ),
       },
       {
         header: 'Create Date',
-        accessorKey: 'date'
+        accessorKey: 'date',
       },
       {
         header: 'Due Date',
-        accessorKey: 'due_date'
+        accessorKey: 'due_date',
       },
       {
         header: 'Quantity',
-        accessorKey: 'quantity'
+        accessorKey: 'quantity',
       },
       {
         header: 'Status',
         accessorKey: 'status',
-        cell: (cell) => {
+        cell: cell => {
           switch (cell.getValue()) {
             case 'Cancelled':
-              return <Chip color="error" label="Cancelled" size="small" variant="light" />;
+              return <Chip color='error' label='Cancelled' size='small' variant='light' />;
             case 'Paid':
-              return <Chip color="success" label="Paid" size="small" variant="light" />;
+              return <Chip color='success' label='Paid' size='small' variant='light' />;
             case 'Unpaid':
             default:
-              return <Chip color="info" label="Unpaid" size="small" variant="light" />;
+              return <Chip color='info' label='Unpaid' size='small' variant='light' />;
           }
-        }
+        },
       },
       {
         header: 'Actions',
@@ -375,10 +373,10 @@ export default function List() {
         disableSortBy: true,
         cell: ({ row }) => {
           return (
-            <Stack direction="row" alignItems="center" justifyContent="center" spacing={0}>
-              <Tooltip title="View">
+            <Stack direction='row' alignItems='center' justifyContent='center' spacing={0}>
+              <Tooltip title='View'>
                 <IconButton
-                  color="secondary"
+                  color='secondary'
                   onClick={(e: any) => {
                     e.stopPropagation();
                     navigation(`/apps/invoice/details/${row?.original?.id}`);
@@ -387,9 +385,9 @@ export default function List() {
                   <Eye />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Edit">
+              <Tooltip title='Edit'>
                 <IconButton
-                  color="primary"
+                  color='primary'
                   onClick={(e: any) => {
                     e.stopPropagation();
                     navigation(`/apps/invoice/edit/${row?.original?.id}`);
@@ -398,9 +396,9 @@ export default function List() {
                   <Edit />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Delete">
+              <Tooltip title='Delete'>
                 <IconButton
-                  color="error"
+                  color='error'
                   onClick={(e: any) => {
                     e.stopPropagation();
                     setInvoiceId(row?.original?.id);
@@ -412,11 +410,11 @@ export default function List() {
               </Tooltip>
             </Stack>
           );
-        }
-      }
+        },
+      },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [],
   );
 
   const theme = useTheme();
@@ -430,7 +428,7 @@ export default function List() {
       isLoss: false,
       invoice: '9',
       color: theme.palette.success,
-      chartData: [200, 600, 100, 400, 300, 400, 50]
+      chartData: [200, 600, 100, 400, 300, 400, 50],
     },
     {
       title: 'Unpaid',
@@ -439,7 +437,7 @@ export default function List() {
       isLoss: true,
       invoice: '6',
       color: theme.palette.warning,
-      chartData: [100, 550, 300, 350, 200, 100, 300]
+      chartData: [100, 550, 300, 350, 200, 100, 300],
     },
     {
       title: 'Overdue',
@@ -448,18 +446,18 @@ export default function List() {
       isLoss: true,
       invoice: '4',
       color: theme.palette.error,
-      chartData: [100, 550, 200, 300, 100, 200, 300]
-    }
+      chartData: [100, 550, 200, 300, 100, 200, 300],
+    },
   ];
 
   let breadcrumbLinks = [{ title: 'Home', to: APP_DEFAULT_PATH }, { title: 'Invoice', to: '/apps/invoice/dashboard' }, { title: 'List' }];
 
   return (
     <>
-      <Breadcrumbs custom heading="Invoice List" links={breadcrumbLinks} />
+      <Breadcrumbs custom heading='Invoice List' links={breadcrumbLinks} />
       <Grid container direction={matchDownSM ? 'column' : 'row'} spacing={2} sx={{ pb: 2 }}>
         <Grid item md={8}>
-          <Grid container direction="row" spacing={2}>
+          <Grid container direction='row' spacing={2}>
             {widgetsData.map((widget: InvoiceWidgets, index: number) => (
               <Grid item sm={4} xs={12} key={index}>
                 <MainCard>
@@ -483,41 +481,41 @@ export default function List() {
             sx={{
               background: `linear-gradient(to right, ${theme.palette.primary.dark}, ${theme.palette.primary.main})`,
               borderRadius: 1,
-              p: 1.75
+              p: 1.75,
             }}
           >
-            <Stack direction="row" alignItems="flex-end" justifyContent="space-between" spacing={1}>
-              <Stack direction="row" spacing={1} alignItems="center">
-                <Avatar alt="Natacha" variant="rounded" type="filled">
+            <Stack direction='row' alignItems='flex-end' justifyContent='space-between' spacing={1}>
+              <Stack direction='row' spacing={1} alignItems='center'>
+                <Avatar alt='Natacha' variant='rounded' type='filled'>
                   <ProfileTick style={{ fontSize: '20px' }} />
                 </Avatar>
                 <Box>
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <Typography variant="body1" color="white">
+                  <Stack direction='row' spacing={1} alignItems='center'>
+                    <Typography variant='body1' color='white'>
                       Total Recievables
                     </Typography>
                     <InfoCircle color={theme.palette.background.paper} />
                   </Stack>
-                  <Stack direction="row" spacing={1}>
-                    <Typography variant="body2" color="white">
+                  <Stack direction='row' spacing={1}>
+                    <Typography variant='body2' color='white'>
                       Current
                     </Typography>
-                    <Typography variant="body1" color="white">
+                    <Typography variant='body1' color='white'>
                       109.1k
                     </Typography>
                   </Stack>
                 </Box>
               </Stack>
-              <Stack direction="row" spacing={1}>
-                <Typography variant="body2" color="white">
+              <Stack direction='row' spacing={1}>
+                <Typography variant='body2' color='white'>
                   Overdue
                 </Typography>
-                <Typography variant="body1" color="white">
+                <Typography variant='body1' color='white'>
                   62k
                 </Typography>
               </Stack>
             </Stack>
-            <Typography variant="h4" color="white" sx={{ pt: 2, pb: 1, zIndex: 1 }}>
+            <Typography variant='h4' color='white' sx={{ pt: 2, pb: 1, zIndex: 1 }}>
               $43,078
             </Typography>
             <Box sx={{ maxWidth: '100%' }}>
@@ -542,10 +540,10 @@ function LinearWithLabel({ value, ...others }: LinearProgressProps) {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Box sx={{ width: '100%', mr: 1 }}>
-        <LinearProgress color="warning" variant="determinate" value={value} {...others} />
+        <LinearProgress color='warning' variant='determinate' value={value} {...others} />
       </Box>
       <Box sx={{ minWidth: 35 }}>
-        <Typography variant="body2" color="white">{`${Math.round(value!)}%`}</Typography>
+        <Typography variant='body2' color='white'>{`${Math.round(value!)}%`}</Typography>
       </Box>
     </Box>
   );

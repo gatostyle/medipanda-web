@@ -41,29 +41,29 @@ onClick={() => {
 </Button>`;
 
   return (
-    <MainCard title="Maximum snackbars" codeString={NotiStackMaxSnackbarCodeString}>
+    <MainCard title='Maximum snackbars' codeString={NotiStackMaxSnackbarCodeString}>
       <Stack justifyContent={'space-between'} flexDirection={'row'}>
         <Button
-          variant="outlined"
-          size="small"
+          variant='outlined'
+          size='small'
           sx={width}
           disabled={snackbar.maxStack === 0 ? true : false}
-          onClick={() => setValue((prev) => prev - 1)}
+          onClick={() => setValue(prev => prev - 1)}
         >
           <Minus />
         </Button>
-        <Typography variant="body1">stack up to {value}</Typography>
+        <Typography variant='body1'>stack up to {value}</Typography>
         <Button
-          variant="outlined"
-          size="small"
+          variant='outlined'
+          size='small'
           sx={width}
           disabled={snackbar.maxStack === 4 ? true : false}
-          onClick={() => setValue((prev) => prev + 1)}
+          onClick={() => setValue(prev => prev + 1)}
         >
           <Add />
         </Button>
       </Stack>
-      <Button variant="contained" fullWidth sx={{ marginBlockStart: 2 }} onClick={() => handlerMaxStack()}>
+      <Button variant='contained' fullWidth sx={{ marginBlockStart: 2 }} onClick={() => handlerMaxStack()}>
         Show Snackbar
       </Button>
     </MainCard>

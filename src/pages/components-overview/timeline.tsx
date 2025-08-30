@@ -18,10 +18,10 @@ export default function ComponentTimeline() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Timeline"
-        caption="The timeline displays a list of events in chronological order."
-        directory="src/pages/components-overview/timeline"
-        link="https://mui.com/material-ui/react-timeline/"
+        title='Timeline'
+        caption='The timeline displays a list of events in chronological order.'
+        directory='src/pages/components-overview/timeline'
+        link='https://mui.com/material-ui/react-timeline/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>

@@ -8,13 +8,13 @@ export default function AuthSocButton({ children, ...other }: ButtonProps) {
   const theme = useTheme();
   return (
     <Button
-      variant="outlined"
+      variant='outlined'
       fullWidth
       sx={{
         bgcolor: 'secondary.100',
         borderColor: theme.palette.secondary[200],
         color: 'secondary.main',
-        '&:hover,&:focus': { bgcolor: 'secondary.100', borderColor: theme.palette.primary.main }
+        '&:hover,&:focus': { bgcolor: 'secondary.100', borderColor: theme.palette.primary.main },
       }}
       {...other}
     >

@@ -21,7 +21,7 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
@@ -34,7 +34,7 @@ import {
   DateTimeString,
   PrescriptionResponse,
   searchPrescriptions,
-  uploadEdiZip
+  uploadEdiZip,
 } from 'medipanda/backend';
 import MpDatePicker from 'medipanda/components/MpDatePicker';
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
@@ -76,7 +76,7 @@ export default function MpAdminPrescriptionReceptionList() {
       startAt: null as Date | null,
       endAt: null as Date | null,
       pageIndex: 0,
-      pageSize: 20
+      pageSize: 20,
     },
     onSubmit: async () => {
       if (formik.values.pageIndex !== 0) {
@@ -84,7 +84,7 @@ export default function MpAdminPrescriptionReceptionList() {
       } else {
         await fetchData();
       }
-    }
+    },
   });
 
   const handleConfirm = async (id: number) => {
@@ -107,64 +107,64 @@ export default function MpAdminPrescriptionReceptionList() {
       header: 'No',
       accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
-      size: 60
+      size: 60,
     },
     {
       header: '딜러번호',
       accessorKey: 'dealerId',
       cell: ({ row }) => row.original.dealerId,
-      size: 100
+      size: 100,
     },
     {
       header: '아이디',
       accessorKey: 'userId',
       cell: ({ row }) => row.original.userId,
-      size: 120
+      size: 120,
     },
     {
       header: '회사명',
       accessorKey: 'companyName',
       cell: ({ row }) => row.original.companyName,
-      size: 150
+      size: 150,
     },
     {
       header: '딜러명',
       accessorKey: 'dealerName',
       cell: ({ row }) => row.original.dealerName,
-      size: 100
+      size: 100,
     },
     {
       header: '처방월',
       accessorKey: 'prescriptionMonth',
       cell: ({ row }) => formatYyyyMm(row.original.prescriptionMonth),
-      size: 100
+      size: 100,
     },
     {
       header: '정산월',
       accessorKey: 'settlementMonth',
       cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
-      size: 100
+      size: 100,
     },
     {
       header: '접수신청일',
       accessorKey: 'submittedAt',
       cell: ({ row }) => formatYyyyMmDd(row.original.submittedAt),
-      size: 120
+      size: 120,
     },
     {
       header: '접수파일',
       cell: ({ row }) => (
         <Button
-          variant="contained"
-          color="success"
-          size="small"
+          variant='contained'
+          color='success'
+          size='small'
           href={`/v1/prescriptions/partners/${row.original.id}/edi-files/download`}
-          target="_blank"
+          target='_blank'
         >
           다운로드
         </Button>
       ),
-      size: 120
+      size: 120,
     },
     {
       header: '접수상태',
@@ -175,25 +175,25 @@ export default function MpAdminPrescriptionReceptionList() {
         const labels = {
           PENDING: '접수대기',
           IN_PROGRESS: '처리중',
-          COMPLETED: '입력완료'
+          COMPLETED: '입력완료',
         };
 
-        return <Chip label={labels[status]} size="small" sx={{ backgroundColor: '#4caf50', color: 'white' }} />;
+        return <Chip label={labels[status]} size='small' sx={{ backgroundColor: '#4caf50', color: 'white' }} />;
       },
-      size: 100
+      size: 100,
     },
     {
       header: '관리자확인',
       cell: ({ row }) =>
         row.original.status === 'PENDING' ? (
-          <Button variant="contained" color="success" size="small" onClick={() => handleConfirm(row.original.id)}>
+          <Button variant='contained' color='success' size='small' onClick={() => handleConfirm(row.original.id)}>
             접수확인
           </Button>
         ) : (
-          <Typography variant="body2">{row.original.checkedAt ? formatYyyyMmDd(row.original.checkedAt) : '-'}</Typography>
+          <Typography variant='body2'>{row.original.checkedAt ? formatYyyyMmDd(row.original.checkedAt) : '-'}</Typography>
         ),
-      size: 120
-    }
+      size: 120,
+    },
   ];
 
   const table = useReactTable({
@@ -204,11 +204,11 @@ export default function MpAdminPrescriptionReceptionList() {
     state: {
       pagination: {
         pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize
-      }
+        pageSize: formik.values.pageSize,
+      },
     },
     pageCount: totalPages,
-    manualPagination: true
+    manualPagination: true,
   });
 
   const handleReset = () => {
@@ -227,7 +227,7 @@ export default function MpAdminPrescriptionReceptionList() {
         startAt: formik.values.startAt ? new DateTimeString(formik.values.startAt) : undefined,
         endAt: formik.values.endAt ? new DateTimeString(formik.values.endAt) : undefined,
         page: formik.values.pageIndex,
-        size: formik.values.pageSize
+        size: formik.values.pageSize,
       });
 
       setData(withSequence(response).content);
@@ -255,7 +255,7 @@ export default function MpAdminPrescriptionReceptionList() {
       await uploadEdiZip({
         prescriptionMonth: new DateString(prescriptionMonth!).toString(),
         settlementMonth: new DateString(settlementMonth!).toString(),
-        file: ediZipFile
+        file: ediZipFile,
       });
 
       infoDialog.showInfo('EDI를 업로드했습니다.');
@@ -272,7 +272,7 @@ export default function MpAdminPrescriptionReceptionList() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant='h4' gutterBottom>
           처방접수
         </Typography>
       </Grid>
@@ -283,9 +283,9 @@ export default function MpAdminPrescriptionReceptionList() {
             <form onSubmit={formik.handleSubmit}>
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size="small">
+                  <FormControl fullWidth size='small'>
                     <InputLabel>접수상태</InputLabel>
-                    <Select name="status" value={formik.values.status} onChange={formik.handleChange}>
+                    <Select name='status' value={formik.values.status} onChange={formik.handleChange}>
                       <MenuItem value={'PENDING'}>접수대기</MenuItem>
                       <MenuItem value={'IN_PROGRESS'}>처리중</MenuItem>
                       <MenuItem value={'COMPLETED'}>입력완료</MenuItem>
@@ -293,9 +293,9 @@ export default function MpAdminPrescriptionReceptionList() {
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size="small">
+                  <FormControl fullWidth size='small'>
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
+                    <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'companyName'}>회사명</MenuItem>
                       <MenuItem value={'id'}>아이디</MenuItem>
                       <MenuItem value={'dealerName'}>딜러명</MenuItem>
@@ -304,26 +304,26 @@ export default function MpAdminPrescriptionReceptionList() {
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="startAt" label="시작일" formik={formik} />
+                  <MpFormikDatePicker name='startAt' label='시작일' formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="endAt" label="종료일" formik={formik} />
+                  <MpFormikDatePicker name='endAt' label='종료일' formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
-                    name="searchKeyword"
-                    size="small"
-                    placeholder="검색어를 입력하세요"
+                    name='searchKeyword'
+                    size='small'
+                    placeholder='검색어를 입력하세요'
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
                   />
                 </SearchFilterItem>
                 <SearchFilterActions>
-                  <Button variant="contained" size="small" type="submit">
+                  <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant="outlined" size="small" onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={handleReset}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -336,12 +336,12 @@ export default function MpAdminPrescriptionReceptionList() {
       <Grid item xs={12}>
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Stack direction="row" spacing={2}>
-                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+            <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+              <Stack direction='row' spacing={2}>
+                <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
-              <Stack direction="row" spacing={1}>
-                <Button variant="contained" color="success" size="small" onClick={() => setRegisterDialogOpen(true)}>
+              <Stack direction='row' spacing={1}>
+                <Button variant='contained' color='success' size='small' onClick={() => setRegisterDialogOpen(true)}>
                   EDI 등록
                 </Button>
               </Stack>
@@ -349,11 +349,11 @@ export default function MpAdminPrescriptionReceptionList() {
 
             <ScrollX>
               <TableContainer>
-                <Table size="small">
+                <Table size='small'>
                   <TableHead>
-                    {table.getHeaderGroups().map((headerGroup) => (
+                    {table.getHeaderGroups().map(headerGroup => (
                       <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => (
+                        {headerGroup.headers.map(header => (
                           <TableCell key={header.id} style={{ width: header.getSize() }}>
                             {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                           </TableCell>
@@ -364,24 +364,24 @@ export default function MpAdminPrescriptionReceptionList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : (
-                      table.getRowModel().rows.map((row) => (
+                      table.getRowModel().rows.map(row => (
                         <TableRow key={row.id}>
-                          {row.getVisibleCells().map((cell) => (
+                          {row.getVisibleCells().map(cell => (
                             <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                           ))}
                         </TableRow>
@@ -392,13 +392,13 @@ export default function MpAdminPrescriptionReceptionList() {
               </TableContainer>
             </ScrollX>
 
-            <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
+            <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
                 page={formik.values.pageIndex + 1}
                 onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
-                color="primary"
-                variant="outlined"
+                color='primary'
+                variant='outlined'
                 showFirstButton
                 showLastButton
               />
@@ -407,31 +407,31 @@ export default function MpAdminPrescriptionReceptionList() {
         </MainCard>
       </Grid>
 
-      <Dialog open={registerDialogOpen} onClose={() => setRegisterDialogOpen(false)} maxWidth="sm" fullWidth>
+      <Dialog open={registerDialogOpen} onClose={() => setRegisterDialogOpen(false)} maxWidth='sm' fullWidth>
         <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}>EDI 등록</DialogTitle>
         <DialogContent sx={{ pt: 3, pb: 3 }}>
-          <Stack direction="row" spacing={2} justifyContent="center" alignItems="center" sx={{ mb: 3 }}>
-            <Typography variant="body1">처방월 선택</Typography>
+          <Stack direction='row' spacing={2} justifyContent='center' alignItems='center' sx={{ mb: 3 }}>
+            <Typography variant='body1'>처방월 선택</Typography>
             <Box>
               <MpDatePicker
                 value={prescriptionMonth}
-                onChange={(value) => {
+                onChange={value => {
                   setPrescriptionMonth(value);
                 }}
-                placeholder="월 선택"
-                format="yyyy-MM"
+                placeholder='월 선택'
+                format='yyyy-MM'
                 views={['year', 'month']}
               />
             </Box>
-            <Typography variant="body1">정산월 선택</Typography>
+            <Typography variant='body1'>정산월 선택</Typography>
             <Box>
               <MpDatePicker
                 value={settlementMonth}
-                onChange={(value) => {
+                onChange={value => {
                   setSettlementMonth(value);
                 }}
-                placeholder="월 선택"
-                format="yyyy-MM"
+                placeholder='월 선택'
+                format='yyyy-MM'
                 views={['year', 'month']}
               />
             </Box>
@@ -446,17 +446,17 @@ export default function MpAdminPrescriptionReceptionList() {
               cursor: 'pointer',
               bgcolor: isDragActive ? 'action.hover' : 'transparent',
               '&:hover': {
-                borderColor: 'primary.main'
-              }
+                borderColor: 'primary.main',
+              },
             }}
           >
             <input {...getInputProps()} />
             <UploadFile sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
-            <Typography variant="h6" color="text.secondary">
+            <Typography variant='h6' color='text.secondary'>
               여기에 파일을 드래그하거나 클릭하여 업로드하세요.
             </Typography>
             {ediZipFile && (
-              <Typography variant="body2" sx={{ mt: 1 }}>
+              <Typography variant='body2' sx={{ mt: 1 }}>
                 선택된 파일: {ediZipFile.name}
               </Typography>
             )}
@@ -464,7 +464,7 @@ export default function MpAdminPrescriptionReceptionList() {
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'center', pb: 3 }}>
           <Button
-            variant="outlined"
+            variant='outlined'
             onClick={() => {
               setRegisterDialogOpen(false);
               setEdiZipFile(null);
@@ -473,7 +473,7 @@ export default function MpAdminPrescriptionReceptionList() {
           >
             취소
           </Button>
-          <Button variant="contained" color="success" onClick={handleFileUpload} disabled={!ediZipFile} sx={{ minWidth: 100 }}>
+          <Button variant='contained' color='success' onClick={handleFileUpload} disabled={!ediZipFile} sx={{ minWidth: 100 }}>
             업데이트
           </Button>
         </DialogActions>

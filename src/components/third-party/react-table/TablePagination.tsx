@@ -55,22 +55,22 @@ export default function TablePagination({ getPageCount, setPageIndex, setPageSiz
   };
 
   return (
-    <Grid spacing={1} container alignItems="center" justifyContent="space-between" sx={{ width: 'auto' }}>
+    <Grid spacing={1} container alignItems='center' justifyContent='space-between' sx={{ width: 'auto' }}>
       <Grid item>
-        <Stack direction="row" spacing={1} alignItems="center">
-          <Stack direction="row" spacing={1} alignItems="center">
-            <Typography variant="caption" color="secondary">
+        <Stack direction='row' spacing={1} alignItems='center'>
+          <Stack direction='row' spacing={1} alignItems='center'>
+            <Typography variant='caption' color='secondary'>
               Row per page
             </Typography>
             <FormControl sx={{ m: 1 }}>
               <Select
-                id="demo-controlled-open-select"
+                id='demo-controlled-open-select'
                 open={open}
                 onClose={handleClose}
                 onOpen={handleOpen}
                 value={getState().pagination.pageSize}
                 onChange={handleChange}
-                size="small"
+                size='small'
                 sx={{ '& .MuiSelect-select': { py: 0.75, px: 1.25 } }}
               >
                 {options.map((option: number) => (
@@ -81,14 +81,14 @@ export default function TablePagination({ getPageCount, setPageIndex, setPageSiz
               </Select>
             </FormControl>
           </Stack>
-          <Typography variant="caption" color="secondary">
+          <Typography variant='caption' color='secondary'>
             Go to
           </Typography>
           <TextField
-            size="small"
-            type="number"
+            size='small'
+            type='number'
             value={getState().pagination.pageIndex + 1}
-            onChange={(e) => {
+            onChange={e => {
               const page = e.target.value ? Number(e.target.value) - 1 : 0;
               setPageIndex(page);
             }}
@@ -102,8 +102,8 @@ export default function TablePagination({ getPageCount, setPageIndex, setPageSiz
           count={getPageCount()}
           page={getState().pagination.pageIndex + 1}
           onChange={handleChangePagination}
-          color="primary"
-          variant="combined"
+          color='primary'
+          variant='combined'
           showFirstButton
           showLastButton
         />

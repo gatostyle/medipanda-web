@@ -12,39 +12,39 @@ const icons = {
   widgets: Story,
   statistics: Story,
   data: Fatrows,
-  chart: PresentionChart
+  chart: PresentionChart,
 };
 
 // ==============================|| MENU ITEMS - WIDGETS ||============================== //
 
 const widget: NavItemType = {
   id: 'group-widget',
-  title: <FormattedMessage id="widgets" />,
+  title: <FormattedMessage id='widgets' />,
   icon: icons.widgets,
   type: 'group',
   children: [
     {
       id: 'statistics',
-      title: <FormattedMessage id="statistics" />,
+      title: <FormattedMessage id='statistics' />,
       type: 'item',
       url: '/widget/statistics',
-      icon: icons.statistics
+      icon: icons.statistics,
     },
     {
       id: 'data',
-      title: <FormattedMessage id="data" />,
+      title: <FormattedMessage id='data' />,
       type: 'item',
       url: '/widget/data',
-      icon: icons.data
+      icon: icons.data,
     },
     {
       id: 'chart',
-      title: <FormattedMessage id="chart" />,
+      title: <FormattedMessage id='chart' />,
       type: 'item',
       url: '/widget/chart',
-      icon: icons.chart
-    }
-  ]
+      icon: icons.chart,
+    },
+  ],
 };
 
 export default widget;

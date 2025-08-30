@@ -24,27 +24,27 @@ export default function TotalRevenue() {
   const errorSX = { color: theme.palette.error.main };
 
   return (
-    <MainCard title="Total Revenue" content={false}>
+    <MainCard title='Total Revenue' content={false}>
       <SimpleBar sx={{ height: 334 }}>
         <List
           disablePadding
-          component="nav"
-          aria-label="main mailbox folders"
+          component='nav'
+          aria-label='main mailbox folders'
           sx={{
             '& .MuiListItemButton-root': { borderRadius: 0, my: 0, py: 1.5 },
             '& .MuiListItemText-root': { color: 'text.primary' },
-            '& svg': { mr: { xs: 1, sm: 4, md: 8, lg: 12 } }
+            '& svg': { mr: { xs: 1, sm: 4, md: 8, lg: 12 } },
           }}
         >
           <ListItemButton>
             <ListItemIcon>
-              <ArrowUp2 variant="Bold" size={20} style={successSX} />
+              <ArrowUp2 variant='Bold' size={20} style={successSX} />
             </ListItemIcon>
             <ListItemText
               primary={
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Stack direction='row' justifyContent='space-between' alignItems='center'>
                   <span>Bitcoin</span>
-                  <Typography variant="subtitle1" sx={successSX}>
+                  <Typography variant='subtitle1' sx={successSX}>
                     + $145.85
                   </Typography>
                 </Stack>
@@ -54,13 +54,13 @@ export default function TotalRevenue() {
           <Divider />
           <ListItemButton>
             <ListItemIcon>
-              <ArrowDown2 variant="Bold" size={20} style={errorSX} />
+              <ArrowDown2 variant='Bold' size={20} style={errorSX} />
             </ListItemIcon>
             <ListItemText
               primary={
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Stack direction='row' justifyContent='space-between' alignItems='center'>
                   <span>Ethereum</span>
-                  <Typography variant="subtitle1" sx={errorSX}>
+                  <Typography variant='subtitle1' sx={errorSX}>
                     - $6.368
                   </Typography>
                 </Stack>
@@ -70,13 +70,13 @@ export default function TotalRevenue() {
           <Divider />
           <ListItemButton>
             <ListItemIcon>
-              <ArrowUp2 variant="Bold" size={20} style={successSX} />
+              <ArrowUp2 variant='Bold' size={20} style={successSX} />
             </ListItemIcon>
             <ListItemText
               primary={
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Stack direction='row' justifyContent='space-between' alignItems='center'>
                   <span>Ripple</span>
-                  <Typography variant="subtitle1" sx={successSX}>
+                  <Typography variant='subtitle1' sx={successSX}>
                     + $458.63
                   </Typography>
                 </Stack>
@@ -86,13 +86,13 @@ export default function TotalRevenue() {
           <Divider />
           <ListItemButton>
             <ListItemIcon>
-              <ArrowDown2 variant="Bold" size={20} style={errorSX} />
+              <ArrowDown2 variant='Bold' size={20} style={errorSX} />
             </ListItemIcon>
             <ListItemText
               primary={
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Stack direction='row' justifyContent='space-between' alignItems='center'>
                   <span>Neo</span>
-                  <Typography variant="subtitle1" sx={errorSX}>
+                  <Typography variant='subtitle1' sx={errorSX}>
                     - $5.631
                   </Typography>
                 </Stack>
@@ -102,13 +102,13 @@ export default function TotalRevenue() {
           <Divider />
           <ListItemButton>
             <ListItemIcon>
-              <ArrowDown2 variant="Bold" size={20} style={errorSX} />
+              <ArrowDown2 variant='Bold' size={20} style={errorSX} />
             </ListItemIcon>
             <ListItemText
               primary={
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Stack direction='row' justifyContent='space-between' alignItems='center'>
                   <span>Ethereum</span>
-                  <Typography variant="subtitle1" sx={errorSX}>
+                  <Typography variant='subtitle1' sx={errorSX}>
                     - $6.368
                   </Typography>
                 </Stack>
@@ -118,13 +118,13 @@ export default function TotalRevenue() {
           <Divider />
           <ListItemButton>
             <ListItemIcon>
-              <ArrowUp2 variant="Bold" size={20} style={successSX} />
+              <ArrowUp2 variant='Bold' size={20} style={successSX} />
             </ListItemIcon>
             <ListItemText
               primary={
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Stack direction='row' justifyContent='space-between' alignItems='center'>
                   <span>Ripple</span>
-                  <Typography variant="subtitle1" sx={successSX}>
+                  <Typography variant='subtitle1' sx={successSX}>
                     + $458.63
                   </Typography>
                 </Stack>
@@ -134,13 +134,13 @@ export default function TotalRevenue() {
           <Divider />
           <ListItemButton>
             <ListItemIcon>
-              <ArrowDown2 variant="Bold" size={20} style={errorSX} />
+              <ArrowDown2 variant='Bold' size={20} style={errorSX} />
             </ListItemIcon>
             <ListItemText
               primary={
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Stack direction='row' justifyContent='space-between' alignItems='center'>
                   <span>Neo</span>
-                  <Typography variant="subtitle1" sx={errorSX}>
+                  <Typography variant='subtitle1' sx={errorSX}>
                     - $5.631
                   </Typography>
                 </Stack>
@@ -150,13 +150,13 @@ export default function TotalRevenue() {
           <Divider />
           <ListItemButton>
             <ListItemIcon>
-              <ArrowDown2 variant="Bold" size={20} style={errorSX} />
+              <ArrowDown2 variant='Bold' size={20} style={errorSX} />
             </ListItemIcon>
             <ListItemText
               primary={
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Stack direction='row' justifyContent='space-between' alignItems='center'>
                   <span>Ethereum</span>
-                  <Typography variant="subtitle1" sx={errorSX}>
+                  <Typography variant='subtitle1' sx={errorSX}>
                     - $6.368
                   </Typography>
                 </Stack>
@@ -166,13 +166,13 @@ export default function TotalRevenue() {
           <Divider />
           <ListItemButton>
             <ListItemIcon>
-              <ArrowUp2 variant="Bold" size={20} style={successSX} />
+              <ArrowUp2 variant='Bold' size={20} style={successSX} />
             </ListItemIcon>
             <ListItemText
               primary={
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Stack direction='row' justifyContent='space-between' alignItems='center'>
                   <span>Ripple</span>
-                  <Typography variant="subtitle1" sx={successSX}>
+                  <Typography variant='subtitle1' sx={successSX}>
                     + $458.63
                   </Typography>
                 </Stack>
@@ -182,13 +182,13 @@ export default function TotalRevenue() {
           <Divider />
           <ListItemButton>
             <ListItemIcon>
-              <ArrowDown2 variant="Bold" size={20} style={errorSX} />
+              <ArrowDown2 variant='Bold' size={20} style={errorSX} />
             </ListItemIcon>
             <ListItemText
               primary={
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Stack direction='row' justifyContent='space-between' alignItems='center'>
                   <span>Neo</span>
-                  <Typography variant="subtitle1" sx={errorSX}>
+                  <Typography variant='subtitle1' sx={errorSX}>
                     - $5.631
                   </Typography>
                 </Stack>

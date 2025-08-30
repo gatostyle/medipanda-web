@@ -20,7 +20,7 @@ export default function FullScreen() {
   const [open, setOpen] = useState(false);
 
   const handleToggle = useCallback(() => {
-    setOpen((prevOpen) => !prevOpen);
+    setOpen(prevOpen => !prevOpen);
     if (document && !document.fullscreenElement) {
       document.documentElement.requestFullscreen();
     } else if (document.exitFullscreen) {
@@ -35,13 +35,13 @@ export default function FullScreen() {
     <Box sx={{ flexShrink: 0, ml: 0.75 }}>
       <Tooltip title={open ? 'Exit Fullscreen' : 'Fullscreen'}>
         <IconButton
-          color="secondary"
-          variant="light"
+          color='secondary'
+          variant='light'
           onClick={handleToggle}
-          size="large"
+          size='large'
           sx={{ color: 'secondary.main', bgcolor: open ? iconBackColorOpen : iconBackColor, p: 1 }}
         >
-          <Maximize1 variant="Bulk" {...(open && { style: { transform: 'rotate(180deg)' } })} />
+          <Maximize1 variant='Bulk' {...(open && { style: { transform: 'rotate(180deg)' } })} />
         </IconButton>
       </Tooltip>
     </Box>

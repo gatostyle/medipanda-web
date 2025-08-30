@@ -31,26 +31,26 @@ export default function MessageCard({ status, time, title, message, src, actions
     <MainCard>
       <Grid container spacing={1.5}>
         <Grid item xs={12}>
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <Chip label={status.label} color={status.color} size="small" variant="light" />
-            <Typography variant="caption" color="secondary">
+          <Stack direction='row' alignItems='center' spacing={1}>
+            <Chip label={status.label} color={status.color} size='small' variant='light' />
+            <Typography variant='caption' color='secondary'>
               {time}
             </Typography>
-            <Dot size={5} color="warning" />
+            <Dot size={5} color='warning' />
           </Stack>
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="subtitle1">{title}</Typography>
+          <Typography variant='subtitle1'>{title}</Typography>
         </Grid>
         <Grid item xs={12}>
           <Typography>{message}</Typography>
         </Grid>
         <Grid item xs={12}>
-          <CardMedia component="img" src={src} alt={title} />
+          <CardMedia component='img' src={src} alt={title} />
         </Grid>
         {actions && actions?.length > 0 && (
           <Grid item xs={12} sx={{ mt: 1 }}>
-            <Stack direction="row" alignItems="center" spacing={{ xs: 1.5, sm: 2.5 }}>
+            <Stack direction='row' alignItems='center' spacing={{ xs: 1.5, sm: 2.5 }}>
               {actions.map((item: MessageActions, index: number) => (
                 <Button {...item.button} key={index}>
                   {item.label}

@@ -17,7 +17,7 @@ import Dashboard2 from 'assets/images/widget/dashborad-3.jpg';
 const mediaSX = {
   width: 90,
   height: 80,
-  borderRadius: 1
+  borderRadius: 1,
 };
 
 // ===========================|| DATA WIDGET - LATEST POSTS ||=========================== //
@@ -25,10 +25,10 @@ const mediaSX = {
 export default function LatestPosts() {
   return (
     <MainCard
-      title="Latest Posts"
+      title='Latest Posts'
       content={false}
       secondary={
-        <Link component={RouterLink} to="#" color="primary">
+        <Link component={RouterLink} to='#' color='primary'>
           View all
         </Link>
       }
@@ -36,15 +36,15 @@ export default function LatestPosts() {
       <CardContent>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <Grid container alignItems="center" spacing={2}>
+            <Grid container alignItems='center' spacing={2}>
               <Grid item>
-                <CardMedia component="img" image={Dashboard1} title="image" sx={mediaSX} />
+                <CardMedia component='img' image={Dashboard1} title='image' sx={mediaSX} />
               </Grid>
               <Grid item xs zeroMinWidth>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1">Up unpacked friendly</Typography>
-                    <Typography variant="caption" color="secondary">
+                    <Typography variant='subtitle1'>Up unpacked friendly</Typography>
+                    <Typography variant='caption' color='secondary'>
                       Video | 14 minutes ago
                     </Typography>
                   </Grid>
@@ -53,15 +53,15 @@ export default function LatestPosts() {
             </Grid>
           </Grid>
           <Grid item xs={12}>
-            <Grid container alignItems="center" spacing={2}>
+            <Grid container alignItems='center' spacing={2}>
               <Grid item>
-                <CardMedia component="iframe" src="https://www.youtube.com/embed/668nUCeBHyY" title="image" sx={mediaSX} />
+                <CardMedia component='iframe' src='https://www.youtube.com/embed/668nUCeBHyY' title='image' sx={mediaSX} />
               </Grid>
               <Grid item xs zeroMinWidth>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1">Up unpacked friendly</Typography>
-                    <Typography variant="caption" color="secondary">
+                    <Typography variant='subtitle1'>Up unpacked friendly</Typography>
+                    <Typography variant='caption' color='secondary'>
                       Video | 14 minutes ago
                     </Typography>
                   </Grid>
@@ -70,15 +70,15 @@ export default function LatestPosts() {
             </Grid>
           </Grid>
           <Grid item xs={12}>
-            <Grid container alignItems="center" spacing={2}>
+            <Grid container alignItems='center' spacing={2}>
               <Grid item>
-                <CardMedia component="img" image={Dashboard2} title="image" sx={mediaSX} />
+                <CardMedia component='img' image={Dashboard2} title='image' sx={mediaSX} />
               </Grid>
               <Grid item xs zeroMinWidth>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1">Up unpacked friendly</Typography>
-                    <Typography variant="caption" color="secondary">
+                    <Typography variant='subtitle1'>Up unpacked friendly</Typography>
+                    <Typography variant='caption' color='secondary'>
                       Video | 14 minutes ago
                     </Typography>
                   </Grid>

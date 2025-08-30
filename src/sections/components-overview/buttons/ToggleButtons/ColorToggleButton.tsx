@@ -17,17 +17,17 @@ export default function ColorToggleButton() {
   };
 
   return (
-    <ToggleButtonGroup color="primary" value={alignment} exclusive onChange={handleAlignment} aria-label="text alignment">
-      <ToggleButton value="left" aria-label="left aligned">
+    <ToggleButtonGroup color='primary' value={alignment} exclusive onChange={handleAlignment} aria-label='text alignment'>
+      <ToggleButton value='left' aria-label='left aligned'>
         <TextalignLeft />
       </ToggleButton>
-      <ToggleButton value="center" aria-label="centered">
+      <ToggleButton value='center' aria-label='centered'>
         <TextalignCenter />
       </ToggleButton>
-      <ToggleButton value="right" aria-label="right aligned">
+      <ToggleButton value='right' aria-label='right aligned'>
         <TextalignRight />
       </ToggleButton>
-      <ToggleButton value="list" aria-label="list">
+      <ToggleButton value='list' aria-label='list'>
         <TextalignJustifycenter />
       </ToggleButton>
     </ToggleButtonGroup>

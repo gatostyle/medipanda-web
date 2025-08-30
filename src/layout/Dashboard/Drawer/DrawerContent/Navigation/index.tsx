@@ -49,17 +49,17 @@ export default function Navigation() {
   if (lastItem && lastItem < menuItems.items.length) {
     lastItemId = menuItems.items[lastItem - 1].id!;
     lastItemIndex = lastItem - 1;
-    remItems = menuItems.items.slice(lastItem - 1, menuItems.items.length).map((item) => ({
+    remItems = menuItems.items.slice(lastItem - 1, menuItems.items.length).map(item => ({
       title: item.title,
       elements: item.children,
       icon: item.icon,
       ...(item.url && {
-        url: item.url
-      })
+        url: item.url,
+      }),
     }));
   }
 
-  const navGroups = menuItems.items.slice(0, lastItemIndex + 1).map((item) => {
+  const navGroups = menuItems.items.slice(0, lastItemIndex + 1).map(item => {
     switch (item.type) {
       case 'group':
         if (item.url && item.id !== lastItemId) {
@@ -103,7 +103,7 @@ export default function Navigation() {
         );
       default:
         return (
-          <Typography key={item.id} variant="h6" color="error" align="center">
+          <Typography key={item.id} variant='h6' color='error' align='center'>
             Fix - Navigation Group
           </Typography>
         );
@@ -115,7 +115,7 @@ export default function Navigation() {
       sx={{
         pt: drawerOpen ? (isHorizontal ? 0 : 2) : 0,
         '& > ul:first-of-type': { mt: 0 },
-        display: isHorizontal ? { xs: 'block', lg: 'flex' } : 'block'
+        display: isHorizontal ? { xs: 'block', lg: 'flex' } : 'block',
       }}
     >
       {navGroups}

@@ -23,31 +23,31 @@ const LoginRoutes = {
       children: [
         {
           path: 'login',
-          element: <AuthLogin />
+          element: <AuthLogin />,
         },
         {
           path: 'register',
-          element: <AuthRegister />
+          element: <AuthRegister />,
         },
         {
           path: 'forgot-password',
-          element: <AuthForgotPassword />
+          element: <AuthForgotPassword />,
         },
         {
           path: 'check-mail',
-          element: <AuthCheckMail />
+          element: <AuthCheckMail />,
         },
         {
           path: 'reset-password',
-          element: <AuthResetPassword />
+          element: <AuthResetPassword />,
         },
         {
           path: 'code-verification',
-          element: <AuthCodeVerification />
-        }
-      ]
-    }
-  ]
+          element: <AuthCodeVerification />,
+        },
+      ],
+    },
+  ],
 };
 
 export default LoginRoutes;

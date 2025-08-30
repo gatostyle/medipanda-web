@@ -23,26 +23,26 @@ export default function UserCard() {
       <CardContent sx={{ p: 2 }}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Stack flexDirection="row" alignItems="center">
+            <Stack flexDirection='row' alignItems='center'>
               <Avatar>
                 <ProfileAdd style={{ visibility: 'inherit' }} />
               </Avatar>
               <Stack sx={{ width: '100%', pl: 2.5 }}>
-                <Skeleton animation={false} height={20} width="80%" />
-                <Skeleton animation={false} height={20} width="40%" />
+                <Skeleton animation={false} height={20} width='80%' />
+                <Skeleton animation={false} height={20} width='40%' />
               </Stack>
             </Stack>
           </Grid>
           <Grid item xs={12}>
             <Skeleton animation={false} height={20} width={45} />
             <Skeleton animation={false} height={20} />
-            <Stack direction="row" alignItems="center" spacing={1}>
+            <Stack direction='row' alignItems='center' spacing={1}>
               <Skeleton animation={false} height={20} width={90} />
               <Skeleton animation={false} height={20} width={38} />
             </Stack>
           </Grid>
           <Grid item xs={12}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Stack direction='row' justifyContent='space-between' alignItems='center'>
               <Grid container spacing={1}>
                 <Grid item>
                   <Skeleton animation={false} height={20} width={40} />

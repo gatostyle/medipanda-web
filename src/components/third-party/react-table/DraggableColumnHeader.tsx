@@ -21,7 +21,7 @@ const reorderColumn = (draggedColumnId: string, targetColumnId: string, columnOr
 export default function DraggableColumnHeader({
   header,
   table,
-  children
+  children,
 }: {
   header: Header<TableDataProps, unknown>;
   table: Table<TableDataProps>;
@@ -37,18 +37,18 @@ export default function DraggableColumnHeader({
       const newColumnOrder = reorderColumn(draggedColumn.id, column.id, columnOrder);
       setColumnOrder(newColumnOrder);
     },
-    collect: (monitor) => ({
+    collect: monitor => ({
       isOver: monitor.isOver(),
-      isOverCurrent: monitor.isOver({ shallow: true })
-    })
+      isOverCurrent: monitor.isOver({ shallow: true }),
+    }),
   });
 
   const [{ isDragging }, dragRef, previewRef] = useDrag({
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging()
+    collect: monitor => ({
+      isDragging: monitor.isDragging(),
     }),
     item: () => column,
-    type: 'column'
+    type: 'column',
   });
 
   return (

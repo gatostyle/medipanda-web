@@ -1317,7 +1317,7 @@ export async function callbackPage(options?: { certNum?: string }): Promise<stri
   const response = await axios.request<string>({
     method: 'GET',
     url: '/v1/kmc/auth/callback-page',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -1329,7 +1329,7 @@ export async function callbackPage_1(options?: { certNum?: string }): Promise<st
   const response = await axios.request<string>({
     method: 'POST',
     url: '/v1/kmc/auth/callback-page',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -1340,7 +1340,7 @@ export async function callbackPage_1(options?: { certNum?: string }): Promise<st
 export async function exportAll(): Promise<string> {
   const response = await axios.request<string>({
     method: 'PUT',
-    url: '/v1/products/export-to-root-tsv'
+    url: '/v1/products/export-to-root-tsv',
   });
   return response.data;
 }
@@ -1352,7 +1352,7 @@ export async function exportAll(): Promise<string> {
 export async function getPartnerDetails(id: number): Promise<PartnerResponse> {
   const response = await axios.request<PartnerResponse>({
     method: 'GET',
-    url: `/v1/partners/${id}`
+    url: `/v1/partners/${id}`,
   });
   return response.data;
 }
@@ -1365,7 +1365,7 @@ export async function updatePartner(id: number, data: PartnerUpdateRequest): Pro
   await axios.request({
     method: 'PUT',
     url: `/v1/partners/${id}`,
-    data
+    data,
   });
 }
 
@@ -1376,7 +1376,7 @@ export async function updatePartner(id: number, data: PartnerUpdateRequest): Pro
 export async function deletePartner(id: number): Promise<void> {
   await axios.request({
     method: 'DELETE',
-    url: `/v1/partners/${id}`
+    url: `/v1/partners/${id}`,
   });
 }
 
@@ -1397,7 +1397,7 @@ export async function getCommentMembers(options?: {
   const response = await axios.request<PageCommentMemberResponse>({
     method: 'GET',
     url: '/v1/comments',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -1410,7 +1410,7 @@ export async function updateComment(data: CommentUpdateRequest): Promise<string>
   const response = await axios.request<string>({
     method: 'PUT',
     url: '/v1/comments',
-    data
+    data,
   });
   return response.data;
 }
@@ -1422,7 +1422,7 @@ export async function updateComment(data: CommentUpdateRequest): Promise<string>
 export async function toggleBlindStatus(id: number): Promise<boolean> {
   const response = await axios.request<boolean>({
     method: 'PUT',
-    url: `/v1/comments/${id}/toggle-blind`
+    url: `/v1/comments/${id}/toggle-blind`,
   });
   return response.data;
 }
@@ -1436,12 +1436,12 @@ export async function getBoardDetails(
   options?: {
     filterBlind?: boolean;
     filterDeleted?: boolean;
-  }
+  },
 ): Promise<BoardDetailsResponse> {
   const response = await axios.request<BoardDetailsResponse>({
     method: 'GET',
     url: `/v1/boards/${id}`,
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -1455,7 +1455,7 @@ export async function updateBoardPost(
   data: {
     updateRequest: BoardPostUpdateRequest;
     newFiles?: File[];
-  }
+  },
 ): Promise<string> {
   const form = new FormData();
   form.append('updateRequest', new Blob([JSON.stringify(data.updateRequest)], { type: 'application/json' }));
@@ -1467,7 +1467,7 @@ export async function updateBoardPost(
   const response = await axios.request<string>({
     method: 'PUT',
     url: `/v1/boards/${id}`,
-    data: form
+    data: form,
   });
   return response.data;
 }
@@ -1479,7 +1479,7 @@ export async function updateBoardPost(
 export async function deleteBoardPost(id: number): Promise<void> {
   await axios.request({
     method: 'DELETE',
-    url: `/v1/boards/${id}`
+    url: `/v1/boards/${id}`,
   });
 }
 
@@ -1490,7 +1490,7 @@ export async function deleteBoardPost(id: number): Promise<void> {
 export async function toggleBlindStatus_1(id: number): Promise<boolean> {
   const response = await axios.request<boolean>({
     method: 'PUT',
-    url: `/v1/boards/${id}/toggle-blind`
+    url: `/v1/boards/${id}/toggle-blind`,
   });
   return response.data;
 }
@@ -1503,7 +1503,7 @@ export async function unblindPost(data: BlindUpdateRequest): Promise<void> {
   await axios.request({
     method: 'PUT',
     url: '/v1/blind-posts/unblind',
-    data
+    data,
   });
 }
 
@@ -1515,7 +1515,7 @@ export async function uploadSettlementExcel(data: { file: File }): Promise<void>
   await axios.request({
     method: 'POST',
     url: '/v1/settlements/upload',
-    data
+    data,
   });
 }
 
@@ -1527,7 +1527,7 @@ export async function notifyAdminForSettlements(data: SettlementNotifyRequest): 
   await axios.request({
     method: 'POST',
     url: '/v1/settlements/notify-admin',
-    data
+    data,
   });
 }
 
@@ -1546,7 +1546,7 @@ export async function getSalesAgencyProducts(options?: {
   const response = await axios.request<PageSalesAgencyProductSummaryResponse>({
     method: 'GET',
     url: '/v1/sales-agency-products',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -1565,7 +1565,7 @@ export async function createSalesAgencyProductBoard(data: {
   form.append('boardPostCreateRequest', new Blob([JSON.stringify(data.boardPostCreateRequest)], { type: 'application/json' }));
   form.append(
     'salesAgencyProductCreateRequest',
-    new Blob([JSON.stringify(data.salesAgencyProductCreateRequest)], { type: 'application/json' })
+    new Blob([JSON.stringify(data.salesAgencyProductCreateRequest)], { type: 'application/json' }),
   );
   form.append('thumbnail', data.thumbnail);
   if (data.files !== undefined) {
@@ -1576,7 +1576,7 @@ export async function createSalesAgencyProductBoard(data: {
   const response = await axios.request<string>({
     method: 'POST',
     url: '/v1/sales-agency-products',
-    data: form
+    data: form,
   });
   return response.data;
 }
@@ -1588,7 +1588,7 @@ export async function createSalesAgencyProductBoard(data: {
 export async function applyProduct(id: number): Promise<void> {
   await axios.request({
     method: 'POST',
-    url: `/v1/sales-agency-products/${id}/apply`
+    url: `/v1/sales-agency-products/${id}/apply`,
   });
 }
 
@@ -1600,7 +1600,7 @@ export async function createReport(userId: string, data: ReportCreateRequest): P
   const response = await axios.request<string>({
     method: 'POST',
     url: `/v1/reports/${userId}`,
-    data
+    data,
   });
   return response.data;
 }
@@ -1612,7 +1612,7 @@ export async function uploadFromS3(options?: { prefix?: string }): Promise<strin
   const response = await axios.request<string>({
     method: 'POST',
     url: '/v1/products/upload-kims-from-s3',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -1627,7 +1627,7 @@ export async function uploadProductExtraInfo(data: { file: File }): Promise<void
   await axios.request({
     method: 'POST',
     url: '/v1/products/product-extra-info/upload',
-    data: form
+    data: form,
   });
 }
 
@@ -1644,7 +1644,7 @@ export async function createProductExtraInfo(data: {
   form.append('boardPostCreateRequest', new Blob([JSON.stringify(data.boardPostCreateRequest)], { type: 'application/json' }));
   form.append(
     'productExtraInfoCreateRequest',
-    new Blob([JSON.stringify(data.productExtraInfoCreateRequest)], { type: 'application/json' })
+    new Blob([JSON.stringify(data.productExtraInfoCreateRequest)], { type: 'application/json' }),
   );
   if (data.files !== undefined) {
     for (const v of data.files) {
@@ -1654,7 +1654,7 @@ export async function createProductExtraInfo(data: {
   await axios.request({
     method: 'POST',
     url: '/v1/products/extra-info',
-    data: form
+    data: form,
   });
 }
 
@@ -1674,7 +1674,7 @@ export async function uploadEdiZip(data: {
   const response = await axios.request<PrescriptionZipUploadResult>({
     method: 'POST',
     url: '/v1/prescriptions/zip',
-    data: form
+    data: form,
   });
   return response.data;
 }
@@ -1687,7 +1687,7 @@ export async function createPartnerProducts(data: PrescriptionPartnerProductCrea
   await axios.request({
     method: 'POST',
     url: '/v1/prescriptions/partner-products',
-    data
+    data,
   });
 }
 
@@ -1704,7 +1704,7 @@ export async function uploadPartnerEdiFiles(data: { request: PrescriptionCreateR
   await axios.request({
     method: 'POST',
     url: '/v1/prescriptions/partner-files',
-    data: form
+    data: form,
   });
 }
 
@@ -1715,7 +1715,7 @@ export async function uploadPartnerEdiFiles(data: { request: PrescriptionCreateR
 export async function evict(): Promise<void> {
   await axios.request({
     method: 'POST',
-    url: '/v1/prescriptions/cache/evict'
+    url: '/v1/prescriptions/cache/evict',
   });
 }
 
@@ -1734,7 +1734,7 @@ export async function getPartners(options?: {
   const response = await axios.request<PagePartnerResponse>({
     method: 'GET',
     url: '/v1/partners',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -1747,7 +1747,7 @@ export async function createPartner(data: PartnerCreateRequest): Promise<void> {
   await axios.request({
     method: 'POST',
     url: '/v1/partners',
-    data
+    data,
   });
 }
 
@@ -1759,14 +1759,14 @@ export async function uploadPartnersExcel(
   userId: string,
   data: {
     file: File;
-  }
+  },
 ): Promise<void> {
   const form = new FormData();
   form.append('file', data.file);
   await axios.request({
     method: 'POST',
     url: `/v1/partners/upload/${userId}`,
-    data: form
+    data: form,
   });
 }
 
@@ -1790,7 +1790,7 @@ export async function applyContract(data: {
   await axios.request({
     method: 'POST',
     url: '/v1/partner-contracts',
-    data: form
+    data: form,
   });
 }
 
@@ -1801,7 +1801,7 @@ export async function applyContract(data: {
 export async function rejectContract(contractId: number): Promise<void> {
   await axios.request({
     method: 'POST',
-    url: `/v1/partner-contracts/${contractId}/reject`
+    url: `/v1/partner-contracts/${contractId}/reject`,
   });
 }
 
@@ -1812,7 +1812,7 @@ export async function rejectContract(contractId: number): Promise<void> {
 export async function approveContract(contractId: number): Promise<void> {
   await axios.request({
     method: 'POST',
-    url: `/v1/partner-contracts/${contractId}/approve`
+    url: `/v1/partner-contracts/${contractId}/approve`,
   });
 }
 
@@ -1844,7 +1844,7 @@ export async function updateContract(data: {
   await axios.request({
     method: 'POST',
     url: '/v1/partner-contracts/update',
-    data: form
+    data: form,
   });
 }
 
@@ -1869,7 +1869,7 @@ export async function getUserMembers(options?: {
   const response = await axios.request<PageMemberResponse>({
     method: 'GET',
     url: '/v1/members',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -1887,7 +1887,7 @@ export async function signup(data: { request: MemberSignupRequest; file?: File }
   const response = await axios.request<DeviceUuidResponse>({
     method: 'POST',
     url: '/v1/members',
-    data: form
+    data: form,
   });
   return response.data;
 }
@@ -1900,7 +1900,7 @@ export async function checkPassword(options?: { password?: string }): Promise<bo
   const response = await axios.request<boolean>({
     method: 'POST',
     url: '/v1/members/check-password',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -1913,7 +1913,7 @@ export async function getAdminMembers(options?: { page?: number; size?: number }
   const response = await axios.request<PageMemberResponse>({
     method: 'GET',
     url: '/v1/members/admins',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -1926,7 +1926,7 @@ export async function signupByAdmin(data: AdminCreateRequest): Promise<void> {
   await axios.request({
     method: 'POST',
     url: '/v1/members/admins',
-    data
+    data,
   });
 }
 
@@ -1937,7 +1937,7 @@ export async function createAuthRequest(data: KmcAuthRequest): Promise<KmcAuthRe
   const response = await axios.request<KmcAuthResponse>({
     method: 'POST',
     url: '/v1/kmc/auth/request',
-    data
+    data,
   });
   return response.data;
 }
@@ -1949,7 +1949,7 @@ export async function handleCallback(options?: { apiToken?: string; certNum?: st
   const response = await axios.request<string>({
     method: 'POST',
     url: '/v1/kmc/auth/callback',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -1964,7 +1964,7 @@ export async function uploadHospitalExcel(data: { file: File }): Promise<string>
   const response = await axios.request<string>({
     method: 'POST',
     url: '/v1/hospitals/upload',
-    data: form
+    data: form,
   });
   return response.data;
 }
@@ -1987,7 +1987,7 @@ export async function createSampleProvideReport(data: {
   await axios.request({
     method: 'POST',
     url: '/v1/expense-reports/sample-provide',
-    data: form
+    data: form,
   });
 }
 
@@ -2013,7 +2013,7 @@ export async function createProductBriefingSingleReport(data: {
   await axios.request({
     method: 'POST',
     url: '/v1/expense-reports/product-briefing/single',
-    data: form
+    data: form,
   });
 }
 
@@ -2035,7 +2035,7 @@ export async function createProductBriefingMultiReport(data: {
   await axios.request({
     method: 'POST',
     url: '/v1/expense-reports/product-briefing/multi',
-    data: form
+    data: form,
   });
 }
 
@@ -2054,7 +2054,7 @@ export async function getEventBoards(options?: {
   const response = await axios.request<PageEventBoardSummaryResponse>({
     method: 'GET',
     url: '/v1/events',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -2081,7 +2081,7 @@ export async function createEventBoard(data: {
   const response = await axios.request<string>({
     method: 'POST',
     url: '/v1/events',
-    data: form
+    data: form,
   });
   return response.data;
 }
@@ -2094,7 +2094,7 @@ export async function listDealers(options?: { dealerName?: string; drugCompanyNa
   const response = await axios.request<DealerResponse[]>({
     method: 'GET',
     url: '/v1/dealers',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -2107,7 +2107,7 @@ export async function createDealer(data: DealerCreateRequest): Promise<void> {
   await axios.request({
     method: 'POST',
     url: '/v1/dealers',
-    data
+    data,
   });
 }
 
@@ -2119,7 +2119,7 @@ export async function createComment(userId: string, data: CommentCreateRequest):
   const response = await axios.request<string>({
     method: 'POST',
     url: `/v1/comments/${userId}`,
-    data
+    data,
   });
   return response.data;
 }
@@ -2130,7 +2130,7 @@ export async function createComment(userId: string, data: CommentCreateRequest):
 export async function toggleLike(id: number): Promise<void> {
   await axios.request({
     method: 'POST',
-    url: `/v1/comments/${id}/like`
+    url: `/v1/comments/${id}/like`,
   });
 }
 
@@ -2160,7 +2160,7 @@ export async function getBoards(options?: {
   const response = await axios.request<PageBoardPostResponse>({
     method: 'GET',
     url: '/v1/boards',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -2180,7 +2180,7 @@ export async function createBoardPost(data: { request: BoardPostCreateRequest; f
   const response = await axios.request<string>({
     method: 'POST',
     url: '/v1/boards',
-    data: form
+    data: form,
   });
   return response.data;
 }
@@ -2192,7 +2192,7 @@ export async function createBoardPost(data: { request: BoardPostCreateRequest; f
 export async function toggleLike_1(id: number): Promise<void> {
   await axios.request({
     method: 'POST',
-    url: `/v1/boards/${id}/like`
+    url: `/v1/boards/${id}/like`,
   });
 }
 
@@ -2206,7 +2206,7 @@ export async function uploadEditorFile(data: { file: File }): Promise<Attachment
   const response = await axios.request<AttachmentResponse>({
     method: 'POST',
     url: '/v1/boards/uploads',
-    data: form
+    data: form,
   });
   return response.data;
 }
@@ -2226,7 +2226,7 @@ export async function getBanners(options?: {
   const response = await axios.request<PageBannerResponse>({
     method: 'GET',
     url: '/v1/banners',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -2242,7 +2242,7 @@ export async function createBanner(data: { request: BannerCreateRequest; imageFi
   const response = await axios.request<string>({
     method: 'POST',
     url: '/v1/banners',
-    data: form
+    data: form,
   });
   return response.data;
 }
@@ -2255,12 +2255,12 @@ export async function verifyCode(
   userId: string,
   options?: {
     verificationCode?: string;
-  }
+  },
 ): Promise<boolean> {
   const response = await axios.request<boolean>({
     method: 'POST',
     url: `/v1/auth/verification-code/verify/${userId}`,
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -2273,12 +2273,12 @@ export async function sendVerificationCode(
   userId: string,
   options?: {
     phoneNumber?: string;
-  }
+  },
 ): Promise<void> {
   await axios.request({
     method: 'POST',
     url: `/v1/auth/verification-code/send/${userId}`,
-    params: options
+    params: options,
   });
 }
 
@@ -2294,7 +2294,7 @@ export async function verifyCodeForFindPassword(options?: {
   const response = await axios.request<LoginResponse>({
     method: 'POST',
     url: '/v1/auth/verification-code/password/verify',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -2307,7 +2307,7 @@ export async function verifyCodeForFindId(options?: { phoneNumber?: string; veri
   const response = await axios.request<string>({
     method: 'POST',
     url: '/v1/auth/verification-code/id/verify',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -2320,7 +2320,7 @@ export async function sendVerificationCodeForFindAccount(options?: { phoneNumber
   await axios.request({
     method: 'POST',
     url: '/v1/auth/verification-code/account/send',
-    params: options
+    params: options,
   });
 }
 
@@ -2332,7 +2332,7 @@ export async function refreshToken(data: RefreshTokenRequest): Promise<LoginResp
   const response = await axios.request<LoginResponse>({
     method: 'POST',
     url: '/v1/auth/token/refresh',
-    data
+    data,
   });
   return response.data;
 }
@@ -2345,7 +2345,7 @@ export async function login(data: LoginRequest): Promise<LoginResponse> {
   const response = await axios.request<LoginResponse>({
     method: 'POST',
     url: '/v1/auth/login',
-    data
+    data,
   });
   return response.data;
 }
@@ -2358,7 +2358,7 @@ export async function registerFcmToken(data: FcmTokenRequest): Promise<DeviceUui
   const response = await axios.request<DeviceUuidResponse>({
     method: 'POST',
     url: '/v1/auth/fcm-token',
-    data
+    data,
   });
   return response.data;
 }
@@ -2370,7 +2370,7 @@ export async function registerFcmToken(data: FcmTokenRequest): Promise<DeviceUui
 export async function getSalesAgencyProductDetails(id: number): Promise<SalesAgencyProductDetailsResponse> {
   const response = await axios.request<SalesAgencyProductDetailsResponse>({
     method: 'GET',
-    url: `/v1/sales-agency-products/${id}`
+    url: `/v1/sales-agency-products/${id}`,
   });
   return response.data;
 }
@@ -2386,7 +2386,7 @@ export async function updateSalesAgencyProductBoard(
     salesAgencyProductUpdateRequest?: SalesAgencyProductUpdateRequest;
     thumbnail?: File;
     newFiles?: File[];
-  }
+  },
 ): Promise<void> {
   const form = new FormData();
   if (data.boardPostUpdateRequest !== undefined) {
@@ -2395,7 +2395,7 @@ export async function updateSalesAgencyProductBoard(
   if (data.salesAgencyProductUpdateRequest !== undefined) {
     form.append(
       'salesAgencyProductUpdateRequest',
-      new Blob([JSON.stringify(data.salesAgencyProductUpdateRequest)], { type: 'application/json' })
+      new Blob([JSON.stringify(data.salesAgencyProductUpdateRequest)], { type: 'application/json' }),
     );
   }
   if (data.thumbnail !== undefined) {
@@ -2409,7 +2409,7 @@ export async function updateSalesAgencyProductBoard(
   await axios.request({
     method: 'PATCH',
     url: `/v1/sales-agency-products/${id}`,
-    data: form
+    data: form,
   });
 }
 
@@ -2420,7 +2420,7 @@ export async function updateSalesAgencyProductBoard(
 export async function deleteSalesAgencyProduct(id: number): Promise<void> {
   await axios.request({
     method: 'DELETE',
-    url: `/v1/sales-agency-products/${id}`
+    url: `/v1/sales-agency-products/${id}`,
   });
 }
 
@@ -2432,7 +2432,7 @@ export async function updateApplicantNotes(data: SalesAgencyProductNoteUpdateReq
   await axios.request({
     method: 'PATCH',
     url: '/v1/sales-agency-products/applicants/notes',
-    data
+    data,
   });
 }
 
@@ -2446,13 +2446,13 @@ export async function updateProductExtraInfo(
     boardPostUpdateRequest: BoardPostUpdateRequest;
     productExtraInfoCreateRequest: ProductExtraInfoRequest;
     newFiles?: File[];
-  }
+  },
 ): Promise<void> {
   const form = new FormData();
   form.append('boardPostUpdateRequest', new Blob([JSON.stringify(data.boardPostUpdateRequest)], { type: 'application/json' }));
   form.append(
     'productExtraInfoCreateRequest',
-    new Blob([JSON.stringify(data.productExtraInfoCreateRequest)], { type: 'application/json' })
+    new Blob([JSON.stringify(data.productExtraInfoCreateRequest)], { type: 'application/json' }),
   );
   if (data.newFiles !== undefined) {
     for (const v of data.newFiles) {
@@ -2462,7 +2462,7 @@ export async function updateProductExtraInfo(
   await axios.request({
     method: 'PATCH',
     url: `/v1/products/${id}/extra-info`,
-    data: form
+    data: form,
   });
 }
 
@@ -2473,7 +2473,7 @@ export async function updateProductExtraInfo(
 export async function updateProductExtraInfo_1(id: number): Promise<void> {
   await axios.request({
     method: 'DELETE',
-    url: `/v1/products/${id}/extra-info`
+    url: `/v1/products/${id}/extra-info`,
   });
 }
 
@@ -2484,7 +2484,7 @@ export async function updateProductExtraInfo_1(id: number): Promise<void> {
 export async function confirmPrescription(id: number): Promise<void> {
   await axios.request({
     method: 'PATCH',
-    url: `/v1/prescriptions/${id}/confirm`
+    url: `/v1/prescriptions/${id}/confirm`,
   });
 }
 
@@ -2495,7 +2495,7 @@ export async function confirmPrescription(id: number): Promise<void> {
 export async function completePrescriptionPartner(prescriptionPartnerId: number): Promise<void> {
   await axios.request({
     method: 'PATCH',
-    url: `/v1/prescriptions/partners/${prescriptionPartnerId}/complete`
+    url: `/v1/prescriptions/partners/${prescriptionPartnerId}/complete`,
   });
 }
 
@@ -2508,7 +2508,7 @@ export async function updateMember(
   data: {
     request: MemberUpdateRequest;
     file?: File;
-  }
+  },
 ): Promise<void> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
@@ -2518,7 +2518,7 @@ export async function updateMember(
   await axios.request({
     method: 'PATCH',
     url: `/v1/members/${userId}`,
-    data: form
+    data: form,
   });
 }
 
@@ -2529,7 +2529,7 @@ export async function updateMember(
 export async function deleteMember(userId: string): Promise<void> {
   await axios.request({
     method: 'DELETE',
-    url: `/v1/members/${userId}`
+    url: `/v1/members/${userId}`,
   });
 }
 
@@ -2541,7 +2541,7 @@ export async function changePassword(userId: string, data: ChangePasswordRequest
   await axios.request({
     method: 'PATCH',
     url: `/v1/members/${userId}/password`,
-    data
+    data,
   });
 }
 
@@ -2553,7 +2553,7 @@ export async function changePassword_1(userId: string, data: ChangePasswordForFi
   await axios.request({
     method: 'PATCH',
     url: `/v1/members/${userId}/password-for-find-account`,
-    data
+    data,
   });
 }
 
@@ -2565,12 +2565,12 @@ export async function updateNickname(
   userId: string,
   options?: {
     nickname?: string;
-  }
+  },
 ): Promise<void> {
   await axios.request({
     method: 'PATCH',
     url: `/v1/members/${userId}/nickname`,
-    params: options
+    params: options,
   });
 }
 
@@ -2582,12 +2582,12 @@ export async function approveOrRejectCso(
   userId: string,
   options?: {
     isApproved?: boolean;
-  }
+  },
 ): Promise<void> {
   await axios.request({
     method: 'PATCH',
     url: `/v1/members/${userId}/cso-approval`,
-    params: options
+    params: options,
   });
 }
 
@@ -2599,7 +2599,7 @@ export async function updateByAdmin(userId: string, data: AdminUpdateRequest): P
   await axios.request({
     method: 'PATCH',
     url: `/v1/members/admins/${userId}`,
-    data
+    data,
   });
 }
 
@@ -2610,7 +2610,7 @@ export async function updateByAdmin(userId: string, data: AdminUpdateRequest): P
 export async function getSampleProvideReport(id: number): Promise<SampleProvideReportDetailResponse> {
   const response = await axios.request<SampleProvideReportDetailResponse>({
     method: 'GET',
-    url: `/v1/expense-reports/sample-provide/${id}`
+    url: `/v1/expense-reports/sample-provide/${id}`,
   });
   return response.data;
 }
@@ -2624,7 +2624,7 @@ export async function updateSampleProvideReport(
   data: {
     request: SampleProvideReportUpdateRequest;
     newFiles?: File[];
-  }
+  },
 ): Promise<void> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
@@ -2636,7 +2636,7 @@ export async function updateSampleProvideReport(
   await axios.request({
     method: 'PATCH',
     url: `/v1/expense-reports/sample-provide/${id}`,
-    data: form
+    data: form,
   });
 }
 
@@ -2647,7 +2647,7 @@ export async function updateSampleProvideReport(
 export async function getProductBriefingSingleReport(id: number): Promise<ProductBriefingSingleDetailResponse> {
   const response = await axios.request<ProductBriefingSingleDetailResponse>({
     method: 'GET',
-    url: `/v1/expense-reports/product-briefing/single/${id}`
+    url: `/v1/expense-reports/product-briefing/single/${id}`,
   });
   return response.data;
 }
@@ -2662,7 +2662,7 @@ export async function updateProductBriefingSingleReport(
     request: ProductBriefingSingleUpdateRequest;
     signatureFiles?: File[];
     newFiles?: File[];
-  }
+  },
 ): Promise<void> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
@@ -2679,7 +2679,7 @@ export async function updateProductBriefingSingleReport(
   await axios.request({
     method: 'PATCH',
     url: `/v1/expense-reports/product-briefing/single/${id}`,
-    data: form
+    data: form,
   });
 }
 
@@ -2690,7 +2690,7 @@ export async function updateProductBriefingSingleReport(
 export async function getProductBriefingMultiReport(id: number): Promise<ProductBriefingMultiDetailResponse> {
   const response = await axios.request<ProductBriefingMultiDetailResponse>({
     method: 'GET',
-    url: `/v1/expense-reports/product-briefing/multi/${id}`
+    url: `/v1/expense-reports/product-briefing/multi/${id}`,
   });
   return response.data;
 }
@@ -2704,7 +2704,7 @@ export async function updateProductBriefingMultiReport(
   data: {
     request: ProductBriefingMultiUpdateRequest;
     newFiles?: File[];
-  }
+  },
 ): Promise<void> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
@@ -2716,7 +2716,7 @@ export async function updateProductBriefingMultiReport(
   await axios.request({
     method: 'PATCH',
     url: `/v1/expense-reports/product-briefing/multi/${id}`,
-    data: form
+    data: form,
   });
 }
 
@@ -2727,7 +2727,7 @@ export async function updateProductBriefingMultiReport(
 export async function getEventBoardDetails(id: number): Promise<EventBoardDetailsResponse> {
   const response = await axios.request<EventBoardDetailsResponse>({
     method: 'GET',
-    url: `/v1/events/${id}`
+    url: `/v1/events/${id}`,
   });
   return response.data;
 }
@@ -2743,7 +2743,7 @@ export async function updateEventBoard(
     eventRequest?: EventBoardUpdateRequest;
     thumbnail?: File;
     newFiles?: File[];
-  }
+  },
 ): Promise<void> {
   const form = new FormData();
   if (data.request !== undefined) {
@@ -2763,7 +2763,7 @@ export async function updateEventBoard(
   await axios.request({
     method: 'PATCH',
     url: `/v1/events/${id}`,
-    data: form
+    data: form,
   });
 }
 
@@ -2774,7 +2774,7 @@ export async function updateEventBoard(
 export async function softDeleteEventBoard(id: number): Promise<void> {
   await axios.request({
     method: 'DELETE',
-    url: `/v1/events/${id}`
+    url: `/v1/events/${id}`,
   });
 }
 
@@ -2785,7 +2785,7 @@ export async function softDeleteEventBoard(id: number): Promise<void> {
 export async function getBanner(id: number): Promise<BannerResponse> {
   const response = await axios.request<BannerResponse>({
     method: 'GET',
-    url: `/v1/banners/${id}`
+    url: `/v1/banners/${id}`,
   });
   return response.data;
 }
@@ -2799,7 +2799,7 @@ export async function updateBanner(
   data: {
     request: BannerUpdateRequest;
     imageFile?: File;
-  }
+  },
 ): Promise<void> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
@@ -2809,7 +2809,7 @@ export async function updateBanner(
   await axios.request({
     method: 'PATCH',
     url: `/v1/banners/${id}`,
-    data: form
+    data: form,
   });
 }
 
@@ -2821,7 +2821,7 @@ export async function tetSms(options?: { message?: string; phoneNumber?: string 
   await axios.request({
     method: 'GET',
     url: '/v1/test/sms',
-    params: options
+    params: options,
   });
 }
 
@@ -2833,7 +2833,7 @@ export async function testPush(options?: { userId?: string; message?: string }):
   await axios.request({
     method: 'GET',
     url: '/v1/test/push',
-    params: options
+    params: options,
   });
 }
 
@@ -2845,7 +2845,7 @@ export async function testEmail(options?: { to?: string; subject?: string; body?
   await axios.request({
     method: 'GET',
     url: '/v1/test/email',
-    params: options
+    params: options,
   });
 }
 
@@ -2856,7 +2856,7 @@ export async function testEmail(options?: { to?: string; subject?: string; body?
 export async function getTermsByVersion(version: string): Promise<string> {
   const response = await axios.request<string>({
     method: 'GET',
-    url: `/v1/terms/${version}`
+    url: `/v1/terms/${version}`,
   });
   return response.data;
 }
@@ -2868,7 +2868,7 @@ export async function getTermsByVersion(version: string): Promise<string> {
 export async function getPrivacyPolicyByVersion(version: string): Promise<string> {
   const response = await axios.request<string>({
     method: 'GET',
-    url: `/v1/terms/privacy/${version}`
+    url: `/v1/terms/privacy/${version}`,
   });
   return response.data;
 }
@@ -2880,7 +2880,7 @@ export async function getPrivacyPolicyByVersion(version: string): Promise<string
 export async function getLatestPrivacyPolicy(): Promise<string> {
   const response = await axios.request<string>({
     method: 'GET',
-    url: '/v1/terms/privacy/latest'
+    url: '/v1/terms/privacy/latest',
   });
   return response.data;
 }
@@ -2892,7 +2892,7 @@ export async function getLatestPrivacyPolicy(): Promise<string> {
 export async function getLatestTerms(): Promise<string> {
   const response = await axios.request<string>({
     method: 'GET',
-    url: '/v1/terms/latest'
+    url: '/v1/terms/latest',
   });
   return response.data;
 }
@@ -2915,7 +2915,7 @@ export async function getSettlements(options?: {
   const response = await axios.request<PageSettlementResponse>({
     method: 'GET',
     url: '/v1/settlements',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -2927,7 +2927,7 @@ export async function getSettlements(options?: {
 export async function getSettlement(id: number): Promise<SettlementResponse> {
   const response = await axios.request<SettlementResponse>({
     method: 'GET',
-    url: `/v1/settlements/${id}`
+    url: `/v1/settlements/${id}`,
   });
   return response.data;
 }
@@ -2949,7 +2949,7 @@ export async function getPerformanceStats(options?: {
   const response = await axios.request<PagePerformanceStatsResponse>({
     method: 'GET',
     url: '/v1/settlements/performance',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -2969,7 +2969,7 @@ export async function getPerformanceTotalPrescriptionAmount(options?: {
   const response = await axios.request<number>({
     method: 'GET',
     url: '/v1/settlements/performance/total-prescription-amount',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -3007,7 +3007,7 @@ export async function getPerformanceByInstitution(options?: {
   const response = await axios.request<PerformanceStatsByInstitution[]>({
     method: 'GET',
     url: '/v1/settlements/performance/by-institution',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -3024,7 +3024,7 @@ export async function getPerformanceByDrugCompany(options?: {
   const response = await axios.request<PerformanceStatsByDrugCompany[]>({
     method: 'GET',
     url: '/v1/settlements/performance/by-drug-company',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -3041,7 +3041,7 @@ export async function getPerformanceByDrugCompanyMonthly(options?: {
   const response = await axios.request<PerformanceStatsByDrugCompanyMonthly[]>({
     method: 'GET',
     url: '/v1/settlements/performance/by-drug-company/monthly',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -3061,7 +3061,7 @@ export async function getSettlementPartnerSummary(options?: {
   const response = await axios.request<PageSettlementPartnerResponse>({
     method: 'GET',
     url: '/v1/settlements/partners',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -3073,7 +3073,7 @@ export async function getSettlementPartnerSummary(options?: {
 export async function getSettlementPartnerProducts(settlementPartnerId: number): Promise<SettlementPartnerProductResponse[]> {
   const response = await axios.request<SettlementPartnerProductResponse[]>({
     method: 'GET',
-    url: `/v1/settlements/partners/${settlementPartnerId}/products`
+    url: `/v1/settlements/partners/${settlementPartnerId}/products`,
   });
   return response.data;
 }
@@ -3132,12 +3132,12 @@ export async function getProductApplicants(
     name?: string;
     page?: number;
     size?: number;
-  }
+  },
 ): Promise<PageSalesAgencyProductApplicantResponse> {
   const response = await axios.request<PageSalesAgencyProductApplicantResponse>({
     method: 'GET',
     url: `/v1/sales-agency-products/${id}/applicants`,
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -3153,7 +3153,7 @@ export function getDownloadProductApplicantsExcel(
     name?: string;
     page?: number;
     size?: number;
-  }
+  },
 ): string {
   const baseUrl = `/v1/sales-agency-products/${id}/applicants/excel-download`;
   const paramsInit = Object.entries(options ?? {})
@@ -3204,7 +3204,7 @@ export async function getProductSummaries(options?: {
   const response = await axios.request<PageProductSummaryResponse>({
     method: 'GET',
     url: '/v1/products',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -3216,7 +3216,7 @@ export async function getProductSummaries(options?: {
 export async function getProductDetails(id: number): Promise<ProductDetailsResponse> {
   const response = await axios.request<ProductDetailsResponse>({
     method: 'GET',
-    url: `/v1/products/${id}/details`
+    url: `/v1/products/${id}/details`,
   });
   return response.data;
 }
@@ -3266,7 +3266,7 @@ export async function searchPrescriptions(options?: {
   const response = await axios.request<PagePrescriptionResponse>({
     method: 'GET',
     url: '/v1/prescriptions',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -3291,7 +3291,7 @@ export async function getPrescriptionPartnerList(options?: {
   const response = await axios.request<PagePrescriptionPartnerResponse>({
     method: 'GET',
     url: '/v1/prescriptions/partners',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -3303,7 +3303,7 @@ export async function getPrescriptionPartnerList(options?: {
 export async function getPrescriptionPartner(prescriptionPartnerId: number): Promise<PrescriptionPartnerResponse> {
   const response = await axios.request<PrescriptionPartnerResponse>({
     method: 'GET',
-    url: `/v1/prescriptions/partners/${prescriptionPartnerId}`
+    url: `/v1/prescriptions/partners/${prescriptionPartnerId}`,
   });
   return response.data;
 }
@@ -3315,7 +3315,7 @@ export async function getPrescriptionPartner(prescriptionPartnerId: number): Pro
 export async function deletePrescriptionPartner(prescriptionPartnerId: number): Promise<void> {
   await axios.request({
     method: 'DELETE',
-    url: `/v1/prescriptions/partners/${prescriptionPartnerId}`
+    url: `/v1/prescriptions/partners/${prescriptionPartnerId}`,
   });
 }
 
@@ -3326,7 +3326,7 @@ export async function deletePrescriptionPartner(prescriptionPartnerId: number): 
 export async function getPartnerProducts(prescriptionPartnerId: number): Promise<PrescriptionPartnerProductResponse[]> {
   const response = await axios.request<PrescriptionPartnerProductResponse[]>({
     method: 'GET',
-    url: `/v1/prescriptions/partners/${prescriptionPartnerId}/products`
+    url: `/v1/prescriptions/partners/${prescriptionPartnerId}/products`,
   });
   return response.data;
 }
@@ -3338,7 +3338,7 @@ export async function getPartnerProducts(prescriptionPartnerId: number): Promise
 export async function getAttachedEdiFiles(prescriptionPartnerId: number): Promise<AttachmentResponse[]> {
   const response = await axios.request<AttachmentResponse[]>({
     method: 'GET',
-    url: `/v1/prescriptions/partners/${prescriptionPartnerId}/edi-files/attached`
+    url: `/v1/prescriptions/partners/${prescriptionPartnerId}/edi-files/attached`,
   });
   return response.data;
 }
@@ -3350,7 +3350,7 @@ export async function getAttachedEdiFiles(prescriptionPartnerId: number): Promis
 export async function downloadZippedEdiFiles(prescriptionId: number): Promise<void> {
   await axios.request({
     method: 'GET',
-    url: `/v1/prescriptions/partners/${prescriptionId}/edi-files/download`
+    url: `/v1/prescriptions/partners/${prescriptionId}/edi-files/download`,
   });
 }
 
@@ -3362,7 +3362,7 @@ export async function monthlyFee(options?: { referenceDate?: number }): Promise<
   const response = await axios.request<MonthlyFeeAmountResponse>({
     method: 'GET',
     url: '/v1/prescriptions/monthly-fee',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -3375,7 +3375,7 @@ export async function monthlyCount(options?: { referenceDate?: number }): Promis
   const response = await axios.request<MonthlyPrescriptionCountResponse>({
     method: 'GET',
     url: '/v1/prescriptions/monthly-count',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -3387,7 +3387,7 @@ export async function monthlyCount(options?: { referenceDate?: number }): Promis
 export async function getPartnerIdsByUserId(userId: string): Promise<number[]> {
   const response = await axios.request<number[]>({
     method: 'GET',
-    url: `/v1/partners/ids/${userId}`
+    url: `/v1/partners/ids/${userId}`,
   });
   return response.data;
 }
@@ -3399,7 +3399,7 @@ export async function getPartnerIdsByUserId(userId: string): Promise<number[]> {
 export async function getDrugCompanies(): Promise<DrugCompanyResponse[]> {
   const response = await axios.request<DrugCompanyResponse[]>({
     method: 'GET',
-    url: '/v1/partners/drug-companies'
+    url: '/v1/partners/drug-companies',
   });
   return response.data;
 }
@@ -3411,7 +3411,7 @@ export async function getDrugCompanies(): Promise<DrugCompanyResponse[]> {
 export async function getContractDetails(userId: string): Promise<PartnerContractDetailsResponse> {
   const response = await axios.request<PartnerContractDetailsResponse>({
     method: 'GET',
-    url: `/v1/partner-contracts/${userId}`
+    url: `/v1/partner-contracts/${userId}`,
   });
   return response.data;
 }
@@ -3423,7 +3423,7 @@ export async function getContractDetails(userId: string): Promise<PartnerContrac
 export async function getMemberDetails(userId: string): Promise<MemberDetailsResponse> {
   const response = await axios.request<MemberDetailsResponse>({
     method: 'GET',
-    url: `/v1/members/${userId}/details`
+    url: `/v1/members/${userId}/details`,
   });
   return response.data;
 }
@@ -3435,7 +3435,7 @@ export async function getMemberDetails(userId: string): Promise<MemberDetailsRes
 export async function isUserIdAvailable(userId: string): Promise<boolean> {
   const response = await axios.request<boolean>({
     method: 'GET',
-    url: `/v1/members/${userId}/available`
+    url: `/v1/members/${userId}/available`,
   });
   return response.data;
 }
@@ -3474,7 +3474,7 @@ export async function isAvailableNickname(options?: { nickname?: string }): Prom
   const response = await axios.request<boolean>({
     method: 'GET',
     url: '/v1/members/available-nickname',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -3486,7 +3486,7 @@ export async function isAvailableNickname(options?: { nickname?: string }): Prom
 export async function getPermissions(userId: string): Promise<AdminPermissionResponse> {
   const response = await axios.request<AdminPermissionResponse>({
     method: 'GET',
-    url: `/v1/members/admins/${userId}/permissions`
+    url: `/v1/members/admins/${userId}/permissions`,
   });
   return response.data;
 }
@@ -3498,7 +3498,7 @@ export async function result(options?: { certNum?: string }): Promise<Record<str
   const response = await axios.request<Record<string, {}>>({
     method: 'GET',
     url: '/v1/kmc/auth/result',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -3510,7 +3510,7 @@ export async function launch(options?: { certNum?: string }): Promise<string> {
   const response = await axios.request<string>({
     method: 'GET',
     url: '/v1/kmc/auth/launch',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -3530,7 +3530,7 @@ export async function getHospitals(options?: {
   const response = await axios.request<PageHospitalResponse>({
     method: 'GET',
     url: '/v1/hospitals',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -3543,7 +3543,7 @@ export async function getRecentlyOpenedCount(options?: { referenceDate?: DateStr
   const response = await axios.request<number>({
     method: 'GET',
     url: '/v1/hospitals/opened/count',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -3566,7 +3566,7 @@ export async function getExpenseReportList(options?: {
   const response = await axios.request<PageExpenseReportResponse>({
     method: 'GET',
     url: '/v1/expense-reports',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -3579,7 +3579,7 @@ export async function downloadExpenseReportFiles(options?: { ids?: number[] }): 
   await axios.request({
     method: 'GET',
     url: '/v1/expense-reports/files/download',
-    params: options
+    params: options,
   });
 }
 
@@ -3613,7 +3613,7 @@ export function getDownloadExpenseReportListExcel(options?: {
 export async function getDealerIdByUserId(userId: string): Promise<number> {
   const response = await axios.request<number>({
     method: 'GET',
-    url: `/v1/dealers/id/${userId}`
+    url: `/v1/dealers/id/${userId}`,
   });
   return response.data;
 }
@@ -3629,7 +3629,7 @@ export async function getFixedTopNotices(options?: {
   const response = await axios.request<BoardPostResponse[]>({
     method: 'GET',
     url: '/v1/boards/notices/fixed-top',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -3654,7 +3654,7 @@ export async function getBoardMembers(options?: {
   const response = await axios.request<PageBoardMemberStatsResponse>({
     method: 'GET',
     url: '/v1/boards/members',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -3674,7 +3674,7 @@ export async function getBlindPosts(options?: {
   const response = await axios.request<PageBlindPostResponse>({
     method: 'GET',
     url: '/v1/blind-posts',
-    params: options
+    params: options,
   });
   return response.data;
 }
@@ -3686,7 +3686,7 @@ export async function getBlindPosts(options?: {
 export async function getPublicKey(): Promise<Record<string, string>> {
   const response = await axios.request<Record<string, string>>({
     method: 'GET',
-    url: '/v1/auth/public-key'
+    url: '/v1/auth/public-key',
   });
   return response.data;
 }
@@ -3698,7 +3698,7 @@ export async function getPublicKey(): Promise<Record<string, string>> {
 export async function whoAmI(): Promise<MemberDetailsResponse> {
   const response = await axios.request<MemberDetailsResponse>({
     method: 'GET',
-    url: '/v1/auth/me'
+    url: '/v1/auth/me',
   });
   return response.data;
 }
@@ -3710,7 +3710,7 @@ export async function whoAmI(): Promise<MemberDetailsResponse> {
 export async function logout(): Promise<void> {
   await axios.request({
     method: 'GET',
-    url: '/v1/auth/logout'
+    url: '/v1/auth/logout',
   });
 }
 
@@ -3721,7 +3721,7 @@ export async function logout(): Promise<void> {
 export async function softDeleteHospital(id: number): Promise<void> {
   await axios.request({
     method: 'DELETE',
-    url: `/v1/hospitals/${id}`
+    url: `/v1/hospitals/${id}`,
   });
 }
 
@@ -3732,6 +3732,6 @@ export async function softDeleteHospital(id: number): Promise<void> {
 export async function deleteComment(id: number): Promise<void> {
   await axios.request({
     method: 'DELETE',
-    url: `/v1/comments/${id}`
+    url: `/v1/comments/${id}`,
   });
 }

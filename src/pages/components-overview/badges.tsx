@@ -155,43 +155,43 @@ export default function ComponentBadge() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Badge"
-        caption="Badge generates a small badge to the top-right of its child(ren)."
-        directory="src/pages/components-overview/badges"
-        link="https://mui.com/material-ui/react-badge/"
+        title='Badge'
+        caption='Badge generates a small badge to the top-right of its child(ren).'
+        directory='src/pages/components-overview/badges'
+        link='https://mui.com/material-ui/react-badge/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Basic" codeHighlight codeString={basicBadgesCodeString}>
+            <MainCard title='Basic' codeHighlight codeString={basicBadgesCodeString}>
               <Grid container spacing={3}>
                 <Grid item>
-                  <Badge badgeContent={4} color="primary">
+                  <Badge badgeContent={4} color='primary'>
                     <Sms />
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge badgeContent={4} color="secondary">
+                  <Badge badgeContent={4} color='secondary'>
                     <Sms />
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge badgeContent={4} color="success">
+                  <Badge badgeContent={4} color='success'>
                     <Sms />
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge badgeContent={4} color="warning">
+                  <Badge badgeContent={4} color='warning'>
                     <Sms />
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge badgeContent={4} color="info">
+                  <Badge badgeContent={4} color='info'>
                     <Sms />
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge badgeContent={4} color="error">
+                  <Badge badgeContent={4} color='error'>
                     <Sms />
                   </Badge>
                 </Grid>
@@ -199,35 +199,35 @@ export default function ComponentBadge() {
             </MainCard>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Light" codeString={lightBadgesCodeString}>
+            <MainCard title='Light' codeString={lightBadgesCodeString}>
               <Grid container spacing={3}>
                 <Grid item>
-                  <Badge badgeContent={4} color="primary" variant="light">
+                  <Badge badgeContent={4} color='primary' variant='light'>
                     <Sms />
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge badgeContent={4} color="secondary" variant="light">
+                  <Badge badgeContent={4} color='secondary' variant='light'>
                     <Sms />
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge badgeContent={4} color="success" variant="light">
+                  <Badge badgeContent={4} color='success' variant='light'>
                     <Sms />
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge badgeContent={4} color="warning" variant="light">
+                  <Badge badgeContent={4} color='warning' variant='light'>
                     <Sms />
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge badgeContent={4} color="info" variant="light">
+                  <Badge badgeContent={4} color='info' variant='light'>
                     <Sms />
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge badgeContent={4} color="error" variant="light">
+                  <Badge badgeContent={4} color='error' variant='light'>
                     <Sms />
                   </Badge>
                 </Grid>
@@ -235,30 +235,30 @@ export default function ComponentBadge() {
             </MainCard>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Maximmum Value" codeString={maxBadgesCodeString}>
+            <MainCard title='Maximmum Value' codeString={maxBadgesCodeString}>
               <Grid container spacing={4}>
                 <Grid item>
-                  <Badge badgeContent={99} color="primary">
+                  <Badge badgeContent={99} color='primary'>
                     <Sms />
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge badgeContent={100} color="secondary">
+                  <Badge badgeContent={100} color='secondary'>
                     <Sms />
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge badgeContent={1000} max={999} color="primary" variant="light">
+                  <Badge badgeContent={1000} max={999} color='primary' variant='light'>
                     <Sms />
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge badgeContent={99} color="secondary" variant="light">
+                  <Badge badgeContent={99} color='secondary' variant='light'>
                     <Sms />
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge badgeContent={99} color="error">
+                  <Badge badgeContent={99} color='error'>
                     <Sms />
                   </Badge>
                 </Grid>
@@ -266,61 +266,61 @@ export default function ComponentBadge() {
             </MainCard>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Dot Badges" codeString={dotBadgesCodeString}>
+            <MainCard title='Dot Badges' codeString={dotBadgesCodeString}>
               <Grid container spacing={3}>
                 <Grid item>
-                  <Badge color="primary" variant="dot">
+                  <Badge color='primary' variant='dot'>
                     <Sms />
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge color="secondary" variant="dot">
+                  <Badge color='secondary' variant='dot'>
                     <Sms />
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge max={999} color="success" variant="dot">
+                  <Badge max={999} color='success' variant='dot'>
                     <Sms />
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge color="warning" variant="dot">
+                  <Badge color='warning' variant='dot'>
                     <Sms />
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge color="info" variant="dot">
+                  <Badge color='info' variant='dot'>
                     <Sms />
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge color="error" variant="dot">
-                    <Typography variant="h6">Typography</Typography>
+                  <Badge color='error' variant='dot'>
+                    <Typography variant='h6'>Typography</Typography>
                   </Badge>
                 </Grid>
               </Grid>
             </MainCard>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Alignment" codeString={alignmentBadgesCodeString}>
+            <MainCard title='Alignment' codeString={alignmentBadgesCodeString}>
               <Grid container spacing={4}>
                 <Grid item>
-                  <Badge badgeContent={9} color="primary">
+                  <Badge badgeContent={9} color='primary'>
                     <Sms />
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge color="primary" variant="dot">
+                  <Badge color='primary' variant='dot'>
                     <Sms />
                   </Badge>
                 </Grid>
                 <Grid item>
                   <Badge
                     badgeContent={9}
-                    color="primary"
+                    color='primary'
                     anchorOrigin={{
                       vertical: 'bottom',
-                      horizontal: 'right'
+                      horizontal: 'right',
                     }}
                   >
                     <Sms />
@@ -329,10 +329,10 @@ export default function ComponentBadge() {
                 <Grid item>
                   <Badge
                     badgeContent={9}
-                    color="primary"
+                    color='primary'
                     anchorOrigin={{
                       vertical: 'top',
-                      horizontal: 'left'
+                      horizontal: 'left',
                     }}
                   >
                     <Sms />
@@ -341,10 +341,10 @@ export default function ComponentBadge() {
                 <Grid item>
                   <Badge
                     badgeContent={99}
-                    color="primary"
+                    color='primary'
                     anchorOrigin={{
                       vertical: 'bottom',
-                      horizontal: 'left'
+                      horizontal: 'left',
                     }}
                   >
                     <Sms />
@@ -354,46 +354,46 @@ export default function ComponentBadge() {
             </MainCard>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Overlap" codeString={overlapBadgesCodeString}>
+            <MainCard title='Overlap' codeString={overlapBadgesCodeString}>
               <Grid container spacing={2}>
                 <Grid item>
-                  <Badge color="error" overlap="circular" variant="dot">
-                    <AntAvatar alt="Basic">
-                      <Profile variant="Bold" />
+                  <Badge color='error' overlap='circular' variant='dot'>
+                    <AntAvatar alt='Basic'>
+                      <Profile variant='Bold' />
                     </AntAvatar>
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge color="error" variant="dot">
-                    <AntAvatar alt="Basic" variant="rounded" type="filled">
+                  <Badge color='error' variant='dot'>
+                    <AntAvatar alt='Basic' variant='rounded' type='filled'>
                       <Profile />
                     </AntAvatar>
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge color="error" variant="dot">
-                    <AntAvatar alt="Basic" variant="square" type="outlined">
-                      <Profile variant="Bold" />
+                  <Badge color='error' variant='dot'>
+                    <AntAvatar alt='Basic' variant='square' type='outlined'>
+                      <Profile variant='Bold' />
                     </AntAvatar>
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge badgeContent=" " color="error" overlap="circular">
-                    <AntAvatar alt="Basic" type="outlined">
+                  <Badge badgeContent=' ' color='error' overlap='circular'>
+                    <AntAvatar alt='Basic' type='outlined'>
                       U
                     </AntAvatar>
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge badgeContent=" " color="error">
-                    <AntAvatar alt="Basic" variant="rounded" type="filled">
+                  <Badge badgeContent=' ' color='error'>
+                    <AntAvatar alt='Basic' variant='rounded' type='filled'>
                       U
                     </AntAvatar>
                   </Badge>
                 </Grid>
                 <Grid item>
-                  <Badge badgeContent=" " color="error">
-                    <AntAvatar alt="Basic" variant="square" type="outlined">
+                  <Badge badgeContent=' ' color='error'>
+                    <AntAvatar alt='Basic' variant='square' type='outlined'>
                       U
                     </AntAvatar>
                   </Badge>
@@ -402,16 +402,16 @@ export default function ComponentBadge() {
             </MainCard>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Visibility" codeString={visibleBadgesCodeString}>
+            <MainCard title='Visibility' codeString={visibleBadgesCodeString}>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
-                  <Stack direction="row" spacing={3} alignItems="center">
-                    <Badge color="primary" badgeContent={count}>
+                  <Stack direction='row' spacing={3} alignItems='center'>
+                    <Badge color='primary' badgeContent={count}>
                       <Sms />
                     </Badge>
                     <ButtonGroup>
                       <Button
-                        aria-label="reduce"
+                        aria-label='reduce'
                         onClick={() => {
                           setCount(Math.max(count - 1, 0));
                         }}
@@ -419,7 +419,7 @@ export default function ComponentBadge() {
                         <Minus />
                       </Button>
                       <Button
-                        aria-label="increase"
+                        aria-label='increase'
                         onClick={() => {
                           setCount(count + 1);
                         }}
@@ -430,15 +430,15 @@ export default function ComponentBadge() {
                   </Stack>
                 </Grid>
                 <Grid item xs={12}>
-                  <Stack direction="row" spacing={3} alignItems="center">
-                    <Badge color="primary" variant="dot" invisible={invisible}>
+                  <Stack direction='row' spacing={3} alignItems='center'>
+                    <Badge color='primary' variant='dot' invisible={invisible}>
                       <Sms />
                     </Badge>
                     <FormControlLabel
                       sx={{ color: 'text.primary' }}
                       control={<Switch checked={!invisible} onChange={handleBadgeVisibility} />}
-                      label="Show Badge"
-                      labelPlacement="start"
+                      label='Show Badge'
+                      labelPlacement='start'
                     />
                   </Stack>
                 </Grid>

@@ -42,14 +42,14 @@ function ElevationScroll({ children, window }: ElevationScrollProps) {
   const trigger = useScrollTrigger({
     disableHysteresis: true,
     threshold: 10,
-    target: window ? window : undefined
+    target: window ? window : undefined,
   });
 
   return cloneElement(children, {
     style: {
       boxShadow: trigger ? '0 8px 6px -10px rgba(0, 0, 0, 0.5)' : 'none',
-      backgroundColor: trigger ? alpha(theme.palette.background.default, 0.8) : alpha(theme.palette.background.default, 0.1)
-    }
+      backgroundColor: trigger ? alpha(theme.palette.background.default, 0.8) : alpha(theme.palette.background.default, 0.1),
+    },
   });
 }
 
@@ -92,69 +92,69 @@ export default function Header({ layout = 'landing', ...others }: Props) {
           bgcolor: alpha(theme.palette.background.default, 0.1),
           backdropFilter: 'blur(8px)',
           color: theme.palette.text.primary,
-          boxShadow: 'none'
+          boxShadow: 'none',
         }}
       >
-        <Container maxWidth="xl" disableGutters={matchDownMd}>
+        <Container maxWidth='xl' disableGutters={matchDownMd}>
           <Toolbar sx={{ px: { xs: 1.5, sm: 4, md: 0, lg: 0 }, py: 1 }}>
-            <Stack direction="row" sx={{ flexGrow: 1, display: { xs: 'none', md: 'block' } }} alignItems="center">
+            <Stack direction='row' sx={{ flexGrow: 1, display: { xs: 'none', md: 'block' } }} alignItems='center'>
               <Typography sx={{ textAlign: 'left', display: 'inline-block' }}>
-                <Logo to="/" />
+                <Logo to='/' />
               </Typography>
               <Chip
                 label={import.meta.env.VITE_APP_VERSION}
-                variant="outlined"
-                size="small"
-                color="secondary"
+                variant='outlined'
+                size='small'
+                color='secondary'
                 sx={{ mt: 0.5, ml: 1, fontSize: '0.725rem', height: 20, '& .MuiChip-label': { px: 0.5 } }}
               />
             </Stack>
             <Stack
-              direction="row"
+              direction='row'
               sx={{
                 '& .header-link': { fontWeight: 500, '&:hover': { color: 'primary.main' } },
-                display: { xs: 'none', md: 'block' }
+                display: { xs: 'none', md: 'block' },
               }}
               spacing={3}
             >
               <Link
-                className="header-link"
+                className='header-link'
                 sx={{ ml: theme.direction === ThemeDirection.RTL ? 3 : 0 }}
-                color="secondary.main"
+                color='secondary.main'
                 component={RouterLink}
-                to="/login"
-                target="_blank"
-                underline="none"
+                to='/login'
+                target='_blank'
+                underline='none'
               >
                 Dashboard
               </Link>
               <Link
-                className="header-link"
-                color="secondary.main"
+                className='header-link'
+                color='secondary.main'
                 component={RouterLink}
-                to="/components-overview/buttons"
-                underline="none"
+                to='/components-overview/buttons'
+                underline='none'
               >
                 Components
               </Link>
               <Link
-                className="header-link"
-                color="secondary.main"
-                href="https://phoenixcoded.gitbook.io/able-pro/v/react/"
-                target="_blank"
-                underline="none"
+                className='header-link'
+                color='secondary.main'
+                href='https://phoenixcoded.gitbook.io/able-pro/v/react/'
+                target='_blank'
+                underline='none'
               >
                 Documentation
               </Link>
-              <Link href="https://github.com/phoenixcoded/able-pro-free-admin-dashboard-template" target="_blank" underline="none">
+              <Link href='https://github.com/phoenixcoded/able-pro-free-admin-dashboard-template' target='_blank' underline='none'>
                 <IconButton
-                  size="large"
-                  shape="rounded"
-                  color="secondary"
+                  size='large'
+                  shape='rounded'
+                  color='secondary'
                   sx={{
                     bgcolor: 'secondary.light',
                     color: 'secondary.darker',
-                    '&:hover': { color: 'secondary.lighter', bgcolor: 'secondary.darker' }
+                    '&:hover': { color: 'secondary.lighter', bgcolor: 'secondary.darker' },
                   }}
                 >
                   <DocumentDownload />
@@ -165,12 +165,12 @@ export default function Header({ layout = 'landing', ...others }: Props) {
                   <Button
                     component={Link}
                     href={url}
-                    target="_blank"
+                    target='_blank'
                     disableElevation
                     startIcon={<ExportSquare />}
-                    color="success"
-                    size="large"
-                    variant="contained"
+                    color='success'
+                    size='large'
+                    variant='contained'
                   >
                     Purchase Now
                   </Button>
@@ -182,27 +182,27 @@ export default function Header({ layout = 'landing', ...others }: Props) {
                 width: '100%',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                display: { xs: 'flex', md: 'none' }
+                display: { xs: 'flex', md: 'none' },
               }}
             >
               <Typography sx={{ textAlign: 'left', display: 'inline-block' }}>
-                <Logo to="/" />
+                <Logo to='/' />
               </Typography>
-              <Stack direction="row" spacing={2}>
+              <Stack direction='row' spacing={2}>
                 {layout === 'component' && (
-                  <Button variant="outlined" color="warning" component={RouterLink} to={APP_DEFAULT_PATH} sx={{ mt: 0.25 }}>
+                  <Button variant='outlined' color='warning' component={RouterLink} to={APP_DEFAULT_PATH} sx={{ mt: 0.25 }}>
                     Dashboard
                   </Button>
                 )}
                 {layout !== 'component' && (
-                  <Button variant="outlined" color="warning" component={RouterLink} to="/components-overview/buttons" sx={{ mt: 0.25 }}>
+                  <Button variant='outlined' color='warning' component={RouterLink} to='/components-overview/buttons' sx={{ mt: 0.25 }}>
                     All Components
                   </Button>
                 )}
 
                 <IconButton
-                  size="large"
-                  color="secondary"
+                  size='large'
+                  color='secondary'
                   {...(layout === 'component'
                     ? { onClick: () => handlerComponentDrawer(!menuMaster.isComponentDrawerOpened) }
                     : { onClick: drawerToggler(true) })}
@@ -212,7 +212,7 @@ export default function Header({ layout = 'landing', ...others }: Props) {
                 </IconButton>
               </Stack>
               <Drawer
-                anchor="top"
+                anchor='top'
                 open={drawerToggle}
                 onClose={drawerToggler(false)}
                 sx={{ '& .MuiDrawer-paper': { backgroundImage: 'none' } }}
@@ -222,69 +222,69 @@ export default function Header({ layout = 'landing', ...others }: Props) {
                     width: 'auto',
                     '& .MuiListItemIcon-root': {
                       fontSize: '1rem',
-                      minWidth: 32
-                    }
+                      minWidth: 32,
+                    },
                   }}
-                  role="presentation"
+                  role='presentation'
                   onClick={drawerToggler(false)}
                   onKeyDown={drawerToggler(false)}
                 >
                   <List>
-                    <Link style={{ textDecoration: 'none' }} href="/login" target="_blank">
+                    <Link style={{ textDecoration: 'none' }} href='/login' target='_blank'>
                       <ListItemButton>
                         <ListItemIcon>
                           <Minus color={theme.palette.secondary.main} />
                         </ListItemIcon>
-                        <ListItemText primary="Dashboard" primaryTypographyProps={{ variant: 'h6', color: 'secondary.main' }} />
+                        <ListItemText primary='Dashboard' primaryTypographyProps={{ variant: 'h6', color: 'secondary.main' }} />
                       </ListItemButton>
                     </Link>
-                    <Link style={{ textDecoration: 'none' }} component={RouterLink} to="/components-overview/buttons" target="_blank">
+                    <Link style={{ textDecoration: 'none' }} component={RouterLink} to='/components-overview/buttons' target='_blank'>
                       <ListItemButton>
                         <ListItemIcon>
                           <Minus color={theme.palette.secondary.main} />
                         </ListItemIcon>
-                        <ListItemText primary="All Components" primaryTypographyProps={{ variant: 'h6', color: 'secondary.main' }} />
+                        <ListItemText primary='All Components' primaryTypographyProps={{ variant: 'h6', color: 'secondary.main' }} />
                       </ListItemButton>
                     </Link>
                     <Link
                       style={{ textDecoration: 'none' }}
-                      href="https://github.com/phoenixcoded/able-pro-free-admin-dashboard-template"
-                      target="_blank"
+                      href='https://github.com/phoenixcoded/able-pro-free-admin-dashboard-template'
+                      target='_blank'
                     >
                       <ListItemButton>
                         <ListItemIcon>
                           <Minus color={theme.palette.secondary.main} />
                         </ListItemIcon>
-                        <ListItemText primary="Free Version" primaryTypographyProps={{ variant: 'h6', color: 'secondary.main' }} />
+                        <ListItemText primary='Free Version' primaryTypographyProps={{ variant: 'h6', color: 'secondary.main' }} />
                       </ListItemButton>
                     </Link>
-                    <Link style={{ textDecoration: 'none' }} href="https://phoenixcoded.gitbook.io/able-pro/v/react/" target="_blank">
+                    <Link style={{ textDecoration: 'none' }} href='https://phoenixcoded.gitbook.io/able-pro/v/react/' target='_blank'>
                       <ListItemButton>
                         <ListItemIcon>
                           <Minus color={theme.palette.secondary.main} />
                         </ListItemIcon>
-                        <ListItemText primary="Documentation" primaryTypographyProps={{ variant: 'h6', color: 'secondary.main' }} />
+                        <ListItemText primary='Documentation' primaryTypographyProps={{ variant: 'h6', color: 'secondary.main' }} />
                       </ListItemButton>
                     </Link>
-                    <Link style={{ textDecoration: 'none' }} href="https://phoenixcoded.authordesk.app/" target="_blank">
+                    <Link style={{ textDecoration: 'none' }} href='https://phoenixcoded.authordesk.app/' target='_blank'>
                       <ListItemButton>
                         <ListItemIcon>
                           <Minus color={theme.palette.secondary.main} />
                         </ListItemIcon>
-                        <ListItemText primary="Support" primaryTypographyProps={{ variant: 'h6', color: 'secondary.main' }} />
+                        <ListItemText primary='Support' primaryTypographyProps={{ variant: 'h6', color: 'secondary.main' }} />
                       </ListItemButton>
                     </Link>
                     <Link
                       style={{ textDecoration: 'none' }}
-                      href="https://1.envato.market/c/1289604/275988/4415?subId1=phoenixcoded&u=https%3A%2F%2Fthemeforest.net%2Fitem%2Fable-pro-responsive-bootstrap-4-admin-template%2F19300403"
-                      target="_blank"
+                      href='https://1.envato.market/c/1289604/275988/4415?subId1=phoenixcoded&u=https%3A%2F%2Fthemeforest.net%2Fitem%2Fable-pro-responsive-bootstrap-4-admin-template%2F19300403'
+                      target='_blank'
                     >
                       <ListItemButton>
                         <ListItemIcon>
                           <Minus color={theme.palette.secondary.main} />
                         </ListItemIcon>
-                        <ListItemText primary="Purchase Now" primaryTypographyProps={{ variant: 'h6', color: 'secondary.main' }} />
-                        <Chip color="primary" label="v1.0" size="small" />
+                        <ListItemText primary='Purchase Now' primaryTypographyProps={{ variant: 'h6', color: 'secondary.main' }} />
+                        <Chip color='primary' label='v1.0' size='small' />
                       </ListItemButton>
                     </Link>
                   </List>

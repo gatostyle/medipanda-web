@@ -97,26 +97,26 @@ export default function NestedList() {
             <ListItemIcon>
               <Grid5 size={18} />
             </ListItemIcon>
-            <ListItemText primary="Sample" />
+            <ListItemText primary='Sample' />
             {open === 'sample' ? <ArrowDown2 size={14} /> : <ArrowUp2 size={14} />}
           </ListItemButton>
         </ListItem>
-        <Collapse in={open === 'sample'} timeout="auto" unmountOnExit>
+        <Collapse in={open === 'sample'} timeout='auto' unmountOnExit>
           <List disablePadding sx={{ bgcolor: 'secondary.100' }}>
             <ListItemButton sx={{ pl: 5 }}>
-              <ListItemText primary="List item 01" />
+              <ListItemText primary='List item 01' />
             </ListItemButton>
             <ListItemButton sx={{ pl: 5 }} onClick={() => handleChildClick('list1')}>
-              <ListItemText primary="List item 02" />
+              <ListItemText primary='List item 02' />
               {openChild === 'list1' ? <ArrowDown2 size={14} /> : <ArrowUp2 size={14} />}
             </ListItemButton>
-            <Collapse in={openChild === 'list1'} timeout="auto" unmountOnExit>
+            <Collapse in={openChild === 'list1'} timeout='auto' unmountOnExit>
               <List disablePadding sx={{ bgcolor: 'secondary.lighter' }}>
                 <ListItemButton sx={{ pl: 7 }}>
-                  <ListItemText primary="List item 05" />
+                  <ListItemText primary='List item 05' />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 7 }}>
-                  <ListItemText primary="List item 06" />
+                  <ListItemText primary='List item 06' />
                 </ListItemButton>
               </List>
             </Collapse>
@@ -127,17 +127,17 @@ export default function NestedList() {
             <ListItemIcon>
               <Setting3 size={18} />
             </ListItemIcon>
-            <ListItemText primary="Settings" />
+            <ListItemText primary='Settings' />
             {open === 'settings' ? <ArrowDown2 size={14} /> : <ArrowUp2 size={14} />}
           </ListItemButton>
         </ListItem>
-        <Collapse in={open === 'settings'} timeout="auto" unmountOnExit>
+        <Collapse in={open === 'settings'} timeout='auto' unmountOnExit>
           <List disablePadding sx={{ bgcolor: 'secondary.100' }}>
             <ListItemButton sx={{ pl: 5 }}>
-              <ListItemText primary="List item 03" />
+              <ListItemText primary='List item 03' />
             </ListItemButton>
             <ListItemButton sx={{ pl: 5 }}>
-              <ListItemText primary="List item 04" />
+              <ListItemText primary='List item 04' />
             </ListItemButton>
           </List>
         </Collapse>
@@ -146,7 +146,7 @@ export default function NestedList() {
             <ListItemIcon>
               <Element size={18} />
             </ListItemIcon>
-            <ListItemText primary="UI Elements" />
+            <ListItemText primary='UI Elements' />
           </ListItemButton>
         </ListItem>
       </List>

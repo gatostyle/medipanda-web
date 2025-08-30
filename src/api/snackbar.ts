@@ -5,7 +5,7 @@ import useSWR, { mutate } from 'swr';
 import { SnackbarProps } from 'types/snackbar';
 
 export const endpoints = {
-  key: 'snackbar'
+  key: 'snackbar',
 };
 
 const initialState: SnackbarProps = {
@@ -14,26 +14,26 @@ const initialState: SnackbarProps = {
   message: 'Note archived',
   anchorOrigin: {
     vertical: 'bottom',
-    horizontal: 'right'
+    horizontal: 'right',
   },
   variant: 'default',
   alert: {
     color: 'primary',
-    variant: 'filled'
+    variant: 'filled',
   },
   transition: 'Fade',
   close: false,
   actionButton: false,
   maxStack: 3,
   dense: false,
-  iconVariant: 'usedefault'
+  iconVariant: 'usedefault',
 };
 
 export function useGetSnackbar() {
   const { data } = useSWR(endpoints.key, () => initialState, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
-    revalidateOnReconnect: false
+    revalidateOnReconnect: false,
   });
 
   const memoizedValue = useMemo(() => ({ snackbar: data! }), [data]);
@@ -58,14 +58,14 @@ export function openSnackbar(snackbar: SnackbarProps) {
         variant: variant || initialState.variant,
         alert: {
           color: alert?.color || initialState.alert.color,
-          variant: alert?.variant || initialState.alert.variant
+          variant: alert?.variant || initialState.alert.variant,
         },
         transition: transition || initialState.transition,
         close: close || initialState.close,
-        actionButton: actionButton || initialState.actionButton
+        actionButton: actionButton || initialState.actionButton,
       };
     },
-    false
+    false,
   );
 }
 
@@ -76,7 +76,7 @@ export function closeSnackbar() {
     (currentSnackbar: any) => {
       return { ...currentSnackbar, open: false };
     },
-    false
+    false,
   );
 }
 
@@ -87,7 +87,7 @@ export function handlerIncrease(maxStack: number) {
     (currentSnackbar: any) => {
       return { ...currentSnackbar, maxStack };
     },
-    false
+    false,
   );
 }
 
@@ -98,7 +98,7 @@ export function handlerDense(dense: boolean) {
     (currentSnackbar: any) => {
       return { ...currentSnackbar, dense };
     },
-    false
+    false,
   );
 }
 
@@ -109,6 +109,6 @@ export function handlerIconVariants(iconVariant: string) {
     (currentSnackbar: any) => {
       return { ...currentSnackbar, iconVariant };
     },
-    false
+    false,
   );
 }

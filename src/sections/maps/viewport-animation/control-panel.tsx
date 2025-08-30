@@ -27,9 +27,9 @@ type Props = {
 function ControlPanel({ data, selectedCity, onSelectCity }: Props) {
   return (
     <ControlPanelStyled>
-      {data.map((city) => (
-        <RadioGroup key={city.city} value={selectedCity} onChange={(event) => onSelectCity(event, city)}>
-          <FormControlLabel value={city.city} label={city.city} control={<Radio size="small" />} />
+      {data.map(city => (
+        <RadioGroup key={city.city} value={selectedCity} onChange={event => onSelectCity(event, city)}>
+          <FormControlLabel value={city.city} label={city.city} control={<Radio size='small' />} />
         </RadioGroup>
       ))}
     </ControlPanelStyled>

@@ -36,11 +36,11 @@ export default function ChatMessageAction({ index }: { index: number }) {
       <IconButton
         id={`chat-action-button-${index}`}
         aria-controls={open ? `chat-action-menu-${index}` : undefined}
-        aria-haspopup="true"
+        aria-haspopup='true'
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClickSort}
-        size="small"
-        color="secondary"
+        size='small'
+        color='secondary'
         sx={{ transform: 'rotate(90deg)' }}
       >
         <MoreIcon />

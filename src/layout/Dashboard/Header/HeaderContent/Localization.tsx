@@ -38,7 +38,7 @@ export default function Localization() {
   const anchorRef = useRef<any>(null);
   const [open, setOpen] = useState(false);
   const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
+    setOpen(prevOpen => !prevOpen);
   };
 
   const handleClose = (event: MouseEvent | TouchEvent) => {
@@ -59,17 +59,17 @@ export default function Localization() {
   return (
     <Box sx={{ flexShrink: 0, ml: 0.5 }}>
       <IconButton
-        color="secondary"
-        variant="light"
-        aria-label="open localization"
+        color='secondary'
+        variant='light'
+        aria-label='open localization'
         ref={anchorRef}
         aria-controls={open ? 'localization-grow' : undefined}
-        aria-haspopup="true"
+        aria-haspopup='true'
         onClick={handleToggle}
-        size="large"
+        size='large'
         sx={{ color: 'secondary.main', bgcolor: open ? iconBackColorOpen : iconBackColor, p: 1 }}
       >
-        <LanguageSquare variant="Bulk" />
+        <LanguageSquare variant='Bulk' />
       </IconButton>
       <Popper
         placement={matchesXs ? 'bottom-start' : 'bottom'}
@@ -83,34 +83,34 @@ export default function Localization() {
             {
               name: 'offset',
               options: {
-                offset: [matchesXs ? 0 : 0, 9]
-              }
-            }
-          ]
+                offset: [matchesXs ? 0 : 0, 9],
+              },
+            },
+          ],
         }}
       >
         {({ TransitionProps }) => (
-          <Transitions type="grow" position={matchesXs ? 'top-right' : 'top'} in={open} {...TransitionProps}>
+          <Transitions type='grow' position={matchesXs ? 'top-right' : 'top'} in={open} {...TransitionProps}>
             <Paper sx={{ boxShadow: theme.customShadows.z1, borderRadius: 1.5 }}>
               <ClickAwayListener onClickAway={handleClose}>
                 <MainCard border={false} content={false}>
                   <List
-                    component="nav"
+                    component='nav'
                     sx={{
                       p: 1,
                       width: '100%',
                       minWidth: 200,
                       maxWidth: 290,
                       bgcolor: theme.palette.background.paper,
-                      [theme.breakpoints.down('md')]: { maxWidth: 250 }
+                      [theme.breakpoints.down('md')]: { maxWidth: 250 },
                     }}
                   >
                     <ListItemButton selected={i18n === 'en'} onClick={() => handleListItemClick('en')}>
                       <ListItemText
                         primary={
                           <Grid container>
-                            <Typography color="text.primary">English</Typography>
-                            <Typography variant="caption" color="text.secondary" sx={{ ml: '8px' }}>
+                            <Typography color='text.primary'>English</Typography>
+                            <Typography variant='caption' color='text.secondary' sx={{ ml: '8px' }}>
                               (UK)
                             </Typography>
                           </Grid>
@@ -121,8 +121,8 @@ export default function Localization() {
                       <ListItemText
                         primary={
                           <Grid container>
-                            <Typography color="text.primary">français</Typography>
-                            <Typography variant="caption" color="text.secondary" sx={{ ml: '8px' }}>
+                            <Typography color='text.primary'>français</Typography>
+                            <Typography variant='caption' color='text.secondary' sx={{ ml: '8px' }}>
                               (French)
                             </Typography>
                           </Grid>
@@ -133,8 +133,8 @@ export default function Localization() {
                       <ListItemText
                         primary={
                           <Grid container>
-                            <Typography color="text.primary">Română</Typography>
-                            <Typography variant="caption" color="text.secondary" sx={{ ml: '8px' }}>
+                            <Typography color='text.primary'>Română</Typography>
+                            <Typography variant='caption' color='text.secondary' sx={{ ml: '8px' }}>
                               (Romanian)
                             </Typography>
                           </Grid>
@@ -145,8 +145,8 @@ export default function Localization() {
                       <ListItemText
                         primary={
                           <Grid container>
-                            <Typography color="text.primary">中国人</Typography>
-                            <Typography variant="caption" color="text.secondary" sx={{ ml: '8px' }}>
+                            <Typography color='text.primary'>中国人</Typography>
+                            <Typography variant='caption' color='text.secondary' sx={{ ml: '8px' }}>
                               (Chinese)
                             </Typography>
                           </Grid>

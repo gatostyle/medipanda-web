@@ -15,38 +15,38 @@ export const HEADER_HEIGHT = 74;
 
 export enum SimpleLayoutType {
   SIMPLE = 'simple',
-  LANDING = 'landing'
+  LANDING = 'landing',
 }
 
 export enum ThemeMode {
   LIGHT = 'light',
   DARK = 'dark',
-  AUTO = 'auto'
+  AUTO = 'auto',
 }
 
 export enum MenuOrientation {
   VERTICAL = 'vertical',
-  HORIZONTAL = 'horizontal'
+  HORIZONTAL = 'horizontal',
 }
 
 export enum ThemeDirection {
   LTR = 'ltr',
-  RTL = 'rtl'
+  RTL = 'rtl',
 }
 
 export enum NavActionType {
   FUNCTION = 'function',
-  LINK = 'link'
+  LINK = 'link',
 }
 
 export enum Gender {
   MALE = 'Male',
-  FEMALE = 'Female'
+  FEMALE = 'Female',
 }
 
 export enum DropzopType {
   DEFAULT = 'default',
-  STANDARD = 'standard'
+  STANDARD = 'standard',
 }
 
 // ==============================|| THEME CONFIG ||============================== //
@@ -59,7 +59,7 @@ const config: DefaultConfigProps = {
   mode: ThemeMode.LIGHT,
   presetColor: 'default',
   themeDirection: ThemeDirection.LTR,
-  themeContrast: false
+  themeContrast: false,
 };
 
 export default config;

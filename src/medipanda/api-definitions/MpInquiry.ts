@@ -2,19 +2,19 @@ import { NotImplementedError } from './NotImplementedError';
 
 export enum InquiryResponseStatus {
   WAITING = 'waiting',
-  COMPLETED = 'completed'
+  COMPLETED = 'completed',
 }
 
 export enum InquiryResponseStatusFilter {
   ALL = 'all',
   WAITING = 'waiting',
-  COMPLETED = 'completed'
+  COMPLETED = 'completed',
 }
 
 export enum InquirySearchType {
   MEMBER_NAME = 'memberName',
   COMPANY_NAME = 'companyName',
-  USER_ID = 'userId'
+  USER_ID = 'userId',
 }
 
 export interface MpInquiry {

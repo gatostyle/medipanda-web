@@ -22,10 +22,10 @@ export default function AuthWrapper({ children }: Props) {
       <AuthBackground />
       <Grid
         container
-        direction="column"
-        justifyContent="center"
+        direction='column'
+        justifyContent='center'
         sx={{
-          minHeight: '100vh'
+          minHeight: '100vh',
         }}
       >
         <Grid item xs={12}>
@@ -33,8 +33,8 @@ export default function AuthWrapper({ children }: Props) {
             item
             xs={12}
             container
-            justifyContent="center"
-            alignItems="center"
+            justifyContent='center'
+            alignItems='center'
             sx={{ minHeight: { xs: 'calc(100vh - 210px)', sm: 'calc(100vh - 134px)', md: 'calc(100vh - 112px)' } }}
           >
             <Grid item>

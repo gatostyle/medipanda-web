@@ -24,10 +24,10 @@ export default function EmptyUserCard({ title }: Props) {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            bgcolor: 'transparent'
+            bgcolor: 'transparent',
           }}
         >
-          <Grid container direction="column" justifyContent="center" alignItems="center">
+          <Grid container direction='column' justifyContent='center' alignItems='center'>
             <Grid item>
               <Box sx={{ ml: -9, mb: { xs: -8, sm: -5 } }}>
                 <Box sx={{ position: 'relative' }}>
@@ -40,7 +40,7 @@ export default function EmptyUserCard({ title }: Props) {
             </Grid>
             <Grid item>
               <Stack spacing={1}>
-                <Typography align="center" variant="h4">
+                <Typography align='center' variant='h4'>
                   {title}
                 </Typography>
               </Stack>

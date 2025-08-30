@@ -7,10 +7,10 @@ export default function CardContent() {
         root: {
           padding: 24,
           '&:last-child': {
-            paddingBottom: 24
-          }
-        }
-      }
-    }
+            paddingBottom: 24,
+          },
+        },
+      },
+    },
   };
 }

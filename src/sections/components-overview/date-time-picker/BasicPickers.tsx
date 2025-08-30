@@ -48,11 +48,11 @@ export default function BasicDateTimePickers() {
 </LocalizationProvider>`;
 
   return (
-    <MainCard title="Basic Picker" codeString={basicDatepickerCodeString}>
+    <MainCard title='Basic Picker' codeString={basicDatepickerCodeString}>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <Stack spacing={3}>
-          <DesktopDatePicker format="MM/dd/yyyy" value={value} onChange={handleChange} />
-          <MobileDatePicker format="MM/dd/yyyy" value={value} onChange={handleChange} />
+          <DesktopDatePicker format='MM/dd/yyyy' value={value} onChange={handleChange} />
+          <MobileDatePicker format='MM/dd/yyyy' value={value} onChange={handleChange} />
           <TimePicker value={value} onChange={handleChange} />
           <DateTimePicker value={value} onChange={handleChange} />
         </Stack>

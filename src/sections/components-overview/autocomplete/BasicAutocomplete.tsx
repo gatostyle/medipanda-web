@@ -26,24 +26,24 @@ export default function BasicAutocomplete() {
 />`;
 
   return (
-    <MainCard title="Basic" sx={{ overflow: 'visible' }} codeHighlight codeString={basicAutocompleteCodeString}>
+    <MainCard title='Basic' sx={{ overflow: 'visible' }} codeHighlight codeString={basicAutocompleteCodeString}>
       <Grid container spacing={2}>
         <Grid item xs={12} lg={6}>
           <Autocomplete
             fullWidth
             disablePortal
-            id="basic-autocomplete-label"
+            id='basic-autocomplete-label'
             options={data}
-            renderInput={(params) => <TextField {...params} label="Label" />}
+            renderInput={params => <TextField {...params} label='Label' />}
           />
         </Grid>
         <Grid item xs={12} lg={6}>
           <Autocomplete
             fullWidth
             disablePortal
-            id="basic-autocomplete"
+            id='basic-autocomplete'
             options={data}
-            renderInput={(params) => <TextField {...params} placeholder="Placeholder" />}
+            renderInput={params => <TextField {...params} placeholder='Placeholder' />}
           />
         </Grid>
       </Grid>

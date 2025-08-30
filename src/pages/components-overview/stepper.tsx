@@ -17,10 +17,10 @@ export default function ComponentStepper() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Stepper"
-        caption="Steppers convey progress through numbered steps. It provides a wizard-like workflow."
-        directory="src/pages/components-overview/stepper"
-        link="https://mui.com/material-ui/react-stepper/"
+        title='Stepper'
+        caption='Steppers convey progress through numbered steps. It provides a wizard-like workflow.'
+        directory='src/pages/components-overview/stepper'
+        link='https://mui.com/material-ui/react-stepper/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>

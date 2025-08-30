@@ -13,7 +13,7 @@ import {
   TableHead,
   TableRow,
   Tabs,
-  Typography
+  Typography,
 } from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import ScrollX from 'components/ScrollX';
@@ -59,7 +59,7 @@ export default function MpAdminCommunityPostDetail() {
         commentsCount: boardDetail.commentCount,
         viewsCount: boardDetail.viewsCount,
         isBlind: boardDetail.isBlind,
-        registrationDate: boardDetail.createdAt
+        registrationDate: boardDetail.createdAt,
       });
 
       // editor.commands.setContent(boardDetail.content);
@@ -100,7 +100,7 @@ export default function MpAdminCommunityPostDetail() {
     commentsCount: 0,
     viewsCount: 0,
     isBlind: false,
-    registrationDate: ''
+    registrationDate: '',
   });
 
   const [comments, setComments] = useState<Sequenced<CommentResponse>[]>([]);
@@ -112,40 +112,40 @@ export default function MpAdminCommunityPostDetail() {
         header: 'No',
         accessorKey: 'sequence',
         cell: ({ row }) => row.original.sequence,
-        size: 60
+        size: 60,
       },
       {
         header: '아이디',
         accessorKey: 'userId',
         cell: ({ row }) => row.original.userId,
-        size: 120
+        size: 120,
       },
       {
         header: '회원명',
         accessorKey: 'name',
         cell: ({ row }) => row.original.name,
-        size: 100
+        size: 100,
       },
       {
         header: '닉네임',
         accessorKey: 'nickname',
         cell: ({ row }) => row.original.nickname,
-        size: 120
+        size: 120,
       },
       {
         header: '댓글내용',
         accessorKey: 'content',
         cell: ({ row }) => row.original.content,
-        size: 300
+        size: 300,
       },
       {
         header: '작성일시',
         accessorKey: 'createdAt',
         cell: ({ row }) => formatYyyyMmDdHhMm(row.original.createdAt),
-        size: 160
-      }
+        size: 160,
+      },
     ],
-    []
+    [],
   );
 
   const reportColumns = useMemo<ColumnDef<Sequenced<BoardReportResponse>>[]>(
@@ -154,40 +154,40 @@ export default function MpAdminCommunityPostDetail() {
         header: 'No',
         accessorKey: 'sequence',
         cell: ({ row }) => row.original.sequence,
-        size: 60
+        size: 60,
       },
       {
         header: '아이디',
         accessorKey: 'userId',
         cell: ({ row }) => row.original.userId,
-        size: 120
+        size: 120,
       },
       {
         header: '회원명',
         accessorKey: 'memberName',
         cell: ({ row }) => row.original.memberName,
-        size: 100
+        size: 100,
       },
       {
         header: '닉네임',
         accessorKey: 'nickname',
         cell: ({ row }) => row.original.nickname,
-        size: 120
+        size: 120,
       },
       {
         header: '신고유형',
         accessorKey: 'reportType',
         cell: ({ row }) => row.original.reportType,
-        size: 150
+        size: 150,
       },
       {
         header: '신고일시',
         accessorKey: 'reportDateTime',
         cell: ({ row }) => formatYyyyMmDdHhMm(row.original.reportDateTime),
-        size: 160
-      }
+        size: 160,
+      },
     ],
-    []
+    [],
   );
 
   const commentTable = useReactTable({
@@ -196,10 +196,10 @@ export default function MpAdminCommunityPostDetail() {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      pagination: { pageIndex: 0, pageSize: 20 }
+      pagination: { pageIndex: 0, pageSize: 20 },
     },
     pageCount: 1,
-    manualPagination: true
+    manualPagination: true,
   });
 
   const reportTable = useReactTable({
@@ -208,10 +208,10 @@ export default function MpAdminCommunityPostDetail() {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      pagination: { pageIndex: 0, pageSize: 20 }
+      pagination: { pageIndex: 0, pageSize: 20 },
     },
     pageCount: 1,
-    manualPagination: true
+    manualPagination: true,
   });
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -234,92 +234,92 @@ export default function MpAdminCommunityPostDetail() {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
+      <Typography variant='h4' gutterBottom sx={{ mb: 3 }}>
         포스트 상세
       </Typography>
 
       <Card>
         <Tabs value={tabValue} onChange={handleTabChange} sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tab label="포스트" />
-          <Tab label="댓글" />
-          <Tab label="신고기록" />
+          <Tab label='포스트' />
+          <Tab label='댓글' />
+          <Tab label='신고기록' />
         </Tabs>
 
         {tabValue === 0 && (
           <Box sx={{ p: 3 }}>
             <Stack spacing={2}>
-              <Stack direction="row" spacing={4}>
+              <Stack direction='row' spacing={4}>
                 <Box>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant='body2' color='text.secondary'>
                     게시판유형
                   </Typography>
-                  <Typography variant="body1">{postDetail.boardType}</Typography>
+                  <Typography variant='body1'>{postDetail.boardType}</Typography>
                 </Box>
                 <Box>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant='body2' color='text.secondary'>
                     회원명
                   </Typography>
-                  <Typography variant="body1">
+                  <Typography variant='body1'>
                     {postDetail.name}({postDetail.userId})
                   </Typography>
                 </Box>
                 <Box>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant='body2' color='text.secondary'>
                     닉네임
                   </Typography>
-                  <Typography variant="body1">{postDetail.nickname}</Typography>
+                  <Typography variant='body1'>{postDetail.nickname}</Typography>
                 </Box>
               </Stack>
 
               <Box>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant='body2' color='text.secondary'>
                   제목
                 </Typography>
-                <Typography variant="body1">{postDetail.title}</Typography>
+                <Typography variant='body1'>{postDetail.title}</Typography>
               </Box>
 
               <Box>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant='body2' color='text.secondary'>
                   내용
                 </Typography>
                 <Box sx={{ mt: 1 }}>{/*<TiptapEditor {...props} editor={editor} />*/}</Box>
               </Box>
 
-              <Stack direction="row" spacing={4}>
+              <Stack direction='row' spacing={4}>
                 <Box>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant='body2' color='text.secondary'>
                     좋아요 수
                   </Typography>
-                  <Typography variant="body1">{postDetail.likesCount}</Typography>
+                  <Typography variant='body1'>{postDetail.likesCount}</Typography>
                 </Box>
                 <Box>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant='body2' color='text.secondary'>
                     댓글 수
                   </Typography>
-                  <Typography variant="body1">{postDetail.commentsCount}</Typography>
+                  <Typography variant='body1'>{postDetail.commentsCount}</Typography>
                 </Box>
                 <Box>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant='body2' color='text.secondary'>
                     조회 수
                   </Typography>
-                  <Typography variant="body1">{postDetail.viewsCount}</Typography>
+                  <Typography variant='body1'>{postDetail.viewsCount}</Typography>
                 </Box>
                 <Box>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant='body2' color='text.secondary'>
                     블라인드 여부
                   </Typography>
-                  <Typography variant="body1">{postDetail.isBlind}</Typography>
+                  <Typography variant='body1'>{postDetail.isBlind}</Typography>
                 </Box>
                 <Box>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant='body2' color='text.secondary'>
                     등록일
                   </Typography>
-                  <Typography variant="body1">{formatYyyyMmDd(postDetail.registrationDate)}</Typography>
+                  <Typography variant='body1'>{formatYyyyMmDd(postDetail.registrationDate)}</Typography>
                 </Box>
               </Stack>
 
-              <Stack direction="row" justifyContent="center" sx={{ mt: 4 }}>
-                <Button variant="contained" color="inherit" onClick={handleBackToList} sx={{ minWidth: 120 }}>
+              <Stack direction='row' justifyContent='center' sx={{ mt: 4 }}>
+                <Button variant='contained' color='inherit' onClick={handleBackToList} sx={{ minWidth: 120 }}>
                   목록
                 </Button>
               </Stack>
@@ -331,11 +331,11 @@ export default function MpAdminCommunityPostDetail() {
           <Box sx={{ p: 3 }}>
             <ScrollX>
               <TableContainer>
-                <Table size="small">
+                <Table size='small'>
                   <TableHead>
-                    {commentTable.getHeaderGroups().map((headerGroup) => (
+                    {commentTable.getHeaderGroups().map(headerGroup => (
                       <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => (
+                        {headerGroup.headers.map(header => (
                           <TableCell key={header.id} style={{ width: header.getSize() }}>
                             {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                           </TableCell>
@@ -344,9 +344,9 @@ export default function MpAdminCommunityPostDetail() {
                     ))}
                   </TableHead>
                   <TableBody>
-                    {commentTable.getRowModel().rows.map((row) => (
+                    {commentTable.getRowModel().rows.map(row => (
                       <TableRow key={row.id}>
-                        {row.getVisibleCells().map((cell) => (
+                        {row.getVisibleCells().map(cell => (
                           <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                         ))}
                       </TableRow>
@@ -356,8 +356,8 @@ export default function MpAdminCommunityPostDetail() {
               </TableContainer>
             </ScrollX>
 
-            <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
-              <Pagination count={1} page={1} color="primary" variant="outlined" showFirstButton showLastButton />
+            <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
+              <Pagination count={1} page={1} color='primary' variant='outlined' showFirstButton showLastButton />
             </Stack>
           </Box>
         )}
@@ -366,11 +366,11 @@ export default function MpAdminCommunityPostDetail() {
           <Box sx={{ p: 3 }}>
             <ScrollX>
               <TableContainer>
-                <Table size="small">
+                <Table size='small'>
                   <TableHead>
-                    {reportTable.getHeaderGroups().map((headerGroup) => (
+                    {reportTable.getHeaderGroups().map(headerGroup => (
                       <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => (
+                        {headerGroup.headers.map(header => (
                           <TableCell key={header.id} style={{ width: header.getSize() }}>
                             {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                           </TableCell>
@@ -379,9 +379,9 @@ export default function MpAdminCommunityPostDetail() {
                     ))}
                   </TableHead>
                   <TableBody>
-                    {reportTable.getRowModel().rows.map((row) => (
+                    {reportTable.getRowModel().rows.map(row => (
                       <TableRow key={row.id}>
-                        {row.getVisibleCells().map((cell) => (
+                        {row.getVisibleCells().map(cell => (
                           <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                         ))}
                       </TableRow>
@@ -391,8 +391,8 @@ export default function MpAdminCommunityPostDetail() {
               </TableContainer>
             </ScrollX>
 
-            <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
-              <Pagination count={1} page={1} color="primary" variant="outlined" showFirstButton showLastButton />
+            <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
+              <Pagination count={1} page={1} color='primary' variant='outlined' showFirstButton showLastButton />
             </Stack>
           </Box>
         )}

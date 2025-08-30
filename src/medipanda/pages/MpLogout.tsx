@@ -18,7 +18,7 @@ export default function MpLogout() {
         enqueueSnackbar('인증이 만료되었습니다. 다시 로그인해주세요.', {
           variant: 'warning',
           autoHideDuration: 4000,
-          preventDuplicate: true
+          preventDuplicate: true,
         });
       }
 

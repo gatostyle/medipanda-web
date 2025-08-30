@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 export default function CircularWithLabel({ value, ...others }: CircularProgressProps) {
   return (
     <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-      <CircularProgress variant="determinate" value={value} {...others} />
+      <CircularProgress variant='determinate' value={value} {...others} />
       <Box
         sx={{
           top: 0,
@@ -18,10 +18,10 @@ export default function CircularWithLabel({ value, ...others }: CircularProgress
           position: 'absolute',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
         }}
       >
-        <Typography variant="caption" color="text.secondary">{`${Math.round(value!)}%`}</Typography>
+        <Typography variant='caption' color='text.secondary'>{`${Math.round(value!)}%`}</Typography>
       </Box>
     </Box>
   );

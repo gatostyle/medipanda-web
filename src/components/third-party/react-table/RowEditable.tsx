@@ -44,12 +44,12 @@ export default function RowEditable<T extends RowData>({ getValue: initialValue,
   const ShowStatus = (value: string) => {
     switch (value) {
       case 'Complicated':
-        return <Chip color="error" label="Complicated" size="small" variant="light" />;
+        return <Chip color='error' label='Complicated' size='small' variant='light' />;
       case 'Relationship':
-        return <Chip color="success" label="Relationship" size="small" variant="light" />;
+        return <Chip color='success' label='Relationship' size='small' variant='light' />;
       case 'Single':
       default:
-        return <Chip color="info" label="Single" size="small" variant="light" />;
+        return <Chip color='info' label='Single' size='small' variant='light' />;
     }
   };
 
@@ -58,7 +58,7 @@ export default function RowEditable<T extends RowData>({ getValue: initialValue,
   switch (id) {
     case 'email':
       userInfoSchema = yup.object().shape({
-        userInfo: yup.string().email('Enter valid email ').required('Email is a required field')
+        userInfo: yup.string().email('Enter valid email ').required('Email is a required field'),
       });
       break;
     case 'age':
@@ -68,17 +68,17 @@ export default function RowEditable<T extends RowData>({ getValue: initialValue,
           .typeError('Age must be number')
           .required('Age is required')
           .min(18, 'You must be at least 18 years')
-          .max(65, 'You must be at most 65 years')
+          .max(65, 'You must be at most 65 years'),
       });
       break;
     case 'visits':
       userInfoSchema = yup.object().shape({
-        userInfo: yup.number().typeError('Visits must be number').required('Required')
+        userInfo: yup.number().typeError('Visits must be number').required('Required'),
       });
       break;
     default:
       userInfoSchema = yup.object().shape({
-        userInfo: yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Name is Required')
+        userInfo: yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Name is Required'),
       });
       break;
   }
@@ -93,7 +93,7 @@ export default function RowEditable<T extends RowData>({ getValue: initialValue,
             <>
               <Formik
                 initialValues={{
-                  userInfo: value
+                  userInfo: value,
                 }}
                 enableReinitialize
                 validationSchema={userInfoSchema}
@@ -104,8 +104,8 @@ export default function RowEditable<T extends RowData>({ getValue: initialValue,
                     <TextField
                       value={values.userInfo}
                       id={`${row.index}-${id}`}
-                      name="userInfo"
-                      onChange={(e) => {
+                      name='userInfo'
+                      onChange={e => {
                         handleChange(e);
                         onChange(e);
                       }}
@@ -129,21 +129,21 @@ export default function RowEditable<T extends RowData>({ getValue: initialValue,
         <>
           {isEditable ? (
             <Select
-              labelId="editable-select-label"
+              labelId='editable-select-label'
               sx={{ '& .MuiOutlinedInput-input': { py: 0.75, px: 1 } }}
-              id="editable-select"
+              id='editable-select'
               value={value}
               onChange={onChange}
               onBlur={onBlur}
             >
-              <MenuItem value="Complicated">
-                <Chip color="error" label="Complicated" size="small" variant="light" />
+              <MenuItem value='Complicated'>
+                <Chip color='error' label='Complicated' size='small' variant='light' />
               </MenuItem>
-              <MenuItem value="Relationship">
-                <Chip color="success" label="Relationship" size="small" variant="light" />
+              <MenuItem value='Relationship'>
+                <Chip color='success' label='Relationship' size='small' variant='light' />
               </MenuItem>
-              <MenuItem value="Single">
-                <Chip color="info" label="Single" size="small" variant="light" />
+              <MenuItem value='Single'>
+                <Chip color='info' label='Single' size='small' variant='light' />
               </MenuItem>
             </Select>
           ) : (
@@ -157,7 +157,7 @@ export default function RowEditable<T extends RowData>({ getValue: initialValue,
         <>
           {isEditable ? (
             <>
-              <Stack direction="row" alignItems="center" spacing={1} sx={{ pl: 1, minWidth: 120 }}>
+              <Stack direction='row' alignItems='center' spacing={1} sx={{ pl: 1, minWidth: 120 }}>
                 <Slider
                   value={value}
                   min={0}
@@ -167,8 +167,8 @@ export default function RowEditable<T extends RowData>({ getValue: initialValue,
                   onChange={(event: Event, newValue: number | number[]) => {
                     setValue(newValue);
                   }}
-                  valueLabelDisplay="auto"
-                  aria-labelledby="non-linear-slider"
+                  valueLabelDisplay='auto'
+                  aria-labelledby='non-linear-slider'
                 />
               </Stack>
             </>

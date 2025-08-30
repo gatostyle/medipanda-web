@@ -76,7 +76,7 @@ export default function Breadcrumbs({
     marginLeft: theme.direction === ThemeDirection.RTL ? theme.spacing(0.75) : 0,
     width: '1rem',
     height: '1rem',
-    color: theme.palette.secondary.main
+    color: theme.palette.secondary.main,
   };
 
   let customLocation = location.pathname;
@@ -139,7 +139,7 @@ export default function Breadcrumbs({
       <Typography
         component={Link}
         to={document.location.pathname}
-        variant="body1"
+        variant='body1'
         sx={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
         color={window.location.pathname === main.url ? 'text.secondary' : 'text.primary'}
       >
@@ -163,16 +163,16 @@ export default function Breadcrumbs({
           spacing={0.5}
         >
           <Grid item>
-            <MuiBreadcrumbs aria-label="breadcrumb" maxItems={maxItems || 8} separator={separatorIcon}>
+            <MuiBreadcrumbs aria-label='breadcrumb' maxItems={maxItems || 8} separator={separatorIcon}>
               <Typography
                 component={Link}
-                to="/"
-                variant="body1"
+                to='/'
+                variant='body1'
                 sx={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
-                color="text.primary"
+                color='text.primary'
               >
                 {icons && <Home3 style={iconSX} />}
-                {icon && !icons && <Home3 variant="Bold" style={{ ...iconSX, marginRight: 0 }} />}
+                {icon && !icons && <Home3 variant='Bold' style={{ ...iconSX, marginRight: 0 }} />}
                 {(!icon || icons) && 'Home'}
               </Typography>
               {mainContent}
@@ -180,7 +180,7 @@ export default function Breadcrumbs({
           </Grid>
           {title && titleBottom && (
             <Grid item sx={{ mt: card === false ? 0 : 1 }}>
-              <Typography variant="h2" sx={{ fontWeight: 700 }}>
+              <Typography variant='h2' sx={{ fontWeight: 700 }}>
                 {main.title}
               </Typography>
             </Grid>
@@ -197,23 +197,23 @@ export default function Breadcrumbs({
 
     ItemIcon = item?.icon ? item.icon : Buildings2;
     itemContent = (
-      <Typography variant="body1" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}>
+      <Typography variant='body1' color='text.secondary' sx={{ display: 'flex', alignItems: 'center' }}>
         {icons && <ItemIcon style={iconSX} />}
         {itemTitle}
       </Typography>
     );
 
     let tempContent = (
-      <MuiBreadcrumbs aria-label="breadcrumb" maxItems={maxItems || 8} separator={separatorIcon}>
+      <MuiBreadcrumbs aria-label='breadcrumb' maxItems={maxItems || 8} separator={separatorIcon}>
         <Typography
           component={Link}
-          to="/"
-          color="text.secondary"
-          variant="h6"
+          to='/'
+          color='text.secondary'
+          variant='h6'
           sx={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
         >
           {icons && <Home3 style={iconSX} />}
-          {icon && !icons && <Home3 variant="Bold" style={{ ...iconSX, marginRight: 0 }} />}
+          {icon && !icons && <Home3 variant='Bold' style={{ ...iconSX, marginRight: 0 }} />}
           {(!icon || icons) && 'Home'}
         </Typography>
         {mainContent}
@@ -223,7 +223,7 @@ export default function Breadcrumbs({
 
     if (custom && links && links?.length > 0) {
       tempContent = (
-        <MuiBreadcrumbs aria-label="breadcrumb" maxItems={maxItems || 8} separator={separatorIcon}>
+        <MuiBreadcrumbs aria-label='breadcrumb' maxItems={maxItems || 8} separator={separatorIcon}>
           {links?.map((link: BreadcrumbLinkProps, index: number) => {
             CollapseIcon = link.icon ? link.icon : Buildings2;
 
@@ -231,7 +231,7 @@ export default function Breadcrumbs({
               <Typography
                 key={index}
                 {...(link.to && { component: Link, to: link.to })}
-                variant="body1"
+                variant='body1'
                 sx={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
                 color={link.to ? 'text.primary' : 'text.secondary'}
               >
@@ -263,7 +263,7 @@ export default function Breadcrumbs({
           >
             {title && !titleBottom && (
               <Grid item>
-                <Typography variant="h2" sx={{ fontWeight: 700 }}>
+                <Typography variant='h2' sx={{ fontWeight: 700 }}>
                   {custom ? heading : item?.title}
                 </Typography>
               </Grid>
@@ -271,7 +271,7 @@ export default function Breadcrumbs({
             <Grid item>{tempContent}</Grid>
             {title && titleBottom && (
               <Grid item sx={{ mt: card === false ? 0 : 1 }}>
-                <Typography variant="h2" sx={{ fontWeight: 700 }}>
+                <Typography variant='h2' sx={{ fontWeight: 700 }}>
                   {custom ? heading : item?.title}
                 </Typography>
               </Grid>

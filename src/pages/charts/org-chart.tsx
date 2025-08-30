@@ -32,7 +32,7 @@ function SimpleTree({ name }: TreeMiddleWare) {
         m: 'auto',
         color: 'primary.main',
         bgcolor: alpha(theme.palette.secondary.lighter, 0.6),
-        borderRadius: 1
+        borderRadius: 1,
       }}
     >
       {name}
@@ -62,15 +62,15 @@ export default function OrgChartPage() {
   const theme = useTheme();
 
   return (
-    <Grid container rowSpacing={2} justifyContent="center">
+    <Grid container rowSpacing={2} justifyContent='center'>
       <Grid item xs={12}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <MainCard title="Simple Chart" contentSX={{ overflow: 'auto', direction: theme.direction }}>
+            <MainCard title='Simple Chart' contentSX={{ overflow: 'auto', direction: theme.direction }}>
               <Tree
-                lineWidth="1px"
+                lineWidth='1px'
                 lineColor={theme.palette.primary.main}
-                lineBorderRadius="4px"
+                lineBorderRadius='4px'
                 label={<SimpleTree name={data[0].name} />}
               >
                 <TreeCard items={data[0].children} />
@@ -78,11 +78,11 @@ export default function OrgChartPage() {
             </MainCard>
           </Grid>
           <Grid item xs={12}>
-            <MainCard title="Styled Chart" contentSX={{ overflow: 'auto', direction: theme.direction }}>
+            <MainCard title='Styled Chart' contentSX={{ overflow: 'auto', direction: theme.direction }}>
               <Tree
-                lineWidth="1px"
+                lineWidth='1px'
                 lineColor={theme.palette.primary.main}
-                lineBorderRadius="4px"
+                lineBorderRadius='4px'
                 label={
                   <DataCard
                     name={data[0].name}

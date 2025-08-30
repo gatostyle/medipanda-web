@@ -43,39 +43,39 @@ export default function NativePickers() {
 />`;
 
   return (
-    <MainCard title="Native Picker" codeString={nativeDatepickerCodeString}>
-      <Stack component="form" noValidate spacing={3}>
+    <MainCard title='Native Picker' codeString={nativeDatepickerCodeString}>
+      <Stack component='form' noValidate spacing={3}>
         <TextField
-          id="date"
-          placeholder="Birthday"
-          type="date"
-          defaultValue="2017-05-24"
+          id='date'
+          placeholder='Birthday'
+          type='date'
+          defaultValue='2017-05-24'
           sx={{ width: 220 }}
           InputLabelProps={{
-            shrink: true
+            shrink: true,
           }}
         />
         <TextField
-          id="time"
-          placeholder="Alarm Clock"
-          type="time"
-          defaultValue="07:30"
+          id='time'
+          placeholder='Alarm Clock'
+          type='time'
+          defaultValue='07:30'
           InputLabelProps={{
-            shrink: true
+            shrink: true,
           }}
           inputProps={{
-            step: 300 // 5 min
+            step: 300, // 5 min
           }}
           sx={{ width: 150 }}
         />
         <TextField
-          id="datetime-local"
-          placeholder="Next Appointment"
-          type="datetime-local"
-          defaultValue="2017-05-24T10:30"
+          id='datetime-local'
+          placeholder='Next Appointment'
+          type='datetime-local'
+          defaultValue='2017-05-24T10:30'
           sx={{ width: 250 }}
           InputLabelProps={{
-            shrink: true
+            shrink: true,
           }}
         />
       </Stack>

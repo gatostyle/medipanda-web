@@ -41,7 +41,7 @@ export default function MpAdminProductDetail() {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+      <Box display='flex' justifyContent='center' alignItems='center' minHeight='400px'>
         <CircularProgress />
       </Box>
     );
@@ -62,61 +62,61 @@ export default function MpAdminProductDetail() {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
+      <Typography variant='h4' gutterBottom sx={{ mb: 3 }}>
         제품정보
       </Typography>
 
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Card sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
+            <Typography variant='h6' gutterBottom sx={{ mb: 3 }}>
               제품정보
             </Typography>
 
             <Grid container spacing={2}>
               <Grid item xs={2}>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant='subtitle2' color='text.secondary'>
                   제약사
                 </Typography>
               </Grid>
               <Grid item xs={10}>
-                <Typography variant="body1">{productDetail.manufacturer}</Typography>
+                <Typography variant='body1'>{productDetail.manufacturer}</Typography>
               </Grid>
 
               <Grid item xs={2}>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant='subtitle2' color='text.secondary'>
                   제품명
                 </Typography>
               </Grid>
               <Grid item xs={10}>
-                <Typography variant="body1">{productDetail.productName}</Typography>
+                <Typography variant='body1'>{productDetail.productName}</Typography>
               </Grid>
 
               <Grid item xs={2}>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant='subtitle2' color='text.secondary'>
                   성분명
                 </Typography>
               </Grid>
               <Grid item xs={10}>
-                <Typography variant="body1">{productDetail.composition}</Typography>
+                <Typography variant='body1'>{productDetail.composition}</Typography>
               </Grid>
 
               <Grid item xs={2}>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant='subtitle2' color='text.secondary'>
                   제품코드
                 </Typography>
               </Grid>
               <Grid item xs={10}>
-                <Typography variant="body1">{productDetail.productCode}</Typography>
+                <Typography variant='body1'>{productDetail.productCode}</Typography>
               </Grid>
 
               <Grid item xs={2}>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant='subtitle2' color='text.secondary'>
                   약가
                 </Typography>
               </Grid>
               <Grid item xs={10}>
-                <Typography variant="body1">
+                <Typography variant='body1'>
                   {productDetail.price !== null && productDetail.price !== undefined
                     ? `${productDetail.price.toLocaleString()}원${productDetail.productCode !== '비급여' ? ' (급여)' : ''}`
                     : '-'}
@@ -124,57 +124,57 @@ export default function MpAdminProductDetail() {
               </Grid>
 
               <Grid item xs={2}>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant='subtitle2' color='text.secondary'>
                   기본수수료율
                 </Typography>
               </Grid>
               <Grid item xs={10}>
-                <Typography variant="body1">
+                <Typography variant='body1'>
                   {productDetail.feeRate !== null && productDetail.feeRate !== undefined ? `${productDetail.feeRate}%` : '-'}
                 </Typography>
               </Grid>
 
               <Grid item xs={2}>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant='subtitle2' color='text.secondary'>
                   변경요율/변경월
                 </Typography>
               </Grid>
               <Grid item xs={10}>
-                <Typography variant="body1">{getChangedRateDisplay()}</Typography>
+                <Typography variant='body1'>{getChangedRateDisplay()}</Typography>
               </Grid>
 
               <Grid item xs={2}>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant='subtitle2' color='text.secondary'>
                   상태
                 </Typography>
               </Grid>
               <Grid item xs={10}>
                 <Box>
-                  <FormControlLabel control={<Checkbox checked={productDetail.isAcquisition ?? undefined} disabled />} label="취급품목" />
-                  <FormControlLabel control={<Checkbox checked={productDetail.isPromotion ?? undefined} disabled />} label="프로모션" />
-                  <FormControlLabel control={<Checkbox checked={productDetail.isOutOfStock ?? undefined} disabled />} label="품절" />
-                  <FormControlLabel control={<Checkbox checked={productDetail.isStopSelling ?? undefined} disabled />} label="판매중단" />
+                  <FormControlLabel control={<Checkbox checked={productDetail.isAcquisition ?? undefined} disabled />} label='취급품목' />
+                  <FormControlLabel control={<Checkbox checked={productDetail.isPromotion ?? undefined} disabled />} label='프로모션' />
+                  <FormControlLabel control={<Checkbox checked={productDetail.isOutOfStock ?? undefined} disabled />} label='품절' />
+                  <FormControlLabel control={<Checkbox checked={productDetail.isStopSelling ?? undefined} disabled />} label='판매중단' />
                 </Box>
               </Grid>
 
               <Grid item xs={2}>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant='subtitle2' color='text.secondary'>
                   비고
                 </Typography>
               </Grid>
               <Grid item xs={10}>
-                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
+                <Typography variant='body1' style={{ whiteSpace: 'pre-wrap' }}>
                   {productDetail.note}
                 </Typography>
               </Grid>
 
               <Grid item xs={2}>
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant='subtitle2' color='text.secondary'>
                   대체가능의약품
                 </Typography>
               </Grid>
               <Grid item xs={10}>
-                <Typography variant="body1">{productDetail.alternativeProducts.join(', ')}</Typography>
+                <Typography variant='body1'>{productDetail.alternativeProducts.join(', ')}</Typography>
               </Grid>
             </Grid>
           </Card>
@@ -182,7 +182,7 @@ export default function MpAdminProductDetail() {
 
         <Grid item xs={12}>
           <Card sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
+            <Typography variant='h6' gutterBottom sx={{ mb: 3 }}>
               상세 정보
             </Typography>
 
@@ -191,11 +191,11 @@ export default function MpAdminProductDetail() {
         </Grid>
 
         <Grid item xs={12}>
-          <Stack direction="row" spacing={2} justifyContent="center">
-            <Button variant="outlined" size="large" onClick={handleCancel} sx={{ minWidth: 120 }}>
+          <Stack direction='row' spacing={2} justifyContent='center'>
+            <Button variant='outlined' size='large' onClick={handleCancel} sx={{ minWidth: 120 }}>
               취소
             </Button>
-            <Button variant="contained" color="success" size="large" onClick={handleEdit} sx={{ minWidth: 120 }}>
+            <Button variant='contained' color='success' size='large' onClick={handleEdit} sx={{ minWidth: 120 }}>
               수정
             </Button>
           </Stack>

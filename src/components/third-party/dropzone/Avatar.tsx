@@ -21,7 +21,7 @@ const RootWrapper = styled('div')(({ theme }) => ({
   borderRadius: '50%',
   border: '1px dashed',
   borderColor: theme.palette.primary.main,
-  background: theme.palette.primary.lighter
+  background: theme.palette.primary.lighter,
 }));
 
 const DropzoneWrapper = styled('div')({
@@ -36,7 +36,7 @@ const DropzoneWrapper = styled('div')({
   alignItems: 'center',
   justifyContent: 'center',
   '& > *': { width: '100%', height: '100%' },
-  '&:hover': { cursor: 'pointer', '& .placeholder': { zIndex: 9 } }
+  '&:hover': { cursor: 'pointer', '& .placeholder': { zIndex: 9 } },
 });
 
 const PlaceholderWrapper = styled('div')(({ theme }) => ({
@@ -48,9 +48,9 @@ const PlaceholderWrapper = styled('div')(({ theme }) => ({
   backgroundColor: alpha(theme.palette.primary.lighter, 0.75),
   transition: theme.transitions.create('opacity', {
     easing: theme.transitions.easing.easeInOut,
-    duration: theme.transitions.duration.shorter
+    duration: theme.transitions.duration.shorter,
   }),
-  '&:hover': { opacity: 0.85 }
+  '&:hover': { opacity: 0.85 },
 }));
 
 // ==============================|| UPLOAD - AVATAR ||============================== //
@@ -64,9 +64,9 @@ export default function AvatarUpload({ error, file, setFieldValue, sx }: UploadP
     onDrop: (acceptedFiles: CustomFile[]) => {
       setFieldValue(
         'files',
-        acceptedFiles.map((file: CustomFile) => Object.assign(file, { preview: URL.createObjectURL(file) }))
+        acceptedFiles.map((file: CustomFile) => Object.assign(file, { preview: URL.createObjectURL(file) })),
       );
-    }
+    },
   });
 
   const thumbs =
@@ -89,15 +89,15 @@ export default function AvatarUpload({ error, file, setFieldValue, sx }: UploadP
           <input {...getInputProps()} />
           {thumbs}
           <PlaceholderWrapper
-            className="placeholder"
+            className='placeholder'
             sx={{
               ...(thumbs && { opacity: 0, color: 'common.white', bgcolor: 'secondary.darker' }),
-              ...((isDragReject || error) && { bgcolor: 'error.lighter' })
+              ...((isDragReject || error) && { bgcolor: 'error.lighter' }),
             }}
           >
-            <Stack spacing={0.5} alignItems="center">
+            <Stack spacing={0.5} alignItems='center'>
               <Camera style={{ color: theme.palette.secondary.main, fontSize: '2rem' }} />
-              <Typography color="secondary">{file ? 'Update' : 'Upload'}</Typography>
+              <Typography color='secondary'>{file ? 'Update' : 'Upload'}</Typography>
             </Stack>
           </PlaceholderWrapper>
         </DropzoneWrapper>

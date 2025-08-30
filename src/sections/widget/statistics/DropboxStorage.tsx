@@ -34,28 +34,28 @@ export default function DropboxStorage() {
           right: 0,
           bottom: 0,
           zIndex: 1,
-          opacity: 0.5
-        }
+          opacity: 0.5,
+        },
       }}
     >
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
-            <Typography variant="h5">Dropbox Storage</Typography>
-            <Typography variant="h4">150GB</Typography>
+          <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1}>
+            <Typography variant='h5'>Dropbox Storage</Typography>
+            <Typography variant='h4'>150GB</Typography>
           </Stack>
-          <Avatar color="secondary" variant="rounded" sx={{ mt: 0.75, bgcolor: 'secondary.dark' }}>
+          <Avatar color='secondary' variant='rounded' sx={{ mt: 0.75, bgcolor: 'secondary.dark' }}>
             <Cloud color={theme.palette.secondary.light} />
           </Avatar>
         </Grid>
         <Grid item xs={12}>
           <Stack spacing={0.75}>
-            <Typography variant="caption">1,342GB of 150GB Users</Typography>
+            <Typography variant='caption'>1,342GB of 150GB Users</Typography>
             <Box sx={{ display: 'flex' }}>
-              <LinearProgress variant="determinate" value={100} color="error" sx={{ width: '15%' }} />
-              <LinearProgress variant="determinate" value={100} color="warning" sx={{ width: '18%', right: 2 }} />
-              <LinearProgress variant="determinate" value={100} color="secondary" sx={{ width: '20%', right: 4 }} />
-              <LinearProgress variant="determinate" value={100} color="success" sx={{ width: '28%', right: 8 }} />
+              <LinearProgress variant='determinate' value={100} color='error' sx={{ width: '15%' }} />
+              <LinearProgress variant='determinate' value={100} color='warning' sx={{ width: '18%', right: 2 }} />
+              <LinearProgress variant='determinate' value={100} color='secondary' sx={{ width: '20%', right: 4 }} />
+              <LinearProgress variant='determinate' value={100} color='success' sx={{ width: '28%', right: 8 }} />
             </Box>
           </Stack>
         </Grid>

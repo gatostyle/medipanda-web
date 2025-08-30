@@ -34,11 +34,11 @@ export default function DashboardDefault() {
       {/* row 1 */}
       <Grid item xs={12} sm={6} lg={3}>
         <EcommerceDataCard
-          title="All Earnings"
-          count="$3000"
+          title='All Earnings'
+          count='$3000'
           iconPrimary={<Wallet3 />}
           percentage={
-            <Typography color="primary" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <Typography color='primary' sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <ArrowUp size={16} style={{ transform: 'rotate(45deg)' }} /> 30.6%
             </Typography>
           }
@@ -48,12 +48,12 @@ export default function DashboardDefault() {
       </Grid>
       <Grid item xs={12} sm={6} lg={3}>
         <EcommerceDataCard
-          title="Page Views"
-          count="290+"
-          color="warning"
+          title='Page Views'
+          count='290+'
+          color='warning'
           iconPrimary={<Book color={theme.palette.warning.dark} />}
           percentage={
-            <Typography color="warning.dark" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <Typography color='warning.dark' sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <ArrowDown size={16} style={{ transform: 'rotate(-45deg)' }} /> 30.6%
             </Typography>
           }
@@ -63,12 +63,12 @@ export default function DashboardDefault() {
       </Grid>
       <Grid item xs={12} sm={6} lg={3}>
         <EcommerceDataCard
-          title="Total task"
-          count="1,568"
-          color="success"
+          title='Total task'
+          count='1,568'
+          color='success'
           iconPrimary={<Calendar color={theme.palette.success.darker} />}
           percentage={
-            <Typography color="success.darker" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <Typography color='success.darker' sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <ArrowUp size={16} style={{ transform: 'rotate(45deg)' }} /> 30.6%
             </Typography>
           }
@@ -78,12 +78,12 @@ export default function DashboardDefault() {
       </Grid>
       <Grid item xs={12} sm={6} lg={3}>
         <EcommerceDataCard
-          title="Download"
-          count="$200"
-          color="error"
+          title='Download'
+          count='$200'
+          color='error'
           iconPrimary={<CloudChange color={theme.palette.error.dark} />}
           percentage={
-            <Typography color="error.dark" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <Typography color='error.dark' sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <ArrowDown size={16} style={{ transform: 'rotate(45deg)' }} /> 30.6%
             </Typography>
           }

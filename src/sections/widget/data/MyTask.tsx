@@ -37,20 +37,20 @@ export default function MyTask() {
   return (
     <MainCard content={false}>
       <Box sx={{ p: 3, pb: 0 }}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
-          <Typography variant="h5">My Task</Typography>
+        <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1}>
+          <Typography variant='h5'>My Task</Typography>
           <IconButton
-            color="secondary"
-            id="wallet-button"
+            color='secondary'
+            id='wallet-button'
             aria-controls={open ? 'wallet-menu' : undefined}
-            aria-haspopup="true"
+            aria-haspopup='true'
             aria-expanded={open ? 'true' : undefined}
             onClick={handleClick}
           >
             <MoreIcon />
           </IconButton>
           <Menu
-            id="wallet-menu"
+            id='wallet-menu'
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
@@ -68,20 +68,20 @@ export default function MyTask() {
         <ListItem
           divider
           secondaryAction={
-            <IconButton aria-label="delete" color="success">
+            <IconButton aria-label='delete' color='success'>
               <TickCircle />
             </IconButton>
           }
         >
           <Stack>
-            <ListItemText primary={<Typography variant="subtitle1">Follow up client for feedback</Typography>} />
+            <ListItemText primary={<Typography variant='subtitle1'>Follow up client for feedback</Typography>} />
             <Stack spacing={0.5}>
-              <Stack direction="row" alignItems="center" spacing={0.5}>
+              <Stack direction='row' alignItems='center' spacing={0.5}>
                 <Send2 size={12} />
                 <Typography>Sending report</Typography>
               </Stack>
               <Box>
-                <Chip label="00 : 15" color="error" variant="filled" size="small" />
+                <Chip label='00 : 15' color='error' variant='filled' size='small' />
               </Box>
             </Stack>
           </Stack>
@@ -89,40 +89,40 @@ export default function MyTask() {
         <ListItem
           divider
           secondaryAction={
-            <IconButton aria-label="delete" color="secondary">
+            <IconButton aria-label='delete' color='secondary'>
               <TickCircle />
             </IconButton>
           }
         >
           <Stack>
-            <ListItemText primary={<Typography variant="subtitle1">Follow up client for feedback</Typography>} />
+            <ListItemText primary={<Typography variant='subtitle1'>Follow up client for feedback</Typography>} />
             <Stack spacing={0.5}>
-              <Stack direction="row" alignItems="center" spacing={0.5}>
+              <Stack direction='row' alignItems='center' spacing={0.5}>
                 <Folder size={12} />
                 <Typography>Received report</Typography>
               </Stack>
               <Box>
-                <Chip label="00 : 15" color="success" variant="filled" size="small" />
+                <Chip label='00 : 15' color='success' variant='filled' size='small' />
               </Box>
             </Stack>
           </Stack>
         </ListItem>
         <ListItem
           secondaryAction={
-            <IconButton aria-label="delete" color="secondary">
+            <IconButton aria-label='delete' color='secondary'>
               <TickCircle />
             </IconButton>
           }
         >
           <Stack>
-            <ListItemText primary={<Typography variant="subtitle1">Follow up client for feedback</Typography>} />
+            <ListItemText primary={<Typography variant='subtitle1'>Follow up client for feedback</Typography>} />
             <Stack spacing={0.5}>
-              <Stack direction="row" alignItems="center" spacing={0.5}>
+              <Stack direction='row' alignItems='center' spacing={0.5}>
                 <Send2 size={12} />
                 <Typography>Sending report</Typography>
               </Stack>
               <Box>
-                <Chip label="00 : 15" color="error" variant="filled" size="small" />
+                <Chip label='00 : 15' color='error' variant='filled' size='small' />
               </Box>
             </Stack>
           </Stack>

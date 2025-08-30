@@ -45,14 +45,14 @@ interface Props {
 
 const validationSchema = yup.object({
   title: yup.string().required('Task title is required'),
-  dueDate: yup.date()
+  dueDate: yup.date(),
 });
 
 // ==============================|| KANBAN BOARD - ITEM EDIT ||============================== //
 
 export default function EditItem({ item, profiles, userStory, columns, handleDrawerOpen }: Props) {
-  const itemUserStory = userStory.filter((story) => story.itemIds.filter((itemId: string) => itemId === item.id)[0])[0];
-  const itemColumn = columns.filter((column) => column.itemIds.filter((itemId) => itemId === item.id)[0])[0];
+  const itemUserStory = userStory.filter(story => story.itemIds.filter((itemId: string) => itemId === item.id)[0])[0];
+  const itemColumn = columns.filter(column => column.itemIds.filter(itemId => itemId === item.id)[0])[0];
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -67,10 +67,10 @@ export default function EditItem({ item, profiles, userStory, columns, handleDra
       image: item.image,
       storyId: itemUserStory ? itemUserStory.id : '',
       columnId: itemColumn ? itemColumn.id : '',
-      files: item.attachments
+      files: item.attachments,
     },
     validationSchema,
-    onSubmit: (values) => {
+    onSubmit: values => {
       const itemToEdit = {
         id: values.id,
         title: values.title,
@@ -80,7 +80,7 @@ export default function EditItem({ item, profiles, userStory, columns, handleDra
         description: values.description,
         commentIds: values.commentIds,
         image: values.image,
-        attachments: values.files
+        attachments: values.files,
       };
       editItem(values.columnId, itemToEdit, values.storyId);
       openSnackbar({
@@ -88,12 +88,12 @@ export default function EditItem({ item, profiles, userStory, columns, handleDra
         message: 'Submit Success',
         variant: 'alert',
         alert: {
-          color: 'success'
-        }
+          color: 'success',
+        },
       } as SnackbarProps);
 
       handleDrawerOpen();
-    }
+    },
   });
 
   return (
@@ -105,9 +105,9 @@ export default function EditItem({ item, profiles, userStory, columns, handleDra
               <InputLabel>Title</InputLabel>
               <TextField
                 fullWidth
-                id="title"
-                name="title"
-                placeholder="Title"
+                id='title'
+                name='title'
+                placeholder='Title'
                 value={formik.values.title}
                 onChange={formik.handleChange}
                 error={formik.touched.title && Boolean(formik.errors.title)}
@@ -119,27 +119,27 @@ export default function EditItem({ item, profiles, userStory, columns, handleDra
             <Stack spacing={1}>
               <InputLabel>Assign to</InputLabel>
               <Autocomplete
-                id="assign"
+                id='assign'
                 fullWidth
                 autoHighlight
                 options={profiles}
                 value={profiles.find((profile: KanbanProfile) => profile.id === formik.values.assign)}
-                getOptionLabel={(option) => option.name}
-                isOptionEqualToValue={(option) => option.id === formik.values.assign}
+                getOptionLabel={option => option.name}
+                isOptionEqualToValue={option => option.id === formik.values.assign}
                 renderOption={(props, option) => (
-                  <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                    <img loading="lazy" width="20" src={getImageUrl(`${option.avatar}`, ImagePath.USERS)} alt="" />
+                  <Box component='li' sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                    <img loading='lazy' width='20' src={getImageUrl(`${option.avatar}`, ImagePath.USERS)} alt='' />
                     {option.name}
                   </Box>
                 )}
-                renderInput={(params) => (
+                renderInput={params => (
                   <TextField
                     {...params}
-                    name="assign"
-                    placeholder="Choose a assignee"
+                    name='assign'
+                    placeholder='Choose a assignee'
                     inputProps={{
                       ...params.inputProps,
-                      autoComplete: 'new-password' // disable autocomplete and autofill
+                      autoComplete: 'new-password', // disable autocomplete and autofill
                     }}
                   />
                 )}
@@ -156,15 +156,15 @@ export default function EditItem({ item, profiles, userStory, columns, handleDra
               <FormControl>
                 <RadioGroup
                   row
-                  aria-label="color"
+                  aria-label='color'
                   value={formik.values.priority}
                   onChange={formik.handleChange}
-                  name="priority"
-                  id="priority"
+                  name='priority'
+                  id='priority'
                 >
-                  <FormControlLabel value="low" control={<Radio color="primary" sx={{ color: 'primary.main' }} />} label="Low" />
-                  <FormControlLabel value="medium" control={<Radio color="warning" sx={{ color: 'warning.main' }} />} label="Medium" />
-                  <FormControlLabel value="high" control={<Radio color="error" sx={{ color: 'error.main' }} />} label="High" />
+                  <FormControlLabel value='low' control={<Radio color='primary' sx={{ color: 'primary.main' }} />} label='Low' />
+                  <FormControlLabel value='medium' control={<Radio color='warning' sx={{ color: 'warning.main' }} />} label='Medium' />
+                  <FormControlLabel value='high' control={<Radio color='error' sx={{ color: 'error.main' }} />} label='High' />
                 </RadioGroup>
               </FormControl>
             </Stack>
@@ -174,8 +174,8 @@ export default function EditItem({ item, profiles, userStory, columns, handleDra
               <InputLabel>Due date</InputLabel>
               <DesktopDatePicker
                 value={formik.values.dueDate}
-                format="dd/MM/yyyy"
-                onChange={(date) => {
+                format='dd/MM/yyyy'
+                onChange={date => {
                   formik.setFieldValue('dueDate', date);
                 }}
               />
@@ -186,8 +186,8 @@ export default function EditItem({ item, profiles, userStory, columns, handleDra
               <InputLabel>Description</InputLabel>
               <TextField
                 fullWidth
-                id="description"
-                name="description"
+                id='description'
+                name='description'
                 multiline
                 rows={3}
                 value={formik.values.description}
@@ -202,8 +202,8 @@ export default function EditItem({ item, profiles, userStory, columns, handleDra
               <InputLabel>User Story</InputLabel>
               <FormControl fullWidth>
                 <Select
-                  id="storyId"
-                  name="storyId"
+                  id='storyId'
+                  name='storyId'
                   displayEmpty
                   value={formik.values.storyId}
                   onChange={formik.handleChange}
@@ -223,8 +223,8 @@ export default function EditItem({ item, profiles, userStory, columns, handleDra
               <InputLabel>State</InputLabel>
               <FormControl fullWidth>
                 <Select
-                  id="columnId"
-                  name="columnId"
+                  id='columnId'
+                  name='columnId'
                   displayEmpty
                   value={formik.values.columnId}
                   onChange={formik.handleChange}
@@ -255,7 +255,7 @@ export default function EditItem({ item, profiles, userStory, columns, handleDra
               </Grid>
               {formik.touched.files && formik.errors.files && (
                 <Grid item xs={12}>
-                  <FormHelperText error id="standard-weight-helper-text-password-login">
+                  <FormHelperText error id='standard-weight-helper-text-password-login'>
                     {formik.errors.files}
                   </FormHelperText>
                 </Grid>
@@ -265,7 +265,7 @@ export default function EditItem({ item, profiles, userStory, columns, handleDra
 
           <Grid item xs={12}>
             <AnimateButton>
-              <Button fullWidth variant="contained" type="submit">
+              <Button fullWidth variant='contained' type='submit'>
                 Save
               </Button>
             </AnimateButton>

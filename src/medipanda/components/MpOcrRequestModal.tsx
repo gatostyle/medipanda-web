@@ -258,7 +258,7 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
       { x: 0, y: 0 },
       { x: outputWidth, y: 0 },
       { x: outputWidth, y: outputHeight },
-      { x: 0, y: outputHeight }
+      { x: 0, y: outputHeight },
     ];
 
     const H = calculateHomographyMatrix(currentPoints, dstPoints);
@@ -286,7 +286,7 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
               r: srcImageData.data[idx],
               g: srcImageData.data[idx + 1],
               b: srcImageData.data[idx + 2],
-              a: srcImageData.data[idx + 3]
+              a: srcImageData.data[idx + 3],
             };
           };
 
@@ -332,7 +332,7 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
     return [
       [h[0], h[1], h[2]],
       [h[3], h[4], h[5]],
-      [h[6], h[7], 1]
+      [h[6], h[7], 1],
     ];
   };
 
@@ -377,7 +377,7 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
     const w = H[2][0] * x + H[2][1] * y + H[2][2];
     return {
       x: (H[0][0] * x + H[0][1] * y + H[0][2]) / w,
-      y: (H[1][0] * x + H[1][1] * y + H[1][2]) / w
+      y: (H[1][0] * x + H[1][1] * y + H[1][2]) / w,
     };
   };
 
@@ -391,7 +391,7 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
       return [
         [1, 0, 0],
         [0, 1, 0],
-        [0, 0, 1]
+        [0, 0, 1],
       ];
     }
 
@@ -400,18 +400,18 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
       [
         (m[1][1] * m[2][2] - m[1][2] * m[2][1]) * invDet,
         (m[0][2] * m[2][1] - m[0][1] * m[2][2]) * invDet,
-        (m[0][1] * m[1][2] - m[0][2] * m[1][1]) * invDet
+        (m[0][1] * m[1][2] - m[0][2] * m[1][1]) * invDet,
       ],
       [
         (m[1][2] * m[2][0] - m[1][0] * m[2][2]) * invDet,
         (m[0][0] * m[2][2] - m[0][2] * m[2][0]) * invDet,
-        (m[0][2] * m[1][0] - m[0][0] * m[1][2]) * invDet
+        (m[0][2] * m[1][0] - m[0][0] * m[1][2]) * invDet,
       ],
       [
         (m[1][0] * m[2][1] - m[1][1] * m[2][0]) * invDet,
         (m[0][1] * m[2][0] - m[0][0] * m[2][1]) * invDet,
-        (m[0][0] * m[1][1] - m[0][1] * m[1][0]) * invDet
-      ]
+        (m[0][0] * m[1][1] - m[0][1] * m[1][0]) * invDet,
+      ],
     ];
   };
 
@@ -438,7 +438,7 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
 
       const blob = await new Promise<Blob>((resolve, reject) => {
         transformedCanvas.toBlob(
-          (blob) => {
+          blob => {
             if (blob) {
               resolve(blob);
             } else {
@@ -446,7 +446,7 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
             }
           },
           'image/jpeg',
-          0.95
+          0.95,
         );
       });
 
@@ -474,10 +474,10 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
         originalFileName: new URL(currentImageUrl!).pathname.split('/').pop()!,
         width,
         height,
-        points: currentPoints.map((point) => ({
+        points: currentPoints.map(point => ({
           x: (point.x - imageOffsetX) * imageScale,
-          y: (point.y - imageOffsetY) * imageScale
-        }))
+          y: (point.y - imageOffsetY) * imageScale,
+        })),
       });
 
       onSubmit(ocrData);
@@ -528,35 +528,35 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="xl" fullScreen disableEscapeKeyDown>
+    <Dialog open={open} onClose={handleClose} maxWidth='xl' fullScreen disableEscapeKeyDown>
       <DialogTitle>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6">OCR 요청</Typography>
-          <IconButton onClick={handleClose} size="small">
+        <Box display='flex' justifyContent='space-between' alignItems='center'>
+          <Typography variant='h6'>OCR 요청</Typography>
+          <IconButton onClick={handleClose} size='small'>
             <CloseIcon />
           </IconButton>
         </Box>
       </DialogTitle>
       <DialogContent>
         <Box sx={{ mb: 2 }}>
-          <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box display='flex' justifyContent='space-between' alignItems='center'>
             <Box>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant='body2' color='text.secondary'>
                 상단 캔버스: 원본 이미지 - 좌측 상단부터 시계 방향으로 4개의 모서리 점을 클릭하여 문서 영역을 선택하세요
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant='body2' color='text.secondary'>
                 하단 캔버스: 변환된 이미지 - 선택한 영역이 자동으로 변환됩니다
               </Typography>
             </Box>
             {hasImages && imageUrls.length > 1 && (
-              <Box display="flex" alignItems="center" gap={1}>
-                <IconButton onClick={handlePreviousImage} disabled={currentImageIndex === 0} size="small">
+              <Box display='flex' alignItems='center' gap={1}>
+                <IconButton onClick={handlePreviousImage} disabled={currentImageIndex === 0} size='small'>
                   <ArrowBackIcon />
                 </IconButton>
-                <Typography variant="body2" color="text.primary">
+                <Typography variant='body2' color='text.primary'>
                   {currentImageIndex + 1} / {imageUrls.length}
                 </Typography>
-                <IconButton onClick={handleNextImage} disabled={currentImageIndex === imageUrls.length - 1} size="small">
+                <IconButton onClick={handleNextImage} disabled={currentImageIndex === imageUrls.length - 1} size='small'>
                   <ArrowForwardIcon />
                 </IconButton>
               </Box>
@@ -564,7 +564,7 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
           </Box>
         </Box>
 
-        <Box display="flex" flexDirection="column" gap={2}>
+        <Box display='flex' flexDirection='column' gap={2}>
           <Box>
             <canvas
               ref={canvasRef}
@@ -575,7 +575,7 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
                 margin: '0 auto',
                 backgroundColor: 'white',
                 width: '100%',
-                height: 'auto'
+                height: 'auto',
               }}
               onClick={handleCanvasClick}
               onMouseDown={handleMouseDown}
@@ -596,20 +596,20 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
                 margin: '0 auto',
                 backgroundColor: '#f0f0f0',
                 width: '100%',
-                height: 'auto'
+                height: 'auto',
               }}
             />
           </Box>
         </Box>
 
         <Box sx={{ mt: 2, textAlign: 'center' }}>
-          <Typography variant="body1" color={currentPoints.length === 4 ? 'success.main' : 'text.secondary'} fontWeight="bold">
+          <Typography variant='body1' color={currentPoints.length === 4 ? 'success.main' : 'text.secondary'} fontWeight='bold'>
             {currentPoints.length === 4
               ? '문서 모서리가 모두 선택되었습니다!'
               : `4개 점을 클릭해서 문서 모서리를 선택해주세요 (${currentPoints.length}/4)`}
           </Typography>
           {hasImages && imageUrls.length > 1 && (
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+            <Typography variant='body2' color='text.secondary' sx={{ mt: 1 }}>
               현재 이미지: {currentImageIndex + 1} / {imageUrls.length}
             </Typography>
           )}
@@ -618,17 +618,17 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
         {isProcessing && (
           <Box sx={{ mt: 2 }}>
             <LinearProgress />
-            <Typography variant="body2" color="text.secondary" align="center" sx={{ mt: 1 }}>
+            <Typography variant='body2' color='text.secondary' align='center' sx={{ mt: 1 }}>
               OCR 처리 중...
             </Typography>
           </Box>
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="inherit">
+        <Button onClick={handleClose} color='inherit'>
           취소
         </Button>
-        <Button onClick={handleSubmit} variant="contained" color="success" disabled={currentPoints.length !== 4 || isProcessing}>
+        <Button onClick={handleSubmit} variant='contained' color='success' disabled={currentPoints.length !== 4 || isProcessing}>
           제출
         </Button>
       </DialogActions>

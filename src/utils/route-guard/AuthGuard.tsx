@@ -18,9 +18,9 @@ export default function AuthGuard({ children }: GuardProps) {
     if (!isLoggedIn) {
       navigate('login', {
         state: {
-          from: location.pathname
+          from: location.pathname,
         },
-        replace: true
+        replace: true,
       });
     }
   }, [isLoggedIn, navigate, location]);

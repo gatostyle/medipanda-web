@@ -40,11 +40,11 @@ import { SnackbarProps } from 'types/snackbar';
 
 // product color select
 function getColor(color: string) {
-  return ColorOptions.filter((item) => item.value === color);
+  return ColorOptions.filter(item => item.value === color);
 }
 
 const validationSchema = yup.object({
-  color: yup.string().required('Color selection is required')
+  color: yup.string().required('Color selection is required'),
 });
 
 // ==============================|| COLORS OPTION ||============================== //
@@ -58,13 +58,13 @@ function Colors({ checked, colorsData }: { checked?: boolean; colorsData: Colors
           sx={{ borderRadius: '50%', '&:focus-visible': { outline: `2px solid ${theme.palette.secondary.dark}`, outlineOffset: 2 } }}
         >
           <Avatar
-            color="inherit"
-            size="sm"
+            color='inherit'
+            size='sm'
             sx={{
               bgcolor: colorsData[0]?.bg,
               color: theme.palette.mode === ThemeMode.DARK ? 'secondary.800' : 'secondary.lighter',
               border: '3px solid',
-              borderColor: checked ? theme.palette.secondary.light : theme.palette.background.paper
+              borderColor: checked ? theme.palette.secondary.light : theme.palette.background.paper,
             }}
           >
             {' '}
@@ -94,21 +94,21 @@ export default function ProductInfo({ product }: { product: Products }) {
       offerPrice: product.offerPrice,
       color: '',
       size: '',
-      quantity: 1
+      quantity: 1,
     },
     validationSchema,
-    onSubmit: (values) => {
+    onSubmit: values => {
       values.quantity = value;
       addToCart(values, cart.products);
       openSnackbar({
         open: true,
         message: 'Submit Success',
         variant: 'alert',
-        alert: { color: 'success' }
+        alert: { color: 'success' },
       } as SnackbarProps);
 
       history('/apps/e-commerce/checkout');
-    }
+    },
   });
 
   const { errors, values, handleSubmit, handleChange } = formik;
@@ -121,35 +121,35 @@ export default function ProductInfo({ product }: { product: Products }) {
       open: true,
       message: 'Add To Cart Success',
       variant: 'alert',
-      alert: { color: 'success' }
+      alert: { color: 'success' },
     } as SnackbarProps);
   };
 
   return (
     <Stack spacing={1}>
-      <Stack direction="row" spacing={1} alignItems="center">
-        <Rating name="simple-controlled" value={product.rating} precision={0.1} readOnly />
-        <Typography color="text.secondary">({product.rating?.toFixed(1)})</Typography>
+      <Stack direction='row' spacing={1} alignItems='center'>
+        <Rating name='simple-controlled' value={product.rating} precision={0.1} readOnly />
+        <Typography color='text.secondary'>({product.rating?.toFixed(1)})</Typography>
       </Stack>
-      <Typography variant="h3">{product.name}</Typography>
+      <Typography variant='h3'>{product.name}</Typography>
       <Chip
-        size="small"
+        size='small'
         label={product.isStock ? 'In Stock' : 'Out of Stock'}
         sx={{
           width: 'fit-content',
           borderRadius: '4px',
           color: product.isStock ? 'success.main' : 'error.main',
-          bgcolor: product.isStock ? 'success.lighter' : 'error.lighter'
+          bgcolor: product.isStock ? 'success.lighter' : 'error.lighter',
         }}
       />
-      <Typography color="text.secondary">{product.about}</Typography>
+      <Typography color='text.secondary'>{product.about}</Typography>
       <FormikProvider value={formik}>
-        <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+        <Form autoComplete='off' noValidate onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Stack spacing={1}>
-                <Typography color="text.secondary">Color</Typography>
-                <RadioGroup row value={values.color} onChange={handleChange} aria-label="colors" name="color" id="color">
+                <Typography color='text.secondary'>Color</Typography>
+                <RadioGroup row value={values.color} onChange={handleChange} aria-label='colors' name='color' id='color'>
                   {product.colors &&
                     product.colors.map((item, index) => {
                       const colorsData = getColor(item);
@@ -164,7 +164,7 @@ export default function ProductInfo({ product }: { product: Products }) {
                               icon={<Colors colorsData={colorsData} />}
                             />
                           }
-                          label=""
+                          label=''
                           sx={{ ml: -0.25 }}
                         />
                       );
@@ -172,26 +172,26 @@ export default function ProductInfo({ product }: { product: Products }) {
                 </RadioGroup>
               </Stack>
               {errors.color && (
-                <FormHelperText error id="standard-label-color">
+                <FormHelperText error id='standard-label-color'>
                   {errors.color}
                 </FormHelperText>
               )}
             </Grid>
             <Grid item xs={12}>
-              <Stack justifyContent="flex-end" spacing={1}>
-                <Typography color="text.secondary">Quantity</Typography>
-                <Stack direction="row">
+              <Stack justifyContent='flex-end' spacing={1}>
+                <Typography color='text.secondary'>Quantity</Typography>
+                <Stack direction='row'>
                   <TextField
-                    name="rty-incre"
+                    name='rty-incre'
                     value={value > 0 ? value : ''}
                     onChange={(e: any) => setValue(Number(e.target.value))}
                     sx={{ '& .MuiOutlinedInput-input': { p: 1.75 }, width: '33%', '& .MuiOutlinedInput-root': { borderRadius: 0 } }}
                   />
                   <Stack>
                     <Button
-                      key="one"
-                      color="secondary"
-                      variant="outlined"
+                      key='one'
+                      color='secondary'
+                      variant='outlined'
                       onClick={() => setValue(value + 1)}
                       sx={{
                         px: 0.25,
@@ -201,15 +201,15 @@ export default function ProductInfo({ product }: { product: Products }) {
                         borderLeft: 'none',
                         borderColor: theme.palette.secondary[400],
                         '&:hover': { borderLeft: 'none', borderColor: theme.palette.secondary[400] },
-                        '&.Mui-disabled': { borderLeft: 'none', borderColor: theme.palette.secondary.light }
+                        '&.Mui-disabled': { borderLeft: 'none', borderColor: theme.palette.secondary.light },
                       }}
                     >
                       <Add />
                     </Button>
                     <Button
-                      key="three"
-                      color="secondary"
-                      variant="outlined"
+                      key='three'
+                      color='secondary'
+                      variant='outlined'
                       disabled={value <= 1}
                       onClick={() => setValue(value - 1)}
                       sx={{
@@ -221,7 +221,7 @@ export default function ProductInfo({ product }: { product: Products }) {
                         borderLeft: 'none',
                         borderColor: theme.palette.secondary[400],
                         '&:hover': { borderTop: 'none', borderLeft: 'none', borderColor: theme.palette.secondary[400] },
-                        '&.Mui-disabled': { borderTop: 'none', borderLeft: 'none', borderColor: theme.palette.secondary.light }
+                        '&.Mui-disabled': { borderTop: 'none', borderLeft: 'none', borderColor: theme.palette.secondary.light },
                       }}
                     >
                       <Minus />
@@ -232,30 +232,30 @@ export default function ProductInfo({ product }: { product: Products }) {
               {value === 0 && <FormHelperText sx={{ color: 'error.main' }}>Please select quantity more than 0</FormHelperText>}
             </Grid>
             <Grid item xs={12}>
-              <Stack direction="row" alignItems="center" spacing={1}>
-                <Typography variant="h3">${product.offerPrice}</Typography>
+              <Stack direction='row' alignItems='center' spacing={1}>
+                <Typography variant='h3'>${product.offerPrice}</Typography>
                 {product.salePrice && (
-                  <Typography variant="h4" color="text.secondary" sx={{ textDecoration: 'line-through', opacity: 0.5, fontWeight: 400 }}>
+                  <Typography variant='h4' color='text.secondary' sx={{ textDecoration: 'line-through', opacity: 0.5, fontWeight: 400 }}>
                     ${product.salePrice}
                   </Typography>
                 )}
               </Stack>
             </Grid>
             <Grid item xs={12}>
-              <Stack direction="row" alignItems="center" spacing={2} sx={{ mt: 2 }}>
+              <Stack direction='row' alignItems='center' spacing={2} sx={{ mt: 2 }}>
                 <Button
-                  type="submit"
+                  type='submit'
                   disabled={value < 1 || !product.isStock}
-                  color="primary"
-                  variant="contained"
-                  size="large"
+                  color='primary'
+                  variant='contained'
+                  size='large'
                   startIcon={<ShoppingCart />}
                 >
                   {!product.isStock ? 'Sold Out' : 'Buy Now'}
                 </Button>
 
                 {product.isStock && value > 0 && (
-                  <Button color="secondary" variant="outlined" size="large" onClick={addCart} startIcon={<ShopAdd variant="Bold" />}>
+                  <Button color='secondary' variant='outlined' size='large' onClick={addCart} startIcon={<ShopAdd variant='Bold' />}>
                     Add to Cart
                   </Button>
                 )}

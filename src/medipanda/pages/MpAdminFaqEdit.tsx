@@ -9,7 +9,7 @@ import {
   Radio,
   RadioGroup,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
@@ -36,11 +36,11 @@ export default function MpAdminFaqEdit() {
       content: '',
       isExposed: true,
       files: [] as File[],
-      existingFileIds: [] as number[]
+      existingFileIds: [] as number[],
     },
     validationSchema: Yup.object().shape({
       title: Yup.string().required('제목을 입력해주세요.').max(100, '제목은 100자를 초과할 수 없습니다.'),
-      content: Yup.string().required('내용을 입력해주세요.')
+      content: Yup.string().required('내용을 입력해주세요.'),
     }),
     onSubmit: async (values, { setSubmitting }) => {
       if (!session?.userId) {
@@ -62,9 +62,9 @@ export default function MpAdminFaqEdit() {
               isExposed: values.isExposed,
               editorFileIds: null,
               exposureRange: 'ALL',
-              noticeProperties: null
+              noticeProperties: null,
             },
-            files: values.files && values.files.length > 0 ? values.files : undefined
+            files: values.files && values.files.length > 0 ? values.files : undefined,
           });
           enqueueSnackbar('FAQ가 성공적으로 등록되었습니다.', { variant: 'success' });
         } else {
@@ -77,9 +77,9 @@ export default function MpAdminFaqEdit() {
               exposureRange: 'ALL',
               keepFileIds: values.existingFileIds,
               editorFileIds: [],
-              noticeProperties: null
+              noticeProperties: null,
             },
-            newFiles: values.files ? values.files : undefined
+            newFiles: values.files ? values.files : undefined,
           });
           enqueueSnackbar('FAQ가 성공적으로 수정되었습니다.', { variant: 'success' });
         }
@@ -90,7 +90,7 @@ export default function MpAdminFaqEdit() {
       } finally {
         setSubmitting(false);
       }
-    }
+    },
   });
 
   useEffect(() => {
@@ -108,7 +108,7 @@ export default function MpAdminFaqEdit() {
         content: response.content,
         isExposed: response.isExposed,
         files: [],
-        existingFileIds: response.attachments ? response.attachments.map((file) => file.s3fileId) : []
+        existingFileIds: response.attachments ? response.attachments.map(file => file.s3fileId) : [],
       });
     } catch (error) {
       console.error('Failed to fetch FAQ detail:', error);
@@ -131,7 +131,7 @@ export default function MpAdminFaqEdit() {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+      <Box display='flex' justifyContent='center' alignItems='center' minHeight='400px'>
         <CircularProgress />
       </Box>
     );
@@ -141,7 +141,7 @@ export default function MpAdminFaqEdit() {
     <form onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Typography variant="h4" gutterBottom>
+          <Typography variant='h4' gutterBottom>
             FAQ 등록
           </Typography>
         </Grid>
@@ -150,13 +150,13 @@ export default function MpAdminFaqEdit() {
           <MainCard>
             <Grid container spacing={3}>
               <Grid item xs={12}>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
+                <Typography variant='body2' color='text.secondary' gutterBottom>
                   제목
                 </Typography>
                 <TextField
                   fullWidth
-                  name="title"
-                  placeholder=""
+                  name='title'
+                  placeholder=''
                   value={formik.values.title}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -166,37 +166,37 @@ export default function MpAdminFaqEdit() {
               </Grid>
 
               <Grid item xs={12}>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
+                <Typography variant='body2' color='text.secondary' gutterBottom>
                   내용
                 </Typography>
                 <TiptapEditor
                   content={formik.values.content}
-                  onChange={(content) => formik.setFieldValue('content', content)}
-                  placeholder="내용을 입력하세요"
+                  onChange={content => formik.setFieldValue('content', content)}
+                  placeholder='내용을 입력하세요'
                   error={!!(formik.touched.content && formik.errors.content)}
                   helperText={formik.touched.content && formik.errors.content ? formik.errors.content : undefined}
                 />
               </Grid>
 
               <Grid item xs={12}>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
+                <Typography variant='body2' color='text.secondary' gutterBottom>
                   첨부파일
                 </Typography>
                 <Button
-                  variant="contained"
-                  component="label"
+                  variant='contained'
+                  component='label'
                   sx={{
                     bgcolor: '#4caf50',
-                    '&:hover': { bgcolor: '#45a049' }
+                    '&:hover': { bgcolor: '#45a049' },
                   }}
                 >
                   파일첨부
-                  <input type="file" hidden multiple onChange={handleFileChange} accept="*" />
+                  <input type='file' hidden multiple onChange={handleFileChange} accept='*' />
                 </Button>
 
                 {formik.values.existingFileIds && formik.values.existingFileIds.length > 0 && (
                   <Box sx={{ mt: 2 }}>
-                    <Typography variant="body2" sx={{ mb: 1 }}>
+                    <Typography variant='body2' sx={{ mb: 1 }}>
                       기존 파일:
                     </Typography>
                     {formik.values.existingFileIds.map((fileId, index) => (
@@ -206,7 +206,7 @@ export default function MpAdminFaqEdit() {
                         onDelete={() => {
                           formik.setFieldValue(
                             'existingFileIds',
-                            formik.values.existingFileIds.filter((_, i) => i !== index)
+                            formik.values.existingFileIds.filter((_, i) => i !== index),
                           );
                         }}
                         sx={{ mr: 1, mb: 1 }}
@@ -217,7 +217,7 @@ export default function MpAdminFaqEdit() {
 
                 {formik.values.files && formik.values.files.length > 0 && (
                   <Box sx={{ mt: 2 }}>
-                    <Typography variant="body2" sx={{ mb: 1 }}>
+                    <Typography variant='body2' sx={{ mb: 1 }}>
                       새 파일:
                     </Typography>
                     {formik.values.files.map((file, index) => (
@@ -227,7 +227,7 @@ export default function MpAdminFaqEdit() {
                         onDelete={() => {
                           formik.setFieldValue(
                             'files',
-                            formik.values.files.filter((_, i) => i !== index)
+                            formik.values.files.filter((_, i) => i !== index),
                           );
                         }}
                         sx={{ mr: 1, mb: 1 }}
@@ -238,17 +238,17 @@ export default function MpAdminFaqEdit() {
               </Grid>
 
               <Grid item xs={12}>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
+                <Typography variant='body2' color='text.secondary' gutterBottom>
                   노출상태
                 </Typography>
-                <FormControl component="fieldset">
+                <FormControl component='fieldset'>
                   <RadioGroup
                     row
                     value={formik.values.isExposed ? 'visible' : 'hidden'}
-                    onChange={(e) => formik.setFieldValue('isExposed', e.target.value === 'visible')}
+                    onChange={e => formik.setFieldValue('isExposed', e.target.value === 'visible')}
                   >
-                    <FormControlLabel value="visible" control={<Radio />} label="노출" />
-                    <FormControlLabel value="hidden" control={<Radio />} label="미노출" />
+                    <FormControlLabel value='visible' control={<Radio />} label='노출' />
+                    <FormControlLabel value='hidden' control={<Radio />} label='미노출' />
                   </RadioGroup>
                 </FormControl>
               </Grid>
@@ -256,7 +256,7 @@ export default function MpAdminFaqEdit() {
 
             <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
               <Button
-                variant="outlined"
+                variant='outlined'
                 onClick={handleCancel}
                 sx={{
                   minWidth: 120,
@@ -264,20 +264,20 @@ export default function MpAdminFaqEdit() {
                   borderColor: '#ccc',
                   '&:hover': {
                     borderColor: '#999',
-                    bgcolor: '#f5f5f5'
-                  }
+                    bgcolor: '#f5f5f5',
+                  },
                 }}
                 disabled={formik.isSubmitting}
               >
                 취소
               </Button>
               <Button
-                variant="contained"
-                type="submit"
+                variant='contained'
+                type='submit'
                 sx={{
                   minWidth: 120,
                   bgcolor: '#4caf50',
-                  '&:hover': { bgcolor: '#45a049' }
+                  '&:hover': { bgcolor: '#45a049' },
                 }}
                 disabled={formik.isSubmitting}
                 startIcon={formik.isSubmitting ? <CircularProgress size={20} /> : null}

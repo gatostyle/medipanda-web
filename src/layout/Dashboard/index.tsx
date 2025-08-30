@@ -35,7 +35,7 @@ export default function MainLayout() {
           <Header />
           <Drawer />
 
-          <Box component="main" sx={{ width: `calc(100% - ${DRAWER_WIDTH}px)`, flexGrow: 1, p: { xs: 2, md: 3 } }}>
+          <Box component='main' sx={{ width: `calc(100% - ${DRAWER_WIDTH}px)`, flexGrow: 1, p: { xs: 2, md: 3 } }}>
             <Toolbar sx={{ mt: 'inherit', mb: 'inherit' }} />
             <Container
               maxWidth={container ? 'xl' : false}
@@ -45,7 +45,7 @@ export default function MainLayout() {
                 position: 'relative',
                 minHeight: 'calc(100vh - 110px)',
                 display: 'flex',
-                flexDirection: 'column'
+                flexDirection: 'column',
               }}
             >
               <Breadcrumbs />

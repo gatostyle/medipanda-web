@@ -74,16 +74,16 @@ export default function AlignList() {
   return (
     <MainCard content={false} codeString={alignListCodeString}>
       <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-        <ListItem alignItems="flex-start">
+        <ListItem alignItems='flex-start'>
           <ListItemAvatar>
-            <AntAvatar alt="Remy Sharp" src={avatar1} />
+            <AntAvatar alt='Remy Sharp' src={avatar1} />
           </ListItemAvatar>
           <ListItemText
-            primary="Brunch this weekend?"
+            primary='Brunch this weekend?'
             secondary={
               <>
                 {/* component='span' is required for fixed console log error */}
-                <Typography component="span" sx={{ display: 'inline' }} variant="body2" color="text.primary">
+                <Typography component='span' sx={{ display: 'inline' }} variant='body2' color='text.primary'>
                   Ali Connors
                 </Typography>
                 {" — I'll be in your neighborhood doing errands this…"}
@@ -91,16 +91,16 @@ export default function AlignList() {
             }
           />
         </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem alignItems="flex-start">
+        <Divider variant='inset' component='li' />
+        <ListItem alignItems='flex-start'>
           <ListItemAvatar>
-            <AntAvatar alt="Travis Howard" src={avatar2} />
+            <AntAvatar alt='Travis Howard' src={avatar2} />
           </ListItemAvatar>
           <ListItemText
-            primary="Summer BBQ"
+            primary='Summer BBQ'
             secondary={
               <>
-                <Typography component="span" sx={{ display: 'inline' }} variant="body2" color="text.primary">
+                <Typography component='span' sx={{ display: 'inline' }} variant='body2' color='text.primary'>
                   to Scott, Alex, Jennifer
                 </Typography>
                 {" — Wish I could come, but I'm out of town this…"}
@@ -108,16 +108,16 @@ export default function AlignList() {
             }
           />
         </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem alignItems="flex-start">
+        <Divider variant='inset' component='li' />
+        <ListItem alignItems='flex-start'>
           <ListItemAvatar>
-            <AntAvatar alt="Cindy Baker" src={avatar3} />
+            <AntAvatar alt='Cindy Baker' src={avatar3} />
           </ListItemAvatar>
           <ListItemText
-            primary="Oui Oui"
+            primary='Oui Oui'
             secondary={
               <>
-                <Typography component="span" sx={{ display: 'inline' }} variant="body2" color="text.primary">
+                <Typography component='span' sx={{ display: 'inline' }} variant='body2' color='text.primary'>
                   Sandra Adams
                 </Typography>
                 {' — Do you have Paris recommendations? Have you ever…'}

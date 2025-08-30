@@ -45,15 +45,15 @@ function SimpleDialog({ onClose, selectedValue, open }: Props) {
       <Grid
         container
         spacing={2}
-        justifyContent="space-between"
-        alignItems="center"
+        justifyContent='space-between'
+        alignItems='center'
         sx={{ borderBottom: `1px solid ${theme.palette.divider}` }}
       >
         <Grid item>
           <DialogTitle>Set backup account</DialogTitle>
         </Grid>
         <Grid item sx={{ mr: 1.5 }}>
-          <IconButton color="secondary" onClick={handleClose}>
+          <IconButton color='secondary' onClick={handleClose}>
             <Add style={{ transform: 'rotate(45deg)' }} />
           </IconButton>
         </Grid>
@@ -74,7 +74,7 @@ function SimpleDialog({ onClose, selectedValue, open }: Props) {
               <Add style={{ fontSize: '0.625rem' }} />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Add Account" />
+          <ListItemText primary='Add Account' />
         </ListItemButton>
       </List>
     </Dialog>
@@ -96,7 +96,7 @@ export default function SimpleDialogDemo() {
 
   return (
     <>
-      <Button variant="contained" onClick={handleClickOpen}>
+      <Button variant='contained' onClick={handleClickOpen}>
         Open simple dialog
       </Button>
       <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} />

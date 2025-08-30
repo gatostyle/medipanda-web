@@ -8,7 +8,7 @@ import { fetcher } from 'utils/axios';
 import { KanbanColumn, KanbanComment, KanbanItem, KanbanStateProps, KanbanUserStory } from 'types/kanban';
 
 const initialState: KanbanStateProps = {
-  selectedItem: false
+  selectedItem: false,
 };
 
 export const endpoints = {
@@ -29,14 +29,14 @@ export const endpoints = {
   updateStoryOrder: '/update-story-order', // server URL
   updateStoryItemOrder: '/update-storyitem-order', // server URL
   addStoryComment: '/add-story-comment', // server URL
-  deleteStory: '/delete-story' // server URL
+  deleteStory: '/delete-story', // server URL
 };
 
 export function useGetBacklogs() {
   const { data, isLoading, error, isValidating } = useSWR(endpoints.key, fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
-    revalidateOnReconnect: false
+    revalidateOnReconnect: false,
   });
 
   const memoizedValue = useMemo(
@@ -44,9 +44,9 @@ export function useGetBacklogs() {
       backlogs: data?.backlogs,
       backlogsLoading: isLoading,
       backlogsError: error,
-      backlogsValidating: isValidating
+      backlogsValidating: isValidating,
     }),
-    [data, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating],
   );
 
   return memoizedValue;
@@ -66,11 +66,11 @@ export async function addColumn(newColumn: KanbanColumn) {
         backlogs: {
           ...backlogs,
           columns,
-          columnsOrder
-        }
+          columnsOrder,
+        },
       };
     },
-    false
+    false,
   );
 
   // to hit server
@@ -89,7 +89,7 @@ export async function editColumn(newColumn: KanbanColumn) {
       const column = backlogs.columns.splice(
         backlogs.columns.findIndex((c: KanbanColumn) => c.id === newColumn.id),
         1,
-        newColumn
+        newColumn,
       );
       const columns = [...backlogs.columns, column];
 
@@ -97,11 +97,11 @@ export async function editColumn(newColumn: KanbanColumn) {
         ...currentBacklog,
         backlogs: {
           ...backlogs,
-          columns
-        }
+          columns,
+        },
       };
     },
-    false
+    false,
   );
 
   // to hit server
@@ -121,11 +121,11 @@ export async function updateColumnOrder(columnsOrder: string[]) {
         ...currentBacklog,
         backlogs: {
           ...backlogs,
-          columnsOrder
-        }
+          columnsOrder,
+        },
       };
     },
-    false
+    false,
   );
 
   // to hit server
@@ -149,11 +149,11 @@ export async function deleteColumn(columnId: string) {
         backlogs: {
           ...backlogs,
           columns,
-          columnsOrder
-        }
+          columnsOrder,
+        },
       };
     },
-    false
+    false,
   );
 
   // to hit server
@@ -175,7 +175,7 @@ export async function addItem(columnId: string, item: KanbanItem, storyId: strin
           if (column.id === columnId) {
             return {
               ...column,
-              itemIds: column.itemIds ? [...column.itemIds, item.id] : [item.id]
+              itemIds: column.itemIds ? [...column.itemIds, item.id] : [item.id],
             };
           }
           return column;
@@ -188,7 +188,7 @@ export async function addItem(columnId: string, item: KanbanItem, storyId: strin
           if (story.id === storyId) {
             return {
               ...story,
-              itemIds: story.itemIds ? [...story.itemIds, item.id] : [item.id]
+              itemIds: story.itemIds ? [...story.itemIds, item.id] : [item.id],
             };
           }
           return story;
@@ -203,11 +203,11 @@ export async function addItem(columnId: string, item: KanbanItem, storyId: strin
           ...backlogs,
           columns,
           userStory,
-          items
-        }
+          items,
+        },
       };
     },
-    false
+    false,
   );
 
   // to hit server
@@ -226,27 +226,27 @@ export async function editItem(columnId: string, newItem: KanbanItem, storyId: s
       const item = backlogs.items.splice(
         backlogs.items.findIndex((c: KanbanItem) => c.id === newItem.id),
         1,
-        newItem
+        newItem,
       );
       const items = [...backlogs.items, item];
 
       let userStory = backlogs.userStory;
       if (storyId) {
         const currentStory = backlogs.userStory.filter(
-          (story: KanbanUserStory) => story.itemIds.filter((itemId) => itemId === newItem.id)[0]
+          (story: KanbanUserStory) => story.itemIds.filter(itemId => itemId === newItem.id)[0],
         )[0];
         if (currentStory !== undefined && currentStory.id !== storyId) {
           userStory = backlogs.userStory.map((story: KanbanUserStory) => {
-            if (story.itemIds.filter((itemId) => itemId === newItem.id)[0]) {
+            if (story.itemIds.filter(itemId => itemId === newItem.id)[0]) {
               return {
                 ...story,
-                itemIds: story.itemIds.filter((itemId) => itemId !== newItem.id)
+                itemIds: story.itemIds.filter(itemId => itemId !== newItem.id),
               };
             }
             if (story.id === storyId) {
               return {
                 ...story,
-                itemIds: story.itemIds ? [...story.itemIds, newItem.id] : [newItem.id]
+                itemIds: story.itemIds ? [...story.itemIds, newItem.id] : [newItem.id],
               };
             }
             return story;
@@ -258,7 +258,7 @@ export async function editItem(columnId: string, newItem: KanbanItem, storyId: s
             if (story.id === storyId) {
               return {
                 ...story,
-                itemIds: story.itemIds ? [...story.itemIds, newItem.id] : [newItem.id]
+                itemIds: story.itemIds ? [...story.itemIds, newItem.id] : [newItem.id],
               };
             }
             return story;
@@ -269,20 +269,20 @@ export async function editItem(columnId: string, newItem: KanbanItem, storyId: s
       let columns = backlogs.columns;
       if (columnId) {
         const currentColumn = backlogs.columns.filter(
-          (column: KanbanColumn) => column.itemIds.filter((itemId) => itemId === newItem.id)[0]
+          (column: KanbanColumn) => column.itemIds.filter(itemId => itemId === newItem.id)[0],
         )[0];
         if (currentColumn !== undefined && currentColumn.id !== columnId) {
           columns = backlogs.columns.map((column: KanbanColumn) => {
-            if (column.itemIds.filter((itemId) => itemId === newItem.id)[0]) {
+            if (column.itemIds.filter(itemId => itemId === newItem.id)[0]) {
               return {
                 ...column,
-                itemIds: column.itemIds.filter((itemId) => itemId !== newItem.id)
+                itemIds: column.itemIds.filter(itemId => itemId !== newItem.id),
               };
             }
             if (column.id === columnId) {
               return {
                 ...column,
-                itemIds: column.itemIds ? [...column.itemIds, newItem.id] : [newItem.id]
+                itemIds: column.itemIds ? [...column.itemIds, newItem.id] : [newItem.id],
               };
             }
             return column;
@@ -294,7 +294,7 @@ export async function editItem(columnId: string, newItem: KanbanItem, storyId: s
             if (column.id === columnId) {
               return {
                 ...column,
-                itemIds: column.itemIds ? [...column.itemIds, newItem.id] : [newItem.id]
+                itemIds: column.itemIds ? [...column.itemIds, newItem.id] : [newItem.id],
               };
             }
             return column;
@@ -308,11 +308,11 @@ export async function editItem(columnId: string, newItem: KanbanItem, storyId: s
           ...backlogs,
           columns,
           userStory,
-          items
-        }
+          items,
+        },
       };
     },
-    false
+    false,
   );
 
   // to hit server
@@ -332,11 +332,11 @@ export async function updateColumnItemOrder(columns: KanbanColumn[]) {
         ...currentBacklog,
         backlogs: {
           ...backlogs,
-          columns
-        }
+          columns,
+        },
       };
     },
-    false
+    false,
   );
 
   // to hit server
@@ -356,7 +356,7 @@ export async function addItemComment(itemId: string | false, comment: KanbanComm
         if (item.id === itemId) {
           return {
             ...item,
-            commentIds: item.commentIds ? [...item.commentIds, comment.id] : [comment.id]
+            commentIds: item.commentIds ? [...item.commentIds, comment.id] : [comment.id],
           };
         }
         return item;
@@ -369,11 +369,11 @@ export async function addItemComment(itemId: string | false, comment: KanbanComm
         backlogs: {
           ...backlogs,
           items,
-          comments
-        }
+          comments,
+        },
       };
     },
-    false
+    false,
   );
 
   // to hit server
@@ -391,18 +391,18 @@ export async function deleteItem(itemId: string | false) {
 
       const items = backlogs.items.filter((item: KanbanItem) => item.id !== itemId);
       const columns = backlogs.columns.map((column: KanbanColumn) => {
-        const itemIds = column.itemIds.filter((id) => id !== itemId);
+        const itemIds = column.itemIds.filter(id => id !== itemId);
         return {
           ...column,
-          itemIds
+          itemIds,
         };
       });
 
       const userStory = backlogs.userStory.map((story: KanbanUserStory) => {
-        const itemIds = story.itemIds.filter((id) => id !== itemId);
+        const itemIds = story.itemIds.filter(id => id !== itemId);
         return {
           ...story,
-          itemIds
+          itemIds,
         };
       });
 
@@ -412,11 +412,11 @@ export async function deleteItem(itemId: string | false) {
           ...backlogs,
           items,
           columns,
-          userStory
-        }
+          userStory,
+        },
       };
     },
-    false
+    false,
   );
 
   // to hit server
@@ -439,11 +439,11 @@ export async function addStory(newStory: any) {
         backlogs: {
           ...backlogs,
           userStory,
-          userStoryOrder
-        }
+          userStoryOrder,
+        },
       };
     },
-    false
+    false,
   );
 
   // to hit server
@@ -461,18 +461,18 @@ export async function editStory(newStory: KanbanUserStory) {
       backlogs.userStory.splice(
         backlogs.userStory.findIndex((c: KanbanUserStory) => c.id === newStory.id),
         1,
-        newStory
+        newStory,
       );
       const userStory = [...backlogs.userStory];
       return {
         ...currentBacklog,
         backlogs: {
           ...backlogs,
-          userStory
-        }
+          userStory,
+        },
       };
     },
-    false
+    false,
   );
   // to hit server
   // you may need to refetch latest data after server hit and based on your logic
@@ -491,11 +491,11 @@ export async function updateStoryOrder(userStoryOrder: string[]) {
         ...currentBacklog,
         backlogs: {
           ...backlogs,
-          userStoryOrder
-        }
+          userStoryOrder,
+        },
       };
     },
-    false
+    false,
   );
 
   // to hit server
@@ -515,11 +515,11 @@ export async function updateStoryItemOrder(userStory: KanbanUserStory[]) {
         ...currentBacklog,
         backlogs: {
           ...backlogs,
-          userStory
-        }
+          userStory,
+        },
       };
     },
-    false
+    false,
   );
 
   // to hit server
@@ -539,7 +539,7 @@ export async function addStoryComment(storyId: string, comment: KanbanComment) {
         if (story.id === storyId) {
           return {
             ...story,
-            commentIds: story.commentIds ? [...story.commentIds, comment.id] : [comment.id]
+            commentIds: story.commentIds ? [...story.commentIds, comment.id] : [comment.id],
           };
         }
         return story;
@@ -552,11 +552,11 @@ export async function addStoryComment(storyId: string, comment: KanbanComment) {
         backlogs: {
           ...backlogs,
           userStory,
-          comments
-        }
+          comments,
+        },
       };
     },
-    false
+    false,
   );
 
   // to hit server
@@ -580,11 +580,11 @@ export async function deleteStory(storyId: string) {
         backlogs: {
           ...backlogs,
           userStory,
-          userStoryOrder
-        }
+          userStoryOrder,
+        },
       };
     },
-    false
+    false,
   );
 
   // to hit server
@@ -597,15 +597,15 @@ export function useGetKanbanMaster() {
   const { data, isLoading } = useSWR(endpoints.key + endpoints.master, () => initialState, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
-    revalidateOnReconnect: false
+    revalidateOnReconnect: false,
   });
 
   const memoizedValue = useMemo(
     () => ({
       kanbanMaster: data,
-      kanbanMasterLoading: isLoading
+      kanbanMasterLoading: isLoading,
     }),
-    [data, isLoading]
+    [data, isLoading],
   );
 
   return memoizedValue;
@@ -619,6 +619,6 @@ export function handlerKanbanDialog(selectedItem: string | boolean) {
     (currentKanbanMaster: any) => {
       return { ...currentKanbanMaster, selectedItem };
     },
-    false
+    false,
   );
 }

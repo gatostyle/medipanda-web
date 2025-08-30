@@ -34,19 +34,19 @@ interface GlobalFilterProps extends OutlinedInputProps {
 export function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter, ...other }: GlobalFilterProps) {
   const count = preGlobalFilteredRows.length;
   const [value, setValue] = useState(globalFilter);
-  const onChange = useAsyncDebounce((value) => {
+  const onChange = useAsyncDebounce(value => {
     setGlobalFilter(value || undefined);
   }, 200);
 
   return (
     <OutlinedInput
       value={value || ''}
-      onChange={(e) => {
+      onChange={e => {
         setValue(e.target.value);
         onChange(e.target.value);
       }}
       placeholder={`Search ${count} records...`}
-      id="start-adornment-email"
+      id='start-adornment-email'
       startAdornment={<SearchNormal1 size={18} />}
       {...other}
     />
@@ -58,11 +58,11 @@ export function DefaultColumnFilter({ column: { filterValue, Header, setFilter }
     <TextField
       fullWidth
       value={filterValue || ''}
-      onChange={(e) => {
+      onChange={e => {
         setFilter(e.target.value || undefined);
       }}
       placeholder={Header}
-      size="small"
+      size='small'
     />
   );
 }
@@ -72,9 +72,9 @@ export function DateColumnFilter({ column: { filterValue, Header, setFilter } }:
     <FormControl sx={{ width: '100%' }}>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <DatePicker
-          format="dd/MM/yyyy"
+          format='dd/MM/yyyy'
           value={filterValue && new Date(filterValue)}
-          onChange={(newValue) => {
+          onChange={newValue => {
             let formatDateFn = undefined;
             try {
               formatDateFn = format(newValue, 'M/d/yyyy');
@@ -110,13 +110,13 @@ export function SelectColumnFilter({ column: { filterValue, setFilter, preFilter
   return (
     <Select
       value={filterValue}
-      onChange={(e) => {
+      onChange={e => {
         setFilter(e.target.value || undefined);
       }}
       displayEmpty
-      size="small"
+      size='small'
     >
-      <MenuItem value="">All</MenuItem>
+      <MenuItem value=''>All</MenuItem>
       {options.map((option: any, i: number) => (
         <MenuItem key={i} value={option}>
           {option}
@@ -138,7 +138,7 @@ export function SliderColumnFilter({ column: { filterValue, setFilter, preFilter
   }, [id, preFilteredRows]);
 
   return (
-    <Stack direction="row" alignItems="center" spacing={1} sx={{ pl: 1, minWidth: 120 }}>
+    <Stack direction='row' alignItems='center' spacing={1} sx={{ pl: 1, minWidth: 120 }}>
       <Slider
         value={filterValue || min}
         min={min}
@@ -147,11 +147,11 @@ export function SliderColumnFilter({ column: { filterValue, setFilter, preFilter
         onChange={(event: Event, newValue: number | number[]) => {
           setFilter(newValue);
         }}
-        valueLabelDisplay="auto"
-        aria-labelledby="non-linear-slider"
+        valueLabelDisplay='auto'
+        aria-labelledby='non-linear-slider'
       />
-      <Tooltip title="Reset">
-        <IconButton size="small" color="error" onClick={() => setFilter(undefined)}>
+      <Tooltip title='Reset'>
+        <IconButton size='small' color='error' onClick={() => setFilter(undefined)}>
           <Add style={{ transform: 'rotate(45deg)' }} />
         </IconButton>
       </Tooltip>
@@ -171,29 +171,29 @@ export function NumberRangeColumnFilter({ column: { filterValue = [], preFiltere
   }, [id, preFilteredRows]);
 
   return (
-    <Stack direction="row" alignItems="center" spacing={1} sx={{ minWidth: 168, maxWidth: 250 }}>
+    <Stack direction='row' alignItems='center' spacing={1} sx={{ minWidth: 168, maxWidth: 250 }}>
       <TextField
         fullWidth
         value={filterValue[0] || ''}
-        type="number"
-        onChange={(e) => {
+        type='number'
+        onChange={e => {
           const val = e.target.value;
           setFilter((old = []) => [val ? parseInt(val, 10) : undefined, old[1]]);
         }}
         placeholder={`Min (${min})`}
-        size="small"
+        size='small'
       />
       <Minus />
       <TextField
         fullWidth
         value={filterValue[1] || ''}
-        type="number"
-        onChange={(e) => {
+        type='number'
+        onChange={e => {
           const val = e.target.value;
           setFilter((old = []) => [old[0], val ? parseInt(val, 10) : undefined]);
         }}
         placeholder={`Max (${max})`}
-        size="small"
+        size='small'
       />
     </Stack>
   );
@@ -212,7 +212,7 @@ export const renderFilterTypes: any = () => ({
       const rowValue = row.values[id];
       return rowValue !== undefined ? String(rowValue).toLowerCase().startsWith(String(filterValue).toLowerCase()) : true;
     });
-  }
+  },
 });
 
 export function filterGreaterThan(rows: Row[], id: number, filterValue: number) {
@@ -229,7 +229,7 @@ export function useControlledState(state: TableState<{}>) {
     if (state.groupBy.length) {
       return {
         ...state,
-        hiddenColumns: [...state.hiddenColumns!, ...state.groupBy].filter((d, i, all) => all.indexOf(d) === i)
+        hiddenColumns: [...state.hiddenColumns!, ...state.groupBy].filter((d, i, all) => all.indexOf(d) === i),
       };
     }
     return state;

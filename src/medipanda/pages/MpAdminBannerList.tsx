@@ -16,7 +16,7 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
@@ -45,7 +45,7 @@ export default function MpAdminBannerList() {
       endAt: null as Date | null,
       bannerTitle: '',
       pageIndex: 0,
-      pageSize: 20
+      pageSize: 20,
     },
     onSubmit: async () => {
       if (formik.values.pageIndex !== 0) {
@@ -53,7 +53,7 @@ export default function MpAdminBannerList() {
       } else {
         await fetchData();
       }
-    }
+    },
   });
 
   const handleReset = () => {
@@ -65,7 +65,7 @@ export default function MpAdminBannerList() {
       header: 'No',
       accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
-      size: 60
+      size: 60,
     },
     {
       header: '배너위치',
@@ -85,7 +85,7 @@ export default function MpAdminBannerList() {
             return position;
         }
       },
-      size: 120
+      size: 120,
     },
     {
       header: '배너제목',
@@ -95,7 +95,7 @@ export default function MpAdminBannerList() {
           {row.original.title}
         </Link>
       ),
-      size: 200
+      size: 200,
     },
     {
       header: '노출상태',
@@ -106,12 +106,12 @@ export default function MpAdminBannerList() {
           <Chip
             label={status === 'VISIBLE' ? '노출' : '미노출'}
             color={status === 'VISIBLE' ? 'success' : 'default'}
-            variant="light"
-            size="small"
+            variant='light'
+            size='small'
           />
         );
       },
-      size: 100
+      size: 100,
     },
     {
       header: '노출범위',
@@ -129,7 +129,7 @@ export default function MpAdminBannerList() {
             return scope;
         }
       },
-      size: 100
+      size: 100,
     },
     {
       header: '게시기간',
@@ -137,7 +137,7 @@ export default function MpAdminBannerList() {
       cell: ({ row }) => {
         return `${formatYyyyMmDdHhMm(row.original.startAt)} ~ ${formatYyyyMmDdHhMm(row.original.endAt)}`;
       },
-      size: 300
+      size: 300,
     },
     {
       header: '등록일',
@@ -145,32 +145,32 @@ export default function MpAdminBannerList() {
       cell: ({ row }) => {
         return formatYyyyMmDd(row.original.startAt);
       },
-      size: 150
+      size: 150,
     },
     {
       header: '노출순서',
       accessorKey: 'displayOrder',
       cell: ({ row }) => row.original.displayOrder,
-      size: 80
+      size: 80,
     },
     {
       header: '노출수',
       accessorKey: 'viewCount',
       cell: ({ row }) => row.original.viewCount.toLocaleString(),
-      size: 100
+      size: 100,
     },
     {
       header: '클릭수',
       accessorKey: 'clickCount',
       cell: ({ row }) => row.original.clickCount.toLocaleString(),
-      size: 100
+      size: 100,
     },
     {
       header: 'CTR',
       accessorKey: 'ctr',
       cell: ({ row }) => `${row.original.ctr}%`,
-      size: 80
-    }
+      size: 80,
+    },
   ];
 
   const table = useReactTable({
@@ -181,11 +181,11 @@ export default function MpAdminBannerList() {
     state: {
       pagination: {
         pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize
-      }
+        pageSize: formik.values.pageSize,
+      },
     },
     pageCount: totalPages,
-    manualPagination: true
+    manualPagination: true,
   });
 
   const fetchData = async () => {
@@ -197,7 +197,7 @@ export default function MpAdminBannerList() {
         startAt: formik.values.startAt ? new DateTimeString(formik.values.startAt) : undefined,
         endAt: formik.values.endAt ? new DateTimeString(formik.values.endAt) : undefined,
         bannerTitle: formik.values.bannerTitle !== '' ? formik.values.bannerTitle : undefined,
-        bannerStatus: formik.values.bannerStatus !== '' ? formik.values.bannerStatus : undefined
+        bannerStatus: formik.values.bannerStatus !== '' ? formik.values.bannerStatus : undefined,
       });
 
       setData(withSequence(response).content);
@@ -221,7 +221,7 @@ export default function MpAdminBannerList() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant='h4' gutterBottom>
           배너관리
         </Typography>
       </Grid>
@@ -232,35 +232,35 @@ export default function MpAdminBannerList() {
             <form onSubmit={formik.handleSubmit}>
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size="small">
+                  <FormControl fullWidth size='small'>
                     <InputLabel>상태</InputLabel>
-                    <Select name="bannerStatus" value={formik.values.bannerStatus} onChange={formik.handleChange}>
+                    <Select name='bannerStatus' value={formik.values.bannerStatus} onChange={formik.handleChange}>
                       <MenuItem value={'VISIBLE'}>노출</MenuItem>
                       <MenuItem value={'HIDDEN'}>미노출</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="startAt" label="시작일" formik={formik} />
+                  <MpFormikDatePicker name='startAt' label='시작일' formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="endAt" label="종료일" formik={formik} />
+                  <MpFormikDatePicker name='endAt' label='종료일' formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
-                    name="bannerTitle"
-                    size="small"
-                    placeholder="검색어를 입력하세요"
+                    name='bannerTitle'
+                    size='small'
+                    placeholder='검색어를 입력하세요'
                     fullWidth
                     value={formik.values.bannerTitle}
                     onChange={formik.handleChange}
                   />
                 </SearchFilterItem>
                 <SearchFilterActions>
-                  <Button variant="contained" size="small" type="submit">
+                  <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant="outlined" size="small" onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={handleReset}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -273,12 +273,12 @@ export default function MpAdminBannerList() {
       <Grid item xs={12}>
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Stack direction="row" spacing={2}>
-                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+            <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+              <Stack direction='row' spacing={2}>
+                <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
-              <Stack direction="row" spacing={1}>
-                <Button variant="contained" color="success" size="small" component={Link} to="/admin/banners/new">
+              <Stack direction='row' spacing={1}>
+                <Button variant='contained' color='success' size='small' component={Link} to='/admin/banners/new'>
                   등록
                 </Button>
               </Stack>
@@ -286,11 +286,11 @@ export default function MpAdminBannerList() {
 
             <ScrollX>
               <TableContainer>
-                <Table size="small">
+                <Table size='small'>
                   <TableHead>
-                    {table.getHeaderGroups().map((headerGroup) => (
+                    {table.getHeaderGroups().map(headerGroup => (
                       <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => (
+                        {headerGroup.headers.map(header => (
                           <TableCell key={header.id} style={{ width: header.getSize() }}>
                             {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                           </TableCell>
@@ -301,24 +301,24 @@ export default function MpAdminBannerList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : (
-                      table.getRowModel().rows.map((row) => (
+                      table.getRowModel().rows.map(row => (
                         <TableRow key={row.id}>
-                          {row.getVisibleCells().map((cell) => (
+                          {row.getVisibleCells().map(cell => (
                             <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                           ))}
                         </TableRow>
@@ -329,13 +329,13 @@ export default function MpAdminBannerList() {
               </TableContainer>
             </ScrollX>
 
-            <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
+            <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
                 page={formik.values.pageIndex + 1}
                 onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
-                color="primary"
-                variant="outlined"
+                color='primary'
+                variant='outlined'
                 showFirstButton
                 showLastButton
               />

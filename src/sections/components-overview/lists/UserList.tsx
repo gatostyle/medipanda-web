@@ -51,27 +51,27 @@ export default function UserList() {
         <ListItem
           divider
           secondaryAction={
-            <IconButton edge="end" sx={{ transform: 'rotate(90deg)' }} aria-label="delete" color="secondary">
+            <IconButton edge='end' sx={{ transform: 'rotate(90deg)' }} aria-label='delete' color='secondary'>
               <MoreIcon />
             </IconButton>
           }
         >
           <ListItemAvatar>
-            <AntAvatar alt="Avatar" src={avatar4} />
+            <AntAvatar alt='Avatar' src={avatar4} />
           </ListItemAvatar>
-          <ListItemText primary="Jone Doe" secondary="Developer" />
+          <ListItemText primary='Jone Doe' secondary='Developer' />
         </ListItem>
         <ListItem
           secondaryAction={
-            <IconButton edge="end" sx={{ transform: 'rotate(90deg)' }} aria-label="delete" color="secondary">
+            <IconButton edge='end' sx={{ transform: 'rotate(90deg)' }} aria-label='delete' color='secondary'>
               <MoreIcon />
             </IconButton>
           }
         >
           <ListItemAvatar>
-            <AntAvatar alt="Avatar" src={avatar5} />
+            <AntAvatar alt='Avatar' src={avatar5} />
           </ListItemAvatar>
-          <ListItemText primary="Aidal Danny" secondary="Project Leader" />
+          <ListItemText primary='Aidal Danny' secondary='Project Leader' />
         </ListItem>
       </List>
     </MainCard>

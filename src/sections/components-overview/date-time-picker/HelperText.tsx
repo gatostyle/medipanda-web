@@ -24,11 +24,11 @@ export default function HelperText() {
 </LocalizationProvider>`;
 
   return (
-    <MainCard title="Helper Text" codeString={helperDatepickerCodeString}>
+    <MainCard title='Helper Text' codeString={helperDatepickerCodeString}>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <DatePicker
           value={value}
-          onChange={(newValue) => {
+          onChange={newValue => {
             setValue(newValue);
           }}
           slotProps={{ textField: { placeholder: 'Helper Text', helperText: 'Helper Text' } }}

@@ -44,11 +44,11 @@ export default function Drawer() {
         '& .MuiDrawer-paper': {
           borderRadius: matchDownMd ? 0 : 1.5,
           position: 'relative',
-          border: 'none'
-        }
+          border: 'none',
+        },
       }}
       variant={matchDownMd ? 'temporary' : 'persistent'}
-      anchor="left"
+      anchor='left'
       open={open}
       ModalProps={{ keepMounted: true }}
       onClose={() => handlerComponentDrawer(false)}
@@ -61,7 +61,7 @@ export default function Drawer() {
             InputProps={{
               startAdornment: <SearchNormal1 />,
               placeholder: 'Search Components',
-              type: 'search'
+              type: 'search',
             }}
             onChange={handleSearchValue}
           />

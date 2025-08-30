@@ -26,15 +26,15 @@ import { ArrowUp } from 'iconsax-react';
 const pieChartOptions = {
   chart: {
     type: 'donut',
-    height: 320
+    height: 320,
   },
   labels: ['Total income', 'Total rent', 'Download', 'Views'],
   legend: {
-    show: false
+    show: false,
   },
   dataLabels: {
-    enabled: false
-  }
+    enabled: false,
+  },
 };
 
 // ==============================|| CHART ||============================== //
@@ -59,38 +59,38 @@ function ApexDonutChart() {
     const warning = theme.palette.warning.main;
     const success = theme.palette.success.main;
 
-    setOptions((prevState) => ({
+    setOptions(prevState => ({
       ...prevState,
       colors: [primaryMain, warning, success, primaryLighter],
       xaxis: {
         labels: {
           style: {
-            colors: [primary, primary, primary, primary, primary, primary, primary]
-          }
-        }
+            colors: [primary, primary, primary, primary, primary, primary, primary],
+          },
+        },
       },
       yaxis: {
         labels: {
           style: {
-            colors: [primary]
-          }
-        }
+            colors: [primary],
+          },
+        },
       },
       grid: {
-        borderColor: line
+        borderColor: line,
       },
       stroke: {
-        colors: [backColor]
+        colors: [backColor],
       },
       theme: {
-        mode: mode === ThemeMode.DARK ? 'dark' : 'light'
-      }
+        mode: mode === ThemeMode.DARK ? 'dark' : 'light',
+      },
     }));
   }, [mode, primary, line, grey200, backColor, theme]);
 
   return (
-    <div id="chart">
-      <ReactApexChart options={options} series={series} type="donut" height={downSM ? 280 : 320} />
+    <div id='chart'>
+      <ReactApexChart options={options} series={series} type='donut' height={downSM ? 280 : 320} />
     </div>
   );
 }
@@ -114,20 +114,20 @@ export default function TotalIncome() {
     <MainCard>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
-            <Typography variant="h5">Total Income</Typography>
+          <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1}>
+            <Typography variant='h5'>Total Income</Typography>
             <IconButton
-              color="secondary"
-              id="wallet-button"
+              color='secondary'
+              id='wallet-button'
               aria-controls={open ? 'wallet-menu' : undefined}
-              aria-haspopup="true"
+              aria-haspopup='true'
               aria-expanded={open ? 'true' : undefined}
               onClick={handleClick}
             >
               <MoreIcon />
             </IconButton>
             <Menu
-              id="wallet-menu"
+              id='wallet-menu'
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
@@ -146,17 +146,17 @@ export default function TotalIncome() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <MainCard content={false} border={false} sx={{ bgcolor: 'background.default' }}>
-            <Stack alignItems="flex-start" sx={{ p: 2 }} spacing={0.5}>
-              <Stack direction="row" alignItems="center" spacing={1}>
+            <Stack alignItems='flex-start' sx={{ p: 2 }} spacing={0.5}>
+              <Stack direction='row' alignItems='center' spacing={1}>
                 <Dot componentDiv />
                 <Typography>Item01</Typography>
               </Stack>
 
-              <Typography variant="subtitle1" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Typography variant='subtitle1' sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                 $23,876
                 <Typography
-                  variant="caption"
-                  color="text.secondary"
+                  variant='caption'
+                  color='text.secondary'
                   sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 0.25 }}
                 >
                   <ArrowUp size={14} /> +$76,343
@@ -167,16 +167,16 @@ export default function TotalIncome() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <MainCard content={false} border={false} sx={{ bgcolor: 'background.default' }}>
-            <Stack alignItems="flex-start" sx={{ p: 2 }} spacing={0.5}>
-              <Stack direction="row" alignItems="center" spacing={1}>
+            <Stack alignItems='flex-start' sx={{ p: 2 }} spacing={0.5}>
+              <Stack direction='row' alignItems='center' spacing={1}>
                 <Dot componentDiv sx={{ bgcolor: 'primary.200' }} />
                 <Typography>Item02</Typography>
               </Stack>
-              <Typography variant="subtitle1" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Typography variant='subtitle1' sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                 $23,876
                 <Typography
-                  variant="caption"
-                  color="text.secondary"
+                  variant='caption'
+                  color='text.secondary'
                   sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 0.25 }}
                 >
                   <ArrowUp size={14} /> +$76,343
@@ -187,16 +187,16 @@ export default function TotalIncome() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <MainCard content={false} border={false} sx={{ bgcolor: 'background.default' }}>
-            <Stack alignItems="flex-start" sx={{ p: 2 }} spacing={0.5}>
-              <Stack direction="row" alignItems="center" spacing={1}>
-                <Dot componentDiv color="warning" />
+            <Stack alignItems='flex-start' sx={{ p: 2 }} spacing={0.5}>
+              <Stack direction='row' alignItems='center' spacing={1}>
+                <Dot componentDiv color='warning' />
                 <Typography>Item03</Typography>
               </Stack>
-              <Typography variant="subtitle1" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Typography variant='subtitle1' sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                 $23,876
                 <Typography
-                  variant="caption"
-                  color="text.secondary"
+                  variant='caption'
+                  color='text.secondary'
                   sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 0.25 }}
                 >
                   <ArrowUp size={14} /> +$76,343
@@ -207,16 +207,16 @@ export default function TotalIncome() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <MainCard content={false} border={false} sx={{ bgcolor: 'background.default' }}>
-            <Stack alignItems="flex-start" sx={{ p: 2 }} spacing={0.5}>
-              <Stack direction="row" alignItems="center" spacing={1}>
-                <Dot componentDiv color="success" />
+            <Stack alignItems='flex-start' sx={{ p: 2 }} spacing={0.5}>
+              <Stack direction='row' alignItems='center' spacing={1}>
+                <Dot componentDiv color='success' />
                 <Typography>Item04</Typography>
               </Stack>
-              <Typography variant="subtitle1" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Typography variant='subtitle1' sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                 $23,876
                 <Typography
-                  variant="caption"
-                  color="text.secondary"
+                  variant='caption'
+                  color='text.secondary'
                   sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 0.25 }}
                 >
                   <ArrowUp size={14} /> +$76,343

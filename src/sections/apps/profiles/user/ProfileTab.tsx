@@ -46,30 +46,30 @@ export default function ProfileTab() {
   }, [pathname]);
 
   return (
-    <List component="nav" sx={{ p: 0, '& .MuiListItemIcon-root': { minWidth: 32, color: 'secondary.main' } }}>
+    <List component='nav' sx={{ p: 0, '& .MuiListItemIcon-root': { minWidth: 32, color: 'secondary.main' } }}>
       <ListItemButton selected={selectedIndex === 0} onClick={() => handleListItemClick(0, '/apps/profiles/user/personal')}>
         <ListItemIcon>
           <Profile size={18} />
         </ListItemIcon>
-        <ListItemText primary="Personal Information" />
+        <ListItemText primary='Personal Information' />
       </ListItemButton>
       <ListItemButton selected={selectedIndex === 1} onClick={() => handleListItemClick(1, '/apps/profiles/user/payment')}>
         <ListItemIcon>
           <CardCoin size={18} />
         </ListItemIcon>
-        <ListItemText primary="Payment" />
+        <ListItemText primary='Payment' />
       </ListItemButton>
       <ListItemButton selected={selectedIndex === 2} onClick={() => handleListItemClick(2, '/apps/profiles/user/password')}>
         <ListItemIcon>
           <Lock size={18} />
         </ListItemIcon>
-        <ListItemText primary="Change Password" />
+        <ListItemText primary='Change Password' />
       </ListItemButton>
       <ListItemButton selected={selectedIndex === 3} onClick={() => handleListItemClick(3, '/apps/profiles/user/settings')}>
         <ListItemIcon>
           <Setting3 size={18} />
         </ListItemIcon>
-        <ListItemText primary="Settings" />
+        <ListItemText primary='Settings' />
       </ListItemButton>
     </List>
   );

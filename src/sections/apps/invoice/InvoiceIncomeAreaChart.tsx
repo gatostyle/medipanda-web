@@ -17,24 +17,24 @@ const areaChartOptions = {
     type: 'line',
     stacked: false,
     toolbar: {
-      show: false
-    }
+      show: false,
+    },
   },
   plotOptions: {
     bar: {
-      columnWidth: '50%'
-    }
+      columnWidth: '50%',
+    },
   },
   legend: {
-    show: false
+    show: false,
   },
   stroke: {
     width: [0, 2],
-    curve: 'smooth'
+    curve: 'smooth',
   },
   dataLabels: {
-    enabled: false
-  }
+    enabled: false,
+  },
 };
 
 // ==============================|| INVOICE - INCOME AREA CHART ||============================== //
@@ -49,7 +49,7 @@ export default function InvoiceIncomeAreaChart({ series }: { series: any }) {
   const [options, setOptions] = useState<ChartProps>(areaChartOptions);
 
   useEffect(() => {
-    setOptions((prevState) => ({
+    setOptions(prevState => ({
       ...prevState,
       colors: [theme.palette.warning.main, theme.palette.warning.main],
       xaxis: {
@@ -69,22 +69,22 @@ export default function InvoiceIncomeAreaChart({ series }: { series: any }) {
               secondary,
               secondary,
               secondary,
-              secondary
-            ]
-          }
+              secondary,
+            ],
+          },
         },
         axisBorder: {
           show: false,
-          color: line
+          color: line,
         },
-        tickAmount: 11
+        tickAmount: 11,
       },
       yaxis: {
         labels: {
           style: {
-            colors: [secondary]
-          }
-        }
+            colors: [secondary],
+          },
+        },
       },
       fill: {
         type: 'gradient',
@@ -101,9 +101,9 @@ export default function InvoiceIncomeAreaChart({ series }: { series: any }) {
             type: 'vertical',
             opacityFrom: 0.15,
             opacityTo: 0.65,
-            stops: [0, 96, 100]
-          }
-        }
+            stops: [0, 96, 100],
+          },
+        },
       },
       markers: {
         size: [0, 3],
@@ -113,21 +113,21 @@ export default function InvoiceIncomeAreaChart({ series }: { series: any }) {
         hover: {
           size: 5,
           colors: theme.palette.warning.main,
-          strokeColors: theme.palette.common.white
-        }
+          strokeColors: theme.palette.common.white,
+        },
       },
       grid: {
-        borderColor: line
+        borderColor: line,
       },
       theme: {
-        mode: mode === ThemeMode.DARK ? 'dark' : 'light'
-      }
+        mode: mode === ThemeMode.DARK ? 'dark' : 'light',
+      },
     }));
   }, [mode, primary, secondary, line, theme]);
 
   return (
     <Box sx={{ '.apexcharts-bar-area': { strokeWidth: 0 } }}>
-      <ReactApexChart options={options} series={series} type="line" height={265} />
+      <ReactApexChart options={options} series={series} type='line' height={265} />
     </Box>
   );
 }

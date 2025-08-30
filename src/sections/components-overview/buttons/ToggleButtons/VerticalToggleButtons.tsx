@@ -17,14 +17,14 @@ export default function VerticalToggleButtons() {
   };
 
   return (
-    <ToggleButtonGroup orientation="vertical" value={view} exclusive onChange={handleChange}>
-      <ToggleButton value="tree" aria-label="tree">
+    <ToggleButtonGroup orientation='vertical' value={view} exclusive onChange={handleChange}>
+      <ToggleButton value='tree' aria-label='tree'>
         <Buildings2 />
       </ToggleButton>
-      <ToggleButton value="grid" aria-label="grid">
+      <ToggleButton value='grid' aria-label='grid'>
         <Apple />
       </ToggleButton>
-      <ToggleButton value="table" aria-label="table">
+      <ToggleButton value='table' aria-label='table'>
         <TableDocument />
       </ToggleButton>
     </ToggleButtonGroup>

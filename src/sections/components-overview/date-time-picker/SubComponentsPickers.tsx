@@ -35,9 +35,9 @@ export default function SubComponentsPickers() {
 </LocalizationProvider>`;
 
   return (
-    <MainCard title="Sub Component" codeString={subDatepickerCodeString}>
+    <MainCard title='Sub Component' codeString={subDatepickerCodeString}>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <Stack spacing={3} justifyContent="center" alignItems="center">
+        <Stack spacing={3} justifyContent='center' alignItems='center'>
           <Box sx={{ maxWidth: 320 }}>
             <YearCalendar value={date} minDate={minDate} maxDate={maxDate} onChange={(newDate: Date) => setDate(newDate)} />
           </Box>

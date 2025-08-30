@@ -16,9 +16,9 @@ const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 200
-    }
-  }
+      width: 200,
+    },
+  },
 };
 
 interface Props {
@@ -34,43 +34,43 @@ export default function SelectColumnVisibility({
   getVisibleLeafColumns,
   getIsAllColumnsVisible,
   getToggleAllColumnsVisibilityHandler,
-  getAllColumns
+  getAllColumns,
 }: Props) {
   return (
     <FormControl sx={{ width: 200 }}>
       <Select
-        id="column-hiding"
+        id='column-hiding'
         multiple
         displayEmpty
         value={getVisibleLeafColumns()}
-        input={<OutlinedInput id="select-column-hiding" placeholder="select column" />}
+        input={<OutlinedInput id='select-column-hiding' placeholder='select column' />}
         renderValue={() => {
           if (getIsAllColumnsVisible()) {
-            return <Typography variant="subtitle1">All columns visible</Typography>;
+            return <Typography variant='subtitle1'>All columns visible</Typography>;
           }
 
           if (getVisibleLeafColumns().length === 0) {
-            return <Typography variant="subtitle1">All columns hidden</Typography>;
+            return <Typography variant='subtitle1'>All columns hidden</Typography>;
           }
 
-          return <Typography variant="subtitle1">{getVisibleLeafColumns().length} column(s) visible</Typography>;
+          return <Typography variant='subtitle1'>{getVisibleLeafColumns().length} column(s) visible</Typography>;
         }}
         MenuProps={MenuProps}
-        size="small"
+        size='small'
       >
-        <MenuItem value="all" onClick={getToggleAllColumnsVisibilityHandler()}>
-          <Checkbox checked={getIsAllColumnsVisible()} color="success" />
-          <ListItemText primary="All Column" />
+        <MenuItem value='all' onClick={getToggleAllColumnsVisibilityHandler()}>
+          <Checkbox checked={getIsAllColumnsVisible()} color='success' />
+          <ListItemText primary='All Column' />
         </MenuItem>
         {getAllColumns().map(
-          (column) =>
+          column =>
             // @ts-ignore
             column.columnDef.accessorKey && (
               <MenuItem key={column.id} value={column.id} onClick={column.getToggleVisibilityHandler()}>
-                <Checkbox checked={column.getIsVisible()} color="success" />
+                <Checkbox checked={column.getIsVisible()} color='success' />
                 <ListItemText primary={column.columnDef.header as string} />
               </MenuItem>
-            )
+            ),
         )}
       </Select>
     </FormControl>

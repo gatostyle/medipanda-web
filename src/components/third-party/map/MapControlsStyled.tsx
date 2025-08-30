@@ -25,8 +25,8 @@ export default function MapControlsStyled() {
           borderRadius: '4px',
           color: theme.palette.common.white,
           fontWeight: theme.typography.fontWeightBold,
-          backgroundImage: `linear-gradient(to right, #8a2387, #e94057, #f27121)`
-        }
+          backgroundImage: `linear-gradient(to right, #8a2387, #e94057, #f27121)`,
+        },
       }}
     />
   );

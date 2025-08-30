@@ -22,7 +22,7 @@ interface StepWrapperProps {
 
 function StepWrapper({ children, value, index, ...other }: StepWrapperProps) {
   return (
-    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+    <div role='tabpanel' hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   );
@@ -45,12 +45,12 @@ export default function HorizontalLinearStepper() {
       newSkipped.delete(activeStep);
     }
 
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setActiveStep(prevActiveStep => prevActiveStep + 1);
     setSkipped(newSkipped);
   };
 
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    setActiveStep(prevActiveStep => prevActiveStep - 1);
   };
 
   const handleSkip = () => {
@@ -60,8 +60,8 @@ export default function HorizontalLinearStepper() {
       throw new Error("You can't skip a step that isn't optional.");
     }
 
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped((prevSkipped) => {
+    setActiveStep(prevActiveStep => prevActiveStep + 1);
+    setSkipped(prevSkipped => {
       const newSkipped = new Set(prevSkipped.values());
       newSkipped.add(activeStep);
       return newSkipped;
@@ -149,7 +149,7 @@ export default function HorizontalLinearStepper() {
 )}`;
 
   return (
-    <MainCard title="Basic - Linear" codeString={hlStepperCodeString}>
+    <MainCard title='Basic - Linear' codeString={hlStepperCodeString}>
       <>
         <Stepper activeStep={activeStep}>
           {steps.map((label, index) => {
@@ -158,7 +158,7 @@ export default function HorizontalLinearStepper() {
               optional?: ReactNode;
             } = {};
             if (isStepOptional(index)) {
-              labelProps.optional = <Typography variant="caption">Optional</Typography>;
+              labelProps.optional = <Typography variant='caption'>Optional</Typography>;
             }
             if (isStepSkipped(index)) {
               stepProps.completed = false;
@@ -175,7 +175,7 @@ export default function HorizontalLinearStepper() {
             <Alert sx={{ my: 3 }}>All steps completed - you&apos;re finished</Alert>
             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
               <Box sx={{ flex: '1 1 auto' }} />
-              <Button onClick={handleReset} color="error" variant="contained">
+              <Button onClick={handleReset} color='error' variant='contained'>
                 Reset
               </Button>
             </Box>
@@ -210,16 +210,16 @@ export default function HorizontalLinearStepper() {
               </Typography>
             </StepWrapper>
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-              <Button variant="outlined" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
+              <Button variant='outlined' disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
                 Back
               </Button>
               <Box sx={{ flex: '1 1 auto' }} />
               {isStepOptional(activeStep) && (
-                <Button color="error" onClick={handleSkip} sx={{ mr: 1 }}>
+                <Button color='error' onClick={handleSkip} sx={{ mr: 1 }}>
                   Skip
                 </Button>
               )}
-              <Button onClick={handleNext} variant="contained" color={activeStep === steps.length - 1 ? 'success' : 'primary'}>
+              <Button onClick={handleNext} variant='contained' color={activeStep === steps.length - 1 ? 'success' : 'primary'}>
                 {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
               </Button>
             </Box>

@@ -18,7 +18,7 @@ const redialBarChartOptions = {
   chart: {
     type: 'radialBar',
     width: 450,
-    height: 450
+    height: 450,
   },
   plotOptions: {
     radialBar: {
@@ -29,17 +29,17 @@ const redialBarChartOptions = {
         margin: 5,
         size: '30%',
         background: 'transparent',
-        image: undefined
+        image: undefined,
       },
       dataLabels: {
         name: {
-          show: false
+          show: false,
         },
         value: {
-          show: false
-        }
-      }
-    }
+          show: false,
+        },
+      },
+    },
   },
   labels: ['Vimeo', 'Messenger', 'Facebook', 'LinkedIn'],
   legend: {
@@ -50,24 +50,24 @@ const redialBarChartOptions = {
     offsetX: -15,
     offsetY: -15,
     labels: {
-      useSeriesColors: true
+      useSeriesColors: true,
     },
     markers: {
-      size: 4
+      size: 4,
     },
     formatter(seriesName: string, opts: KeyedObject) {
       return `${seriesName}:  ${opts.w.globals.series[opts.seriesIndex]}`;
     },
     itemMargin: {
-      vertical: 2
-    }
+      vertical: 2,
+    },
   },
   responsive: [
     {
       breakpoint: 450,
       chart: {
         width: 280,
-        height: 280
+        height: 280,
       },
       options: {
         legend: {
@@ -78,21 +78,21 @@ const redialBarChartOptions = {
           offsetX: -20,
           offsetY: -10,
           labels: {
-            useSeriesColors: true
+            useSeriesColors: true,
           },
           markers: {
-            size: 4
+            size: 4,
           },
           formatter(seriesName: string, opts: KeyedObject) {
             return `${seriesName}:  ${opts.w.globals.series[opts.seriesIndex]}`;
           },
           itemMargin: {
-            vertical: 2
-          }
-        }
-      }
-    }
-  ]
+            vertical: 2,
+          },
+        },
+      },
+    },
+  ],
 };
 
 // ==============================|| APEXCHART - RADIAL ||============================== //
@@ -114,42 +114,42 @@ export default function ApexRedialBarChart() {
   const error = theme.palette.error.main;
 
   useEffect(() => {
-    setOptions((prevState) => ({
+    setOptions(prevState => ({
       ...prevState,
       colors: [secondary, primaryMain, successDark, error],
       xaxis: {
         labels: {
           style: {
-            colors: [primary, primary, primary, primary, primary, primary, primary]
-          }
-        }
+            colors: [primary, primary, primary, primary, primary, primary, primary],
+          },
+        },
       },
       yaxis: {
         labels: {
           style: {
-            colors: [primary]
-          }
-        }
+            colors: [primary],
+          },
+        },
       },
       grid: {
-        borderColor: line
+        borderColor: line,
       },
       plotOptions: {
         radialBar: {
           track: {
-            background: line
-          }
-        }
+            background: line,
+          },
+        },
       },
       theme: {
-        mode: mode === ThemeMode.DARK ? 'dark' : 'light'
-      }
+        mode: mode === ThemeMode.DARK ? 'dark' : 'light',
+      },
     }));
   }, [mode, primary, line, grey200, secondary, primaryMain, successDark, error]);
 
   return (
-    <Box id="chart" sx={{ bgcolor: 'transparent' }}>
-      <ReactApexChart options={options} series={series} type="radialBar" />
+    <Box id='chart' sx={{ bgcolor: 'transparent' }}>
+      <ReactApexChart options={options} series={series} type='radialBar' />
     </Box>
   );
 }

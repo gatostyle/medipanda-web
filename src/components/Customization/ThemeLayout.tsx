@@ -56,36 +56,36 @@ export default function ThemeLayout() {
   };
 
   return (
-    <RadioGroup row aria-label="payment-card" name="payment-card" value={value} onChange={handleRadioChange}>
-      <Stack direction="row" alignItems="center" spacing={2.5} sx={{ width: '100%' }}>
+    <RadioGroup row aria-label='payment-card' name='payment-card' value={value} onChange={handleRadioChange}>
+      <Stack direction='row' alignItems='center' spacing={2.5} sx={{ width: '100%' }}>
         <FormControlLabel
-          control={<Radio value="default" sx={{ display: 'none' }} />}
+          control={<Radio value='default' sx={{ display: 'none' }} />}
           sx={{ width: '100%', m: 0, display: 'flex', '& .MuiFormControlLabel-label': { flex: 1 } }}
           label={
-            <Stack alignItems="center" spacing={0.5}>
+            <Stack alignItems='center' spacing={0.5}>
               <MainCard
                 content={false}
                 sx={{ borderWidth: 2, p: 1, ...(value === 'default' && { borderColor: theme.palette.primary.main }) }}
               >
-                <CardMedia component="img" src={defaultLayout} alt="defaultLayout" />
+                <CardMedia component='img' src={defaultLayout} alt='defaultLayout' />
               </MainCard>
-              <Typography variant="caption">Default</Typography>
+              <Typography variant='caption'>Default</Typography>
             </Stack>
           }
         />
         {(menuOrientation === MenuOrientation.VERTICAL || downLG) && (
           <FormControlLabel
-            control={<Radio value="mini" sx={{ display: 'none' }} />}
+            control={<Radio value='mini' sx={{ display: 'none' }} />}
             sx={{ width: '100%', m: 0, display: 'flex', '& .MuiFormControlLabel-label': { flex: 1 } }}
             label={
-              <Stack alignItems="center" spacing={0.5}>
+              <Stack alignItems='center' spacing={0.5}>
                 <MainCard
                   content={false}
                   sx={{ borderWidth: 2, p: 1, ...(value === 'mini' && { borderColor: theme.palette.primary.main }) }}
                 >
-                  <CardMedia component="img" src={miniMenu} alt="miniMenu" />
+                  <CardMedia component='img' src={miniMenu} alt='miniMenu' />
                 </MainCard>
-                <Typography variant="caption">Mini Drawer</Typography>
+                <Typography variant='caption'>Mini Drawer</Typography>
               </Stack>
             }
           />
@@ -94,14 +94,14 @@ export default function ThemeLayout() {
           control={<Radio value={ThemeDirection.RTL} sx={{ display: 'none' }} />}
           sx={{ width: '100%', m: 0, display: 'flex', '& .MuiFormControlLabel-label': { flex: 1 } }}
           label={
-            <Stack alignItems="center" spacing={0.5}>
+            <Stack alignItems='center' spacing={0.5}>
               <MainCard
                 content={false}
                 sx={{ borderWidth: 2, p: 1, ...(value === ThemeDirection.RTL && { borderColor: theme.palette.primary.main }) }}
               >
-                <CardMedia component="img" src={rtlLayout} alt="rtlLayout" />
+                <CardMedia component='img' src={rtlLayout} alt='rtlLayout' />
               </MainCard>
-              <Typography variant="caption">RTL</Typography>
+              <Typography variant='caption'>RTL</Typography>
             </Stack>
           }
         />

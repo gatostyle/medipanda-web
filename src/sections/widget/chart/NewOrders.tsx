@@ -32,11 +32,11 @@ export default function NewOrders() {
     <MainCard>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
-            <Typography variant="h5">New Orders</Typography>
+          <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1}>
+            <Typography variant='h5'>New Orders</Typography>
             <Box sx={{ minWidth: 120 }}>
-              <FormControl fullWidth size="small">
-                <Select id="demo-simple-select" value={age} onChange={handleChange}>
+              <FormControl fullWidth size='small'>
+                <Select id='demo-simple-select' value={age} onChange={handleChange}>
                   <MenuItem value={10}>Today</MenuItem>
                   <MenuItem value={20}>Weekly</MenuItem>
                   <MenuItem value={30}>Monthly</MenuItem>
@@ -49,16 +49,16 @@ export default function NewOrders() {
           <EcommerceDataChart color={theme.palette.primary.main} height={80} />
         </Grid>
         <Grid item xs={12}>
-          <Stack direction="row" alignItems="center" justifyContent="center" spacing={1}>
-            <Typography variant="subtitle1">$30,200</Typography>
-            <Typography color="primary" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, fontWeight: 500 }}>
+          <Stack direction='row' alignItems='center' justifyContent='center' spacing={1}>
+            <Typography variant='subtitle1'>$30,200</Typography>
+            <Typography color='primary' sx={{ display: 'flex', alignItems: 'center', gap: 0.5, fontWeight: 500 }}>
               <ArrowUp size={14} style={{ transform: 'rotate(45deg)' }} />
               30.6%
             </Typography>
           </Stack>
         </Grid>
         <Grid item xs={12}>
-          <Button fullWidth variant="outlined" color="secondary">
+          <Button fullWidth variant='outlined' color='secondary'>
             View more
           </Button>
         </Grid>

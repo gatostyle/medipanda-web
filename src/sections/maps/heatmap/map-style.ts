@@ -28,11 +28,11 @@ const heatmapLayer: HeatmapLayer = {
       0.8,
       'rgb(239,138,98)',
       0.9,
-      'rgb(255,201,101)'
+      'rgb(255,201,101)',
     ],
     'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 0, 2, MAX_ZOOM_LEVEL, 20],
-    'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 7, 1, 9, 0]
-  }
+    'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 7, 1, 9, 0],
+  },
 };
 
 export default heatmapLayer;

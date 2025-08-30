@@ -77,18 +77,18 @@ export default function CreatableAutocomplete() {
 />`;
 
   return (
-    <MainCard title="Creatable" codeString={createAutocompleteCodeString}>
+    <MainCard title='Creatable' codeString={createAutocompleteCodeString}>
       <Autocomplete
         fullWidth
         value={value}
         onChange={(event, newValue) => {
           if (typeof newValue === 'string') {
             setValue({
-              label: newValue
+              label: newValue,
             });
           } else if (newValue && newValue.inputValue) {
             setValue({
-              label: newValue.inputValue
+              label: newValue.inputValue,
             });
           } else {
             setValue(newValue);
@@ -99,11 +99,11 @@ export default function CreatableAutocomplete() {
 
           const { inputValue } = params;
 
-          const isExisting = options.some((option) => inputValue === option.label);
+          const isExisting = options.some(option => inputValue === option.label);
           if (inputValue !== '' && !isExisting) {
             filtered.push({
               inputValue,
-              label: `Add "${inputValue}"`
+              label: `Add "${inputValue}"`,
             });
           }
 
@@ -112,9 +112,9 @@ export default function CreatableAutocomplete() {
         selectOnFocus
         clearOnBlur
         handleHomeEndKeys
-        id="free-solo-with-text-demo"
+        id='free-solo-with-text-demo'
         options={data}
-        getOptionLabel={(option) => {
+        getOptionLabel={option => {
           // value selected with enter, right from the input
           if (typeof option === 'string') {
             return option;
@@ -130,7 +130,7 @@ export default function CreatableAutocomplete() {
         }}
         renderOption={(props, option) => <li {...props}>{option.label}</li>}
         freeSolo
-        renderInput={(params) => <TextField {...params} placeholder="Free solo with text demo" />}
+        renderInput={params => <TextField {...params} placeholder='Free solo with text demo' />}
       />
     </MainCard>
   );

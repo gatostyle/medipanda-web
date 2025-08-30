@@ -18,7 +18,7 @@ import { openSnackbar } from 'api/snackbar';
 import { SnackbarProps } from 'types/snackbar';
 
 const validationSchema = yup.object({
-  color: yup.array().min(1, 'At least one color is required')
+  color: yup.array().min(1, 'At least one color is required'),
 });
 
 // ==============================|| FORM VALIDATION - CHECKBOX  ||============================== //
@@ -32,36 +32,36 @@ export default function CheckboxForms() {
         open: true,
         message: 'Checkbox - Submit Success',
         variant: 'alert',
-        alert: { color: 'success' }
+        alert: { color: 'success' },
       } as SnackbarProps);
-    }
+    },
   });
 
   return (
-    <MainCard title="Checkbox">
+    <MainCard title='Checkbox'>
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2}>
           <Grid item>
-            <Checkbox value="primary" name="color" color="primary" onChange={formik.handleChange} />
+            <Checkbox value='primary' name='color' color='primary' onChange={formik.handleChange} />
           </Grid>
           <Grid item>
-            <Checkbox value="secondary" name="color" color="secondary" onChange={formik.handleChange} />
+            <Checkbox value='secondary' name='color' color='secondary' onChange={formik.handleChange} />
           </Grid>
           <Grid item>
-            <Checkbox value="error" name="color" color="error" onChange={formik.handleChange} />
+            <Checkbox value='error' name='color' color='error' onChange={formik.handleChange} />
           </Grid>
           <Grid item xs={12} sx={{ pt: '0 !important' }}>
             {formik.errors.color && (
-              <FormHelperText error id="standard-weight-helper-text-email-login">
+              <FormHelperText error id='standard-weight-helper-text-email-login'>
                 {' '}
                 {formik.errors.color}{' '}
               </FormHelperText>
             )}
           </Grid>
           <Grid item xs={12}>
-            <Stack direction="row" justifyContent="flex-end">
+            <Stack direction='row' justifyContent='flex-end'>
               <AnimateButton>
-                <Button variant="contained" type="submit">
+                <Button variant='contained' type='submit'>
                   Submit
                 </Button>
               </AnimateButton>

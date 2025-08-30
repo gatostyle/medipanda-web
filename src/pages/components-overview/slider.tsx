@@ -20,7 +20,7 @@ function valuetext(value: number) {
 }
 
 function valueLabelFormat(value: number) {
-  return marks.findIndex((mark) => mark.value === value) + 1;
+  return marks.findIndex(mark => mark.value === value) + 1;
 }
 
 const minDistance = 10;
@@ -28,20 +28,20 @@ const minDistance = 10;
 const marks = [
   {
     value: 0,
-    label: '0°C'
+    label: '0°C',
   },
   {
     value: 20,
-    label: '20°C'
+    label: '20°C',
   },
   {
     value: 37,
-    label: '37°C'
+    label: '37°C',
   },
   {
     value: 100,
-    label: '100°C'
-  }
+    label: '100°C',
+  },
 ];
 
 // ==============================|| COMPONENTS - SLIDER ||============================== //
@@ -182,55 +182,55 @@ export default function ComponentSlider() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Slider"
-        caption="Sliders allow users to make selections from a range of values."
-        directory="src/pages/components-overview/slider"
-        link="https://mui.com/material-ui/react-slider/"
+        title='Slider'
+        caption='Sliders allow users to make selections from a range of values.'
+        directory='src/pages/components-overview/slider'
+        link='https://mui.com/material-ui/react-slider/'
       />
       <ComponentWrapper>
         <Grid container spacing={2.5}>
           <Grid item xs={12} sm={6}>
             <Stack spacing={2.5}>
-              <MainCard title="Basic" codeHighlight codeString={basicSliderCodeString}>
+              <MainCard title='Basic' codeHighlight codeString={basicSliderCodeString}>
                 <Slider defaultValue={35} />
               </MainCard>
-              <MainCard title="With Icons" codeString={iconsSliderCodeString}>
-                <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
+              <MainCard title='With Icons' codeString={iconsSliderCodeString}>
+                <Stack spacing={2} direction='row' sx={{ mb: 1 }} alignItems='center'>
                   <VolumeMute style={{ color: volume <= 25 ? 'inherit' : theme.palette.text.secondary }} />
-                  <Slider aria-label="Volume" value={volume} onChange={handleVolumeChange} />
+                  <Slider aria-label='Volume' value={volume} onChange={handleVolumeChange} />
                   <VolumeHigh style={{ color: volume > 25 ? 'inherit' : theme.palette.text.secondary }} />
                 </Stack>
               </MainCard>
-              <MainCard title="Range" codeString={rangesSliderCodeString}>
+              <MainCard title='Range' codeString={rangesSliderCodeString}>
                 <Slider
                   getAriaLabel={() => 'Temperature range'}
                   value={range}
                   onChange={handleRangeChange}
-                  valueLabelDisplay="auto"
+                  valueLabelDisplay='auto'
                   getAriaValueText={valuetext}
                 />
               </MainCard>
-              <MainCard title="With Label" codeString={labelSliderCodeString}>
+              <MainCard title='With Label' codeString={labelSliderCodeString}>
                 <Slider
                   sx={{ mt: 2.5 }}
-                  aria-label="Always visible"
+                  aria-label='Always visible'
                   defaultValue={80}
                   getAriaValueText={valuetext}
                   step={10}
-                  valueLabelDisplay="on"
+                  valueLabelDisplay='on'
                 />
               </MainCard>
-              <MainCard title="Vertical" codeString={verticalSliderCodeString}>
-                <Stack sx={{ height: 300 }} spacing={1} direction="row">
-                  <Slider aria-label="Temperature" orientation="vertical" getAriaValueText={valuetext} defaultValue={30} />
-                  <Slider aria-label="Temperature" orientation="vertical" defaultValue={30} disabled />
+              <MainCard title='Vertical' codeString={verticalSliderCodeString}>
+                <Stack sx={{ height: 300 }} spacing={1} direction='row'>
+                  <Slider aria-label='Temperature' orientation='vertical' getAriaValueText={valuetext} defaultValue={30} />
+                  <Slider aria-label='Temperature' orientation='vertical' defaultValue={30} disabled />
                   <Slider
                     getAriaLabel={() => 'Temperature'}
-                    orientation="vertical"
+                    orientation='vertical'
                     getAriaValueText={valuetext}
                     defaultValue={[20, 37]}
                     marks={marks}
-                    color="warning"
+                    color='warning'
                   />
                 </Stack>
               </MainCard>
@@ -238,42 +238,42 @@ export default function ComponentSlider() {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Stack spacing={2.5}>
-              <MainCard title="Disabled" codeString={disabledSliderCodeString}>
+              <MainCard title='Disabled' codeString={disabledSliderCodeString}>
                 <Slider defaultValue={50} disabled />
               </MainCard>
-              <MainCard title="Sizes" codeString={sizeSliderCodeString}>
-                <Slider size="small" defaultValue={70} aria-label="Small" valueLabelDisplay="auto" />
-                <Slider defaultValue={50} aria-label="Default" valueLabelDisplay="auto" />
+              <MainCard title='Sizes' codeString={sizeSliderCodeString}>
+                <Slider size='small' defaultValue={70} aria-label='Small' valueLabelDisplay='auto' />
+                <Slider defaultValue={50} aria-label='Default' valueLabelDisplay='auto' />
               </MainCard>
-              <MainCard title="Discrete" codeString={discreteSliderCodeString}>
+              <MainCard title='Discrete' codeString={discreteSliderCodeString}>
                 <Slider
-                  aria-label="Temperature"
+                  aria-label='Temperature'
                   defaultValue={60}
                   getAriaValueText={valuetext}
-                  valueLabelDisplay="auto"
+                  valueLabelDisplay='auto'
                   step={10}
                   marks
                   min={10}
                   max={110}
                 />
               </MainCard>
-              <MainCard title="Restricted values" codeString={restrictedSliderCodeString}>
+              <MainCard title='Restricted values' codeString={restrictedSliderCodeString}>
                 <Slider
-                  aria-label="Restricted values"
+                  aria-label='Restricted values'
                   defaultValue={20}
                   valueLabelFormat={valueLabelFormat}
                   getAriaValueText={valuetext}
                   step={null}
-                  valueLabelDisplay="auto"
+                  valueLabelDisplay='auto'
                   marks={marks}
                 />
               </MainCard>
-              <MainCard title="Minimum distance" codeString={minSliderCodeString}>
+              <MainCard title='Minimum distance' codeString={minSliderCodeString}>
                 <Slider
                   getAriaLabel={() => 'Minimum distance'}
                   value={value1}
                   onChange={handleChange1}
-                  valueLabelDisplay="auto"
+                  valueLabelDisplay='auto'
                   getAriaValueText={valuetext}
                   disableSwap
                 />
@@ -281,18 +281,18 @@ export default function ComponentSlider() {
                   getAriaLabel={() => 'Minimum distance shift'}
                   value={value2}
                   onChange={handleChange2}
-                  valueLabelDisplay="auto"
+                  valueLabelDisplay='auto'
                   getAriaValueText={valuetext}
                   disableSwap
                 />
               </MainCard>
-              <MainCard title="Colors" codeString={colorsSliderCodeString}>
+              <MainCard title='Colors' codeString={colorsSliderCodeString}>
                 <Slider defaultValue={65} />
-                <Slider defaultValue={50} color="secondary" />
-                <Slider defaultValue={95} color="success" />
-                <Slider defaultValue={30} color="warning" />
-                <Slider defaultValue={85} color="info" />
-                <Slider defaultValue={5} color="error" />
+                <Slider defaultValue={50} color='secondary' />
+                <Slider defaultValue={95} color='success' />
+                <Slider defaultValue={30} color='warning' />
+                <Slider defaultValue={85} color='info' />
+                <Slider defaultValue={5} color='error' />
               </MainCard>
             </Stack>
           </Grid>

@@ -28,10 +28,10 @@ Dense margins
 </Button>`;
 
   return (
-    <MainCard title="Dense" codeString={NotistackDenseCodeString}>
+    <MainCard title='Dense' codeString={NotistackDenseCodeString}>
       <Checkbox checked={checked} onChange={handleChange} inputProps={{ 'aria-label': 'controlled' }} />
       Dense margins
-      <Button variant="outlined" fullWidth sx={{ marginBlockStart: 2 }} onClick={() => enqueueSnackbar('Your notification here')}>
+      <Button variant='outlined' fullWidth sx={{ marginBlockStart: 2 }} onClick={() => enqueueSnackbar('Your notification here')}>
         Show snackbar
       </Button>
     </MainCard>

@@ -42,7 +42,7 @@ export default function Locales({ children }: Props) {
   return (
     <>
       {messages && (
-        <IntlProvider locale={i18n} defaultLocale="en" messages={messages}>
+        <IntlProvider locale={i18n} defaultLocale='en' messages={messages}>
           {children}
         </IntlProvider>
       )}

@@ -9,7 +9,7 @@ const LoaderWrapper = styled('div')(({ theme }) => ({
   left: 0,
   zIndex: 2001,
   width: '100%',
-  '& > * + *': { marginTop: theme.spacing(2) }
+  '& > * + *': { marginTop: theme.spacing(2) },
 }));
 
 // ==============================|| Loader ||============================== //
@@ -19,7 +19,7 @@ export interface LoaderProps extends LinearProgressProps {}
 export default function Loader() {
   return (
     <LoaderWrapper>
-      <LinearProgress color="primary" sx={{ height: 2 }} />
+      <LinearProgress color='primary' sx={{ height: 2 }} />
     </LoaderWrapper>
   );
 }

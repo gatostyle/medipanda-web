@@ -21,7 +21,7 @@ const StyledAutocompletePopper = styled(Box)(({ theme }) => ({
     boxShadow: 'none',
     margin: 0,
     color: 'inherit',
-    fontSize: 13
+    fontSize: 13,
   },
   [`& .${autocompleteClasses.listbox}`]: {
     backgroundColor: theme.palette.background.default,
@@ -33,11 +33,11 @@ const StyledAutocompletePopper = styled(Box)(({ theme }) => ({
       borderBottom: `1px solid ${theme.palette.divider}`,
       '&[aria-selected="true"]': { backgroundColor: 'transparent' },
       '&[data-focus="true"], &[data-focus="true"][aria-selected="true"]': {
-        backgroundColor: theme.palette.action.hover
-      }
-    }
+        backgroundColor: theme.palette.action.hover,
+      },
+    },
   },
-  [`&.${autocompleteClasses.popperDisablePortal}`]: { position: 'relative' }
+  [`&.${autocompleteClasses.popperDisablePortal}`]: { position: 'relative' },
 }));
 
 function PopperComponent({ ...other }) {
@@ -53,7 +53,7 @@ const StyledPopper = styled(Popper)(({ theme }) => ({
   zIndex: theme.zIndex.modal,
   fontSize: 13,
   color: theme.palette.mode === ThemeMode.DARK ? theme.palette.secondary.light : theme.palette.secondary.dark,
-  backgroundColor: theme.palette.background.default
+  backgroundColor: theme.palette.background.default,
 }));
 
 const StyledInput = styled(InputBase)(({ theme }) => ({
@@ -71,9 +71,9 @@ const StyledInput = styled(InputBase)(({ theme }) => ({
     fontSize: 14,
     '&:focus-visible': {
       boxShadow: theme.customShadows.primary,
-      borderColor: theme.palette.primary.main
-    }
-  }
+      borderColor: theme.palette.primary.main,
+    },
+  },
 }));
 
 const Button = styled(ButtonBase)(({ theme }) => ({
@@ -84,20 +84,20 @@ const Button = styled(ButtonBase)(({ theme }) => ({
   color: theme.palette.text.primary,
   fontWeight: 600,
   '&:hover': {
-    color: theme.palette.primary.main
+    color: theme.palette.primary.main,
   },
   '&:focus-visible': {
     borderRadius: 1,
     outline: `2px solid ${theme.palette.secondary.dark}`,
-    outlineOffset: 2
+    outlineOffset: 2,
   },
   '& span': {
-    width: '100%'
+    width: '100%',
   },
   '& svg': {
     width: 16,
-    height: 16
-  }
+    height: 16,
+  },
 }));
 
 // ==============================|| AUTOCOMPLETE - GITHUB ||============================== //
@@ -223,7 +223,7 @@ export default function GitHubLabel() {
           sx={{ justifyContent: 'space-between', '& span': { width: 'auto' } }}
         >
           <span>Labels</span>
-          <Setting3 variant="Bold" />
+          <Setting3 variant='Bold' />
         </Button>
         {value.map((label, index) => (
           <Box
@@ -234,25 +234,25 @@ export default function GitHubLabel() {
               padding: '.15em 4px',
               fontWeight: 600,
               lineHeight: '15px',
-              borderRadius: '2px'
+              borderRadius: '2px',
             }}
             style={{
               backgroundColor: label.color,
-              color: theme.palette.getContrastText(label.color)
+              color: theme.palette.getContrastText(label.color),
             }}
           >
             {label.name}
           </Box>
         ))}
       </Box>
-      <StyledPopper id={id} open={open} anchorEl={anchorEl} placement="bottom-start">
+      <StyledPopper id={id} open={open} anchorEl={anchorEl} placement='bottom-start'>
         <ClickAwayListener onClickAway={handleClose}>
           <Box sx={{ bgcolor: 'background.default' }}>
             <Box
               sx={{
                 borderBottom: `1px solid ${theme.palette.divider}`,
                 padding: '8px 10px',
-                fontWeight: 600
+                fontWeight: 600,
               }}
             >
               Apply labels to this pull request
@@ -275,7 +275,7 @@ export default function GitHubLabel() {
               disableCloseOnSelect
               PopperComponent={PopperComponent}
               renderTags={() => null}
-              noOptionsText="No labels"
+              noOptionsText='No labels'
               renderOption={(props, option, { selected }) => (
                 <li {...props}>
                   <Box
@@ -287,7 +287,7 @@ export default function GitHubLabel() {
                       ml: '-2px',
                       mt: 0.25,
                       color: 'success.main',
-                      visibility: selected ? 'visible' : 'hidden'
+                      visibility: selected ? 'visible' : 'hidden',
                     }}
                   />
                   <Box sx={{ width: 14, height: 14, flexShrink: 0, borderRadius: '3px', mr: 1, mt: '2px', bgcolor: option.color }} />
@@ -310,9 +310,9 @@ export default function GitHubLabel() {
                 bi = bi === -1 ? value.length + labels.indexOf(b) : bi;
                 return ai - bi;
               })}
-              getOptionLabel={(option) => option.name}
-              renderInput={(params) => (
-                <StyledInput ref={params.InputProps.ref} inputProps={params.inputProps} autoFocus placeholder="Filter labels" />
+              getOptionLabel={option => option.name}
+              renderInput={params => (
+                <StyledInput ref={params.InputProps.ref} inputProps={params.inputProps} autoFocus placeholder='Filter labels' />
               )}
             />
           </Box>
@@ -333,91 +333,91 @@ const labels = [
   {
     name: 'good first issue',
     color: '#7057ff',
-    description: 'Good for newcomers'
+    description: 'Good for newcomers',
   },
   {
     name: 'help wanted',
     color: '#008672',
-    description: 'Extra attention is needed'
+    description: 'Extra attention is needed',
   },
   {
     name: 'priority: critical',
     color: '#b60205',
-    description: ''
+    description: '',
   },
   {
     name: 'priority: high',
     color: '#d93f0b',
-    description: ''
+    description: '',
   },
   {
     name: 'priority: low',
     color: '#0e8a16',
-    description: ''
+    description: '',
   },
   {
     name: 'priority: medium',
     color: '#fbca04',
-    description: ''
+    description: '',
   },
   {
     name: "status: can't reproduce",
     color: '#fec1c1',
-    description: ''
+    description: '',
   },
   {
     name: 'status: confirmed',
     color: '#215cea',
-    description: ''
+    description: '',
   },
   {
     name: 'status: duplicate',
     color: '#cfd3d7',
-    description: 'This issue or pull request already exists'
+    description: 'This issue or pull request already exists',
   },
   {
     name: 'status: needs information',
     color: '#fef2c0',
-    description: ''
+    description: '',
   },
   {
     name: 'status: wont do/fix',
     color: '#eeeeee',
-    description: 'This will not be worked on'
+    description: 'This will not be worked on',
   },
   {
     name: 'type: bug',
     color: '#d73a4a',
-    description: "Something isn't working"
+    description: "Something isn't working",
   },
   {
     name: 'type: discussion',
     color: '#d4c5f9',
-    description: ''
+    description: '',
   },
   {
     name: 'type: documentation',
     color: '#006b75',
-    description: ''
+    description: '',
   },
   {
     name: 'type: enhancement',
     color: '#84b6eb',
-    description: ''
+    description: '',
   },
   {
     name: 'type: epic',
     color: '#3e4b9e',
-    description: 'A theme of work that contain sub-tasks'
+    description: 'A theme of work that contain sub-tasks',
   },
   {
     name: 'type: feature request',
     color: '#fbca04',
-    description: 'New feature or request'
+    description: 'New feature or request',
   },
   {
     name: 'type: question',
     color: '#d876e3',
-    description: 'Further information is requested'
-  }
+    description: 'Further information is requested',
+  },
 ];

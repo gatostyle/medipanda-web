@@ -30,7 +30,7 @@ function ChangeTheme({ themes, ...other }: Props) {
           longitude: 72.8636084,
           zoom: 6,
           bearing: 0,
-          pitch: 0
+          pitch: 0,
         }}
         mapStyle={themes?.[selectTheme]}
         {...other}

@@ -42,20 +42,20 @@ export default function TeamMembers() {
   return (
     <MainCard content={false}>
       <Box sx={{ p: 3, pb: 0 }}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
-          <Typography variant="h5">Team Members</Typography>
+        <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1}>
+          <Typography variant='h5'>Team Members</Typography>
           <IconButton
-            color="secondary"
-            id="wallet-button"
+            color='secondary'
+            id='wallet-button'
             aria-controls={open ? 'wallet-menu' : undefined}
-            aria-haspopup="true"
+            aria-haspopup='true'
             aria-expanded={open ? 'true' : undefined}
             onClick={handleClick}
           >
             <MoreIcon />
           </IconButton>
           <Menu
-            id="wallet-menu"
+            id='wallet-menu'
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
@@ -70,39 +70,39 @@ export default function TeamMembers() {
         </Stack>
       </Box>
       <List disablePadding sx={{ '& .MuiListItem-root': { px: 3, py: 1.5 } }}>
-        <ListItem divider secondaryAction={<Typography color="text.secondary">5 min ago</Typography>}>
+        <ListItem divider secondaryAction={<Typography color='text.secondary'>5 min ago</Typography>}>
           <ListItemAvatar sx={{ mr: 1 }}>
-            <Avatar alt="User 1" src={Avatar1} variant="rounded" size="lg" />
+            <Avatar alt='User 1' src={Avatar1} variant='rounded' size='lg' />
           </ListItemAvatar>
           <ListItemText
-            primary={<Typography variant="subtitle1">David Jones</Typography>}
+            primary={<Typography variant='subtitle1'>David Jones</Typography>}
             secondary={<Typography sx={{ mt: 0.25 }}>Project Leader</Typography>}
           />
         </ListItem>
-        <ListItem divider secondaryAction={<Typography color="text.secondary">1 hour ago</Typography>}>
+        <ListItem divider secondaryAction={<Typography color='text.secondary'>1 hour ago</Typography>}>
           <ListItemAvatar sx={{ mr: 1 }}>
-            <Avatar alt="User 2" src={Avatar2} variant="rounded" size="lg" />
+            <Avatar alt='User 2' src={Avatar2} variant='rounded' size='lg' />
           </ListItemAvatar>
           <ListItemText
-            primary={<Typography variant="subtitle1">David Jones</Typography>}
+            primary={<Typography variant='subtitle1'>David Jones</Typography>}
             secondary={<Typography sx={{ mt: 0.25 }}>HR Manager</Typography>}
           />
         </ListItem>
-        <ListItem divider secondaryAction={<Typography color="text.secondary">Yesterday</Typography>}>
+        <ListItem divider secondaryAction={<Typography color='text.secondary'>Yesterday</Typography>}>
           <ListItemAvatar sx={{ mr: 1 }}>
-            <Avatar alt="User 3" src={Avatar3} variant="rounded" size="lg" />
+            <Avatar alt='User 3' src={Avatar3} variant='rounded' size='lg' />
           </ListItemAvatar>
           <ListItemText
-            primary={<Typography variant="subtitle1">David Jones</Typography>}
+            primary={<Typography variant='subtitle1'>David Jones</Typography>}
             secondary={<Typography sx={{ mt: 0.25 }}>Developer</Typography>}
           />
         </ListItem>
-        <ListItem secondaryAction={<Typography color="text.secondary">02-05-2022</Typography>}>
+        <ListItem secondaryAction={<Typography color='text.secondary'>02-05-2022</Typography>}>
           <ListItemAvatar sx={{ mr: 1 }}>
-            <Avatar alt="User 4" src={Avatar4} variant="rounded" size="lg" />
+            <Avatar alt='User 4' src={Avatar4} variant='rounded' size='lg' />
           </ListItemAvatar>
           <ListItemText
-            primary={<Typography variant="subtitle1">David Jones</Typography>}
+            primary={<Typography variant='subtitle1'>David Jones</Typography>}
             secondary={<Typography sx={{ mt: 0.25 }}>UI/UX Designer</Typography>}
           />
         </ListItem>

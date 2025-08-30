@@ -20,7 +20,7 @@ export default function ComponentLayout() {
   return (
     <>
       <Suspense fallback={<Loader />}>
-        <Container maxWidth="xl" sx={{ px: { xs: 0, sm: 2 } }}>
+        <Container maxWidth='xl' sx={{ px: { xs: 0, sm: 2 } }}>
           <Header />
           <Toolbar sx={{ mt: 2 }} />
           <ComponentLayoutPage />

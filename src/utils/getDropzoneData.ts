@@ -7,7 +7,7 @@ export default function getDropzoneData(file: CustomFile | string, index?: numbe
   if (typeof file === 'string') {
     return {
       key: index ? `${file}-${index}` : file,
-      preview: file
+      preview: file,
     };
   }
 
@@ -19,6 +19,6 @@ export default function getDropzoneData(file: CustomFile | string, index?: numbe
     type: file.type,
     preview: file.preview,
     lastModified: file.lastModified,
-    lastModifiedDate: file.lastModifiedDate
+    lastModifiedDate: file.lastModifiedDate,
   };
 }

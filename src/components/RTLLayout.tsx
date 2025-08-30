@@ -27,7 +27,7 @@ export default function RTLLayout({ children }: Props) {
   const cacheRtl = createCache({
     key: themeDirection === ThemeDirection.RTL ? 'rtl' : 'css',
     prepend: true,
-    stylisPlugins: themeDirection === ThemeDirection.RTL ? [rtlPlugin as StylisPlugin] : []
+    stylisPlugins: themeDirection === ThemeDirection.RTL ? [rtlPlugin as StylisPlugin] : [],
   });
 
   return <CacheProvider value={cacheRtl}>{children}</CacheProvider>;

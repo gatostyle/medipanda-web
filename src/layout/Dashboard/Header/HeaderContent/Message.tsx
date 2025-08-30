@@ -40,74 +40,74 @@ export default function Customization() {
     <>
       <Box sx={{ flexShrink: 0, ml: 0.75 }}>
         <IconButton
-          color="secondary"
-          variant="light"
+          color='secondary'
+          variant='light'
           onClick={handleToggle}
-          aria-label="settings toggler"
-          size="large"
+          aria-label='settings toggler'
+          size='large'
           sx={{ color: 'secondary.main', bgcolor: open ? iconBackColorOpen : iconBackColor, p: 1 }}
         >
-          <NotificationStatus variant="Bulk" />
+          <NotificationStatus variant='Bulk' />
         </IconButton>
       </Box>
-      <Drawer sx={{ zIndex: 2001 }} anchor="right" onClose={handleToggle} open={open} PaperProps={{ sx: { width: { xs: 350, sm: 474 } } }}>
+      <Drawer sx={{ zIndex: 2001 }} anchor='right' onClose={handleToggle} open={open} PaperProps={{ sx: { width: { xs: 350, sm: 474 } } }}>
         {open && (
           <MainCard content={false} sx={{ border: 'none', borderRadius: 0, height: '100vh' }}>
             <SimpleBar
               sx={{
                 '& .simplebar-content': {
                   display: 'flex',
-                  flexDirection: 'column'
-                }
+                  flexDirection: 'column',
+                },
               }}
             >
               <Box sx={{ p: 2.5 }}>
-                <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1.5}>
-                  <Typography variant="h5">What’s new announcement?</Typography>
-                  <IconButton color="secondary" sx={{ p: 0 }} onClick={handleToggle}>
+                <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1.5}>
+                  <Typography variant='h5'>What’s new announcement?</Typography>
+                  <IconButton color='secondary' sx={{ p: 0 }} onClick={handleToggle}>
                     <Add size={28} style={{ transform: 'rotate(45deg)' }} />
                   </IconButton>
                 </Stack>
                 <Grid container spacing={1.5} sx={{ mt: 2 }}>
                   <Grid item xs={12}>
-                    <Typography variant="h6">Today</Typography>
+                    <Typography variant='h6'>Today</Typography>
                   </Grid>
                   <Grid item xs={12}>
                     <MessageCard
                       status={{ label: 'New Feature', color: 'success' }}
-                      time="just now"
-                      title="Select Business Unit"
-                      message="You can use the Analytics Dashboard to explore how many new users download reports daily and monthly"
+                      time='just now'
+                      title='Select Business Unit'
+                      message='You can use the Analytics Dashboard to explore how many new users download reports daily and monthly'
                       src={message1}
                       actions={[
                         {
                           label: 'Skip Intro',
-                          button: { variant: 'outlined', color: 'secondary', fullWidth: true }
+                          button: { variant: 'outlined', color: 'secondary', fullWidth: true },
                         },
                         {
                           label: 'Next',
-                          button: { variant: 'contained', fullWidth: true }
-                        }
+                          button: { variant: 'contained', fullWidth: true },
+                        },
                       ]}
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <MessageCard
                       status={{ label: 'Meeting', color: 'warning' }}
-                      time="2 min ago"
-                      title="General Meeting for update"
-                      message="You can use the Dashboard to explore how many new users download reports daily and monthly"
+                      time='2 min ago'
+                      title='General Meeting for update'
+                      message='You can use the Dashboard to explore how many new users download reports daily and monthly'
                       src={message2}
                     />
                   </Grid>
                   <Grid item xs={12} sx={{ my: 1.25 }}>
-                    <Typography variant="h6">Yesterday</Typography>
+                    <Typography variant='h6'>Yesterday</Typography>
                   </Grid>
                   <Grid item xs={12}>
                     <MessageCard
                       status={{ label: 'Improvement', color: 'primary' }}
-                      time="2 hours ago"
-                      title="Widgets update"
+                      time='2 hours ago'
+                      title='Widgets update'
                       message="We've made some updates to the emendable widget which we think you are going to love."
                       src={message3}
                     />
@@ -115,8 +115,8 @@ export default function Customization() {
                   <Grid item xs={12}>
                     <MessageCard
                       status={{ label: 'Improvement', color: 'primary' }}
-                      time="1 day ago"
-                      title="Coming soon dark mode"
+                      time='1 day ago'
+                      title='Coming soon dark mode'
                       message="We've made some updates to the emendable widget which we think you are going to love."
                       src={message4}
                     />

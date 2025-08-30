@@ -38,7 +38,7 @@ export default function ScrollableList() {
   return (
     <MainCard content={false} codeString={scrollListCodeString}>
       <Box sx={{ width: '100%', height: 400, bgcolor: 'background.paper', '& .MuiListItemButton-root': { borderRadius: 0, my: 0 } }}>
-        <FixedSizeList height={400} width="100%" itemSize={46} itemCount={200} overscanCount={5}>
+        <FixedSizeList height={400} width='100%' itemSize={46} itemCount={200} overscanCount={5}>
           {renderRow}
         </FixedSizeList>
       </Box>

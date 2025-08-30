@@ -41,7 +41,7 @@ const getDragWrapper = (isDragging: boolean, theme: Theme): CSSProperties | unde
     theme.palette.mode === ThemeMode.DARK ? alpha(theme.palette.background.paper, 0.9) : alpha(theme.palette.primary.lighter, 0.99);
   return {
     backgroundColor: isDragging ? bgcolor : 'transparent',
-    userSelect: 'none'
+    userSelect: 'none',
   };
 };
 
@@ -52,7 +52,7 @@ export default function Items({ itemId, index }: Props) {
   const { backlogs } = useGetBacklogs();
 
   const item = backlogs?.items.filter((data: KanbanItem) => data.id === itemId)[0];
-  const itemColumn = backlogs?.columns.filter((column: KanbanColumn) => column.itemIds.filter((id) => id === item.id)[0])[0];
+  const itemColumn = backlogs?.columns.filter((column: KanbanColumn) => column.itemIds.filter(id => id === item.id)[0])[0];
   const itemProfile = backlogs?.profiles.filter((profile: KanbanProfile) => profile.id === item.assign)[0];
 
   const handlerDetails = () => {
@@ -78,7 +78,7 @@ export default function Items({ itemId, index }: Props) {
         message: 'Task Deleted successfully',
         anchorOrigin: { vertical: 'top', horizontal: 'right' },
         variant: 'alert',
-        alert: { color: 'success' }
+        alert: { color: 'success' },
       } as SnackbarProps);
     }
   };
@@ -97,20 +97,20 @@ export default function Items({ itemId, index }: Props) {
             '& .more-button': { opacity: 0 },
             ':hover': { '& .more-button': { opacity: 1 } },
             ...(Boolean(anchorEl) && { '& .more-button': { opacity: 1 } }),
-            ...getDragWrapper(snapshot.isDragging, theme)
+            ...getDragWrapper(snapshot.isDragging, theme),
           }}
         >
           <TableCell sx={{ pl: 3, minWidth: 120, width: 120, height: 46 }} />
           <TableCell sx={{ width: 110, minWidth: 110 }}>
-            <Stack direction="row" spacing={0.75} alignItems="center">
+            <Stack direction='row' spacing={0.75} alignItems='center'>
               <Task size={16} style={{ color: theme.palette.info.main, marginTop: -2 }} />
-              <Typography variant="subtitle2">{item.id}</Typography>
+              <Typography variant='subtitle2'>{item.id}</Typography>
             </Stack>
           </TableCell>
-          <TableCell sx={{ maxWidth: 'calc(100vw - 850px)', minWidth: 140 }} component="th" scope="row">
+          <TableCell sx={{ maxWidth: 'calc(100vw - 850px)', minWidth: 140 }} component='th' scope='row'>
             <Link
-              underline="hover"
-              color="default"
+              underline='hover'
+              color='default'
               onClick={handlerDetails}
               sx={{
                 overflow: 'hidden',
@@ -118,7 +118,7 @@ export default function Items({ itemId, index }: Props) {
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
                 ':hover': { color: 'info.main' },
-                cursor: 'pointer'
+                cursor: 'pointer',
               }}
             >
               {item.title}
@@ -126,23 +126,23 @@ export default function Items({ itemId, index }: Props) {
           </TableCell>
           <TableCell sx={{ width: 60, minWidth: 60 }}>
             <IconButton
-              className="more-button"
-              size="small"
+              className='more-button'
+              size='small'
               onClick={handleClick}
-              aria-controls="menu-comment"
-              aria-haspopup="true"
-              color="secondary"
+              aria-controls='menu-comment'
+              aria-haspopup='true'
+              color='secondary'
               sx={{ color: 'text.secondary' }}
             >
               <MoreIcon />
             </IconButton>
             <Menu
-              id="menu-comment"
+              id='menu-comment'
               anchorEl={anchorEl}
               keepMounted
               open={Boolean(anchorEl)}
               onClose={handleClose}
-              variant="selectedMenu"
+              variant='selectedMenu'
               anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
               transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             >

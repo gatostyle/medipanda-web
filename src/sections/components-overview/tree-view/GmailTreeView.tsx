@@ -43,28 +43,28 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
     '&:hover': { backgroundColor: theme.palette.action.hover },
     '&.Mui-focused, &.Mui-selected, &.Mui-selected.Mui-focused': {
       backgroundColor: `var(--tree-view-bg-color, ${theme.palette.action.selected})`,
-      color: 'var(--tree-view-color)'
+      color: 'var(--tree-view-color)',
     },
-    [`& .${treeItemClasses.label}`]: { fontWeight: 'inherit', color: 'inherit' }
+    [`& .${treeItemClasses.label}`]: { fontWeight: 'inherit', color: 'inherit' },
   },
   [`& .${treeItemClasses.groupTransition}`]: {
     marginLeft: 0,
     [`& .${treeItemClasses.content}`]: {
-      paddingLeft: theme.spacing(2)
-    }
-  }
+      paddingLeft: theme.spacing(2),
+    },
+  },
 }));
 
 function StyledTreeItem({ bgColor, color, labelIcon, labelInfo, labelText, ...other }: StyledTreeItemProps) {
   return (
     <StyledTreeItemRoot
       label={
-        <Stack direction="row" spacing={0.5}>
+        <Stack direction='row' spacing={0.5}>
           <Box sx={{ mr: 1, fontSize: '1rem' }}>{labelIcon}</Box>
-          <Typography variant="body2" sx={{ fontWeight: 'inherit', flexGrow: 1 }}>
+          <Typography variant='body2' sx={{ fontWeight: 'inherit', flexGrow: 1 }}>
             {labelText}
           </Typography>
-          <Typography variant="caption" color="inherit">
+          <Typography variant='caption' color='inherit'>
             {labelInfo}
           </Typography>
         </Stack>
@@ -79,11 +79,11 @@ function StyledTreeItem({ bgColor, color, labelIcon, labelInfo, labelText, ...ot
 
 export default function GmailTreeView() {
   const CollapseIcon = () => {
-    return <ArrowDown2 variant="Bold" />;
+    return <ArrowDown2 variant='Bold' />;
   };
 
   const ExpandIcon = () => {
-    return <ArrowRight2 variant="Bold" />;
+    return <ArrowRight2 variant='Bold' />;
   };
 
   const EndIcon = () => {
@@ -123,50 +123,50 @@ export default function GmailTreeView() {
 </SimpleTreeView>`;
 
   return (
-    <MainCard title="Gmail Clone" codeString={gmailTreeviewCodeString}>
+    <MainCard title='Gmail Clone' codeString={gmailTreeviewCodeString}>
       <SimpleTreeView
-        aria-label="gmail"
+        aria-label='gmail'
         defaultExpandedItems={['3']}
         slots={{ collapseIcon: CollapseIcon, expandIcon: ExpandIcon, endIcon: EndIcon }}
         sx={{ height: 400, flexGrow: 1, overflowY: 'auto' }}
       >
-        <StyledTreeItem itemId="1" labelText="All Mail" labelIcon={<Sms />} />
-        <StyledTreeItem itemId="2" labelText="Trash" labelIcon={<Trash />} />
-        <StyledTreeItem itemId="3" labelText="Categories" labelIcon={<Tag2 />}>
+        <StyledTreeItem itemId='1' labelText='All Mail' labelIcon={<Sms />} />
+        <StyledTreeItem itemId='2' labelText='Trash' labelIcon={<Trash />} />
+        <StyledTreeItem itemId='3' labelText='Categories' labelIcon={<Tag2 />}>
           <StyledTreeItem
-            itemId="5"
-            labelText="Social"
-            labelIcon={<Profile variant="Bulk" />}
-            labelInfo="90"
-            color="#1a73e8"
-            bgColor="#e8f0fe"
+            itemId='5'
+            labelText='Social'
+            labelIcon={<Profile variant='Bulk' />}
+            labelInfo='90'
+            color='#1a73e8'
+            bgColor='#e8f0fe'
           />
           <StyledTreeItem
-            itemId="6"
-            labelText="Updates"
-            labelIcon={<InfoCircle variant="Bulk" />}
-            labelInfo="2,294"
-            color="#e3742f"
-            bgColor="#fcefe3"
+            itemId='6'
+            labelText='Updates'
+            labelIcon={<InfoCircle variant='Bulk' />}
+            labelInfo='2,294'
+            color='#e3742f'
+            bgColor='#fcefe3'
           />
           <StyledTreeItem
-            itemId="7"
-            labelText="Forums"
-            labelIcon={<Book1 variant="Bulk" />}
-            labelInfo="3,566"
-            color="#a250f5"
-            bgColor="#f3e8fd"
+            itemId='7'
+            labelText='Forums'
+            labelIcon={<Book1 variant='Bulk' />}
+            labelInfo='3,566'
+            color='#a250f5'
+            bgColor='#f3e8fd'
           />
           <StyledTreeItem
-            itemId="8"
-            labelText="Promotions"
-            labelIcon={<Tag2 variant="Bulk" />}
-            labelInfo="733"
-            color="#3c8039"
-            bgColor="#e6f4ea"
+            itemId='8'
+            labelText='Promotions'
+            labelIcon={<Tag2 variant='Bulk' />}
+            labelInfo='733'
+            color='#3c8039'
+            bgColor='#e6f4ea'
           />
         </StyledTreeItem>
-        <StyledTreeItem itemId="4" labelText="History" labelIcon={<Tag2 />} />
+        <StyledTreeItem itemId='4' labelText='History' labelIcon={<Tag2 />} />
       </SimpleTreeView>
     </MainCard>
   );

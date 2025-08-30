@@ -20,42 +20,42 @@ export default function Apexchart() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} md={6}>
-        <MainCard title="Column Chart">
+        <MainCard title='Column Chart'>
           <ApexColumnChart />
         </MainCard>
       </Grid>
       <Grid item xs={12} md={6}>
-        <MainCard title="Bar Chart">
+        <MainCard title='Bar Chart'>
           <ApexBarChart />
         </MainCard>
       </Grid>
       <Grid item xs={12} md={6} lg={6}>
-        <MainCard title="Line Chart">
+        <MainCard title='Line Chart'>
           <ApexLineChart />
         </MainCard>
       </Grid>
       <Grid item xs={12} md={6} lg={6}>
-        <MainCard title="Area Chart">
+        <MainCard title='Area Chart'>
           <ApexAreaChart />
         </MainCard>
       </Grid>
       <Grid item xs={12} md={6} lg={8}>
-        <MainCard title="Mixed Chart">
+        <MainCard title='Mixed Chart'>
           <ApexMixedChart />
         </MainCard>
       </Grid>
       <Grid item xs={12} sm={6} lg={4}>
-        <MainCard title="Redial Chart">
+        <MainCard title='Redial Chart'>
           <ApexRedialChart />
         </MainCard>
       </Grid>
       <Grid item xs={12} sm={6} xl={4}>
-        <MainCard title="Polar Chart">
+        <MainCard title='Polar Chart'>
           <ApexPolarChart />
         </MainCard>
       </Grid>
       <Grid item xs={12} sm={6} xl={4}>
-        <MainCard title="Pie Chart">
+        <MainCard title='Pie Chart'>
           <ApexPieChart />
         </MainCard>
       </Grid>

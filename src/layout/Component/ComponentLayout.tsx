@@ -13,23 +13,23 @@ import { DRAWER_WIDTH } from 'config';
 import { handlerComponentDrawer, useGetMenuMaster } from 'api/menu';
 
 // components content
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }: { theme: Theme; open: boolean }) => ({
+const Main = styled('main', { shouldForwardProp: prop => prop !== 'open' })(({ theme, open }: { theme: Theme; open: boolean }) => ({
   minHeight: `calc(100vh - 180px)`,
   width: `calc(100% - ${DRAWER_WIDTH}px)`,
   flexGrow: 1,
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen
+    duration: theme.transitions.duration.leavingScreen,
   }),
   [theme.breakpoints.down('md')]: {
-    paddingLeft: 0
+    paddingLeft: 0,
   },
   ...(open && {
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    })
-  })
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  }),
 }));
 
 // ==============================|| COMPONENTS LAYOUT ||============================== //

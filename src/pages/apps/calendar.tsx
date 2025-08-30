@@ -113,7 +113,7 @@ export default function Calendar() {
 
   const handleEventSelect = (arg: EventClickArg) => {
     if (arg?.event?.id) {
-      const event = events.find((event) => event.id === arg.event.id);
+      const event = events.find(event => event.id === arg.event.id);
       setSelectedEvent(event);
     }
 
@@ -124,7 +124,7 @@ export default function Calendar() {
     await updateEvent(event.id, {
       allDay: event.allDay,
       start: event.start,
-      end: event.end
+      end: event.end,
     });
     setModalOpen(true);
   };
@@ -167,7 +167,7 @@ export default function Calendar() {
           initialDate={date}
           initialView={calendarView}
           dayMaxEventRows={3}
-          eventDisplay="block"
+          eventDisplay='block'
           headerToolbar={false}
           allDayMaintainDuration
           eventResizableFromStart
@@ -182,7 +182,7 @@ export default function Calendar() {
 
       {/* Dialog renders its body even if not open */}
       <Dialog
-        maxWidth="sm"
+        maxWidth='sm'
         TransitionComponent={PopupTransition}
         fullWidth
         onClose={handleModal}
@@ -191,9 +191,9 @@ export default function Calendar() {
       >
         <AddEventForm modalCallback={modalCallback} event={selectedEvent} range={selectedRange} onCancel={handleModal} />
       </Dialog>
-      <Tooltip title="Add New Event">
+      <Tooltip title='Add New Event'>
         <SpeedDial
-          ariaLabel="add-event-fab"
+          ariaLabel='add-event-fab'
           sx={{ display: 'inline-flex', position: 'sticky', bottom: 24, left: '100%', transform: 'translate(-50%, -50% )' }}
           icon={<Add />}
           onClick={handleModal}

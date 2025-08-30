@@ -43,32 +43,32 @@ export default function ColorsTimeline() {
 </Timeline>`;
 
   return (
-    <MainCard title="Colors" codeString={colorTimelineCodeString}>
-      <Timeline position="alternate">
+    <MainCard title='Colors' codeString={colorTimelineCodeString}>
+      <Timeline position='alternate'>
         <TimelineItem>
           <TimelineSeparator>
-            <TimelineDot variant="outlined" color="primary" />
+            <TimelineDot variant='outlined' color='primary' />
             <TimelineConnector />
           </TimelineSeparator>
           <TimelineContent>Eat</TimelineContent>
         </TimelineItem>
         <TimelineItem>
           <TimelineSeparator>
-            <TimelineDot variant="outlined" color="success" />
+            <TimelineDot variant='outlined' color='success' />
             <TimelineConnector />
           </TimelineSeparator>
           <TimelineContent>Code</TimelineContent>
         </TimelineItem>
         <TimelineItem>
           <TimelineSeparator>
-            <TimelineDot variant="outlined" color="warning" />
+            <TimelineDot variant='outlined' color='warning' />
             <TimelineConnector />
           </TimelineSeparator>
           <TimelineContent>Sleep</TimelineContent>
         </TimelineItem>
         <TimelineItem sx={{ minHeight: 'auto' }}>
           <TimelineSeparator>
-            <TimelineDot variant="outlined" color="error" />
+            <TimelineDot variant='outlined' color='error' />
           </TimelineSeparator>
           <TimelineContent>Repeat</TimelineContent>
         </TimelineItem>

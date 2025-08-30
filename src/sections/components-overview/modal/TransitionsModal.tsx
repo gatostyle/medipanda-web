@@ -21,34 +21,34 @@ export default function TransitionsModal() {
   const handleClose = () => setOpen(false);
 
   return (
-    <MainCard title="Transitions Modal">
-      <Button onClick={handleOpen} variant="contained">
+    <MainCard title='Transitions Modal'>
+      <Button onClick={handleOpen} variant='contained'>
         Open modal
       </Button>
       <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
+        aria-labelledby='transition-modal-title'
+        aria-describedby='transition-modal-description'
         open={open}
         onClose={handleClose}
         closeAfterTransition
         slots={{ backdrop: Backdrop }}
         slotProps={{
           backdrop: {
-            timeout: 500
-          }
+            timeout: 500,
+          },
         }}
       >
         <Fade in={open}>
-          <MainCard title="Transitions Modal" modal darkTitle content={false}>
+          <MainCard title='Transitions Modal' modal darkTitle content={false}>
             <CardContent>
-              <Typography id="modal-modal-description">Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography>
+              <Typography id='modal-modal-description'>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography>
             </CardContent>
             <Divider />
-            <Stack direction="row" spacing={1} justifyContent="flex-end" sx={{ px: 2.5, py: 2 }}>
-              <Button color="error" size="small" onClick={handleClose}>
+            <Stack direction='row' spacing={1} justifyContent='flex-end' sx={{ px: 2.5, py: 2 }}>
+              <Button color='error' size='small' onClick={handleClose}>
                 Cancel
               </Button>
-              <Button variant="contained" size="small">
+              <Button variant='contained' size='small'>
                 Submit
               </Button>
             </Stack>

@@ -15,18 +15,18 @@ const lineChartOptions = {
     height: 350,
     type: 'line',
     zoom: {
-      enabled: false
-    }
+      enabled: false,
+    },
   },
   dataLabels: {
-    enabled: false
+    enabled: false,
   },
   stroke: {
-    curve: 'straight'
+    curve: 'straight',
   },
   xaxis: {
-    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']
-  }
+    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+  },
 };
 
 // ==============================|| APEXCHART - LINE ||============================== //
@@ -43,41 +43,41 @@ export default function ApexLineChart() {
   const [series] = useState([
     {
       name: 'Desktops',
-      data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
-    }
+      data: [10, 41, 35, 51, 49, 62, 69, 91, 148],
+    },
   ]);
 
   const [options, setOptions] = useState<ChartProps>(lineChartOptions);
 
   useEffect(() => {
-    setOptions((prevState) => ({
+    setOptions(prevState => ({
       ...prevState,
       colors: [secondary],
       xaxis: {
         labels: {
           style: {
-            colors: [primary, primary, primary, primary, primary, primary, primary, primary, primary]
-          }
-        }
+            colors: [primary, primary, primary, primary, primary, primary, primary, primary, primary],
+          },
+        },
       },
       yaxis: {
         labels: {
           style: {
-            colors: [primary]
-          }
-        }
+            colors: [primary],
+          },
+        },
       },
       grid: {
-        borderColor: line
+        borderColor: line,
       },
       theme: {
-        mode: mode === ThemeMode.DARK ? 'dark' : 'light'
-      }
+        mode: mode === ThemeMode.DARK ? 'dark' : 'light',
+      },
     }));
   }, [mode, primary, line, grey200, secondary]);
   return (
-    <div id="chart">
-      <ReactApexChart options={options} series={series} type="line" height={350} />
+    <div id='chart'>
+      <ReactApexChart options={options} series={series} type='line' height={350} />
     </div>
   );
 }

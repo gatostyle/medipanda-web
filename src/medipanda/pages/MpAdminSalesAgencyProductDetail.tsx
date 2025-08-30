@@ -15,7 +15,7 @@ import {
   TableHead,
   TableRow,
   Tabs,
-  Typography
+  Typography,
 } from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import ScrollX from 'components/ScrollX';
@@ -23,7 +23,7 @@ import {
   getProductApplicants,
   getSalesAgencyProductDetails,
   SalesAgencyProductApplicantResponse,
-  SalesAgencyProductDetailsResponse
+  SalesAgencyProductDetailsResponse,
 } from 'medipanda/backend';
 import { TiptapEditor } from 'medipanda/components/TiptapEditor';
 import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
@@ -49,37 +49,37 @@ export default function MpAdminSalesAgencyProductDetail() {
         header: 'No',
         accessorKey: 'sequence',
         cell: ({ row }) => row.original.sequence,
-        size: 60
+        size: 60,
       },
       {
         header: '회원번호',
         accessorKey: 'id',
         cell: ({ row }) => row.original.id,
-        size: 100
+        size: 100,
       },
       {
         header: '아이디',
         accessorKey: 'userId',
         cell: ({ row }) => row.original.userId,
-        size: 120
+        size: 120,
       },
       {
         header: '회원명',
         accessorKey: 'memberName',
         cell: ({ row }) => row.original.memberName,
-        size: 100
+        size: 100,
       },
       {
         header: '핸드폰번호',
         accessorKey: 'phoneNumber',
         cell: ({ row }) => row.original.phoneNumber,
-        size: 140
+        size: 140,
       },
       {
         header: '신청일',
         accessorKey: 'appliedDate',
         cell: ({ row }) => formatYyyyMmDd(row.original.appliedDate),
-        size: 120
+        size: 120,
       },
       {
         header: '파트너사 계약여부',
@@ -87,20 +87,20 @@ export default function MpAdminSalesAgencyProductDetail() {
         cell: ({ row }) => (
           <Chip
             label={row.original.contractStatus === 'CONTRACT' ? 'Y' : 'N'}
-            size="small"
+            size='small'
             color={row.original.contractStatus === 'CONTRACT' ? 'success' : 'default'}
           />
         ),
-        size: 140
+        size: 140,
       },
       {
         header: '비고',
         accessorKey: 'note',
         cell: ({ row }) => row.original.note,
-        size: 100
-      }
+        size: 100,
+      },
     ],
-    []
+    [],
   );
 
   const table = useReactTable({
@@ -109,10 +109,10 @@ export default function MpAdminSalesAgencyProductDetail() {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      pagination: { pageIndex: 0, pageSize: 20 }
+      pagination: { pageIndex: 0, pageSize: 20 },
     },
     pageCount: 1,
-    manualPagination: true
+    manualPagination: true,
   });
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -133,7 +133,7 @@ export default function MpAdminSalesAgencyProductDetail() {
       setLoading(true);
       const [detail, applicantsResponse] = await Promise.all([
         getSalesAgencyProductDetails(parseInt(id)),
-        getProductApplicants(parseInt(id))
+        getProductApplicants(parseInt(id)),
       ]);
 
       setProductDetail(detail);
@@ -165,14 +165,14 @@ export default function MpAdminSalesAgencyProductDetail() {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
+      <Typography variant='h4' gutterBottom sx={{ mb: 3 }}>
         영업대행상품 상세
       </Typography>
 
       <Card>
         <Tabs value={tabValue} onChange={handleTabChange} sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tab label="기본정보" />
-          <Tab label="신청자" />
+          <Tab label='기본정보' />
+          <Tab label='신청자' />
         </Tabs>
 
         {tabValue === 0 && (
@@ -181,82 +181,82 @@ export default function MpAdminSalesAgencyProductDetail() {
               <Grid item xs={12} md={8}>
                 <Stack spacing={3}>
                   <Box>
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                       위탁사명
                     </Typography>
-                    <Typography variant="body1">{productDetail?.clientName}</Typography>
+                    <Typography variant='body1'>{productDetail?.clientName}</Typography>
                   </Box>
 
                   <Box>
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                       상품명
                     </Typography>
-                    <Typography variant="body1">{productDetail?.productName}</Typography>
+                    <Typography variant='body1'>{productDetail?.productName}</Typography>
                   </Box>
 
                   <Box>
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                       노출상태
                     </Typography>
-                    <Typography variant="body1">{productDetail?.boardPostDetail?.isExposed ? '노출' : '미노출'}</Typography>
+                    <Typography variant='body1'>{productDetail?.boardPostDetail?.isExposed ? '노출' : '미노출'}</Typography>
                   </Box>
 
                   <Box>
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                       노출범위
                     </Typography>
-                    <Typography variant="body1">{productDetail?.boardPostDetail?.exposureRange}</Typography>
+                    <Typography variant='body1'>{productDetail?.boardPostDetail?.exposureRange}</Typography>
                   </Box>
 
                   <Box>
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                       진행상태
                     </Typography>
-                    <Chip label={productDetail?.boardPostDetail?.isExposed ? '진행중' : '미노출'} color="success" size="small" />
+                    <Chip label={productDetail?.boardPostDetail?.isExposed ? '진행중' : '미노출'} color='success' size='small' />
                   </Box>
 
                   <Box>
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                       내용
                     </Typography>
                     <TiptapEditor content={productDetail?.boardPostDetail?.content ?? ''} readOnly />
                   </Box>
 
                   <Box>
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                       영상url
                     </Typography>
-                    <Typography variant="body1">{productDetail?.videoUrl}</Typography>
+                    <Typography variant='body1'>{productDetail?.videoUrl}</Typography>
                   </Box>
 
                   <Box>
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                       계약일
                     </Typography>
-                    <Typography variant="body1">{productDetail ? formatYyyyMmDd(productDetail.contractDate) : '-'}</Typography>
+                    <Typography variant='body1'>{productDetail ? formatYyyyMmDd(productDetail.contractDate) : '-'}</Typography>
                   </Box>
 
                   <Box>
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                       비고
                     </Typography>
-                    <Typography variant="body1">{productDetail?.note}</Typography>
+                    <Typography variant='body1'>{productDetail?.note}</Typography>
                   </Box>
 
-                  <Stack direction="row" spacing={4}>
+                  <Stack direction='row' spacing={4}>
                     <Box>
-                      <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                      <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         게시기간
                       </Typography>
-                      <Typography variant="body1">
+                      <Typography variant='body1'>
                         {productDetail ? `${formatYyyyMmDd(productDetail.startDate)} ~ ${formatYyyyMmDd(productDetail.endDate)}` : '-'}
                       </Typography>
                     </Box>
                     <Box>
-                      <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                      <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         조회수
                       </Typography>
-                      <Typography variant="body1">{productDetail?.boardPostDetail?.viewsCount?.toLocaleString()}</Typography>
+                      <Typography variant='body1'>{productDetail?.boardPostDetail?.viewsCount?.toLocaleString()}</Typography>
                     </Box>
                   </Stack>
                 </Stack>
@@ -264,16 +264,16 @@ export default function MpAdminSalesAgencyProductDetail() {
 
               <Grid item xs={12} md={4}>
                 <Box
-                  component="img"
+                  component='img'
                   src={productDetail?.thumbnailUrl}
-                  alt="Product"
+                  alt='Product'
                   sx={{
                     width: '100%',
                     height: 'auto',
                     maxHeight: 400,
                     objectFit: 'contain',
                     backgroundColor: 'grey.100',
-                    borderRadius: 1
+                    borderRadius: 1,
                   }}
                   onError={(e: any) => {
                     e.target.src =
@@ -283,11 +283,11 @@ export default function MpAdminSalesAgencyProductDetail() {
               </Grid>
 
               <Grid item xs={12}>
-                <Stack direction="row" spacing={2} justifyContent="center">
-                  <Button variant="outlined" onClick={handleBackToList} sx={{ minWidth: 120 }}>
+                <Stack direction='row' spacing={2} justifyContent='center'>
+                  <Button variant='outlined' onClick={handleBackToList} sx={{ minWidth: 120 }}>
                     목록
                   </Button>
-                  <Button variant="contained" onClick={handleEdit} sx={{ minWidth: 120 }}>
+                  <Button variant='contained' onClick={handleEdit} sx={{ minWidth: 120 }}>
                     수정
                   </Button>
                 </Stack>
@@ -299,22 +299,22 @@ export default function MpAdminSalesAgencyProductDetail() {
         {tabValue === 1 && (
           <Box sx={{ p: 3 }}>
             <Stack spacing={2}>
-              <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
-                <Typography variant="body2" color="text.secondary">
+              <Stack direction='row' alignItems='center' spacing={2} sx={{ mb: 2 }}>
+                <Typography variant='body2' color='text.secondary'>
                   위탁사명: {productDetail?.clientName}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant='body2' color='text.secondary'>
                   상품명: {productDetail?.productName}
                 </Typography>
               </Stack>
 
               <ScrollX>
                 <TableContainer>
-                  <Table size="small">
+                  <Table size='small'>
                     <TableHead>
-                      {table.getHeaderGroups().map((headerGroup) => (
+                      {table.getHeaderGroups().map(headerGroup => (
                         <TableRow key={headerGroup.id}>
-                          {headerGroup.headers.map((header) => (
+                          {headerGroup.headers.map(header => (
                             <TableCell key={header.id} style={{ width: header.getSize() }}>
                               {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                             </TableCell>
@@ -323,9 +323,9 @@ export default function MpAdminSalesAgencyProductDetail() {
                       ))}
                     </TableHead>
                     <TableBody>
-                      {table.getRowModel().rows.map((row) => (
+                      {table.getRowModel().rows.map(row => (
                         <TableRow key={row.id}>
-                          {row.getVisibleCells().map((cell) => (
+                          {row.getVisibleCells().map(cell => (
                             <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                           ))}
                         </TableRow>
@@ -335,8 +335,8 @@ export default function MpAdminSalesAgencyProductDetail() {
                 </TableContainer>
               </ScrollX>
 
-              <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
-                <Pagination count={1} page={1} color="primary" variant="outlined" showFirstButton showLastButton />
+              <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
+                <Pagination count={1} page={1} color='primary' variant='outlined' showFirstButton showLastButton />
               </Stack>
             </Stack>
           </Box>

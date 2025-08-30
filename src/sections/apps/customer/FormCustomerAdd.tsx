@@ -98,7 +98,7 @@ const skills = [
   'SVG',
   'UI/UX',
   'User Interface Designing',
-  'Wordpress'
+  'Wordpress',
 ];
 
 // CONSTANT
@@ -123,7 +123,7 @@ const getInitialValues = (customer: CustomerList | null) => {
     about: '',
     skills: [],
     time: ['just now'],
-    date: ''
+    date: '',
   };
 
   if (customer) {
@@ -136,7 +136,7 @@ const getInitialValues = (customer: CustomerList | null) => {
 const allStatus: StatusProps[] = [
   { value: 3, label: 'Rejected' },
   { value: 1, label: 'Verified' },
-  { value: 2, label: 'Pending' }
+  { value: 2, label: 'Pending' },
 ];
 
 // ==============================|| CUSTOMER ADD / EDIT - FORM ||============================== //
@@ -147,7 +147,7 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedImage, setSelectedImage] = useState<File | undefined>(undefined);
   const [avatar, setAvatar] = useState<string | undefined>(
-    getImageUrl(`avatar-${customer && customer !== null && customer?.avatar ? customer.avatar : 1}.png`, ImagePath.USERS)
+    getImageUrl(`avatar-${customer && customer !== null && customer?.avatar ? customer.avatar : 1}.png`, ImagePath.USERS),
   );
 
   useEffect(() => {
@@ -166,7 +166,7 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
     email: Yup.string().max(255).required('Email is required').email('Must be a valid email'),
     status: Yup.string().required('Status is required'),
     location: Yup.string().max(500),
-    about: Yup.string().max(500)
+    about: Yup.string().max(500),
   });
 
   const [openAlert, setOpenAlert] = useState(false);
@@ -192,8 +192,8 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
               message: 'Customer update successfully.',
               variant: 'alert',
               alert: {
-                color: 'success'
-              }
+                color: 'success',
+              },
             } as SnackbarProps);
             setSubmitting(false);
             closeModal();
@@ -205,8 +205,8 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
               message: 'Customer added successfully.',
               variant: 'alert',
               alert: {
-                color: 'success'
-              }
+                color: 'success',
+              },
             } as SnackbarProps);
             setSubmitting(false);
             closeModal();
@@ -215,7 +215,7 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
       } catch (error) {
         // console.error(error);
       }
-    }
+    },
   });
 
   const { errors, touched, handleSubmit, isSubmitting, getFieldProps, setFieldValue } = formik;
@@ -223,7 +223,7 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
   if (loading)
     return (
       <Box sx={{ p: 5 }}>
-        <Stack direction="row" justifyContent="center">
+        <Stack direction='row' justifyContent='center'>
           <CircularWithPath />
         </Stack>
       </Box>
@@ -233,24 +233,24 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
     <>
       <FormikProvider value={formik}>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+          <Form autoComplete='off' noValidate onSubmit={handleSubmit}>
             <DialogTitle>{customer ? 'Edit Customer' : 'New Customer'}</DialogTitle>
             <Divider />
             <DialogContent sx={{ p: 2.5 }}>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={3}>
-                  <Stack direction="row" justifyContent="center" sx={{ mt: 3 }}>
+                  <Stack direction='row' justifyContent='center' sx={{ mt: 3 }}>
                     <FormLabel
-                      htmlFor="change-avtar"
+                      htmlFor='change-avtar'
                       sx={{
                         position: 'relative',
                         borderRadius: '50%',
                         overflow: 'hidden',
                         '&:hover .MuiBox-root': { opacity: 1 },
-                        cursor: 'pointer'
+                        cursor: 'pointer',
                       }}
                     >
-                      <Avatar alt="Avatar 1" src={avatar} sx={{ width: 72, height: 72, border: '1px dashed' }} />
+                      <Avatar alt='Avatar 1' src={avatar} sx={{ width: 72, height: 72, border: '1px dashed' }} />
                       <Box
                         sx={{
                           position: 'absolute',
@@ -262,20 +262,20 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
                           opacity: 0,
                           display: 'flex',
                           alignItems: 'center',
-                          justifyContent: 'center'
+                          justifyContent: 'center',
                         }}
                       >
-                        <Stack spacing={0.5} alignItems="center">
+                        <Stack spacing={0.5} alignItems='center'>
                           <Camera style={{ color: theme.palette.secondary.lighter, fontSize: '2rem' }} />
                           <Typography sx={{ color: 'secondary.lighter' }}>Upload</Typography>
                         </Stack>
                       </Box>
                     </FormLabel>
                     <TextField
-                      type="file"
-                      id="change-avtar"
-                      placeholder="Outlined"
-                      variant="outlined"
+                      type='file'
+                      id='change-avtar'
+                      placeholder='Outlined'
+                      variant='outlined'
                       sx={{ display: 'none' }}
                       onChange={(e: ChangeEvent<HTMLInputElement>) => setSelectedImage(e.target.files?.[0])}
                     />
@@ -285,11 +285,11 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
                   <Grid container spacing={3}>
                     <Grid item xs={12} sm={6}>
                       <Stack spacing={1}>
-                        <InputLabel htmlFor="customer-firstName">First Name</InputLabel>
+                        <InputLabel htmlFor='customer-firstName'>First Name</InputLabel>
                         <TextField
                           fullWidth
-                          id="customer-firstName"
-                          placeholder="Enter First Name"
+                          id='customer-firstName'
+                          placeholder='Enter First Name'
                           {...getFieldProps('firstName')}
                           error={Boolean(touched.firstName && errors.firstName)}
                           helperText={touched.firstName && errors.firstName}
@@ -298,11 +298,11 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <Stack spacing={1}>
-                        <InputLabel htmlFor="customer-lastName">Last Name</InputLabel>
+                        <InputLabel htmlFor='customer-lastName'>Last Name</InputLabel>
                         <TextField
                           fullWidth
-                          id="customer-lastName"
-                          placeholder="Enter Last Name"
+                          id='customer-lastName'
+                          placeholder='Enter Last Name'
                           {...getFieldProps('lastName')}
                           error={Boolean(touched.lastName && errors.lastName)}
                           helperText={touched.lastName && errors.lastName}
@@ -311,11 +311,11 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
                     </Grid>
                     <Grid item xs={9}>
                       <Stack spacing={1}>
-                        <InputLabel htmlFor="customer-email">Email</InputLabel>
+                        <InputLabel htmlFor='customer-email'>Email</InputLabel>
                         <TextField
                           fullWidth
-                          id="customer-email"
-                          placeholder="Enter Customer Email"
+                          id='customer-email'
+                          placeholder='Enter Customer Email'
                           {...getFieldProps('email')}
                           error={Boolean(touched.email && errors.email)}
                           helperText={touched.email && errors.email}
@@ -324,12 +324,12 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
                     </Grid>
                     <Grid item xs={3}>
                       <Stack spacing={1}>
-                        <InputLabel htmlFor="customer-age">Age</InputLabel>
+                        <InputLabel htmlFor='customer-age'>Age</InputLabel>
                         <TextField
-                          type="number"
+                          type='number'
                           fullWidth
-                          id="customer-age"
-                          placeholder="Enter Age"
+                          id='customer-age'
+                          placeholder='Enter Age'
                           {...getFieldProps('age')}
                           error={Boolean(touched.age && errors.age)}
                           helperText={touched.age && errors.age}
@@ -338,11 +338,11 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <Stack spacing={1}>
-                        <InputLabel htmlFor="customer-fatherName">Father Name</InputLabel>
+                        <InputLabel htmlFor='customer-fatherName'>Father Name</InputLabel>
                         <TextField
                           fullWidth
-                          id="customer-fatherName"
-                          placeholder="Enter Father Name"
+                          id='customer-fatherName'
+                          placeholder='Enter Father Name'
                           {...getFieldProps('fatherName')}
                           error={Boolean(touched.fatherName && errors.fatherName)}
                           helperText={touched.fatherName && errors.fatherName}
@@ -351,11 +351,11 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <Stack spacing={1}>
-                        <InputLabel htmlFor="customer-role">Customer Role</InputLabel>
+                        <InputLabel htmlFor='customer-role'>Customer Role</InputLabel>
                         <TextField
                           fullWidth
-                          id="customer-role"
-                          placeholder="Enter Role"
+                          id='customer-role'
+                          placeholder='Enter Role'
                           {...getFieldProps('role')}
                           error={Boolean(touched.role && errors.role)}
                           helperText={touched.role && errors.role}
@@ -364,8 +364,8 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <Stack spacing={1}>
-                        <InputLabel htmlFor="customer-gender">Gender</InputLabel>
-                        <RadioGroup row aria-label="payment-card" {...getFieldProps('gender')}>
+                        <InputLabel htmlFor='customer-gender'>Gender</InputLabel>
+                        <RadioGroup row aria-label='payment-card' {...getFieldProps('gender')}>
                           <FormControlLabel control={<Radio value={Gender.FEMALE} />} label={Gender.FEMALE} />
                           <FormControlLabel control={<Radio value={Gender.MALE} />} label={Gender.MALE} />
                         </RadioGroup>
@@ -373,22 +373,22 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
                     </Grid>
                     <Grid item xs={12}>
                       <Stack spacing={1}>
-                        <InputLabel htmlFor="customer-status">Status</InputLabel>
+                        <InputLabel htmlFor='customer-status'>Status</InputLabel>
                         <FormControl fullWidth>
                           <Select
-                            id="column-hiding"
+                            id='column-hiding'
                             displayEmpty
                             {...getFieldProps('status')}
                             onChange={(event: SelectChangeEvent<string>) => setFieldValue('status', event.target.value as string)}
-                            input={<OutlinedInput id="select-column-hiding" placeholder="Sort by" />}
-                            renderValue={(selected) => {
+                            input={<OutlinedInput id='select-column-hiding' placeholder='Sort by' />}
+                            renderValue={selected => {
                               if (!selected) {
-                                return <Typography variant="subtitle1">Select Status</Typography>;
+                                return <Typography variant='subtitle1'>Select Status</Typography>;
                               }
 
-                              const selectedStatus = allStatus.filter((item) => item.value === Number(selected));
+                              const selectedStatus = allStatus.filter(item => item.value === Number(selected));
                               return (
-                                <Typography variant="subtitle2">
+                                <Typography variant='subtitle2'>
                                   {selectedStatus.length > 0 ? selectedStatus[0].label : 'Pending'}
                                 </Typography>
                               );
@@ -402,7 +402,7 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
                           </Select>
                         </FormControl>
                         {touched.status && errors.status && (
-                          <FormHelperText error id="standard-weight-helper-text-email-login" sx={{ pl: 1.75 }}>
+                          <FormHelperText error id='standard-weight-helper-text-email-login' sx={{ pl: 1.75 }}>
                             {errors.status}
                           </FormHelperText>
                         )}
@@ -410,11 +410,11 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <Stack spacing={1}>
-                        <InputLabel htmlFor="customer-contact">Contact</InputLabel>
+                        <InputLabel htmlFor='customer-contact'>Contact</InputLabel>
                         <TextField
                           fullWidth
-                          id="customer-contact"
-                          placeholder="Enter Contact"
+                          id='customer-contact'
+                          placeholder='Enter Contact'
                           {...getFieldProps('contact')}
                           error={Boolean(touched.contact && errors.contact)}
                           helperText={touched.contact && errors.contact}
@@ -423,11 +423,11 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <Stack spacing={1}>
-                        <InputLabel htmlFor="customer-country">Country</InputLabel>
+                        <InputLabel htmlFor='customer-country'>Country</InputLabel>
                         <TextField
                           fullWidth
-                          id="customer-country"
-                          placeholder="Enter Country"
+                          id='customer-country'
+                          placeholder='Enter Country'
                           {...getFieldProps('country')}
                           error={Boolean(touched.country && errors.country)}
                           helperText={touched.country && errors.country}
@@ -436,13 +436,13 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
                     </Grid>
                     <Grid item xs={12}>
                       <Stack spacing={1}>
-                        <InputLabel htmlFor="customer-location">Location</InputLabel>
+                        <InputLabel htmlFor='customer-location'>Location</InputLabel>
                         <TextField
                           fullWidth
-                          id="customer-location"
+                          id='customer-location'
                           multiline
                           rows={2}
-                          placeholder="Enter Location"
+                          placeholder='Enter Location'
                           {...getFieldProps('location')}
                           error={Boolean(touched.location && errors.location)}
                           helperText={touched.location && errors.location}
@@ -451,13 +451,13 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
                     </Grid>
                     <Grid item xs={12}>
                       <Stack spacing={1}>
-                        <InputLabel htmlFor="customer-about">About Customer</InputLabel>
+                        <InputLabel htmlFor='customer-about'>About Customer</InputLabel>
                         <TextField
                           fullWidth
-                          id="customer-about"
+                          id='customer-about'
                           multiline
                           rows={2}
-                          placeholder="Enter Customer Information"
+                          placeholder='Enter Customer Information'
                           {...getFieldProps('about')}
                           error={Boolean(touched.about && errors.about)}
                           helperText={touched.about && errors.about}
@@ -466,23 +466,23 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
                     </Grid>
                     <Grid item xs={12}>
                       <Stack spacing={1}>
-                        <InputLabel htmlFor="customer-skills">Skills</InputLabel>
+                        <InputLabel htmlFor='customer-skills'>Skills</InputLabel>
                         <Autocomplete
                           multiple
                           fullWidth
-                          id="customer-skills"
+                          id='customer-skills'
                           options={skills}
                           {...getFieldProps('skills')}
-                          getOptionLabel={(label) => label}
+                          getOptionLabel={label => label}
                           onChange={(event, newValue) => {
                             setFieldValue('skills', newValue);
                           }}
-                          renderInput={(params) => <TextField {...params} name="skill" placeholder="Add Skills" />}
+                          renderInput={params => <TextField {...params} name='skill' placeholder='Add Skills' />}
                           renderTags={(value, getTagProps) =>
                             value.map((option, index) => (
                               <Chip
                                 {...getTagProps({ index })}
-                                variant="combined"
+                                variant='combined'
                                 key={index}
                                 label={option}
                                 deleteIcon={<CloseCircle style={{ fontSize: '0.75rem' }} />}
@@ -494,24 +494,24 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
                       </Stack>
                     </Grid>
                     <Grid item xs={12}>
-                      <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+                      <Stack direction='row' justifyContent='space-between' alignItems='flex-start'>
                         <Stack spacing={0.5}>
-                          <Typography variant="subtitle1">Make Contact Info Public</Typography>
-                          <Typography variant="caption" color="text.secondary">
+                          <Typography variant='subtitle1'>Make Contact Info Public</Typography>
+                          <Typography variant='caption' color='text.secondary'>
                             Means that anyone viewing your profile will be able to see your contacts details
                           </Typography>
                         </Stack>
-                        <FormControlLabel control={<Switch defaultChecked sx={{ mt: 0 }} />} label="" labelPlacement="start" />
+                        <FormControlLabel control={<Switch defaultChecked sx={{ mt: 0 }} />} label='' labelPlacement='start' />
                       </Stack>
                       <Divider sx={{ my: 2 }} />
-                      <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+                      <Stack direction='row' justifyContent='space-between' alignItems='flex-start'>
                         <Stack spacing={0.5}>
-                          <Typography variant="subtitle1">Available to hire</Typography>
-                          <Typography variant="caption" color="text.secondary">
+                          <Typography variant='subtitle1'>Available to hire</Typography>
+                          <Typography variant='caption' color='text.secondary'>
                             Toggling this will let your teammates know that you are available for acquiring new projects
                           </Typography>
                         </Stack>
-                        <FormControlLabel control={<Switch sx={{ mt: 0 }} />} label="" labelPlacement="start" />
+                        <FormControlLabel control={<Switch sx={{ mt: 0 }} />} label='' labelPlacement='start' />
                       </Stack>
                     </Grid>
                   </Grid>
@@ -520,22 +520,22 @@ export default function FormCustomerAdd({ customer, closeModal }: { customer: Cu
             </DialogContent>
             <Divider />
             <DialogActions sx={{ p: 2.5 }}>
-              <Grid container justifyContent="space-between" alignItems="center">
+              <Grid container justifyContent='space-between' alignItems='center'>
                 <Grid item>
                   {customer && (
-                    <Tooltip title="Delete Customer" placement="top">
-                      <IconButton onClick={() => setOpenAlert(true)} size="large" color="error">
-                        <Trash variant="Bold" />
+                    <Tooltip title='Delete Customer' placement='top'>
+                      <IconButton onClick={() => setOpenAlert(true)} size='large' color='error'>
+                        <Trash variant='Bold' />
                       </IconButton>
                     </Tooltip>
                   )}
                 </Grid>
                 <Grid item>
-                  <Stack direction="row" spacing={2} alignItems="center">
-                    <Button color="error" onClick={closeModal}>
+                  <Stack direction='row' spacing={2} alignItems='center'>
+                    <Button color='error' onClick={closeModal}>
                       Cancel
                     </Button>
-                    <Button type="submit" variant="contained" disabled={isSubmitting}>
+                    <Button type='submit' variant='contained' disabled={isSubmitting}>
                       {customer ? 'Edit' : 'Add'}
                     </Button>
                   </Stack>

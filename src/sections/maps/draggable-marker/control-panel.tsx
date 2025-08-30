@@ -24,17 +24,17 @@ type Props = {
 function ControlPanel({ events = {} }: Props) {
   return (
     <ControlPanelStyled>
-      {EVENT_LIST.map((event) => {
+      {EVENT_LIST.map(event => {
         const lngLat = events[event];
 
         return (
           <div key={event}>
-            <Typography variant="subtitle2">{event}:</Typography>
+            <Typography variant='subtitle2'>{event}:</Typography>
 
             {lngLat ? (
-              <Typography variant="subtitle2">{`${round5(lngLat.lng)}, ${round5(lngLat.lat)}`}</Typography>
+              <Typography variant='subtitle2'>{`${round5(lngLat.lng)}, ${round5(lngLat.lat)}`}</Typography>
             ) : (
-              <Typography variant="body2" component="em">
+              <Typography variant='body2' component='em'>
                 -
               </Typography>
             )}

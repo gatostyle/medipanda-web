@@ -26,22 +26,22 @@ function getVariantStyle({ color, theme, labelColor }: TooltipStyleProps) {
     return {
       [`& .${tooltipClasses.tooltip}`]: {
         backgroundColor: main,
-        color: labelColor ? labelColor : contrastText
+        color: labelColor ? labelColor : contrastText,
       },
       [`& .${tooltipClasses.arrow}`]: {
-        color: main
-      }
+        color: main,
+      },
     };
   } else {
     return {
       [`& .${tooltipClasses.tooltip}`]: {
         backgroundColor: colorValue,
         color: labelColor ? labelColor : contrastText,
-        boxShadow: theme.shadows[1]
+        boxShadow: theme.shadows[1],
       },
       [`& .${tooltipClasses.arrow}`]: {
-        color: colorValue
-      }
+        color: colorValue,
+      },
     };
   }
 }
@@ -56,9 +56,9 @@ interface StyleProps {
 }
 
 const TooltipStyle = styled(({ className, ...props }: TooltipProps) => <MuiTooltip {...props} classes={{ popper: className }} />, {
-  shouldForwardProp: (prop) => prop !== 'color' && prop !== 'labelColor'
+  shouldForwardProp: prop => prop !== 'color' && prop !== 'labelColor',
 })(({ theme, color, labelColor }: StyleProps) => ({
-  ...(color && getVariantStyle({ color, theme, labelColor }))
+  ...(color && getVariantStyle({ color, theme, labelColor })),
 }));
 
 // ==============================|| TOOLTIP - EXTENDED ||============================== //
@@ -72,7 +72,7 @@ interface Props extends TooltipProps {
 export default function CustomTooltip({ children, arrow, labelColor = '', ...rest }: Props) {
   const theme = useTheme();
   return (
-    <Box display="flex">
+    <Box display='flex'>
       <TooltipStyle arrow={arrow} {...rest} theme={theme} labelColor={labelColor}>
         {children}
       </TooltipStyle>

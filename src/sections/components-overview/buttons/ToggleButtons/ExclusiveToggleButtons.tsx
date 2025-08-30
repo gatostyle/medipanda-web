@@ -17,17 +17,17 @@ export default function ExclusiveToggleButtons() {
   };
 
   return (
-    <ToggleButtonGroup value={alignment} exclusive onChange={handleAlignment} aria-label="text alignment">
-      <ToggleButton value="left" aria-label="left aligned">
+    <ToggleButtonGroup value={alignment} exclusive onChange={handleAlignment} aria-label='text alignment'>
+      <ToggleButton value='left' aria-label='left aligned'>
         <TextalignCenter />
       </ToggleButton>
-      <ToggleButton value="center" aria-label="centered">
+      <ToggleButton value='center' aria-label='centered'>
         <TextalignRight />
       </ToggleButton>
-      <ToggleButton value="right" aria-label="right aligned">
+      <ToggleButton value='right' aria-label='right aligned'>
         <TextalignLeft />
       </ToggleButton>
-      <ToggleButton value="list" aria-label="list" disabled sx={{ '&.Mui-disabled': { color: 'text.disabled' } }}>
+      <ToggleButton value='list' aria-label='list' disabled sx={{ '&.Mui-disabled': { color: 'text.disabled' } }}>
         <TextalignJustifycenter />
       </ToggleButton>
     </ToggleButtonGroup>

@@ -52,7 +52,7 @@ interface Props {
 const chance = new Chance();
 const validationSchema = yup.object({
   title: yup.string().required('User story title is required'),
-  dueDate: yup.date().required('Due date is required').nullable()
+  dueDate: yup.date().required('Due date is required').nullable(),
 });
 
 // ==============================|| KANBAN BACKLOGS - ADD STORY ||============================== //
@@ -73,7 +73,7 @@ export default function AddStory({ open, handleDrawerOpen }: Props) {
       commentIds: '',
       image: false,
       itemIds: [],
-      files: []
+      files: [],
     },
     enableReinitialize: true,
     validationSchema,
@@ -85,12 +85,12 @@ export default function AddStory({ open, handleDrawerOpen }: Props) {
         message: 'Submit Success',
         variant: 'alert',
         alert: {
-          color: 'success'
-        }
+          color: 'success',
+        },
       } as SnackbarProps);
       handleDrawerOpen();
       resetForm();
-    }
+    },
   });
 
   return (
@@ -104,11 +104,11 @@ export default function AddStory({ open, handleDrawerOpen }: Props) {
         '& .MuiDrawer-paper': {
           width: { xs: 320, md: 450 },
           border: 'none',
-          borderRadius: '0px'
-        }
+          borderRadius: '0px',
+        },
       }}
-      variant="temporary"
-      anchor="right"
+      variant='temporary'
+      anchor='right'
       open={open}
       ModalProps={{ keepMounted: true }}
       onClose={handleDrawerOpen}
@@ -117,14 +117,14 @@ export default function AddStory({ open, handleDrawerOpen }: Props) {
         <SimpleBar
           sx={{
             overflowX: 'hidden',
-            height: '100vh'
+            height: '100vh',
           }}
         >
           <Box sx={{ p: 3 }}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between">
-              <Typography variant="h4">Add Story</Typography>
-              <Tooltip title="Close">
-                <IconButton color="secondary" onClick={handleDrawerOpen} size="small" sx={{ fontSize: '0.875rem' }}>
+            <Stack direction='row' alignItems='center' justifyContent='space-between'>
+              <Typography variant='h4'>Add Story</Typography>
+              <Tooltip title='Close'>
+                <IconButton color='secondary' onClick={handleDrawerOpen} size='small' sx={{ fontSize: '0.875rem' }}>
                   <Add style={{ transform: 'rotate(45deg)' }} />
                 </IconButton>
               </Tooltip>
@@ -140,9 +140,9 @@ export default function AddStory({ open, handleDrawerOpen }: Props) {
                       <InputLabel>Title</InputLabel>
                       <TextField
                         fullWidth
-                        id="title"
-                        name="title"
-                        placeholder="Title"
+                        id='title'
+                        name='title'
+                        placeholder='Title'
                         value={formik.values.title}
                         onChange={formik.handleChange}
                         error={formik.touched.title && Boolean(formik.errors.title)}
@@ -154,7 +154,7 @@ export default function AddStory({ open, handleDrawerOpen }: Props) {
                     <Stack spacing={1}>
                       <InputLabel>Assign to</InputLabel>
                       <Autocomplete
-                        id="assign"
+                        id='assign'
                         value={backlogs?.profiles.find((profile: KanbanProfile) => profile.id === formik.values.assign) || null}
                         onChange={(event, value) => {
                           formik.setFieldValue('assign', value?.id);
@@ -162,21 +162,21 @@ export default function AddStory({ open, handleDrawerOpen }: Props) {
                         options={backlogs?.profiles}
                         fullWidth
                         autoHighlight
-                        getOptionLabel={(option) => option.name}
-                        isOptionEqualToValue={(option) => option.id === formik.values.assign}
+                        getOptionLabel={option => option.name}
+                        isOptionEqualToValue={option => option.id === formik.values.assign}
                         renderOption={(props, option) => (
-                          <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                            <img loading="lazy" width="20" src={getImageUrl(`${option.avatar}`, ImagePath.USERS)} alt="" />
+                          <Box component='li' sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                            <img loading='lazy' width='20' src={getImageUrl(`${option.avatar}`, ImagePath.USERS)} alt='' />
                             {option.name}
                           </Box>
                         )}
-                        renderInput={(params) => (
+                        renderInput={params => (
                           <TextField
                             {...params}
-                            placeholder="Choose a assignee"
+                            placeholder='Choose a assignee'
                             inputProps={{
                               ...params.inputProps,
-                              autoComplete: 'new-password' // disable autocomplete and autofill
+                              autoComplete: 'new-password', // disable autocomplete and autofill
                             }}
                           />
                         )}
@@ -189,19 +189,19 @@ export default function AddStory({ open, handleDrawerOpen }: Props) {
                       <FormControl>
                         <RadioGroup
                           row
-                          aria-label="color"
+                          aria-label='color'
                           value={formik.values.priority}
                           onChange={formik.handleChange}
-                          name="priority"
-                          id="priority"
+                          name='priority'
+                          id='priority'
                         >
-                          <FormControlLabel value="low" control={<Radio color="primary" sx={{ color: 'primary.main' }} />} label="Low" />
+                          <FormControlLabel value='low' control={<Radio color='primary' sx={{ color: 'primary.main' }} />} label='Low' />
                           <FormControlLabel
-                            value="medium"
-                            control={<Radio color="warning" sx={{ color: 'warning.main' }} />}
-                            label="Medium"
+                            value='medium'
+                            control={<Radio color='warning' sx={{ color: 'warning.main' }} />}
+                            label='Medium'
                           />
-                          <FormControlLabel value="high" control={<Radio color="error" sx={{ color: 'error.main' }} />} label="High" />
+                          <FormControlLabel value='high' control={<Radio color='error' sx={{ color: 'error.main' }} />} label='High' />
                         </RadioGroup>
                       </FormControl>
                     </Stack>
@@ -211,8 +211,8 @@ export default function AddStory({ open, handleDrawerOpen }: Props) {
                       <InputLabel>Due date</InputLabel>
                       <DesktopDatePicker
                         value={formik.values.dueDate}
-                        format="dd/MM/yyyy"
-                        onChange={(date) => {
+                        format='dd/MM/yyyy'
+                        onChange={date => {
                           formik.setFieldValue('dueDate', date);
                         }}
                       />
@@ -223,8 +223,8 @@ export default function AddStory({ open, handleDrawerOpen }: Props) {
                       <InputLabel>Acceptance</InputLabel>
                       <TextField
                         fullWidth
-                        id="acceptance"
-                        name="acceptance"
+                        id='acceptance'
+                        name='acceptance'
                         multiline
                         rows={3}
                         value={formik.values.acceptance}
@@ -239,8 +239,8 @@ export default function AddStory({ open, handleDrawerOpen }: Props) {
                       <InputLabel>Description</InputLabel>
                       <TextField
                         fullWidth
-                        id="description"
-                        name="description"
+                        id='description'
+                        name='description'
                         multiline
                         rows={3}
                         value={formik.values.description}
@@ -255,8 +255,8 @@ export default function AddStory({ open, handleDrawerOpen }: Props) {
                       <InputLabel>State</InputLabel>
                       <FormControl fullWidth sx={{ m: 1 }}>
                         <Select
-                          id="columnId"
-                          name="columnId"
+                          id='columnId'
+                          name='columnId'
                           displayEmpty
                           value={formik.values.columnId}
                           onChange={formik.handleChange}
@@ -287,7 +287,7 @@ export default function AddStory({ open, handleDrawerOpen }: Props) {
                       </Grid>
                       {formik.touched.files && formik.errors.files && (
                         <Grid item xs={12}>
-                          <FormHelperText error id="standard-weight-helper-text-password-login">
+                          <FormHelperText error id='standard-weight-helper-text-password-login'>
                             {formik.errors.files}
                           </FormHelperText>
                         </Grid>
@@ -297,7 +297,7 @@ export default function AddStory({ open, handleDrawerOpen }: Props) {
 
                   <Grid item xs={12}>
                     <AnimateButton>
-                      <Button fullWidth variant="contained" type="submit">
+                      <Button fullWidth variant='contained' type='submit'>
                         Save
                       </Button>
                     </AnimateButton>

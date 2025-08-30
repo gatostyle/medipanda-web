@@ -16,7 +16,7 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
@@ -40,7 +40,7 @@ interface BoardPostResponseWithMockData extends BoardPostResponse {
 function withMock<T extends BoardPostResponse>(data: T): T & BoardPostResponseWithMockData {
   return {
     ...data,
-    drugCompany: '제약사명'
+    drugCompany: '제약사명',
   };
 }
 
@@ -62,7 +62,7 @@ export default function MpAdminNoticeList() {
       startAt: null as Date | null,
       endAt: null as Date | null,
       pageIndex: 0,
-      pageSize: 20
+      pageSize: 20,
     },
     onSubmit: async () => {
       if (formik.values.pageIndex !== 0) {
@@ -70,7 +70,7 @@ export default function MpAdminNoticeList() {
       } else {
         await fetchData();
       }
-    }
+    },
   });
 
   const columns: ColumnDef<Sequenced<BoardPostResponseWithMockData>>[] = [
@@ -79,9 +79,9 @@ export default function MpAdminNoticeList() {
       header: () => (
         <Checkbox
           checked={selectedItems.length === data.length && data.length > 0}
-          onChange={(e) => {
+          onChange={e => {
             if (e.target.checked) {
-              setSelectedItems(data.map((item) => item.id));
+              setSelectedItems(data.map(item => item.id));
             } else {
               setSelectedItems([]);
             }
@@ -91,28 +91,28 @@ export default function MpAdminNoticeList() {
       cell: ({ row }) => (
         <Checkbox
           checked={selectedItems.includes(row.original.id)}
-          onChange={(e) => {
+          onChange={e => {
             if (e.target.checked) {
-              setSelectedItems((prev) => [...prev, row.original.id]);
+              setSelectedItems(prev => [...prev, row.original.id]);
             } else {
-              setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
+              setSelectedItems(prev => prev.filter(id => id !== row.original.id));
             }
           }}
         />
       ),
-      size: 50
+      size: 50,
     },
     {
       header: 'No',
       accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
-      size: 60
+      size: 60,
     },
     {
       header: '게시판',
       accessorKey: 'boardType',
       cell: ({ row }) => BOARD_TYPE_LABELS[row.original.boardType],
-      size: 100
+      size: 100,
     },
     {
       header: '공지분류',
@@ -122,13 +122,13 @@ export default function MpAdminNoticeList() {
         if (!noticeType) return '-';
         return NOTICE_TYPE_LABELS[noticeType];
       },
-      size: 100
+      size: 100,
     },
     {
       header: '제약사명',
       accessorKey: 'drugCompany',
       cell: ({ row }) => row.original.drugCompany,
-      size: 120
+      size: 120,
     },
     {
       header: '제목',
@@ -137,32 +137,32 @@ export default function MpAdminNoticeList() {
         <Link to={`/admin/notices/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
           {row.original.title}
         </Link>
-      )
+      ),
     },
     {
       header: '상태',
       accessorKey: 'isExposed',
       cell: ({ row }) => (row.original.isExposed ? '노출' : '미노출'),
-      size: 80
+      size: 80,
     },
     {
       header: '노출범위',
       accessorKey: 'exposureRange',
       cell: ({ row }) => EXPOSURE_RANGE_LABELS[row.original.exposureRange],
-      size: 80
+      size: 80,
     },
     {
       header: '조회수',
       accessorKey: 'viewsCount',
       cell: ({ row }) => row.original.viewsCount.toLocaleString(),
-      size: 80
+      size: 80,
     },
     {
       header: '작성일',
       accessorKey: 'createdAt',
       cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
-      size: 100
-    }
+      size: 100,
+    },
   ];
 
   const table = useReactTable({
@@ -173,11 +173,11 @@ export default function MpAdminNoticeList() {
     state: {
       pagination: {
         pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize
-      }
+        pageSize: formik.values.pageSize,
+      },
     },
     pageCount: totalPages,
-    manualPagination: true
+    manualPagination: true,
   });
 
   const fetchData = async () => {
@@ -196,7 +196,7 @@ export default function MpAdminNoticeList() {
         boardTitle: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
         filterDeleted: undefined,
         isExposed: formik.values.isExposed !== '' ? formik.values.isExposed : undefined,
-        drugCompany: formik.values.drugCompany !== '' ? formik.values.drugCompany : undefined
+        drugCompany: formik.values.drugCompany !== '' ? formik.values.drugCompany : undefined,
       });
 
       setData(withSequence(response).content.map(withMock));
@@ -238,28 +238,28 @@ export default function MpAdminNoticeList() {
     const count = selectedItems.length;
     const message =
       count === 1
-        ? `공지사항 ${data.find((item) => item.id === selectedItems[0])?.title}을 삭제하시겠습니까?`
+        ? `공지사항 ${data.find(item => item.id === selectedItems[0])?.title}을 삭제하시겠습니까?`
         : `${count}건이 선택되었습니다. 삭제하시겠습니까?`;
 
     deleteDialog.open({
       message,
       onConfirm: async () => {
         try {
-          await Promise.all(selectedItems.map((id) => deleteBoardPost(id)));
+          await Promise.all(selectedItems.map(id => deleteBoardPost(id)));
           setSelectedItems([]);
           fetchData();
         } catch (error) {
           console.error('Failed to delete items:', error);
           errorDialog.showError('삭제 중 오류가 발생했습니다.');
         }
-      }
+      },
     });
   };
 
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant='h4' gutterBottom>
           공지사항
         </Typography>
       </Grid>
@@ -270,12 +270,12 @@ export default function MpAdminNoticeList() {
             <form onSubmit={formik.handleSubmit}>
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size="small">
+                  <FormControl fullWidth size='small'>
                     <InputLabel>상태</InputLabel>
                     <Select
-                      name="isExposed"
+                      name='isExposed'
                       value={`${formik.values.isExposed}`}
-                      onChange={(e) => formik.setFieldValue('isExposed', e.target.value === 'true')}
+                      onChange={e => formik.setFieldValue('isExposed', e.target.value === 'true')}
                     >
                       <MenuItem value={'true'}>노출</MenuItem>
                       <MenuItem value={'false'}>미노출</MenuItem>
@@ -283,10 +283,10 @@ export default function MpAdminNoticeList() {
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size="small">
+                  <FormControl fullWidth size='small'>
                     <InputLabel>제약사명</InputLabel>
-                    <Select name="drugCompany" value={formik.values.drugCompany} onChange={formik.handleChange}>
-                      {manufacturerOptions.map((manufacturer) => (
+                    <Select name='drugCompany' value={formik.values.drugCompany} onChange={formik.handleChange}>
+                      {manufacturerOptions.map(manufacturer => (
                         <MenuItem key={manufacturer.id} value={manufacturer.name}>
                           {manufacturer.name}
                         </MenuItem>
@@ -295,26 +295,26 @@ export default function MpAdminNoticeList() {
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="startAt" label="시작일" formik={formik} />
+                  <MpFormikDatePicker name='startAt' label='시작일' formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="endAt" label="종료일" formik={formik} />
+                  <MpFormikDatePicker name='endAt' label='종료일' formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
-                    name="searchKeyword"
-                    size="small"
-                    placeholder="검색어를 입력하세요"
+                    name='searchKeyword'
+                    size='small'
+                    placeholder='검색어를 입력하세요'
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
                   />
                 </SearchFilterItem>
                 <SearchFilterActions>
-                  <Button variant="contained" size="small" type="submit">
+                  <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant="outlined" size="small" onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={handleReset}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -327,15 +327,15 @@ export default function MpAdminNoticeList() {
       <Grid item xs={12}>
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Stack direction="row" spacing={2}>
-                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+            <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+              <Stack direction='row' spacing={2}>
+                <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
-              <Stack direction="row" spacing={1}>
-                <Button variant="contained" color="error" size="small" disabled={selectedItems.length === 0} onClick={handleDelete}>
+              <Stack direction='row' spacing={1}>
+                <Button variant='contained' color='error' size='small' disabled={selectedItems.length === 0} onClick={handleDelete}>
                   삭제
                 </Button>
-                <Button variant="contained" color="success" size="small" component={Link} to="/admin/notices/new">
+                <Button variant='contained' color='success' size='small' component={Link} to='/admin/notices/new'>
                   등록
                 </Button>
               </Stack>
@@ -343,11 +343,11 @@ export default function MpAdminNoticeList() {
 
             <ScrollX>
               <TableContainer>
-                <Table size="small">
+                <Table size='small'>
                   <TableHead>
-                    {table.getHeaderGroups().map((headerGroup) => (
+                    {table.getHeaderGroups().map(headerGroup => (
                       <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => (
+                        {headerGroup.headers.map(header => (
                           <TableCell key={header.id} style={{ width: header.getSize() }}>
                             {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                           </TableCell>
@@ -358,24 +358,24 @@ export default function MpAdminNoticeList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : (
-                      table.getRowModel().rows.map((row) => (
+                      table.getRowModel().rows.map(row => (
                         <TableRow key={row.id}>
-                          {row.getVisibleCells().map((cell) => (
+                          {row.getVisibleCells().map(cell => (
                             <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                           ))}
                         </TableRow>
@@ -386,13 +386,13 @@ export default function MpAdminNoticeList() {
               </TableContainer>
             </ScrollX>
 
-            <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
+            <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
                 page={formik.values.pageIndex + 1}
                 onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
-                color="primary"
-                variant="outlined"
+                color='primary'
+                variant='outlined'
                 showFirstButton
                 showLastButton
               />

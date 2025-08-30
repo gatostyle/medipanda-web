@@ -16,10 +16,10 @@ export default function ComponentModal() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Modal"
-        caption="The modal component provides a solid foundation for creating dialogs, popovers, lightboxes, or whatever else."
-        directory="src/pages/components-overview/modal"
-        link="https://mui.com/material-ui/react-modal"
+        title='Modal'
+        caption='The modal component provides a solid foundation for creating dialogs, popovers, lightboxes, or whatever else.'
+        directory='src/pages/components-overview/modal'
+        link='https://mui.com/material-ui/react-modal'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>

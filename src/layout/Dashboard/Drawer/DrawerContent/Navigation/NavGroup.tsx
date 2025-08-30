@@ -73,8 +73,8 @@ const PopperStyled = styled(Popper)(({ theme }) => ({
     borderStyle: 'solid',
     borderColor: `${theme.palette.background.paper}  transparent transparent ${theme.palette.background.paper}`,
     borderLeft: `1px solid ${theme.palette.divider}`,
-    borderTop: `1px solid ${theme.palette.divider}`
-  }
+    borderTop: `1px solid ${theme.palette.divider}`,
+  },
 }));
 
 // ==============================|| NAVIGATION - GROUP ||============================== //
@@ -89,7 +89,7 @@ export default function NavGroup({
   setSelectedItems,
   selectedItems,
   setSelectedLevel,
-  selectedLevel
+  selectedLevel,
 }: Props) {
   const theme = useTheme();
   const { pathname } = useLocation();
@@ -164,7 +164,7 @@ export default function NavGroup({
 
   const Icon = currentItem?.icon!;
   const itemIcon = currentItem?.icon ? (
-    <Icon variant="Bulk" size={22} color={isSelected ? theme.palette.primary.main : theme.palette.secondary.main} />
+    <Icon variant='Bulk' size={22} color={isSelected ? theme.palette.primary.main : theme.palette.secondary.main} />
   ) : null;
 
   const navCollapse = item.children?.map((menuItem, index) => {
@@ -186,7 +186,7 @@ export default function NavGroup({
         return <NavItem key={menuItem.id} item={menuItem} level={1} />;
       default:
         return (
-          <Typography key={index} variant="h6" color="error" align="center">
+          <Typography key={index} variant='h6' color='error' align='center'>
             Fix - Group Collapse or Items
           </Typography>
         );
@@ -199,12 +199,12 @@ export default function NavGroup({
         <NavItem item={item} level={1} />
       ) : (
         itemRem.title && (
-          <Typography variant="caption" sx={{ pl: 2 }}>
+          <Typography variant='caption' sx={{ pl: 2 }}>
             {itemRem.title} {itemRem.url}
           </Typography>
         )
       )}
-      {itemRem?.elements?.map((menu) => {
+      {itemRem?.elements?.map(menu => {
         switch (menu.type) {
           case 'collapse':
             return (
@@ -223,7 +223,7 @@ export default function NavGroup({
             return <NavItem key={menu.id} item={menu} level={1} />;
           default:
             return (
-              <Typography key={menu.id} variant="h6" color="error" align="center">
+              <Typography key={menu.id} variant='h6' color='error' align='center'>
                 Menu Items Error
               </Typography>
             );
@@ -233,7 +233,7 @@ export default function NavGroup({
   ));
 
   // menu list collapse & items
-  const items = currentItem.children?.map((menu) => {
+  const items = currentItem.children?.map(menu => {
     switch (menu?.type) {
       case 'collapse':
         return (
@@ -252,7 +252,7 @@ export default function NavGroup({
         return <NavItem key={menu.id} item={menu} level={1} />;
       default:
         return (
-          <Typography key={menu?.id} variant="h6" color="error" align="center">
+          <Typography key={menu?.id} variant='h6' color='error' align='center'>
             Menu Items Error
           </Typography>
         );
@@ -272,14 +272,14 @@ export default function NavGroup({
                 drawerOpen && (
                   <Box sx={{ pl: 3, mb: 1.5 }}>
                     <Typography
-                      variant="h5"
+                      variant='h5'
                       color={theme.palette.mode === ThemeMode.DARK ? 'text.secondary' : 'secondary.dark'}
                       sx={{ textTransform: 'uppercase', fontSize: '0.688rem' }}
                     >
                       {item.title}
                     </Typography>
                     {item.caption && (
-                      <Typography variant="caption" color="secondary">
+                      <Typography variant='caption' color='secondary'>
                         {item.caption}
                       </Typography>
                     )}
@@ -307,7 +307,7 @@ export default function NavGroup({
               mr: 1,
               display: 'flex',
               alignItems: 'center',
-              borderRadius: 1
+              borderRadius: 1,
             }}
             onMouseEnter={handleClick}
             onClick={(event: any) => {
@@ -319,19 +319,19 @@ export default function NavGroup({
           >
             {itemIcon && (
               <ListItemIcon sx={{ minWidth: 32 }}>
-                {currentItem.id === lastItemId ? <More2 size={22} variant="Bulk" /> : itemIcon}
+                {currentItem.id === lastItemId ? <More2 size={22} variant='Bulk' /> : itemIcon}
               </ListItemIcon>
             )}
             <ListItemText
               sx={{ mr: 1 }}
               primary={
-                <Typography variant="h6" color={isSelected ? 'primary' : textColor} sx={{ fontWeight: isSelected ? 500 : 400 }}>
-                  {currentItem.id === lastItemId ? <FormattedMessage id="more-items" /> : currentItem.title}
+                <Typography variant='h6' color={isSelected ? 'primary' : textColor} sx={{ fontWeight: isSelected ? 500 : 400 }}>
+                  {currentItem.id === lastItemId ? <FormattedMessage id='more-items' /> : currentItem.title}
                 </Typography>
               }
             />
             {anchorEl && currentItem.type === 'group' && (
-              <PopperStyled id={popperId} open={openMini} anchorEl={anchorEl} placement="bottom-start" style={{ zIndex: 2001 }}>
+              <PopperStyled id={popperId} open={openMini} anchorEl={anchorEl} placement='bottom-start' style={{ zIndex: 2001 }}>
                 {({ TransitionProps }) => (
                   <Transitions in={openMini} {...TransitionProps}>
                     <Paper
@@ -341,7 +341,7 @@ export default function NavGroup({
                         boxShadow: theme.customShadows.z1,
                         border: '1px solid ',
                         borderColor: 'divider',
-                        backgroundImage: 'none'
+                        backgroundImage: 'none',
                       }}
                     >
                       <ClickAwayListener onClickAway={handleClose}>
@@ -350,7 +350,7 @@ export default function NavGroup({
                             sx={{
                               minWidth: 200,
                               overflowY: 'auto',
-                              maxHeight: 'calc(100vh - 170px)'
+                              maxHeight: 'calc(100vh - 170px)',
                             }}
                           >
                             {currentItem.id !== lastItemId ? items : moreItems}

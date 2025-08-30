@@ -56,133 +56,133 @@ const ComponentsRoutes = {
   children: [
     {
       path: 'autocomplete',
-      element: <Autocomplete />
+      element: <Autocomplete />,
     },
     {
       path: 'buttons',
-      element: <Buttons />
+      element: <Buttons />,
     },
     {
       path: 'checkbox',
-      element: <Checkbox />
+      element: <Checkbox />,
     },
     {
       path: 'radio',
-      element: <Radio />
+      element: <Radio />,
     },
     {
       path: 'rating',
-      element: <Rating />
+      element: <Rating />,
     },
     {
       path: 'switch',
-      element: <Switch />
+      element: <Switch />,
     },
     {
       path: 'select',
-      element: <Select />
+      element: <Select />,
     },
     {
       path: 'slider',
-      element: <Slider />
+      element: <Slider />,
     },
     {
       path: 'textfield',
-      element: <TextField />
+      element: <TextField />,
     },
     {
       path: 'avatars',
-      element: <Avatars />
+      element: <Avatars />,
     },
     {
       path: 'badges',
-      element: <Badges />
+      element: <Badges />,
     },
     {
       path: 'chips',
-      element: <Chips />
+      element: <Chips />,
     },
     {
       path: 'lists',
-      element: <Lists />
+      element: <Lists />,
     },
     {
       path: 'tooltip',
-      element: <Tooltip />
+      element: <Tooltip />,
     },
     {
       path: 'typography',
-      element: <Typography />
+      element: <Typography />,
     },
     {
       path: 'alert',
-      element: <Alert />
+      element: <Alert />,
     },
     {
       path: 'dialogs',
-      element: <Dialogs />
+      element: <Dialogs />,
     },
     {
       path: 'progress',
-      element: <Progress />
+      element: <Progress />,
     },
     {
       path: 'snackbar',
-      element: <Snackbar />
+      element: <Snackbar />,
     },
     {
       path: 'breadcrumbs',
-      element: <Breadcrumbs />
+      element: <Breadcrumbs />,
     },
     {
       path: 'pagination',
-      element: <Pagination />
+      element: <Pagination />,
     },
     {
       path: 'speeddial',
-      element: <Speeddial />
+      element: <Speeddial />,
     },
     {
       path: 'stepper',
-      element: <Stepper />
+      element: <Stepper />,
     },
     {
       path: 'tabs',
-      element: <Tabs />
+      element: <Tabs />,
     },
     {
       path: 'accordion',
-      element: <Accordion />
+      element: <Accordion />,
     },
     {
       path: 'cards',
-      element: <Cards />
+      element: <Cards />,
     },
     {
       path: 'color',
-      element: <Color />
+      element: <Color />,
     },
     {
       path: 'date-time-picker',
-      element: <DateTimePicker />
+      element: <DateTimePicker />,
     },
     {
       path: 'modal',
-      element: <Modal />
+      element: <Modal />,
     },
     {
       path: 'shadows',
-      element: <Shadow />
+      element: <Shadow />,
     },
     {
       path: 'timeline',
-      element: <Timeline />
+      element: <Timeline />,
     },
     {
       path: 'treeview',
-      element: <TreeView />
-    }
-  ]
+      element: <TreeView />,
+    },
+  ],
 };
 
 export default ComponentsRoutes;

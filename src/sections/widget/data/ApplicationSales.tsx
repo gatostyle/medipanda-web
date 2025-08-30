@@ -21,17 +21,17 @@ const rows = [
   createData('Materially', 'Powerful Admin Theme', '16,300', '$53', '$15,652'),
   createData('Photoshop', 'Design Software', '26,421', '$35', '$8,785'),
   createData('Guruable', 'Best Admin Template', '8,265', '$98', '$9,652'),
-  createData('Flatable', 'Admin App', '10,652', '$20', '$7,856')
+  createData('Flatable', 'Admin App', '10,652', '$20', '$7,856'),
 ];
 // =========================|| DATA WIDGET - APPLICATION SALES ||========================= //
 
 export default function ApplicationSales() {
   return (
     <MainCard
-      title="Application Sales"
+      title='Application Sales'
       content={false}
       secondary={
-        <Link component={RouterLink} to="#" color="primary">
+        <Link component={RouterLink} to='#' color='primary'>
           View all
         </Link>
       }
@@ -41,9 +41,9 @@ export default function ApplicationSales() {
           <TableHead>
             <TableRow>
               <TableCell sx={{ pl: 3 }}>Application</TableCell>
-              <TableCell align="right">Sales</TableCell>
-              <TableCell align="right">Avg. Price</TableCell>
-              <TableCell align="right" sx={{ pr: 3 }}>
+              <TableCell align='right'>Sales</TableCell>
+              <TableCell align='right'>Avg. Price</TableCell>
+              <TableCell align='right' sx={{ pr: 3 }}>
                 Total
               </TableCell>
             </TableRow>
@@ -52,14 +52,14 @@ export default function ApplicationSales() {
             {rows.map((row, index) => (
               <TableRow hover key={index}>
                 <TableCell sx={{ pl: 3 }}>
-                  <Typography variant="subtitle1">{row.name}</Typography>
-                  <Typography variant="caption" color="secondary">
+                  <Typography variant='subtitle1'>{row.name}</Typography>
+                  <Typography variant='caption' color='secondary'>
                     {row.designation}
                   </Typography>
                 </TableCell>
-                <TableCell align="right">{row.product}</TableCell>
-                <TableCell align="right">{row.date}</TableCell>
-                <TableCell align="right" sx={{ pr: 3 }}>
+                <TableCell align='right'>{row.product}</TableCell>
+                <TableCell align='right'>{row.date}</TableCell>
+                <TableCell align='right' sx={{ pr: 3 }}>
                   <span>{row.badgeText}</span>
                 </TableCell>
               </TableRow>

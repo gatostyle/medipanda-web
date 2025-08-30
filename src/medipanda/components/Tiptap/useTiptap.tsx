@@ -31,7 +31,7 @@ export function useTiptap(props: UseTiptapOptions): {
       Paragraph,
       Text,
       Placeholder.configure({
-        placeholder: placeholder.current
+        placeholder: placeholder.current,
       }),
       Bold,
       ListItem,
@@ -53,8 +53,8 @@ export function useTiptap(props: UseTiptapOptions): {
               .insertContentAt(pos, {
                 type: 'image',
                 attrs: {
-                  src: fileSrc
-                }
+                  src: fileSrc,
+                },
               })
               .focus()
               .run();
@@ -73,22 +73,22 @@ export function useTiptap(props: UseTiptapOptions): {
               .insertContentAt(currentEditor.state.selection.anchor, {
                 type: 'image',
                 attrs: {
-                  src: fileSrc
-                }
+                  src: fileSrc,
+                },
               })
               .focus()
               .run();
           }
-        }
-      })
+        },
+      }),
     ],
-    onDelete: (props) => {
+    onDelete: props => {
       if (props.type === 'node' && props.node.type.name === 'image') {
         onImageDelete.current?.(props.node.attrs.src);
       }
     },
     imageMimeTypes: imageMimeTypes.current,
-    onImageInsert: onImageInsert.current
+    onImageInsert: onImageInsert.current,
   } as ExtendedUseEditorOptions);
 
   return { editor };

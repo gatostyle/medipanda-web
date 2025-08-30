@@ -29,33 +29,33 @@ export default function ThemeWidth() {
   return (
     <RadioGroup
       row
-      aria-label="payment-card"
-      name="payment-card"
+      aria-label='payment-card'
+      name='payment-card'
       value={container ? 'container' : 'fluid'}
       onChange={handleContainerChange}
     >
-      <Stack direction="row" alignItems="center" spacing={2.5} sx={{ width: '100%' }}>
+      <Stack direction='row' alignItems='center' spacing={2.5} sx={{ width: '100%' }}>
         <FormControlLabel
-          control={<Radio value="fluid" sx={{ display: 'none' }} />}
+          control={<Radio value='fluid' sx={{ display: 'none' }} />}
           sx={{ width: '100%', m: 0, display: 'flex', '& .MuiFormControlLabel-label': { flex: 1 } }}
           label={
-            <Stack alignItems="center" spacing={0.5}>
+            <Stack alignItems='center' spacing={0.5}>
               <MainCard content={false} sx={{ borderWidth: 2, p: 1, ...(!container && { borderColor: theme.palette.primary.main }) }}>
-                <CardMedia component="img" src={defaultLayout} alt="defaultLayout" />
+                <CardMedia component='img' src={defaultLayout} alt='defaultLayout' />
               </MainCard>
-              <Typography variant="caption">Fluid</Typography>
+              <Typography variant='caption'>Fluid</Typography>
             </Stack>
           }
         />
         <FormControlLabel
-          control={<Radio value="container" sx={{ display: 'none' }} />}
+          control={<Radio value='container' sx={{ display: 'none' }} />}
           sx={{ width: '100%', m: 0, display: 'flex', '& .MuiFormControlLabel-label': { flex: 1 } }}
           label={
-            <Stack alignItems="center" spacing={0.5}>
+            <Stack alignItems='center' spacing={0.5}>
               <MainCard content={false} sx={{ borderWidth: 2, p: 1, ...(container && { borderColor: theme.palette.primary.main }) }}>
-                <CardMedia component="img" src={containerLayout} alt="defaultLayout" />
+                <CardMedia component='img' src={containerLayout} alt='defaultLayout' />
               </MainCard>
-              <Typography variant="caption">Container</Typography>
+              <Typography variant='caption'>Container</Typography>
             </Stack>
           }
         />

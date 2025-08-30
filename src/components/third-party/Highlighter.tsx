@@ -32,17 +32,17 @@ export default function Highlighter({ codeString, codeHighlight }: Props) {
       <CardActions sx={{ justifyContent: 'flex-end' }}>
         <Box sx={{ display: 'flex' }}>
           <CopyToClipboard text={codeString}>
-            <Tooltip title="Copy the source" placement="top-end">
-              <IconButton color="secondary" size="small">
+            <Tooltip title='Copy the source' placement='top-end'>
+              <IconButton color='secondary' size='small'>
                 <Copy />
               </IconButton>
             </Tooltip>
           </CopyToClipboard>
-          <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: 1 }} />
-          <Tooltip title="Show the source" placement="top-end">
+          <Divider orientation='vertical' variant='middle' flexItem sx={{ mx: 1 }} />
+          <Tooltip title='Show the source' placement='top-end'>
             <IconButton
               sx={{ fontSize: '0.875rem' }}
-              size="small"
+              size='small'
               color={highlight ? 'primary' : 'secondary'}
               onClick={() => setHighlight(!highlight)}
             >

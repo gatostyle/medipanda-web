@@ -31,9 +31,9 @@ export default function FloatingCart() {
   return (
     <Fab
       component={Link}
-      to="/apps/e-commerce/checkout"
-      size="large"
-      variant="circular"
+      to='/apps/e-commerce/checkout'
+      size='large'
+      variant='circular'
       sx={{
         borderRadius: 0,
         borderTopLeftRadius: '50%',
@@ -50,18 +50,18 @@ export default function FloatingCart() {
         borderColor: 'background.paper',
         borderRight: 'none',
         '&:hover': {
-          bgcolor: 'warning.lighter'
-        }
+          bgcolor: 'warning.lighter',
+        },
       }}
     >
       <IconButton
-        aria-label="settings toggler"
-        size="large"
+        aria-label='settings toggler'
+        size='large'
         sx={{ p: 0, '& :hover': { bgcolor: 'red' }, '& svg': { width: 26, height: 26 }, color: 'warning.dark' }}
-        color="warning"
+        color='warning'
       >
-        <Badge showZero badgeContent={totalQuantity} color="error">
-          <ShoppingCart variant="Bulk" />
+        <Badge showZero badgeContent={totalQuantity} color='error'>
+          <ShoppingCart variant='Bulk' />
         </Badge>
       </IconButton>
     </Fab>

@@ -41,16 +41,16 @@ function ControlPanel({ startTime, endTime, allDays, selectedTime, onChangeTime,
           width: '100%',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
         }}
       >
-        <Typography variant="subtitle2">All Days</Typography>
-        <Switch size="small" checked={allDays} onChange={(event) => onChangeAllDays(event.target.checked)} />
+        <Typography variant='subtitle2'>All Days</Typography>
+        <Switch size='small' checked={allDays} onChange={event => onChangeAllDays(event.target.checked)} />
       </Box>
 
       <br />
 
-      <Typography gutterBottom variant="body2" sx={{ color: allDays ? 'text.disabled' : 'text.primary' }}>
+      <Typography gutterBottom variant='body2' sx={{ color: allDays ? 'text.disabled' : 'text.primary' }}>
         Each Day: {format(new Date(selectedTime), 'dd MMM yyyy')}
       </Typography>
 
@@ -60,7 +60,7 @@ function ControlPanel({ startTime, endTime, allDays, selectedTime, onChangeTime,
         max={days}
         disabled={allDays}
         value={selectedDay}
-        color="primary"
+        color='primary'
         onChange={(event, newValue) => {
           if (typeof newValue === 'number') handleChangeDays(newValue);
         }}

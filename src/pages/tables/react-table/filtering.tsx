@@ -25,7 +25,7 @@ import {
   HeaderGroup,
   FilterFn,
   SortingFn,
-  sortingFns
+  sortingFns,
 } from '@tanstack/react-table';
 import { compareItems, rankItem, RankingInfo } from '@tanstack/match-sorter-utils';
 
@@ -85,27 +85,27 @@ function ReactTable({ columns, data }: ReactTableProps) {
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: fuzzyFilter
+    globalFilterFn: fuzzyFilter,
   });
 
   let headers: LabelKeyObject[] = [];
-  table.getAllColumns().map((columns) =>
+  table.getAllColumns().map(columns =>
     headers.push({
       label: typeof columns.columnDef.header === 'string' ? columns.columnDef.header : '#',
       // @ts-ignore
-      key: columns.columnDef.accessorKey
-    })
+      key: columns.columnDef.accessorKey,
+    }),
   );
 
   return (
     <MainCard content={false}>
-      <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between" sx={{ padding: 2 }}>
+      <Stack direction='row' spacing={2} alignItems='center' justifyContent='space-between' sx={{ padding: 2 }}>
         <DebouncedInput
           value={globalFilter ?? ''}
-          onFilterChange={(value) => setGlobalFilter(String(value))}
+          onFilterChange={value => setGlobalFilter(String(value))}
           placeholder={`Search ${data.length} records...`}
         />
-        <CSVExport {...{ data: table.getRowModel().rows.map((d) => d.original), headers, filename: 'filtering.csv' }} />
+        <CSVExport {...{ data: table.getRowModel().rows.map(d => d.original), headers, filename: 'filtering.csv' }} />
       </Stack>
 
       <ScrollX>
@@ -114,7 +114,7 @@ function ReactTable({ columns, data }: ReactTableProps) {
             <TableHead>
               {table.getHeaderGroups().map((headerGroup: HeaderGroup<any>) => (
                 <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
+                  {headerGroup.headers.map(header => (
                     <TableCell key={header.id} {...header.column.columnDef.meta}>
                       {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableCell>
@@ -125,7 +125,7 @@ function ReactTable({ columns, data }: ReactTableProps) {
             <TableHead>
               {table.getHeaderGroups().map((headerGroup: HeaderGroup<any>) => (
                 <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
+                  {headerGroup.headers.map(header => (
                     <TableCell key={header.id} {...header.column.columnDef.meta}>
                       {header.column.getCanFilter() && <Filter column={header.column} table={table} />}
                     </TableCell>
@@ -135,9 +135,9 @@ function ReactTable({ columns, data }: ReactTableProps) {
             </TableHead>
             <TableBody>
               {table.getRowModel().rows.length > 0 ? (
-                table.getRowModel().rows.map((row) => (
+                table.getRowModel().rows.map(row => (
                   <TableRow key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
+                    {row.getVisibleCells().map(cell => (
                       <TableCell key={cell.id} {...cell.column.columnDef.meta}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
@@ -147,7 +147,7 @@ function ReactTable({ columns, data }: ReactTableProps) {
               ) : (
                 <TableRow>
                   <TableCell colSpan={table.getAllColumns().length}>
-                    <EmptyTable msg="No Data" />
+                    <EmptyTable msg='No Data' />
                   </TableCell>
                 </TableRow>
               )}
@@ -168,54 +168,54 @@ export default function FilteringTable() {
     () => [
       {
         header: 'First Name',
-        accessorKey: 'firstName'
+        accessorKey: 'firstName',
       },
       {
         header: 'Last Name',
-        accessorKey: 'lastName'
+        accessorKey: 'lastName',
       },
       {
         header: 'Email',
-        accessorKey: 'email'
+        accessorKey: 'email',
       },
       {
         header: 'Role',
         accessorKey: 'role',
         filterFn: fuzzyFilter,
-        sortingFn: fuzzySort
+        sortingFn: fuzzySort,
       },
       {
         header: 'Age',
         accessorKey: 'age',
-        meta: { className: 'cell-right' }
+        meta: { className: 'cell-right' },
       },
       {
         header: 'Visits',
         accessorKey: 'visits',
-        meta: { className: 'cell-right' }
+        meta: { className: 'cell-right' },
       },
       {
         header: 'Status',
         accessorKey: 'status',
-        cell: (props) => {
+        cell: props => {
           switch (props.getValue()) {
             case 'Complicated':
-              return <Chip color="error" label="Complicated" size="small" variant="light" />;
+              return <Chip color='error' label='Complicated' size='small' variant='light' />;
             case 'Relationship':
-              return <Chip color="success" label="Relationship" size="small" variant="light" />;
+              return <Chip color='success' label='Relationship' size='small' variant='light' />;
             case 'Single':
             default:
-              return <Chip color="info" label="Single" size="small" variant="light" />;
+              return <Chip color='info' label='Single' size='small' variant='light' />;
           }
-        }
+        },
       },
       {
         header: 'Profile Progress',
         accessorKey: 'progress',
-        cell: (props) => <LinearWithLabel value={props.getValue() as number} sx={{ minWidth: 75 }} />
-      }
+        cell: props => <LinearWithLabel value={props.getValue() as number} sx={{ minWidth: 75 }} />,
+      },
     ],
-    []
+    [],
   );
 
   return <ReactTable {...{ data, columns }} />;

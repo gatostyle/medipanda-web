@@ -6,7 +6,7 @@ const initialState = {
   menuItems: [] as NavItemType[],
   menuOrientation: MenuOrientation.VERTICAL,
   setMenuItems: (menuItems: NavItemType[]) => {},
-  setMenuOrientation: (menuOrientation: MenuOrientation) => {}
+  setMenuOrientation: (menuOrientation: MenuOrientation) => {},
 };
 
 export const MpMenuContext = createContext(initialState);
@@ -25,7 +25,7 @@ export function MpMenuProvider({ children }: MpMenuProviderProps) {
         menuItems,
         menuOrientation,
         setMenuItems,
-        setMenuOrientation
+        setMenuOrientation,
       }}
     >
       {children}

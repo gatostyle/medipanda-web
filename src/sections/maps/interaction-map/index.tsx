@@ -27,16 +27,16 @@ function InteractionMap({ ...other }: MapBoxProps) {
     touchPitch: true,
     touchRotate: true,
     doubleClickZoom: true,
-    touchZoomRotate: true
+    touchZoomRotate: true,
   });
 
   const updateSettings = useCallback(
     (name: string, value: boolean | number) =>
-      setSettings((prevSettings) => ({
+      setSettings(prevSettings => ({
         ...prevSettings,
-        [name]: value
+        [name]: value,
       })),
-    []
+    [],
   );
 
   return (
@@ -47,7 +47,7 @@ function InteractionMap({ ...other }: MapBoxProps) {
         longitude: -122.36,
         zoom: 11,
         bearing: 0,
-        pitch: 50
+        pitch: 50,
       }}
       {...other}
     >

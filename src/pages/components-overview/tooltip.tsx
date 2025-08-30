@@ -30,21 +30,21 @@ const LightTooltip = styled(({ className, ...props }: TooltipProps) => <Tooltip 
       backgroundColor: theme.palette.common.white,
       color: 'rgba(0, 0, 0, 0.87)',
       boxShadow: theme.shadows[1],
-      fontSize: 11
-    }
-  })
+      fontSize: 11,
+    },
+  }),
 );
 LightTooltip.displayName = 'LightTooltip';
 
 const BootstrapTooltip = styled(({ className, ...props }: TooltipProps) => <Tooltip {...props} arrow classes={{ popper: className }} />)(
   ({ theme }) => ({
     [`& .${tooltipClasses.arrow}`]: {
-      color: theme.palette.common.black
+      color: theme.palette.common.black,
     },
     [`& .${tooltipClasses.tooltip}`]: {
-      backgroundColor: theme.palette.common.black
-    }
-  })
+      backgroundColor: theme.palette.common.black,
+    },
+  }),
 );
 BootstrapTooltip.displayName = 'BootstrapTooltip';
 
@@ -55,23 +55,23 @@ const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => <Tooltip {
       color: 'rgba(0, 0, 0, 0.87)',
       maxWidth: 220,
       fontSize: theme.typography.pxToRem(12),
-      border: '1px solid #dadde9'
-    }
-  })
+      border: '1px solid #dadde9',
+    },
+  }),
 );
 HtmlTooltip.displayName = 'HtmlTooltip';
 
 const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => <Tooltip {...props} classes={{ popper: className }} />)({
   [`& .${tooltipClasses.tooltip}`]: {
-    maxWidth: 500
-  }
+    maxWidth: 500,
+  },
 });
 CustomWidthTooltip.displayName = 'CustomWidthTooltip';
 
 const NoMaxWidthTooltip = styled(({ className, ...props }: TooltipProps) => <Tooltip {...props} classes={{ popper: className }} />)({
   [`& .${tooltipClasses.tooltip}`]: {
-    maxWidth: 'none'
-  }
+    maxWidth: 'none',
+  },
 });
 NoMaxWidthTooltip.displayName = 'NoMaxWidthTooltip';
 
@@ -303,42 +303,42 @@ Nullam eget est sed sem iaculis gravida eget vitae justo.`;
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Tooltip"
-        caption="Tooltips display informative text when users hover over, focus on, or tap an element."
-        directory="src/pages/components-overview/tooltip"
-        link="https://mui.com/material-ui/react-tooltip/"
+        title='Tooltip'
+        caption='Tooltips display informative text when users hover over, focus on, or tap an element.'
+        directory='src/pages/components-overview/tooltip'
+        link='https://mui.com/material-ui/react-tooltip/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
             <Stack spacing={3}>
-              <MainCard title="Simple Tooltips" codeHighlight codeString={simpleTooltipsCodeString}>
-                <Grid container spacing={3} alignItems="center">
+              <MainCard title='Simple Tooltips' codeHighlight codeString={simpleTooltipsCodeString}>
+                <Grid container spacing={3} alignItems='center'>
                   <Grid item>
-                    <Tooltip title="Delete">
-                      <IconButton aria-label="delete" size="large" color="error">
-                        <Trash variant="Bold" />
+                    <Tooltip title='Delete'>
+                      <IconButton aria-label='delete' size='large' color='error'>
+                        <Trash variant='Bold' />
                       </IconButton>
                     </Tooltip>
                   </Grid>
                   <Grid item>
-                    <Tooltip title="Add" aria-label="add">
-                      <Fab color="primary">
+                    <Tooltip title='Add' aria-label='add'>
+                      <Fab color='primary'>
                         <Add />
                       </Fab>
                     </Tooltip>
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Customized Tooltip" codeString={customTooltipsCodeString}>
-                <Grid container spacing={1} alignItems="center">
+              <MainCard title='Customized Tooltip' codeString={customTooltipsCodeString}>
+                <Grid container spacing={1} alignItems='center'>
                   <Grid item>
-                    <LightTooltip title="Add">
+                    <LightTooltip title='Add'>
                       <Button>Light</Button>
                     </LightTooltip>
                   </Grid>
                   <Grid item>
-                    <BootstrapTooltip title="Add">
+                    <BootstrapTooltip title='Add'>
                       <Button>Bootstrap</Button>
                     </BootstrapTooltip>
                   </Grid>
@@ -346,9 +346,9 @@ Nullam eget est sed sem iaculis gravida eget vitae justo.`;
                     <HtmlTooltip
                       title={
                         <>
-                          <Typography color="inherit">Tooltip with HTML</Typography>
+                          <Typography color='inherit'>Tooltip with HTML</Typography>
                           <em>And here&apos;s</em>{' '}
-                          <Typography variant="subtitle1" component="span">
+                          <Typography variant='subtitle1' component='span'>
                             some
                           </Typography>{' '}
                           <u>amazing content</u>. it&apos;s very engaging. Right?
@@ -360,26 +360,26 @@ Nullam eget est sed sem iaculis gravida eget vitae justo.`;
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Arrow Tooltips" codeString={arrowTooltipsCodeString}>
-                <Grid container spacing={1} alignItems="center">
+              <MainCard title='Arrow Tooltips' codeString={arrowTooltipsCodeString}>
+                <Grid container spacing={1} alignItems='center'>
                   <Grid item>
-                    <Tooltip title="Add" arrow>
+                    <Tooltip title='Add' arrow>
                       <Button>Arrow</Button>
                     </Tooltip>
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Delay Tooltips" codeString={delayTooltipsCodeString}>
-                <Grid container spacing={1} alignItems="center">
+              <MainCard title='Delay Tooltips' codeString={delayTooltipsCodeString}>
+                <Grid container spacing={1} alignItems='center'>
                   <Grid item>
-                    <Tooltip title="Add" enterDelay={500} leaveDelay={200}>
+                    <Tooltip title='Add' enterDelay={500} leaveDelay={200}>
                       <Button>[500ms, 200ms]</Button>
                     </Tooltip>
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Disabled Tooltips" codeString={disabledTooltipsCodeString}>
-                <Grid container spacing={1} alignItems="center">
+              <MainCard title='Disabled Tooltips' codeString={disabledTooltipsCodeString}>
+                <Grid container spacing={1} alignItems='center'>
                   <Grid item>
                     <Tooltip title="You Don't have permission to do this">
                       <span>
@@ -389,10 +389,10 @@ Nullam eget est sed sem iaculis gravida eget vitae justo.`;
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Disable Interactive Tooltips" codeString={interactiveTooltipsCodeString}>
-                <Grid container spacing={1} alignItems="center">
+              <MainCard title='Disable Interactive Tooltips' codeString={interactiveTooltipsCodeString}>
+                <Grid container spacing={1} alignItems='center'>
                   <Grid item>
-                    <Tooltip title="Add" disableInteractive>
+                    <Tooltip title='Add' disableInteractive>
                       <Button>Disable Interactive</Button>
                     </Tooltip>
                   </Grid>
@@ -402,15 +402,15 @@ Nullam eget est sed sem iaculis gravida eget vitae justo.`;
           </Grid>
           <Grid item xs={12} md={6}>
             <Stack spacing={3}>
-              <MainCard title="Triggers/Controlled Tooltips" codeString={controlledTooltipsCodeString}>
-                <Grid container spacing={1} alignItems="center">
+              <MainCard title='Triggers/Controlled Tooltips' codeString={controlledTooltipsCodeString}>
+                <Grid container spacing={1} alignItems='center'>
                   <Grid item>
-                    <Tooltip disableFocusListener title="Add">
+                    <Tooltip disableFocusListener title='Add'>
                       <Button>Hover or touch</Button>
                     </Tooltip>
                   </Grid>
                   <Grid item>
-                    <Tooltip disableFocusListener disableTouchListener title="Add">
+                    <Tooltip disableFocusListener disableTouchListener title='Add'>
                       <Button>Hover</Button>
                     </Tooltip>
                   </Grid>
@@ -419,14 +419,14 @@ Nullam eget est sed sem iaculis gravida eget vitae justo.`;
                       <div>
                         <Tooltip
                           PopperProps={{
-                            disablePortal: true
+                            disablePortal: true,
                           }}
                           onClose={handleTooltipClose}
                           open={open}
                           disableFocusListener
                           disableHoverListener
                           disableTouchListener
-                          title="Add"
+                          title='Add'
                         >
                           <Button onClick={handleTooltipOpen}>Click</Button>
                         </Tooltip>
@@ -435,27 +435,27 @@ Nullam eget est sed sem iaculis gravida eget vitae justo.`;
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Transitions Tooltips" codeString={transitionsTooltipsCodeString}>
-                <Grid container spacing={1} alignItems="center">
+              <MainCard title='Transitions Tooltips' codeString={transitionsTooltipsCodeString}>
+                <Grid container spacing={1} alignItems='center'>
                   <Grid item>
-                    <Tooltip title="Add">
+                    <Tooltip title='Add'>
                       <Button>Grow</Button>
                     </Tooltip>
                   </Grid>
                   <Grid item>
-                    <Tooltip TransitionComponent={Fade} TransitionProps={{ timeout: 600 }} title="Add">
+                    <Tooltip TransitionComponent={Fade} TransitionProps={{ timeout: 600 }} title='Add'>
                       <Button>Fade</Button>
                     </Tooltip>
                   </Grid>
                   <Grid item>
-                    <Tooltip TransitionComponent={Zoom} title="Add">
+                    <Tooltip TransitionComponent={Zoom} title='Add'>
                       <Button>Zoom</Button>
                     </Tooltip>
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Variable Width Tooltips" codeString={variableTooltipsCodeString}>
-                <Grid container spacing={1} alignItems="center">
+              <MainCard title='Variable Width Tooltips' codeString={variableTooltipsCodeString}>
+                <Grid container spacing={1} alignItems='center'>
                   <Grid item>
                     <Tooltip title={longText}>
                       <Button sx={{ m: 1 }}>Default Width [300px]</Button>
@@ -473,97 +473,97 @@ Nullam eget est sed sem iaculis gravida eget vitae justo.`;
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Positioned Tooltips" codeString={positionedTooltipsCodeString}>
+              <MainCard title='Positioned Tooltips' codeString={positionedTooltipsCodeString}>
                 <>
-                  <Grid container justifyContent="center" spacing={1}>
+                  <Grid container justifyContent='center' spacing={1}>
                     <Grid item>
-                      <Tooltip title="Add" placement="top-start">
-                        <Button color="secondary" variant="outlined">
+                      <Tooltip title='Add' placement='top-start'>
+                        <Button color='secondary' variant='outlined'>
                           top-start
                         </Button>
                       </Tooltip>
                     </Grid>
                     <Grid item>
-                      <Tooltip title="Add" placement="top">
-                        <Button color="secondary" variant="outlined">
+                      <Tooltip title='Add' placement='top'>
+                        <Button color='secondary' variant='outlined'>
                           top
                         </Button>
                       </Tooltip>
                     </Grid>
                     <Grid item>
-                      <Tooltip title="Add" placement="top-end">
-                        <Button color="secondary" variant="outlined">
+                      <Tooltip title='Add' placement='top-end'>
+                        <Button color='secondary' variant='outlined'>
                           top-end
                         </Button>
                       </Tooltip>
                     </Grid>
                   </Grid>
-                  <Grid container justifyContent="center" sx={{ my: 1 }}>
-                    <Grid item xs={6} container alignItems="flex-start" direction="column" spacing={1}>
+                  <Grid container justifyContent='center' sx={{ my: 1 }}>
+                    <Grid item xs={6} container alignItems='flex-start' direction='column' spacing={1}>
                       <Grid item>
-                        <Tooltip title="Add" placement="right-start">
-                          <Button color="secondary" variant="outlined">
+                        <Tooltip title='Add' placement='right-start'>
+                          <Button color='secondary' variant='outlined'>
                             right-start
                           </Button>
                         </Tooltip>
                       </Grid>
                       <Grid item>
-                        <Tooltip title="Add" placement="right">
-                          <Button color="secondary" variant="outlined">
+                        <Tooltip title='Add' placement='right'>
+                          <Button color='secondary' variant='outlined'>
                             right
                           </Button>
                         </Tooltip>
                       </Grid>
                       <Grid item>
-                        <Tooltip title="Add" placement="right-end">
-                          <Button color="secondary" variant="outlined">
+                        <Tooltip title='Add' placement='right-end'>
+                          <Button color='secondary' variant='outlined'>
                             right-end
                           </Button>
                         </Tooltip>
                       </Grid>
                     </Grid>
-                    <Grid item xs={6} container alignItems="flex-end" direction="column" spacing={1}>
+                    <Grid item xs={6} container alignItems='flex-end' direction='column' spacing={1}>
                       <Grid item>
-                        <Tooltip title="Add" placement="left-start">
-                          <Button color="secondary" variant="outlined">
+                        <Tooltip title='Add' placement='left-start'>
+                          <Button color='secondary' variant='outlined'>
                             left-start
                           </Button>
                         </Tooltip>
                       </Grid>
                       <Grid item>
-                        <Tooltip title="Add" placement="left">
-                          <Button color="secondary" variant="outlined">
+                        <Tooltip title='Add' placement='left'>
+                          <Button color='secondary' variant='outlined'>
                             left
                           </Button>
                         </Tooltip>
                       </Grid>
                       <Grid item>
-                        <Tooltip title="Add" placement="left-end">
-                          <Button color="secondary" variant="outlined">
+                        <Tooltip title='Add' placement='left-end'>
+                          <Button color='secondary' variant='outlined'>
                             left-end
                           </Button>
                         </Tooltip>
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid container justifyContent="center" spacing={1}>
+                  <Grid container justifyContent='center' spacing={1}>
                     <Grid item>
-                      <Tooltip title="Add" placement="bottom-start">
-                        <Button color="secondary" variant="outlined">
+                      <Tooltip title='Add' placement='bottom-start'>
+                        <Button color='secondary' variant='outlined'>
                           bottom-start
                         </Button>
                       </Tooltip>
                     </Grid>
                     <Grid item>
-                      <Tooltip title="Add" placement="bottom">
-                        <Button color="secondary" variant="outlined">
+                      <Tooltip title='Add' placement='bottom'>
+                        <Button color='secondary' variant='outlined'>
                           bottom
                         </Button>
                       </Tooltip>
                     </Grid>
                     <Grid item>
-                      <Tooltip title="Add" placement="bottom-end">
-                        <Button color="secondary" variant="outlined">
+                      <Tooltip title='Add' placement='bottom-end'>
+                        <Button color='secondary' variant='outlined'>
                           bottom-end
                         </Button>
                       </Tooltip>
@@ -571,78 +571,78 @@ Nullam eget est sed sem iaculis gravida eget vitae justo.`;
                   </Grid>
                 </>
               </MainCard>
-              <MainCard title="Color Variant Tooltips" codeString={TooltipsVariantCodeString}>
-                <Grid container spacing={1} alignItems="center">
+              <MainCard title='Color Variant Tooltips' codeString={TooltipsVariantCodeString}>
+                <Grid container spacing={1} alignItems='center'>
                   <Grid item>
-                    <CustomTooltip title="Add" arrow color="primary">
-                      <Button color="primary" variant="contained">
+                    <CustomTooltip title='Add' arrow color='primary'>
+                      <Button color='primary' variant='contained'>
                         Primary
                       </Button>
                     </CustomTooltip>
                   </Grid>
                   <Grid item>
-                    <CustomTooltip title="Add" arrow color="secondary">
-                      <Button color="secondary" variant="contained">
+                    <CustomTooltip title='Add' arrow color='secondary'>
+                      <Button color='secondary' variant='contained'>
                         Secondary
                       </Button>
                     </CustomTooltip>
                   </Grid>
                   <Grid item>
-                    <CustomTooltip title="Add" arrow color="success">
-                      <Button color="success" variant="contained">
+                    <CustomTooltip title='Add' arrow color='success'>
+                      <Button color='success' variant='contained'>
                         Success
                       </Button>
                     </CustomTooltip>
                   </Grid>
                   <Grid item>
-                    <CustomTooltip title="Add" arrow color="info">
-                      <Button color="info" variant="contained">
+                    <CustomTooltip title='Add' arrow color='info'>
+                      <Button color='info' variant='contained'>
                         Info
                       </Button>
                     </CustomTooltip>
                   </Grid>
                   <Grid item>
-                    <CustomTooltip title="Add" arrow color="warning">
-                      <Button color="warning" variant="contained">
+                    <CustomTooltip title='Add' arrow color='warning'>
+                      <Button color='warning' variant='contained'>
                         Warning
                       </Button>
                     </CustomTooltip>
                   </Grid>
                   <Grid item>
-                    <CustomTooltip title="Add" arrow color="error">
-                      <Button color="error" variant="contained">
+                    <CustomTooltip title='Add' arrow color='error'>
+                      <Button color='error' variant='contained'>
                         error
                       </Button>
                     </CustomTooltip>
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Custom Color Tooltips" codeString={TooltipsCustomColorCodeString}>
-                <Grid container spacing={1} alignItems="center">
+              <MainCard title='Custom Color Tooltips' codeString={TooltipsCustomColorCodeString}>
+                <Grid container spacing={1} alignItems='center'>
                   <Grid item>
-                    <CustomTooltip title="Add" arrow color="pink" labelColor="#000">
-                      <Button color="inherit" variant="outlined">
+                    <CustomTooltip title='Add' arrow color='pink' labelColor='#000'>
+                      <Button color='inherit' variant='outlined'>
                         pink
                       </Button>
                     </CustomTooltip>
                   </Grid>
                   <Grid item>
-                    <CustomTooltip title="Add" arrow color="orange">
-                      <Button color="inherit" variant="outlined">
+                    <CustomTooltip title='Add' arrow color='orange'>
+                      <Button color='inherit' variant='outlined'>
                         Orange
                       </Button>
                     </CustomTooltip>
                   </Grid>
                   <Grid item>
-                    <CustomTooltip title="Add" arrow color="yellow" labelColor="#000">
-                      <Button color="inherit" variant="outlined">
+                    <CustomTooltip title='Add' arrow color='yellow' labelColor='#000'>
+                      <Button color='inherit' variant='outlined'>
                         Yellow
                       </Button>
                     </CustomTooltip>
                   </Grid>
                   <Grid item>
-                    <CustomTooltip title="Add" arrow color="#fff" labelColor="#000">
-                      <Button color="inherit" variant="outlined">
+                    <CustomTooltip title='Add' arrow color='#fff' labelColor='#000'>
+                      <Button color='inherit' variant='outlined'>
                         Black/white
                       </Button>
                     </CustomTooltip>

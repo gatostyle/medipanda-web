@@ -17,11 +17,11 @@ export default function ReportCard({ primary, secondary, iconPrimary, color }: R
 
   return (
     <MainCard>
-      <Grid container justifyContent="space-between" alignItems="center">
+      <Grid container justifyContent='space-between' alignItems='center'>
         <Grid item>
           <Stack spacing={0.25}>
-            <Typography variant="h3">{primary}</Typography>
-            <Typography variant="body1" color="text.secondary">
+            <Typography variant='h3'>{primary}</Typography>
+            <Typography variant='body1' color='text.secondary'>
               {secondary}
             </Typography>
           </Stack>

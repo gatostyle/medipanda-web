@@ -25,8 +25,8 @@ export default function CodeVerification() {
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Stack spacing={1}>
-            <Typography variant="h3">Enter Verification Code</Typography>
-            <Typography color="secondary">We send you on mail.</Typography>
+            <Typography variant='h3'>Enter Verification Code</Typography>
+            <Typography color='secondary'>We send you on mail.</Typography>
           </Stack>
         </Grid>
         <Grid item xs={12}>

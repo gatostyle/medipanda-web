@@ -15,7 +15,7 @@ import MainCard from 'components/MainCard';
 import { ArrowDown2, ArrowUp2, Element, Grid5, Setting3 } from 'iconsax-react';
 
 const selectList = {
-  '&.Mui-selected': { bgcolor: 'transparent', color: 'primary.main', '& .MuiListItemIcon-root': { color: 'primary.main' } }
+  '&.Mui-selected': { bgcolor: 'transparent', color: 'primary.main', '& .MuiListItemIcon-root': { color: 'primary.main' } },
 };
 
 // ==============================|| LIST - SELECTED ||============================== //
@@ -136,42 +136,42 @@ export default function SelectedList() {
             <ListItemIcon>
               <Grid5 size={18} />
             </ListItemIcon>
-            <ListItemText primary="Sample" />
+            <ListItemText primary='Sample' />
             {open === 'sample' ? <ArrowDown2 size={14} /> : <ArrowUp2 size={14} />}
           </ListItemButton>
         </ListItem>
-        <Collapse in={open === 'sample'} timeout="auto" unmountOnExit>
+        <Collapse in={open === 'sample'} timeout='auto' unmountOnExit>
           <List disablePadding>
             <ListItemButton
               sx={{ pl: 5, '&.Mui-selected': { borderRight: '2px solid', borderColor: 'primary.main' } }}
               selected={selected === 'list1'}
               onClick={() => handleSelect('list1')}
             >
-              <ListItemText primary="List item 01" />
+              <ListItemText primary='List item 01' />
             </ListItemButton>
             <ListItemButton
               sx={{ pl: 5, ...selectList }}
               onClick={() => handleChildClick('list2')}
               selected={selected === 'list2' || openChild === 'list2'}
             >
-              <ListItemText primary="List item 02" />
+              <ListItemText primary='List item 02' />
               {openChild === 'list1' ? <ArrowDown2 size={14} /> : <ArrowUp2 size={14} />}
             </ListItemButton>
-            <Collapse in={openChild === 'list2'} timeout="auto" unmountOnExit>
+            <Collapse in={openChild === 'list2'} timeout='auto' unmountOnExit>
               <List disablePadding>
                 <ListItemButton
                   sx={{ pl: 7, '&.Mui-selected': { borderRight: '2px solid', borderColor: 'primary.main' } }}
                   selected={selected === 'list5'}
                   onClick={() => handleSelect('list5')}
                 >
-                  <ListItemText primary="List item 05" />
+                  <ListItemText primary='List item 05' />
                 </ListItemButton>
                 <ListItemButton
                   sx={{ pl: 7, '&.Mui-selected': { borderRight: '2px solid', borderColor: 'primary.main' } }}
                   selected={selected === 'list6'}
                   onClick={() => handleSelect('list6')}
                 >
-                  <ListItemText primary="List item 06" />
+                  <ListItemText primary='List item 06' />
                 </ListItemButton>
               </List>
             </Collapse>
@@ -182,25 +182,25 @@ export default function SelectedList() {
             <ListItemIcon>
               <Setting3 size={18} />
             </ListItemIcon>
-            <ListItemText primary="Settings" />
+            <ListItemText primary='Settings' />
             {open === 'settings' ? <ArrowDown2 size={14} /> : <ArrowUp2 size={14} />}
           </ListItemButton>
         </ListItem>
-        <Collapse in={open === 'settings'} timeout="auto" unmountOnExit>
+        <Collapse in={open === 'settings'} timeout='auto' unmountOnExit>
           <List disablePadding>
             <ListItemButton
               sx={{ pl: 5, '&.Mui-selected': { borderRight: '2px solid', borderColor: 'primary.main' } }}
               selected={selected === 'list3'}
               onClick={() => handleSelect('list3')}
             >
-              <ListItemText primary="List item 03" />
+              <ListItemText primary='List item 03' />
             </ListItemButton>
             <ListItemButton
               sx={{ pl: 5, '&.Mui-selected': { borderRight: '2px solid', borderColor: 'primary.main' } }}
               selected={selected === 'list4'}
               onClick={() => handleSelect('list4')}
             >
-              <ListItemText primary="List item 04" />
+              <ListItemText primary='List item 04' />
             </ListItemButton>
           </List>
         </Collapse>
@@ -213,7 +213,7 @@ export default function SelectedList() {
             <ListItemIcon>
               <Element size={18} />
             </ListItemIcon>
-            <ListItemText primary="UI Elements" />
+            <ListItemText primary='UI Elements' />
           </ListItemButton>
         </ListItem>
       </List>

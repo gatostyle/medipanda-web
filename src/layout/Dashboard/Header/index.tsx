@@ -34,8 +34,8 @@ export default function Header() {
       bgcolor: alpha(theme.palette.background.default, 0.8),
       backdropFilter: 'blur(8px)',
       zIndex: 1200,
-      width: drawerOpen ? `calc(100% - ${DRAWER_WIDTH}px)` : `calc(100% - ${MINI_DRAWER_WIDTH}px)`
-    }
+      width: drawerOpen ? `calc(100% - ${DRAWER_WIDTH}px)` : `calc(100% - ${MINI_DRAWER_WIDTH}px)`,
+    },
   };
 
   return (

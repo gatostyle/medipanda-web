@@ -44,9 +44,9 @@ export default function PaymentHistory() {
   return (
     <MainCard content={false}>
       <Box sx={{ p: 3, pb: 1 }}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
-          <Typography variant="h5">Payment History</Typography>
-          <IconButton color="secondary" sx={{ color: 'secondary.darker' }}>
+        <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1}>
+          <Typography variant='h5'>Payment History</Typography>
+          <IconButton color='secondary' sx={{ color: 'secondary.darker' }}>
             <Add />
           </IconButton>
         </Stack>
@@ -56,10 +56,10 @@ export default function PaymentHistory() {
           divider
           secondaryAction={
             <IconButton
-              color="secondary"
-              id="wallet-button"
+              color='secondary'
+              id='wallet-button'
               aria-controls={open ? 'wallet-menu' : undefined}
-              aria-haspopup="true"
+              aria-haspopup='true'
               aria-expanded={open ? 'true' : undefined}
               onClick={handleClick}
             >
@@ -68,16 +68,16 @@ export default function PaymentHistory() {
           }
         >
           <ListItemAvatar>
-            <Avatar variant="rounded" color="secondary">
-              <CardMedia component="img" alt="Paypal" src={paypal} sx={{ width: 24 }} />
+            <Avatar variant='rounded' color='secondary'>
+              <CardMedia component='img' alt='Paypal' src={paypal} sx={{ width: 24 }} />
             </Avatar>
           </ListItemAvatar>
           <ListItemText
-            primary="Paypal"
+            primary='Paypal'
             secondary={
-              <Typography variant="subtitle1">
+              <Typography variant='subtitle1'>
                 +2,10,000{' '}
-                <Typography variant="caption" color="success.main">
+                <Typography variant='caption' color='success.main'>
                   +30.6%
                 </Typography>
               </Typography>
@@ -88,10 +88,10 @@ export default function PaymentHistory() {
           divider
           secondaryAction={
             <IconButton
-              color="secondary"
-              id="wallet-button"
+              color='secondary'
+              id='wallet-button'
               aria-controls={open ? 'wallet-menu' : undefined}
-              aria-haspopup="true"
+              aria-haspopup='true'
               aria-expanded={open ? 'true' : undefined}
               onClick={handleClick}
             >
@@ -100,16 +100,16 @@ export default function PaymentHistory() {
           }
         >
           <ListItemAvatar>
-            <Avatar variant="rounded" color="secondary">
-              <CardMedia component="img" alt="Gpay" src={gpay} sx={{ width: 24 }} />
+            <Avatar variant='rounded' color='secondary'>
+              <CardMedia component='img' alt='Gpay' src={gpay} sx={{ width: 24 }} />
             </Avatar>
           </ListItemAvatar>
           <ListItemText
-            primary="Gpay"
+            primary='Gpay'
             secondary={
-              <Typography variant="subtitle1">
+              <Typography variant='subtitle1'>
                 -2000{' '}
-                <Typography variant="caption" color="error.dark">
+                <Typography variant='caption' color='error.dark'>
                   - 30.6%
                 </Typography>
               </Typography>
@@ -120,10 +120,10 @@ export default function PaymentHistory() {
           divider
           secondaryAction={
             <IconButton
-              color="secondary"
-              id="wallet-button"
+              color='secondary'
+              id='wallet-button'
               aria-controls={open ? 'wallet-menu' : undefined}
-              aria-haspopup="true"
+              aria-haspopup='true'
               aria-expanded={open ? 'true' : undefined}
               onClick={handleClick}
             >
@@ -132,16 +132,16 @@ export default function PaymentHistory() {
           }
         >
           <ListItemAvatar>
-            <Avatar variant="rounded" color="secondary">
-              <CardMedia component="img" alt="phone-pay" src={phonePay} sx={{ width: 24 }} />
+            <Avatar variant='rounded' color='secondary'>
+              <CardMedia component='img' alt='phone-pay' src={phonePay} sx={{ width: 24 }} />
             </Avatar>
           </ListItemAvatar>
           <ListItemText
-            primary="Phone Pay"
+            primary='Phone Pay'
             secondary={
-              <Typography variant="subtitle1">
+              <Typography variant='subtitle1'>
                 -2000{' '}
-                <Typography variant="caption" color="error.dark">
+                <Typography variant='caption' color='error.dark'>
                   - 30.6%
                 </Typography>
               </Typography>
@@ -149,27 +149,27 @@ export default function PaymentHistory() {
           />
         </ListItem>
       </List>
-      <Stack direction="row" alignItems="center" spacing={1.25} sx={{ p: 3 }}>
-        <Button variant="outlined" fullWidth color="secondary">
+      <Stack direction='row' alignItems='center' spacing={1.25} sx={{ p: 3 }}>
+        <Button variant='outlined' fullWidth color='secondary'>
           View all
         </Button>
       </Stack>
       <Menu
-        id="wallet-menu"
+        id='wallet-menu'
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
         MenuListProps={{
           'aria-labelledby': 'wallet-button',
-          sx: { p: 1.25, minWidth: 150 }
+          sx: { p: 1.25, minWidth: 150 },
         }}
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'right'
+          horizontal: 'right',
         }}
         transformOrigin={{
           vertical: 'top',
-          horizontal: 'right'
+          horizontal: 'right',
         }}
       >
         <ListItemButton onClick={handleClose}>Name</ListItemButton>

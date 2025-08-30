@@ -40,8 +40,8 @@ export default function CustomerModal({ open, modalToggler, customer }: Props) {
         <Modal
           open={open}
           onClose={closeModal}
-          aria-labelledby="modal-customer-add-label"
-          aria-describedby="modal-customer-add-description"
+          aria-labelledby='modal-customer-add-label'
+          aria-describedby='modal-customer-add-description'
           sx={{ '& .MuiPaper-root:focus': { outline: 'none' } }}
         >
           <MainCard
@@ -52,7 +52,7 @@ export default function CustomerModal({ open, modalToggler, customer }: Props) {
             <SimpleBar sx={{ maxHeight: `calc(100vh - 48px)`, '& .simplebar-content': { display: 'flex', flexDirection: 'column' } }}>
               {loading ? (
                 <Box sx={{ p: 5 }}>
-                  <Stack direction="row" justifyContent="center">
+                  <Stack direction='row' justifyContent='center'>
                     <CircularWithPath />
                   </Stack>
                 </Box>

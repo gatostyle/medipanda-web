@@ -20,8 +20,8 @@ function Heatmap({ ...other }: MapBoxProps) {
 
   useEffect(() => {
     fetch('https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson')
-      .then((resp) => resp.json())
-      .then((json) => {
+      .then(resp => resp.json())
+      .then(json => {
         const { features } = json;
         const endTime = features[0].properties.time;
         const startTime = features[features.length - 1].properties.time;
@@ -29,12 +29,12 @@ function Heatmap({ ...other }: MapBoxProps) {
         setEarthQuakes(json);
         selectTime(endTime);
       })
-      .catch((error) => console.error('Could not load data', error));
+      .catch(error => console.error('Could not load data', error));
   }, []);
 
   const data: any = useMemo(
     () => (allDays ? earthquakes : filterFeaturesByDay(earthquakes, selectedTime)),
-    [earthquakes, allDays, selectedTime]
+    [earthquakes, allDays, selectedTime],
   );
 
   return (
@@ -43,12 +43,12 @@ function Heatmap({ ...other }: MapBoxProps) {
         initialViewState={{
           latitude: 40,
           longitude: -100,
-          zoom: 3
+          zoom: 3,
         }}
         {...other}
       >
         {data && (
-          <Source type="geojson" data={data}>
+          <Source type='geojson' data={data}>
             <Layer {...heatmapLayer} />
           </Source>
         )}
@@ -73,14 +73,14 @@ function filterFeaturesByDay(
         features: any[];
       }
     | undefined,
-  time: number
+  time: number,
 ) {
   const date = new Date(time);
   const year = date.getFullYear();
   const month = date.getMonth();
   const day = date.getDate();
 
-  const features = featureCollection?.features.filter((feature) => {
+  const features = featureCollection?.features.filter(feature => {
     const featureDate = new Date(feature.properties?.time);
     return featureDate.getFullYear() === year && featureDate.getMonth() === month && featureDate.getDate() === day;
   });

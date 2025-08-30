@@ -19,21 +19,21 @@ export default function BasicModal() {
   const handleClose = () => setOpen(false);
 
   return (
-    <MainCard title="Basic">
-      <Button variant="contained" onClick={handleOpen}>
+    <MainCard title='Basic'>
+      <Button variant='contained' onClick={handleOpen}>
         Open Basic Modal
       </Button>
-      <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
-        <MainCard title="Basic Modal" modal darkTitle content={false}>
+      <Modal open={open} onClose={handleClose} aria-labelledby='modal-modal-title' aria-describedby='modal-modal-description'>
+        <MainCard title='Basic Modal' modal darkTitle content={false}>
           <CardContent>
-            <Typography id="modal-modal-description">Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography>
+            <Typography id='modal-modal-description'>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography>
           </CardContent>
           <Divider />
-          <Stack direction="row" spacing={1} justifyContent="flex-end" sx={{ px: 2.5, py: 2 }}>
-            <Button color="error" size="small" onClick={handleClose}>
+          <Stack direction='row' spacing={1} justifyContent='flex-end' sx={{ px: 2.5, py: 2 }}>
+            <Button color='error' size='small' onClick={handleClose}>
               Cancel
             </Button>
-            <Button variant="contained" size="small">
+            <Button variant='contained' size='small'>
               Submit
             </Button>
           </Stack>

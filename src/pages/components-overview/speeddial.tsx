@@ -15,10 +15,10 @@ export default function ComponentSpeeddial() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Speed Dial"
-        caption="When pressed, a floating action button can display three to six related actions in the form of a speed dial."
-        directory="src/pages/components-overview/speeddial"
-        link="https://mui.com/material-ui/react-speed-dial/"
+        title='Speed Dial'
+        caption='When pressed, a floating action button can display three to six related actions in the form of a speed dial.'
+        directory='src/pages/components-overview/speeddial'
+        link='https://mui.com/material-ui/react-speed-dial/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>

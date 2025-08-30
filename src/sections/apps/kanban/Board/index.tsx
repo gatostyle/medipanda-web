@@ -25,7 +25,7 @@ const getDragWrapper = () => ({
   px: 0,
   bgcolor: 'transparent',
   display: 'flex',
-  overflow: 'auto'
+  overflow: 'auto',
 });
 
 const heightOptions = [120, 100, 160, 80, 60];
@@ -74,7 +74,7 @@ export default function Board() {
       // updated column
       const newSourceColumn = {
         ...sourceColumn,
-        itemIds: newItemIds
+        itemIds: newItemIds,
       };
 
       newColumn = lists?.columns.map((column: KanbanColumn) => {
@@ -92,7 +92,7 @@ export default function Board() {
       // updated dragged items's column
       const newSourceColumn = {
         ...sourceColumn,
-        itemIds: newSourceItemIds
+        itemIds: newSourceItemIds,
       };
 
       const newDestinationItemIds = Array.from(destinationColumn.itemIds);
@@ -103,7 +103,7 @@ export default function Board() {
       // updated dropped item's column
       const newDestinationColumn = {
         ...destinationColumn,
-        itemIds: newDestinationItemIds
+        itemIds: newDestinationItemIds,
       };
 
       newColumn = lists?.columns.map((column: KanbanColumn) => {
@@ -124,8 +124,8 @@ export default function Board() {
     <Box sx={{ display: 'flex' }}>
       <ScrollX>
         <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable droppableId="columns" direction="horizontal" type="column">
-            {(provided) => (
+          <Droppable droppableId='columns' direction='horizontal' type='column'>
+            {provided => (
               <MainCard
                 border={false}
                 ref={provided.innerRef}
@@ -142,14 +142,14 @@ export default function Board() {
                         p: 1.5,
                         margin: `0 ${16}px 0 0`,
                         minWidth: 250,
-                        bgcolor: theme.palette.mode === ThemeMode.DARK ? 'background.default' : 'secondary.lighter'
+                        bgcolor: theme.palette.mode === ThemeMode.DARK ? 'background.default' : 'secondary.lighter',
                       }}
                     >
                       <Stack spacing={1.25}>
-                        <Skeleton variant="rounded" width="100%" height={38} />
-                        <Skeleton variant="rounded" width="100%" height={heightOptions[Math.floor(Math.random() * heightOptions.length)]} />
-                        <Skeleton variant="rounded" width="100%" height={heightOptions[Math.floor(Math.random() * heightOptions.length)]} />
-                        <Skeleton variant="rounded" width="100%" height={heightOptions[Math.floor(Math.random() * heightOptions.length)]} />
+                        <Skeleton variant='rounded' width='100%' height={38} />
+                        <Skeleton variant='rounded' width='100%' height={heightOptions[Math.floor(Math.random() * heightOptions.length)]} />
+                        <Skeleton variant='rounded' width='100%' height={heightOptions[Math.floor(Math.random() * heightOptions.length)]} />
+                        <Skeleton variant='rounded' width='100%' height={heightOptions[Math.floor(Math.random() * heightOptions.length)]} />
                       </Stack>
                     </MainCard>
                   ) : (

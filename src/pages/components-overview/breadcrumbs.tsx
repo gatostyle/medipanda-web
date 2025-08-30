@@ -70,55 +70,55 @@ export default function ComponentBreadcrumb() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Breadcrumbs"
-        caption="Breadcrumbs allow users to make selections from a range of values."
-        directory="src/pages/components-overview/breadcrumbs"
-        link="https://mui.com/material-ui/react-breadcrumbs/"
+        title='Breadcrumbs'
+        caption='Breadcrumbs allow users to make selections from a range of values.'
+        directory='src/pages/components-overview/breadcrumbs'
+        link='https://mui.com/material-ui/react-breadcrumbs/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Basic" codeHighlight codeString={basicBreadcrumbsCodeString}>
+            <MainCard title='Basic' codeHighlight codeString={basicBreadcrumbsCodeString}>
               <Breadcrumb card title={false} sx={{ mb: '0px !important', bgcolor: 'secondary.lighter' }} />
             </MainCard>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Custom Separator" codeString={separatorBreadcrumbsCodeString}>
+            <MainCard title='Custom Separator' codeString={separatorBreadcrumbsCodeString}>
               <Breadcrumb card title={false} separator={Minus} sx={{ mb: '0px !important', bgcolor: 'secondary.lighter' }} />
             </MainCard>
           </Grid>
           <Grid item xs={12} md={6}>
-            <MainCard title="With Title" codeString={titleBreadcrumbsCodeString}>
+            <MainCard title='With Title' codeString={titleBreadcrumbsCodeString}>
               <Breadcrumb card titleBottom={false} sx={{ mb: '0px !important', bgcolor: 'secondary.lighter' }} />
             </MainCard>
           </Grid>
           <Grid item xs={12} md={6}>
-            <MainCard title="Title Bottom" codeString={bottomBreadcrumbsCodeString}>
+            <MainCard title='Title Bottom' codeString={bottomBreadcrumbsCodeString}>
               <Breadcrumb card sx={{ mb: '0px !important', bgcolor: 'secondary.lighter' }} />
             </MainCard>
           </Grid>
           <Grid item xs={12} md={6}>
-            <MainCard title="With Icons" codeString={iconsBreadcrumbsCodeString}>
+            <MainCard title='With Icons' codeString={iconsBreadcrumbsCodeString}>
               <Breadcrumb card icons titleBottom={false} sx={{ mb: '0px !important', bgcolor: 'secondary.lighter' }} />
             </MainCard>
           </Grid>
           <Grid item xs={12} md={6}>
-            <MainCard title="Only Dashboard Icons" codeString={dashboardBreadcrumbsCodeString}>
+            <MainCard title='Only Dashboard Icons' codeString={dashboardBreadcrumbsCodeString}>
               <Breadcrumb card title icon titleBottom={false} sx={{ mb: '0px !important', bgcolor: 'secondary.lighter' }} />
             </MainCard>
           </Grid>
           <Grid item xs={12} md={6}>
-            <MainCard title="Collapsed Breadcrumbs" codeString={collapsedBreadcrumbsCodeString}>
+            <MainCard title='Collapsed Breadcrumbs' codeString={collapsedBreadcrumbsCodeString}>
               <Breadcrumb title maxItems={2} card titleBottom={false} sx={{ mb: '0px !important', bgcolor: 'secondary.lighter' }} />
             </MainCard>
           </Grid>
           <Grid item xs={12} md={6}>
-            <MainCard title="No Card with Divider" codeString={noCardBreadcrumbsCodeString}>
+            <MainCard title='No Card with Divider' codeString={noCardBreadcrumbsCodeString}>
               <Breadcrumb title divider titleBottom={false} sx={{ mb: '0px !important' }} />
             </MainCard>
           </Grid>
           <Grid item xs={12} md={6}>
-            <MainCard title="No Card & No Divider" codeString={noDividerBreadcrumbsCodeString}>
+            <MainCard title='No Card & No Divider' codeString={noDividerBreadcrumbsCodeString}>
               <Breadcrumb title titleBottom={false} sx={{ mb: '0px !important' }} />
             </MainCard>
           </Grid>

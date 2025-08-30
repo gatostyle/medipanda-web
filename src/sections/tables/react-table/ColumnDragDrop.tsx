@@ -40,34 +40,34 @@ function ReactTable({ defaultColumns, data }: ReactTableProps) {
   const [columns] = useState(() => [...defaultColumns]);
 
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
-    columns.map((column) => column.id as string) // must start out with populated columnOrder so we can splice
+    columns.map(column => column.id as string), // must start out with populated columnOrder so we can splice
   );
 
   const table = useReactTable({
     data,
     columns,
     state: {
-      columnOrder
+      columnOrder,
     },
     onColumnOrderChange: setColumnOrder,
     getCoreRowModel: getCoreRowModel(),
     debugTable: true,
     debugHeaders: true,
-    debugColumns: true
+    debugColumns: true,
   });
 
   let headers: LabelKeyObject[] = [];
-  table.getAllColumns().map((columns) =>
+  table.getAllColumns().map(columns =>
     headers.push({
       label: typeof columns.columnDef.header === 'string' ? columns.columnDef.header : '#',
       // @ts-ignore
-      key: columns.columnDef.accessorKey
-    })
+      key: columns.columnDef.accessorKey,
+    }),
   );
 
   return (
     <MainCard
-      title="Column Drag & Drop (Ordering)"
+      title='Column Drag & Drop (Ordering)'
       content={false}
       secondary={<CSVExport {...{ data, headers, filename: 'column-dragable.csv' }} />}
     >
@@ -77,7 +77,7 @@ function ReactTable({ defaultColumns, data }: ReactTableProps) {
             <TableHead>
               {table.getHeaderGroups().map((headerGroup: HeaderGroup<any>) => (
                 <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
+                  {headerGroup.headers.map(header => (
                     <DraggableColumnHeader key={header.id} header={header} table={table}>
                       <>{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}</>
                     </DraggableColumnHeader>
@@ -86,9 +86,9 @@ function ReactTable({ defaultColumns, data }: ReactTableProps) {
               ))}
             </TableHead>
             <TableBody>
-              {table.getRowModel().rows.map((row) => (
+              {table.getRowModel().rows.map(row => (
                 <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
+                  {row.getVisibleCells().map(cell => (
                     <TableCell key={cell.id} {...cell.column.columnDef.meta}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
@@ -113,19 +113,19 @@ export default function ColumnDragDrop() {
       id: 'firstName',
       header: 'First Name',
       footer: 'First Name',
-      accessorKey: 'firstName'
+      accessorKey: 'firstName',
     },
     {
       id: 'lastName',
       header: 'Last Name',
       footer: 'Last Name',
-      accessorKey: 'lastName'
+      accessorKey: 'lastName',
     },
     {
       id: 'email',
       header: 'Email',
       footer: 'Email',
-      accessorKey: 'email'
+      accessorKey: 'email',
     },
     {
       id: 'age',
@@ -133,8 +133,8 @@ export default function ColumnDragDrop() {
       footer: 'Age',
       accessorKey: 'age',
       meta: {
-        className: 'cell-right'
-      }
+        className: 'cell-right',
+      },
     },
     {
       id: 'visits',
@@ -142,33 +142,33 @@ export default function ColumnDragDrop() {
       footer: 'Visits',
       accessorKey: 'visits',
       meta: {
-        className: 'cell-right'
-      }
+        className: 'cell-right',
+      },
     },
     {
       id: 'status',
       header: 'Status',
       footer: 'Status',
       accessorKey: 'status',
-      cell: (props) => {
+      cell: props => {
         switch (props.getValue()) {
           case 'Complicated':
-            return <Chip color="error" label="Complicated" size="small" variant="light" />;
+            return <Chip color='error' label='Complicated' size='small' variant='light' />;
           case 'Relationship':
-            return <Chip color="success" label="Relationship" size="small" variant="light" />;
+            return <Chip color='success' label='Relationship' size='small' variant='light' />;
           case 'Single':
           default:
-            return <Chip color="info" label="Single" size="small" variant="light" />;
+            return <Chip color='info' label='Single' size='small' variant='light' />;
         }
-      }
+      },
     },
     {
       id: 'progress',
       header: 'Profile Progress',
       footer: 'Profile Progress',
       accessorKey: 'progress',
-      cell: (props) => <LinearWithLabel value={props.getValue() as number} sx={{ minWidth: 75 }} />
-    }
+      cell: props => <LinearWithLabel value={props.getValue() as number} sx={{ minWidth: 75 }} />,
+    },
   ];
 
   return (

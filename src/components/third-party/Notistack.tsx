@@ -19,7 +19,7 @@ const StyledSnackbarProvider = styled(SnackbarProvider)(({ theme }) => ({
   '&.notistack-MuiContent-error': { backgroundColor: theme.palette.error.main },
   '&.notistack-MuiContent-success': { backgroundColor: theme.palette.success.main },
   '&.notistack-MuiContent-info': { backgroundColor: theme.palette.info.main },
-  '&.notistack-MuiContent-warning': { backgroundColor: theme.palette.warning.main }
+  '&.notistack-MuiContent-warning': { backgroundColor: theme.palette.warning.main },
 }));
 
 // ===========================|| SNACKBAR - NOTISTACK ||=========================== //
@@ -40,7 +40,7 @@ export default function Notistack({ children }: { children: ReactNode }) {
               success: <TickCircle style={iconSX} />,
               error: <CloseCircle style={iconSX} />,
               warning: <Warning2 style={iconSX} />,
-              info: <InfoCircle style={iconSX} />
+              info: <InfoCircle style={iconSX} />,
             }
           : undefined
       }

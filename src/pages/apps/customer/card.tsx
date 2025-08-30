@@ -33,32 +33,32 @@ import { Add, SearchNormal1 } from 'iconsax-react';
 const allColumns = [
   {
     id: 1,
-    header: 'Default'
+    header: 'Default',
   },
   {
     id: 2,
-    header: 'Customer Name'
+    header: 'Customer Name',
   },
   {
     id: 3,
-    header: 'Email'
+    header: 'Email',
   },
   {
     id: 4,
-    header: 'Contact'
+    header: 'Contact',
   },
   {
     id: 5,
-    header: 'Age'
+    header: 'Age',
   },
   {
     id: 6,
-    header: 'Country'
+    header: 'Country',
   },
   {
     id: 7,
-    header: 'Status'
-  }
+    header: 'Status',
+  },
 ];
 
 function dataSort(data: CustomerList[], sortBy: string) {
@@ -121,36 +121,36 @@ export default function CustomerCardPage() {
   return (
     <>
       <Box sx={{ position: 'relative', marginBottom: 3 }}>
-        <Stack direction="row" alignItems="center">
+        <Stack direction='row' alignItems='center'>
           <Stack
             direction={matchDownSM ? 'column' : 'row'}
             sx={{ width: '100%' }}
             spacing={1}
-            justifyContent="space-between"
-            alignItems="center"
+            justifyContent='space-between'
+            alignItems='center'
           >
             <DebouncedInput
               value={globalFilter ?? ''}
-              onFilterChange={(value) => setGlobalFilter(String(value))}
+              onFilterChange={value => setGlobalFilter(String(value))}
               placeholder={`Search ${userCard.length} records...`}
               startAdornment={<SearchNormal1 size={18} />}
             />
-            <Stack direction={matchDownSM ? 'column' : 'row'} alignItems="center" spacing={1}>
+            <Stack direction={matchDownSM ? 'column' : 'row'} alignItems='center' spacing={1}>
               <FormControl sx={{ m: '8px !important', minWidth: 120 }}>
                 <Select
                   value={sortBy}
                   onChange={handleChange}
                   displayEmpty
                   inputProps={{ 'aria-label': 'Without label' }}
-                  renderValue={(selected) => {
+                  renderValue={selected => {
                     if (!selected) {
-                      return <Typography variant="subtitle1">Sort By</Typography>;
+                      return <Typography variant='subtitle1'>Sort By</Typography>;
                     }
 
-                    return <Typography variant="subtitle2">Sort by ({sortBy})</Typography>;
+                    return <Typography variant='subtitle2'>Sort by ({sortBy})</Typography>;
                   }}
                 >
-                  {allColumns.map((column) => {
+                  {allColumns.map(column => {
                     return (
                       <MenuItem key={column.id} value={column.header}>
                         {column.header}
@@ -159,7 +159,7 @@ export default function CustomerCardPage() {
                   })}
                 </Select>
               </FormControl>
-              <Button variant="contained" onClick={() => setCustomerModal(true)} size="large" startIcon={<Add />}>
+              <Button variant='contained' onClick={() => setCustomerModal(true)} size='large' startIcon={<Add />}>
                 Add Customer
               </Button>
             </Stack>
@@ -169,7 +169,7 @@ export default function CustomerCardPage() {
       <Grid container spacing={3}>
         {!customerLoading && userCard.length > 0 ? (
           _DATA.currentData().map((user: CustomerList, index: number) => (
-            <Slide key={index} direction="up" in={true} timeout={50}>
+            <Slide key={index} direction='up' in={true} timeout={50}>
               <Grid item xs={12} sm={6} lg={4}>
                 <CustomerCard customer={user} />
               </Grid>
@@ -179,16 +179,16 @@ export default function CustomerCardPage() {
           <EmptyUserCard title={customerLoading ? 'Loading...' : 'You have not created any customer yet.'} />
         )}
       </Grid>
-      <Stack spacing={2} sx={{ p: 2.5 }} alignItems="flex-end">
+      <Stack spacing={2} sx={{ p: 2.5 }} alignItems='flex-end'>
         <Pagination
           sx={{ '& .MuiPaginationItem-root': { my: 0.5 } }}
           count={count}
-          size="medium"
+          size='medium'
           page={page}
           showFirstButton
           showLastButton
-          variant="combined"
-          color="primary"
+          variant='combined'
+          color='primary'
           onChange={handleChangePage}
         />
       </Stack>

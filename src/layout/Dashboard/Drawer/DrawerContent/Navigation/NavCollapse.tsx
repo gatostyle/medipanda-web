@@ -53,8 +53,8 @@ const PopperStyled = styled(Popper)(({ theme }) => ({
     height: 10,
     backgroundColor: theme.palette.background.paper,
     transform: 'translateY(-50%) rotate(45deg)',
-    zIndex: 120
-  }
+    zIndex: 120,
+  },
 }));
 
 // ==============================|| NAVIGATION - COLLAPSE ||============================== //
@@ -98,7 +98,7 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
       | React.MouseEvent<HTMLAnchorElement>
       | React.MouseEvent<HTMLDivElement, MouseEvent>
       | undefined,
-    isRedirect: boolean
+    isRedirect: boolean,
   ) => {
     setAnchorEl(null);
     setSelectedLevel(level);
@@ -226,7 +226,7 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
     }
   }, [pathname, menu]);
 
-  const navCollapse = menu.children?.map((item) => {
+  const navCollapse = menu.children?.map(item => {
     switch (item.type) {
       case 'collapse':
         return (
@@ -245,7 +245,7 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
         return <NavItem key={item.id} item={item} level={level + 1} />;
       default:
         return (
-          <Typography key={item.id} variant="h6" color="error" align="center">
+          <Typography key={item.id} variant='h6' color='error' align='center'>
             Fix - Collapse or Item
           </Typography>
         );
@@ -253,9 +253,9 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
   });
 
   const isSelected = selected === menu.id;
-  const borderIcon = level === 1 ? <Copy variant="Bulk" size={drawerOpen ? 22 : 24} /> : false;
+  const borderIcon = level === 1 ? <Copy variant='Bulk' size={drawerOpen ? 22 : 24} /> : false;
   const Icon = menu.icon!;
-  const menuIcon = menu.icon ? <Icon variant="Bulk" size={drawerOpen ? 22 : 24} /> : borderIcon;
+  const menuIcon = menu.icon ? <Icon variant='Bulk' size={drawerOpen ? 22 : 24} /> : borderIcon;
   const textColor = mode === ThemeMode.DARK ? theme.palette.secondary[400] : theme.palette.secondary.main;
   const iconSelectedColor = mode === ThemeMode.DARK && drawerOpen ? theme.palette.text.primary : theme.palette.primary.main;
   const popperId = miniMenuOpened ? `collapse-pop-${menu.id}` : undefined;
@@ -268,8 +268,8 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
           <ListItemButton
             id={`${menu.id}-button`}
             selected={isSelected}
-            {...(!drawerOpen && { onMouseEnter: (e) => handleClick(e, true), onMouseLeave: handleClose })}
-            onClick={(e) => handleClick(e, true)}
+            {...(!drawerOpen && { onMouseEnter: e => handleClick(e, true), onMouseLeave: handleClose })}
+            onClick={e => handleClick(e, true)}
             sx={{
               pl: drawerOpen ? `${level === 1 ? 20 : level * 20 - 10}px` : 1.5,
               py: !drawerOpen && level === 1 ? 1.25 : 1,
@@ -278,7 +278,7 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
                 my: 0.5,
                 borderRadius: 1,
                 '&:hover': { bgcolor: mode === ThemeMode.DARK ? 'divider' : 'secondary.200' },
-                '&.Mui-selected': { color: iconSelectedColor }
+                '&.Mui-selected': { color: iconSelectedColor },
               }),
               ...(!drawerOpen && {
                 px: 2.75,
@@ -286,16 +286,16 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
                 '&:hover': { bgcolor: 'transparent' },
                 '&.Mui-selected': {
                   '&:hover': { bgcolor: 'transparent' },
-                  bgcolor: 'transparent'
-                }
-              })
+                  bgcolor: 'transparent',
+                },
+              }),
             }}
             {...((drawerOpen &&
               menu.isDropdown && {
                 'aria-controls': openCollapse ? `${menu.id}-menu` : undefined,
                 'aria-haspopup': true,
                 'aria-expanded': openCollapse ? 'true' : undefined,
-                onClick: handleClickCollapse
+                onClick: handleClickCollapse,
               }) as any)}
           >
             {menuIcon && (
@@ -310,13 +310,13 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
                     height: 46,
                     alignItems: 'center',
                     justifyContent: 'center',
-                    '&:hover': { bgcolor: mode === ThemeMode.DARK ? 'secondary.light' : 'secondary.200' }
+                    '&:hover': { bgcolor: mode === ThemeMode.DARK ? 'secondary.light' : 'secondary.200' },
                   }),
                   ...(!drawerOpen &&
                     isSelected && {
                       bgcolor: mode === ThemeMode.DARK ? 'secondary.100' : 'primary.lighter',
-                      '&:hover': { bgcolor: mode === ThemeMode.DARK ? 'secondary.200' : 'primary.lighter' }
-                    })
+                      '&:hover': { bgcolor: mode === ThemeMode.DARK ? 'secondary.200' : 'primary.lighter' },
+                    }),
                 }}
               >
                 {menuIcon}
@@ -332,13 +332,13 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
             {(drawerOpen || (!drawerOpen && level !== 1)) && (
               <ListItemText
                 primary={
-                  <Typography variant="h6" color={isSelected ? 'primary' : textColor} sx={{ fontWeight: isSelected ? 500 : 400 }}>
+                  <Typography variant='h6' color={isSelected ? 'primary' : textColor} sx={{ fontWeight: isSelected ? 500 : 400 }}>
                     {menu.title}
                   </Typography>
                 }
                 secondary={
                   menu.caption && (
-                    <Typography variant="caption" color="secondary">
+                    <Typography variant='caption' color='secondary'>
                       {menu.caption}
                     </Typography>
                   )
@@ -348,12 +348,12 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
             {(drawerOpen || (!drawerOpen && level !== 1)) &&
               (menu?.url ? (
                 <IconButton
-                  onClick={(event) => {
+                  onClick={event => {
                     event.stopPropagation();
                     handleClick(event, false);
                   }}
-                  color="secondary"
-                  variant="outlined"
+                  color='secondary'
+                  variant='outlined'
                   sx={{
                     width: 20,
                     height: 20,
@@ -361,7 +361,7 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
                     p: 0.25,
                     color: 'secondary.dark',
                     borderColor: open ? 'primary.light' : 'secondary.light',
-                    '&:hover': { borderColor: open ? 'primary.main' : 'secondary.main' }
+                    '&:hover': { borderColor: open ? 'primary.main' : 'secondary.main' },
                   }}
                 >
                   {miniMenuOpened || open ? (
@@ -396,7 +396,7 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
               <PopperStyled
                 open={miniMenuOpened}
                 anchorEl={anchorEl}
-                placement="right-start"
+                placement='right-start'
                 style={{ zIndex: 2001 }}
                 popperOptions={{ modifiers: [{ name: 'offset', options: { offset: [-12, 1] } }] }}
               >
@@ -409,7 +409,7 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
                         boxShadow: theme.customShadows.z1,
                         backgroundImage: 'none',
                         border: '1px solid ',
-                        borderColor: 'divider'
+                        borderColor: 'divider',
                       }}
                     >
                       <ClickAwayListener onClickAway={handleClose}>
@@ -418,7 +418,7 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
                             sx={{
                               overflowX: 'hidden',
                               overflowY: 'auto',
-                              maxHeight: 'calc(100vh - 170px)'
+                              maxHeight: 'calc(100vh - 170px)',
                             }}
                           >
                             {navCollapse}
@@ -432,7 +432,7 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
             )}
           </ListItemButton>
           {drawerOpen && !menu?.isDropdown && (
-            <Collapse in={open} timeout="auto" unmountOnExit>
+            <Collapse in={open} timeout='auto' unmountOnExit>
               <List sx={{ p: 0 }}>{navCollapse}</List>
             </Collapse>
           )}
@@ -445,11 +445,11 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
               onClose={handleCloseCollapse}
               anchorOrigin={{
                 vertical: 'bottom',
-                horizontal: 'right'
+                horizontal: 'right',
               }}
               transformOrigin={{
                 vertical: 'top',
-                horizontal: 'right'
+                horizontal: 'right',
               }}
               sx={{ '& .MuiPaper-root': { boxShadow: theme.shadows[2] } }}
             >
@@ -469,14 +469,14 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
             aria-describedby={popperId}
             sx={{
               '&:hover': {
-                bgcolor: 'transparent'
+                bgcolor: 'transparent',
               },
               '&.Mui-selected': {
                 '&:hover': {
-                  bgcolor: 'transparent'
+                  bgcolor: 'transparent',
                 },
-                bgcolor: 'transparent'
-              }
+                bgcolor: 'transparent',
+              },
             }}
           >
             <Box onClick={handlerIconLink} sx={FlexBox}>
@@ -485,7 +485,7 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
               )}
               <ListItemText
                 primary={
-                  <Typography variant="h6" color={textColor} sx={{ fontWeight: isSelected ? 500 : 400 }}>
+                  <Typography variant='h6' color={textColor} sx={{ fontWeight: isSelected ? 500 : 400 }}>
                     {menu.title}
                   </Typography>
                 }
@@ -498,7 +498,7 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
                 id={popperId}
                 open={miniMenuOpened}
                 anchorEl={anchorEl}
-                placement="right-start"
+                placement='right-start'
                 style={{ zIndex: 2001 }}
                 modifiers={[{ name: 'offset', options: { offset: [-10, 0] } }]}
               >
@@ -512,7 +512,7 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
                         boxShadow: theme.customShadows.z1,
                         border: '1px solid ',
                         borderColor: 'divider',
-                        backgroundImage: 'none'
+                        backgroundImage: 'none',
                       }}
                     >
                       <ClickAwayListener onClickAway={handleClose}>
@@ -521,7 +521,7 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
                             sx={{
                               overflowX: 'hidden',
                               overflowY: 'auto',
-                              maxHeight: 'calc(100vh - 170px)'
+                              maxHeight: 'calc(100vh - 170px)',
                             }}
                           >
                             {navCollapse}

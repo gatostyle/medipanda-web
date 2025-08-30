@@ -12,14 +12,14 @@ export const endpoints = {
   list: '/list', // server URL
   insert: '/new', // server URL
   update: '/edit', // server URL
-  delete: '/delete' // server URL
+  delete: '/delete', // server URL
 };
 
 export function useGetAddress() {
   const { data, isLoading, error, isValidating } = useSWR(endpoints.key + endpoints.list, fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
-    revalidateOnReconnect: false
+    revalidateOnReconnect: false,
   });
 
   const memoizedValue = useMemo(
@@ -28,9 +28,9 @@ export function useGetAddress() {
       addressLoading: isLoading,
       addressError: error,
       addressValidating: isValidating,
-      addressEmpty: !isLoading && !data?.address?.length
+      addressEmpty: !isLoading && !data?.address?.length,
     }),
-    [data, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating],
   );
 
   return memoizedValue;
@@ -46,10 +46,10 @@ export async function insertAddress(newAddress: Address) {
 
       return {
         ...currentAddress,
-        address: addedAddress
+        address: addedAddress,
       };
     },
-    false
+    false,
   );
 
   // to hit server
@@ -64,15 +64,15 @@ export async function updateAddress(addressId: string | number | undefined, upda
     endpoints.key + endpoints.list,
     (currentAddress: any) => {
       const newAddress: Address[] = currentAddress.address.map((address: Address) =>
-        address.id === addressId ? { ...address, ...updatedAddress } : address
+        address.id === addressId ? { ...address, ...updatedAddress } : address,
       );
 
       return {
         ...currentAddress,
-        address: newAddress
+        address: newAddress,
       };
     },
-    false
+    false,
   );
 
   // to hit server
@@ -90,10 +90,10 @@ export async function deleteAddress(addressId: number) {
 
       return {
         ...currentAddress,
-        address: nonDeletedAddress
+        address: nonDeletedAddress,
       };
     },
-    false
+    false,
   );
 
   // to hit server

@@ -30,20 +30,20 @@ export default function SwitchBalanace() {
           right: 0,
           bottom: 0,
           zIndex: 1,
-          opacity: 0.6
-        }
+          opacity: 0.6,
+        },
       }}
     >
       <Box sx={{ p: 2, position: 'inherit', zIndex: 2 }}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
+        <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1}>
           <Stack>
             <Typography>Available Balance</Typography>
-            <Typography variant="h4">$1,234.90</Typography>
+            <Typography variant='h4'>$1,234.90</Typography>
           </Stack>
           <Avatar
-            variant="rounded"
-            type="filled"
-            size="lg"
+            variant='rounded'
+            type='filled'
+            size='lg'
             sx={{ bgcolor: theme.palette.mode === ThemeMode.DARK ? 'primary.100' : 'primary.darker' }}
           >
             <ArrowSwapHorizontal />

@@ -26,10 +26,10 @@ export default function ComponentAutocomplete() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Autocomplete"
-        caption="The autocomplete is a normal text input enhanced by a panel of suggested options."
-        directory="src/pages/components-overview/autocomplete"
-        link="https://mui.com/material-ui/react-autocomplete/"
+        title='Autocomplete'
+        caption='The autocomplete is a normal text input enhanced by a panel of suggested options.'
+        directory='src/pages/components-overview/autocomplete'
+        link='https://mui.com/material-ui/react-autocomplete/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>

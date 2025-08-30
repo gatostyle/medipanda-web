@@ -9,13 +9,13 @@ export default function Dialog() {
       styleOverrides: {
         root: {
           '& .MuiBackdrop-root': {
-            backgroundColor: alpha('#000', 0.5)
-          }
+            backgroundColor: alpha('#000', 0.5),
+          },
         },
         paper: {
-          backgroundImage: 'none'
-        }
-      }
-    }
+          backgroundImage: 'none',
+        },
+      },
+    },
   };
 }

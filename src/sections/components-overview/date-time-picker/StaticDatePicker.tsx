@@ -38,24 +38,24 @@ export default function ComponentStaticDatePicker() {
 </LocalizationProvider>`;
 
   return (
-    <MainCard title="Static Mode" codeHighlight codeString={staticDatepickerCodeString}>
+    <MainCard title='Static Mode' codeHighlight codeString={staticDatepickerCodeString}>
       <Stack spacing={3}>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <StaticDatePicker
-            displayStaticWrapperAs="desktop"
-            openTo="year"
+            displayStaticWrapperAs='desktop'
+            openTo='year'
             value={value}
-            onChange={(newValue) => {
+            onChange={newValue => {
               setValue(newValue);
             }}
           />
         </LocalizationProvider>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <StaticDatePicker
-            displayStaticWrapperAs="desktop"
-            openTo="day"
+            displayStaticWrapperAs='desktop'
+            openTo='day'
             value={value}
-            onChange={(newValue) => {
+            onChange={newValue => {
               setValue(newValue);
             }}
           />

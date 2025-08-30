@@ -50,7 +50,7 @@ const getInitialValues = (event: FormikValues | null, range: DateRange | null) =
     textColor: '#fff',
     allDay: false,
     start: range ? new Date(range.start) : new Date(),
-    end: range ? new Date(range.end) : new Date()
+    end: range ? new Date(range.end) : new Date(),
   };
 
   if (event || range) {
@@ -76,102 +76,102 @@ export default function AddEventFrom({ event, range, onCancel, modalCallback }: 
   const backgroundColor = [
     {
       value: theme.palette.primary.main,
-      color: 'primary.main'
+      color: 'primary.main',
     },
     {
       value: theme.palette.error.main,
-      color: 'error.main'
+      color: 'error.main',
     },
     {
       value: theme.palette.success.main,
-      color: 'success.main'
+      color: 'success.main',
     },
     {
       value: theme.palette.secondary.main,
-      color: 'secondary.main'
+      color: 'secondary.main',
     },
     {
       value: theme.palette.warning.main,
-      color: 'warning.main'
+      color: 'warning.main',
     },
     {
       value: theme.palette.mode === ThemeMode.DARK ? theme.palette.primary.darker : theme.palette.primary.lighter,
       color: theme.palette.mode === ThemeMode.DARK ? 'primary.darker' : 'primary.lighter',
-      isLight: true
+      isLight: true,
     },
     {
       value: theme.palette.mode === ThemeMode.DARK ? theme.palette.error.darker : theme.palette.error.lighter,
       color: theme.palette.mode === ThemeMode.DARK ? 'error.darker' : 'error.lighter',
-      isLight: true
+      isLight: true,
     },
     {
       value: theme.palette.mode === ThemeMode.DARK ? theme.palette.success.darker : theme.palette.success.lighter,
       color: theme.palette.mode === ThemeMode.DARK ? 'success.darker' : 'success.lighter',
-      isLight: true
+      isLight: true,
     },
     {
       value: theme.palette.mode === ThemeMode.DARK ? theme.palette.secondary.darker : theme.palette.secondary.lighter,
       color: theme.palette.mode === ThemeMode.DARK ? 'secondary.darker' : 'secondary.lighter',
-      isLight: true
+      isLight: true,
     },
     {
       value: theme.palette.mode === ThemeMode.DARK ? theme.palette.warning.darker : theme.palette.warning.lighter,
       color: theme.palette.mode === ThemeMode.DARK ? 'warning.darker' : 'warning.lighter',
-      isLight: true
-    }
+      isLight: true,
+    },
   ];
 
   const textColor = [
     {
       value: '#fff',
       color: 'white',
-      isLight: true
+      isLight: true,
     },
     {
       value: theme.palette.mode === ThemeMode.DARK ? theme.palette.error.darker : theme.palette.error.lighter,
       color: theme.palette.mode === ThemeMode.DARK ? 'error.darker' : 'error.lighter',
-      isLight: true
+      isLight: true,
     },
     {
       value: theme.palette.mode === ThemeMode.DARK ? theme.palette.success.darker : theme.palette.success.lighter,
       color: theme.palette.mode === ThemeMode.DARK ? 'success.darker' : 'success.lighter',
-      isLight: true
+      isLight: true,
     },
     {
       value: theme.palette.mode === ThemeMode.DARK ? theme.palette.secondary.darker : theme.palette.secondary.lighter,
       color: theme.palette.mode === ThemeMode.DARK ? 'secondary.darker' : 'secondary.lighter',
-      isLight: true
+      isLight: true,
     },
     {
       value: theme.palette.mode === ThemeMode.DARK ? theme.palette.warning.darker : theme.palette.warning.lighter,
       color: theme.palette.mode === ThemeMode.DARK ? 'warning.darker' : 'warning.lighter',
-      isLight: true
+      isLight: true,
     },
     {
       value: theme.palette.mode === ThemeMode.DARK ? theme.palette.primary.darker : theme.palette.primary.lighter,
       color: theme.palette.mode === ThemeMode.DARK ? 'primary.darker' : 'primary.lighter',
-      isLight: true
+      isLight: true,
     },
     {
       value: theme.palette.primary.main,
-      color: 'primary.main'
+      color: 'primary.main',
     },
     {
       value: theme.palette.error.main,
-      color: 'error.main'
+      color: 'error.main',
     },
     {
       value: theme.palette.success.main,
-      color: 'success.main'
+      color: 'success.main',
     },
     {
       value: theme.palette.secondary.main,
-      color: 'secondary.main'
+      color: 'secondary.main',
     },
     {
       value: theme.palette.warning.main,
-      color: 'warning.main'
-    }
+      color: 'warning.main',
+    },
   ];
 
   const EventSchema = Yup.object().shape({
@@ -180,7 +180,7 @@ export default function AddEventFrom({ event, range, onCancel, modalCallback }: 
     end: Yup.date().when('start', (start, schema) => start && schema.min(start, 'End date must be later than start date')),
     start: Yup.date(),
     color: Yup.string().max(255),
-    textColor: Yup.string().max(255)
+    textColor: Yup.string().max(255),
   });
 
   const deleteHandler = async () => {
@@ -190,8 +190,8 @@ export default function AddEventFrom({ event, range, onCancel, modalCallback }: 
       message: 'Event deleted successfully.',
       variant: 'alert',
       alert: {
-        color: 'success'
-      }
+        color: 'success',
+      },
     } as SnackbarProps);
     modalCallback(false);
   };
@@ -207,7 +207,7 @@ export default function AddEventFrom({ event, range, onCancel, modalCallback }: 
           textColor: values.textColor,
           allDay: values.allDay,
           start: values.start,
-          end: values.end
+          end: values.end,
         };
 
         if (event) {
@@ -217,8 +217,8 @@ export default function AddEventFrom({ event, range, onCancel, modalCallback }: 
             message: 'Event update successfully.',
             variant: 'alert',
             alert: {
-              color: 'success'
-            }
+              color: 'success',
+            },
           } as SnackbarProps);
           modalCallback(false);
         } else {
@@ -228,8 +228,8 @@ export default function AddEventFrom({ event, range, onCancel, modalCallback }: 
             message: 'Event added successfully.',
             variant: 'alert',
             alert: {
-              color: 'success'
-            }
+              color: 'success',
+            },
           } as SnackbarProps);
           modalCallback(false);
         }
@@ -238,7 +238,7 @@ export default function AddEventFrom({ event, range, onCancel, modalCallback }: 
       } catch (error) {
         console.error(error);
       }
-    }
+    },
   });
 
   const { values, errors, touched, handleSubmit, isSubmitting, getFieldProps, setFieldValue } = formik;
@@ -246,18 +246,18 @@ export default function AddEventFrom({ event, range, onCancel, modalCallback }: 
   return (
     <FormikProvider value={formik}>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+        <Form autoComplete='off' noValidate onSubmit={handleSubmit}>
           <DialogTitle>{event ? 'Edit Event' : 'Add Event'}</DialogTitle>
           <Divider />
           <DialogContent sx={{ p: 2.5 }}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="cal-title">Title</InputLabel>
+                  <InputLabel htmlFor='cal-title'>Title</InputLabel>
                   <TextField
                     fullWidth
-                    id="cal-title"
-                    placeholder="Title"
+                    id='cal-title'
+                    placeholder='Title'
                     {...getFieldProps('title')}
                     error={Boolean(touched.title && errors.title)}
                     helperText={touched.title && errors.title}
@@ -266,13 +266,13 @@ export default function AddEventFrom({ event, range, onCancel, modalCallback }: 
               </Grid>
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="cal-description">Description</InputLabel>
+                  <InputLabel htmlFor='cal-description'>Description</InputLabel>
                   <TextField
                     fullWidth
-                    id="cal-description"
+                    id='cal-description'
                     multiline
                     rows={3}
-                    placeholder="Description"
+                    placeholder='Description'
                     {...getFieldProps('description')}
                     error={Boolean(touched.description && errors.description)}
                     helperText={touched.description && errors.description}
@@ -280,25 +280,25 @@ export default function AddEventFrom({ event, range, onCancel, modalCallback }: 
                 </Stack>
               </Grid>
               <Grid item xs={12}>
-                <FormControlLabel control={<Switch checked={values.allDay} {...getFieldProps('allDay')} />} label="All day" />
+                <FormControlLabel control={<Switch checked={values.allDay} {...getFieldProps('allDay')} />} label='All day' />
               </Grid>
               <Grid item xs={12} md={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="cal-start-date">Start Date</InputLabel>
+                  <InputLabel htmlFor='cal-start-date'>Start Date</InputLabel>
                   <MobileDateTimePicker
                     value={new Date(values.start)}
-                    format="dd/MM/yyyy hh:mm a"
-                    onChange={(date) => setFieldValue('start', date)}
+                    format='dd/MM/yyyy hh:mm a'
+                    onChange={date => setFieldValue('start', date)}
                     slotProps={{
                       textField: {
                         InputProps: {
                           endAdornment: (
-                            <InputAdornment position="end" sx={{ cursor: 'pointer' }}>
+                            <InputAdornment position='end' sx={{ cursor: 'pointer' }}>
                               <Calendar />
                             </InputAdornment>
-                          )
-                        }
-                      }
+                          ),
+                        },
+                      },
                     }}
                   />
                 </Stack>
@@ -306,21 +306,21 @@ export default function AddEventFrom({ event, range, onCancel, modalCallback }: 
               </Grid>
               <Grid item xs={12} md={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="cal-end-date">End Date</InputLabel>
+                  <InputLabel htmlFor='cal-end-date'>End Date</InputLabel>
                   <MobileDateTimePicker
                     value={new Date(values.end)}
-                    format="dd/MM/yyyy hh:mm a"
-                    onChange={(date) => setFieldValue('end', date)}
+                    format='dd/MM/yyyy hh:mm a'
+                    onChange={date => setFieldValue('end', date)}
                     slotProps={{
                       textField: {
                         InputProps: {
                           endAdornment: (
-                            <InputAdornment position="end" sx={{ cursor: 'pointer' }}>
+                            <InputAdornment position='end' sx={{ cursor: 'pointer' }}>
                               <Calendar />
                             </InputAdornment>
-                          )
-                        }
-                      }
+                          ),
+                        },
+                      },
                     }}
                   />
                 </Stack>
@@ -329,16 +329,16 @@ export default function AddEventFrom({ event, range, onCancel, modalCallback }: 
               <Grid item xs={12}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1">Background Color</Typography>
+                    <Typography variant='subtitle1'>Background Color</Typography>
                   </Grid>
                   <Grid item xs={12}>
                     <FormControl>
                       <RadioGroup
                         row
-                        aria-label="color"
+                        aria-label='color'
                         {...getFieldProps('color')}
-                        onChange={(e) => setFieldValue('color', e.target.value)}
-                        name="color-radio-buttons-group"
+                        onChange={e => setFieldValue('color', e.target.value)}
+                        name='color-radio-buttons-group'
                         sx={{ '& .MuiFormControlLabel-root': { mr: 2 } }}
                       >
                         {backgroundColor.map((item, index) => (
@@ -352,16 +352,16 @@ export default function AddEventFrom({ event, range, onCancel, modalCallback }: 
               <Grid item xs={12}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1">Text Color</Typography>
+                    <Typography variant='subtitle1'>Text Color</Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <FormControl component="fieldset">
+                    <FormControl component='fieldset'>
                       <RadioGroup
                         row
-                        aria-label="textColor"
+                        aria-label='textColor'
                         {...getFieldProps('textColor')}
-                        onChange={(e) => setFieldValue('textColor', e.target.value)}
-                        name="text-color-radio-buttons-group"
+                        onChange={e => setFieldValue('textColor', e.target.value)}
+                        name='text-color-radio-buttons-group'
                         sx={{ '& .MuiFormControlLabel-root': { mr: 2 } }}
                       >
                         {textColor.map((item, index) => (
@@ -376,22 +376,22 @@ export default function AddEventFrom({ event, range, onCancel, modalCallback }: 
           </DialogContent>
           <Divider />
           <DialogActions sx={{ p: 2.5 }}>
-            <Grid container justifyContent="space-between" alignItems="center">
+            <Grid container justifyContent='space-between' alignItems='center'>
               <Grid item>
                 {!isCreating && (
-                  <Tooltip title="Delete Event" placement="top">
-                    <IconButton onClick={deleteHandler} size="large" color="error">
-                      <Trash variant="Bold" />
+                  <Tooltip title='Delete Event' placement='top'>
+                    <IconButton onClick={deleteHandler} size='large' color='error'>
+                      <Trash variant='Bold' />
                     </IconButton>
                   </Tooltip>
                 )}
               </Grid>
               <Grid item>
-                <Stack direction="row" spacing={2} alignItems="center">
-                  <Button color="error" onClick={onCancel}>
+                <Stack direction='row' spacing={2} alignItems='center'>
+                  <Button color='error' onClick={onCancel}>
                     Cancel
                   </Button>
-                  <Button type="submit" variant="contained" disabled={isSubmitting}>
+                  <Button type='submit' variant='contained' disabled={isSubmitting}>
                     {event ? 'Edit' : 'Add'}
                   </Button>
                 </Stack>

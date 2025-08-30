@@ -20,7 +20,7 @@ import {
   PositioningSnackbar,
   PreventDuplicate,
   SnackBarAction,
-  TransitionBar
+  TransitionBar,
 } from 'sections/components-overview/notistack';
 
 import { openSnackbar } from 'api/snackbar';
@@ -584,24 +584,24 @@ export default function ComponentSnackbar() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Snackbar"
-        caption="Snackbars provide brief notifications. The component is also known as a toast."
-        directory="src/pages/components-overview/snackbar"
-        link="https://mui.com/material-ui/react-snackbar/"
+        title='Snackbar'
+        caption='Snackbars provide brief notifications. The component is also known as a toast.'
+        directory='src/pages/components-overview/snackbar'
+        link='https://mui.com/material-ui/react-snackbar/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Basic" codeString={basicSnackbarCodeString}>
+            <MainCard title='Basic' codeString={basicSnackbarCodeString}>
               <Grid container spacing={2}>
                 <Grid item>
                   <Button
-                    variant="contained"
+                    variant='contained'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         message: 'This is default message',
-                        variant: 'alert'
+                        variant: 'alert',
                       } as SnackbarProps)
                     }
                   >
@@ -610,14 +610,14 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="contained"
-                    color="secondary"
+                    variant='contained'
+                    color='secondary'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         message: 'This is secondary message',
                         variant: 'alert',
-                        alert: { color: 'secondary' }
+                        alert: { color: 'secondary' },
                       } as SnackbarProps)
                     }
                   >
@@ -626,16 +626,16 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="contained"
-                    color="success"
+                    variant='contained'
+                    color='success'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         message: 'This is success message',
                         variant: 'alert',
                         alert: {
-                          color: 'success'
-                        }
+                          color: 'success',
+                        },
                       } as SnackbarProps)
                     }
                   >
@@ -644,16 +644,16 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="contained"
-                    color="warning"
+                    variant='contained'
+                    color='warning'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         message: 'This is warning message',
                         variant: 'alert',
                         alert: {
-                          color: 'warning'
-                        }
+                          color: 'warning',
+                        },
                       } as SnackbarProps)
                     }
                   >
@@ -662,16 +662,16 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="contained"
-                    color="info"
+                    variant='contained'
+                    color='info'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         message: 'This is info message',
                         variant: 'alert',
                         alert: {
-                          color: 'info'
-                        }
+                          color: 'info',
+                        },
                       } as SnackbarProps)
                     }
                   >
@@ -680,16 +680,16 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="contained"
-                    color="error"
+                    variant='contained'
+                    color='error'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         message: 'This is error message',
                         variant: 'alert',
                         alert: {
-                          color: 'error'
-                        }
+                          color: 'error',
+                        },
                       } as SnackbarProps)
                     }
                   >
@@ -700,19 +700,19 @@ export default function ComponentSnackbar() {
             </MainCard>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Outlined" codeString={outlinedSnackbarCodeString}>
+            <MainCard title='Outlined' codeString={outlinedSnackbarCodeString}>
               <Grid container spacing={2}>
                 <Grid item>
                   <Button
-                    variant="outlined"
+                    variant='outlined'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         message: 'This is default message',
                         variant: 'alert',
                         alert: {
-                          variant: 'outlined'
-                        }
+                          variant: 'outlined',
+                        },
                       } as SnackbarProps)
                     }
                   >
@@ -721,8 +721,8 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="outlined"
-                    color="secondary"
+                    variant='outlined'
+                    color='secondary'
                     onClick={() =>
                       openSnackbar({
                         open: true,
@@ -730,8 +730,8 @@ export default function ComponentSnackbar() {
                         variant: 'alert',
                         alert: {
                           variant: 'outlined',
-                          color: 'secondary'
-                        }
+                          color: 'secondary',
+                        },
                       } as SnackbarProps)
                     }
                   >
@@ -740,8 +740,8 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="outlined"
-                    color="success"
+                    variant='outlined'
+                    color='success'
                     onClick={() =>
                       openSnackbar({
                         open: true,
@@ -749,8 +749,8 @@ export default function ComponentSnackbar() {
                         variant: 'alert',
                         alert: {
                           variant: 'outlined',
-                          color: 'success'
-                        }
+                          color: 'success',
+                        },
                       } as SnackbarProps)
                     }
                   >
@@ -759,8 +759,8 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="outlined"
-                    color="warning"
+                    variant='outlined'
+                    color='warning'
                     onClick={() =>
                       openSnackbar({
                         open: true,
@@ -768,8 +768,8 @@ export default function ComponentSnackbar() {
                         variant: 'alert',
                         alert: {
                           variant: 'outlined',
-                          color: 'warning'
-                        }
+                          color: 'warning',
+                        },
                       } as SnackbarProps)
                     }
                   >
@@ -778,8 +778,8 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="outlined"
-                    color="info"
+                    variant='outlined'
+                    color='info'
                     onClick={() =>
                       openSnackbar({
                         open: true,
@@ -787,8 +787,8 @@ export default function ComponentSnackbar() {
                         variant: 'alert',
                         alert: {
                           variant: 'outlined',
-                          color: 'info'
-                        }
+                          color: 'info',
+                        },
                       } as SnackbarProps)
                     }
                   >
@@ -797,8 +797,8 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="outlined"
-                    color="error"
+                    variant='outlined'
+                    color='error'
                     onClick={() =>
                       openSnackbar({
                         open: true,
@@ -806,8 +806,8 @@ export default function ComponentSnackbar() {
                         variant: 'alert',
                         alert: {
                           variant: 'outlined',
-                          color: 'error'
-                        }
+                          color: 'error',
+                        },
                       } as SnackbarProps)
                     }
                   >
@@ -818,17 +818,17 @@ export default function ComponentSnackbar() {
             </MainCard>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <MainCard title="With Close" codeString={closeSnackbarCodeString}>
+            <MainCard title='With Close' codeString={closeSnackbarCodeString}>
               <Grid container spacing={2}>
                 <Grid item>
                   <Button
-                    variant="contained"
+                    variant='contained'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         message: 'This is default message',
                         variant: 'alert',
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -837,17 +837,17 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="contained"
-                    color="secondary"
+                    variant='contained'
+                    color='secondary'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         message: 'This is secondary message',
                         variant: 'alert',
                         alert: {
-                          color: 'secondary'
+                          color: 'secondary',
                         },
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -856,17 +856,17 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="contained"
-                    color="success"
+                    variant='contained'
+                    color='success'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         message: 'This is success message',
                         variant: 'alert',
                         alert: {
-                          color: 'success'
+                          color: 'success',
                         },
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -875,17 +875,17 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="contained"
-                    color="warning"
+                    variant='contained'
+                    color='warning'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         message: 'This is warning message',
                         variant: 'alert',
                         alert: {
-                          color: 'warning'
+                          color: 'warning',
                         },
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -894,17 +894,17 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="contained"
-                    color="info"
+                    variant='contained'
+                    color='info'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         message: 'This is info message',
                         variant: 'alert',
                         alert: {
-                          color: 'info'
+                          color: 'info',
                         },
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -913,17 +913,17 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="contained"
-                    color="error"
+                    variant='contained'
+                    color='error'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         message: 'This is error message',
                         variant: 'alert',
                         alert: {
-                          color: 'error'
+                          color: 'error',
                         },
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -934,21 +934,21 @@ export default function ComponentSnackbar() {
             </MainCard>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <MainCard title="With Close + Action" codeString={actionSnackbarCodeString}>
+            <MainCard title='With Close + Action' codeString={actionSnackbarCodeString}>
               <Grid container spacing={2}>
                 <Grid item>
                   <Button
-                    variant="outlined"
+                    variant='outlined'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         message: 'This is default message',
                         variant: 'alert',
                         alert: {
-                          variant: 'outlined'
+                          variant: 'outlined',
                         },
                         actionButton: true,
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -957,8 +957,8 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="outlined"
-                    color="secondary"
+                    variant='outlined'
+                    color='secondary'
                     onClick={() =>
                       openSnackbar({
                         open: true,
@@ -966,10 +966,10 @@ export default function ComponentSnackbar() {
                         variant: 'alert',
                         alert: {
                           variant: 'outlined',
-                          color: 'secondary'
+                          color: 'secondary',
                         },
                         actionButton: true,
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -978,8 +978,8 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="outlined"
-                    color="success"
+                    variant='outlined'
+                    color='success'
                     onClick={() =>
                       openSnackbar({
                         open: true,
@@ -987,10 +987,10 @@ export default function ComponentSnackbar() {
                         variant: 'alert',
                         alert: {
                           variant: 'outlined',
-                          color: 'success'
+                          color: 'success',
                         },
                         actionButton: true,
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -999,8 +999,8 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="outlined"
-                    color="warning"
+                    variant='outlined'
+                    color='warning'
                     onClick={() =>
                       openSnackbar({
                         open: true,
@@ -1008,10 +1008,10 @@ export default function ComponentSnackbar() {
                         variant: 'alert',
                         alert: {
                           variant: 'outlined',
-                          color: 'warning'
+                          color: 'warning',
                         },
                         actionButton: true,
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -1020,8 +1020,8 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="outlined"
-                    color="info"
+                    variant='outlined'
+                    color='info'
                     onClick={() =>
                       openSnackbar({
                         open: true,
@@ -1029,10 +1029,10 @@ export default function ComponentSnackbar() {
                         variant: 'alert',
                         alert: {
                           variant: 'outlined',
-                          color: 'info'
+                          color: 'info',
                         },
                         actionButton: true,
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -1041,8 +1041,8 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="outlined"
-                    color="error"
+                    variant='outlined'
+                    color='error'
                     onClick={() =>
                       openSnackbar({
                         open: true,
@@ -1050,10 +1050,10 @@ export default function ComponentSnackbar() {
                         variant: 'alert',
                         alert: {
                           variant: 'outlined',
-                          color: 'error'
+                          color: 'error',
                         },
                         actionButton: true,
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -1064,17 +1064,17 @@ export default function ComponentSnackbar() {
             </MainCard>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Position" codeString={positionSnackbarCodeString}>
+            <MainCard title='Position' codeString={positionSnackbarCodeString}>
               <Grid container spacing={2}>
                 <Grid item>
                   <Button
-                    variant="contained"
+                    variant='contained'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         anchorOrigin: { vertical: 'top', horizontal: 'left' },
                         message: 'This is an top-left message!',
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -1083,13 +1083,13 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="contained"
+                    variant='contained'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         anchorOrigin: { vertical: 'top', horizontal: 'center' },
                         message: 'This is an top-center message!',
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -1098,13 +1098,13 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="contained"
+                    variant='contained'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         anchorOrigin: { vertical: 'top', horizontal: 'right' },
                         message: 'This is an top-right message!',
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -1113,13 +1113,13 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="contained"
+                    variant='contained'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         anchorOrigin: { vertical: 'bottom', horizontal: 'right' },
                         message: 'This is an bottom-right message!',
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -1128,13 +1128,13 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="contained"
+                    variant='contained'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         anchorOrigin: { vertical: 'bottom', horizontal: 'center' },
                         message: 'This is an bottom-center message!',
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -1143,13 +1143,13 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="contained"
+                    variant='contained'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         anchorOrigin: { vertical: 'bottom', horizontal: 'left' },
                         message: 'This is an bottom-left message!',
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -1160,17 +1160,17 @@ export default function ComponentSnackbar() {
             </MainCard>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Transitions" codeString={transitionsSnackbarCodeString}>
+            <MainCard title='Transitions' codeString={transitionsSnackbarCodeString}>
               <Grid container spacing={2}>
                 <Grid item>
                   <Button
-                    variant="contained"
+                    variant='contained'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         message: 'This is an fade message!',
                         transition: 'Fade',
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -1179,13 +1179,13 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="contained"
+                    variant='contained'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         message: 'This is an slide-left message!',
                         transition: 'SlideLeft',
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -1194,13 +1194,13 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="contained"
+                    variant='contained'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         message: 'This is an slide-up message!',
                         transition: 'SlideUp',
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -1209,13 +1209,13 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="contained"
+                    variant='contained'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         message: 'This is an slide-right message!',
                         transition: 'SlideRight',
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -1224,13 +1224,13 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="contained"
+                    variant='contained'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         message: 'This is an slide-down message!',
                         transition: 'SlideDown',
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -1239,13 +1239,13 @@ export default function ComponentSnackbar() {
                 </Grid>
                 <Grid item>
                   <Button
-                    variant="contained"
+                    variant='contained'
                     onClick={() =>
                       openSnackbar({
                         open: true,
                         message: 'This is an grow message!',
                         transition: 'Grow',
-                        close: true
+                        close: true,
                       } as SnackbarProps)
                     }
                   >
@@ -1256,7 +1256,7 @@ export default function ComponentSnackbar() {
             </MainCard>
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="h5" sx={{ mt: 2 }}>
+            <Typography variant='h5' sx={{ mt: 2 }}>
               Extended - Notistack
             </Typography>
           </Grid>

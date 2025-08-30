@@ -18,8 +18,8 @@ export default function HeaderContent() {
     <>
       <Box sx={{ width: '100%', ml: 1 }} />
 
-      <IconButton size="large" color="error" sx={{ p: 1 }} onClick={handleLogout}>
-        <Logout variant="Bulk" />
+      <IconButton size='large' color='error' sx={{ p: 1 }} onClick={handleLogout}>
+        <Logout variant='Bulk' />
       </IconButton>
     </>
   );

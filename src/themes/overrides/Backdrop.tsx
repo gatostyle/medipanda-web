@@ -8,9 +8,9 @@ export default function Backdrop() {
     MuiBackdrop: {
       styleOverrides: {
         root: {
-          backgroundColor: alpha('#000', 0.2)
-        }
-      }
-    }
+          backgroundColor: alpha('#000', 0.2),
+        },
+      },
+    },
   };
 }

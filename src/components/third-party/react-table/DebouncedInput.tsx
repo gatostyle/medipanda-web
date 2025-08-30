@@ -20,7 +20,7 @@ export default function DebouncedInput({
   onFilterChange,
   debounce = 500,
   size,
-  startAdornment = <SearchNormal size="18" />,
+  startAdornment = <SearchNormal size='18' />,
   ...props
 }: Props) {
   const [value, setValue] = useState<number | string>(initialValue);

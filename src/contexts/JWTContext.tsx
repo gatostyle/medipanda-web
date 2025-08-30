@@ -20,10 +20,10 @@ const chance = new Chance();
 const initialState: AuthProps = {
   isLoggedIn: false,
   isInitialized: false,
-  user: null
+  user: null,
 };
 
-const verifyToken: (st: string) => boolean = (serviceToken) => {
+const verifyToken: (st: string) => boolean = serviceToken => {
   if (!serviceToken) {
     return false;
   }
@@ -63,18 +63,18 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
             type: LOGIN,
             payload: {
               isLoggedIn: true,
-              user
-            }
+              user,
+            },
           });
         } else {
           dispatch({
-            type: LOGOUT
+            type: LOGOUT,
           });
         }
       } catch (err) {
         console.error(err);
         dispatch({
-          type: LOGOUT
+          type: LOGOUT,
         });
       }
     };
@@ -90,8 +90,8 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
       type: LOGIN,
       payload: {
         isLoggedIn: true,
-        user
-      }
+        user,
+      },
     });
   };
 
@@ -103,7 +103,7 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
       email,
       password,
       firstName,
-      lastName
+      lastName,
     });
     let users = response.data;
 
@@ -115,8 +115,8 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
           id,
           email,
           password,
-          name: `${firstName} ${lastName}`
-        }
+          name: `${firstName} ${lastName}`,
+        },
       ];
     }
 

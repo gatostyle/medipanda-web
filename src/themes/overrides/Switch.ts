@@ -33,16 +33,16 @@ function switchStyle(theme: Theme, size?: SwitchProps['size']) {
     '& .MuiSwitch-switchBase': {
       padding: 3,
       '&.Mui-checked': {
-        transform: `translateX(${sizes.base}px)`
-      }
+        transform: `translateX(${sizes.base}px)`,
+      },
     },
     '& .MuiSwitch-thumb': {
       width: sizes.thumb,
-      height: sizes.thumb
+      height: sizes.thumb,
     },
     '& .MuiSwitch-track': {
-      borderRadius: sizes.trackRadius
-    }
+      borderRadius: sizes.trackRadius,
+    },
   };
 }
 
@@ -55,30 +55,30 @@ export default function Switch(theme: Theme) {
         track: {
           opacity: 1,
           backgroundColor: theme.palette.secondary[400],
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
         },
         thumb: {
           borderRadius: '50%',
           transition: theme.transitions.create(['width'], {
-            duration: 200
-          })
+            duration: 200,
+          }),
         },
         switchBase: {
           '&.Mui-checked': {
             color: '#fff',
             '& + .MuiSwitch-track': {
-              opacity: 1
+              opacity: 1,
             },
             '&.Mui-disabled': {
-              color: theme.palette.background.paper
-            }
+              color: theme.palette.background.paper,
+            },
           },
           '&.Mui-disabled': {
             color: theme.palette.background.paper,
             '+.MuiSwitch-track': {
-              opacity: 0.3
-            }
-          }
+              opacity: 0.3,
+            },
+          },
         },
         root: {
           color: theme.palette.text.primary,
@@ -86,15 +86,15 @@ export default function Switch(theme: Theme) {
           margin: 8,
           display: 'flex',
           '& ~ .MuiFormControlLabel-label': {
-            margin: 6
+            margin: 6,
           },
-          ...switchStyle(theme, 'medium')
+          ...switchStyle(theme, 'medium'),
         },
         sizeLarge: { ...switchStyle(theme, 'large') },
         sizeSmall: {
-          ...switchStyle(theme, 'small')
-        }
-      }
-    }
+          ...switchStyle(theme, 'small'),
+        },
+      },
+    },
   };
 }

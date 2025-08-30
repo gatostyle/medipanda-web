@@ -27,7 +27,7 @@ export default function FilesPreview({ showList = false, files, onRemove, type }
       disablePadding
       sx={{
         ...(hasFile && type !== DropzopType.STANDARD && { my: 3 }),
-        ...(type === DropzopType.STANDARD && { width: 'calc(100% - 84px)' })
+        ...(type === DropzopType.STANDARD && { width: 'calc(100% - 84px)' }),
       }}
     >
       {files.map((file, index) => {
@@ -48,17 +48,17 @@ export default function FilesPreview({ showList = false, files, onRemove, type }
                 verticalAlign: 'text-top',
                 border: '1px solid',
                 borderColor: 'divider',
-                overflow: 'hidden'
+                overflow: 'hidden',
               }}
             >
-              {type?.includes('image') && <img alt="preview" src={preview} style={{ width: '100%' }} />}
-              {!type?.includes('image') && <Document variant="Bold" style={{ width: '100%', fontSize: '1.5rem' }} />}
+              {type?.includes('image') && <img alt='preview' src={preview} style={{ width: '100%' }} />}
+              {!type?.includes('image') && <Document variant='Bold' style={{ width: '100%', fontSize: '1.5rem' }} />}
 
               {onRemove && (
                 <IconButton
-                  size="small"
-                  color="error"
-                  shape="rounded"
+                  size='small'
+                  color='error'
+                  shape='rounded'
                   onClick={() => onRemove(file)}
                   sx={{
                     fontSize: '0.875rem',
@@ -68,10 +68,10 @@ export default function FilesPreview({ showList = false, files, onRemove, type }
                     height: 'auto',
                     top: 2,
                     right: 2,
-                    position: 'absolute'
+                    position: 'absolute',
                   }}
                 >
-                  <CloseCircle variant="Bold" />
+                  <CloseCircle variant='Bold' />
                 </IconButton>
               )}
             </ListItem>
@@ -87,10 +87,10 @@ export default function FilesPreview({ showList = false, files, onRemove, type }
               py: 0.75,
               borderRadius: 0.75,
               border: ' 1px solid',
-              borderColor: 'divider'
+              borderColor: 'divider',
             }}
           >
-            <Document variant="Bold" style={{ width: '30px', height: '30px', fontSize: '1.15rem', marginRight: 4 }} />
+            <Document variant='Bold' style={{ width: '30px', height: '30px', fontSize: '1.15rem', marginRight: 4 }} />
 
             <ListItemText
               primary={typeof file === 'string' ? file : name}
@@ -100,8 +100,8 @@ export default function FilesPreview({ showList = false, files, onRemove, type }
             />
 
             {onRemove && (
-              <IconButton edge="end" size="small" onClick={() => onRemove(file)}>
-                <CloseCircle variant="Bold" style={{ fontSize: '1.15rem' }} />
+              <IconButton edge='end' size='small' onClick={() => onRemove(file)}>
+                <CloseCircle variant='Bold' style={{ fontSize: '1.15rem' }} />
               </IconButton>
             )}
           </ListItem>

@@ -60,7 +60,7 @@ function MainCard(
     modal = false,
     ...others
   }: MainCardProps,
-  ref: Ref<HTMLDivElement>
+  ref: Ref<HTMLDivElement>,
 ) {
   const theme = useTheme();
   const { themeContrast } = useConfig();
@@ -76,15 +76,15 @@ function MainCard(
         borderRadius: 1.5,
         borderColor: theme.palette.divider,
         ...(((themeContrast && boxShadow) || shadow) && {
-          boxShadow: shadow ? shadow : theme.customShadows.z1
+          boxShadow: shadow ? shadow : theme.customShadows.z1,
         }),
         ...(codeHighlight && {
           '& pre': {
             m: 0,
             p: '12px !important',
             fontFamily: theme.typography.fontFamily,
-            fontSize: '0.75rem'
-          }
+            fontSize: '0.75rem',
+          },
         }),
         ...(modal && {
           position: 'absolute' as 'absolute',
@@ -95,17 +95,17 @@ function MainCard(
           '& .MuiCardContent-root': {
             overflowY: 'auto',
             minHeight: 'auto',
-            maxHeight: `calc(100vh - 200px)`
-          }
+            maxHeight: `calc(100vh - 200px)`,
+          },
         }),
-        ...sx
+        ...sx,
       }}
     >
       {/* card header and action */}
       {!darkTitle && title && (
         <CardHeader sx={headerSX} titleTypographyProps={{ variant: 'subtitle1' }} title={title} action={secondary} subheader={subheader} />
       )}
-      {darkTitle && title && <CardHeader sx={headerSX} title={<Typography variant="h4">{title}</Typography>} action={secondary} />}
+      {darkTitle && title && <CardHeader sx={headerSX} title={<Typography variant='h4'>{title}</Typography>} action={secondary} />}
 
       {/* content & header divider */}
       {title && divider && <Divider />}

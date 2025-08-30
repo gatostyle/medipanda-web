@@ -15,14 +15,14 @@ export default function MapMarker({ ...other }: MarkerProps) {
   return (
     <Marker {...other}>
       <Box
-        component="svg"
-        viewBox="0 0 24 24"
+        component='svg'
+        viewBox='0 0 24 24'
         sx={{
           height: size,
           stroke: 'none',
           cursor: 'pointer',
-          fill: (theme) => theme.palette.primary.main,
-          transform: `translate(${-size / 2}px,${-size}px)`
+          fill: theme => theme.palette.primary.main,
+          transform: `translate(${-size / 2}px,${-size}px)`,
         }}
       >
         <path d={ICON} />

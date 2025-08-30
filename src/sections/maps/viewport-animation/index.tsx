@@ -26,7 +26,7 @@ function ViewportAnimation({ data, ...other }: Props) {
       setSelectedCity(event.target.value);
       mapRef.current?.flyTo({ center: [longitude, latitude], duration: 2000 });
     },
-    []
+    [],
   );
 
   return (
@@ -36,7 +36,7 @@ function ViewportAnimation({ data, ...other }: Props) {
         longitude: 73.208119,
         zoom: 11,
         bearing: 0,
-        pitch: 0
+        pitch: 0,
       }}
       ref={mapRef}
       {...other}

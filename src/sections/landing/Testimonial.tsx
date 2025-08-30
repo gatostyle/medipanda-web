@@ -31,16 +31,16 @@ import Avatar8 from 'assets/images/users/avatar-8.png';
 function Item({ item }: { item: { image: string; text: string; name: string; designation: string; highlight?: boolean } }) {
   return (
     <MainCard sx={{ width: { xs: '300px', md: '420px' }, cursor: 'pointer', my: 0.2, mx: 1.5 }}>
-      <Stack direction="row" alignItems="flex-start" spacing={2}>
-        <Avatar alt="Avatar" size="lg" src={item.image}></Avatar>
+      <Stack direction='row' alignItems='flex-start' spacing={2}>
+        <Avatar alt='Avatar' size='lg' src={item.image}></Avatar>
         <Stack>
           <Typography>{item.text}</Typography>
           <Typography>
-            <Typography component="span" variant="caption">
+            <Typography component='span' variant='caption'>
               {item.name}
             </Typography>
             {' - '}
-            <Typography component="span" color="text.secondary">
+            <Typography component='span' color='text.secondary'>
               {item.designation}
             </Typography>
           </Typography>
@@ -60,50 +60,50 @@ export default function TestimonialPage() {
       image: Avatar2,
       text: '“Code quality is amazing. Design is astonishing. very easy to customize..😍“',
       name: 'shahabblouch',
-      designation: 'Code Quality'
+      designation: 'Code Quality',
     },
     {
       image: Avatar3,
       text: '“This has been one of my favorite admin dashboards to use. 😍“',
       name: 'htmhell',
-      designation: 'Design Quality'
+      designation: 'Design Quality',
     },
     {
       image: Avatar4,
       text: '“Excellent support, if we need any modification, they are doing immediately“',
       name: 'hemchandkodali',
-      designation: 'Customer Support'
+      designation: 'Customer Support',
     },
     {
       image: Avatar5,
       text: '“For developers like me, this is the total package! 😍 “',
       name: 'sumaranjum',
-      designation: 'Feature Availability'
+      designation: 'Feature Availability',
     },
     {
       image: Avatar6,
       text: '“I love the looks of Able Pro 7.0. I really like the colors you guys have chosen for this theme. It looks really nice.. 💎“',
       name: 'ritelogic',
-      designation: 'Other'
+      designation: 'Other',
     },
     {
       image: Avatar7,
       text: '“The author is very nice and solved my problem inmediately 😍 “',
       name: 'richitela',
-      designation: 'Customer Support'
+      designation: 'Customer Support',
     },
     {
       image: Avatar8,
       text: '“Perfect for my need. Elegant look n feel with blazing fast code. 💎“',
       name: 'Genstiade',
-      designation: 'Feature Availability'
-    }
+      designation: 'Feature Availability',
+    },
   ];
   return (
     <>
       <Box sx={{ mt: { md: 15, xs: 2.5 } }}>
         <Container>
-          <Grid container spacing={2} justifyContent="center" sx={{ textAlign: 'center', marginBottom: 4 }}>
+          <Grid container spacing={2} justifyContent='center' sx={{ textAlign: 'center', marginBottom: 4 }}>
             <Grid item xs={12}>
               <motion.div
                 initial={{ opacity: 0, translateY: 550 }}
@@ -112,12 +112,12 @@ export default function TestimonialPage() {
                   type: 'spring',
                   stiffness: 150,
                   damping: 30,
-                  delay: 0.2
+                  delay: 0.2,
                 }}
               >
-                <Typography variant="h2">
+                <Typography variant='h2'>
                   They{' '}
-                  <Typography variant="h2" component="span" sx={{ color: theme.palette.primary.main }}>
+                  <Typography variant='h2' component='span' sx={{ color: theme.palette.primary.main }}>
                     love
                   </Typography>{' '}
                   Able Pro, Now your turn 😍
@@ -132,7 +132,7 @@ export default function TestimonialPage() {
                   type: 'spring',
                   stiffness: 150,
                   damping: 30,
-                  delay: 0.4
+                  delay: 0.4,
                 }}
               >
                 <Typography>

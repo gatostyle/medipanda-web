@@ -44,7 +44,7 @@ export default function InvoiceItem({ id, name, description, qty, price, onDelet
         message: 'Product Deleted successfully',
         anchorOrigin: { vertical: 'top', horizontal: 'right' },
         variant: 'alert',
-        alert: { color: 'success' }
+        alert: { color: 'success' },
       } as SnackbarProps);
     }
   };
@@ -62,7 +62,7 @@ export default function InvoiceItem({ id, name, description, qty, price, onDelet
       id: id + '_name',
       value: name,
       errors: errorName,
-      touched: touchedName
+      touched: touchedName,
     },
     {
       placeholder: 'Description',
@@ -70,10 +70,10 @@ export default function InvoiceItem({ id, name, description, qty, price, onDelet
       name: `invoice_detail.${index}.description`,
       type: 'text',
       id: id + '_description',
-      value: description
+      value: description,
     },
     { placeholder: '', label: 'Qty', type: 'number', name: `invoice_detail.${index}.qty`, id: id + '_qty', value: qty },
-    { placeholder: '', label: 'price', type: 'number', name: `invoice_detail.${index}.price`, id: id + '_price', value: price }
+    { placeholder: '', label: 'price', type: 'number', name: `invoice_detail.${index}.price`, id: id + '_price', value: price },
   ];
 
   return (
@@ -90,14 +90,14 @@ export default function InvoiceItem({ id, name, description, qty, price, onDelet
               id: item.id,
               value: item.value,
               errors: item.errors,
-              touched: item.touched
+              touched: item.touched,
             }}
             key={item.label}
           />
         );
       })}
       <TableCell>
-        <Stack direction="column" justifyContent="flex-end" alignItems="flex-end" spacing={2}>
+        <Stack direction='column' justifyContent='flex-end' alignItems='flex-end' spacing={2}>
           <Box sx={{ pl: 2 }}>
             {invoiceMaster === undefined ? (
               <Skeleton width={520} height={16} />
@@ -107,19 +107,19 @@ export default function InvoiceItem({ id, name, description, qty, price, onDelet
           </Box>
         </Stack>
       </TableCell>
-      <TableCell align="center">
+      <TableCell align='center'>
         <Tooltip
           componentsProps={{
             tooltip: {
               sx: {
                 backgroundColor: mode === ThemeMode.DARK ? theme.palette.grey[50] : theme.palette.grey[700],
-                opacity: 0.9
-              }
-            }
+                opacity: 0.9,
+              },
+            },
           }}
-          title="Remove Item"
+          title='Remove Item'
         >
-          <Button color="error" onClick={() => setOpen(true)}>
+          <Button color='error' onClick={() => setOpen(true)}>
             <Trash />
           </Button>
         </Tooltip>

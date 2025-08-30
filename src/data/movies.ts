@@ -10,23 +10,23 @@ const movies = [
   { label: 'Pulp Fiction', year: 1994 },
   {
     label: 'The Lord of the Rings: The Return of the King',
-    year: 2003
+    year: 2003,
   },
   { label: 'The Good, the Bad and the Ugly', year: 1966 },
   { label: 'Fight Club', year: 1999 },
   {
     label: 'The Lord of the Rings: The Fellowship of the Ring',
-    year: 2001
+    year: 2001,
   },
   {
     label: 'Star Wars: Episode V - The Empire Strikes Back',
-    year: 1980
+    year: 1980,
   },
   { label: 'Forrest Gump', year: 1994 },
   { label: 'Inception', year: 2010 },
   {
     label: 'The Lord of the Rings: The Two Towers',
-    year: 2002
+    year: 2002,
   },
   { label: "One Flew Over the Cuckoo's Nest", year: 1975 },
   { label: 'Goodfellas', year: 1990 },
@@ -34,7 +34,7 @@ const movies = [
   { label: 'Seven Samurai', year: 1954 },
   {
     label: 'Star Wars: Episode IV - A New Hope',
-    year: 1977
+    year: 1977,
   },
   { label: 'City of God', year: 2002 },
   { label: 'Se7en', year: 1995 },
@@ -70,7 +70,7 @@ const movies = [
   { label: 'Sunset Boulevard', year: 1950 },
   {
     label: 'Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb',
-    year: 1964
+    year: 1964,
   },
   { label: 'The Great Dictator', year: 1940 },
   { label: 'Cinema Paradiso', year: 1988 },
@@ -93,7 +93,7 @@ const movies = [
   { label: 'Vertigo', year: 1958 },
   {
     label: 'Star Wars: Episode VI - Return of the Jedi',
-    year: 1983
+    year: 1983,
   },
   { label: 'Reservoir Dogs', year: 1992 },
   { label: 'Braveheart', year: 1995 },
@@ -107,7 +107,7 @@ const movies = [
   { label: 'Double Indemnity', year: 1944 },
   {
     label: 'Eternal Sunshine of the Spotless Mind',
-    year: 2004
+    year: 2004,
   },
   { label: 'Amadeus', year: 1984 },
   { label: 'To Kill a Mockingbird', year: 1962 },
@@ -124,7 +124,7 @@ const movies = [
   { label: 'Inglourious Basterds', year: 2009 },
   { label: 'Snatch', year: 2000 },
   { label: '3 Idiots', year: 2009 },
-  { label: 'Monty Python and the Holy Grail', year: 1975 }
+  { label: 'Monty Python and the Holy Grail', year: 1975 },
 ];
 
 export default movies;

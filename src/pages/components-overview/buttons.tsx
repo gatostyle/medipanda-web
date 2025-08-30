@@ -36,7 +36,7 @@ export default function Buttons() {
     address: false,
     add: false,
     submit: false,
-    cancel: false
+    cancel: false,
   });
 
   const loadingHandler = (state: string) => {
@@ -225,236 +225,236 @@ export default function Buttons() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Buttons"
-        caption="Buttons allow users to take actions, and make choices, with a single tap."
-        directory="src/pages/components-overview/buttons"
-        link="https://mui.com/material-ui/react-button/"
+        title='Buttons'
+        caption='Buttons allow users to take actions, and make choices, with a single tap.'
+        directory='src/pages/components-overview/buttons'
+        link='https://mui.com/material-ui/react-button/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
             <Stack spacing={3}>
-              <MainCard title="Basic Button" codeHighlight codeString={basicButtonCodeString}>
+              <MainCard title='Basic Button' codeHighlight codeString={basicButtonCodeString}>
                 <Grid container spacing={2}>
                   <Grid item>
-                    <Button variant="contained">Default</Button>
+                    <Button variant='contained'>Default</Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="contained" color="secondary">
+                    <Button variant='contained' color='secondary'>
                       Secondary
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="contained" color="info">
+                    <Button variant='contained' color='info'>
                       Info
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="contained" color="success">
+                    <Button variant='contained' color='success'>
                       Success
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="contained" color="warning">
+                    <Button variant='contained' color='warning'>
                       Warning
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="contained" color="error">
+                    <Button variant='contained' color='error'>
                       Error
                     </Button>
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Outlined Button" codeString={outlinedButtonCodeString}>
+              <MainCard title='Outlined Button' codeString={outlinedButtonCodeString}>
                 <Grid container spacing={2}>
                   <Grid item>
-                    <Button variant="outlined">Default</Button>
+                    <Button variant='outlined'>Default</Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="outlined" color="secondary">
+                    <Button variant='outlined' color='secondary'>
                       Secondary
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="outlined" color="info">
+                    <Button variant='outlined' color='info'>
                       Info
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="outlined" color="success">
+                    <Button variant='outlined' color='success'>
                       Success
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="outlined" color="warning">
+                    <Button variant='outlined' color='warning'>
                       Warning
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="outlined" color="error">
+                    <Button variant='outlined' color='error'>
                       Error
                     </Button>
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Dashed Button" codeString={dashButtonCodeString}>
+              <MainCard title='Dashed Button' codeString={dashButtonCodeString}>
                 <Grid container spacing={2}>
                   <Grid item>
-                    <Button variant="dashed">Default</Button>
+                    <Button variant='dashed'>Default</Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="dashed" color="secondary">
+                    <Button variant='dashed' color='secondary'>
                       Secondary
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="dashed" color="info">
+                    <Button variant='dashed' color='info'>
                       Info
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="dashed" color="success">
+                    <Button variant='dashed' color='success'>
                       Success
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="dashed" color="warning">
+                    <Button variant='dashed' color='warning'>
                       Warning
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="dashed" color="error">
+                    <Button variant='dashed' color='error'>
                       Error
                     </Button>
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Text Button" codeString={textButtonCodeString}>
+              <MainCard title='Text Button' codeString={textButtonCodeString}>
                 <Grid container spacing={2}>
                   <Grid item>
                     <Button>Default</Button>
                   </Grid>
                   <Grid item>
-                    <Button color="secondary">Secondary</Button>
+                    <Button color='secondary'>Secondary</Button>
                   </Grid>
                   <Grid item>
-                    <Button color="info">Info</Button>
+                    <Button color='info'>Info</Button>
                   </Grid>
                   <Grid item>
-                    <Button color="success">Success</Button>
+                    <Button color='success'>Success</Button>
                   </Grid>
                   <Grid item>
-                    <Button color="warning">Warning</Button>
+                    <Button color='warning'>Warning</Button>
                   </Grid>
                   <Grid item>
-                    <Button color="error">Error</Button>
+                    <Button color='error'>Error</Button>
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Shadow Button" codeString={shadowButtonCodeString}>
+              <MainCard title='Shadow Button' codeString={shadowButtonCodeString}>
                 <Grid container spacing={2}>
                   <Grid item>
-                    <Button variant="shadow">Default</Button>
+                    <Button variant='shadow'>Default</Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="shadow" color="secondary">
+                    <Button variant='shadow' color='secondary'>
                       Secondary
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="shadow" color="info">
+                    <Button variant='shadow' color='info'>
                       Info
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="shadow" color="success">
+                    <Button variant='shadow' color='success'>
                       Success
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="shadow" color="warning">
+                    <Button variant='shadow' color='warning'>
                       Warning
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="shadow" color="error">
+                    <Button variant='shadow' color='error'>
                       Error
                     </Button>
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="With Icon" codeString={withIconButtonCodeString}>
+              <MainCard title='With Icon' codeString={withIconButtonCodeString}>
                 <Grid container spacing={2}>
                   <Grid item>
-                    <Button variant="contained" startIcon={<Home3 />}>
+                    <Button variant='contained' startIcon={<Home3 />}>
                       Home
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="contained" color="secondary" endIcon={<EmojiHappy variant="Bold" />}>
+                    <Button variant='contained' color='secondary' endIcon={<EmojiHappy variant='Bold' />}>
                       Profile
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="outlined" color="info" startIcon={<Location />}>
+                    <Button variant='outlined' color='info' startIcon={<Location />}>
                       Address
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="outlined" color="success" startIcon={<AddCircle />}>
+                    <Button variant='outlined' color='success' startIcon={<AddCircle />}>
                       Add
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="outlined" color="warning" endIcon={<Send />}>
+                    <Button variant='outlined' color='warning' endIcon={<Send />}>
                       Send
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button color="error" endIcon={<Add style={{ transform: 'rotate(45deg)' }} />}>
+                    <Button color='error' endIcon={<Add style={{ transform: 'rotate(45deg)' }} />}>
                       Cancel
                     </Button>
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Button Size" codeString={sizeButtonCodeString}>
+              <MainCard title='Button Size' codeString={sizeButtonCodeString}>
                 <Grid container spacing={2}>
                   <Grid item>
-                    <Button variant="contained" size="extraSmall">
+                    <Button variant='contained' size='extraSmall'>
                       Extra Small
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="contained" size="small">
+                    <Button variant='contained' size='small'>
                       small
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="contained">Default</Button>
+                    <Button variant='contained'>Default</Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="contained" size="large">
+                    <Button variant='contained' size='large'>
                       Large
                     </Button>
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Upload Button" codeString={uploadButtonCodeString}>
+              <MainCard title='Upload Button' codeString={uploadButtonCodeString}>
                 <Grid container spacing={2}>
                   <Grid item>
-                    <label htmlFor="contained-button-file">
-                      <Input accept="image/*" id="contained-button-file" multiple type="file" />
-                      <Button variant="contained">Upload</Button>
+                    <label htmlFor='contained-button-file'>
+                      <Input accept='image/*' id='contained-button-file' multiple type='file' />
+                      <Button variant='contained'>Upload</Button>
                     </label>
                   </Grid>
                   <Grid item>
-                    <label htmlFor="icon-button-file">
-                      <Input accept="image/*" id="icon-button-file" type="file" />
+                    <label htmlFor='icon-button-file'>
+                      <Input accept='image/*' id='icon-button-file' type='file' />
                       <IconButton
-                        variant="contained"
-                        shape="rounded"
-                        aria-label="upload picture"
+                        variant='contained'
+                        shape='rounded'
+                        aria-label='upload picture'
                         sx={{ '& svg': { width: 18, height: 18 } }}
                       >
                         <Camera />
@@ -463,57 +463,57 @@ export default function Buttons() {
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Diabled Button" codeString={disabledButtonCodeString}>
+              <MainCard title='Diabled Button' codeString={disabledButtonCodeString}>
                 <Grid container spacing={2}>
                   <Grid item>
                     <Button disabled>Default</Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="contained" disabled>
+                    <Button variant='contained' disabled>
                       Contained
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="outlined" disabled>
+                    <Button variant='outlined' disabled>
                       Outlined
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="dashed" color="success" disabled>
+                    <Button variant='dashed' color='success' disabled>
                       Dashed
                     </Button>
                   </Grid>
                   <Grid item>
-                    <IconButton variant="contained" disabled>
+                    <IconButton variant='contained' disabled>
                       <Home3 />
                     </IconButton>
                   </Grid>
                   <Grid item>
-                    <IconButton variant="outlined" color="success" disabled>
+                    <IconButton variant='outlined' color='success' disabled>
                       <AddCircle />
                     </IconButton>
                   </Grid>
                   <Grid item>
-                    <IconButton variant="dashed" color="warning" disabled>
+                    <IconButton variant='dashed' color='warning' disabled>
                       <Send />
                     </IconButton>
                   </Grid>
                   <Grid item>
-                    <LoadingButton loading color="secondary">
+                    <LoadingButton loading color='secondary'>
                       <Add style={{ transform: 'rotate(45deg)' }} />
                     </LoadingButton>
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Block Level" codeString={blockButtonCodeString}>
+              <MainCard title='Block Level' codeString={blockButtonCodeString}>
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
-                    <Button variant="contained" fullWidth>
+                    <Button variant='contained' fullWidth>
                       Primary
                     </Button>
                   </Grid>
                   <Grid item xs={6}>
-                    <Button variant="outlined" color="secondary" fullWidth>
+                    <Button variant='outlined' color='secondary' fullWidth>
                       Secondary
                     </Button>
                   </Grid>
@@ -526,75 +526,75 @@ export default function Buttons() {
             <Stack spacing={3}>
               <ToggleButtons />
               <ButtonGroups />
-              <MainCard title="Fab " codeString={fabButtonCodeString}>
-                <Grid container spacing={2} alignItems="center">
+              <MainCard title='Fab ' codeString={fabButtonCodeString}>
+                <Grid container spacing={2} alignItems='center'>
                   <Grid item>
-                    <Fab color="primary" aria-label="add">
+                    <Fab color='primary' aria-label='add'>
                       <Add style={{ fontSize: '1.3rem' }} />
                     </Fab>
                   </Grid>
                   <Grid item>
-                    <Fab color="info" aria-label="edit">
+                    <Fab color='info' aria-label='edit'>
                       <Edit style={{ fontSize: '1.3rem' }} />
                     </Fab>
                   </Grid>
                   <Grid item>
-                    <Fab disabled aria-label="like">
+                    <Fab disabled aria-label='like'>
                       <MicrophoneSlash style={{ fontSize: '1.3rem' }} />
                     </Fab>
                   </Grid>
                   <Grid item>
-                    <Fab color="error" variant="extended">
+                    <Fab color='error' variant='extended'>
                       Extended
                     </Fab>
                   </Grid>
                 </Grid>
               </MainCard>
 
-              <Typography variant="h5" sx={{ mt: 2 }}>
+              <Typography variant='h5' sx={{ mt: 2 }}>
                 Extended Button
               </Typography>
-              <MainCard title="Icon Button" codeString={iconButtonCodeString}>
+              <MainCard title='Icon Button' codeString={iconButtonCodeString}>
                 <>
                   <Grid container spacing={2}>
                     <Grid item>
-                      <Tooltip title="Home">
-                        <IconButton variant="contained">
+                      <Tooltip title='Home'>
+                        <IconButton variant='contained'>
                           <Home3 />
                         </IconButton>
                       </Tooltip>
                     </Grid>
                     <Grid item>
-                      <Tooltip title="Profile">
-                        <IconButton variant="contained" color="secondary">
-                          <EmojiHappy variant="Bold" />
+                      <Tooltip title='Profile'>
+                        <IconButton variant='contained' color='secondary'>
+                          <EmojiHappy variant='Bold' />
                         </IconButton>
                       </Tooltip>
                     </Grid>
                     <Grid item>
-                      <Tooltip title="Address">
-                        <IconButton variant="outlined" color="info">
+                      <Tooltip title='Address'>
+                        <IconButton variant='outlined' color='info'>
                           <Location />
                         </IconButton>
                       </Tooltip>
                     </Grid>
                     <Grid item>
-                      <Tooltip title="Add">
-                        <IconButton variant="outlined" color="success">
+                      <Tooltip title='Add'>
+                        <IconButton variant='outlined' color='success'>
                           <AddCircle />
                         </IconButton>
                       </Tooltip>
                     </Grid>
                     <Grid item>
-                      <Tooltip title="Send">
-                        <IconButton variant="dashed" color="warning">
+                      <Tooltip title='Send'>
+                        <IconButton variant='dashed' color='warning'>
                           <Send />
                         </IconButton>
                       </Tooltip>
                     </Grid>
                     <Grid item>
-                      <Tooltip title="Delete">
-                        <IconButton color="error">
+                      <Tooltip title='Delete'>
+                        <IconButton color='error'>
                           <Add style={{ transform: 'rotate(45deg)' }} />
                         </IconButton>
                       </Tooltip>
@@ -602,43 +602,43 @@ export default function Buttons() {
                   </Grid>
                   <Grid container spacing={2} sx={{ mt: 2 }}>
                     <Grid item>
-                      <Tooltip title="Home">
-                        <IconButton shape="rounded" variant="contained">
+                      <Tooltip title='Home'>
+                        <IconButton shape='rounded' variant='contained'>
                           <Home3 />
                         </IconButton>
                       </Tooltip>
                     </Grid>
                     <Grid item>
-                      <Tooltip title="Profile">
-                        <IconButton shape="rounded" variant="contained" color="secondary">
-                          <EmojiHappy variant="Bold" />
+                      <Tooltip title='Profile'>
+                        <IconButton shape='rounded' variant='contained' color='secondary'>
+                          <EmojiHappy variant='Bold' />
                         </IconButton>
                       </Tooltip>
                     </Grid>
                     <Grid item>
-                      <Tooltip title="Address">
-                        <IconButton shape="rounded" variant="outlined" color="info">
+                      <Tooltip title='Address'>
+                        <IconButton shape='rounded' variant='outlined' color='info'>
                           <Location />
                         </IconButton>
                       </Tooltip>
                     </Grid>
                     <Grid item>
-                      <Tooltip title="Add">
-                        <IconButton shape="rounded" variant="outlined" color="success">
+                      <Tooltip title='Add'>
+                        <IconButton shape='rounded' variant='outlined' color='success'>
                           <AddCircle />
                         </IconButton>
                       </Tooltip>
                     </Grid>
                     <Grid item>
-                      <Tooltip title="Send">
-                        <IconButton shape="rounded" variant="dashed" color="warning">
+                      <Tooltip title='Send'>
+                        <IconButton shape='rounded' variant='dashed' color='warning'>
                           <Send />
                         </IconButton>
                       </Tooltip>
                     </Grid>
                     <Grid item>
-                      <Tooltip title="Delete">
-                        <IconButton shape="rounded" color="error">
+                      <Tooltip title='Delete'>
+                        <IconButton shape='rounded' color='error'>
                           <Add style={{ transform: 'rotate(45deg)' }} />
                         </IconButton>
                       </Tooltip>
@@ -646,42 +646,42 @@ export default function Buttons() {
                   </Grid>
                 </>
               </MainCard>
-              <MainCard title="Loading Button" codeString={loadingButtonCodeString}>
+              <MainCard title='Loading Button' codeString={loadingButtonCodeString}>
                 <>
                   <Grid container spacing={2}>
                     <Grid item>
-                      <LoadingButton loading variant="contained" loadingPosition="start" startIcon={<Home3 />}>
+                      <LoadingButton loading variant='contained' loadingPosition='start' startIcon={<Home3 />}>
                         Home
                       </LoadingButton>
                     </Grid>
                     <Grid item>
                       <LoadingButton
                         loading
-                        color="secondary"
-                        variant="outlined"
-                        loadingPosition="end"
-                        endIcon={<EmojiHappy variant="Bold" />}
+                        color='secondary'
+                        variant='outlined'
+                        loadingPosition='end'
+                        endIcon={<EmojiHappy variant='Bold' />}
                       >
                         Edit
                       </LoadingButton>
                     </Grid>
                     <Grid item>
-                      <LoadingButton loading color="info" variant="dashed" loadingIndicator="Loading...">
+                      <LoadingButton loading color='info' variant='dashed' loadingIndicator='Loading...'>
                         Address
                       </LoadingButton>
                     </Grid>
                     <Grid item>
-                      <LoadingButton loading color="success" variant="contained" shape="square">
+                      <LoadingButton loading color='success' variant='contained' shape='square'>
                         <AddCircle />
                       </LoadingButton>
                     </Grid>
                     <Grid item>
-                      <LoadingButton loading color="warning" variant="dashed" shape="rounded">
+                      <LoadingButton loading color='warning' variant='dashed' shape='rounded'>
                         <Send />
                       </LoadingButton>
                     </Grid>
                     <Grid item>
-                      <LoadingButton loading color="error" shape="square">
+                      <LoadingButton loading color='error' shape='square'>
                         <Add style={{ transform: 'rotate(45deg)' }} />
                       </LoadingButton>
                     </Grid>
@@ -690,8 +690,8 @@ export default function Buttons() {
                     <Grid item>
                       <LoadingButton
                         loading={loading.home}
-                        variant="contained"
-                        loadingPosition="start"
+                        variant='contained'
+                        loadingPosition='start'
                         startIcon={<Home3 />}
                         onClick={() => loadingHandler('home')}
                       >
@@ -701,10 +701,10 @@ export default function Buttons() {
                     <Grid item>
                       <LoadingButton
                         loading={loading.edit}
-                        color="secondary"
-                        variant="outlined"
-                        loadingPosition="end"
-                        endIcon={<EmojiHappy variant="Bold" />}
+                        color='secondary'
+                        variant='outlined'
+                        loadingPosition='end'
+                        endIcon={<EmojiHappy variant='Bold' />}
                         onClick={() => loadingHandler('edit')}
                       >
                         Edit
@@ -713,21 +713,21 @@ export default function Buttons() {
                     <Grid item>
                       <LoadingButton
                         loading={loading.address}
-                        color="info"
-                        variant="dashed"
-                        loadingIndicator="Loading..."
+                        color='info'
+                        variant='dashed'
+                        loadingIndicator='Loading...'
                         onClick={() => loadingHandler('address')}
                       >
                         Address
                       </LoadingButton>
                     </Grid>
                     <Grid item>
-                      <Tooltip title="Add">
+                      <Tooltip title='Add'>
                         <LoadingButton
                           loading={loading.add}
-                          color="success"
-                          variant="contained"
-                          shape="square"
+                          color='success'
+                          variant='contained'
+                          shape='square'
                           onClick={() => loadingHandler('add')}
                         >
                           <AddCircle />
@@ -735,12 +735,12 @@ export default function Buttons() {
                       </Tooltip>
                     </Grid>
                     <Grid item>
-                      <Tooltip title="Send">
+                      <Tooltip title='Send'>
                         <LoadingButton
                           loading={loading.submit}
-                          color="warning"
-                          variant="dashed"
-                          shape="rounded"
+                          color='warning'
+                          variant='dashed'
+                          shape='rounded'
                           onClick={() => loadingHandler('submit')}
                         >
                           <Send />
@@ -748,8 +748,8 @@ export default function Buttons() {
                       </Tooltip>
                     </Grid>
                     <Grid item>
-                      <Tooltip title="Cancel">
-                        <LoadingButton loading={loading.cancel} color="error" onClick={() => loadingHandler('cancel')} shape="square">
+                      <Tooltip title='Cancel'>
+                        <LoadingButton loading={loading.cancel} color='error' onClick={() => loadingHandler('cancel')} shape='square'>
                           <Add style={{ transform: 'rotate(45deg)' }} />
                         </LoadingButton>
                       </Tooltip>
@@ -757,36 +757,36 @@ export default function Buttons() {
                   </Grid>
                 </>
               </MainCard>
-              <MainCard title="Animation" codeString={animationButtonCodeString}>
+              <MainCard title='Animation' codeString={animationButtonCodeString}>
                 <Grid container spacing={2}>
                   <Grid item>
                     <AnimateButton>
-                      <Button variant="contained">Default</Button>
+                      <Button variant='contained'>Default</Button>
                     </AnimateButton>
                   </Grid>
                   <Grid item>
                     <AnimateButton
                       scale={{
                         hover: 1.1,
-                        tap: 0.9
+                        tap: 0.9,
                       }}
                     >
-                      <Button variant="contained" color="info">
+                      <Button variant='contained' color='info'>
                         Scale
                       </Button>
                     </AnimateButton>
                   </Grid>
                   <Grid item>
-                    <AnimateButton type="slide">
-                      <Button variant="contained" color="success">
+                    <AnimateButton type='slide'>
+                      <Button variant='contained' color='success'>
                         Slide
                       </Button>
                     </AnimateButton>
                   </Grid>
                   <Grid item>
-                    <AnimateButton type="rotate">
-                      <Tooltip title="Rotate">
-                        <IconButton color="warning" variant="dashed" shape="rounded">
+                    <AnimateButton type='rotate'>
+                      <Tooltip title='Rotate'>
+                        <IconButton color='warning' variant='dashed' shape='rounded'>
                           <Setting2 />
                         </IconButton>
                       </Tooltip>

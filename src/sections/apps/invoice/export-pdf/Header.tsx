@@ -16,54 +16,54 @@ const textSecondary = '#8c8c8c';
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   detailColumn: {
     marginBottom: '12px',
     flexDirection: 'column',
-    flexGrow: 2
+    flexGrow: 2,
   },
   chipTitle: {
     fontSize: '8px',
-    padding: 4
+    padding: 4,
   },
   chip: {
     alignItems: 'center',
     borderRadius: '4px',
     marginLeft: 52,
     marginRight: 4,
-    marginBottom: 8
+    marginBottom: 8,
   },
   leftColumn: {
     flexDirection: 'column',
     width: 36,
     marginRight: 10,
     paddingLeft: 4,
-    marginTop: 4
+    marginTop: 4,
   },
   image: {
     width: 90,
-    height: 28
+    height: 28,
   },
   mainContainer: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'stretch'
+    alignItems: 'stretch',
   },
   row: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   title: {
     color: textPrimary,
-    fontSize: '10px'
+    fontSize: '10px',
   },
   caption: {
     color: textSecondary,
-    fontSize: '10px'
-  }
+    fontSize: '10px',
+  },
 });
 
 interface Props {
@@ -98,8 +98,8 @@ export default function Header({ list }: Props) {
                     ? theme.palette.success.main
                     : list?.status === 'Unpaid'
                       ? theme.palette.info.main
-                      : theme.palette.error.main
-              }
+                      : theme.palette.error.main,
+              },
             ]}
           >
             <Text style={styles.chipTitle}>{list?.status}</Text>

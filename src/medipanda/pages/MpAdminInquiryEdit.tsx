@@ -33,11 +33,11 @@ function withMock<T extends BoardDetailsResponse>(data: T): T & BoardDetailsResp
       userId: '아이디',
       name: '사용자명',
       drugCompany: '제약사명',
-      phoneNumber: '010-1234-5678'
+      phoneNumber: '010-1234-5678',
     },
     responseContent: '답변 내용',
     responseCreatedAt: '2025-05-01',
-    notes: '비고 내용'
+    notes: '비고 내용',
   };
 }
 
@@ -54,9 +54,9 @@ export default function MpAdminInquiryEdit() {
   const formik = useFormik({
     initialValues: {
       responseContent: '',
-      notes: ''
+      notes: '',
     },
-    onSubmit: async (values) => {
+    onSubmit: async values => {
       if (id === undefined) return;
 
       if (!values.responseContent.trim()) {
@@ -68,12 +68,12 @@ export default function MpAdminInquiryEdit() {
         if (inquiry?.responseContent) {
           await mpUpdateInquiryResponse(parseInt(id), {
             responseContent: values.responseContent,
-            notes: values.notes
+            notes: values.notes,
           });
         } else {
           await mpCreateInquiryResponse(parseInt(id), {
             responseContent: values.responseContent,
-            notes: values.notes
+            notes: values.notes,
           });
         }
         infoDialog.showInfo('답변이 저장되었습니다.');
@@ -86,7 +86,7 @@ export default function MpAdminInquiryEdit() {
           errorDialog.showError('답변 저장 중 오류가 발생했습니다.');
         }
       }
-    }
+    },
   });
 
   useEffect(() => {
@@ -131,7 +131,7 @@ export default function MpAdminInquiryEdit() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant='h4' gutterBottom>
           1:1 문의 수정
         </Typography>
       </Grid>
@@ -143,12 +143,12 @@ export default function MpAdminInquiryEdit() {
               <Grid container spacing={2}>
                 <Grid item xs={12} md={4}>
                   <Box>
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                       회원정보
                     </Typography>
                     <TextField
                       fullWidth
-                      size="small"
+                      size='small'
                       value={`${inquiry.nickname}(${inquiry.member.id} / ${inquiry.member.userId})`}
                       InputProps={{ readOnly: true }}
                       sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
@@ -157,12 +157,12 @@ export default function MpAdminInquiryEdit() {
                 </Grid>
                 <Grid item xs={12} md={4}>
                   <Box>
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                       회사정보
                     </Typography>
                     <TextField
                       fullWidth
-                      size="small"
+                      size='small'
                       value={
                         inquiry.member.drugCompany
                           ? `${inquiry.member.drugCompany}${inquiry.member.drugCompany.includes('법인') ? '' : '(법인)'}`
@@ -175,12 +175,12 @@ export default function MpAdminInquiryEdit() {
                 </Grid>
                 <Grid item xs={12} md={4}>
                   <Box>
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                       휴대폰번호
                     </Typography>
                     <TextField
                       fullWidth
-                      size="small"
+                      size='small'
                       value={inquiry.member.phoneNumber}
                       InputProps={{ readOnly: true }}
                       sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
@@ -192,12 +192,12 @@ export default function MpAdminInquiryEdit() {
 
             <Grid item xs={12}>
               <Box>
-                <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                   제목
                 </Typography>
                 <TextField
                   fullWidth
-                  size="small"
+                  size='small'
                   value={inquiry.title}
                   InputProps={{ readOnly: true }}
                   sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
@@ -207,7 +207,7 @@ export default function MpAdminInquiryEdit() {
 
             <Grid item xs={12}>
               <Box>
-                <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                   내용
                 </Typography>
                 <TextField
@@ -219,25 +219,25 @@ export default function MpAdminInquiryEdit() {
                   sx={{
                     '& .MuiInputBase-root': {
                       backgroundColor: '#f5f5f5',
-                      '& textarea': { cursor: 'default' }
-                    }
+                      '& textarea': { cursor: 'default' },
+                    },
                   }}
                 />
               </Box>
             </Grid>
 
             <Grid item xs={12}>
-              <Typography variant="subtitle2" color="text.secondary" gutterBottom></Typography>
+              <Typography variant='subtitle2' color='text.secondary' gutterBottom></Typography>
             </Grid>
 
             <Grid item xs={12}>
               <Box>
-                <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                   문의시간
                 </Typography>
                 <TextField
                   fullWidth
-                  size="small"
+                  size='small'
                   value={formatYyyyMmDdHhMm(inquiry.createdAt)}
                   InputProps={{ readOnly: true }}
                   sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
@@ -248,15 +248,15 @@ export default function MpAdminInquiryEdit() {
             {formik.values.responseContent && (
               <Grid item xs={12}>
                 <Box>
-                  <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                  <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                     답변내용
                   </Typography>
                   <TextField
-                    name="responseContent"
+                    name='responseContent'
                     multiline
                     rows={6}
                     fullWidth
-                    placeholder=""
+                    placeholder=''
                     value={formik.values.responseContent}
                     onChange={formik.handleChange}
                   />
@@ -267,12 +267,12 @@ export default function MpAdminInquiryEdit() {
             {inquiry.responseCreatedAt !== null && (
               <Grid item xs={12}>
                 <Box>
-                  <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                  <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                     답변시간
                   </Typography>
                   <TextField
                     fullWidth
-                    size="small"
+                    size='small'
                     value={formatYyyyMmDdHhMm(inquiry.responseCreatedAt)}
                     InputProps={{ readOnly: true }}
                     sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
@@ -283,19 +283,19 @@ export default function MpAdminInquiryEdit() {
 
             <Grid item xs={12}>
               <Box>
-                <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                   비고
                 </Typography>
-                <TextField name="notes" multiline rows={4} fullWidth value={formik.values.notes} onChange={formik.handleChange} />
+                <TextField name='notes' multiline rows={4} fullWidth value={formik.values.notes} onChange={formik.handleChange} />
               </Box>
             </Grid>
 
             <Grid item xs={12}>
-              <Stack direction="row" spacing={2} justifyContent="center">
-                <Button variant="outlined" size="large" onClick={handleCancel}>
+              <Stack direction='row' spacing={2} justifyContent='center'>
+                <Button variant='outlined' size='large' onClick={handleCancel}>
                   취소
                 </Button>
-                <Button variant="contained" size="large" color="success" onClick={() => formik.handleSubmit()}>
+                <Button variant='contained' size='large' color='success' onClick={() => formik.handleSubmit()}>
                   답변하기
                 </Button>
               </Stack>

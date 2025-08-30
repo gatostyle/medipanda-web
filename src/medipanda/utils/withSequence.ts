@@ -12,7 +12,7 @@ export function withSequence<T>(responseOrArray: PagedResponse<T> | T[]): PagedR
   if (Array.isArray(responseOrArray)) {
     return responseOrArray.map((item, index, array) => ({
       ...item,
-      sequence: array.length - index
+      sequence: array.length - index,
     }));
   }
 
@@ -20,7 +20,7 @@ export function withSequence<T>(responseOrArray: PagedResponse<T> | T[]): PagedR
     ...responseOrArray,
     content: responseOrArray.content.map((item, index) => ({
       ...item,
-      sequence: responseOrArray.totalElements - responseOrArray.size * responseOrArray.number - index
-    }))
+      sequence: responseOrArray.totalElements - responseOrArray.size * responseOrArray.number - index,
+    })),
   };
 }

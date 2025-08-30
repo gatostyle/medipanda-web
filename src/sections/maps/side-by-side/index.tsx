@@ -12,14 +12,14 @@ import { MapBoxProps } from 'types/map';
 const leftMapStyle: CSSProperties = {
   position: 'absolute',
   width: '50%',
-  height: '100%'
+  height: '100%',
 };
 
 const rightMapStyle: CSSProperties = {
   position: 'absolute',
   left: '50%',
   width: '50%',
-  height: '100%'
+  height: '100%',
 };
 
 // ==============================|| SIDE BY SIDE ||============================== //
@@ -29,7 +29,7 @@ function SideBySide({ ...other }: MapBoxProps) {
     latitude: 21.2335611,
     longitude: 72.8636084,
     zoom: 12,
-    pitch: 30
+    pitch: 30,
   });
 
   const [mode, setMode] = useState<ModeProps>('split-screen');
@@ -51,31 +51,31 @@ function SideBySide({ ...other }: MapBoxProps) {
   return (
     <>
       <Map
-        id="left-map"
+        id='left-map'
         {...viewState}
         padding={leftMapPadding}
         onMoveStart={onLeftMoveStart}
-        onMove={(event) => {
+        onMove={event => {
           if (activeMap === 'left') {
             onMove(event);
           }
         }}
         style={leftMapStyle}
-        mapStyle="mapbox://styles/mapbox/light-v10"
+        mapStyle='mapbox://styles/mapbox/light-v10'
         {...other}
       />
       <Map
-        id="right-map"
+        id='right-map'
         {...viewState}
         padding={rightMapPadding}
         onMoveStart={onRightMoveStart}
-        onMove={(event) => {
+        onMove={event => {
           if (activeMap === 'right') {
             onMove(event);
           }
         }}
         style={rightMapStyle}
-        mapStyle="mapbox://styles/mapbox/dark-v10"
+        mapStyle='mapbox://styles/mapbox/dark-v10'
         {...other}
       />
       <ControlPanel mode={mode} onModeChange={handleChangeMode} />

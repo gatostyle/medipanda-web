@@ -33,27 +33,27 @@ export default function ThemeFont() {
     {
       id: 'inter',
       value: `Inter var`,
-      label: 'Inter'
+      label: 'Inter',
     },
     {
       id: 'roboto',
       value: `'Roboto', sans-serif`,
-      label: 'Roboto'
+      label: 'Roboto',
     },
     {
       id: 'poppins',
       value: `'Poppins', sans-serif`,
-      label: 'Poppins'
+      label: 'Poppins',
     },
     {
       id: 'public-sans',
       value: `'Public Sans', sans-serif`,
-      label: 'Public Sans'
-    }
+      label: 'Public Sans',
+    },
   ];
 
   return (
-    <RadioGroup row aria-label="payment-card" name="payment-card" value={fontFamily} onChange={handleFontChange}>
+    <RadioGroup row aria-label='payment-card' name='payment-card' value={fontFamily} onChange={handleFontChange}>
       <Grid container spacing={1.75} sx={{ ml: 0 }}>
         {fonts.map((item, index) => (
           <Grid item key={index}>
@@ -68,11 +68,11 @@ export default function ThemeFont() {
                   {...(fontFamily === item.value && { boxShadow: true, shadow: theme.customShadows.primary })}
                 >
                   <Box sx={{ minWidth: HEADER_HEIGHT, bgcolor: 'background.paper', p: 1, '&:hover': { bgcolor: 'background.paper' } }}>
-                    <Stack spacing={0.5} alignItems="center">
-                      <Typography variant="h5" color="text.primary" sx={{ fontFamily: item.value }}>
+                    <Stack spacing={0.5} alignItems='center'>
+                      <Typography variant='h5' color='text.primary' sx={{ fontFamily: item.value }}>
                         Aa
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant='caption' color='text.secondary'>
                         {item.label}
                       </Typography>
                     </Stack>

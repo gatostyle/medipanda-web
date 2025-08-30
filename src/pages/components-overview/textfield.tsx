@@ -29,7 +29,7 @@ interface State {
 export default function ComponentTextField() {
   const [values, setValues] = useState({
     password: '',
-    showPassword: false
+    showPassword: false,
   });
 
   const handleChange = (prop: keyof State) => (event: ChangeEvent<HTMLInputElement>) => {
@@ -39,7 +39,7 @@ export default function ComponentTextField() {
   const handleClickShowPassword = () => {
     setValues({
       ...values,
-      showPassword: !values.showPassword
+      showPassword: !values.showPassword,
     });
   };
 
@@ -175,35 +175,35 @@ export default function ComponentTextField() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Text Field"
-        caption="Text fields let users enter and edit text."
-        directory="src/pages/components-overview/textfield"
-        link="https://mui.com/material-ui/react-text-field/"
+        title='Text Field'
+        caption='Text fields let users enter and edit text.'
+        directory='src/pages/components-overview/textfield'
+        link='https://mui.com/material-ui/react-text-field/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={6}>
             <Stack spacing={3}>
-              <MainCard title="Basic" codeHighlight codeString={basicTextfeildCodeString}>
+              <MainCard title='Basic' codeHighlight codeString={basicTextfeildCodeString}>
                 <Stack spacing={2}>
-                  <TextField id="outlined-basic" placeholder="Outlined" />
-                  <TextField id="filled-basic" label="Filled" variant="filled" />
-                  <TextField id="standard-basic" label="Standard" variant="standard" />
+                  <TextField id='outlined-basic' placeholder='Outlined' />
+                  <TextField id='filled-basic' label='Filled' variant='filled' />
+                  <TextField id='standard-basic' label='Standard' variant='standard' />
                 </Stack>
               </MainCard>
-              <MainCard title="Form Props" codeString={propsTextfeildCodeString}>
-                <form id="form-props">
+              <MainCard title='Form Props' codeString={propsTextfeildCodeString}>
+                <form id='form-props'>
                   <Grid container spacing={2}>
                     <Grid item xs={12} md={6}>
                       <Stack spacing={2}>
-                        <TextField required id="outlined-required" placeholder="Required *" defaultValue="Hello World" />
-                        <TextField id="helper-text-basic" placeholder="Helper text" helperText="Helper text" />
-                        <TextField id="outlined-number" placeholder="Number" type="number" />
+                        <TextField required id='outlined-required' placeholder='Required *' defaultValue='Hello World' />
+                        <TextField id='helper-text-basic' placeholder='Helper text' helperText='Helper text' />
+                        <TextField id='outlined-number' placeholder='Number' type='number' />
                         <TextField
-                          id="outlined-number-readonly"
-                          defaultValue="Read Only"
+                          id='outlined-number-readonly'
+                          defaultValue='Read Only'
                           InputProps={{
-                            readOnly: true
+                            readOnly: true,
                           }}
                         />
                       </Stack>
@@ -211,70 +211,70 @@ export default function ComponentTextField() {
                     <Grid item xs={12} md={6}>
                       <Stack spacing={2}>
                         <OutlinedInput
-                          id="outlined-adornment-password"
+                          id='outlined-adornment-password'
                           type={values.showPassword ? 'text' : 'password'}
                           value={values.password}
                           onChange={handleChange('password')}
                           endAdornment={
-                            <InputAdornment position="end">
+                            <InputAdornment position='end'>
                               <IconButton
-                                aria-label="toggle password visibility"
+                                aria-label='toggle password visibility'
                                 onClick={handleClickShowPassword}
                                 onMouseDown={handleMouseDownPassword}
-                                edge="end"
-                                color="secondary"
+                                edge='end'
+                                color='secondary'
                               >
                                 {values.showPassword ? <Eye /> : <EyeSlash />}
                               </IconButton>
                             </InputAdornment>
                           }
-                          autoComplete="outlined-adornment-password"
+                          autoComplete='outlined-adornment-password'
                         />
                         <Stack>
-                          <InputLabel shrink htmlFor="with-label-input">
+                          <InputLabel shrink htmlFor='with-label-input'>
                             With Label
                           </InputLabel>
-                          <FormControl variant="standard">
-                            <TextField id="with-label-input" placeholder="With Label" />
+                          <FormControl variant='standard'>
+                            <TextField id='with-label-input' placeholder='With Label' />
                           </FormControl>
                         </Stack>
-                        <TextField id="disabled-basic" placeholder="Disabled" disabled />
-                        <TextField id="filled-search" placeholder="Search" type="search" />
+                        <TextField id='disabled-basic' placeholder='Disabled' disabled />
+                        <TextField id='filled-search' placeholder='Search' type='search' />
                       </Stack>
                     </Grid>
                   </Grid>
                 </form>
               </MainCard>
-              <MainCard title="With Icon" codeString={iconTextfeildCodeString}>
-                <form id="with-icon">
+              <MainCard title='With Icon' codeString={iconTextfeildCodeString}>
+                <form id='with-icon'>
                   <Stack spacing={2}>
-                    <OutlinedInput id="start-adornment-email" placeholder="Email / UserId" startAdornment={<Sms />} />
+                    <OutlinedInput id='start-adornment-email' placeholder='Email / UserId' startAdornment={<Sms />} />
                     <OutlinedInput
-                      id="end-adornment-password"
-                      type="password"
-                      placeholder="Password"
+                      id='end-adornment-password'
+                      type='password'
+                      placeholder='Password'
                       endAdornment={
-                        <InputAdornment position="end">
-                          <IconButton aria-label="toggle password visibility" edge="end" color="secondary">
+                        <InputAdornment position='end'>
+                          <IconButton aria-label='toggle password visibility' edge='end' color='secondary'>
                             <EyeSlash />
                           </IconButton>
                         </InputAdornment>
                       }
-                      autoComplete="end-adornment-password"
+                      autoComplete='end-adornment-password'
                     />
                   </Stack>
                 </form>
               </MainCard>
-              <MainCard title="Sizes" codeString={sizeTextfeildCodeString}>
+              <MainCard title='Sizes' codeString={sizeTextfeildCodeString}>
                 <Stack spacing={2}>
-                  <TextField id="outlined-basic-small" placeholder="Small" size="small" />
-                  <TextField id="outlined-basic-default" placeholder="Medium" />
+                  <TextField id='outlined-basic-small' placeholder='Small' size='small' />
+                  <TextField id='outlined-basic-default' placeholder='Medium' />
                   <TextField
-                    id="outlined-basic-custom"
-                    placeholder="Custom"
+                    id='outlined-basic-custom'
+                    placeholder='Custom'
                     sx={{
                       '& .MuiInputLabel-root': { fontSize: '1rem' },
-                      '& .MuiOutlinedInput-root': { fontSize: '1rem' }
+                      '& .MuiOutlinedInput-root': { fontSize: '1rem' },
                     }}
                   />
                 </Stack>
@@ -283,52 +283,52 @@ export default function ComponentTextField() {
           </Grid>
           <Grid item xs={12} lg={6}>
             <Stack spacing={3}>
-              <MainCard title="Event" codeString={eventTextfeildCodeString}>
-                <TextField id="outlined-basic-auto" placeholder="Auto Focus" autoFocus />
+              <MainCard title='Event' codeString={eventTextfeildCodeString}>
+                <TextField id='outlined-basic-auto' placeholder='Auto Focus' autoFocus />
               </MainCard>
-              <MainCard title="Validation" codeString={validationTextfeildCodeString}>
+              <MainCard title='Validation' codeString={validationTextfeildCodeString}>
                 <Grid container spacing={2}>
                   <Grid item xs={12} md={6}>
-                    <TextField error id="outlined-error" placeholder="Error" defaultValue="Hello World" />
+                    <TextField error id='outlined-error' placeholder='Error' defaultValue='Hello World' />
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <TextField
                       error
-                      id="outlined-error-helper-text"
-                      placeholder="Error"
-                      defaultValue="Hello World"
-                      helperText="Incorrect entry."
+                      id='outlined-error-helper-text'
+                      placeholder='Error'
+                      defaultValue='Hello World'
+                      helperText='Incorrect entry.'
                     />
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Multiline" codeString={multilineTextfeildCodeString}>
+              <MainCard title='Multiline' codeString={multilineTextfeildCodeString}>
                 <TextField
-                  id="outlined-multiline-static"
+                  id='outlined-multiline-static'
                   fullWidth
-                  placeholder="Multiline"
+                  placeholder='Multiline'
                   multiline
                   rows={5}
                   defaultValue="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text"
                 />
               </MainCard>
-              <MainCard title="Input Adornments" codeString={adornmentTextfeildCodeString}>
-                <form id="input-adornments">
+              <MainCard title='Input Adornments' codeString={adornmentTextfeildCodeString}>
+                <form id='input-adornments'>
                   <Grid container spacing={2}>
                     <Grid item xs={12} md={6}>
                       <Stack spacing={2}>
                         <TextField
-                          placeholder="Website URL"
-                          id="url-start-adornment"
+                          placeholder='Website URL'
+                          id='url-start-adornment'
                           InputProps={{
-                            startAdornment: 'https://'
+                            startAdornment: 'https://',
                           }}
                         />
                         <TextField
-                          placeholder="Website URL"
-                          id="outlined-end-adornment"
+                          placeholder='Website URL'
+                          id='outlined-end-adornment'
                           InputProps={{
-                            endAdornment: '.com'
+                            endAdornment: '.com',
                           }}
                         />
                       </Stack>
@@ -336,23 +336,23 @@ export default function ComponentTextField() {
                     <Grid item xs={12} md={6}>
                       <Stack spacing={2}>
                         <OutlinedInput
-                          id="text-adornment-password"
-                          type="password"
-                          placeholder="Password"
+                          id='text-adornment-password'
+                          type='password'
+                          placeholder='Password'
                           endAdornment={
-                            <InputAdornment position="end">
-                              <IconButton aria-label="toggle password visibility" edge="end" color="secondary">
+                            <InputAdornment position='end'>
+                              <IconButton aria-label='toggle password visibility' edge='end' color='secondary'>
                                 <EyeSlash />
                               </IconButton>
                             </InputAdornment>
                           }
-                          autoComplete="text-adornment-password"
+                          autoComplete='text-adornment-password'
                         />
                         <TextField
-                          placeholder="0.00"
-                          id="outlined-start-adornment"
+                          placeholder='0.00'
+                          id='outlined-start-adornment'
                           InputProps={{
-                            startAdornment: '$'
+                            startAdornment: '$',
                           }}
                         />
                       </Stack>
@@ -360,8 +360,8 @@ export default function ComponentTextField() {
                   </Grid>
                 </form>
               </MainCard>
-              <MainCard title="Full Width" codeString={widthTextfeildCodeString}>
-                <TextField fullWidth id="outlined-basic-fullwidth" placeholder="Fullwidth" />
+              <MainCard title='Full Width' codeString={widthTextfeildCodeString}>
+                <TextField fullWidth id='outlined-basic-fullwidth' placeholder='Fullwidth' />
               </MainCard>
             </Stack>
           </Grid>

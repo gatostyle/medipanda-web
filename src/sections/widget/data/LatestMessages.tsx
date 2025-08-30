@@ -18,10 +18,10 @@ import { Facebook, Profile, ShoppingCart, TickCircle } from 'iconsax-react';
 export default function LatestMessages() {
   return (
     <MainCard
-      title="Latest Messages"
+      title='Latest Messages'
       content={false}
       secondary={
-        <Link component={RouterLink} to="#" color="primary">
+        <Link component={RouterLink} to='#' color='primary'>
           View all
         </Link>
       }
@@ -30,7 +30,7 @@ export default function LatestMessages() {
         <Grid
           container
           spacing={3}
-          alignItems="center"
+          alignItems='center'
           sx={{
             position: 'relative',
             '&>*': { position: 'relative', zIndex: '5' },
@@ -42,22 +42,22 @@ export default function LatestMessages() {
               width: 2,
               height: '100%',
               bgcolor: 'divider',
-              zIndex: '1'
-            }
+              zIndex: '1',
+            },
           }}
         >
           <Grid item xs={12}>
             <Grid container spacing={2}>
               <Grid item>
-                <Grid container spacing={2} alignItems="center">
+                <Grid container spacing={2} alignItems='center'>
                   <Grid item xs zeroMinWidth>
-                    <Typography variant="caption" color="secondary">
+                    <Typography variant='caption' color='secondary'>
                       2 hrs ago
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Avatar color="info">
-                      <Facebook variant="Bold" />
+                    <Avatar color='info'>
+                      <Facebook variant='Bold' />
                     </Avatar>
                   </Grid>
                 </Grid>
@@ -65,8 +65,8 @@ export default function LatestMessages() {
               <Grid item xs zeroMinWidth>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1">+ 1652 Followers</Typography>
-                    <Typography color="secondary" variant="caption">
+                    <Typography variant='subtitle1'>+ 1652 Followers</Typography>
+                    <Typography color='secondary' variant='caption'>
                       You’re getting more and more followers, keep it up!
                     </Typography>
                   </Grid>
@@ -77,15 +77,15 @@ export default function LatestMessages() {
           <Grid item xs={12}>
             <Grid container spacing={2}>
               <Grid item>
-                <Grid container spacing={2} alignItems="center">
+                <Grid container spacing={2} alignItems='center'>
                   <Grid item xs zeroMinWidth>
-                    <Typography variant="caption" color="secondary">
+                    <Typography variant='caption' color='secondary'>
                       4 hrs ago
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Avatar color="error">
-                      <ShoppingCart variant="Bold" />
+                    <Avatar color='error'>
+                      <ShoppingCart variant='Bold' />
                     </Avatar>
                   </Grid>
                 </Grid>
@@ -93,8 +93,8 @@ export default function LatestMessages() {
               <Grid item xs zeroMinWidth>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1">+ 5 New Products were added!</Typography>
-                    <Typography color="secondary" variant="caption">
+                    <Typography variant='subtitle1'>+ 5 New Products were added!</Typography>
+                    <Typography color='secondary' variant='caption'>
                       Congratulations!
                     </Typography>
                   </Grid>
@@ -105,15 +105,15 @@ export default function LatestMessages() {
           <Grid item xs={12}>
             <Grid container spacing={2}>
               <Grid item>
-                <Grid container spacing={2} alignItems="center">
+                <Grid container spacing={2} alignItems='center'>
                   <Grid item xs zeroMinWidth>
-                    <Typography variant="caption" color="secondary">
+                    <Typography variant='caption' color='secondary'>
                       1 day ago
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Avatar color="success">
-                      <TickCircle variant="Bold" />
+                    <Avatar color='success'>
+                      <TickCircle variant='Bold' />
                     </Avatar>
                   </Grid>
                 </Grid>
@@ -121,10 +121,10 @@ export default function LatestMessages() {
               <Grid item xs zeroMinWidth>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1">Database backup completed!</Typography>
-                    <Typography color="secondary" variant="caption">
+                    <Typography variant='subtitle1'>Database backup completed!</Typography>
+                    <Typography color='secondary' variant='caption'>
                       Download the{' '}
-                      <Link component={RouterLink} to="#" underline="hover">
+                      <Link component={RouterLink} to='#' underline='hover'>
                         latest backup
                       </Link>
                       .
@@ -137,15 +137,15 @@ export default function LatestMessages() {
           <Grid item xs={12}>
             <Grid container spacing={2}>
               <Grid item>
-                <Grid container spacing={2} alignItems="center">
+                <Grid container spacing={2} alignItems='center'>
                   <Grid item xs zeroMinWidth>
-                    <Typography variant="caption" color="secondary">
+                    <Typography variant='caption' color='secondary'>
                       2 day ago
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Avatar color="primary">
-                      <Profile variant="Bold" />
+                    <Avatar color='primary'>
+                      <Profile variant='Bold' />
                     </Avatar>
                   </Grid>
                 </Grid>
@@ -153,8 +153,8 @@ export default function LatestMessages() {
               <Grid item xs zeroMinWidth>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1">+2 Friend Requests</Typography>
-                    <Typography color="secondary" variant="caption">
+                    <Typography variant='subtitle1'>+2 Friend Requests</Typography>
+                    <Typography color='secondary' variant='caption'>
                       This is great, keep it up!
                     </Typography>
                   </Grid>

@@ -38,7 +38,7 @@ export default function MpAdminProductEdit() {
       isStopSelling: false,
       note: '',
       alternativeProducts: [] as AlternativeProductDto[],
-      detailContent: ''
+      detailContent: '',
     },
     validationSchema: Yup.object().shape({
       manufacturer: Yup.string().required('제약사를 입력해주세요.'),
@@ -49,7 +49,7 @@ export default function MpAdminProductEdit() {
       feeRate: Yup.number()
         .required('기본수수료율을 입력해주세요.')
         .min(0, '수수료율은 0 이상이어야 합니다.')
-        .max(100, '수수료율은 100 이하여야 합니다.')
+        .max(100, '수수료율은 100 이하여야 합니다.'),
     }),
     onSubmit: async (values, { setSubmitting }) => {
       try {
@@ -65,7 +65,7 @@ export default function MpAdminProductEdit() {
             isExposed: true,
             editorFileIds: null,
             exposureRange: 'ALL' as const,
-            noticeProperties: null
+            noticeProperties: null,
           };
           const productExtraInfoRequest = {
             manufacturer: values.manufacturer,
@@ -82,12 +82,12 @@ export default function MpAdminProductEdit() {
             isPromotion: values.isPromotion,
             isOutOfStock: values.isOutOfStock,
             isStopSelling: values.isStopSelling,
-            isAcquisition: values.isAcquisition
+            isAcquisition: values.isAcquisition,
           };
           await createProductExtraInfo({
             boardPostCreateRequest: boardPostCreateRequest,
             productExtraInfoCreateRequest: productExtraInfoRequest,
-            files: undefined
+            files: undefined,
           });
           enqueueSnackbar('제품이 성공적으로 등록되었습니다.', { variant: 'success' });
         } else {
@@ -99,7 +99,7 @@ export default function MpAdminProductEdit() {
             exposureRange: 'ALL' as const,
             keepFileIds: [], // Empty array for now
             editorFileIds: null,
-            noticeProperties: null
+            noticeProperties: null,
           };
           const productExtraInfoRequest = {
             manufacturer: values.manufacturer,
@@ -116,12 +116,12 @@ export default function MpAdminProductEdit() {
             isPromotion: values.isPromotion,
             isOutOfStock: values.isOutOfStock,
             isStopSelling: values.isStopSelling,
-            isAcquisition: values.isAcquisition
+            isAcquisition: values.isAcquisition,
           };
           await updateProductExtraInfo(parseInt(id!, 10), {
             boardPostUpdateRequest: boardPostUpdateRequest,
             productExtraInfoCreateRequest: productExtraInfoRequest,
-            newFiles: undefined
+            newFiles: undefined,
           });
           enqueueSnackbar('제품이 성공적으로 수정되었습니다.', { variant: 'success' });
         }
@@ -136,7 +136,7 @@ export default function MpAdminProductEdit() {
       } finally {
         setSubmitting(false);
       }
-    }
+    },
   });
 
   useEffect(() => {
@@ -164,7 +164,7 @@ export default function MpAdminProductEdit() {
         isStopSelling: response.isStopSelling ?? false,
         note: response.note ?? '',
         alternativeProducts: response.alternativeProducts ?? [],
-        detailContent: response.boardDetailsResponse.content ?? ''
+        detailContent: response.boardDetailsResponse.content ?? '',
       });
     } catch (error) {
       console.error('Failed to fetch product detail:', error);
@@ -184,7 +184,7 @@ export default function MpAdminProductEdit() {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+      <Box display='flex' justifyContent='center' alignItems='center' minHeight='400px'>
         <CircularProgress />
       </Box>
     );
@@ -192,7 +192,7 @@ export default function MpAdminProductEdit() {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
+      <Typography variant='h4' gutterBottom sx={{ mb: 3 }}>
         제품정보 {isNew ? '등록' : '수정'}
       </Typography>
 
@@ -200,22 +200,22 @@ export default function MpAdminProductEdit() {
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Card sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
+              <Typography variant='h6' gutterBottom sx={{ mb: 3 }}>
                 제품정보
               </Typography>
 
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={3} md={2}>
-                  <Typography variant="subtitle2" color="text.secondary">
+                  <Typography variant='subtitle2' color='text.secondary'>
                     제약사
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={9} md={10}>
                   <TextField
                     fullWidth
-                    size="small"
-                    name="manufacturer"
-                    placeholder="제약사를 입력하세요"
+                    size='small'
+                    name='manufacturer'
+                    placeholder='제약사를 입력하세요'
                     required
                     value={formik.values.manufacturer}
                     onChange={formik.handleChange}
@@ -226,16 +226,16 @@ export default function MpAdminProductEdit() {
                 </Grid>
 
                 <Grid item xs={12} sm={3} md={2}>
-                  <Typography variant="subtitle2" color="text.secondary">
+                  <Typography variant='subtitle2' color='text.secondary'>
                     제품명
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={9} md={10}>
                   <TextField
                     fullWidth
-                    size="small"
-                    name="productName"
-                    placeholder="제품명을 입력하세요"
+                    size='small'
+                    name='productName'
+                    placeholder='제품명을 입력하세요'
                     required
                     value={formik.values.productName}
                     onChange={formik.handleChange}
@@ -246,16 +246,16 @@ export default function MpAdminProductEdit() {
                 </Grid>
 
                 <Grid item xs={12} sm={3} md={2}>
-                  <Typography variant="subtitle2" color="text.secondary">
+                  <Typography variant='subtitle2' color='text.secondary'>
                     성분명
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={9} md={10}>
                   <TextField
                     fullWidth
-                    size="small"
-                    name="composition"
-                    placeholder="성분명을 입력하세요"
+                    size='small'
+                    name='composition'
+                    placeholder='성분명을 입력하세요'
                     required
                     value={formik.values.composition}
                     onChange={formik.handleChange}
@@ -266,16 +266,16 @@ export default function MpAdminProductEdit() {
                 </Grid>
 
                 <Grid item xs={12} sm={3} md={2}>
-                  <Typography variant="subtitle2" color="text.secondary">
+                  <Typography variant='subtitle2' color='text.secondary'>
                     제품코드
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={9} md={10}>
                   <TextField
                     fullWidth
-                    size="small"
-                    name="productCode"
-                    placeholder="제품코드를 입력하세요"
+                    size='small'
+                    name='productCode'
+                    placeholder='제품코드를 입력하세요'
                     required
                     value={formik.values.productCode}
                     onChange={formik.handleChange}
@@ -286,77 +286,77 @@ export default function MpAdminProductEdit() {
                 </Grid>
 
                 <Grid item xs={12} sm={3} md={2}>
-                  <Typography variant="subtitle2" color="text.secondary">
+                  <Typography variant='subtitle2' color='text.secondary'>
                     약가
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={9} md={10}>
                   <TextField
                     fullWidth
-                    size="small"
-                    name="price"
-                    placeholder="약가를 입력하세요"
+                    size='small'
+                    name='price'
+                    placeholder='약가를 입력하세요'
                     required
-                    type="number"
+                    type='number'
                     value={formik.values.price}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     error={!!(formik.touched.price && formik.errors.price)}
                     helperText={formik.touched.price && formik.errors.price}
                     InputProps={{
-                      endAdornment: <Typography variant="body2">원</Typography>
+                      endAdornment: <Typography variant='body2'>원</Typography>,
                     }}
                   />
                 </Grid>
 
                 <Grid item xs={12} sm={3} md={2}>
-                  <Typography variant="subtitle2" color="text.secondary">
+                  <Typography variant='subtitle2' color='text.secondary'>
                     기본수수료율
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={9} md={10}>
                   <TextField
                     fullWidth
-                    size="small"
-                    name="feeRate"
-                    placeholder="수수료율을 입력하세요"
+                    size='small'
+                    name='feeRate'
+                    placeholder='수수료율을 입력하세요'
                     required
-                    type="number"
+                    type='number'
                     value={formik.values.feeRate}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     error={!!(formik.touched.feeRate && formik.errors.feeRate)}
                     helperText={formik.touched.feeRate && formik.errors.feeRate}
                     InputProps={{
-                      endAdornment: <Typography variant="body2">%</Typography>
+                      endAdornment: <Typography variant='body2'>%</Typography>,
                     }}
                   />
                 </Grid>
 
                 <Grid item xs={12} sm={3} md={2}>
-                  <Typography variant="subtitle2" color="text.secondary">
+                  <Typography variant='subtitle2' color='text.secondary'>
                     변경요율/변경월
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={9} md={10}>
-                  <Box display="flex" gap={2} flexDirection={{ xs: 'column', sm: 'row' }}>
+                  <Box display='flex' gap={2} flexDirection={{ xs: 'column', sm: 'row' }}>
                     <TextField
-                      size="small"
-                      name="changedFeeRate"
-                      placeholder="변경요율"
-                      type="number"
+                      size='small'
+                      name='changedFeeRate'
+                      placeholder='변경요율'
+                      type='number'
                       value={formik.values.changedFeeRate ?? ''}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       InputProps={{
-                        endAdornment: <Typography variant="body2">%</Typography>
+                        endAdornment: <Typography variant='body2'>%</Typography>,
                       }}
                       sx={{ width: { xs: '100%', sm: '200px' } }}
                     />
                     <TextField
-                      size="small"
-                      name="changedMonth"
-                      placeholder="변경월 (예: 4월)"
+                      size='small'
+                      name='changedMonth'
+                      placeholder='변경월 (예: 4월)'
                       value={formik.values.changedMonth}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
@@ -366,33 +366,33 @@ export default function MpAdminProductEdit() {
                 </Grid>
 
                 <Grid item xs={12} sm={3} md={2}>
-                  <Typography variant="subtitle2" color="text.secondary">
+                  <Typography variant='subtitle2' color='text.secondary'>
                     상태
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={9} md={10}>
                   <Box>
                     <FormControlLabel
-                      control={<Checkbox name="isAcquisition" checked={formik.values.isAcquisition} onChange={formik.handleChange} />}
-                      label="취급품목"
+                      control={<Checkbox name='isAcquisition' checked={formik.values.isAcquisition} onChange={formik.handleChange} />}
+                      label='취급품목'
                     />
                     <FormControlLabel
-                      control={<Checkbox name="isPromotion" checked={formik.values.isPromotion} onChange={formik.handleChange} />}
-                      label="프로모션"
+                      control={<Checkbox name='isPromotion' checked={formik.values.isPromotion} onChange={formik.handleChange} />}
+                      label='프로모션'
                     />
                     <FormControlLabel
-                      control={<Checkbox name="isOutOfStock" checked={formik.values.isOutOfStock} onChange={formik.handleChange} />}
-                      label="품절"
+                      control={<Checkbox name='isOutOfStock' checked={formik.values.isOutOfStock} onChange={formik.handleChange} />}
+                      label='품절'
                     />
                     <FormControlLabel
-                      control={<Checkbox name="isStopSelling" checked={formik.values.isStopSelling} onChange={formik.handleChange} />}
-                      label="판매중단"
+                      control={<Checkbox name='isStopSelling' checked={formik.values.isStopSelling} onChange={formik.handleChange} />}
+                      label='판매중단'
                     />
                   </Box>
                 </Grid>
 
                 <Grid item xs={12} sm={3} md={2}>
-                  <Typography variant="subtitle2" color="text.secondary">
+                  <Typography variant='subtitle2' color='text.secondary'>
                     비고
                   </Typography>
                 </Grid>
@@ -401,9 +401,9 @@ export default function MpAdminProductEdit() {
                     fullWidth
                     multiline
                     rows={4}
-                    size="small"
-                    name="note"
-                    placeholder="비고를 입력하세요"
+                    size='small'
+                    name='note'
+                    placeholder='비고를 입력하세요'
                     value={formik.values.note}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -411,18 +411,18 @@ export default function MpAdminProductEdit() {
                 </Grid>
 
                 <Grid item xs={12} sm={3} md={2}>
-                  <Typography variant="subtitle2" color="text.secondary">
+                  <Typography variant='subtitle2' color='text.secondary'>
                     대체가능의약품
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={9} md={10}>
                   <TextField
                     fullWidth
-                    size="small"
-                    name="alternativeProducts"
-                    placeholder="대체가능의약품을 입력하세요"
+                    size='small'
+                    name='alternativeProducts'
+                    placeholder='대체가능의약품을 입력하세요'
                     value={formik.values.alternativeProducts.join(', ')}
-                    onChange={(e) => formik.setFieldValue('alternativeProducts', e.target.value.split(', '))}
+                    onChange={e => formik.setFieldValue('alternativeProducts', e.target.value.split(', '))}
                     onBlur={formik.handleBlur}
                   />
                 </Grid>
@@ -432,28 +432,28 @@ export default function MpAdminProductEdit() {
 
           <Grid item xs={12}>
             <Card sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
+              <Typography variant='h6' gutterBottom sx={{ mb: 3 }}>
                 디테일 정보
               </Typography>
 
               <TiptapEditor
                 content={formik.values.detailContent}
-                onChange={(content) => formik.setFieldValue('detailContent', content)}
-                placeholder="제품 상세 정보를 입력하세요"
+                onChange={content => formik.setFieldValue('detailContent', content)}
+                placeholder='제품 상세 정보를 입력하세요'
               />
             </Card>
           </Grid>
 
           <Grid item xs={12}>
-            <Stack direction="row" spacing={2} justifyContent="center">
-              <Button variant="outlined" size="large" onClick={handleCancel} sx={{ minWidth: 120 }} disabled={formik.isSubmitting}>
+            <Stack direction='row' spacing={2} justifyContent='center'>
+              <Button variant='outlined' size='large' onClick={handleCancel} sx={{ minWidth: 120 }} disabled={formik.isSubmitting}>
                 취소
               </Button>
               <Button
-                variant="contained"
-                color="success"
-                size="large"
-                type="submit"
+                variant='contained'
+                color='success'
+                size='large'
+                type='submit'
                 sx={{ minWidth: 120 }}
                 disabled={formik.isSubmitting}
                 startIcon={formik.isSubmitting ? <CircularProgress size={20} /> : null}

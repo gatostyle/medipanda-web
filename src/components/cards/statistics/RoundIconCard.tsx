@@ -27,20 +27,20 @@ export default function RoundIconCard({ primary, secondary, content, iconPrimary
 
   return (
     <MainCard>
-      <Grid container alignItems="center" spacing={0} justifyContent="space-between">
+      <Grid container alignItems='center' spacing={0} justifyContent='space-between'>
         <Grid item>
           <Stack spacing={1}>
-            <Typography variant="h5" color="inherit">
+            <Typography variant='h5' color='inherit'>
               {primary}
             </Typography>
-            <Typography variant="h4">{secondary}</Typography>
-            <Typography variant="subtitle2" color="inherit">
+            <Typography variant='h4'>{secondary}</Typography>
+            <Typography variant='subtitle2' color='inherit'>
               {content}
             </Typography>
           </Stack>
         </Grid>
         <Grid item>
-          <Avatar variant="rounded" sx={{ bgcolor, color }} size="lg">
+          <Avatar variant='rounded' sx={{ bgcolor, color }} size='lg'>
             {primaryIcon}
           </Avatar>
         </Grid>

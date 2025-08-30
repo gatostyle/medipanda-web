@@ -28,20 +28,20 @@ interface ExpandMoreProps extends IconButtonProps {
   drawerOpen: boolean;
 }
 
-const ExpandMore = styled(IconButton, { shouldForwardProp: (prop) => prop !== 'theme' && prop !== 'expand' && prop !== 'drawerOpen' })(
+const ExpandMore = styled(IconButton, { shouldForwardProp: prop => prop !== 'theme' && prop !== 'expand' && prop !== 'drawerOpen' })(
   ({ theme, expand, drawerOpen }: ExpandMoreProps) => ({
     transform: !expand ? 'rotate(0deg)' : 'rotate(-90deg)',
     marginLeft: 'auto',
     color: theme.palette.secondary.dark,
     transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest
+      duration: theme.transitions.duration.shortest,
     }),
     ...(!drawerOpen && {
       opacity: 0,
       width: 50,
-      height: 50
-    })
-  })
+      height: 50,
+    }),
+  }),
 );
 
 // ==============================|| LIST - USER ||============================== //
@@ -74,29 +74,29 @@ export default function UserList() {
               theme={theme}
               expand={open}
               drawerOpen={drawerOpen}
-              id="basic-button"
+              id='basic-button'
               aria-controls={open ? 'basic-menu' : undefined}
-              aria-haspopup="true"
+              aria-haspopup='true'
               aria-expanded={open ? 'true' : undefined}
               onClick={handleClick}
-              aria-label="show more"
+              aria-label='show more'
             >
               <ArrowRight2 style={{ fontSize: '0.625rem' }} />
             </ExpandMore>
           }
           sx={{
             ...(!drawerOpen && { display: 'flex', justifyContent: 'flex-end' }),
-            '& .MuiListItemSecondaryAction-root': { right: !drawerOpen ? 16 : -16 }
+            '& .MuiListItemSecondaryAction-root': { right: !drawerOpen ? 16 : -16 },
           }}
         >
           <ListItemAvatar>
-            <Avatar alt="Avatar" src={avatar1} sx={{ ...(drawerOpen && { width: 46, height: 46 }) }} />
+            <Avatar alt='Avatar' src={avatar1} sx={{ ...(drawerOpen && { width: 46, height: 46 }) }} />
           </ListItemAvatar>
-          <ListItemText primary={session?.name} sx={{ ...(!drawerOpen && { display: 'none' }) }} secondary="UI/UX Designer" />
+          <ListItemText primary={session?.name} sx={{ ...(!drawerOpen && { display: 'none' }) }} secondary='UI/UX Designer' />
         </ListItem>
       </List>
       <Menu
-        id="basic-menu"
+        id='basic-menu'
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
@@ -104,13 +104,13 @@ export default function UserList() {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
-        <MenuItem component={Link} to="/logout">
+        <MenuItem component={Link} to='/logout'>
           Logout
         </MenuItem>
-        <MenuItem component={Link} to="/apps/profiles/user/personal" onClick={handleClose}>
+        <MenuItem component={Link} to='/apps/profiles/user/personal' onClick={handleClose}>
           Profile
         </MenuItem>
-        <MenuItem component={Link} to="/apps/profiles/account/basic" onClick={handleClose}>
+        <MenuItem component={Link} to='/apps/profiles/account/basic' onClick={handleClose}>
           My account
         </MenuItem>
       </Menu>

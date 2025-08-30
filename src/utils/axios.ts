@@ -1,14 +1,14 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
 const axiosServices = axios.create({
-  withCredentials: true // Ensure cookies are sent with requests
+  withCredentials: true, // Ensure cookies are sent with requests
 });
 
 // ==============================|| AXIOS - FOR MOCK SERVICES ||============================== //
 
 axiosServices.interceptors.response.use(
-  (response) => response,
-  (error) => {
+  response => response,
+  error => {
     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
       const currentPath = window.location.pathname;
       const isAuthPage = currentPath.includes('/login') || currentPath.includes('/logout');
@@ -25,7 +25,7 @@ axiosServices.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default axiosServices;

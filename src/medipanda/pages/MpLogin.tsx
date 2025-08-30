@@ -24,7 +24,7 @@ export default function MpLogin() {
       enqueueSnackbar('인증이 만료되었습니다. 다시 로그인해주세요.', {
         variant: 'warning',
         autoHideDuration: 5000,
-        preventDuplicate: true
+        preventDuplicate: true,
       });
     }
   }, [location.search, enqueueSnackbar]);
@@ -33,11 +33,11 @@ export default function MpLogin() {
     initialValues: {
       userId: '',
       password: '',
-      submit: null
+      submit: null,
     },
     validationSchema: Yup.object().shape({
       userId: Yup.string().required('아이디를 입력해 주세요.'),
-      password: Yup.string().required('비밀번호를 입력해 주세요.')
+      password: Yup.string().required('비밀번호를 입력해 주세요.'),
     }),
     onSubmit: async (values, { setErrors }) => {
       try {
@@ -50,7 +50,7 @@ export default function MpLogin() {
       } catch (e: any) {
         setErrors({ submit: `오류: ${JSON.stringify(e)}` });
       }
-    }
+    },
   });
 
   const handleClickShowPassword = () => {
@@ -63,19 +63,19 @@ export default function MpLogin() {
 
   return (
     <AuthWrapper>
-      <Grid container spacing={3} component="form" noValidate onSubmit={handleSubmit}>
+      <Grid container spacing={3} component='form' noValidate onSubmit={handleSubmit}>
         <Grid item xs={12} sx={{ textAlign: 'center' }}>
           <h3>로그인</h3>
         </Grid>
         <Grid item xs={12}>
           <Stack spacing={1}>
             <OutlinedInput
-              type="userId"
+              type='userId'
               value={values.userId}
-              name="userId"
+              name='userId'
               onBlur={handleBlur}
               onChange={handleChange}
-              placeholder="이메일"
+              placeholder='이메일'
               fullWidth
               error={Boolean(touched.userId && errors.userId)}
             />
@@ -89,23 +89,23 @@ export default function MpLogin() {
               error={Boolean(touched.password && errors.password)}
               type={showPassword ? 'text' : 'password'}
               value={values.password}
-              name="password"
+              name='password'
               onBlur={handleBlur}
               onChange={handleChange}
               endAdornment={
-                <InputAdornment position="end">
+                <InputAdornment position='end'>
                   <IconButton
-                    aria-label="toggle password visibility"
+                    aria-label='toggle password visibility'
                     onClick={handleClickShowPassword}
                     onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                    color="secondary"
+                    edge='end'
+                    color='secondary'
                   >
                     {showPassword ? <Eye /> : <EyeSlash />}
                   </IconButton>
                 </InputAdornment>
               }
-              placeholder="비밀번호"
+              placeholder='비밀번호'
             />
           </Stack>
           {touched.password && errors.password && <FormHelperText error>{errors.password}</FormHelperText>}
@@ -116,7 +116,7 @@ export default function MpLogin() {
           </Grid>
         )}
         <Grid item xs={12} sx={{ pointerEvents: isSubmitting ? 'none' : undefined }}>
-          <Button disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
+          <Button disabled={isSubmitting} fullWidth size='large' type='submit' variant='contained' color='primary'>
             로그인
           </Button>
         </Grid>

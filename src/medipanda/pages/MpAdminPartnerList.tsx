@@ -21,7 +21,7 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
@@ -68,7 +68,7 @@ export default function MpAdminPartnerList() {
       searchKeyword: '',
       contractType: '' as 'CONTRACT' | 'NON_CONTRACT' | '',
       pageIndex: 0,
-      pageSize: 20
+      pageSize: 20,
     },
     onSubmit: async () => {
       if (formik.values.pageIndex !== 0) {
@@ -76,7 +76,7 @@ export default function MpAdminPartnerList() {
       } else {
         await fetchData();
       }
-    }
+    },
   });
 
   const columns: ColumnDef<Sequenced<PartnerResponse>>[] = [
@@ -85,9 +85,9 @@ export default function MpAdminPartnerList() {
       header: () => (
         <Checkbox
           checked={selectedItems.length === data.length && data.length > 0}
-          onChange={(e) => {
+          onChange={e => {
             if (e.target.checked) {
-              setSelectedItems(data.map((item) => item.id));
+              setSelectedItems(data.map(item => item.id));
             } else {
               setSelectedItems([]);
             }
@@ -97,46 +97,46 @@ export default function MpAdminPartnerList() {
       cell: ({ row }) => (
         <Checkbox
           checked={selectedItems.includes(row.original.id)}
-          onChange={(e) => {
+          onChange={e => {
             if (e.target.checked) {
-              setSelectedItems((prev) => [...prev, row.original.id]);
+              setSelectedItems(prev => [...prev, row.original.id]);
             } else {
-              setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
+              setSelectedItems(prev => prev.filter(id => id !== row.original.id));
             }
           }}
         />
       ),
-      size: 50
+      size: 50,
     },
     {
       header: 'No',
       accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
-      size: 60
+      size: 60,
     },
     {
       header: '제약사명',
       accessorKey: 'drugCompany',
       cell: ({ row }) => row.original.drugCompanyName,
-      size: 150
+      size: 150,
     },
     {
       header: '회사명',
       accessorKey: 'companyName',
       cell: ({ row }) => row.original.companyName,
-      size: 120
+      size: 120,
     },
     {
       header: '계약유형',
       accessorKey: 'contractType',
       cell: ({ row }) => (row.original.contractType === 'CONTRACT' ? '계약' : '미계약'),
-      size: 80
+      size: 80,
     },
     {
       header: '거래처코드',
       accessorKey: 'institutionCode',
       cell: ({ row }) => row.original.institutionCode,
-      size: 100
+      size: 100,
     },
     {
       header: '거래처명',
@@ -146,26 +146,26 @@ export default function MpAdminPartnerList() {
           {row.original.institutionName}
         </Link>
       ),
-      size: 150
+      size: 150,
     },
     {
       header: '사업자등록번호',
       accessorKey: 'businessNumber',
       cell: ({ row }) => row.original.businessNumber,
-      size: 130
+      size: 130,
     },
     {
       header: '진료과',
       accessorKey: 'medicalDepartment',
       cell: ({ row }) => row.original.medicalDepartment ?? '-',
-      size: 100
+      size: 100,
     },
     {
       header: '문전약국',
       accessorKey: 'hasPharmacy',
       cell: ({ row }) => (row.original.hasPharmacy ? 'Y' : 'N'),
-      size: 80
-    }
+      size: 80,
+    },
   ];
 
   const table = useReactTable({
@@ -176,11 +176,11 @@ export default function MpAdminPartnerList() {
     state: {
       pagination: {
         pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize
-      }
+        pageSize: formik.values.pageSize,
+      },
     },
     pageCount: totalPages,
-    manualPagination: true
+    manualPagination: true,
   });
 
   const fetchData = async () => {
@@ -191,7 +191,7 @@ export default function MpAdminPartnerList() {
         page: formik.values.pageIndex,
         size: formik.values.pageSize,
         contractType: formik.values.contractType !== '' ? formik.values.contractType : undefined,
-        companyName: formik.values.searchType === 'company' ? formik.values.searchKeyword : undefined
+        companyName: formik.values.searchType === 'company' ? formik.values.searchKeyword : undefined,
         // partnerName: formik.values.searchType === 'partner' ? formik.values.searchKeyword : undefined,
         // drugCompany: formik.values.searchType === 'pharmaceutical' ? formik.values.searchKeyword : undefined,
         // memberName: formik.values.searchType === 'member' ? formik.values.searchKeyword : undefined
@@ -232,7 +232,7 @@ export default function MpAdminPartnerList() {
       message,
       onConfirm: async () => {
         try {
-          await Promise.all(selectedItems.map((id) => deletePartner(id)));
+          await Promise.all(selectedItems.map(id => deletePartner(id)));
           infoDialog.showInfo('삭제가 완료되었습니다.');
           setSelectedItems([]);
           fetchData();
@@ -244,7 +244,7 @@ export default function MpAdminPartnerList() {
             errorDialog.showError('거래선 삭제 중 오류가 발생했습니다.');
           }
         }
-      }
+      },
     });
   };
 
@@ -273,7 +273,7 @@ export default function MpAdminPartnerList() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant='h4' gutterBottom>
           거래선관리
         </Typography>
       </Grid>
@@ -284,18 +284,18 @@ export default function MpAdminPartnerList() {
             <form onSubmit={formik.handleSubmit}>
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size="small">
+                  <FormControl fullWidth size='small'>
                     <InputLabel>계약유형</InputLabel>
-                    <Select name="contractType" value={formik.values.contractType} onChange={formik.handleChange}>
+                    <Select name='contractType' value={formik.values.contractType} onChange={formik.handleChange}>
                       <MenuItem value={'CONTRACT'}>법인</MenuItem>
                       <MenuItem value={'NON_CONTRACT'}>개인</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size="small">
+                  <FormControl fullWidth size='small'>
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
+                    <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'company'}>회사명</MenuItem>
                       <MenuItem value={'partner'}>거래처명</MenuItem>
                       <MenuItem value={'pharmaceutical'}>제약사명</MenuItem>
@@ -305,19 +305,19 @@ export default function MpAdminPartnerList() {
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
-                    name="searchKeyword"
-                    size="small"
-                    placeholder="검색어를 입력하세요"
+                    name='searchKeyword'
+                    size='small'
+                    placeholder='검색어를 입력하세요'
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
                   />
                 </SearchFilterItem>
                 <SearchFilterActions>
-                  <Button variant="contained" size="small" type="submit">
+                  <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant="outlined" size="small" onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={handleReset}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -330,18 +330,18 @@ export default function MpAdminPartnerList() {
       <Grid item xs={12}>
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Stack direction="row" spacing={2}>
-                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+            <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+              <Stack direction='row' spacing={2}>
+                <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
-              <Stack direction="row" spacing={1}>
-                <Button variant="contained" color="primary" size="small" onClick={() => setUploadDialogOpen(true)}>
+              <Stack direction='row' spacing={1}>
+                <Button variant='contained' color='primary' size='small' onClick={() => setUploadDialogOpen(true)}>
                   파일 업로드
                 </Button>
-                <Button variant="contained" color="error" size="small" disabled={selectedItems.length === 0} onClick={handleDelete}>
+                <Button variant='contained' color='error' size='small' disabled={selectedItems.length === 0} onClick={handleDelete}>
                   삭제
                 </Button>
-                <Button variant="contained" color="success" size="small" component={Link} to="/admin/partners/new">
+                <Button variant='contained' color='success' size='small' component={Link} to='/admin/partners/new'>
                   등록
                 </Button>
               </Stack>
@@ -349,11 +349,11 @@ export default function MpAdminPartnerList() {
 
             <ScrollX>
               <TableContainer>
-                <Table size="small">
+                <Table size='small'>
                   <TableHead>
-                    {table.getHeaderGroups().map((headerGroup) => (
+                    {table.getHeaderGroups().map(headerGroup => (
                       <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => (
+                        {headerGroup.headers.map(header => (
                           <TableCell key={header.id} style={{ width: header.getSize() }}>
                             {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                           </TableCell>
@@ -364,24 +364,24 @@ export default function MpAdminPartnerList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : (
-                      table.getRowModel().rows.map((row) => (
+                      table.getRowModel().rows.map(row => (
                         <TableRow key={row.id}>
-                          {row.getVisibleCells().map((cell) => (
+                          {row.getVisibleCells().map(cell => (
                             <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                           ))}
                         </TableRow>
@@ -392,13 +392,13 @@ export default function MpAdminPartnerList() {
               </TableContainer>
             </ScrollX>
 
-            <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
+            <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
                 page={formik.values.pageIndex + 1}
                 onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
-                color="primary"
-                variant="outlined"
+                color='primary'
+                variant='outlined'
                 showFirstButton
                 showLastButton
               />
@@ -407,16 +407,16 @@ export default function MpAdminPartnerList() {
         </MainCard>
       </Grid>
 
-      <Dialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)} maxWidth="sm" fullWidth>
+      <Dialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)} maxWidth='sm' fullWidth>
         <DialogTitle sx={{ fontSize: '1.25rem', fontWeight: 600 }}>거래선 업로드</DialogTitle>
         <DialogContent sx={{ pt: 3, pb: 3 }}>
           <Box sx={{ textAlign: 'right', mb: 2 }}>
             <Button
               href={import.meta.env.VITE_APP_URL_FILE_BUSINESS_PARTNER}
-              target="_blank"
-              variant="contained"
-              color="success"
-              size="small"
+              target='_blank'
+              variant='contained'
+              color='success'
+              size='small'
               startIcon={<AttachFileIcon />}
             >
               양식 다운로드
@@ -432,17 +432,17 @@ export default function MpAdminPartnerList() {
               cursor: 'pointer',
               bgcolor: isDragActive ? 'action.hover' : 'transparent',
               '&:hover': {
-                borderColor: 'primary.main'
-              }
+                borderColor: 'primary.main',
+              },
             }}
           >
             <input {...getInputProps()} />
             <UploadFile sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
-            <Typography variant="h6" color="text.secondary">
+            <Typography variant='h6' color='text.secondary'>
               여기에 파일을 드래그하거나 클릭하여 업로드하세요.
             </Typography>
             {uploadFile && (
-              <Typography variant="body2" sx={{ mt: 1 }}>
+              <Typography variant='body2' sx={{ mt: 1 }}>
                 선택된 파일: {uploadFile.name}
               </Typography>
             )}
@@ -450,7 +450,7 @@ export default function MpAdminPartnerList() {
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'center', pb: 3 }}>
           <Button
-            variant="outlined"
+            variant='outlined'
             onClick={() => {
               setUploadDialogOpen(false);
               setUploadFile(null);
@@ -459,7 +459,7 @@ export default function MpAdminPartnerList() {
           >
             취소
           </Button>
-          <Button variant="contained" color="success" onClick={handleFileUpload} disabled={!uploadFile} sx={{ minWidth: 100 }}>
+          <Button variant='contained' color='success' onClick={handleFileUpload} disabled={!uploadFile} sx={{ minWidth: 100 }}>
             업데이트
           </Button>
         </DialogActions>

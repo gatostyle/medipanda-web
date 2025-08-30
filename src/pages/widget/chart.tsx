@@ -63,11 +63,11 @@ export default function WidgetChart() {
       {/* row 1 */}
       <Grid item xs={12} sm={6} lg={3}>
         <EcommerceDataCard
-          title="All Earnings"
-          count="$3200"
+          title='All Earnings'
+          count='$3200'
           iconPrimary={<Wallet3 />}
           percentage={
-            <Typography color="primary" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <Typography color='primary' sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <ArrowUp size={16} style={{ transform: 'rotate(45deg)' }} /> 30.6%
             </Typography>
           }
@@ -77,12 +77,12 @@ export default function WidgetChart() {
       </Grid>
       <Grid item xs={12} sm={6} lg={3}>
         <EcommerceDataCard
-          title="Page Views"
-          count="290+"
-          color="warning"
+          title='Page Views'
+          count='290+'
+          color='warning'
           iconPrimary={<Book color={theme.palette.warning.main} />}
           percentage={
-            <Typography color="warning.main" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <Typography color='warning.main' sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <ArrowDown size={16} style={{ transform: 'rotate(-45deg)' }} /> 30.6%
             </Typography>
           }
@@ -92,12 +92,12 @@ export default function WidgetChart() {
       </Grid>
       <Grid item xs={12} sm={6} lg={3}>
         <EcommerceDataCard
-          title="Total task"
-          count="1468"
-          color="success"
+          title='Total task'
+          count='1468'
+          color='success'
           iconPrimary={<Calendar color={theme.palette.success.main} />}
           percentage={
-            <Typography color="success.main" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <Typography color='success.main' sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <ArrowUp size={16} style={{ transform: 'rotate(45deg)' }} /> 30.6%
             </Typography>
           }
@@ -107,12 +107,12 @@ export default function WidgetChart() {
       </Grid>
       <Grid item xs={12} sm={6} lg={3}>
         <EcommerceDataCard
-          title="Download"
-          count="$300"
-          color="error"
+          title='Download'
+          count='$300'
+          color='error'
           iconPrimary={<CloudChange color={theme.palette.error.dark} />}
           percentage={
-            <Typography color="error.dark" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <Typography color='error.dark' sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <ArrowDown size={16} style={{ transform: 'rotate(45deg)' }} /> 30.6%
             </Typography>
           }
@@ -184,36 +184,36 @@ export default function WidgetChart() {
           <Grid container>
             <Grid item xs={12} sm={6}>
               <Stack alignItems={{ xs: 'center', sm: 'flex-start' }}>
-                <Typography variant="h5">Income Overview</Typography>
-                <Stack direction="row" alignItems="center" sx={{ mt: 2 }}>
-                  <ArrowDown2 variant="Bold" style={{ color: theme.palette.error.main, paddingRight: '4px' }} />
+                <Typography variant='h5'>Income Overview</Typography>
+                <Stack direction='row' alignItems='center' sx={{ mt: 2 }}>
+                  <ArrowDown2 variant='Bold' style={{ color: theme.palette.error.main, paddingRight: '4px' }} />
                   <Typography color={theme.palette.error.main}>$1,12,900 (45.67%)</Typography>
                 </Stack>
-                <Typography color="text.secondary" sx={{ display: 'block' }}>
+                <Typography color='text.secondary' sx={{ display: 'block' }}>
                   Compare to : 01 Dec 2021-08 Jan 2022
                 </Typography>
               </Stack>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Stack direction="row" spacing={1} alignItems="center" justifyContent={{ xs: 'center', sm: 'flex-end' }} sx={{ mr: 2 }}>
+              <Stack direction='row' spacing={1} alignItems='center' justifyContent={{ xs: 'center', sm: 'flex-end' }} sx={{ mr: 2 }}>
                 <ToggleButtonGroup exclusive onChange={handleChange} value={slot}>
-                  <ToggleButton disabled={slot === 'week'} value="week" sx={{ px: 2, py: 0.5 }}>
+                  <ToggleButton disabled={slot === 'week'} value='week' sx={{ px: 2, py: 0.5 }}>
                     Week
                   </ToggleButton>
-                  <ToggleButton disabled={slot === 'month'} value="month" sx={{ px: 2, py: 0.5 }}>
+                  <ToggleButton disabled={slot === 'month'} value='month' sx={{ px: 2, py: 0.5 }}>
                     Month
                   </ToggleButton>
                 </ToggleButtonGroup>
-                <Select value={quantity} onChange={handleQuantity} size="small">
-                  <MenuItem value="By volume">By Volume</MenuItem>
-                  <MenuItem value="By margin">By Margin</MenuItem>
-                  <MenuItem value="By sales">By Sales</MenuItem>
+                <Select value={quantity} onChange={handleQuantity} size='small'>
+                  <MenuItem value='By volume'>By Volume</MenuItem>
+                  <MenuItem value='By margin'>By Margin</MenuItem>
+                  <MenuItem value='By sales'>By Sales</MenuItem>
                 </Select>
                 <IconButton
                   sx={{
                     border: '1px solid',
                     borderColor: theme.palette.secondary[400],
-                    '&:hover': { backgroundColor: 'transparent' }
+                    '&:hover': { backgroundColor: 'transparent' },
                   }}
                 >
                   <DocumentDownload style={{ color: theme.palette.secondary.darker }} />

@@ -49,18 +49,18 @@ export default function LocalizedPicker() {
 </LocalizationProvider>`;
 
   return (
-    <MainCard title="Localization Picker" codeString={localizeDatepickerCodeString}>
+    <MainCard title='Localization Picker' codeString={localizeDatepickerCodeString}>
       <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={locales[locale]}>
         <Stack spacing={3} sx={{ width: 300 }}>
           <ToggleButtonGroup value={locale} exclusive fullWidth>
-            {Object.keys(locales).map((localeItem) => (
+            {Object.keys(locales).map(localeItem => (
               <ToggleButton key={localeItem} value={localeItem} onClick={() => selectLocale(localeItem)}>
                 {localeItem}
               </ToggleButton>
             ))}
           </ToggleButtonGroup>
-          <DateField label="Date" defaultValue={new Date('2022-04-17')} />
-          <TimeField label="Time" defaultValue={new Date('2022-04-17T18:30')} />
+          <DateField label='Date' defaultValue={new Date('2022-04-17')} />
+          <TimeField label='Time' defaultValue={new Date('2022-04-17T18:30')} />
         </Stack>
       </LocalizationProvider>
     </MainCard>

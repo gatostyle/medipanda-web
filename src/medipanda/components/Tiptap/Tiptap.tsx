@@ -12,7 +12,7 @@ import {
   KeyboardReturn,
   Redo,
   Title,
-  Undo
+  Undo,
 } from '@mui/icons-material';
 import './Tiptap.scss';
 import { IconButton, Stack, type StackProps } from '@mui/material';
@@ -28,7 +28,7 @@ export function TiptapMenuBar({ editor }: { editor: Editor }) {
 
   const editorState = useEditorState({
     editor,
-    selector: (ctx) => {
+    selector: ctx => {
       return {
         isBold: ctx.editor.isActive('bold') ?? false,
         canBold: (ctx.editor.can().chain() as any).toggleBold ?? false,
@@ -52,9 +52,9 @@ export function TiptapMenuBar({ editor }: { editor: Editor }) {
         canHardBreak: (ctx.editor.can().chain() as any).setHardBreak ?? false,
         canUndo: (ctx.editor.can().chain() as any).undo ?? false,
         canRedo: (ctx.editor.can().chain() as any).redo ?? false,
-        canInsertImage: (ctx.editor.can().chain() as any).setImage ?? false
+        canInsertImage: (ctx.editor.can().chain() as any).setImage ?? false,
       };
-    }
+    },
   });
 
   const handleImageInsert = () => {
@@ -79,8 +79,8 @@ export function TiptapMenuBar({ editor }: { editor: Editor }) {
         .insertContentAt(editor.state.selection.anchor, {
           type: 'image',
           attrs: {
-            src: fileSrc
-          }
+            src: fileSrc,
+          },
         })
         .focus()
         .run();
@@ -92,11 +92,11 @@ export function TiptapMenuBar({ editor }: { editor: Editor }) {
 
   return (
     <Stack gap={1}>
-      <Stack direction="row" gap={0.5}>
+      <Stack direction='row' gap={0.5}>
         {editorState.canBold && (
           <IconButton
             onClick={() => (editor.chain().focus() as any).toggleBold().run()}
-            size="small"
+            size='small'
             color={editorState.isBold ? 'primary' : undefined}
           >
             <FormatBold />
@@ -105,7 +105,7 @@ export function TiptapMenuBar({ editor }: { editor: Editor }) {
         {editorState.canItalic && (
           <IconButton
             onClick={() => (editor.chain().focus() as any).toggleItalic().run()}
-            size="small"
+            size='small'
             color={editorState.isItalic ? 'primary' : undefined}
           >
             <FormatItalic />
@@ -114,7 +114,7 @@ export function TiptapMenuBar({ editor }: { editor: Editor }) {
         {editorState.canStrike && (
           <IconButton
             onClick={() => (editor.chain().focus() as any).toggleStrike().run()}
-            size="small"
+            size='small'
             color={editorState.isStrike ? 'primary' : undefined}
           >
             <FormatStrikethrough />
@@ -123,7 +123,7 @@ export function TiptapMenuBar({ editor }: { editor: Editor }) {
         {editorState.canCode && (
           <IconButton
             onClick={() => (editor.chain().focus() as any).toggleCode().run()}
-            size="small"
+            size='small'
             color={editorState.isCode ? 'primary' : undefined}
           >
             <Code />
@@ -132,7 +132,7 @@ export function TiptapMenuBar({ editor }: { editor: Editor }) {
         {editorState.canHeading1 && (
           <IconButton
             onClick={() => (editor.chain().focus() as any).toggleHeading({ level: 1 }).run()}
-            size="small"
+            size='small'
             color={editorState.isHeading1 ? 'primary' : undefined}
           >
             <Title />
@@ -141,7 +141,7 @@ export function TiptapMenuBar({ editor }: { editor: Editor }) {
         {editorState.canBulletList && (
           <IconButton
             onClick={() => (editor.chain().focus() as any).toggleBulletList().run()}
-            size="small"
+            size='small'
             color={editorState.isBulletList ? 'primary' : undefined}
           >
             <FormatListBulleted />
@@ -150,7 +150,7 @@ export function TiptapMenuBar({ editor }: { editor: Editor }) {
         {editorState.canOrderedList && (
           <IconButton
             onClick={() => (editor.chain().focus() as any).toggleOrderedList().run()}
-            size="small"
+            size='small'
             color={editorState.isOrderedList ? 'primary' : undefined}
           >
             <FormatListNumbered />
@@ -159,7 +159,7 @@ export function TiptapMenuBar({ editor }: { editor: Editor }) {
         {editorState.canCodeBlock && (
           <IconButton
             onClick={() => (editor.chain().focus() as any).toggleCodeBlock().run()}
-            size="small"
+            size='small'
             color={editorState.isCodeBlock ? 'primary' : undefined}
           >
             <Code />
@@ -168,34 +168,34 @@ export function TiptapMenuBar({ editor }: { editor: Editor }) {
         {editorState.canBlockquote && (
           <IconButton
             onClick={() => (editor.chain().focus() as any).toggleBlockquote().run()}
-            size="small"
+            size='small'
             color={editorState.isBlockquote ? 'primary' : undefined}
           >
             <FormatQuote />
           </IconButton>
         )}
         {editorState.canHorizontalRule && (
-          <IconButton onClick={() => (editor.chain().focus() as any).setHorizontalRule().run()} size="small">
+          <IconButton onClick={() => (editor.chain().focus() as any).setHorizontalRule().run()} size='small'>
             <HorizontalRule />
           </IconButton>
         )}
         {editorState.canHardBreak && (
-          <IconButton onClick={() => (editor.chain().focus() as any).setHardBreak().run()} size="small">
+          <IconButton onClick={() => (editor.chain().focus() as any).setHardBreak().run()} size='small'>
             <KeyboardReturn />
           </IconButton>
         )}
         {editorState.canUndo && (
-          <IconButton onClick={() => (editor.chain().focus() as any).undo().run()} size="small">
+          <IconButton onClick={() => (editor.chain().focus() as any).undo().run()} size='small'>
             <Undo />
           </IconButton>
         )}
         {editorState.canRedo && (
-          <IconButton onClick={() => (editor.chain().focus() as any).redo().run()} size="small">
+          <IconButton onClick={() => (editor.chain().focus() as any).redo().run()} size='small'>
             <Redo />
           </IconButton>
         )}
         {editorState.canInsertImage && (
-          <IconButton onClick={handleImageInsert} size="small">
+          <IconButton onClick={handleImageInsert} size='small'>
             <ImageIcon />
           </IconButton>
         )}
@@ -206,26 +206,26 @@ export function TiptapMenuBar({ editor }: { editor: Editor }) {
 
 export function Tiptap({
   editor,
-  sx
+  sx,
 }: {
   editor: Editor;
 } & Pick<StackProps, 'sx'>) {
   const editorState = useEditorState({
     editor,
-    selector: (context) => ({
-      isEditable: context.editor.isEditable
-    })
+    selector: context => ({
+      isEditable: context.editor.isEditable,
+    }),
   });
 
   return (
     <Stack
-      gap="10px"
+      gap='10px'
       sx={{
         ...sx,
         '.tiptap[contenteditable=true]': {
           border: `1px solid #cccccc`,
-          padding: '12px 15px'
-        }
+          padding: '12px 15px',
+        },
       }}
     >
       {editorState.isEditable && <TiptapMenuBar editor={editor} />}

@@ -26,12 +26,12 @@ const names = [
   'Miriam Wagner',
   'Bradley Wilkerson',
   'Virginia Andrews',
-  'Kelly Snyder'
+  'Kelly Snyder',
 ];
 
 function getStyles(name: string, personName: string[], theme: Theme) {
   return {
-    fontWeight: personName.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium
+    fontWeight: personName.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
   };
 }
 
@@ -43,11 +43,11 @@ export default function MultipleSelect() {
 
   const handleChange = (event: SelectChangeEvent<typeof personName>) => {
     const {
-      target: { value }
+      target: { value },
     } = event;
     setPersonName(
       // On autofill we get a the stringified value.
-      typeof value === 'string' ? value.split(',') : value
+      typeof value === 'string' ? value.split(',') : value,
     );
   };
 
@@ -72,20 +72,20 @@ export default function MultipleSelect() {
 </FormControl>`;
 
   return (
-    <MainCard title="Multiple" codeString={multipleSelectCodeString}>
+    <MainCard title='Multiple' codeString={multipleSelectCodeString}>
       <Stack spacing={1}>
-        <InputLabel id="demo-multiple-name-label">Name</InputLabel>
+        <InputLabel id='demo-multiple-name-label'>Name</InputLabel>
         <FormControl fullWidth>
           <Select
-            labelId="demo-multiple-name-label"
-            id="demo-multiple-name"
+            labelId='demo-multiple-name-label'
+            id='demo-multiple-name'
             multiple
             value={personName}
             onChange={handleChange}
             input={<OutlinedInput />}
             MenuProps={MenuProps}
           >
-            {names.map((name) => (
+            {names.map(name => (
               <MenuItem key={name} value={name} style={getStyles(name, personName, theme)}>
                 {name}
               </MenuItem>

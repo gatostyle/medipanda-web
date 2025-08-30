@@ -11,7 +11,7 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
@@ -23,7 +23,7 @@ import {
   getSettlements,
   SettlementPartnerProductResponse,
   SettlementPartnerResponse,
-  SettlementResponse
+  SettlementResponse,
 } from 'medipanda/backend';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
@@ -36,7 +36,7 @@ interface SettlementResponseWithMockData extends SettlementResponse {
 function withMock<T extends SettlementResponse>(data: T): T & SettlementResponseWithMockData {
   return {
     ...data,
-    prescriptionMonth: '2025-01'
+    prescriptionMonth: '2025-01',
   };
 }
 
@@ -56,9 +56,9 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
         getSettlements(),
         getSettlementPartnerSummary({
           settlementId: parseInt(settlementId!),
-          institutionCode: id
+          institutionCode: id,
         }),
-        getSettlementPartnerProducts(parseInt(id!))
+        getSettlementPartnerProducts(parseInt(id!)),
       ]);
 
       setSettlementDetail(settlementResponse.content.map(withMock)[0]);
@@ -81,76 +81,76 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
       {
         header: 'No',
         accessorFn: (_, index) => index + 1,
-        size: 60
+        size: 60,
       },
       {
         header: '보험코드',
         accessorKey: 'productCode',
         cell: ({ row }) => row.original.productCode,
-        size: 120
+        size: 120,
       },
       {
         header: '제품명',
         accessorKey: 'productName',
         cell: ({ row }) => row.original.productName,
-        size: 150
+        size: 150,
       },
       {
         header: '표준코드',
         accessorKey: 'productCode',
         cell: ({ row }) => row.original.productCode,
-        size: 140
+        size: 140,
       },
       {
         header: '수량',
         accessorKey: 'quantity',
         cell: ({ row }) => row.original.quantity,
-        size: 80
+        size: 80,
       },
       {
         header: '약가',
         accessorKey: 'unitPrice',
         cell: ({ row }) => row.original.unitPrice?.toLocaleString() ?? '-',
-        size: 100
+        size: 100,
       },
       {
         header: '처방금액',
         accessorKey: 'prescriptionAmount',
         cell: ({ row }) => row.original.prescriptionAmount?.toLocaleString() ?? '-',
-        size: 120
+        size: 120,
       },
       {
         header: '기본수수료율',
         accessorKey: 'feeRate',
         cell: ({ row }) => (row.original.feeRate !== null ? `${row.original.feeRate}%` : '-'),
-        size: 120
+        size: 120,
       },
       {
         header: '거래수수료율',
         accessorKey: 'extraFeeRate',
         cell: ({ row }) => (row.original.extraFeeRate !== null ? `${row.original.extraFeeRate}%` : '-'),
-        size: 120
+        size: 120,
       },
       {
         header: '수수료 금액',
         accessorKey: 'feeAmount',
         cell: ({ row }) => row.original.feeAmount?.toLocaleString() ?? '-',
-        size: 120
+        size: 120,
       },
       {
         header: '비고',
         accessorKey: 'note',
         cell: ({ row }) => row.original.note ?? '-',
-        size: 200
-      }
+        size: 200,
+      },
     ],
-    []
+    [],
   );
 
   const table = useReactTable({
     data: products,
     columns,
-    getCoreRowModel: getCoreRowModel()
+    getCoreRowModel: getCoreRowModel(),
   });
 
   const handleBack = () => {
@@ -159,7 +159,7 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+      <Box display='flex' justifyContent='center' alignItems='center' minHeight='400px'>
         <CircularProgress />
       </Box>
     );
@@ -175,57 +175,57 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 3 }}>
+      <Stack direction='row' alignItems='center' spacing={2} sx={{ mb: 3 }}>
         <IconButton onClick={handleBack} sx={{ p: 0 }}>
           <ArrowLeft size={24} />
         </IconButton>
-        <Typography variant="h4">거래처별 제품상세</Typography>
+        <Typography variant='h4'>거래처별 제품상세</Typography>
       </Stack>
 
       <MainCard sx={{ mb: 3 }}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
-            <TextField label="딜러명" value={settlementPartnerDetail.dealerName} fullWidth size="small" InputProps={{ readOnly: true }} />
+            <TextField label='딜러명' value={settlementPartnerDetail.dealerName} fullWidth size='small' InputProps={{ readOnly: true }} />
           </Grid>
           <Grid item xs={12} md={4}>
             <TextField
-              label="거래처코드"
+              label='거래처코드'
               value={settlementPartnerDetail.institutionCode}
               fullWidth
-              size="small"
+              size='small'
               InputProps={{ readOnly: true }}
             />
           </Grid>
           <Grid item xs={12} md={4}>
             <TextField
-              label="거래처명"
+              label='거래처명'
               value={settlementPartnerDetail.institutionName}
               fullWidth
-              size="small"
+              size='small'
               InputProps={{ readOnly: true }}
             />
           </Grid>
           <Grid item xs={12} md={4}>
             <TextField
-              label="사업자등록번호"
+              label='사업자등록번호'
               value={settlementPartnerDetail.businessNumber}
               fullWidth
-              size="small"
+              size='small'
               InputProps={{ readOnly: true }}
             />
           </Grid>
           <Grid item xs={12} md={4}>
-            <TextField label="처방월" value={settlementDetail.prescriptionMonth} fullWidth size="small" InputProps={{ readOnly: true }} />
+            <TextField label='처방월' value={settlementDetail.prescriptionMonth} fullWidth size='small' InputProps={{ readOnly: true }} />
           </Grid>
           <Grid item xs={12} md={4}>
-            <TextField label="정산월" value={settlementDetail.settlementMonth} fullWidth size="small" InputProps={{ readOnly: true }} />
+            <TextField label='정산월' value={settlementDetail.settlementMonth} fullWidth size='small' InputProps={{ readOnly: true }} />
           </Grid>
           <Grid item xs={12} md={4}>
             <TextField
-              label="처방금액"
+              label='처방금액'
               value={settlementDetail.prescriptionAmount.toLocaleString()}
               fullWidth
-              size="small"
+              size='small'
               InputProps={{ readOnly: true }}
             />
           </Grid>
@@ -235,11 +235,11 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
       <MainCard content={false}>
         <ScrollX>
           <TableContainer>
-            <Table size="small">
+            <Table size='small'>
               <TableHead>
-                {table.getHeaderGroups().map((headerGroup) => (
+                {table.getHeaderGroups().map(headerGroup => (
                   <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
+                    {headerGroup.headers.map(header => (
                       <TableCell key={header.id} style={{ width: header.getSize() }}>
                         {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                       </TableCell>
@@ -248,9 +248,9 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
                 ))}
               </TableHead>
               <TableBody>
-                {table.getRowModel().rows.map((row) => (
+                {table.getRowModel().rows.map(row => (
                   <TableRow key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
+                    {row.getVisibleCells().map(cell => (
                       <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                     ))}
                   </TableRow>

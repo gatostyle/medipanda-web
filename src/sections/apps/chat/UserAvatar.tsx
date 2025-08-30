@@ -19,7 +19,7 @@ interface UserAvatarProps {
 export default function UserAvatar({ user }: UserAvatarProps) {
   return (
     <Badge
-      overlap="circular"
+      overlap='circular'
       badgeContent={<AvatarStatus status={user.online_status!} />}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       sx={{ '& .MuiBox-root': { width: 6, height: 6 }, padding: 0, minWidth: 12, '& svg': { bgcolor: '#fff', borderRadius: '50%' } }}

@@ -19,15 +19,15 @@ export default function AuthDivider({ children }: { children: ReactElement }) {
           width: '100%',
           height: '1px',
           zIndex: 1,
-          bgcolor: 'divider'
+          bgcolor: 'divider',
         },
         '& .MuiTypography-root': {
           bgcolor: 'background.paper',
           position: 'relative',
           padding: '8px 20px',
           margin: '0 auto',
-          zIndex: 5
-        }
+          zIndex: 5,
+        },
       }}
     >
       {children}

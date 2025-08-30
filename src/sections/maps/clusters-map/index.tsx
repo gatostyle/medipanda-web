@@ -31,7 +31,7 @@ function MapClusters({ ...other }: MapBoxProps) {
         mapRef.current?.easeTo({
           center: feature?.geometry.coordinates as LngLatLike | undefined,
           zoom: Number.isNaN(zoom) ? 3 : zoom,
-          duration: 500
+          duration: 500,
         });
       }
     });
@@ -42,7 +42,7 @@ function MapClusters({ ...other }: MapBoxProps) {
       initialViewState={{
         latitude: 40.67,
         longitude: -103.59,
-        zoom: 3
+        zoom: 3,
       }}
       interactiveLayerIds={[clusterLayer.id || '']}
       onClick={onClick}
@@ -50,9 +50,9 @@ function MapClusters({ ...other }: MapBoxProps) {
       {...other}
     >
       <Source
-        id="earthquakes"
-        type="geojson"
-        data="https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson"
+        id='earthquakes'
+        type='geojson'
+        data='https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson'
         cluster
         clusterMaxZoom={14}
         clusterRadius={50}

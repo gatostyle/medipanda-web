@@ -19,8 +19,8 @@ export default function MainDrawer() {
   const drawerContent = useMemo(() => <DrawerContent />, []);
 
   return (
-    <Box component="nav" sx={{ flexShrink: { md: 0 }, zIndex: 1200 }} aria-label="mailbox folders">
-      <MiniDrawerStyled variant="permanent" open={drawerOpen}>
+    <Box component='nav' sx={{ flexShrink: { md: 0 }, zIndex: 1200 }} aria-label='mailbox folders'>
+      <MiniDrawerStyled variant='permanent' open={drawerOpen}>
         {drawerContent}
       </MiniDrawerStyled>
     </Box>

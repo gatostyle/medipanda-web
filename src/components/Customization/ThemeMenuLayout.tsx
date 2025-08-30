@@ -36,17 +36,17 @@ export default function ThemeMenuLayout() {
   };
 
   return (
-    <RadioGroup row aria-label="payment-card" name="payment-card" value={menuOrientation} onChange={handleContainerChange}>
-      <Stack direction="row" alignItems="center" spacing={2.5} sx={{ width: '100%' }}>
+    <RadioGroup row aria-label='payment-card' name='payment-card' value={menuOrientation} onChange={handleContainerChange}>
+      <Stack direction='row' alignItems='center' spacing={2.5} sx={{ width: '100%' }}>
         <FormControlLabel
           control={<Radio value={MenuOrientation.VERTICAL} sx={{ display: 'none' }} />}
           sx={{ width: '100%', m: 0, display: 'flex', '& .MuiFormControlLabel-label': { flex: 1 } }}
           label={
-            <Stack alignItems="center" spacing={0.5}>
+            <Stack alignItems='center' spacing={0.5}>
               <MainCard content={false} sx={{ borderWidth: 2, p: 1, ...(!isHorizontal && { borderColor: theme.palette.primary.main }) }}>
-                <CardMedia component="img" src={defaultLayout} alt="defaultLayout" />
+                <CardMedia component='img' src={defaultLayout} alt='defaultLayout' />
               </MainCard>
-              <Typography variant="caption">Vertical</Typography>
+              <Typography variant='caption'>Vertical</Typography>
             </Stack>
           }
         />
@@ -54,11 +54,11 @@ export default function ThemeMenuLayout() {
           control={<Radio value={MenuOrientation.HORIZONTAL} sx={{ display: 'none' }} />}
           sx={{ width: '100%', m: 0, display: 'flex', '& .MuiFormControlLabel-label': { flex: 1 } }}
           label={
-            <Stack alignItems="center" spacing={0.5}>
+            <Stack alignItems='center' spacing={0.5}>
               <MainCard content={false} sx={{ borderWidth: 2, p: 1, ...(isHorizontal && { borderColor: theme.palette.primary.main }) }}>
-                <CardMedia component="img" src={horizontalLayout} alt="horizontalLayout" />
+                <CardMedia component='img' src={horizontalLayout} alt='horizontalLayout' />
               </MainCard>
-              <Typography variant="caption">Horizontal</Typography>
+              <Typography variant='caption'>Horizontal</Typography>
             </Stack>
           }
         />

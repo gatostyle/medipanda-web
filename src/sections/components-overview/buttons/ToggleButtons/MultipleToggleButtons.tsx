@@ -17,17 +17,17 @@ export default function MultipleToggleButtons() {
   };
 
   return (
-    <ToggleButtonGroup value={formats} onChange={handleFormat} aria-label="text formatting">
-      <ToggleButton value="bold" aria-label="bold">
+    <ToggleButtonGroup value={formats} onChange={handleFormat} aria-label='text formatting'>
+      <ToggleButton value='bold' aria-label='bold'>
         <TextBold />
       </ToggleButton>
-      <ToggleButton value="italic" aria-label="italic">
+      <ToggleButton value='italic' aria-label='italic'>
         <TextItalic />
       </ToggleButton>
-      <ToggleButton value="underlined" aria-label="underlined">
+      <ToggleButton value='underlined' aria-label='underlined'>
         <TextUnderline />
       </ToggleButton>
-      <ToggleButton value="color" aria-label="color" disabled>
+      <ToggleButton value='color' aria-label='color' disabled>
         <Paintbucket />
         <ArrowDown2 style={{ fontSize: '0.625rem', marginLeft: 6 }} />
       </ToggleButton>

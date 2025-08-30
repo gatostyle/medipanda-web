@@ -16,7 +16,7 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
@@ -39,19 +39,19 @@ export default function MpAdminSettlementEdit() {
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 20
+    pageSize: 20,
   });
 
   const formik = useFormik({
     initialValues: {
       searchType: 'institutionName' as 'institutionName' | 'businessNumber' | 'institutionCode',
-      searchKeyword: ''
+      searchKeyword: '',
     },
-    onSubmit: (values) => {
+    onSubmit: values => {
       if (id) {
         fetchSettlementData();
       }
-    }
+    },
   });
 
   const [data, setData] = useState<Sequenced<SettlementPartnerResponse>[]>([]);
@@ -73,7 +73,7 @@ export default function MpAdminSettlementEdit() {
         businessNumber: formik.values.searchType === 'businessNumber' ? formik.values.searchKeyword : undefined,
         institutionCode: formik.values.searchType === 'institutionCode' ? formik.values.searchKeyword : undefined,
         page: pagination.pageIndex,
-        size: pagination.pageSize
+        size: pagination.pageSize,
       });
 
       setData(withSequence(response).content);
@@ -91,25 +91,25 @@ export default function MpAdminSettlementEdit() {
         header: 'No',
         accessorKey: 'sequence',
         cell: ({ row }) => row.original.sequence,
-        size: 60
+        size: 60,
       },
       {
         header: '회사명',
         accessorKey: 'companyName',
         cell: ({ row }) => row.original.companyName,
-        size: 120
+        size: 120,
       },
       {
         header: '딜러명',
         accessorKey: 'dealerName',
         cell: ({ row }) => row.original.dealerName,
-        size: 100
+        size: 100,
       },
       {
         header: '거래처코드',
         accessorKey: 'institutionCode',
         cell: ({ row }) => row.original.institutionCode,
-        size: 120
+        size: 120,
       },
       {
         header: '거래처명',
@@ -122,34 +122,34 @@ export default function MpAdminSettlementEdit() {
             {row.original.institutionName}
           </Link>
         ),
-        size: 120
+        size: 120,
       },
       {
         header: '사업자등록번호',
         accessorKey: 'businessNumber',
         cell: ({ row }) => row.original.businessNumber,
-        size: 140
+        size: 140,
       },
       {
         header: '공급가액',
         accessorKey: 'supplyAmount',
         cell: ({ row }) => row.original.supplyAmount.toLocaleString(),
-        size: 120
+        size: 120,
       },
       {
         header: '세액',
         accessorKey: 'taxAmount',
         cell: ({ row }) => row.original.taxAmount.toLocaleString(),
-        size: 100
+        size: 100,
       },
       {
         header: '합계금액(수수료금액)',
         accessorKey: 'totalAmount',
         cell: ({ row }) => row.original.totalAmount.toLocaleString(),
-        size: 130
-      }
+        size: 130,
+      },
     ],
-    []
+    [],
   );
 
   const table = useReactTable({
@@ -158,11 +158,11 @@ export default function MpAdminSettlementEdit() {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      pagination
+      pagination,
     },
     onPaginationChange: setPagination,
     pageCount: totalPages,
-    manualPagination: true
+    manualPagination: true,
   });
 
   const handleBack = () => {
@@ -179,38 +179,38 @@ export default function MpAdminSettlementEdit() {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 3 }}>
+      <Stack direction='row' alignItems='center' spacing={2} sx={{ mb: 3 }}>
         <IconButton onClick={handleBack} sx={{ p: 0 }}>
           <ArrowLeft size={24} />
         </IconButton>
-        <Typography variant="h4">정산상세내역</Typography>
+        <Typography variant='h4'>정산상세내역</Typography>
       </Stack>
 
       <MainCard content={false}>
         <Box sx={{ p: 3 }}>
           <form onSubmit={formik.handleSubmit}>
-            <Grid container spacing={2} alignItems="center">
+            <Grid container spacing={2} alignItems='center'>
               <Grid item xs={12} md={2}>
-                <FormControl fullWidth size="small">
-                  <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange} displayEmpty>
-                    <MenuItem value="institutionName">거래처명</MenuItem>
-                    <MenuItem value="businessNumber">사업자등록번호</MenuItem>
-                    <MenuItem value="institutionCode">거래처코드</MenuItem>
+                <FormControl fullWidth size='small'>
+                  <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange} displayEmpty>
+                    <MenuItem value='institutionName'>거래처명</MenuItem>
+                    <MenuItem value='businessNumber'>사업자등록번호</MenuItem>
+                    <MenuItem value='institutionCode'>거래처코드</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
               <Grid item xs={12} md={4}>
                 <TextField
-                  name="searchKeyword"
-                  size="small"
-                  placeholder="검색어를 입력해주세요"
+                  name='searchKeyword'
+                  size='small'
+                  placeholder='검색어를 입력해주세요'
                   fullWidth
                   value={formik.values.searchKeyword}
                   onChange={formik.handleChange}
                 />
               </Grid>
               <Grid item>
-                <Button variant="contained" size="small" type="submit">
+                <Button variant='contained' size='small' type='submit'>
                   검색
                 </Button>
               </Grid>
@@ -219,20 +219,20 @@ export default function MpAdminSettlementEdit() {
         </Box>
 
         <Box sx={{ p: 2 }}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-            <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+          <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+            <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
             <Button
-              variant="contained"
-              color="success"
+              variant='contained'
+              color='success'
               href={getDownloadSettlementPartnerSummaryExcel({
                 settlementId: parseInt(id!),
                 institutionName: formik.values.searchType === 'institutionName' ? formik.values.searchKeyword : undefined,
                 businessNumber: formik.values.searchType === 'businessNumber' ? formik.values.searchKeyword : undefined,
                 institutionCode: formik.values.searchType === 'institutionCode' ? formik.values.searchKeyword : undefined,
                 page: pagination.pageIndex,
-                size: pagination.pageSize
+                size: pagination.pageSize,
               })}
-              target="_blank"
+              target='_blank'
             >
               <DocumentDownload style={{ marginRight: 8 }} />
               Excel
@@ -241,11 +241,11 @@ export default function MpAdminSettlementEdit() {
 
           <ScrollX>
             <TableContainer>
-              <Table size="small">
+              <Table size='small'>
                 <TableHead>
-                  {table.getHeaderGroups().map((headerGroup) => (
+                  {table.getHeaderGroups().map(headerGroup => (
                     <TableRow key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => (
+                      {headerGroup.headers.map(header => (
                         <TableCell key={header.id} style={{ width: header.getSize() }}>
                           {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                         </TableCell>
@@ -254,9 +254,9 @@ export default function MpAdminSettlementEdit() {
                   ))}
                 </TableHead>
                 <TableBody>
-                  {table.getRowModel().rows.map((row) => (
+                  {table.getRowModel().rows.map(row => (
                     <TableRow key={row.id}>
-                      {row.getVisibleCells().map((cell) => (
+                      {row.getVisibleCells().map(cell => (
                         <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                       ))}
                     </TableRow>
@@ -266,15 +266,15 @@ export default function MpAdminSettlementEdit() {
             </TableContainer>
           </ScrollX>
 
-          <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
+          <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
             <Pagination
               count={totalPages}
               page={pagination.pageIndex + 1}
               onChange={(event, value) => {
                 setPagination({ ...pagination, pageIndex: value - 1 });
               }}
-              color="primary"
-              variant="outlined"
+              color='primary'
+              variant='outlined'
               showFirstButton
               showLastButton
             />

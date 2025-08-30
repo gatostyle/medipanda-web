@@ -15,7 +15,7 @@ function getColorStyle({ color, theme }: ExtendedStyleProps) {
 
   return {
     color: darker,
-    backgroundColor: lighter
+    backgroundColor: lighter,
   };
 }
 
@@ -30,10 +30,10 @@ export default function Badge(theme: Theme) {
         standard: {
           minWidth: theme.spacing(2),
           height: theme.spacing(2),
-          padding: theme.spacing(0.5)
+          padding: theme.spacing(0.5),
         },
         colorSecondary: {
-          color: theme.palette.secondary.lighter
+          color: theme.palette.secondary.lighter,
         },
         light: {
           ...defaultLightBadge,
@@ -42,9 +42,9 @@ export default function Badge(theme: Theme) {
           '&.MuiBadge-colorError': getColorStyle({ color: 'error', theme }),
           '&.MuiBadge-colorInfo': getColorStyle({ color: 'info', theme }),
           '&.MuiBadge-colorSuccess': getColorStyle({ color: 'success', theme }),
-          '&.MuiBadge-colorWarning': getColorStyle({ color: 'warning', theme })
-        }
-      }
-    }
+          '&.MuiBadge-colorWarning': getColorStyle({ color: 'warning', theme }),
+        },
+      },
+    },
   };
 }

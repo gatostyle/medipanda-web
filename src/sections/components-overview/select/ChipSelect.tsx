@@ -28,12 +28,12 @@ const names = [
   'Miriam Wagner',
   'Bradley Wilkerson',
   'Virginia Andrews',
-  'Kelly Snyder'
+  'Kelly Snyder',
 ];
 
 function getStyles(name: string, personName: readonly string[], theme: Theme) {
   return {
-    fontWeight: personName.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium
+    fontWeight: personName.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
   };
 }
 
@@ -45,11 +45,11 @@ export default function ChipSelect() {
 
   const handleChange = (event: SelectChangeEvent<typeof personName>) => {
     const {
-      target: { value }
+      target: { value },
     } = event;
     setPersonName(
       // On autofill we get a the stringified value.
-      typeof value === 'string' ? value.split(',') : value
+      typeof value === 'string' ? value.split(',') : value,
     );
   };
 
@@ -81,27 +81,27 @@ export default function ChipSelect() {
 </FormControl>`;
 
   return (
-    <MainCard title="With Chip" codeString={chipSelectCodeString}>
+    <MainCard title='With Chip' codeString={chipSelectCodeString}>
       <Stack spacing={1}>
-        <InputLabel id="demo-multiple-chip-label">Chip</InputLabel>
+        <InputLabel id='demo-multiple-chip-label'>Chip</InputLabel>
         <FormControl fullWidth>
           <Select
-            labelId="demo-multiple-chip-label"
-            id="demo-multiple-chip"
+            labelId='demo-multiple-chip-label'
+            id='demo-multiple-chip'
             multiple
             value={personName}
             onChange={handleChange}
-            input={<OutlinedInput id="select-multiple-chip" placeholder="Chip" />}
-            renderValue={(selected) => (
+            input={<OutlinedInput id='select-multiple-chip' placeholder='Chip' />}
+            renderValue={selected => (
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                {selected.map((value) => (
-                  <Chip key={value} label={value} variant="light" color="primary" size="small" />
+                {selected.map(value => (
+                  <Chip key={value} label={value} variant='light' color='primary' size='small' />
                 ))}
               </Box>
             )}
             MenuProps={MenuProps}
           >
-            {names.map((name) => (
+            {names.map(name => (
               <MenuItem key={name} value={name} style={getStyles(name, personName, theme)}>
                 {name}
               </MenuItem>

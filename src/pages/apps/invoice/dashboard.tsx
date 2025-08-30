@@ -29,7 +29,7 @@ export default function Dashboard() {
       percentage: 20.3,
       isLoss: true,
       invoice: '3',
-      color: theme.palette.warning
+      color: theme.palette.warning,
     },
     {
       title: 'Paid',
@@ -37,7 +37,7 @@ export default function Dashboard() {
       percentage: -8.73,
       isLoss: true,
       invoice: '5',
-      color: theme.palette.error
+      color: theme.palette.error,
     },
     {
       title: 'Pending',
@@ -45,7 +45,7 @@ export default function Dashboard() {
       percentage: 10.73,
       isLoss: false,
       invoice: '20',
-      color: theme.palette.success
+      color: theme.palette.success,
     },
     {
       title: 'Overdue',
@@ -53,21 +53,21 @@ export default function Dashboard() {
       percentage: -4.73,
       isLoss: true,
       invoice: '5',
-      color: theme.palette.primary
-    }
+      color: theme.palette.primary,
+    },
   ];
 
   const [series, setSeries] = useState([
     {
       name: 'TEAM A',
       type: 'column',
-      data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 25]
+      data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 25],
     },
     {
       name: 'TEAM B',
       type: 'line',
-      data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 35]
-    }
+      data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 35],
+    },
   ]);
 
   const handleSeries = (index: number) => {
@@ -78,13 +78,13 @@ export default function Dashboard() {
           {
             name: 'TEAM A',
             type: 'column',
-            data: [10, 15, 8, 12, 11, 7, 10, 13, 22, 10, 18, 4]
+            data: [10, 15, 8, 12, 11, 7, 10, 13, 22, 10, 18, 4],
           },
           {
             name: 'TEAM B',
             type: 'line',
-            data: [12, 18, 15, 17, 12, 10, 14, 16, 25, 17, 20, 8]
-          }
+            data: [12, 18, 15, 17, 12, 10, 14, 16, 25, 17, 20, 8],
+          },
         ]);
         break;
       case 2:
@@ -92,13 +92,13 @@ export default function Dashboard() {
           {
             name: 'TEAM A',
             type: 'column',
-            data: [12, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 25]
+            data: [12, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 25],
           },
           {
             name: 'TEAM B',
             type: 'line',
-            data: [17, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 35]
-          }
+            data: [17, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 35],
+          },
         ]);
         break;
       case 3:
@@ -106,13 +106,13 @@ export default function Dashboard() {
           {
             name: 'TEAM A',
             type: 'column',
-            data: [1, 2, 3, 5, 1, 0, 2, 0, 6, 1, 5, 3]
+            data: [1, 2, 3, 5, 1, 0, 2, 0, 6, 1, 5, 3],
           },
           {
             name: 'TEAM B',
             type: 'line',
-            data: [5, 3, 5, 6, 7, 0, 3, 1, 7, 3, 5, 4]
-          }
+            data: [5, 3, 5, 6, 7, 0, 3, 1, 7, 3, 5, 4],
+          },
         ]);
         break;
       case 0:
@@ -121,13 +121,13 @@ export default function Dashboard() {
           {
             name: 'TEAM A',
             type: 'column',
-            data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 25]
+            data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 25],
           },
           {
             name: 'TEAM B',
             type: 'line',
-            data: [34, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 35]
-          }
+            data: [34, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 35],
+          },
         ]);
     }
   };
@@ -136,7 +136,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <Breadcrumbs custom heading="My Dashboard" links={breadcrumbLinks} />
+      <Breadcrumbs custom heading='My Dashboard' links={breadcrumbLinks} />
       <Grid container spacing={2.5}>
         <Grid item xs={12} lg={9}>
           <MainCard>

@@ -9,7 +9,7 @@ import {
   Stack,
   Switch,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
@@ -55,7 +55,7 @@ const createValidationSchema = (isNew: boolean) =>
       .string()
       .required('연락처를 입력해주세요')
       .matches(/^\d{4}$/, '올바른 번호 형식이 아닙니다'),
-    permissions: yup.array().min(1, '최소 하나 이상의 권한을 선택해주세요')
+    permissions: yup.array().min(1, '최소 하나 이상의 권한을 선택해주세요'),
   });
 
 export default function MpAdminAdminEdit() {
@@ -99,10 +99,10 @@ export default function MpAdminAdminEdit() {
         | 'BANNER_MANAGEMENT'
         | 'PERMISSION_MANAGEMENT'
         | 'ALL'
-      )[]
+      )[],
     },
     validationSchema: createValidationSchema(isNew),
-    onSubmit: async (values) => {
+    onSubmit: async values => {
       try {
         const phoneNumber = `${values.phoneNumber1}-${values.phoneNumber2}-${values.phoneNumber3}`;
 
@@ -114,7 +114,7 @@ export default function MpAdminAdminEdit() {
             password: values.password,
             email: values.email,
             phoneNumber,
-            permissions: values.permissions
+            permissions: values.permissions,
           });
           infoDialog.showInfo('관리자가 등록되었습니다.');
           navigate('/admin/admins');
@@ -125,7 +125,7 @@ export default function MpAdminAdminEdit() {
             password: values.password !== '' ? values.password : null,
             email: values.email,
             phoneNumber,
-            permissions: values.permissions
+            permissions: values.permissions,
           });
           infoDialog.showInfo('관리자 권한이 수정되었습니다.');
           navigate('/admin/admins');
@@ -134,7 +134,7 @@ export default function MpAdminAdminEdit() {
         console.error('Failed to save admin:', error);
         errorDialog.showError('저장 중 오류가 발생했습니다.');
       }
-    }
+    },
   });
 
   useEffect(() => {
@@ -158,7 +158,7 @@ export default function MpAdminAdminEdit() {
           phoneNumber2: phoneParts[1] ?? '',
           phoneNumber3: phoneParts[2] ?? '',
           status: true,
-          permissions: permissionData.permissions
+          permissions: permissionData.permissions,
         });
       } catch (error) {
         console.error('Failed to fetch admin data:', error);
@@ -184,7 +184,7 @@ export default function MpAdminAdminEdit() {
       | 'CUSTOMER_SERVICE'
       | 'BANNER_MANAGEMENT'
       | 'PERMISSION_MANAGEMENT'
-      | 'ALL'
+      | 'ALL',
   ) => {
     const currentPermissions = [...formik.values.permissions];
     const index = currentPermissions.indexOf(permission);
@@ -205,7 +205,7 @@ export default function MpAdminAdminEdit() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant='h4' gutterBottom>
           관리자 권한등록
         </Typography>
       </Grid>
@@ -218,10 +218,10 @@ export default function MpAdminAdminEdit() {
                 <FormControlLabel
                   control={
                     <Switch
-                      name="status"
+                      name='status'
                       checked={formik.values.status}
-                      onChange={(e) => formik.setFieldValue('status', e.target.checked)}
-                      color="primary"
+                      onChange={e => formik.setFieldValue('status', e.target.checked)}
+                      color='primary'
                     />
                   }
                   label={formik.values.status ? '활성' : '비활성'}
@@ -230,8 +230,8 @@ export default function MpAdminAdminEdit() {
 
               <Grid item xs={12}>
                 <TextField
-                  name="name"
-                  label="관리자 명"
+                  name='name'
+                  label='관리자 명'
                   fullWidth
                   required
                   value={formik.values.name}
@@ -244,8 +244,8 @@ export default function MpAdminAdminEdit() {
 
               <Grid item xs={12}>
                 <TextField
-                  name="userId"
-                  label="아이디"
+                  name='userId'
+                  label='아이디'
                   fullWidth
                   required
                   disabled={!isNew}
@@ -259,9 +259,9 @@ export default function MpAdminAdminEdit() {
 
               <Grid item xs={12}>
                 <TextField
-                  name="password"
-                  label="패스워드"
-                  type="password"
+                  name='password'
+                  label='패스워드'
+                  type='password'
                   fullWidth
                   required={isNew}
                   value={formik.values.password}
@@ -280,9 +280,9 @@ export default function MpAdminAdminEdit() {
 
               <Grid item xs={12}>
                 <TextField
-                  name="passwordConfirm"
-                  label="패스워드 확인"
-                  type="password"
+                  name='passwordConfirm'
+                  label='패스워드 확인'
+                  type='password'
                   fullWidth
                   required={isNew}
                   value={formik.values.passwordConfirm}
@@ -295,9 +295,9 @@ export default function MpAdminAdminEdit() {
 
               <Grid item xs={12}>
                 <TextField
-                  name="email"
-                  label="이메일"
-                  type="email"
+                  name='email'
+                  label='이메일'
+                  type='email'
                   fullWidth
                   required
                   value={formik.values.email}
@@ -309,24 +309,24 @@ export default function MpAdminAdminEdit() {
               </Grid>
 
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom>
+                <Typography variant='subtitle1' gutterBottom>
                   연락처
                 </Typography>
-                <Stack direction="row" spacing={2} alignItems="center">
-                  <FormControl size="small" sx={{ minWidth: 100 }}>
-                    <Select name="phoneNumber1" value={formik.values.phoneNumber1} onChange={formik.handleChange}>
-                      <MenuItem value="010">010</MenuItem>
-                      <MenuItem value="011">011</MenuItem>
-                      <MenuItem value="016">016</MenuItem>
-                      <MenuItem value="017">017</MenuItem>
-                      <MenuItem value="018">018</MenuItem>
-                      <MenuItem value="019">019</MenuItem>
+                <Stack direction='row' spacing={2} alignItems='center'>
+                  <FormControl size='small' sx={{ minWidth: 100 }}>
+                    <Select name='phoneNumber1' value={formik.values.phoneNumber1} onChange={formik.handleChange}>
+                      <MenuItem value='010'>010</MenuItem>
+                      <MenuItem value='011'>011</MenuItem>
+                      <MenuItem value='016'>016</MenuItem>
+                      <MenuItem value='017'>017</MenuItem>
+                      <MenuItem value='018'>018</MenuItem>
+                      <MenuItem value='019'>019</MenuItem>
                     </Select>
                   </FormControl>
                   <Typography>-</Typography>
                   <TextField
-                    name="phoneNumber2"
-                    size="small"
+                    name='phoneNumber2'
+                    size='small'
                     sx={{ width: 100 }}
                     value={formik.values.phoneNumber2}
                     onChange={formik.handleChange}
@@ -336,8 +336,8 @@ export default function MpAdminAdminEdit() {
                   />
                   <Typography>-</Typography>
                   <TextField
-                    name="phoneNumber3"
-                    size="small"
+                    name='phoneNumber3'
+                    size='small'
                     sx={{ width: 100 }}
                     value={formik.values.phoneNumber3}
                     onChange={formik.handleChange}
@@ -349,7 +349,7 @@ export default function MpAdminAdminEdit() {
               </Grid>
 
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom>
+                <Typography variant='subtitle1' gutterBottom>
                   관리메뉴
                 </Typography>
                 <Grid container spacing={1}>
@@ -361,7 +361,7 @@ export default function MpAdminAdminEdit() {
                           onChange={() => handlePermissionChange('MEMBER_MANAGEMENT')}
                         />
                       }
-                      label="회원관리"
+                      label='회원관리'
                     />
                   </Grid>
                   <Grid item xs={3}>
@@ -372,7 +372,7 @@ export default function MpAdminAdminEdit() {
                           onChange={() => handlePermissionChange('PRODUCT_MANAGEMENT')}
                         />
                       }
-                      label="제품관리"
+                      label='제품관리'
                     />
                   </Grid>
                   <Grid item xs={3}>
@@ -383,7 +383,7 @@ export default function MpAdminAdminEdit() {
                           onChange={() => handlePermissionChange('TRANSACTION_MANAGEMENT')}
                         />
                       }
-                      label="거래선관리"
+                      label='거래선관리'
                     />
                   </Grid>
                   <Grid item xs={3}>
@@ -394,7 +394,7 @@ export default function MpAdminAdminEdit() {
                           onChange={() => handlePermissionChange('CONTRACT_MANAGEMENT')}
                         />
                       }
-                      label="계약관리"
+                      label='계약관리'
                     />
                   </Grid>
                   <Grid item xs={3}>
@@ -405,7 +405,7 @@ export default function MpAdminAdminEdit() {
                           onChange={() => handlePermissionChange('PRESCRIPTION_MANAGEMENT')}
                         />
                       }
-                      label="처방관리"
+                      label='처방관리'
                     />
                   </Grid>
                   <Grid item xs={3}>
@@ -416,7 +416,7 @@ export default function MpAdminAdminEdit() {
                           onChange={() => handlePermissionChange('SETTLEMENT_MANAGEMENT')}
                         />
                       }
-                      label="정산관리"
+                      label='정산관리'
                     />
                   </Grid>
                   <Grid item xs={3}>
@@ -427,7 +427,7 @@ export default function MpAdminAdminEdit() {
                           onChange={() => handlePermissionChange('EXPENSE_REPORT_MANAGEMENT')}
                         />
                       }
-                      label="지출보고관리"
+                      label='지출보고관리'
                     />
                   </Grid>
                   <Grid item xs={3}>
@@ -438,7 +438,7 @@ export default function MpAdminAdminEdit() {
                           onChange={() => handlePermissionChange('COMMUNITY_MANAGEMENT')}
                         />
                       }
-                      label="커뮤니티"
+                      label='커뮤니티'
                     />
                   </Grid>
                   <Grid item xs={3}>
@@ -449,7 +449,7 @@ export default function MpAdminAdminEdit() {
                           onChange={() => handlePermissionChange('CONTENT_MANAGEMENT')}
                         />
                       }
-                      label="콘텐츠관리"
+                      label='콘텐츠관리'
                     />
                   </Grid>
                   <Grid item xs={3}>
@@ -460,7 +460,7 @@ export default function MpAdminAdminEdit() {
                           onChange={() => handlePermissionChange('CUSTOMER_SERVICE')}
                         />
                       }
-                      label="고객센터"
+                      label='고객센터'
                     />
                   </Grid>
                   <Grid item xs={3}>
@@ -471,7 +471,7 @@ export default function MpAdminAdminEdit() {
                           onChange={() => handlePermissionChange('BANNER_MANAGEMENT')}
                         />
                       }
-                      label="배너관리"
+                      label='배너관리'
                     />
                   </Grid>
                   <Grid item xs={3}>
@@ -482,23 +482,23 @@ export default function MpAdminAdminEdit() {
                           onChange={() => handlePermissionChange('PERMISSION_MANAGEMENT')}
                         />
                       }
-                      label="권한관리"
+                      label='권한관리'
                     />
                   </Grid>
                 </Grid>
                 {formik.touched.permissions && formik.errors.permissions && (
-                  <Typography color="error" variant="caption" sx={{ mt: 1 }}>
+                  <Typography color='error' variant='caption' sx={{ mt: 1 }}>
                     {formik.errors.permissions}
                   </Typography>
                 )}
               </Grid>
 
               <Grid item xs={12}>
-                <Stack direction="row" spacing={2} justifyContent="center">
-                  <Button variant="outlined" size="large" onClick={handleCancel}>
+                <Stack direction='row' spacing={2} justifyContent='center'>
+                  <Button variant='outlined' size='large' onClick={handleCancel}>
                     취소
                   </Button>
-                  <Button variant="contained" size="large" color="success" type="submit">
+                  <Button variant='contained' size='large' color='success' type='submit'>
                     저장
                   </Button>
                 </Stack>

@@ -46,27 +46,27 @@ export default function FolderList() {
       <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
         <ListItem>
           <ListItemAvatar>
-            <Avatar alt="Basic" type="combined" color="warning">
-              <Camera variant="Bold" />
+            <Avatar alt='Basic' type='combined' color='warning'>
+              <Camera variant='Bold' />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Photos" secondary="Jan 9, 2014" />
+          <ListItemText primary='Photos' secondary='Jan 9, 2014' />
         </ListItem>
         <ListItem>
           <ListItemAvatar>
-            <Avatar alt="Basic" type="combined">
-              <DocumentFilter variant="Bold" />
+            <Avatar alt='Basic' type='combined'>
+              <DocumentFilter variant='Bold' />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Work" secondary="Jan 7, 2014" />
+          <ListItemText primary='Work' secondary='Jan 7, 2014' />
         </ListItem>
         <ListItem>
           <ListItemAvatar>
-            <Avatar alt="Basic" type="combined" color="info">
-              <Gps variant="Bold" />
+            <Avatar alt='Basic' type='combined' color='info'>
+              <Gps variant='Bold' />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Vacation" secondary="July 20, 2014" />
+          <ListItemText primary='Vacation' secondary='July 20, 2014' />
         </ListItem>
       </List>
     </MainCard>

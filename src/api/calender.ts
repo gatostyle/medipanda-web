@@ -16,14 +16,14 @@ export const endpoints = {
   key: 'api/calendar/events',
   add: '/add', // server URL
   udpate: '/update', // server URL
-  delete: '/delete' // server URL
+  delete: '/delete', // server URL
 };
 
 export function useGetEvents() {
   const { data, isLoading, error, isValidating } = useSWR(endpoints.key, fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
-    revalidateOnReconnect: false
+    revalidateOnReconnect: false,
   });
 
   const memoizedValue = useMemo(
@@ -32,9 +32,9 @@ export function useGetEvents() {
       eventsLoading: isLoading,
       eventsError: error,
       eventsValidating: isValidating,
-      eventsEmpty: !isLoading && !data?.length
+      eventsEmpty: !isLoading && !data?.length,
     }),
-    [data, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating],
   );
 
   return memoizedValue;
@@ -49,10 +49,10 @@ export async function createEvent(newEvent: Omit<EventInput, 'id'>) {
 
       return {
         ...currentEvents,
-        events: addedEvents
+        events: addedEvents,
       };
     },
-    false
+    false,
   );
 
   // to hit server
@@ -67,22 +67,22 @@ export async function updateEvent(
     allDay: boolean;
     start: Date | null;
     end: Date | null;
-  }>
+  }>,
 ) {
   // to update local state based on key
   mutate(
     endpoints.key,
     (currentEvents: any) => {
       const updatedEvents: EventInput[] = currentEvents.events.map((event: EventInput) =>
-        event.id === eventId ? { ...event, ...updatedEvent } : event
+        event.id === eventId ? { ...event, ...updatedEvent } : event,
       );
 
       return {
         ...currentEvents,
-        events: updatedEvents
+        events: updatedEvents,
       };
     },
-    false
+    false,
   );
 
   // to hit server
@@ -100,10 +100,10 @@ export async function deleteEvent(eventId: string) {
 
       return {
         ...currentEvents,
-        events: nonDeletedEvent
+        events: nonDeletedEvent,
       };
     },
-    false
+    false,
   );
 
   // to hit server

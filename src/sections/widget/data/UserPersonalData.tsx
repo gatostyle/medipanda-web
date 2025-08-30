@@ -27,20 +27,20 @@ export default function UserPersonalData() {
           <ListItem
             sx={{ p: 0 }}
             secondaryAction={
-              <IconButton edge="end" aria-label="delete" color="secondary">
+              <IconButton edge='end' aria-label='delete' color='secondary'>
                 <Notepad />
               </IconButton>
             }
           >
             <ListItemAvatar>
-              <Avatar color="error" variant="rounded">
-                <Google variant="Bold" />
+              <Avatar color='error' variant='rounded'>
+                <Google variant='Bold' />
               </Avatar>
             </ListItemAvatar>
             <ListItemText
               sx={{ my: 0 }}
               primary={<Typography>Google LLC</Typography>}
-              secondary={<Typography variant="subtitle1">Sr. UI designer</Typography>}
+              secondary={<Typography variant='subtitle1'>Sr. UI designer</Typography>}
             />
           </ListItem>
         </List>
@@ -48,7 +48,7 @@ export default function UserPersonalData() {
     >
       <Grid container spacing={1}>
         <Grid item xs={12}>
-          <Typography variant="subtitle1">Description</Typography>
+          <Typography variant='subtitle1'>Description</Typography>
         </Grid>
         <Grid item xs={12}>
           <Typography>
@@ -57,18 +57,18 @@ export default function UserPersonalData() {
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          <Stack direction="row" alignItems="center" spacing={1.25}>
-            <Chip label="Fulltime" variant="combined" sx={{ color: 'text.primary' }} />
-            <Chip label="Remote" variant="combined" sx={{ color: 'text.primary' }} />
-            <Chip label="Hourly" variant="combined" sx={{ color: 'text.primary' }} />
+          <Stack direction='row' alignItems='center' spacing={1.25}>
+            <Chip label='Fulltime' variant='combined' sx={{ color: 'text.primary' }} />
+            <Chip label='Remote' variant='combined' sx={{ color: 'text.primary' }} />
+            <Chip label='Hourly' variant='combined' sx={{ color: 'text.primary' }} />
           </Stack>
         </Grid>
         <Grid item xs={12}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1} sx={{ mt: 1.5 }}>
+          <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1} sx={{ mt: 1.5 }}>
             <Typography sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <Location size={14} /> NY, USA <Clock size={14} style={{ marginLeft: 8 }} /> 2 days ago
             </Typography>
-            <Button variant="contained">Apply</Button>
+            <Button variant='contained'>Apply</Button>
           </Stack>
         </Grid>
       </Grid>

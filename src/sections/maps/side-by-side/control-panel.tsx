@@ -20,8 +20,8 @@ function ControlPanel({ mode, onModeChange }: Props) {
   return (
     <ControlPanelStyled>
       <ToggleButtonGroup value={mode} exclusive onChange={onModeChange}>
-        <ToggleButton value="side-by-side">Side by side</ToggleButton>
-        <ToggleButton value="split-screen">Split screen</ToggleButton>
+        <ToggleButton value='side-by-side'>Side by side</ToggleButton>
+        <ToggleButton value='split-screen'>Split screen</ToggleButton>
       </ToggleButtonGroup>
     </ControlPanelStyled>
   );

@@ -27,26 +27,26 @@ const Main = styled('main', { shouldForwardProp: (prop: string) => prop !== 'ope
     flexGrow: 1,
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.shorter
+      duration: theme.transitions.duration.shorter,
     }),
     marginLeft: -320,
     ...(container && {
       [theme.breakpoints.only('lg')]: {
-        marginLeft: !open ? -240 : 0
-      }
+        marginLeft: !open ? -240 : 0,
+      },
     }),
     [theme.breakpoints.down('lg')]: {
       paddingLeft: 0,
-      marginLeft: 0
+      marginLeft: 0,
     },
     ...(open && {
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.shorter
+        duration: theme.transitions.duration.shorter,
       }),
-      marginLeft: 0
-    })
-  })
+      marginLeft: 0,
+    }),
+  }),
 );
 
 // ==============================|| ECOMMERCE - PRODUCTS ||============================== //
@@ -77,7 +77,7 @@ export default function ProductsPage() {
 
   const [openFilterDrawer, setOpenFilterDrawer] = useState(true);
   const handleDrawerOpen = () => {
-    setOpenFilterDrawer((prevState) => !prevState);
+    setOpenFilterDrawer(prevState => !prevState);
   };
 
   // filter
@@ -88,12 +88,12 @@ export default function ProductsPage() {
     categories: ['all'],
     colors: [],
     price: '',
-    rating: 0
+    rating: 0,
   };
   const [filter, setFilter] = useState(initialState);
 
   const filterData = async () => {
-    await filterProducts(filter).then((response) => {
+    await filterProducts(filter).then(response => {
       setProducts(response.data);
       setLoading(false);
     });
@@ -150,7 +150,7 @@ export default function ProductsPage() {
           <Grid item xs={12}>
             <Grid container spacing={3}>
               {isLoading
-                ? [1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+                ? [1, 2, 3, 4, 5, 6, 7, 8].map(item => (
                     <Grid key={item} item xs={12} sm={6} md={4} lg={4}>
                       <SkeletonProductPlaceholder />
                     </Grid>

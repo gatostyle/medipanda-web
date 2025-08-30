@@ -38,7 +38,7 @@ export async function requestOcr(data: {
   const response = await axios.request<OcrResponse[]>({
     method: 'POST',
     url: '/ocr',
-    data: form
+    data: form,
   });
 
   return response.data;

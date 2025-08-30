@@ -23,33 +23,33 @@ const areaChartOptions = {
     type: 'donut',
     stacked: false,
     zoom: {
-      enabled: false
-    }
+      enabled: false,
+    },
   },
   plotOptions: {
     donut: {
-      size: '15%'
-    }
+      size: '15%',
+    },
   },
   stroke: {
-    width: 0
+    width: 0,
   },
   dataLabels: {
-    enabled: false
+    enabled: false,
   },
   responsive: [
     {
       breakpoint: 480,
       options: {
         chart: {
-          width: 200
-        }
-      }
-    }
+          width: 200,
+        },
+      },
+    },
   ],
   legend: {
-    show: false
-  }
+    show: false,
+  },
 };
 
 // ==============================|| INVOICE - PIE CHART ||============================== //
@@ -66,7 +66,7 @@ export default function InvoicePieChart() {
   const [options, setOptions] = useState<ChartProps>(areaChartOptions);
 
   useEffect(() => {
-    setOptions((prevState) => ({
+    setOptions(prevState => ({
       ...prevState,
       labels: ['Pending', 'Paid', 'Overdue', 'Draft'],
       colors: [theme.palette.warning.main, theme.palette.success.main, theme.palette.error.main, theme.palette.primary.lighter],
@@ -76,11 +76,11 @@ export default function InvoicePieChart() {
           <span class="PieDot" style='background-color:${w.globals.colors[seriesIndex]}'></span>
           <span class="fontsize">${w.globals.labels[seriesIndex]}${' '}
           <span class="fontsizeValue">${series[seriesIndex]}%</span></span></div>`;
-        }
+        },
       },
       theme: {
-        mode: mode === ThemeMode.DARK ? 'dark' : 'light'
-      }
+        mode: mode === ThemeMode.DARK ? 'dark' : 'light',
+      },
     }));
   }, [mode, primary, secondary, line, theme]);
 
@@ -96,9 +96,9 @@ export default function InvoicePieChart() {
 
   return (
     <MainCard
-      title="Total Expenses"
+      title='Total Expenses'
       secondary={
-        <IconButton edge="end" aria-label="comments" color="secondary" sx={{ transform: 'rotate(90deg)' }}>
+        <IconButton edge='end' aria-label='comments' color='secondary' sx={{ transform: 'rotate(90deg)' }}>
           <MoreIcon />
         </IconButton>
       }
@@ -106,19 +106,19 @@ export default function InvoicePieChart() {
         '.pie_box': { padding: 2, display: 'flex', gap: 1, alignItems: 'center', width: '100%' },
         '.PieDot': { width: 12, height: 12, borderRadius: '50%' },
         '.fontsize': { fontWeight: 500, fontSize: '0.875rem', lineHeight: '1.375rem', color: 'secondary.main' },
-        '.fontsizeValue': { color: 'secondary.dark' }
+        '.fontsizeValue': { color: 'secondary.dark' },
       }}
     >
-      <Grid container alignItems="center" spacing={1}>
+      <Grid container alignItems='center' spacing={1}>
         <Grid item xs={12} sx={{ '& .apexcharts-canvas': { margin: '0 auto' } }}>
-          <ReactApexChart options={options} series={series} type="donut" height={downMD ? '100%' : 265} />
+          <ReactApexChart options={options} series={series} type='donut' height={downMD ? '100%' : 265} />
         </Grid>
         <Grid item xs={12}>
           <Grid container>
             <Grid item></Grid>
             <Grid item xs sx={DotSize}>
-              <Dot color="warning" size={12} />
-              <Typography variant="subtitle1" color="text.secondary">
+              <Dot color='warning' size={12} />
+              <Typography variant='subtitle1' color='text.secondary'>
                 Pending
               </Typography>
             </Grid>
@@ -131,8 +131,8 @@ export default function InvoicePieChart() {
           <Grid container>
             <Grid item></Grid>
             <Grid item xs sx={DotSize}>
-              <Dot color="success" size={12} />
-              <Typography variant="subtitle1" color="text.secondary">
+              <Dot color='success' size={12} />
+              <Typography variant='subtitle1' color='text.secondary'>
                 Paid
               </Typography>
             </Grid>
@@ -145,8 +145,8 @@ export default function InvoicePieChart() {
           <Grid container>
             <Grid item></Grid>
             <Grid item xs sx={DotSize}>
-              <Dot color="error" size={12} />
-              <Typography variant="subtitle1" color="text.secondary">
+              <Dot color='error' size={12} />
+              <Typography variant='subtitle1' color='text.secondary'>
                 Overdue
               </Typography>
             </Grid>
@@ -160,7 +160,7 @@ export default function InvoicePieChart() {
             <Grid item></Grid>
             <Grid item xs sx={DotSize}>
               <Dot sx={{ bgcolor: 'primary.lighter' }} size={12} />
-              <Typography variant="subtitle1" color="text.secondary">
+              <Typography variant='subtitle1' color='text.secondary'>
                 Draft
               </Typography>
             </Grid>

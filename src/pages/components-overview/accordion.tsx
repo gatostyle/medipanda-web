@@ -17,10 +17,10 @@ export default function ComponentAccordion() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Accordion"
-        caption="Lists are continuous, vertical indexes of text or images."
-        directory="src/pages/components-overview/accordion"
-        link="https://mui.com/material-ui/react-accordion/"
+        title='Accordion'
+        caption='Lists are continuous, vertical indexes of text or images.'
+        directory='src/pages/components-overview/accordion'
+        link='https://mui.com/material-ui/react-accordion/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>

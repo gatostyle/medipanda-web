@@ -25,22 +25,22 @@ function getColorStyle({ variant, color, theme }: ButtonStyleProps) {
   const commonShadow = {
     '&::after': { boxShadow: `0 0 5px 5px ${alpha(main, 0.9)}` },
     '&:active::after': { boxShadow: `0 0 0 0 ${alpha(main, 0.9)}` },
-    '&:focus-visible': { outline: `2px solid ${dark}`, outlineOffset: 2 }
+    '&:focus-visible': { outline: `2px solid ${dark}`, outlineOffset: 2 },
   };
 
   switch (variant) {
     case 'contained':
       return {
         ...(color === 'secondary' && {
-          backgroundColor: theme.palette.mode === ThemeMode.DARK ? light : dark
+          backgroundColor: theme.palette.mode === ThemeMode.DARK ? light : dark,
         }),
         '&:hover': {
           backgroundColor: theme.palette.mode === ThemeMode.DARK ? lighter : dark,
           ...(color === 'secondary' && {
-            backgroundColor: theme.palette.mode === ThemeMode.DARK ? lighter : darker
-          })
+            backgroundColor: theme.palette.mode === ThemeMode.DARK ? lighter : darker,
+          }),
         },
-        ...commonShadow
+        ...commonShadow,
       };
     case 'shadow':
       return {
@@ -51,10 +51,10 @@ function getColorStyle({ variant, color, theme }: ButtonStyleProps) {
           boxShadow: 'none',
           backgroundColor: theme.palette.mode === ThemeMode.DARK ? lighter : darker,
           ...(color === 'secondary' && {
-            backgroundColor: theme.palette.mode === ThemeMode.DARK ? lighter : darker
-          })
+            backgroundColor: theme.palette.mode === ThemeMode.DARK ? lighter : darker,
+          }),
         },
-        ...commonShadow
+        ...commonShadow,
       };
     case 'outlined':
       return {
@@ -62,9 +62,9 @@ function getColorStyle({ variant, color, theme }: ButtonStyleProps) {
         '&:hover': {
           color: dark,
           backgroundColor: 'transparent',
-          borderColor: dark
+          borderColor: dark,
         },
-        ...commonShadow
+        ...commonShadow,
       };
     case 'dashed':
       return {
@@ -73,18 +73,18 @@ function getColorStyle({ variant, color, theme }: ButtonStyleProps) {
         backgroundColor: lighter,
         '&:hover': {
           color: theme.palette.mode === ThemeMode.DARK ? contrastText : dark,
-          borderColor: dark
+          borderColor: dark,
         },
-        ...commonShadow
+        ...commonShadow,
       };
     case 'text':
     default:
       return {
         '&:hover': {
           color: theme.palette.mode === ThemeMode.DARK ? darker : dark,
-          backgroundColor: theme.palette.mode === ThemeMode.DARK ? lighter + 30 : lighter
+          backgroundColor: theme.palette.mode === ThemeMode.DARK ? lighter + 30 : lighter,
         },
-        ...commonShadow
+        ...commonShadow,
       };
   }
 }
@@ -98,15 +98,15 @@ export default function Button(theme: Theme) {
   const disabledStyle = {
     '&.Mui-disabled': {
       backgroundColor: theme.palette.secondary[200],
-      pointerEvents: 'none !important'
-    }
+      pointerEvents: 'none !important',
+    },
   };
   const iconStyle = { '&>*:nth-of-type(1)': { fontSize: 'inherit' } };
 
   return {
     MuiButton: {
       defaultProps: {
-        disableElevation: true
+        disableElevation: true,
       },
       styleOverrides: {
         root: {
@@ -121,7 +121,7 @@ export default function Button(theme: Theme) {
             height: '100%',
             borderRadius: 8,
             opacity: 0,
-            transition: 'all 0.5s'
+            transition: 'all 0.5s',
           },
 
           '&:active::after': {
@@ -130,26 +130,26 @@ export default function Button(theme: Theme) {
             left: 0,
             top: 0,
             opacity: 1,
-            transition: '0s'
-          }
+            transition: '0s',
+          },
         },
         contained: {
-          ...disabledStyle
+          ...disabledStyle,
         },
         outlined: {
-          ...disabledStyle
+          ...disabledStyle,
         },
         text: {
           boxShadow: 'none',
           '&:hover': {
-            boxShadow: 'none'
-          }
+            boxShadow: 'none',
+          },
         },
         endIcon: {
-          ...iconStyle
+          ...iconStyle,
         },
         startIcon: {
-          ...iconStyle
+          ...iconStyle,
         },
         dashed: {
           border: '1px dashed',
@@ -163,8 +163,8 @@ export default function Button(theme: Theme) {
           '&.Mui-disabled': {
             color: `${theme.palette.secondary.light} !important`,
             borderColor: `${theme.palette.secondary[400]} !important`,
-            backgroundColor: `${theme.palette.secondary[200]} !important`
-          }
+            backgroundColor: `${theme.palette.secondary[200]} !important`,
+          },
         },
         shadow: {
           ...primaryShadow,
@@ -177,8 +177,8 @@ export default function Button(theme: Theme) {
           '&.Mui-disabled': {
             color: `${theme.palette.secondary.light} !important`,
             borderColor: `${theme.palette.secondary[400]} !important`,
-            backgroundColor: `${theme.palette.secondary[200]} !important`
-          }
+            backgroundColor: `${theme.palette.secondary[200]} !important`,
+          },
         },
         containedPrimary: getColorStyle({ variant: 'contained', color: 'primary', theme }),
         containedSecondary: getColorStyle({ variant: 'contained', color: 'secondary', theme }),
@@ -201,27 +201,27 @@ export default function Button(theme: Theme) {
         sizeExtraSmall: {
           minWidth: 56,
           fontSize: '0.625rem',
-          padding: '2px 8px'
+          padding: '2px 8px',
         },
         sizeSmall: {
           '& svg': {
             width: 16,
-            height: 16
-          }
+            height: 16,
+          },
         },
         sizeMedium: {
           '& svg': {
             width: 18,
-            height: 18
-          }
+            height: 18,
+          },
         },
         sizeLarge: {
           '& svg': {
             width: 20,
-            height: 20
-          }
-        }
-      }
-    }
+            height: 20,
+          },
+        },
+      },
+    },
   };
 }

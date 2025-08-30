@@ -28,7 +28,7 @@ function TimerBox({ count }: { count: number }) {
 
   return (
     <MainCard content={false} sx={{ width: { xs: 60, sm: 80 } }}>
-      <Stack justifyContent="center" alignItems="center">
+      <Stack justifyContent='center' alignItems='center'>
         <Box sx={{ py: 1.75 }}>
           <Typography variant={matchDownSM ? 'h4' : 'h2'}>{count}</Typography>
         </Box>
@@ -46,26 +46,26 @@ export default function ComingSoon() {
   return (
     <>
       <Container fixed>
-        <Grid container spacing={4} alignItems="center" justifyContent="center" sx={{ minHeight: '100vh', py: 2 }}>
+        <Grid container spacing={4} alignItems='center' justifyContent='center' sx={{ minHeight: '100vh', py: 2 }}>
           <Grid item md={6}>
             <Box sx={{ height: { xs: 310, sm: 420 }, width: { xs: 360, sm: 'auto' } }}>
-              <img src={coming} alt="coming soon 1" style={{ height: '100%', width: '100%' }} />
+              <img src={coming} alt='coming soon 1' style={{ height: '100%', width: '100%' }} />
             </Box>
           </Grid>
           <Grid item md={6}>
-            <Grid container spacing={3} direction="column" alignItems="center">
+            <Grid container spacing={3} direction='column' alignItems='center'>
               <Grid item xs={12}>
-                <Stack spacing={1} justifyContent="center" alignItems="center">
-                  <Typography align="center" variant="h1">
+                <Stack spacing={1} justifyContent='center' alignItems='center'>
+                  <Typography align='center' variant='h1'>
                     Coming Soon
                   </Typography>
-                  <Typography align="center" color="text.secondary">
+                  <Typography align='center' color='text.secondary'>
                     Something new is on its way
                   </Typography>
                 </Stack>
               </Grid>
               <Grid item xs={12}>
-                <Stack direction="row" alignItems="center" justifyContent="center" spacing={{ xs: 1, sm: 2 }}>
+                <Stack direction='row' alignItems='center' justifyContent='center' spacing={{ xs: 1, sm: 2 }}>
                   <TimerBox count={days} />
                   <TimerBox count={hours} />
                   <TimerBox count={minutes} />
@@ -74,18 +74,18 @@ export default function ComingSoon() {
               </Grid>
               <Grid item xs={12} sx={{ width: { xs: 380, md: 380, lg: 380 } }}>
                 <Stack spacing={3} sx={{ mt: 2 }}>
-                  <Stack direction="row" spacing={1}>
-                    <TextField fullWidth placeholder="Email Address" />
-                    <Button variant="contained" sx={{ width: '50%' }} startIcon={<Notification variant="Bold" />}>
+                  <Stack direction='row' spacing={1}>
+                    <TextField fullWidth placeholder='Email Address' />
+                    <Button variant='contained' sx={{ width: '50%' }} startIcon={<Notification variant='Bold' />}>
                       Notify Me
                     </Button>
                   </Stack>
-                  <Stack direction="row" spacing={2} alignItems="center" justifyContent="center">
-                    <IconButton shape="rounded" color="secondary">
-                      <Facebook variant="Bulk" size={20} />
+                  <Stack direction='row' spacing={2} alignItems='center' justifyContent='center'>
+                    <IconButton shape='rounded' color='secondary'>
+                      <Facebook variant='Bulk' size={20} />
                     </IconButton>
-                    <IconButton shape="rounded" color="secondary">
-                      <Google variant="Bulk" size={20} />
+                    <IconButton shape='rounded' color='secondary'>
+                      <Google variant='Bulk' size={20} />
                     </IconButton>
                   </Stack>
                 </Stack>

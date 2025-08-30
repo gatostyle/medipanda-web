@@ -26,7 +26,7 @@ const labels: { [index: string]: string } = {
   3.5: 'Good',
   4: 'Good+',
   4.5: 'Excellent',
-  5: 'Excellent+'
+  5: 'Excellent+',
 };
 
 // ==============================|| COMPONENTS - RATING ||============================== //
@@ -104,23 +104,23 @@ export default function ComponentRating() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Rating"
+        title='Rating'
         caption="Ratings provide insight regarding others' opinions and experiences, and can allow the user to submit a rating of their own."
-        directory="src/pages/components-overview/rating"
-        link="https://mui.com/material-ui/react-rating/"
+        directory='src/pages/components-overview/rating'
+        link='https://mui.com/material-ui/react-rating/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={6}>
             <Stack spacing={3}>
-              <MainCard title="Basic" codeHighlight codeString={basicRatingCodeString}>
+              <MainCard title='Basic' codeHighlight codeString={basicRatingCodeString}>
                 <Grid container spacing={1}>
                   <Grid item xs={5} sm={3}>
-                    <Typography variant="h6">Controlled</Typography>
+                    <Typography variant='h6'>Controlled</Typography>
                   </Grid>
                   <Grid item xs={7} sm={9}>
                     <Rating
-                      name="simple-controlled"
+                      name='simple-controlled'
                       value={value}
                       onChange={(event, newValue) => {
                         setValue(newValue);
@@ -128,45 +128,45 @@ export default function ComponentRating() {
                     />
                   </Grid>
                   <Grid item xs={5} sm={3}>
-                    <Typography variant="h6">Read Only</Typography>
+                    <Typography variant='h6'>Read Only</Typography>
                   </Grid>
                   <Grid item xs={7} sm={9}>
-                    <Rating name="read-only" value={3} readOnly />
+                    <Rating name='read-only' value={3} readOnly />
                   </Grid>
                   <Grid item xs={5} sm={3}>
-                    <Typography variant="h6">Disabled</Typography>
+                    <Typography variant='h6'>Disabled</Typography>
                   </Grid>
                   <Grid item xs={7} sm={9}>
-                    <Rating name="disabled" value={4} disabled />
+                    <Rating name='disabled' value={4} disabled />
                   </Grid>
                   <Grid item xs={5} sm={3}>
-                    <Typography variant="h6">No rating</Typography>
+                    <Typography variant='h6'>No rating</Typography>
                   </Grid>
                   <Grid item xs={7} sm={9}>
-                    <Rating name="no-value" value={null} />
+                    <Rating name='no-value' value={null} />
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Precision" codeString={precisionRatingCodeString}>
+              <MainCard title='Precision' codeString={precisionRatingCodeString}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <Rating name="half-rating" defaultValue={3.6} precision={0.1} />
+                    <Rating name='half-rating' defaultValue={3.6} precision={0.1} />
                   </Grid>
                   <Grid item xs={12}>
-                    <Rating name="half-rating-read" defaultValue={2.5} precision={0.5} readOnly />
+                    <Rating name='half-rating-read' defaultValue={2.5} precision={0.5} readOnly />
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Hover Feedback" codeString={hoverRatingCodeString}>
+              <MainCard title='Hover Feedback' codeString={hoverRatingCodeString}>
                 <Box
                   sx={{
                     width: 200,
                     display: 'flex',
-                    alignItems: 'center'
+                    alignItems: 'center',
                   }}
                 >
                   <Rating
-                    name="hover-feedback"
+                    name='hover-feedback'
                     value={value}
                     precision={0.5}
                     onChange={(event, newValue) => {
@@ -183,36 +183,36 @@ export default function ComponentRating() {
           </Grid>
           <Grid item xs={12} lg={6}>
             <Stack spacing={3}>
-              <MainCard title="Sizes" codeString={sizeRatingCodeString}>
+              <MainCard title='Sizes' codeString={sizeRatingCodeString}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <Rating name="size-small" defaultValue={2} size="small" />
+                    <Rating name='size-small' defaultValue={2} size='small' />
                   </Grid>
                   <Grid item xs={12}>
-                    <Rating name="size-medium" defaultValue={2} />
+                    <Rating name='size-medium' defaultValue={2} />
                   </Grid>
                   <Grid item xs={12}>
-                    <Rating name="size-large" defaultValue={2} size="large" />
+                    <Rating name='size-large' defaultValue={2} size='large' />
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Customization" codeString={customizationRatingCodeString}>
+              <MainCard title='Customization' codeString={customizationRatingCodeString}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <Rating name="customized-10" defaultValue={2} max={10} />
+                    <Rating name='customized-10' defaultValue={2} max={10} />
                   </Grid>
                   <Grid item xs={12}>
                     <Rating
-                      name="customized-color-heart"
+                      name='customized-color-heart'
                       defaultValue={2}
-                      icon={<Heart variant="Bold" style={{ fontSize: '1.3rem', margin: 2 }} />}
+                      icon={<Heart variant='Bold' style={{ fontSize: '1.3rem', margin: 2 }} />}
                       emptyIcon={<Heart style={{ fontSize: '1.3rem', margin: 2 }} />}
                       sx={{ color: 'error.main' }}
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <Rating
-                      name="customized-color-smily"
+                      name='customized-color-smily'
                       defaultValue={3}
                       icon={<EmojiHappy style={{ fontSize: '1.3rem', margin: 2 }} />}
                       emptyIcon={<EmojiHappy style={{ fontSize: '1.3rem', margin: 2 }} />}
@@ -221,10 +221,10 @@ export default function ComponentRating() {
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Half" codeString={halfRatingCodeString}>
+              <MainCard title='Half' codeString={halfRatingCodeString}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <Rating name="half-rating-read-custom" defaultValue={2.5} precision={0.5} />
+                    <Rating name='half-rating-read-custom' defaultValue={2.5} precision={0.5} />
                   </Grid>
                 </Grid>
               </MainCard>

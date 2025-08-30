@@ -67,30 +67,30 @@ export default function CustomerPreview({ customer, open, onClose, editCustomer 
         TransitionComponent={PopupTransition}
         keepMounted
         onClose={onClose}
-        aria-describedby="alert-dialog-slide-description"
+        aria-describedby='alert-dialog-slide-description'
         sx={{ '& .MuiDialog-paper': { width: 1024, maxWidth: 1, m: { xs: 1.75, sm: 2.5, md: 4 } } }}
       >
-        <Box id="PopupPrint" sx={{ px: { xs: 2, sm: 3, md: 5 }, py: 1 }}>
+        <Box id='PopupPrint' sx={{ px: { xs: 2, sm: 3, md: 5 }, py: 1 }}>
           <DialogTitle sx={{ px: 0 }}>
             <List sx={{ width: 1, p: 0 }}>
               <ListItem
                 disablePadding
                 secondaryAction={
-                  <Stack direction="row" alignItems="center" justifyContent="center" spacing={0}>
+                  <Stack direction='row' alignItems='center' justifyContent='center' spacing={0}>
                     <PDFDownloadLink document={<ListCard customer={customer} />} fileName={`Customer-${customer.name}.pdf`}>
-                      <Tooltip title="Export">
-                        <IconButton color="secondary">
+                      <Tooltip title='Export'>
+                        <IconButton color='secondary'>
                           <DocumentDownload />
                         </IconButton>
                       </Tooltip>
                     </PDFDownloadLink>
-                    <Tooltip title="Edit">
-                      <IconButton color="secondary" onClick={editCustomer}>
+                    <Tooltip title='Edit'>
+                      <IconButton color='secondary' onClick={editCustomer}>
                         <Edit />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title="Delete" onClick={handleClose}>
-                      <IconButton color="error">
+                    <Tooltip title='Delete' onClick={handleClose}>
+                      <IconButton color='error'>
                         <Trash />
                       </IconButton>
                     </Tooltip>
@@ -100,13 +100,13 @@ export default function CustomerPreview({ customer, open, onClose, editCustomer 
                 <ListItemAvatar sx={{ mr: 0.75 }}>
                   <Avatar
                     alt={customer.name}
-                    size="lg"
+                    size='lg'
                     src={getImageUrl(`avatar-${!customer.avatar ? 1 : customer.avatar}.png`, ImagePath.USERS)}
                   />
                 </ListItemAvatar>
                 <ListItemText
-                  primary={<Typography variant="h5">{customer.name}</Typography>}
-                  secondary={<Typography color="secondary">{customer.role}</Typography>}
+                  primary={<Typography variant='h5'>{customer.name}</Typography>}
+                  secondary={<Typography color='secondary'>{customer.role}</Typography>}
                 />
               </ListItem>
             </List>
@@ -117,26 +117,26 @@ export default function CustomerPreview({ customer, open, onClose, editCustomer 
                 <Grid item xs={12} sm={8} xl={9}>
                   <Grid container spacing={2.25}>
                     <Grid item xs={12}>
-                      <MainCard title="About me">
+                      <MainCard title='About me'>
                         <Typography>
                           Hello, Myself {customer.name}, I’m {customer.role} in international company, {customer.about}
                         </Typography>
                       </MainCard>
                     </Grid>
                     <Grid item xs={12}>
-                      <MainCard title="Education">
+                      <MainCard title='Education'>
                         <List sx={{ py: 0 }}>
                           <ListItem divider>
                             <Grid container spacing={matchDownMD ? 0.5 : 3}>
                               <Grid item xs={12} md={6}>
                                 <Stack spacing={0.5}>
-                                  <Typography color="secondary">Master Degree (Year)</Typography>
+                                  <Typography color='secondary'>Master Degree (Year)</Typography>
                                   <Typography>2014-2017</Typography>
                                 </Stack>
                               </Grid>
                               <Grid item xs={12} md={6}>
                                 <Stack spacing={0.5}>
-                                  <Typography color="secondary">Institute</Typography>
+                                  <Typography color='secondary'>Institute</Typography>
                                   <Typography>-</Typography>
                                 </Stack>
                               </Grid>
@@ -146,13 +146,13 @@ export default function CustomerPreview({ customer, open, onClose, editCustomer 
                             <Grid container spacing={matchDownMD ? 0.5 : 3}>
                               <Grid item xs={12} md={6}>
                                 <Stack spacing={0.5}>
-                                  <Typography color="secondary">Bachelor (Year)</Typography>
+                                  <Typography color='secondary'>Bachelor (Year)</Typography>
                                   <Typography>2011-2013</Typography>
                                 </Stack>
                               </Grid>
                               <Grid item xs={12} md={6}>
                                 <Stack spacing={0.5}>
-                                  <Typography color="secondary">Institute</Typography>
+                                  <Typography color='secondary'>Institute</Typography>
                                   <Typography>Imperial College London</Typography>
                                 </Stack>
                               </Grid>
@@ -162,13 +162,13 @@ export default function CustomerPreview({ customer, open, onClose, editCustomer 
                             <Grid container spacing={matchDownMD ? 0.5 : 3}>
                               <Grid item xs={12} md={6}>
                                 <Stack spacing={0.5}>
-                                  <Typography color="secondary">School (Year)</Typography>
+                                  <Typography color='secondary'>School (Year)</Typography>
                                   <Typography>2009-2011</Typography>
                                 </Stack>
                               </Grid>
                               <Grid item xs={12} md={6}>
                                 <Stack spacing={0.5}>
-                                  <Typography color="secondary">Institute</Typography>
+                                  <Typography color='secondary'>Institute</Typography>
                                   <Typography>School of London, England</Typography>
                                 </Stack>
                               </Grid>
@@ -178,19 +178,19 @@ export default function CustomerPreview({ customer, open, onClose, editCustomer 
                       </MainCard>
                     </Grid>
                     <Grid item xs={12}>
-                      <MainCard title="Emplyment">
+                      <MainCard title='Emplyment'>
                         <List sx={{ py: 0 }}>
                           <ListItem divider>
                             <Grid container spacing={matchDownMD ? 0.5 : 3}>
                               <Grid item xs={12} md={6}>
                                 <Stack spacing={0.5}>
-                                  <Typography color="secondary">Senior UI/UX designer (Year)</Typography>
+                                  <Typography color='secondary'>Senior UI/UX designer (Year)</Typography>
                                   <Typography>2019-Current</Typography>
                                 </Stack>
                               </Grid>
                               <Grid item xs={12} md={6}>
                                 <Stack spacing={0.5}>
-                                  <Typography color="secondary">Job Responsibility</Typography>
+                                  <Typography color='secondary'>Job Responsibility</Typography>
                                   <Typography>
                                     Perform task related to project manager with the 100+ team under my observation. Team management is key
                                     role in this company.
@@ -203,13 +203,13 @@ export default function CustomerPreview({ customer, open, onClose, editCustomer 
                             <Grid container spacing={matchDownMD ? 0.5 : 3}>
                               <Grid item xs={12} md={6}>
                                 <Stack spacing={0.5}>
-                                  <Typography color="secondary">Trainee cum Project Manager (Year)</Typography>
+                                  <Typography color='secondary'>Trainee cum Project Manager (Year)</Typography>
                                   <Typography>2017-2019</Typography>
                                 </Stack>
                               </Grid>
                               <Grid item xs={12} md={6}>
                                 <Stack spacing={0.5}>
-                                  <Typography color="secondary">Job Responsibility</Typography>
+                                  <Typography color='secondary'>Job Responsibility</Typography>
                                   <Typography>Team management is key role in this company.</Typography>
                                 </Stack>
                               </Grid>
@@ -219,11 +219,11 @@ export default function CustomerPreview({ customer, open, onClose, editCustomer 
                       </MainCard>
                     </Grid>
                     <Grid item xs={12}>
-                      <MainCard title="Skills">
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', listStyle: 'none', p: 0.5, m: 0 }} component="ul">
+                      <MainCard title='Skills'>
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', listStyle: 'none', p: 0.5, m: 0 }} component='ul'>
                           {customer.skills.map((skill: string, index: number) => (
                             <ListItem disablePadding key={index} sx={{ width: 'auto', pr: 0.75, pb: 0.75 }}>
-                              <Chip color="secondary" variant="outlined" size="small" label={skill} />
+                              <Chip color='secondary' variant='outlined' size='small' label={skill} />
                             </ListItem>
                           ))}
                         </Box>
@@ -235,28 +235,28 @@ export default function CustomerPreview({ customer, open, onClose, editCustomer 
                   <MainCard>
                     <Stack spacing={2}>
                       <Stack spacing={0.5}>
-                        <Typography color="secondary">Father Name</Typography>
+                        <Typography color='secondary'>Father Name</Typography>
                         <Typography>
                           Mr. {customer.firstName} {customer.lastName}
                         </Typography>
                       </Stack>
                       <Stack spacing={0.5}>
-                        <Typography color="secondary">Email</Typography>
+                        <Typography color='secondary'>Email</Typography>
                         <Typography>{customer.email}</Typography>
                       </Stack>
                       <Stack spacing={0.5}>
-                        <Typography color="secondary">Contact</Typography>
+                        <Typography color='secondary'>Contact</Typography>
                         <Typography>
-                          <PatternFormat displayType="text" format="+1 (###) ###-####" mask="_" defaultValue={customer.contact} />
+                          <PatternFormat displayType='text' format='+1 (###) ###-####' mask='_' defaultValue={customer.contact} />
                         </Typography>
                       </Stack>
                       <Stack spacing={0.5}>
-                        <Typography color="secondary">Location</Typography>
+                        <Typography color='secondary'>Location</Typography>
                         <Typography> {customer.country} </Typography>
                       </Stack>
                       <Stack spacing={0.5}>
-                        <Typography color="secondary">Website</Typography>
-                        <Link href="https://google.com" target="_blank" sx={{ textTransform: 'lowercase' }}>
+                        <Typography color='secondary'>Website</Typography>
+                        <Link href='https://google.com' target='_blank' sx={{ textTransform: 'lowercase' }}>
                           https://{customer.firstName}.en
                         </Link>
                       </Stack>
@@ -268,7 +268,7 @@ export default function CustomerPreview({ customer, open, onClose, editCustomer 
           </DialogContent>
 
           <DialogActions>
-            <Button color="error" variant="contained" onClick={onClose}>
+            <Button color='error' variant='contained' onClick={onClose}>
               Close
             </Button>
           </DialogActions>

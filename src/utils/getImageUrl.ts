@@ -3,7 +3,7 @@ export enum ImagePath {
   USERS = 'users',
   ECOMMERCE = 'e-commerce',
   PROFILE = 'profile',
-  WIDGET = 'widget'
+  WIDGET = 'widget',
 }
 
 // ==============================|| NEW URL - GET IMAGE URL ||============================== //

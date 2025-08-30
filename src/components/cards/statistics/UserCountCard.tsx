@@ -15,7 +15,7 @@ const IconWrapper = styled('div')({
   bottom: '-27px',
   color: '#fff',
   transform: 'rotate(25deg)',
-  '& svg': { width: '100px', height: '100px', opacity: '0.35' }
+  '& svg': { width: '100px', height: '100px', opacity: '0.35' },
 });
 
 interface UserCountCardProps {
@@ -29,20 +29,20 @@ interface UserCountCardProps {
 
 export default function UserCountCard({ primary, secondary, iconPrimary, color }: UserCountCardProps) {
   const IconPrimary = iconPrimary!;
-  const primaryIcon = iconPrimary ? <IconPrimary fontSize="large" /> : null;
+  const primaryIcon = iconPrimary ? <IconPrimary fontSize='large' /> : null;
 
   return (
     <Card elevation={0} sx={{ bgcolor: color, position: 'relative', color: '#fff' }}>
       <CardContent>
         <IconWrapper>{primaryIcon}</IconWrapper>
-        <Grid container direction="column" justifyContent="center" alignItems="center" spacing={1}>
+        <Grid container direction='column' justifyContent='center' alignItems='center' spacing={1}>
           <Grid item sm={12}>
-            <Typography variant="h3" align="center" color="inherit">
+            <Typography variant='h3' align='center' color='inherit'>
               {secondary}
             </Typography>
           </Grid>
           <Grid item sm={12}>
-            <Typography variant="body1" align="center" color="inherit">
+            <Typography variant='body1' align='center' color='inherit'>
               {primary}
             </Typography>
           </Grid>

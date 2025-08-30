@@ -24,23 +24,23 @@ const viewOptions = [
   {
     label: 'Month',
     value: 'dayGridMonth',
-    icon: Category
+    icon: Category,
   },
   {
     label: 'Week',
     value: 'timeGridWeek',
-    icon: Grid6
+    icon: Grid6,
   },
   {
     label: 'Day',
     value: 'timeGridDay',
-    icon: Calendar1
+    icon: Calendar1,
   },
   {
     label: 'Agenda',
     value: 'listWeek',
-    icon: TableDocument
-  }
+    icon: TableDocument,
+  },
 ];
 
 export interface ToolbarProps {
@@ -61,7 +61,7 @@ export default function Toolbar({ date, view, onClickNext, onClickPrev, onClickT
 
   useEffect(() => {
     if (matchDownSM) {
-      const filter = viewOptions.filter((item) => item.value !== 'dayGridMonth' && item.value !== 'timeGridWeek');
+      const filter = viewOptions.filter(item => item.value !== 'dayGridMonth' && item.value !== 'timeGridWeek');
       setViewFilter(filter);
     } else {
       setViewFilter(viewOptions);
@@ -69,18 +69,18 @@ export default function Toolbar({ date, view, onClickNext, onClickPrev, onClickT
   }, [matchDownSM]);
 
   return (
-    <Grid alignItems="center" container justifyContent="space-between" spacing={matchDownSM ? 1 : 3} sx={{ pb: 3 }}>
+    <Grid alignItems='center' container justifyContent='space-between' spacing={matchDownSM ? 1 : 3} sx={{ pb: 3 }}>
       <Grid item>
-        <Button variant="outlined" onClick={onClickToday} size={matchDownSM ? 'small' : 'medium'}>
+        <Button variant='outlined' onClick={onClickToday} size={matchDownSM ? 'small' : 'medium'}>
           Today
         </Button>
       </Grid>
       <Grid item>
-        <Stack direction="row" alignItems="center" spacing={matchDownSM ? 1 : 3}>
+        <Stack direction='row' alignItems='center' spacing={matchDownSM ? 1 : 3}>
           <IconButton onClick={onClickPrev} size={matchDownSM ? 'small' : 'large'}>
             <ArrowLeft2 />
           </IconButton>
-          <Typography variant={matchDownSM ? 'h5' : 'h3'} color="text.primary">
+          <Typography variant={matchDownSM ? 'h5' : 'h3'} color='text.primary'>
             {format(date, 'MMMM yyyy')}
           </Typography>
           <IconButton onClick={onClickNext} size={matchDownSM ? 'small' : 'large'}>
@@ -89,8 +89,8 @@ export default function Toolbar({ date, view, onClickNext, onClickPrev, onClickT
         </Stack>
       </Grid>
       <Grid item>
-        <ButtonGroup variant="outlined" aria-label="outlined button group">
-          {viewFilter.map((viewOption) => {
+        <ButtonGroup variant='outlined' aria-label='outlined button group'>
+          {viewFilter.map(viewOption => {
             const Icon = viewOption.icon;
             return (
               <Tooltip title={viewOption.label} key={viewOption.value}>

@@ -5,9 +5,9 @@ export default function Drawer() {
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundImage: 'none'
-        }
-      }
-    }
+          backgroundImage: 'none',
+        },
+      },
+    },
   };
 }

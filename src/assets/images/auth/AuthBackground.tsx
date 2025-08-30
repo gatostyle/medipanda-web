@@ -30,8 +30,8 @@ const AuthBackground = () => {
           position: 'absolute',
           top: 0,
           right: 0,
-          opacity: theme.palette.mode === ThemeMode.DARK ? 0.6 : 1
-        }
+          opacity: theme.palette.mode === ThemeMode.DARK ? 0.6 : 1,
+        },
       }}
     >
       <Box
@@ -43,7 +43,7 @@ const AuthBackground = () => {
           ml: 20,
           position: 'absolute',
           bottom: 180,
-          opacity: theme.palette.mode === ThemeMode.DARK ? 0.8 : 1
+          opacity: theme.palette.mode === ThemeMode.DARK ? 0.8 : 1,
         }}
       />
       <Box
@@ -55,7 +55,7 @@ const AuthBackground = () => {
           position: 'absolute',
           bottom: 0,
           left: -50,
-          opacity: theme.palette.mode === ThemeMode.DARK ? 0.8 : 1
+          opacity: theme.palette.mode === ThemeMode.DARK ? 0.8 : 1,
         }}
       />
     </Box>

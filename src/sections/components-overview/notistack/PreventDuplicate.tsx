@@ -34,17 +34,17 @@ export default function PreventDuplicate() {
 </Button>`;
 
   return (
-    <MainCard title="Prevent Duplicate" codeString={NotiStackPreventDuplicateCodeString}>
-      <Stack flexDirection={'row'} gap={1} justifyContent={'center'} alignItems={'center'} flexWrap="wrap">
+    <MainCard title='Prevent Duplicate' codeString={NotiStackPreventDuplicateCodeString}>
+      <Stack flexDirection={'row'} gap={1} justifyContent={'center'} alignItems={'center'} flexWrap='wrap'>
         <Checkbox checked={checked} onChange={handleChangeCheck} inputProps={{ 'aria-label': 'controlled' }} />
         Prevent duplicate
         <Button
-          variant="outlined"
+          variant='outlined'
           fullWidth
           sx={{ marginBlockStart: 2 }}
           onClick={() =>
             enqueueSnackbar('You only see me once.', {
-              preventDuplicate: checked ? true : false
+              preventDuplicate: checked ? true : false,
             })
           }
         >

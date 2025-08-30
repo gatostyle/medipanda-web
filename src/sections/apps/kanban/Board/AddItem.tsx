@@ -38,7 +38,7 @@ export default function AddItem({ columnId }: Props) {
   const [addTaskBox, setAddTaskBox] = useState(false);
 
   const handleAddTaskChange = () => {
-    setAddTaskBox((prev) => !prev);
+    setAddTaskBox(prev => !prev);
   };
 
   const [title, setTitle] = useState('');
@@ -60,7 +60,7 @@ export default function AddItem({ columnId }: Props) {
         assign: '',
         description: '',
         priority: 'low',
-        attachments: []
+        attachments: [],
       };
 
       addItem(columnId, newItem, '0');
@@ -69,7 +69,7 @@ export default function AddItem({ columnId }: Props) {
         message: 'Task Added successfully',
         anchorOrigin: { vertical: 'top', horizontal: 'right' },
         variant: 'alert',
-        alert: { color: 'success' }
+        alert: { color: 'success' },
       } as SnackbarProps);
       handleAddTaskChange();
       setTitle('');
@@ -89,16 +89,16 @@ export default function AddItem({ columnId }: Props) {
   };
 
   return (
-    <Grid container alignItems="center" spacing={1} sx={{ marginTop: 1 }}>
+    <Grid container alignItems='center' spacing={1} sx={{ marginTop: 1 }}>
       {addTaskBox && (
         <Grid item xs={12}>
           <SubCard content={false}>
             <Box sx={{ p: 2, pb: 1.5, transition: 'background-color 0.25s ease-out' }}>
-              <Grid container alignItems="center" spacing={0.5}>
+              <Grid container alignItems='center' spacing={0.5}>
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    placeholder="Add Task"
+                    placeholder='Add Task'
                     value={title}
                     onChange={handleTaskTitle}
                     sx={{
@@ -106,7 +106,7 @@ export default function AddItem({ columnId }: Props) {
                       '& input': { bgcolor: 'transparent', p: 0, borderRadius: '0px' },
                       '& fieldset': { display: 'none' },
                       '& .MuiFormHelperText-root': { ml: 0 },
-                      '& .MuiOutlinedInput-root': { bgcolor: 'transparent', '&.Mui-focused': { boxShadow: 'none' } }
+                      '& .MuiOutlinedInput-root': { bgcolor: 'transparent', '&.Mui-focused': { boxShadow: 'none' } },
                     }}
                     onKeyUp={handleAddTask}
                     helperText={isTitle ? 'Task title is required.' : ''}
@@ -125,13 +125,13 @@ export default function AddItem({ columnId }: Props) {
                 </Grid>
                 <Grid item xs zeroMinWidth />
                 <Grid item>
-                  <Stack direction="row" alignItems="center" spacing={1}>
-                    <Tooltip title="Cancel">
-                      <IconButton size="small" color="error" onClick={handleAddTaskChange}>
+                  <Stack direction='row' alignItems='center' spacing={1}>
+                    <Tooltip title='Cancel'>
+                      <IconButton size='small' color='error' onClick={handleAddTaskChange}>
                         <Add style={{ transform: 'rotate(45deg)' }} />
                       </IconButton>
                     </Tooltip>
-                    <Button variant="contained" color="primary" onClick={addTask} size="small">
+                    <Button variant='contained' color='primary' onClick={addTask} size='small'>
                       Add
                     </Button>
                   </Stack>
@@ -143,7 +143,7 @@ export default function AddItem({ columnId }: Props) {
       )}
       {!addTaskBox && (
         <Grid item xs={12}>
-          <Button variant="dashed" color="secondary" fullWidth onClick={handleAddTaskChange}>
+          <Button variant='dashed' color='secondary' fullWidth onClick={handleAddTaskChange}>
             Add Task
           </Button>
         </Grid>

@@ -30,14 +30,14 @@ export default function LandscapeDatePicker() {
 </LocalizationProvider>`;
 
   return (
-    <MainCard title="Landscape" codeString={landscapDatepickerCodeString}>
+    <MainCard title='Landscape' codeString={landscapDatepickerCodeString}>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <StaticDatePicker<Date>
-          orientation="landscape"
-          openTo="day"
+          orientation='landscape'
+          openTo='day'
           value={value}
           shouldDisableDate={isWeekend}
-          onChange={(newValue) => {
+          onChange={newValue => {
             setValue(newValue);
           }}
         />

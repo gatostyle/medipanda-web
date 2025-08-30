@@ -22,24 +22,24 @@ export default function DismissSnackBar() {
 </Button>`;
 
   return (
-    <MainCard title="Dismiss Programmatically" codeString={NotiStackDismissSnackBarCodeString}>
+    <MainCard title='Dismiss Programmatically' codeString={NotiStackDismissSnackBarCodeString}>
       <Stack flexDirection={'row'} justifyContent={'space-between'}>
         <Button
-          variant="outlined"
+          variant='outlined'
           fullWidth
-          color="error"
+          color='error'
           sx={{ marginBlockStart: 2, marginInlineEnd: 2 }}
           onClick={() =>
             enqueueSnackbar('No connection!', {
               variant: 'error',
               persist: true,
-              anchorOrigin: { horizontal: 'center', vertical: 'bottom' }
+              anchorOrigin: { horizontal: 'center', vertical: 'bottom' },
             })
           }
         >
           Simulate connection loss
         </Button>
-        <Button variant="outlined" fullWidth sx={{ marginBlockStart: 2 }} onClick={() => closeSnackbar()}>
+        <Button variant='outlined' fullWidth sx={{ marginBlockStart: 2 }} onClick={() => closeSnackbar()}>
           Back Online
         </Button>
       </Stack>

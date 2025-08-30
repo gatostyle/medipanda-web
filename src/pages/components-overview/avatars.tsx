@@ -217,194 +217,194 @@ export default function ComponentAvatar() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Avatar"
-        caption="Avatars are found throughout material design with uses in everything from tables to dialog menus."
-        directory="src/pages/components-overview/avatars"
-        link="https://mui.com/material-ui/react-avatar/"
+        title='Avatar'
+        caption='Avatars are found throughout material design with uses in everything from tables to dialog menus.'
+        directory='src/pages/components-overview/avatars'
+        link='https://mui.com/material-ui/react-avatar/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={6}>
             <Stack spacing={3}>
-              <MainCard title="Basic" codeHighlight codeString={basicAvatarCodeString}>
-                <Avatar alt="Basic">
-                  <Profile variant="Bold" />
+              <MainCard title='Basic' codeHighlight codeString={basicAvatarCodeString}>
+                <Avatar alt='Basic'>
+                  <Profile variant='Bold' />
                 </Avatar>
               </MainCard>
-              <MainCard title="Vector" codeString={vectorAvatarCodeString}>
+              <MainCard title='Vector' codeString={vectorAvatarCodeString}>
                 <Grid container spacing={1}>
                   <Grid item>
                     <Avatar>
-                      <img alt="Natacha" src={vector1} height={40} />
+                      <img alt='Natacha' src={vector1} height={40} />
                     </Avatar>
                   </Grid>
                   <Grid item>
                     <Avatar>
-                      <img alt="Natacha" src={vector2} height={40} />
+                      <img alt='Natacha' src={vector2} height={40} />
                     </Avatar>
                   </Grid>
                   <Grid item>
                     <Avatar>
-                      <img alt="Natacha" src={vector3} height={40} />
+                      <img alt='Natacha' src={vector3} height={40} />
                     </Avatar>
                   </Grid>
                   <Grid item>
                     <Avatar>
-                      <img alt="Natacha" src={vector4} height={40} />
+                      <img alt='Natacha' src={vector4} height={40} />
                     </Avatar>
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Variants" codeString={variantsAvatarCodeString}>
+              <MainCard title='Variants' codeString={variantsAvatarCodeString}>
                 <Grid container spacing={1}>
                   <Grid item>
-                    <Avatar alt="Natacha">
-                      <Profile variant="Bold" />
+                    <Avatar alt='Natacha'>
+                      <Profile variant='Bold' />
                     </Avatar>
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Natacha" variant="rounded" type="combined">
-                      <Profile variant="Bold" />
+                    <Avatar alt='Natacha' variant='rounded' type='combined'>
+                      <Profile variant='Bold' />
                     </Avatar>
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Natacha" variant="square" type="filled">
+                    <Avatar alt='Natacha' variant='square' type='filled'>
                       <Profile />
                     </Avatar>
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Natacha">U</Avatar>
+                    <Avatar alt='Natacha'>U</Avatar>
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Natacha" variant="rounded" type="combined">
+                    <Avatar alt='Natacha' variant='rounded' type='combined'>
                       U
                     </Avatar>
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Natacha" variant="square" type="filled">
+                    <Avatar alt='Natacha' variant='square' type='filled'>
                       U
                     </Avatar>
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Icon" codeString={iconAvatarCodeString}>
+              <MainCard title='Icon' codeString={iconAvatarCodeString}>
                 <Grid container spacing={1}>
                   <Grid item>
-                    <Avatar alt="Natacha" size="sm" type="filled">
-                      <Profile variant="Bold" />
+                    <Avatar alt='Natacha' size='sm' type='filled'>
+                      <Profile variant='Bold' />
                     </Avatar>
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Natacha" size="sm" type="filled" color="success">
-                      <Sms variant="Bold" />
+                    <Avatar alt='Natacha' size='sm' type='filled' color='success'>
+                      <Sms variant='Bold' />
                     </Avatar>
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Natacha" size="sm" type="filled" color="error">
-                      <Setting2 variant="Bold" />
+                    <Avatar alt='Natacha' size='sm' type='filled' color='error'>
+                      <Setting2 variant='Bold' />
                     </Avatar>
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Natacha" size="sm">
+                    <Avatar alt='Natacha' size='sm'>
                       <Add />
                     </Avatar>
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="With Badge" codeString={badgeAvatarCodeString}>
+              <MainCard title='With Badge' codeString={badgeAvatarCodeString}>
                 <Grid container spacing={1}>
                   <Grid item>
-                    <Badge badgeContent={4} color="error" overlap="circular">
-                      <Avatar alt="Natacha" type="filled" src={avatar6} />
+                    <Badge badgeContent={4} color='error' overlap='circular'>
+                      <Avatar alt='Natacha' type='filled' src={avatar6} />
                     </Badge>
                   </Grid>
                   <Grid item>
-                    <Badge color="error" overlap="circular" variant="dot">
-                      <Avatar alt="Natacha" color="secondary" type="filled">
+                    <Badge color='error' overlap='circular' variant='dot'>
+                      <Avatar alt='Natacha' color='secondary' type='filled'>
                         <Profile />
                       </Avatar>
                     </Badge>
                   </Grid>
                   <Grid item>
-                    <Badge color="error" overlap="circular" variant="dot">
-                      <Avatar alt="Natacha" type="filled" src={avatar2} />
+                    <Badge color='error' overlap='circular' variant='dot'>
+                      <Avatar alt='Natacha' type='filled' src={avatar2} />
                     </Badge>
                   </Grid>
                   <Grid item>
-                    <Badge color="error" overlap="circular" variant="dot">
-                      <Avatar alt="Natacha" type="outlined">
+                    <Badge color='error' overlap='circular' variant='dot'>
+                      <Avatar alt='Natacha' type='outlined'>
                         U
                       </Avatar>
                     </Badge>
                   </Grid>
                   <Grid item>
-                    <Badge color="error" overlap="circular" variant="dot">
+                    <Badge color='error' overlap='circular' variant='dot'>
                       <Avatar>
-                        <img alt="Natacha" src={vector2} width={40} />
+                        <img alt='Natacha' src={vector2} width={40} />
                       </Avatar>
                     </Badge>
                   </Grid>
                   <Grid item>
-                    <Badge color="success" variant="dot">
-                      <Avatar alt="Natacha" variant="rounded" type="filled" src={avatar1} />
+                    <Badge color='success' variant='dot'>
+                      <Avatar alt='Natacha' variant='rounded' type='filled' src={avatar1} />
                     </Badge>
                   </Grid>
                   <Grid item>
                     <Badge
-                      overlap="circular"
+                      overlap='circular'
                       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                      badgeContent={<Avatar size="badge" alt="Remy Sharp" src={avatar6} />}
+                      badgeContent={<Avatar size='badge' alt='Remy Sharp' src={avatar6} />}
                     >
-                      <Avatar alt="Travis Howard" src={avatar1} />
+                      <Avatar alt='Travis Howard' src={avatar1} />
                     </Badge>
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Image" codeString={imageAvatarCodeString}>
+              <MainCard title='Image' codeString={imageAvatarCodeString}>
                 <Grid container spacing={1}>
                   <Grid item>
-                    <Avatar alt="Avatar 1" src={avatar1} />
+                    <Avatar alt='Avatar 1' src={avatar1} />
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Avatar 2" src={avatar2} />
+                    <Avatar alt='Avatar 2' src={avatar2} />
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Avatar 3" src={avatar3} />
+                    <Avatar alt='Avatar 3' src={avatar3} />
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Avatar 4" src={avatar4} />
+                    <Avatar alt='Avatar 4' src={avatar4} />
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Colors" codeString={colorsAvatarCodeString}>
+              <MainCard title='Colors' codeString={colorsAvatarCodeString}>
                 <Grid container spacing={1}>
                   <Grid item>
-                    <Avatar alt="Basic" type="filled">
+                    <Avatar alt='Basic' type='filled'>
                       <Profile />
                     </Avatar>
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Basic" type="filled" color="secondary">
+                    <Avatar alt='Basic' type='filled' color='secondary'>
                       <Coin />
                     </Avatar>
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Basic" type="filled" color="success">
+                    <Avatar alt='Basic' type='filled' color='success'>
                       <TickCircle />
                     </Avatar>
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Basic" type="filled" color="warning">
+                    <Avatar alt='Basic' type='filled' color='warning'>
                       <Warning2 />
                     </Avatar>
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Basic" type="filled" color="info">
+                    <Avatar alt='Basic' type='filled' color='info'>
                       <InfoCircle />
                     </Avatar>
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Basic" type="filled" color="error">
+                    <Avatar alt='Basic' type='filled' color='error'>
                       <Trash />
                     </Avatar>
                   </Grid>
@@ -414,86 +414,86 @@ export default function ComponentAvatar() {
           </Grid>
           <Grid item xs={12} lg={6}>
             <Stack spacing={3}>
-              <MainCard title="Letter" codeString={letterAvatarCodeString}>
+              <MainCard title='Letter' codeString={letterAvatarCodeString}>
                 <Grid container spacing={1}>
                   <Grid item>
-                    <Avatar alt="Natacha" size="sm">
+                    <Avatar alt='Natacha' size='sm'>
                       U
                     </Avatar>
                   </Grid>
                   <Grid item>
-                    <Avatar color="error" alt="Natacha" size="sm">
+                    <Avatar color='error' alt='Natacha' size='sm'>
                       UI
                     </Avatar>
                   </Grid>
                   <Grid item>
-                    <Avatar color="error" type="filled" alt="Natacha" size="sm">
+                    <Avatar color='error' type='filled' alt='Natacha' size='sm'>
                       A
                     </Avatar>
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Outlined" codeString={outlinedAvatarCodeString}>
+              <MainCard title='Outlined' codeString={outlinedAvatarCodeString}>
                 <Grid container spacing={1}>
                   <Grid item>
-                    <Avatar alt="Natacha" type="outlined">
-                      <Profile variant="Bold" />
+                    <Avatar alt='Natacha' type='outlined'>
+                      <Profile variant='Bold' />
                     </Avatar>
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Natacha" variant="rounded" type="outlined">
-                      <Profile variant="Bold" />
+                    <Avatar alt='Natacha' variant='rounded' type='outlined'>
+                      <Profile variant='Bold' />
                     </Avatar>
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Natacha" variant="square" type="outlined">
-                      <Profile variant="Bold" />
+                    <Avatar alt='Natacha' variant='square' type='outlined'>
+                      <Profile variant='Bold' />
                     </Avatar>
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Natacha" type="outlined">
+                    <Avatar alt='Natacha' type='outlined'>
                       U
                     </Avatar>
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Natacha" variant="rounded" type="outlined">
+                    <Avatar alt='Natacha' variant='rounded' type='outlined'>
                       U
                     </Avatar>
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Natacha" variant="square" type="outlined">
+                    <Avatar alt='Natacha' variant='square' type='outlined'>
                       U
                     </Avatar>
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Avatar Group" codeString={groupAvatarCodeString}>
+              <MainCard title='Avatar Group' codeString={groupAvatarCodeString}>
                 <Stack spacing={2}>
-                  <Typography variant="subtitle1">Default</Typography>
+                  <Typography variant='subtitle1'>Default</Typography>
                   <Box sx={{ width: 148 }}>
                     <AvatarGroup max={4}>
-                      <Avatar alt="Trevor Henderson" src={avatar5} />
-                      <Avatar alt="Jone Doe" src={avatar6} />
-                      <Avatar alt="Lein Ket" src={avatar7} />
-                      <Avatar alt="Stebin Ben" src={avatar8} />
-                      <Avatar alt="Wungh Tend" src={avatar9} />
-                      <Avatar alt="Trevor Das" src={avatar10} />
+                      <Avatar alt='Trevor Henderson' src={avatar5} />
+                      <Avatar alt='Jone Doe' src={avatar6} />
+                      <Avatar alt='Lein Ket' src={avatar7} />
+                      <Avatar alt='Stebin Ben' src={avatar8} />
+                      <Avatar alt='Wungh Tend' src={avatar9} />
+                      <Avatar alt='Trevor Das' src={avatar10} />
                     </AvatarGroup>
                   </Box>
                   <Divider sx={{ my: 2 }} />
-                  <Typography variant="subtitle1">On Hover</Typography>
+                  <Typography variant='subtitle1'>On Hover</Typography>
                   <Box sx={{ width: 186 }}>
                     <Tooltip
                       open={show}
-                      placement="top-end"
+                      placement='top-end'
                       title={
                         <AvatarGroup max={10}>
-                          <Avatar alt="Trevor Henderson" src={avatar5} />
-                          <Avatar alt="Jone Doe" src={avatar6} />
-                          <Avatar alt="Lein Ket" src={avatar7} />
-                          <Avatar alt="Stebin Ben" src={avatar8} />
-                          <Avatar alt="Wungh Tend" src={avatar9} />
-                          <Avatar alt="Trevor Das" src={avatar10} />
+                          <Avatar alt='Trevor Henderson' src={avatar5} />
+                          <Avatar alt='Jone Doe' src={avatar6} />
+                          <Avatar alt='Lein Ket' src={avatar7} />
+                          <Avatar alt='Stebin Ben' src={avatar8} />
+                          <Avatar alt='Wungh Tend' src={avatar9} />
+                          <Avatar alt='Trevor Das' src={avatar10} />
                         </AvatarGroup>
                       }
                     >
@@ -506,38 +506,38 @@ export default function ComponentAvatar() {
                             },
                             onMouseLeave: () => {
                               setShow(false);
-                            }
-                          }
+                            },
+                          },
                         }}
                       >
-                        <Avatar alt="Remy Sharp" src={avatar1} />
-                        <Avatar alt="Travis Howard" src={avatar2} />
-                        <Avatar alt="Cindy Baker" src={avatar3} />
-                        <Avatar alt="Agnes Walker" src={avatar4} />
-                        <Avatar alt="Trevor Henderson" src={avatar5} />
-                        <Avatar alt="Jone Doe" src={avatar6} />
-                        <Avatar alt="Lein Ket" src={avatar7} />
-                        <Avatar alt="Stebin Ben" src={avatar8} />
-                        <Avatar alt="Wungh Tend" src={avatar9} />
-                        <Avatar alt="Trevor Das" src={avatar10} />
+                        <Avatar alt='Remy Sharp' src={avatar1} />
+                        <Avatar alt='Travis Howard' src={avatar2} />
+                        <Avatar alt='Cindy Baker' src={avatar3} />
+                        <Avatar alt='Agnes Walker' src={avatar4} />
+                        <Avatar alt='Trevor Henderson' src={avatar5} />
+                        <Avatar alt='Jone Doe' src={avatar6} />
+                        <Avatar alt='Lein Ket' src={avatar7} />
+                        <Avatar alt='Stebin Ben' src={avatar8} />
+                        <Avatar alt='Wungh Tend' src={avatar9} />
+                        <Avatar alt='Trevor Das' src={avatar10} />
                       </AvatarGroup>
                     </Tooltip>
                   </Box>
                 </Stack>
                 <Divider sx={{ my: 2 }} />
                 <Stack spacing={2}>
-                  <Typography variant="subtitle1">On Click</Typography>
+                  <Typography variant='subtitle1'>On Click</Typography>
                   <Box sx={{ width: 222 }}>
                     <Tooltip
                       open={open}
-                      placement="top-end"
+                      placement='top-end'
                       title={
                         <AvatarGroup max={10}>
-                          <Avatar alt="Jone Doe" src={avatar6} />
-                          <Avatar alt="Lein Ket" src={avatar7} />
-                          <Avatar alt="Stebin Ben" src={avatar8} />
-                          <Avatar alt="Wungh Tend" src={avatar9} />
-                          <Avatar alt="Trevor Das" src={avatar10} />
+                          <Avatar alt='Jone Doe' src={avatar6} />
+                          <Avatar alt='Lein Ket' src={avatar7} />
+                          <Avatar alt='Stebin Ben' src={avatar8} />
+                          <Avatar alt='Wungh Tend' src={avatar9} />
+                          <Avatar alt='Trevor Das' src={avatar10} />
                         </AvatarGroup>
                       }
                     >
@@ -548,56 +548,56 @@ export default function ComponentAvatar() {
                           additionalAvatar: {
                             onClick: () => {
                               setOpen(!open);
-                            }
-                          }
+                            },
+                          },
                         }}
                       >
-                        <Avatar alt="Remy Sharp" src={avatar1} />
-                        <Avatar alt="Travis Howard" src={avatar2} />
-                        <Avatar alt="Cindy Baker" src={avatar3} />
-                        <Avatar alt="Agnes Walker" src={avatar4} />
-                        <Avatar alt="Trevor Henderson" src={avatar5} />
-                        <Avatar alt="Jone Doe" src={avatar6} />
-                        <Avatar alt="Lein Ket" src={avatar7} />
-                        <Avatar alt="Stebin Ben" src={avatar8} />
-                        <Avatar alt="Wungh Tend" src={avatar9} />
-                        <Avatar alt="Trevor Das" src={avatar10} />
+                        <Avatar alt='Remy Sharp' src={avatar1} />
+                        <Avatar alt='Travis Howard' src={avatar2} />
+                        <Avatar alt='Cindy Baker' src={avatar3} />
+                        <Avatar alt='Agnes Walker' src={avatar4} />
+                        <Avatar alt='Trevor Henderson' src={avatar5} />
+                        <Avatar alt='Jone Doe' src={avatar6} />
+                        <Avatar alt='Lein Ket' src={avatar7} />
+                        <Avatar alt='Stebin Ben' src={avatar8} />
+                        <Avatar alt='Wungh Tend' src={avatar9} />
+                        <Avatar alt='Trevor Das' src={avatar10} />
                       </AvatarGroup>
                     </Tooltip>
                   </Box>
                 </Stack>
               </MainCard>
-              <MainCard title="Sizes" codeString={sizesAvatarCodeString}>
-                <Grid container spacing={1} alignItems="center">
+              <MainCard title='Sizes' codeString={sizesAvatarCodeString}>
+                <Grid container spacing={1} alignItems='center'>
                   <Grid item>
-                    <Avatar size="xs" alt="Avatar 1" src={avatar1} />
+                    <Avatar size='xs' alt='Avatar 1' src={avatar1} />
                   </Grid>
                   <Grid item>
-                    <Avatar size="sm" alt="Avatar 2" src={avatar2} />
+                    <Avatar size='sm' alt='Avatar 2' src={avatar2} />
                   </Grid>
                   <Grid item>
-                    <Avatar size="md" alt="Avatar 3" src={avatar3} />
+                    <Avatar size='md' alt='Avatar 3' src={avatar3} />
                   </Grid>
                   <Grid item>
-                    <Avatar size="lg" alt="Avatar 4" src={avatar4} />
+                    <Avatar size='lg' alt='Avatar 4' src={avatar4} />
                   </Grid>
                   <Grid item>
-                    <Avatar size="xl" alt="Avatar 5" src={avatar5} />
+                    <Avatar size='xl' alt='Avatar 5' src={avatar5} />
                   </Grid>
                 </Grid>
               </MainCard>
-              <MainCard title="Fallbacks" codeString={fallbacksAvatarCodeString}>
+              <MainCard title='Fallbacks' codeString={fallbacksAvatarCodeString}>
                 <Grid container spacing={1}>
                   <Grid item>
-                    <Avatar alt="Remy Sharp" src="/broken-image.jpg" color="error" type="filled">
+                    <Avatar alt='Remy Sharp' src='/broken-image.jpg' color='error' type='filled'>
                       B
                     </Avatar>
                   </Grid>
                   <Grid item>
-                    <Avatar alt="Remy Sharp" src="/broken-image.jpg" color="error" type="outlined" />
+                    <Avatar alt='Remy Sharp' src='/broken-image.jpg' color='error' type='outlined' />
                   </Grid>
                   <Grid item>
-                    <Avatar src="/broken-image.jpg" color="error" />
+                    <Avatar src='/broken-image.jpg' color='error' />
                   </Grid>
                 </Grid>
               </MainCard>

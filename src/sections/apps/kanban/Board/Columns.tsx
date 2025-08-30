@@ -36,7 +36,7 @@ function getDragWrapper(
   isDragging: boolean,
   draggableStyle: DraggingStyle | NotDraggingStyle | undefined,
   theme: Theme,
-  radius: string
+  radius: string,
 ): CSSProperties | undefined {
   return {
     minWidth: 250,
@@ -46,7 +46,7 @@ function getDragWrapper(
     userSelect: 'none',
     margin: `0 ${16}px 0 0`,
     height: '100%',
-    ...draggableStyle
+    ...draggableStyle,
   };
 }
 
@@ -59,7 +59,7 @@ function getDropWrapper(isDraggingOver: boolean, theme: Theme, radius: string) {
     background: isDraggingOver ? bgcolorDrop : bgcolor,
     padding: '8px 16px 14px',
     width: 'auto',
-    borderRadius: radius
+    borderRadius: radius,
   };
 }
 
@@ -70,7 +70,7 @@ export default function Columns({ column, index }: Props) {
 
   const { backlogs } = useGetBacklogs();
   const columnItems: KanbanItem[] = column.itemIds.map(
-    (itemId: string) => backlogs?.items.filter((item: KanbanItem) => item.id === itemId)[0]
+    (itemId: string) => backlogs?.items.filter((item: KanbanItem) => item.id === itemId)[0],
   );
 
   const handleColumnDelete = () => {
@@ -87,7 +87,7 @@ export default function Columns({ column, index }: Props) {
         message: 'Column deleted successfully',
         anchorOrigin: { vertical: 'top', horizontal: 'right' },
         variant: 'alert',
-        alert: { color: 'success' }
+        alert: { color: 'success' },
       } as SnackbarProps);
     }
   };
@@ -101,27 +101,27 @@ export default function Columns({ column, index }: Props) {
           {...provided.dragHandleProps}
           style={getDragWrapper(snapshot.isDragging, provided.draggableProps.style, theme, `12px`)}
         >
-          <Droppable droppableId={column.id} type="item">
+          <Droppable droppableId={column.id} type='item'>
             {(providedDrop, snapshotDrop) => (
               <div
                 ref={providedDrop.innerRef}
                 {...providedDrop.droppableProps}
                 style={getDropWrapper(snapshotDrop.isDraggingOver, theme, `12px`)}
               >
-                <Grid container alignItems="center" spacing={3}>
+                <Grid container alignItems='center' spacing={3}>
                   <Grid item xs zeroMinWidth>
                     <EditColumn column={column} />
                   </Grid>
                   <Grid item sx={{ mb: 1.5 }}>
-                    <Tooltip title="Delete Column">
+                    <Tooltip title='Delete Column'>
                       <IconButton
                         onClick={handleColumnDelete}
-                        aria-controls="menu-simple-card"
-                        aria-haspopup="true"
-                        color="error"
-                        size="small"
+                        aria-controls='menu-simple-card'
+                        aria-haspopup='true'
+                        color='error'
+                        size='small'
                       >
-                        <Trash variant="Bold" />
+                        <Trash variant='Bold' />
                       </IconButton>
                     </Tooltip>
                     <AlertColumnDelete title={column.title} open={open} handleClose={handleClose} />

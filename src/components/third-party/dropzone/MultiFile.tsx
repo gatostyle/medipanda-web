@@ -23,7 +23,7 @@ const DropzoneWrapper = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   border: '1px dashed ',
   borderColor: theme.palette.secondary.main,
-  '&:hover': { opacity: 0.72, cursor: 'pointer' }
+  '&:hover': { opacity: 0.72, cursor: 'pointer' },
 }));
 
 // ==============================|| UPLOAD - MULTIPLE FILE ||============================== //
@@ -35,15 +35,15 @@ export default function MultiFileUpload({ error, showList = false, files, type, 
       if (files) {
         setFieldValue('files', [
           ...files,
-          ...acceptedFiles.map((file: CustomFile) => Object.assign(file, { preview: URL.createObjectURL(file) }))
+          ...acceptedFiles.map((file: CustomFile) => Object.assign(file, { preview: URL.createObjectURL(file) })),
         ]);
       } else {
         setFieldValue(
           'files',
-          acceptedFiles.map((file: CustomFile) => Object.assign(file, { preview: URL.createObjectURL(file) }))
+          acceptedFiles.map((file: CustomFile) => Object.assign(file, { preview: URL.createObjectURL(file) })),
         );
       }
-    }
+    },
   });
 
   const onRemoveAll = () => {
@@ -51,7 +51,7 @@ export default function MultiFileUpload({ error, showList = false, files, type, 
   };
 
   const onRemove = (file: File | string) => {
-    const filteredItems = files && files.filter((_file) => _file !== file);
+    const filteredItems = files && files.filter(_file => _file !== file);
     setFieldValue('files', filteredItems);
   };
 
@@ -64,14 +64,14 @@ export default function MultiFileUpload({ error, showList = false, files, type, 
             sx={{
               ...(type === DropzopType.STANDARD && { p: 0, m: 1, width: 64, height: 64 }),
               ...(isDragActive && { opacity: 0.72 }),
-              ...((isDragReject || error) && { color: 'error.main', borderColor: 'error.light', bgcolor: 'error.lighter' })
+              ...((isDragReject || error) && { color: 'error.main', borderColor: 'error.light', bgcolor: 'error.lighter' }),
             }}
           >
             <input {...getInputProps()} />
             <PlaceholderContent type={type} />
           </DropzoneWrapper>
           {type === DropzopType.STANDARD && files && files.length > 1 && (
-            <Button variant="contained" color="error" size="extraSmall" onClick={onRemoveAll}>
+            <Button variant='contained' color='error' size='extraSmall' onClick={onRemoveAll}>
               Remove all
             </Button>
           )}
@@ -81,11 +81,11 @@ export default function MultiFileUpload({ error, showList = false, files, type, 
       </Box>
 
       {type !== DropzopType.STANDARD && files && files.length > 0 && (
-        <Stack direction="row" justifyContent="flex-end" spacing={1.5} sx={{ mt: 1.5 }}>
-          <Button color="inherit" size="small" onClick={onRemoveAll}>
+        <Stack direction='row' justifyContent='flex-end' spacing={1.5} sx={{ mt: 1.5 }}>
+          <Button color='inherit' size='small' onClick={onRemoveAll}>
             Remove all
           </Button>
-          <Button size="small" variant="contained" onClick={onUpload}>
+          <Button size='small' variant='contained' onClick={onUpload}>
             Upload files
           </Button>
         </Stack>

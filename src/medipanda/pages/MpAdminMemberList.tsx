@@ -15,7 +15,7 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
@@ -47,7 +47,7 @@ export default function MpAdminMemberList() {
       startAt: null as Date | null,
       endAt: null as Date | null,
       pageIndex: 0,
-      pageSize: 20
+      pageSize: 20,
     },
     onSubmit: async () => {
       if (formik.values.pageIndex !== 0) {
@@ -55,7 +55,7 @@ export default function MpAdminMemberList() {
       } else {
         await fetchData();
       }
-    }
+    },
   });
 
   const columns: ColumnDef<Sequenced<MemberResponse>>[] = [
@@ -63,19 +63,19 @@ export default function MpAdminMemberList() {
       header: 'No',
       accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
-      size: 60
+      size: 60,
     },
     {
       header: '회원번호',
       accessorKey: 'id',
       cell: ({ row }) => row.original.id,
-      size: 80
+      size: 80,
     },
     {
       header: '아이디',
       accessorKey: 'userId',
       cell: ({ row }) => row.original.userId,
-      size: 120
+      size: 120,
     },
     {
       header: '회원명',
@@ -85,62 +85,62 @@ export default function MpAdminMemberList() {
           {row.original.name}
         </Link>
       ),
-      size: 100
+      size: 100,
     },
     {
       header: '회사명',
       accessorKey: 'companyName',
       cell: ({ row }) => row.original.companyName,
-      size: 150
+      size: 150,
     },
     {
       header: '휴대폰번호',
       accessorKey: 'phoneNumber',
       cell: ({ row }) => row.original.phoneNumber,
-      size: 130
+      size: 130,
     },
     {
       header: '이메일',
       accessorKey: 'email',
       cell: ({ row }) => row.original.email,
-      size: 200
+      size: 200,
     },
     {
       header: '파트너사 계약여부',
       accessorKey: 'partnerContractStatus',
       cell: ({ row }) => (row.original.partnerContractStatus !== 'NONE' ? '계약' : '미계약'),
-      size: 130
+      size: 130,
     },
     {
       header: 'CSO신고증 유무',
       accessorKey: 'hasCsoCert',
       cell: ({ row }) => (row.original.hasCsoCert ? 'Y' : 'N'),
-      size: 120
+      size: 120,
     },
     {
       header: '계정상태',
       accessorKey: 'accountStatus',
       cell: ({ row }) => MEMBER_ACCOUNT_STATUS_LABELS[row.original.accountStatus],
-      size: 90
+      size: 90,
     },
     {
       header: '마케팅수신동의',
       accessorKey: 'marketingConsent',
       cell: ({ row }) => CONSENT_LABELS[String(row.original.marketingConsent)],
-      size: 120
+      size: 120,
     },
     {
       header: '가입일',
       accessorKey: 'registrationDate',
       cell: ({ row }) => formatYyyyMmDd(row.original.registrationDate),
-      size: 150
+      size: 150,
     },
     {
       header: '최종접속일',
       accessorKey: 'lastLoginDate',
       cell: ({ row }) => formatYyyyMmDd(row.original.lastLoginDate),
-      size: 110
-    }
+      size: 110,
+    },
   ];
 
   const table = useReactTable({
@@ -151,11 +151,11 @@ export default function MpAdminMemberList() {
     state: {
       pagination: {
         pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize
-      }
+        pageSize: formik.values.pageSize,
+      },
     },
     pageCount: totalPages,
-    manualPagination: true
+    manualPagination: true,
   });
 
   const fetchData = async () => {
@@ -174,7 +174,7 @@ export default function MpAdminMemberList() {
         startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
         endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
         page: formik.values.pageIndex,
-        size: formik.values.pageSize
+        size: formik.values.pageSize,
       });
 
       setData(withSequence(response).content);
@@ -202,7 +202,7 @@ export default function MpAdminMemberList() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant='h4' gutterBottom>
           회원관리
         </Typography>
       </Grid>
@@ -213,18 +213,18 @@ export default function MpAdminMemberList() {
             <form onSubmit={formik.handleSubmit}>
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size="small">
+                  <FormControl fullWidth size='small'>
                     <InputLabel>계약상태</InputLabel>
-                    <Select name="contractStatus" value={formik.values.contractStatus} onChange={formik.handleChange}>
+                    <Select name='contractStatus' value={formik.values.contractStatus} onChange={formik.handleChange}>
                       <MenuItem value={'CONTRACT'}>계약</MenuItem>
                       <MenuItem value={'NON_CONTRACT'}>미계약</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size="small">
+                  <FormControl fullWidth size='small'>
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
+                    <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'name'}>회원명</MenuItem>
                       <MenuItem value={'id'}>회원번호</MenuItem>
                       <MenuItem value={'userId'}>아이디</MenuItem>
@@ -235,26 +235,26 @@ export default function MpAdminMemberList() {
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="startAt" label="시작일" formik={formik} />
+                  <MpFormikDatePicker name='startAt' label='시작일' formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="endAt" label="종료일" formik={formik} />
+                  <MpFormikDatePicker name='endAt' label='종료일' formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
-                    name="searchKeyword"
-                    size="small"
-                    placeholder="검색어를 입력하세요"
+                    name='searchKeyword'
+                    size='small'
+                    placeholder='검색어를 입력하세요'
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
                   />
                 </SearchFilterItem>
                 <SearchFilterActions>
-                  <Button variant="contained" size="small" type="submit">
+                  <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant="outlined" size="small" onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={handleReset}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -267,16 +267,16 @@ export default function MpAdminMemberList() {
       <Grid item xs={12}>
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Stack direction="row" spacing={2}>
-                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
+            <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+              <Stack direction='row' spacing={2}>
+                <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
-              <Stack direction="row" spacing={1}>
+              <Stack direction='row' spacing={1}>
                 <Button
-                  variant="contained"
-                  color="success"
-                  size="small"
-                  target="_blank"
+                  variant='contained'
+                  color='success'
+                  size='small'
+                  target='_blank'
                   href={getDownloadUserMembersExcel({
                     contractStatus: formik.values.contractStatus !== '' ? formik.values.contractStatus : undefined,
                     name: formik.values.searchType === 'name' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
@@ -291,7 +291,7 @@ export default function MpAdminMemberList() {
                     startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
                     endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
                     page: formik.values.pageIndex,
-                    size: formik.values.pageSize
+                    size: formik.values.pageSize,
                   })}
                   startIcon={<DocumentDownload size={16} />}
                 >
@@ -302,11 +302,11 @@ export default function MpAdminMemberList() {
 
             <ScrollX>
               <TableContainer>
-                <Table size="small">
+                <Table size='small'>
                   <TableHead>
-                    {table.getHeaderGroups().map((headerGroup) => (
+                    {table.getHeaderGroups().map(headerGroup => (
                       <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => (
+                        {headerGroup.headers.map(header => (
                           <TableCell key={header.id} style={{ width: header.getSize() }}>
                             {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                           </TableCell>
@@ -317,24 +317,24 @@ export default function MpAdminMemberList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : (
-                      table.getRowModel().rows.map((row) => (
+                      table.getRowModel().rows.map(row => (
                         <TableRow key={row.id}>
-                          {row.getVisibleCells().map((cell) => (
+                          {row.getVisibleCells().map(cell => (
                             <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                           ))}
                         </TableRow>
@@ -345,13 +345,13 @@ export default function MpAdminMemberList() {
               </TableContainer>
             </ScrollX>
 
-            <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
+            <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
                 page={formik.values.pageIndex + 1}
                 onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
-                color="primary"
-                variant="outlined"
+                color='primary'
+                variant='outlined'
                 showFirstButton
                 showLastButton
               />

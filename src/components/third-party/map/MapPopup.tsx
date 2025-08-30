@@ -15,7 +15,7 @@ interface Props extends PopupProps {
 
 export default function MapPopup({ sx, children, ...other }: Props) {
   return (
-    <PopupStyled anchor="bottom" sx={sx} {...other}>
+    <PopupStyled anchor='bottom' sx={sx} {...other}>
       {children}
     </PopupStyled>
   );

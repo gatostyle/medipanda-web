@@ -44,39 +44,39 @@ export default function EcommerceDataCard({ title, count, percentage, color, ico
     <MainCard>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between">
-            <Stack direction="row" alignItems="center" spacing={2}>
-              <Avatar variant="rounded" color={color}>
+          <Stack direction='row' alignItems='center' justifyContent='space-between'>
+            <Stack direction='row' alignItems='center' spacing={2}>
+              <Avatar variant='rounded' color={color}>
                 {iconPrimary}
               </Avatar>
-              <Typography variant="subtitle1">{title}</Typography>
+              <Typography variant='subtitle1'>{title}</Typography>
             </Stack>
             <IconButton
-              color="secondary"
-              id="wallet-button"
+              color='secondary'
+              id='wallet-button'
               aria-controls={open ? 'wallet-menu' : undefined}
-              aria-haspopup="true"
+              aria-haspopup='true'
               aria-expanded={open ? 'true' : undefined}
               onClick={handleClick}
             >
               <MoreIcon />
             </IconButton>
             <Menu
-              id="wallet-menu"
+              id='wallet-menu'
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
               MenuListProps={{
                 'aria-labelledby': 'wallet-button',
-                sx: { p: 1.25, minWidth: 150 }
+                sx: { p: 1.25, minWidth: 150 },
               }}
               anchorOrigin={{
                 vertical: 'bottom',
-                horizontal: 'right'
+                horizontal: 'right',
               }}
               transformOrigin={{
                 vertical: 'top',
-                horizontal: 'right'
+                horizontal: 'right',
               }}
             >
               <ListItemButton onClick={handleClose}>Today</ListItemButton>
@@ -94,7 +94,7 @@ export default function EcommerceDataCard({ title, count, percentage, color, ico
                 </Grid>
                 <Grid item xs={5}>
                   <Stack spacing={1}>
-                    <Typography variant="h5">{count}</Typography>
+                    <Typography variant='h5'>{count}</Typography>
                     {percentage}
                   </Stack>
                 </Grid>

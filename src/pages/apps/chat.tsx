@@ -50,7 +50,7 @@ import {
   Send,
   Trash,
   VolumeHigh,
-  VolumeMute
+  VolumeMute,
 } from 'iconsax-react';
 
 // types
@@ -64,22 +64,22 @@ const Main = styled('main', { shouldForwardProp: (prop: string) => prop !== 'ope
     flexGrow: 1,
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.shorter
+      duration: theme.transitions.duration.shorter,
     }),
     marginLeft: `-${drawerWidth}px`,
     [theme.breakpoints.down('lg')]: {
       paddingLeft: 0,
-      marginLeft: 0
+      marginLeft: 0,
     },
     ...(open && {
       width: `calc(100% - ${drawerWidth}px)`,
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.shorter
+        duration: theme.transitions.duration.shorter,
       }),
-      marginLeft: 0
-    })
-  })
+      marginLeft: 0,
+    }),
+  }),
 );
 
 // ==============================|| APPLICATION - CHAT ||============================== //
@@ -98,7 +98,7 @@ export default function Chat() {
 
   useEffect(() => {
     if (!usersLoading) {
-      const newUser = users.filter((item) => item.id?.toString() === '2')[0];
+      const newUser = users.filter(item => item.id?.toString() === '2')[0];
       setUser(newUser);
     }
     // eslint-disable-next-line
@@ -113,12 +113,12 @@ export default function Chat() {
   };
 
   const handleUserChange = () => {
-    setEmailDetails((prev) => !prev);
+    setEmailDetails(prev => !prev);
   };
 
   const [openChatDrawer, setOpenChatDrawer] = useState(true);
   const handleDrawerOpen = () => {
-    setOpenChatDrawer((prevState) => !prevState);
+    setOpenChatDrawer(prevState => !prevState);
   };
 
   const [anchorElEmoji, setAnchorElEmoji] = useState<any>(); /** No single type can cater for all elements */
@@ -138,8 +138,8 @@ export default function Chat() {
         message: 'Message required',
         variant: 'alert',
         alert: {
-          color: 'error'
-        }
+          color: 'error',
+        },
       } as SnackbarProps);
     } else {
       const d = new Date();
@@ -148,7 +148,7 @@ export default function Chat() {
         from: 'User1',
         to: user.name,
         text: message,
-        time: d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        time: d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
       insertChat(user.name!, newMessage);
     }
@@ -197,8 +197,8 @@ export default function Chat() {
             sx={{
               transition: theme.transitions.create('width', {
                 easing: theme.transitions.easing.easeOut,
-                duration: theme.transitions.duration.shorter + 200
-              })
+                duration: theme.transitions.duration.shorter + 200,
+              }),
             }}
           >
             <MainCard
@@ -210,44 +210,44 @@ export default function Chat() {
                 borderRadius: emailDetails ? '0' : '0 12px 12px 0',
                 transition: theme.transitions.create('width', {
                   easing: theme.transitions.easing.easeOut,
-                  duration: theme.transitions.duration.shorter + 200
-                })
+                  duration: theme.transitions.duration.shorter + 200,
+                }),
               }}
             >
               <Grid container spacing={3}>
                 <Grid item xs={12} sx={{ bgcolor: 'background.paper', pr: 2, pb: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
-                  <Grid container justifyContent="space-between" spacing={1.5}>
+                  <Grid container justifyContent='space-between' spacing={1.5}>
                     <Grid item>
                       <ChatHeader loading={usersLoading} user={user} handleDrawerOpen={handleDrawerOpen} />
                     </Grid>
                     <Grid item>
-                      <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing={1}>
-                        <IconButton size="large" color="secondary">
+                      <Stack direction='row' alignItems='center' justifyContent='flex-end' spacing={1}>
+                        <IconButton size='large' color='secondary'>
                           <Call />
                         </IconButton>
-                        <IconButton size="large" color="secondary">
+                        <IconButton size='large' color='secondary'>
                           <Camera />
                         </IconButton>
-                        <IconButton onClick={handleUserChange} size="large" color={emailDetails ? 'error' : 'secondary'}>
+                        <IconButton onClick={handleUserChange} size='large' color={emailDetails ? 'error' : 'secondary'}>
                           {emailDetails ? <Add style={{ transform: 'rotate(45deg)' }} /> : <InfoCircle />}
                         </IconButton>
-                        <IconButton onClick={handleClickSort} size="large" color="secondary" sx={{ transform: 'rotate(90deg)' }}>
+                        <IconButton onClick={handleClickSort} size='large' color='secondary' sx={{ transform: 'rotate(90deg)' }}>
                           {' '}
                           <MoreIcon />
                         </IconButton>
                         <Menu
-                          id="simple-menu"
+                          id='simple-menu'
                           anchorEl={anchorEl}
                           keepMounted
                           open={Boolean(anchorEl)}
                           onClose={handleCloseSort}
                           anchorOrigin={{
                             vertical: 'bottom',
-                            horizontal: 'right'
+                            horizontal: 'right',
                           }}
                           transformOrigin={{
                             vertical: 'top',
-                            horizontal: 'right'
+                            horizontal: 'right',
                           }}
                           sx={{ p: 0, '& .MuiMenu-list': { p: 0 } }}
                         >
@@ -275,13 +275,13 @@ export default function Chat() {
                       height: 'calc(100vh - 416px)',
                       minHeight: 420,
                       '& .simplebar-content': {
-                        height: '100%'
-                      }
+                        height: '100%',
+                      },
                     }}
                   >
                     <Box sx={{ pl: 1, pr: 3, height: '100%' }}>
                       {usersLoading || Object.keys(user).length === 0 ? (
-                        <Stack alignItems="center" justifyContent="center" sx={{ height: '100%' }}>
+                        <Stack alignItems='center' justifyContent='center' sx={{ height: '100%' }}>
                           <CircularWithPath />
                         </Stack>
                       ) : (
@@ -301,23 +301,23 @@ export default function Chat() {
                       fullWidth
                       multiline
                       rows={4}
-                      placeholder="Your Message..."
+                      placeholder='Your Message...'
                       value={message}
-                      onChange={(e) => setMessage(e.target.value.length <= 1 ? e.target.value.trim() : e.target.value)}
+                      onChange={e => setMessage(e.target.value.length <= 1 ? e.target.value.trim() : e.target.value)}
                       onKeyDown={handleEnter}
-                      variant="standard"
+                      variant='standard'
                       sx={{ pr: 2, '& .MuiInput-root:before': { borderBottomColor: theme.palette.divider } }}
                     />
-                    <Stack direction="row" justifyContent="space-between" alignItems="center">
-                      <Stack direction="row" sx={{ py: 2, ml: -1 }}>
+                    <Stack direction='row' justifyContent='space-between' alignItems='center'>
+                      <Stack direction='row' sx={{ py: 2, ml: -1 }}>
                         <>
                           <IconButton
                             ref={anchorElEmoji}
                             aria-describedby={emojiId}
                             onClick={handleOnEmojiButtonClick}
                             sx={{ opacity: 0.5 }}
-                            size="medium"
-                            color="secondary"
+                            size='medium'
+                            color='secondary'
                           >
                             <EmojiHappy />
                           </IconButton>
@@ -336,17 +336,17 @@ export default function Chat() {
                             </ClickAwayListener>
                           </Popper>
                         </>
-                        <IconButton sx={{ opacity: 0.5 }} size="medium" color="secondary">
+                        <IconButton sx={{ opacity: 0.5 }} size='medium' color='secondary'>
                           <Paperclip />
                         </IconButton>
-                        <IconButton sx={{ opacity: 0.5 }} size="medium" color="secondary">
+                        <IconButton sx={{ opacity: 0.5 }} size='medium' color='secondary'>
                           <Image />
                         </IconButton>
-                        <IconButton sx={{ opacity: 0.5 }} size="medium" color="secondary">
+                        <IconButton sx={{ opacity: 0.5 }} size='medium' color='secondary'>
                           <VolumeHigh />
                         </IconButton>
                       </Stack>
-                      <IconButton color="primary" onClick={handleOnSend} size="large" sx={{ mr: 1.5 }}>
+                      <IconButton color='primary' onClick={handleOnSend} size='large' sx={{ mr: 1.5 }}>
                         <Send />
                       </IconButton>
                     </Stack>
@@ -356,12 +356,12 @@ export default function Chat() {
             </MainCard>
           </Grid>
           <Grid item xs={12} md={4} xl={3} sx={{ overflow: 'hidden', display: emailDetails ? 'flex' : 'none' }}>
-            <Collapse orientation="horizontal" in={emailDetails && !matchDownMD}>
+            <Collapse orientation='horizontal' in={emailDetails && !matchDownMD}>
               <UserDetails user={user} onClose={handleUserChange} />
             </Collapse>
           </Grid>
 
-          <Dialog TransitionComponent={PopupTransition} onClose={handleUserChange} open={matchDownMD && emailDetails} scroll="body">
+          <Dialog TransitionComponent={PopupTransition} onClose={handleUserChange} open={matchDownMD && emailDetails} scroll='body'>
             <UserDetails user={user} onClose={handleUserChange} />
           </Dialog>
         </Grid>

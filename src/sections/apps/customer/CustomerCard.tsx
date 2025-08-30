@@ -78,16 +78,16 @@ export default function CustomerCard({ customer }: { customer: CustomerList }) {
   return (
     <>
       <MainCard sx={{ height: 1, '& .MuiCardContent-root': { height: 1, display: 'flex', flexDirection: 'column' } }}>
-        <Grid id="print" container spacing={2.25}>
+        <Grid id='print' container spacing={2.25}>
           <Grid item xs={12}>
             <List sx={{ width: 1, p: 0 }}>
               <ListItem
                 disablePadding
                 secondaryAction={
                   <IconButton
-                    edge="end"
-                    aria-label="comments"
-                    color="secondary"
+                    edge='end'
+                    aria-label='comments'
+                    color='secondary'
                     onClick={handleMenuClick}
                     sx={{ transform: 'rotate(90deg)' }}
                   >
@@ -99,13 +99,13 @@ export default function CustomerCard({ customer }: { customer: CustomerList }) {
                   <Avatar alt={customer.name} src={getImageUrl(`avatar-${!customer.avatar ? 1 : customer.avatar}.png`, ImagePath.USERS)} />
                 </ListItemAvatar>
                 <ListItemText
-                  primary={<Typography variant="subtitle1">{customer.name}</Typography>}
-                  secondary={<Typography color="text.secondary">{customer.role}</Typography>}
+                  primary={<Typography variant='subtitle1'>{customer.name}</Typography>}
+                  secondary={<Typography color='text.secondary'>{customer.role}</Typography>}
                 />
               </ListItem>
             </List>
             <Menu
-              id="fade-menu"
+              id='fade-menu'
               MenuListProps={{ 'aria-labelledby': 'fade-button' }}
               anchorEl={anchorEl}
               open={openMenu}
@@ -137,23 +137,23 @@ export default function CustomerCard({ customer }: { customer: CustomerList }) {
                     p: 0,
                     overflow: 'hidden',
                     '& .MuiListItem-root': { px: 0, py: 0.5 },
-                    '& .MuiListItemIcon-root': { minWidth: 28 }
+                    '& .MuiListItemIcon-root': { minWidth: 28 },
                   }}
                 >
-                  <ListItem alignItems="flex-start">
+                  <ListItem alignItems='flex-start'>
                     <ListItemIcon>
                       <Sms size={18} />
                     </ListItemIcon>
-                    <ListItemText primary={<Typography color="text.secondary">{customer.email}</Typography>} />
+                    <ListItemText primary={<Typography color='text.secondary'>{customer.email}</Typography>} />
                   </ListItem>
-                  <ListItem alignItems="flex-start">
+                  <ListItem alignItems='flex-start'>
                     <ListItemIcon>
                       <CallCalling size={18} />
                     </ListItemIcon>
                     <ListItemText
                       primary={
-                        <Typography color="text.secondary">
-                          <PatternFormat displayType="text" format="+1 (###) ###-####" mask="_" defaultValue={customer.contact} />
+                        <Typography color='text.secondary'>
+                          <PatternFormat displayType='text' format='+1 (###) ###-####' mask='_' defaultValue={customer.contact} />
                         </Typography>
                       }
                     />
@@ -164,19 +164,19 @@ export default function CustomerCard({ customer }: { customer: CustomerList }) {
                 <List
                   sx={{ p: 0, overflow: 'hidden', '& .MuiListItem-root': { px: 0, py: 0.5 }, '& .MuiListItemIcon-root': { minWidth: 28 } }}
                 >
-                  <ListItem alignItems="flex-start">
+                  <ListItem alignItems='flex-start'>
                     <ListItemIcon>
                       <Location size={18} />
                     </ListItemIcon>
-                    <ListItemText primary={<Typography color="text.secondary">{customer.country}</Typography>} />
+                    <ListItemText primary={<Typography color='text.secondary'>{customer.country}</Typography>} />
                   </ListItem>
-                  <ListItem alignItems="flex-start">
+                  <ListItem alignItems='flex-start'>
                     <ListItemIcon>
                       <Link2 size={18} />
                     </ListItemIcon>
                     <ListItemText
                       primary={
-                        <Link href="https://google.com" target="_blank" sx={{ textTransform: 'lowercase' }}>
+                        <Link href='https://google.com' target='_blank' sx={{ textTransform: 'lowercase' }}>
                           https://{customer.firstName}.en
                         </Link>
                       }
@@ -188,10 +188,10 @@ export default function CustomerCard({ customer }: { customer: CustomerList }) {
           </Grid>
           <Grid item xs={12}>
             <Box>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', listStyle: 'none', p: 0.5, m: 0 }} component="ul">
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', listStyle: 'none', p: 0.5, m: 0 }} component='ul'>
                 {customer.skills.map((skill: string, index: number) => (
                   <ListItem disablePadding key={index} sx={{ width: 'auto', pr: 0.75, pb: 0.75 }}>
-                    <Chip color="secondary" variant="outlined" size="small" label={skill} sx={{ color: 'text.secondary' }} />
+                    <Chip color='secondary' variant='outlined' size='small' label={skill} sx={{ color: 'text.secondary' }} />
                   </ListItem>
                 ))}
               </Box>
@@ -199,17 +199,17 @@ export default function CustomerCard({ customer }: { customer: CustomerList }) {
           </Grid>
         </Grid>
         <Stack
-          direction="row"
-          className="hideforPDf"
-          alignItems="center"
+          direction='row'
+          className='hideforPDf'
+          alignItems='center'
           spacing={1}
-          justifyContent="space-between"
+          justifyContent='space-between'
           sx={{ mt: 'auto', mb: 0, pt: 2.25 }}
         >
-          <Typography variant="caption" color="text.secondary">
+          <Typography variant='caption' color='text.secondary'>
             Updated in {customer.time}
           </Typography>
-          <Button variant="outlined" size="small" onClick={handleClickOpen}>
+          <Button variant='outlined' size='small' onClick={handleClickOpen}>
             Preview
           </Button>
         </Stack>

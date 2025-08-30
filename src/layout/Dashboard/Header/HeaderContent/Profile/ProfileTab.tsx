@@ -28,24 +28,24 @@ export default function ProfileTab({ handleLogout }: Props) {
   };
 
   return (
-    <List component="nav" sx={{ p: 0, '& .MuiListItemIcon-root': { minWidth: 32 } }}>
+    <List component='nav' sx={{ p: 0, '& .MuiListItemIcon-root': { minWidth: 32 } }}>
       <ListItemButton
         selected={selectedIndex === 0}
         onClick={(event: MouseEvent<HTMLDivElement>) => handleListItemClick(event, 0, '/apps/profiles/user/personal')}
       >
         <ListItemIcon>
-          <Edit2 variant="Bulk" size={18} />
+          <Edit2 variant='Bulk' size={18} />
         </ListItemIcon>
-        <ListItemText primary="Edit Profile" />
+        <ListItemText primary='Edit Profile' />
       </ListItemButton>
       <ListItemButton
         selected={selectedIndex === 1}
         onClick={(event: MouseEvent<HTMLDivElement>) => handleListItemClick(event, 1, '/apps/profiles/account/basic')}
       >
         <ListItemIcon>
-          <Profile variant="Bulk" size={18} />
+          <Profile variant='Bulk' size={18} />
         </ListItemIcon>
-        <ListItemText primary="View Profile" />
+        <ListItemText primary='View Profile' />
       </ListItemButton>
 
       <ListItemButton
@@ -53,24 +53,24 @@ export default function ProfileTab({ handleLogout }: Props) {
         onClick={(event: MouseEvent<HTMLDivElement>) => handleListItemClick(event, 3, '/apps/profiles/account/personal')}
       >
         <ListItemIcon>
-          <Profile2User variant="Bulk" size={18} />
+          <Profile2User variant='Bulk' size={18} />
         </ListItemIcon>
-        <ListItemText primary="Social Profile" />
+        <ListItemText primary='Social Profile' />
       </ListItemButton>
       <ListItemButton
         selected={selectedIndex === 4}
         onClick={(event: MouseEvent<HTMLDivElement>) => handleListItemClick(event, 4, '/apps/invoice/details/1')}
       >
         <ListItemIcon>
-          <Card variant="Bulk" size={18} />
+          <Card variant='Bulk' size={18} />
         </ListItemIcon>
-        <ListItemText primary="Billing" />
+        <ListItemText primary='Billing' />
       </ListItemButton>
       <ListItemButton selected={selectedIndex === 2} onClick={handleLogout}>
         <ListItemIcon>
-          <Logout variant="Bulk" size={18} />
+          <Logout variant='Bulk' size={18} />
         </ListItemIcon>
-        <ListItemText primary="Logout" />
+        <ListItemText primary='Logout' />
       </ListItemButton>
     </List>
   );

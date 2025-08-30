@@ -24,29 +24,29 @@ export default function ComponentList() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Lists"
-        caption="Lists are continuous, vertical indexes of text or images."
-        directory="src/pages/components-overview/lists"
-        link="https://mui.com/material-ui/react-list/"
+        title='Lists'
+        caption='Lists are continuous, vertical indexes of text or images.'
+        directory='src/pages/components-overview/lists'
+        link='https://mui.com/material-ui/react-list/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
             <Stack spacing={3}>
               <Stack spacing={1}>
-                <Typography variant="h5">Basic</Typography>
+                <Typography variant='h5'>Basic</Typography>
                 <BasicList />
               </Stack>
               <Stack spacing={1}>
-                <Typography variant="h5">Interactive</Typography>
+                <Typography variant='h5'>Interactive</Typography>
                 <InteractiveList />
               </Stack>
               <Stack spacing={1}>
-                <Typography variant="h5">Scrollable</Typography>
+                <Typography variant='h5'>Scrollable</Typography>
                 <ScrollableList />
               </Stack>
               <Stack spacing={1}>
-                <Typography variant="h5">Notification</Typography>
+                <Typography variant='h5'>Notification</Typography>
                 <NotificationList />
               </Stack>
             </Stack>
@@ -54,27 +54,27 @@ export default function ComponentList() {
           <Grid item xs={12} md={6}>
             <Stack spacing={3}>
               <Stack spacing={1}>
-                <Typography variant="h5">Nested</Typography>
+                <Typography variant='h5'>Nested</Typography>
                 <NestedList />
               </Stack>
               <Stack spacing={1}>
-                <Typography variant="h5">Selected</Typography>
+                <Typography variant='h5'>Selected</Typography>
                 <SelectedList />
               </Stack>
               <Stack spacing={1}>
-                <Typography variant="h5">Align Item</Typography>
+                <Typography variant='h5'>Align Item</Typography>
                 <AlignList />
               </Stack>
               <Stack spacing={1}>
-                <Typography variant="h5">Folder</Typography>
+                <Typography variant='h5'>Folder</Typography>
                 <FolderList />
               </Stack>
               <Stack spacing={1}>
-                <Typography variant="h5">Transaction History</Typography>
+                <Typography variant='h5'>Transaction History</Typography>
                 <TransactionList />
               </Stack>
               <Stack spacing={1}>
-                <Typography variant="h5">Users</Typography>
+                <Typography variant='h5'>Users</Typography>
                 <UserList />
               </Stack>
             </Stack>

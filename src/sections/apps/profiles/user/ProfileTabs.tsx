@@ -58,13 +58,13 @@ export default function ProfileTabs({ focusInput }: Props) {
     <MainCard>
       <Grid container spacing={6}>
         <Grid item xs={12}>
-          <Stack direction="row" justifyContent="flex-end">
+          <Stack direction='row' justifyContent='flex-end'>
             <IconButton
-              variant="light"
-              color="secondary"
-              id="basic-button"
+              variant='light'
+              color='secondary'
+              id='basic-button'
               aria-controls={open ? 'basic-menu' : undefined}
-              aria-haspopup="true"
+              aria-haspopup='true'
               aria-expanded={open ? 'true' : undefined}
               onClick={handleClick}
               sx={{ transform: 'rotate(90deg)' }}
@@ -72,7 +72,7 @@ export default function ProfileTabs({ focusInput }: Props) {
               <MoreIcon />
             </IconButton>
             <Menu
-              id="basic-menu"
+              id='basic-menu'
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
@@ -82,7 +82,7 @@ export default function ProfileTabs({ focusInput }: Props) {
             >
               <MenuItem
                 component={Link}
-                to="/apps/profiles/user/personal"
+                to='/apps/profiles/user/personal'
                 onClick={() => {
                   handleClose();
                   setTimeout(() => {
@@ -97,18 +97,18 @@ export default function ProfileTabs({ focusInput }: Props) {
               </MenuItem>
             </Menu>
           </Stack>
-          <Stack spacing={2.5} alignItems="center">
+          <Stack spacing={2.5} alignItems='center'>
             <FormLabel
-              htmlFor="change-avtar"
+              htmlFor='change-avtar'
               sx={{
                 position: 'relative',
                 borderRadius: '50%',
                 overflow: 'hidden',
                 '&:hover .MuiBox-root': { opacity: 1 },
-                cursor: 'pointer'
+                cursor: 'pointer',
               }}
             >
-              <Avatar alt="Avatar 1" src={avatar} sx={{ width: 124, height: 124, border: '1px dashed' }} />
+              <Avatar alt='Avatar 1' src={avatar} sx={{ width: 124, height: 124, border: '1px dashed' }} />
               <Box
                 sx={{
                   position: 'absolute',
@@ -120,50 +120,50 @@ export default function ProfileTabs({ focusInput }: Props) {
                   opacity: 0,
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
                 }}
               >
-                <Stack spacing={0.5} alignItems="center">
+                <Stack spacing={0.5} alignItems='center'>
                   <Camera style={{ color: theme.palette.secondary.lighter, fontSize: '2rem' }} />
                   <Typography sx={{ color: 'secondary.lighter' }}>Upload</Typography>
                 </Stack>
               </Box>
             </FormLabel>
             <TextField
-              type="file"
-              id="change-avtar"
-              placeholder="Outlined"
-              variant="outlined"
+              type='file'
+              id='change-avtar'
+              placeholder='Outlined'
+              variant='outlined'
               sx={{ display: 'none' }}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setSelectedImage(e.target.files?.[0])}
             />
-            <Stack spacing={0.5} alignItems="center">
-              <Typography variant="h5">Stebin Ben</Typography>
-              <Typography color="secondary">Full Stack Developer</Typography>
+            <Stack spacing={0.5} alignItems='center'>
+              <Typography variant='h5'>Stebin Ben</Typography>
+              <Typography color='secondary'>Full Stack Developer</Typography>
             </Stack>
-            <Stack direction="row" spacing={3} sx={{ '& svg': { fontSize: '1.15rem', cursor: 'pointer' } }}>
-              <Google variant="Bold" color={theme.palette.error.main} />
-              <Facebook variant="Bold" color={facebookColor} />
-              <Apple variant="Bold" color={linkedInColor} />
+            <Stack direction='row' spacing={3} sx={{ '& svg': { fontSize: '1.15rem', cursor: 'pointer' } }}>
+              <Google variant='Bold' color={theme.palette.error.main} />
+              <Facebook variant='Bold' color={facebookColor} />
+              <Apple variant='Bold' color={linkedInColor} />
             </Stack>
           </Stack>
         </Grid>
         <Grid item sm={3} sx={{ display: { sm: 'block', md: 'none' } }} />
         <Grid item xs={12} sm={6} md={12}>
-          <Stack direction="row" justifyContent="space-around" alignItems="center">
-            <Stack spacing={0.5} alignItems="center">
-              <Typography variant="h5">86</Typography>
-              <Typography color="secondary">Post</Typography>
+          <Stack direction='row' justifyContent='space-around' alignItems='center'>
+            <Stack spacing={0.5} alignItems='center'>
+              <Typography variant='h5'>86</Typography>
+              <Typography color='secondary'>Post</Typography>
             </Stack>
-            <Divider orientation="vertical" flexItem />
-            <Stack spacing={0.5} alignItems="center">
-              <Typography variant="h5">40</Typography>
-              <Typography color="secondary">Project</Typography>
+            <Divider orientation='vertical' flexItem />
+            <Stack spacing={0.5} alignItems='center'>
+              <Typography variant='h5'>40</Typography>
+              <Typography color='secondary'>Project</Typography>
             </Stack>
-            <Divider orientation="vertical" flexItem />
-            <Stack spacing={0.5} alignItems="center">
-              <Typography variant="h5">4.5K</Typography>
-              <Typography color="secondary">Members</Typography>
+            <Divider orientation='vertical' flexItem />
+            <Stack spacing={0.5} alignItems='center'>
+              <Typography variant='h5'>4.5K</Typography>
+              <Typography color='secondary'>Members</Typography>
             </Stack>
           </Stack>
         </Grid>

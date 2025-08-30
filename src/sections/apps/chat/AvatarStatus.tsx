@@ -15,13 +15,13 @@ export default function AvatarStatus({ status }: Props) {
 
   switch (status) {
     case 'available':
-      return <TickCircle size={14} variant="Bold" style={{ color: theme.palette.success.main }} />;
+      return <TickCircle size={14} variant='Bold' style={{ color: theme.palette.success.main }} />;
 
     case 'do_not_disturb':
-      return <MinusCirlce size={14} variant="Bold" style={{ color: theme.palette.secondary.main }} />;
+      return <MinusCirlce size={14} variant='Bold' style={{ color: theme.palette.secondary.main }} />;
 
     case 'offline':
-      return <Clock size={14} variant="Bold" style={{ color: theme.palette.warning.main }} />;
+      return <Clock size={14} variant='Bold' style={{ color: theme.palette.warning.main }} />;
 
     default:
       return null;

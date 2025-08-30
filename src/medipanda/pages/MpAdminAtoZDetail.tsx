@@ -11,7 +11,7 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-  Typography
+  Typography,
 } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
@@ -45,7 +45,7 @@ export default function MpAdminAtoZDetail() {
       const response = await getBoardDetails(itemId);
       setData(response);
       editor.commands.setContent(response.content);
-      setEditorAttachments(response.attachments.filter((a) => a.type === 'EDITOR'));
+      setEditorAttachments(response.attachments.filter(a => a.type === 'EDITOR'));
     } catch (error) {
       console.error('Failed to fetch CSO A to Z detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -56,7 +56,7 @@ export default function MpAdminAtoZDetail() {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+      <Box display='flex' justifyContent='center' alignItems='center' minHeight='400px'>
         <CircularProgress />
       </Box>
     );
@@ -69,7 +69,7 @@ export default function MpAdminAtoZDetail() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant='h4' gutterBottom>
           CSO A TO Z 상세
         </Typography>
       </Grid>
@@ -80,13 +80,13 @@ export default function MpAdminAtoZDetail() {
             <Table>
               <TableBody>
                 <TableRow>
-                  <TableCell component="th" scope="row" sx={{ width: 120, fontWeight: 'bold' }}>
+                  <TableCell component='th' scope='row' sx={{ width: 120, fontWeight: 'bold' }}>
                     제목
                   </TableCell>
                   <TableCell>{data.title}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell component="th" scope="row" sx={{ fontWeight: 'bold' }}>
+                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     내용
                   </TableCell>
                   <TableCell>
@@ -94,22 +94,22 @@ export default function MpAdminAtoZDetail() {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell component="th" scope="row" sx={{ fontWeight: 'bold' }}>
+                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     첨부파일
                   </TableCell>
                   <TableCell>
-                    {data.attachments.map((file) => {
+                    {data.attachments.map(file => {
                       return (
                         <Box key={file.s3fileId} sx={{ mb: 1 }}>
                           <MuiLink
                             href={file.fileUrl}
                             download
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            target='_blank'
+                            rel='noopener noreferrer'
                             sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
-                            underline="hover"
+                            underline='hover'
                           >
-                            <AttachFileIcon fontSize="small" />
+                            <AttachFileIcon fontSize='small' />
                             {new URL(file.fileUrl).pathname.split('/').pop()}
                           </MuiLink>
                         </Box>
@@ -118,26 +118,26 @@ export default function MpAdminAtoZDetail() {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell component="th" scope="row" sx={{ fontWeight: 'bold' }}>
+                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     노출상태
                   </TableCell>
                   <TableCell>
                     <Chip
                       label={data.isExposed ? '노출' : '미노출'}
                       color={data.isExposed ? 'success' : 'default'}
-                      variant="light"
-                      size="small"
+                      variant='light'
+                      size='small'
                     />
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell component="th" scope="row" sx={{ fontWeight: 'bold' }}>
+                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     조회수
                   </TableCell>
                   <TableCell>{data.viewsCount.toLocaleString()}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell component="th" scope="row" sx={{ fontWeight: 'bold' }}>
+                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     작성일
                   </TableCell>
                   <TableCell>{formatYyyyMmDd(data.createdAt)}</TableCell>
@@ -147,10 +147,10 @@ export default function MpAdminAtoZDetail() {
           </TableContainer>
 
           <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', gap: 2 }}>
-            <Button variant="outlined" component={Link} to="/admin/atoz" sx={{ minWidth: 120 }}>
+            <Button variant='outlined' component={Link} to='/admin/atoz' sx={{ minWidth: 120 }}>
               취소
             </Button>
-            <Button variant="contained" color="success" component={Link} to={`/admin/atoz/${id}/edit`} sx={{ minWidth: 120 }}>
+            <Button variant='contained' color='success' component={Link} to={`/admin/atoz/${id}/edit`} sx={{ minWidth: 120 }}>
               수정
             </Button>
           </Box>

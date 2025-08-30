@@ -14,7 +14,7 @@ const pieChartOptions = {
   chart: {
     type: 'pie',
     width: 450,
-    height: 450
+    height: 450,
   },
   labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
   legend: {
@@ -23,33 +23,33 @@ const pieChartOptions = {
     offsetX: 10,
     offsetY: 10,
     labels: {
-      useSeriesColors: false
+      useSeriesColors: false,
     },
     markers: {
       width: 12,
       height: 12,
-      radius: 5
+      radius: 5,
     },
     itemMargin: {
       horizontal: 25,
-      vertical: 4
-    }
+      vertical: 4,
+    },
   },
   responsive: [
     {
       breakpoint: 450,
       chart: {
         width: 280,
-        height: 280
+        height: 280,
       },
       options: {
         legend: {
           show: false,
-          position: 'bottom'
-        }
-      }
-    }
-  ]
+          position: 'bottom',
+        },
+      },
+    },
+  ],
 };
 
 // ==============================|| APEXCHART - PIE ||============================== //
@@ -73,43 +73,43 @@ export default function ApexPieChart() {
   const orangeDark = theme.palette.warning.main;
 
   useEffect(() => {
-    setOptions((prevState) => ({
+    setOptions(prevState => ({
       ...prevState,
       colors: [secondary, primaryMain, successDark, error, orangeDark],
       xaxis: {
         labels: {
           style: {
-            colors: [primary, primary, primary, primary, primary, primary, primary]
-          }
-        }
+            colors: [primary, primary, primary, primary, primary, primary, primary],
+          },
+        },
       },
       yaxis: {
         labels: {
           style: {
-            colors: [primary]
-          }
-        }
+            colors: [primary],
+          },
+        },
       },
       grid: {
-        borderColor: line
+        borderColor: line,
       },
       legend: {
         labels: {
-          colors: 'secondary.main'
-        }
+          colors: 'secondary.main',
+        },
       },
       stroke: {
-        colors: [backColor]
+        colors: [backColor],
       },
       theme: {
-        mode: mode === ThemeMode.DARK ? 'dark' : 'light'
-      }
+        mode: mode === ThemeMode.DARK ? 'dark' : 'light',
+      },
     }));
   }, [mode, primary, line, grey200, backColor, secondary, primaryMain, successDark, error, orangeDark]);
 
   return (
-    <div id="chart">
-      <ReactApexChart options={options} series={series} type="pie" />
+    <div id='chart'>
+      <ReactApexChart options={options} series={series} type='pie' />
     </div>
   );
 }

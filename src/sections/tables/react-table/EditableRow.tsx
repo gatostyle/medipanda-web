@@ -39,7 +39,7 @@ function EditAction({ row, table }: { row: Row<TableDataProps>; table: TableProp
   const setSelectedRow = (e: MouseEvent<HTMLButtonElement> | undefined) => {
     meta?.setSelectedRow((old: TableDataProps[]) => ({
       ...old,
-      [row.id]: !old[row.id as any]
+      [row.id]: !old[row.id as any],
     }));
 
     // @ts-ignore
@@ -47,17 +47,17 @@ function EditAction({ row, table }: { row: Row<TableDataProps>; table: TableProp
   };
 
   return (
-    <Stack direction="row" spacing={1} alignItems="center">
+    <Stack direction='row' spacing={1} alignItems='center'>
       {meta?.selectedRow[row.id] && (
-        <Tooltip title="Cancel">
-          <IconButton color="error" name="cancel" onClick={setSelectedRow}>
-            <CloseCircle size="15" variant="Outline" />
+        <Tooltip title='Cancel'>
+          <IconButton color='error' name='cancel' onClick={setSelectedRow}>
+            <CloseCircle size='15' variant='Outline' />
           </IconButton>
         </Tooltip>
       )}
       <Tooltip title={meta?.selectedRow[row.id] ? 'Save' : 'Edit'}>
         <IconButton color={meta?.selectedRow[row.id] ? 'success' : 'primary'} onClick={setSelectedRow}>
-          {meta?.selectedRow[row.id] ? <Send size="15" variant="Outline" /> : <Edit2 variant="Outline" />}
+          {meta?.selectedRow[row.id] ? <Send size='15' variant='Outline' /> : <Edit2 variant='Outline' />}
         </IconButton>
       </Tooltip>
     </Stack>
@@ -74,7 +74,7 @@ function ReactTable({ columns, data, setData }: ReactTableProps) {
     data,
     columns,
     defaultColumn: {
-      cell: RowEditable
+      cell: RowEditable,
     },
     getCoreRowModel: getCoreRowModel(),
     meta: {
@@ -84,7 +84,7 @@ function ReactTable({ columns, data, setData }: ReactTableProps) {
         if (revert) {
           setData((old: TableDataProps[]) => old.map((row, index) => (index === rowIndex ? originalData[rowIndex] : row)));
         } else {
-          setOriginalData((old) => old.map((row, index) => (index === rowIndex ? data[rowIndex] : row)));
+          setOriginalData(old => old.map((row, index) => (index === rowIndex ? data[rowIndex] : row)));
         }
       },
       updateData: (rowIndex, columnId, value) => {
@@ -93,36 +93,34 @@ function ReactTable({ columns, data, setData }: ReactTableProps) {
             if (index === rowIndex) {
               return {
                 ...old[rowIndex]!,
-                [columnId]: value
+                [columnId]: value,
               };
             }
             return row;
-          })
+          }),
         );
-      }
+      },
     },
-    debugTable: true
+    debugTable: true,
   });
 
   let headers: LabelKeyObject[] = [];
   table.getAllColumns().map(
-    (columns) =>
+    columns =>
       // @ts-ignore
       columns.columnDef.accessorKey &&
       headers.push({
         label: typeof columns.columnDef.header === 'string' ? columns.columnDef.header : '#',
         // @ts-ignore
-        key: columns.columnDef.accessorKey
-      })
+        key: columns.columnDef.accessorKey,
+      }),
   );
 
   return (
     <MainCard
       content={false}
-      title="Editable Row"
-      secondary={
-        <CSVExport {...{ data: table.getRowModel().flatRows.map((row) => row.original), headers, filename: 'editable-row.csv' }} />
-      }
+      title='Editable Row'
+      secondary={<CSVExport {...{ data: table.getRowModel().flatRows.map(row => row.original), headers, filename: 'editable-row.csv' }} />}
     >
       <ScrollX>
         <TableContainer>
@@ -130,7 +128,7 @@ function ReactTable({ columns, data, setData }: ReactTableProps) {
             <TableHead>
               {table.getHeaderGroups().map((headerGroup: HeaderGroup<any>) => (
                 <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
+                  {headerGroup.headers.map(header => (
                     <TableCell key={header.id} {...header.column.columnDef.meta}>
                       {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableCell>
@@ -139,9 +137,9 @@ function ReactTable({ columns, data, setData }: ReactTableProps) {
               ))}
             </TableHead>
             <TableBody>
-              {table.getRowModel().rows.map((row) => (
+              {table.getRowModel().rows.map(row => (
                 <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
+                  {row.getVisibleCells().map(cell => (
                     <TableCell key={cell.id} {...cell.column.columnDef.meta}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
@@ -166,54 +164,54 @@ export default function EditableRow() {
       {
         header: 'First Name',
         accessorKey: 'firstName',
-        dataType: 'text'
+        dataType: 'text',
       },
       {
         header: 'Last Name',
         accessorKey: 'lastName',
-        dataType: 'text'
+        dataType: 'text',
       },
       {
         header: 'Email',
         accessorKey: 'email',
-        dataType: 'text'
+        dataType: 'text',
       },
       {
         header: 'Age',
         accessorKey: 'age',
         dataType: 'text',
         meta: {
-          className: 'cell-right'
-        }
+          className: 'cell-right',
+        },
       },
       {
         header: 'Visits',
         accessorKey: 'visits',
         dataType: 'text',
         meta: {
-          className: 'cell-right'
-        }
+          className: 'cell-right',
+        },
       },
       {
         header: 'Status',
         accessorKey: 'status',
-        dataType: 'select'
+        dataType: 'select',
       },
       {
         header: 'Profile Progress',
         accessorKey: 'progress',
-        dataType: 'progress'
+        dataType: 'progress',
       },
       {
         header: 'Actions',
         id: 'edit',
         cell: EditAction,
         meta: {
-          className: 'cell-center'
-        }
-      }
+          className: 'cell-center',
+        },
+      },
     ],
-    []
+    [],
   );
 
   return <ReactTable {...{ data, columns, setData }} />;

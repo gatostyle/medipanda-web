@@ -26,43 +26,43 @@ export default function ThemeContrast() {
   return (
     <RadioGroup
       row
-      aria-label="payment-card"
-      name="payment-card"
+      aria-label='payment-card'
+      name='payment-card'
       value={themeContrast ? 'contrast' : 'default'}
       onChange={handleContrastChange}
     >
-      <Stack direction="row" alignItems="center" spacing={2.5} sx={{ width: '100%' }}>
+      <Stack direction='row' alignItems='center' spacing={2.5} sx={{ width: '100%' }}>
         <FormControlLabel
-          control={<Radio value="contrast" sx={{ display: 'none' }} />}
+          control={<Radio value='contrast' sx={{ display: 'none' }} />}
           sx={{ width: '100%', m: 0, display: 'flex', '& .MuiFormControlLabel-label': { flex: 1 } }}
           label={
-            <Stack alignItems="center" spacing={0.5}>
+            <Stack alignItems='center' spacing={0.5}>
               <MainCard
                 content={false}
                 sx={{ width: '100%', borderWidth: 2, p: 1, ...(themeContrast && { borderColor: theme.palette.primary.main }) }}
               >
-                <Stack direction="row" alignItems="center" justifyContent="center" sx={{ height: 44 }}>
-                  <Mask variant="Bold" />
+                <Stack direction='row' alignItems='center' justifyContent='center' sx={{ height: 44 }}>
+                  <Mask variant='Bold' />
                 </Stack>
               </MainCard>
-              <Typography variant="caption">Contrast</Typography>
+              <Typography variant='caption'>Contrast</Typography>
             </Stack>
           }
         />
         <FormControlLabel
-          control={<Radio value="default" sx={{ display: 'none' }} />}
+          control={<Radio value='default' sx={{ display: 'none' }} />}
           sx={{ width: '100%', m: 0, display: 'flex', '& .MuiFormControlLabel-label': { flex: 1 } }}
           label={
-            <Stack alignItems="center" spacing={0.5}>
+            <Stack alignItems='center' spacing={0.5}>
               <MainCard
                 content={false}
                 sx={{ width: '100%', borderWidth: 2, p: 1, ...(!themeContrast && { borderColor: theme.palette.primary.main }) }}
               >
-                <Stack direction="row" alignItems="center" justifyContent="center" sx={{ height: 44 }}>
+                <Stack direction='row' alignItems='center' justifyContent='center' sx={{ height: 44 }}>
                   <Mask />
                 </Stack>
               </MainCard>
-              <Typography variant="caption">Shadow</Typography>
+              <Typography variant='caption'>Shadow</Typography>
             </Stack>
           }
         />

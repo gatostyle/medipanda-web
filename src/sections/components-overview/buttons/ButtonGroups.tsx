@@ -9,7 +9,7 @@ import MainCard from 'components/MainCard';
 // ==============================|| BUTTON GROUPS ||============================== //
 
 export default function ButtonGroups() {
-  const buttons = [<Button key="one">One</Button>, <Button key="two">Two</Button>, <Button key="three">Three</Button>];
+  const buttons = [<Button key='one'>One</Button>, <Button key='two'>Two</Button>, <Button key='three'>Three</Button>];
 
   const groupButtonCodeString = `<ButtonGroup disableElevation variant="contained" aria-label="outlined primary button group">
   <Button key="one">One</Button>
@@ -38,30 +38,30 @@ export default function ButtonGroups() {
 </ButtonGroup>`;
 
   return (
-    <MainCard title="Button Group" codeString={groupButtonCodeString}>
-      <Grid container direction="column" spacing={2}>
+    <MainCard title='Button Group' codeString={groupButtonCodeString}>
+      <Grid container direction='column' spacing={2}>
         <Grid item>
-          <ButtonGroup disableElevation variant="contained" aria-label="outlined primary button group">
+          <ButtonGroup disableElevation variant='contained' aria-label='outlined primary button group'>
             {buttons}
           </ButtonGroup>
         </Grid>
         <Grid item>
-          <ButtonGroup variant="outlined" aria-label="outlined button group">
+          <ButtonGroup variant='outlined' aria-label='outlined button group'>
             {buttons}
           </ButtonGroup>
         </Grid>
         <Grid item>
-          <ButtonGroup variant="text" aria-label="text button group">
+          <ButtonGroup variant='text' aria-label='text button group'>
             {buttons}
           </ButtonGroup>
         </Grid>
         <Grid item>
-          <ButtonGroup color="warning" aria-label="medium secondary button group">
+          <ButtonGroup color='warning' aria-label='medium secondary button group'>
             {buttons}
           </ButtonGroup>
         </Grid>
         <Grid item>
-          <ButtonGroup orientation="vertical" aria-label="vertical outlined button group">
+          <ButtonGroup orientation='vertical' aria-label='vertical outlined button group'>
             {buttons}
           </ButtonGroup>
         </Grid>

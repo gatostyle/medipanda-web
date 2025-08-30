@@ -42,7 +42,7 @@ interface StepWrapperProps {
 
 function StepWrapper({ children, value, index, ...other }: StepWrapperProps) {
   return (
-    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+    <div role='tabpanel' hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
       {value === index && <Box sx={{ py: 3 }}>{children}</Box>}
     </div>
   );
@@ -69,12 +69,12 @@ export default function Login3() {
       newSkipped.delete(activeStep);
     }
 
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setActiveStep(prevActiveStep => prevActiveStep + 1);
     setSkipped(newSkipped);
   };
 
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    setActiveStep(prevActiveStep => prevActiveStep - 1);
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,11 +84,11 @@ export default function Login3() {
     <AuthWrapper3>
       <Grid container spacing={3} sx={{ minHeight: '100%', alignContent: 'space-between' }}>
         <Grid item xs={12}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack direction='row' justifyContent='space-between' alignItems='center'>
             <Logo />
-            <Typography color="secondary">
+            <Typography color='secondary'>
               Step
-              <Typography variant="subtitle1" sx={{ display: 'inline-block', margin: '0 5px' }}>
+              <Typography variant='subtitle1' sx={{ display: 'inline-block', margin: '0 5px' }}>
                 {activeStep + 1}
               </Typography>
               to {steps.length}
@@ -100,7 +100,7 @@ export default function Login3() {
             {activeStep === steps.length ? (
               <>
                 <Alert sx={{ my: 3 }}>All steps completed - you can now Login</Alert>
-                <Button component={Link} to={isLoggedIn ? '/auth/login' : '/login'} color="primary" variant="contained" fullWidth>
+                <Button component={Link} to={isLoggedIn ? '/auth/login' : '/login'} color='primary' variant='contained' fullWidth>
                   Login
                 </Button>
               </>
@@ -111,7 +111,7 @@ export default function Login3() {
                     <Grid item xs={12} sx={{ textAlign: 'center' }}>
                       <Grid container spacing={1}>
                         <Grid item xs={12}>
-                          <Typography variant="h3">Welcome to the Able Pro</Typography>
+                          <Typography variant='h3'>Welcome to the Able Pro</Typography>
                         </Grid>
                         <Grid item xs={12}>
                           <Typography>Sign up or login with your work email.</Typography>
@@ -122,22 +122,22 @@ export default function Login3() {
                       <Grid container spacing={1}>
                         <Grid item xs={12}>
                           <AuthSocButton onClick={handleNext}>
-                            <img src={imgSms} alt="Facebook" style={{ margin: '0 10px' }} /> Continue with work email
+                            <img src={imgSms} alt='Facebook' style={{ margin: '0 10px' }} /> Continue with work email
                           </AuthSocButton>
                         </Grid>
                         <Grid item xs={12}>
                           <AuthSocButton>
-                            <img src={imgFacebook} alt="Facebook" style={{ margin: '0 10px' }} /> Sign In with Facebook
+                            <img src={imgFacebook} alt='Facebook' style={{ margin: '0 10px' }} /> Sign In with Facebook
                           </AuthSocButton>
                         </Grid>
                         <Grid item xs={12}>
                           <AuthSocButton>
-                            <img src={imgTwitter} alt="Facebook" style={{ margin: '0 10px' }} /> Sign In with Twitter
+                            <img src={imgTwitter} alt='Facebook' style={{ margin: '0 10px' }} /> Sign In with Twitter
                           </AuthSocButton>
                         </Grid>
                         <Grid item xs={12}>
                           <AuthSocButton>
-                            <img src={imgGoogle} alt="Facebook" style={{ margin: '0 10px' }} /> Sign In with Google
+                            <img src={imgGoogle} alt='Facebook' style={{ margin: '0 10px' }} /> Sign In with Google
                           </AuthSocButton>
                         </Grid>
                       </Grid>
@@ -148,21 +148,21 @@ export default function Login3() {
                   <Grid container spacing={3}>
                     <Grid item xs={12} sx={{ textAlign: 'center' }}>
                       <Stack spacing={1}>
-                        <Typography variant="h3">Welcome to the Able Pro</Typography>
+                        <Typography variant='h3'>Welcome to the Able Pro</Typography>
                         <Typography>Sign up or login with your work email.</Typography>
                       </Stack>
                     </Grid>
                     <Grid item xs={12}>
                       <Stack spacing={3}>
                         <Stack spacing={1}>
-                          <InputLabel htmlFor="email-login">Enter your work email to continue</InputLabel>
-                          <OutlinedInput id="email-login" type="email" name="email" placeholder="Enter email address" fullWidth />
+                          <InputLabel htmlFor='email-login'>Enter your work email to continue</InputLabel>
+                          <OutlinedInput id='email-login' type='email' name='email' placeholder='Enter email address' fullWidth />
                         </Stack>
-                        <Stack direction="row" spacing={1}>
-                          <Button color="secondary" variant="outlined" onClick={handleBack} fullWidth>
+                        <Stack direction='row' spacing={1}>
+                          <Button color='secondary' variant='outlined' onClick={handleBack} fullWidth>
                             Back
                           </Button>
-                          <Button onClick={handleNext} variant="contained" color="primary" fullWidth>
+                          <Button onClick={handleNext} variant='contained' color='primary' fullWidth>
                             Continue
                           </Button>
                         </Stack>
@@ -174,7 +174,7 @@ export default function Login3() {
                   <Grid container spacing={3}>
                     <Grid item xs={12} sx={{ textAlign: 'center' }}>
                       <Stack spacing={1}>
-                        <Typography variant="h3">What’s your purpose for use Able</Typography>
+                        <Typography variant='h3'>What’s your purpose for use Able</Typography>
                         <Typography>Your setup experience will be streamlined accordingly</Typography>
                       </Stack>
                     </Grid>
@@ -193,46 +193,46 @@ export default function Login3() {
                             width: '100%',
                             border: '1px solid',
                             bporderColor: 'divider',
-                            borderRadius: 1
+                            borderRadius: 1,
                           },
                           '& .MuiRadio-root.Mui-checked + .MuiFormLabel-root': {
                             boxShadow: `0 0 0 1px ${theme.palette.primary.main}, 0px 8px 24px rgba(27, 46, 94, 0.12)`,
                             borderColor: theme.palette.primary.main,
                             color: 'primary.main',
-                            bgcolor: 'primary.lighter'
-                          }
+                            bgcolor: 'primary.lighter',
+                          },
                         }}
                       >
                         <Grid item sm={6}>
                           <Radio
-                            id="radioPersonal"
+                            id='radioPersonal'
                             checked={selectedValue === 'Personal'}
                             onChange={handleChange}
-                            value="Personal"
-                            name="radio-buttons"
+                            value='Personal'
+                            name='radio-buttons'
                             inputProps={{ 'aria-label': 'A' }}
                             sx={{ display: 'none' }}
                           />
-                          <InputLabel htmlFor="radioPersonal" sx={{ ml: '0 !im' }}>
-                            <User variant="Bulk" size={48} />
-                            <Typography variant="h5" sx={{ mt: 1 }}>
+                          <InputLabel htmlFor='radioPersonal' sx={{ ml: '0 !im' }}>
+                            <User variant='Bulk' size={48} />
+                            <Typography variant='h5' sx={{ mt: 1 }}>
                               Personal
                             </Typography>
                           </InputLabel>
                         </Grid>
                         <Grid item sm={6}>
                           <Radio
-                            id="radioBusiness"
+                            id='radioBusiness'
                             checked={selectedValue === 'Business'}
                             onChange={handleChange}
-                            value="Business"
-                            name="radio-buttons"
+                            value='Business'
+                            name='radio-buttons'
                             inputProps={{ 'aria-label': 'B' }}
                             sx={{ display: 'none' }}
                           />
-                          <InputLabel htmlFor="radioBusiness">
-                            <Home3 variant="Bulk" size={48} />
-                            <Typography variant="h5" sx={{ mt: 1 }}>
+                          <InputLabel htmlFor='radioBusiness'>
+                            <Home3 variant='Bulk' size={48} />
+                            <Typography variant='h5' sx={{ mt: 1 }}>
                               Business
                             </Typography>
                           </InputLabel>
@@ -240,11 +240,11 @@ export default function Login3() {
                       </Grid>
                     </Grid>
                     <Grid item xs={12}>
-                      <Stack direction="row" spacing={1}>
-                        <Button color="secondary" variant="outlined" onClick={handleBack} fullWidth>
+                      <Stack direction='row' spacing={1}>
+                        <Button color='secondary' variant='outlined' onClick={handleBack} fullWidth>
                           Back
                         </Button>
-                        <Button onClick={handleNext} variant="contained" color="primary" fullWidth>
+                        <Button onClick={handleNext} variant='contained' color='primary' fullWidth>
                           Continue
                         </Button>
                       </Stack>
@@ -255,7 +255,7 @@ export default function Login3() {
                   <Grid container spacing={3}>
                     <Grid item xs={12} sx={{ textAlign: 'center' }}>
                       <Stack spacing={1}>
-                        <Typography variant="h3">Tell us About Yourself</Typography>
+                        <Typography variant='h3'>Tell us About Yourself</Typography>
                         <Typography>Tell us a bit about yourself</Typography>
                       </Stack>
                     </Grid>
@@ -263,40 +263,40 @@ export default function Login3() {
                       <Grid container spacing={3}>
                         <Grid item sm={6}>
                           <Stack spacing={1}>
-                            <InputLabel htmlFor="First-name">First name</InputLabel>
-                            <OutlinedInput id="First-name" type="text" placeholder="First name" fullWidth />
+                            <InputLabel htmlFor='First-name'>First name</InputLabel>
+                            <OutlinedInput id='First-name' type='text' placeholder='First name' fullWidth />
                           </Stack>
                         </Grid>
                         <Grid item sm={6}>
                           <Stack spacing={1}>
-                            <InputLabel htmlFor="Last-name">Last name</InputLabel>
-                            <OutlinedInput id="Last-name" type="text" placeholder="Last name" fullWidth />
+                            <InputLabel htmlFor='Last-name'>Last name</InputLabel>
+                            <OutlinedInput id='Last-name' type='text' placeholder='Last name' fullWidth />
                           </Stack>
                         </Grid>
                         <Grid item sm={12}>
                           <Stack spacing={1}>
-                            <InputLabel htmlFor="email-login1">Email id</InputLabel>
-                            <OutlinedInput id="email-login1" type="email" name="email" placeholder="Email id" fullWidth />
+                            <InputLabel htmlFor='email-login1'>Email id</InputLabel>
+                            <OutlinedInput id='email-login1' type='email' name='email' placeholder='Email id' fullWidth />
                           </Stack>
                         </Grid>
                         <Grid item sm={12}>
                           <Stack spacing={1}>
-                            <InputLabel htmlFor="Password">Password</InputLabel>
-                            <OutlinedInput id="Password" type="password" placeholder="Password" fullWidth />
+                            <InputLabel htmlFor='Password'>Password</InputLabel>
+                            <OutlinedInput id='Password' type='password' placeholder='Password' fullWidth />
                           </Stack>
                         </Grid>
                         <Grid item sm={12}>
                           <Stack spacing={1}>
-                            <InputLabel htmlFor="Confirm-Password">Confirm Password</InputLabel>
-                            <OutlinedInput id="Confirm-Password" type="password" placeholder="Confirm Password" fullWidth />
+                            <InputLabel htmlFor='Confirm-Password'>Confirm Password</InputLabel>
+                            <OutlinedInput id='Confirm-Password' type='password' placeholder='Confirm Password' fullWidth />
                           </Stack>
                         </Grid>
                         <Grid item sm={12}>
-                          <Stack direction="row" spacing={1}>
-                            <Button color="secondary" variant="outlined" onClick={handleBack} fullWidth>
+                          <Stack direction='row' spacing={1}>
+                            <Button color='secondary' variant='outlined' onClick={handleBack} fullWidth>
                               Back
                             </Button>
-                            <Button onClick={handleNext} variant="contained" color="primary" fullWidth>
+                            <Button onClick={handleNext} variant='contained' color='primary' fullWidth>
                               Continue
                             </Button>
                           </Stack>
@@ -309,7 +309,7 @@ export default function Login3() {
                   <Grid container spacing={3}>
                     <Grid item xs={12} sx={{ textAlign: 'center' }}>
                       <Stack spacing={1}>
-                        <Typography variant="h3">Please confirm your email id</Typography>
+                        <Typography variant='h3'>Please confirm your email id</Typography>
                         <Typography>Lorem Ipsum is simply dummy text of the printing and typesetting industry of Lorem Ipsum.</Typography>
                       </Stack>
                     </Grid>
@@ -328,21 +328,21 @@ export default function Login3() {
                             borderColor: { borderColor },
                             borderRadius: 4,
                             ':hover': {
-                              borderColor: theme.palette.primary.main
-                            }
+                              borderColor: theme.palette.primary.main,
+                            },
                           }}
                           focusStyle={{
                             outline: 'none',
                             boxShadow: theme.customShadows.primary,
                             border: '1px solid ',
-                            borderColor: theme.palette.primary.main
+                            borderColor: theme.palette.primary.main,
                           }}
                         />
-                        <Stack direction="row" spacing={1}>
-                          <Button color="secondary" variant="outlined" onClick={handleBack} fullWidth>
+                        <Stack direction='row' spacing={1}>
+                          <Button color='secondary' variant='outlined' onClick={handleBack} fullWidth>
                             Back
                           </Button>
-                          <Button onClick={handleNext} variant="contained" color="primary" fullWidth>
+                          <Button onClick={handleNext} variant='contained' color='primary' fullWidth>
                             Continue
                           </Button>
                         </Stack>
@@ -355,14 +355,14 @@ export default function Login3() {
           </AuthCard>
         </Grid>
         <Grid item xs={12}>
-          <Stack direction="row" justifyContent="center" alignItems="baseline" sx={{ mb: { xs: -0.5, sm: 0.5 } }}>
-            <Typography align="center">
+          <Stack direction='row' justifyContent='center' alignItems='baseline' sx={{ mb: { xs: -0.5, sm: 0.5 } }}>
+            <Typography align='center'>
               By signing up, you confirm to have read Able pro
-              <Typography component={Link} to={'#'} sx={{ textDecoration: 'none', px: 0.5 }} color="primary">
+              <Typography component={Link} to={'#'} sx={{ textDecoration: 'none', px: 0.5 }} color='primary'>
                 Privacy Policy
               </Typography>
               and agree to the
-              <Typography component={Link} to={'#'} sx={{ textDecoration: 'none', pl: 0.5 }} color="primary">
+              <Typography component={Link} to={'#'} sx={{ textDecoration: 'none', pl: 0.5 }} color='primary'>
                 Terms of Service
               </Typography>
               .

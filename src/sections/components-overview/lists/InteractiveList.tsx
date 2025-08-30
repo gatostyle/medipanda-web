@@ -25,15 +25,15 @@ import vector1 from 'assets/images/users/vector-1.png';
 import avatar4 from 'assets/images/users/avatar-4.png';
 
 function generate(element: ReactElement) {
-  return [0, 1, 2].map((value) =>
+  return [0, 1, 2].map(value =>
     cloneElement(element, {
-      key: value
-    })
+      key: value,
+    }),
   );
 }
 
 const ListWrapper = styled('div')(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper
+  backgroundColor: theme.palette.background.paper,
 }));
 ListWrapper.displayName = 'ListWrapper';
 
@@ -120,31 +120,31 @@ export default function InteractiveList() {
       <Box sx={{ flexGrow: 1 }}>
         <FormGroup row>
           <FormControlLabel
-            control={<Checkbox checked={dense} onChange={(event) => setDense(event.target.checked)} />}
-            label="Enable dense"
+            control={<Checkbox checked={dense} onChange={event => setDense(event.target.checked)} />}
+            label='Enable dense'
           />
           <FormControlLabel
-            control={<Checkbox checked={secondary} onChange={(event) => setSecondary(event.target.checked)} />}
-            label="Enable secondary text"
+            control={<Checkbox checked={secondary} onChange={event => setSecondary(event.target.checked)} />}
+            label='Enable secondary text'
           />
         </FormGroup>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={6}>
-            <Typography sx={{ mt: 3 }} variant="h5">
+            <Typography sx={{ mt: 3 }} variant='h5'>
               Text only
             </Typography>
             <ListWrapper>
               <List dense={dense}>
                 {generate(
                   <ListItem divider>
-                    <ListItemText primary="Single-line item" secondary={secondary ? 'Secondary text' : null} />
-                  </ListItem>
+                    <ListItemText primary='Single-line item' secondary={secondary ? 'Secondary text' : null} />
+                  </ListItem>,
                 )}
               </List>
             </ListWrapper>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <Typography variant="h5" sx={{ mt: { xs: 0, lg: 3 } }}>
+            <Typography variant='h5' sx={{ mt: { xs: 0, lg: 3 } }}>
               Icon with text
             </Typography>
             <ListWrapper>
@@ -154,8 +154,8 @@ export default function InteractiveList() {
                     <ListItemIcon sx={{ mr: 0.5 }}>
                       <FolderOpen size={18} />
                     </ListItemIcon>
-                    <ListItemText primary="Single item" secondary={secondary ? 'Secondary text' : null} />
-                  </ListItem>
+                    <ListItemText primary='Single item' secondary={secondary ? 'Secondary text' : null} />
+                  </ListItem>,
                 )}
               </List>
             </ListWrapper>
@@ -163,40 +163,40 @@ export default function InteractiveList() {
         </Grid>
         <Grid container spacing={3} sx={{ mt: 1 }}>
           <Grid item xs={12} xl={6}>
-            <Typography variant="h5">Avatar with text</Typography>
+            <Typography variant='h5'>Avatar with text</Typography>
             <ListWrapper>
               <List dense={dense}>
                 {generate(
                   <ListItem divider>
                     <ListItemAvatar>
                       <AntAvatar>
-                        <img alt="Natacha" src={vector1} height={40} />
+                        <img alt='Natacha' src={vector1} height={40} />
                       </AntAvatar>
                     </ListItemAvatar>
-                    <ListItemText primary="Single-line item" secondary={secondary ? 'Secondary text' : null} />
-                  </ListItem>
+                    <ListItemText primary='Single-line item' secondary={secondary ? 'Secondary text' : null} />
+                  </ListItem>,
                 )}
               </List>
             </ListWrapper>
           </Grid>
           <Grid item xs={12} xl={6}>
-            <Typography variant="h5">Avatar with text and icon</Typography>
+            <Typography variant='h5'>Avatar with text and icon</Typography>
             <ListWrapper>
               <List dense={dense}>
                 {generate(
                   <ListItem
                     divider
                     secondaryAction={
-                      <IconButton edge="end" aria-label="delete" color="error" size="small">
-                        <Trash variant="Bold" />
+                      <IconButton edge='end' aria-label='delete' color='error' size='small'>
+                        <Trash variant='Bold' />
                       </IconButton>
                     }
                   >
                     <ListItemAvatar>
-                      <AntAvatar alt="Avatar" src={avatar4} />
+                      <AntAvatar alt='Avatar' src={avatar4} />
                     </ListItemAvatar>
-                    <ListItemText primary="Single-line item" secondary={secondary ? 'Secondary text' : null} />
-                  </ListItem>
+                    <ListItemText primary='Single-line item' secondary={secondary ? 'Secondary text' : null} />
+                  </ListItem>,
                 )}
               </List>
             </ListWrapper>

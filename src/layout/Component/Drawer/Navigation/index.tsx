@@ -18,10 +18,10 @@ export default function Navigation({ searchValue }: { searchValue?: string }) {
   if (searchValue === null || searchValue === undefined || searchValue === '') {
     filteredMenuItems = menuItem;
   } else {
-    menuItem.forEach((parentMenu) => {
+    menuItem.forEach(parentMenu => {
       const matchedChildren: any[] = [];
 
-      parentMenu.children?.forEach((child) => {
+      parentMenu.children?.forEach(child => {
         if (child.search?.trim().toLowerCase().includes(searchValue!)) {
           // todo: consider other filed then id
           // if match
@@ -29,7 +29,7 @@ export default function Navigation({ searchValue }: { searchValue?: string }) {
         }
       });
 
-      const parent = filteredMenuItems.filter((xx) => xx === parentMenu); // get the parent menu item/header
+      const parent = filteredMenuItems.filter(xx => xx === parentMenu); // get the parent menu item/header
       if (parent.length === 0 && matchedChildren.length > 0) {
         const clonedParent = { ...parentMenu }; // clone children as we dont want entire children but just filtered
         clonedParent.children = matchedChildren;
@@ -38,13 +38,13 @@ export default function Navigation({ searchValue }: { searchValue?: string }) {
     });
   }
 
-  const navGroups = filteredMenuItems.map((item) => {
+  const navGroups = filteredMenuItems.map(item => {
     switch (item.type) {
       case 'group':
         return <NavGroup key={item.id} item={item} />;
       default:
         return (
-          <Typography key={item.id} variant="h6" color="error" align="center">
+          <Typography key={item.id} variant='h6' color='error' align='center'>
             Fix - Navigation Group
           </Typography>
         );

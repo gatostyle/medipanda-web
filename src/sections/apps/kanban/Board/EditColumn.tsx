@@ -33,15 +33,15 @@ export default function EditColumn({ column }: Props) {
         mb: 1.5,
         fontWeight: 500,
         '& input:focus': {
-          bgcolor: theme.palette.mode === ThemeMode.DARK ? 'secondary.100' : 'secondary.lighter'
+          bgcolor: theme.palette.mode === ThemeMode.DARK ? 'secondary.100' : 'secondary.lighter',
         },
         '& input:hover': {
-          bgcolor: theme.palette.mode === ThemeMode.DARK ? 'secondary.100' : 'secondary.lighter'
+          bgcolor: theme.palette.mode === ThemeMode.DARK ? 'secondary.100' : 'secondary.lighter',
         },
         '& input:hover + fieldset': { display: 'block' },
         '&, & input': { bgcolor: 'transparent' },
         '& fieldset': { display: 'none' },
-        '& input:focus + fieldset': { display: 'block' }
+        '& input:focus + fieldset': { display: 'block' },
       }}
     />
   );

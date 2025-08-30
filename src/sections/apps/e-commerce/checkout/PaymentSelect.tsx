@@ -25,19 +25,19 @@ export default function PaymentSelect({ item }: { item: PaymentOptionsProps }) {
           control={<Radio />}
           label={
             <Stack spacing={0.5} sx={{ width: '100%' }}>
-              <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2.5} sx={{ width: '100%' }}>
-                <Typography variant="subtitle1">{item.title}</Typography>
+              <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={2.5} sx={{ width: '100%' }}>
+                <Typography variant='subtitle1'>{item.title}</Typography>
                 <Box
                   sx={{
                     backgroundImage: `url(${item.image})`,
                     backgroundSize: 'contain',
                     backgroundPosition: 'right',
                     borderColor: 'error.light',
-                    ...item.size
+                    ...item.size,
                   }}
                 />
               </Stack>
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant='caption' color='text.secondary'>
                 {item.caption}
               </Typography>
             </Stack>
@@ -47,7 +47,7 @@ export default function PaymentSelect({ item }: { item: PaymentOptionsProps }) {
             alignItems: 'flex-start',
             '& .MuiSvgIcon-root': { fontSize: 32 },
             '& .MuiFormControlLabel-label': { width: '100%' },
-            '& .MuiRadio-root': { p: 0, pl: 1, pr: 1, pt: 0.5 }
+            '& .MuiRadio-root': { p: 0, pl: 1, pr: 1, pt: 0.5 },
           }}
         />
       </Box>

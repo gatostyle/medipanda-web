@@ -39,22 +39,22 @@ function TaskStatusChart({ color, data }: Props) {
       type: 'area',
       stacked: true,
       sparkline: {
-        enabled: true
+        enabled: true,
       },
-      offsetX: -20
+      offsetX: -20,
     },
     plotOptions: {
       bar: {
-        borderRadius: 0
-      }
+        borderRadius: 0,
+      },
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     markers: {
       hover: {
-        size: 5
-      }
+        size: 5,
+      },
     },
 
     fill: {
@@ -64,18 +64,18 @@ function TaskStatusChart({ color, data }: Props) {
         type: 'vertical',
         inverseColors: false,
         opacityFrom: 0.5,
-        opacityTo: 0
-      }
+        opacityTo: 0,
+      },
     },
     stroke: { curve: 'smooth', width: 2 },
     tooltip: {
       x: {
-        show: false
-      }
+        show: false,
+      },
     },
     grid: {
-      show: false
-    }
+      show: false,
+    },
   };
   const { primary, secondary } = theme.palette.text;
   const line = theme.palette.divider;
@@ -83,18 +83,18 @@ function TaskStatusChart({ color, data }: Props) {
   const [options, setOptions] = useState<ChartProps>(areaChartOptions);
 
   useEffect(() => {
-    setOptions((prevState) => ({
+    setOptions(prevState => ({
       ...prevState,
       colors: [color],
       theme: {
-        mode: mode === ThemeMode.DARK ? 'dark' : 'light'
-      }
+        mode: mode === ThemeMode.DARK ? 'dark' : 'light',
+      },
     }));
   }, [color, mode, primary, secondary, line, theme]);
 
   const [series] = useState([{ name: 'Orders', data }]);
 
-  return <ReactApexChart options={options} series={series} type="area" height={60} />;
+  return <ReactApexChart options={options} series={series} type='area' height={60} />;
 }
 
 // ==============================|| CHART - PROJECT OVERVIEW ||============================== //
@@ -115,13 +115,13 @@ export default function ProjectOverview() {
 
   return (
     <MainCard>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
-        <Typography variant="h5">Project overview</Typography>
+      <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1}>
+        <Typography variant='h5'>Project overview</Typography>
         <IconButton
-          color="secondary"
-          id="wallet-button"
+          color='secondary'
+          id='wallet-button'
           aria-controls={open ? 'wallet-menu' : undefined}
-          aria-haspopup="true"
+          aria-haspopup='true'
           aria-expanded={open ? 'true' : undefined}
           onClick={handleClick}
           sx={{ transform: 'rotate(90deg)' }}
@@ -129,7 +129,7 @@ export default function ProjectOverview() {
           <MoreIcon />
         </IconButton>
         <Menu
-          id="wallet-menu"
+          id='wallet-menu'
           anchorEl={anchorEl}
           open={open}
           onClose={handleClose}
@@ -144,11 +144,11 @@ export default function ProjectOverview() {
       </Stack>
       <Grid container spacing={3} sx={{ mt: 1 }}>
         <Grid item xs={12} sm={6} md={4}>
-          <Grid container spacing={1} alignItems="flex-end">
+          <Grid container spacing={1} alignItems='flex-end'>
             <Grid item xs={6}>
               <Stack spacing={0.25}>
-                <Typography color="text.secondary">Total Tasks</Typography>
-                <Typography variant="h5">34,686</Typography>
+                <Typography color='text.secondary'>Total Tasks</Typography>
+                <Typography variant='h5'>34,686</Typography>
               </Stack>
             </Grid>
             <Grid item xs={6}>
@@ -160,8 +160,8 @@ export default function ProjectOverview() {
           <Grid container spacing={1}>
             <Grid item xs={6}>
               <Stack spacing={0.25}>
-                <Typography color="text.secondary">Pending Tasks</Typography>
-                <Typography variant="h5">3,6786</Typography>
+                <Typography color='text.secondary'>Pending Tasks</Typography>
+                <Typography variant='h5'>3,6786</Typography>
               </Stack>
             </Grid>
             <Grid item xs={6}>
@@ -170,7 +170,7 @@ export default function ProjectOverview() {
           </Grid>
         </Grid>
         <Grid item xs={12} md={4}>
-          <Button fullWidth variant="contained" startIcon={<Add />} size="large">
+          <Button fullWidth variant='contained' startIcon={<Add />} size='large'>
             Add project
           </Button>
         </Grid>

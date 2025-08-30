@@ -26,7 +26,7 @@ import {
   getCoreRowModel,
   ColumnFiltersState,
   getFilteredRowModel,
-  getPaginationRowModel
+  getPaginationRowModel,
 } from '@tanstack/react-table';
 
 // project import
@@ -66,7 +66,7 @@ function ReactTable({ columns, data, title }: ReactTableProps) {
     state: {
       columnFilters,
       rowSelection,
-      globalFilter
+      globalFilter,
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
@@ -75,16 +75,16 @@ function ReactTable({ columns, data, title }: ReactTableProps) {
     getFilteredRowModel: getFilteredRowModel(),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    debugTable: true
+    debugTable: true,
   });
 
   let headers: LabelKeyObject[] = [];
-  table.getAllColumns().map((columns) =>
+  table.getAllColumns().map(columns =>
     headers.push({
       label: typeof columns.columnDef.header === 'string' ? columns.columnDef.header : '#',
       // @ts-ignore
-      key: columns.columnDef.accessorKey
-    })
+      key: columns.columnDef.accessorKey,
+    }),
   );
 
   const [age, setAge] = useState('10');
@@ -95,11 +95,11 @@ function ReactTable({ columns, data, title }: ReactTableProps) {
   return (
     <MainCard content={false} title={title}>
       <Box sx={{ p: 3, pb: 0 }}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
-          <Typography variant="h5">Products</Typography>
+        <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1}>
+          <Typography variant='h5'>Products</Typography>
           <Box sx={{ minWidth: 120 }}>
             <FormControl fullWidth>
-              <Select id="demo-simple-select" value={age} onChange={handleChange}>
+              <Select id='demo-simple-select' value={age} onChange={handleChange}>
                 <MenuItem value={10}>Today</MenuItem>
                 <MenuItem value={20}>Weekly</MenuItem>
                 <MenuItem value={30}>Monthly</MenuItem>
@@ -111,17 +111,17 @@ function ReactTable({ columns, data, title }: ReactTableProps) {
       <Stack
         direction={matchDownSM ? 'column' : 'row'}
         spacing={2}
-        justifyContent="space-between"
-        alignItems="center"
+        justifyContent='space-between'
+        alignItems='center'
         sx={{ padding: 2.5 }}
       >
         <DebouncedInput
           value={globalFilter ?? ''}
-          onFilterChange={(value) => setGlobalFilter(String(value))}
+          onFilterChange={value => setGlobalFilter(String(value))}
           placeholder={`Search ${data.length} records...`}
         />
 
-        <Stack direction={matchDownSM ? 'column' : 'row'} alignItems="center" spacing={2}>
+        <Stack direction={matchDownSM ? 'column' : 'row'} alignItems='center' spacing={2}>
           {/* <SelectColumnSorting {...{ getState: table.getState, getAllColumns: table.getAllColumns }} /> */}
         </Stack>
       </Stack>
@@ -132,10 +132,10 @@ function ReactTable({ columns, data, title }: ReactTableProps) {
               <TableHead>
                 {table.getHeaderGroups().map((headerGroup: HeaderGroup<any>) => (
                   <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
+                    {headerGroup.headers.map(header => {
                       if (header.column.columnDef.meta !== undefined && header.column.getCanSort()) {
                         Object.assign(header.column.columnDef.meta, {
-                          className: header.column.columnDef.meta.className + ' cursor-pointer prevent-select'
+                          className: header.column.columnDef.meta.className + ' cursor-pointer prevent-select',
                         });
                       }
 
@@ -146,11 +146,11 @@ function ReactTable({ columns, data, title }: ReactTableProps) {
                           onClick={header.column.getToggleSortingHandler()}
                           {...(header.column.getCanSort() &&
                             header.column.columnDef.meta === undefined && {
-                              className: 'cursor-pointer prevent-select'
+                              className: 'cursor-pointer prevent-select',
                             })}
                         >
                           {header.isPlaceholder ? null : (
-                            <Stack direction="row" spacing={1} alignItems="center">
+                            <Stack direction='row' spacing={1} alignItems='center'>
                               <Box>{flexRender(header.column.columnDef.header, header.getContext())}</Box>
                               {header.column.getCanSort() && <HeaderSort column={header.column} />}
                             </Stack>
@@ -162,9 +162,9 @@ function ReactTable({ columns, data, title }: ReactTableProps) {
                 ))}
               </TableHead>
               <TableBody>
-                {table.getRowModel().rows.map((row) => (
+                {table.getRowModel().rows.map(row => (
                   <TableRow key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
+                    {row.getVisibleCells().map(cell => (
                       <TableCell key={cell.id} {...cell.column.columnDef.meta}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
@@ -179,7 +179,7 @@ function ReactTable({ columns, data, title }: ReactTableProps) {
                         setPageIndex: table.setPageIndex,
                         getState: table.getState,
                         getPageCount: table.getPageCount,
-                        initialPageSize: 4
+                        initialPageSize: 4,
                       }}
                     />
                   </TableCell>
@@ -210,58 +210,58 @@ export default function Products() {
         accessorKey: 'fatherName',
         cell: ({ row }) => {
           return (
-            <Stack direction="row" spacing={1.5} alignItems="center">
+            <Stack direction='row' spacing={1.5} alignItems='center'>
               <Avatar
-                alt="Avatar 1"
-                size="lg"
-                variant="rounded"
+                alt='Avatar 1'
+                size='lg'
+                variant='rounded'
                 src={getImageUrl(`img-prod-${randomIntFromInterval(1, 4)}.jpg`, ImagePath.WIDGET)}
               />
               <Stack spacing={0}>
-                <Typography variant="subtitle1">{row.original.fatherName}</Typography>
-                <Typography variant="caption" color="text.secondary" sx={{ display: { xs: 'none', lg: 'inherit' } }}>
+                <Typography variant='subtitle1'>{row.original.fatherName}</Typography>
+                <Typography variant='caption' color='text.secondary' sx={{ display: { xs: 'none', lg: 'inherit' } }}>
                   Leather panels. Laces. Rounded toe.
                 </Typography>
               </Stack>
             </Stack>
           );
-        }
+        },
       },
       {
         header: 'Status',
         accessorKey: 'status',
-        cell: (cell) => {
+        cell: cell => {
           switch (cell.getValue()) {
             case 'Complicated':
-              return <Chip color="error" label="Close" size="small" sx={{ borderRadius: 1 }} />;
+              return <Chip color='error' label='Close' size='small' sx={{ borderRadius: 1 }} />;
             case 'Relationship':
-              return <Chip color="success" label="Active" size="small" sx={{ borderRadius: 1 }} />;
+              return <Chip color='success' label='Active' size='small' sx={{ borderRadius: 1 }} />;
             case 'Single':
             default:
-              return <Chip color="warning" label="Pending" size="small" sx={{ borderRadius: 1 }} />;
+              return <Chip color='warning' label='Pending' size='small' sx={{ borderRadius: 1 }} />;
           }
-        }
+        },
       },
       {
         header: 'Price',
         accessorKey: 'age',
-        cell: ({ row }) => <Typography variant="subtitle1">${row.original.age}</Typography>
+        cell: ({ row }) => <Typography variant='subtitle1'>${row.original.age}</Typography>,
       },
       {
         header: 'Sales',
         accessorKey: 'visits',
         cell: ({ row }) => {
           return (
-            <Stack direction="row" alignItems="center" spacing={0.75}>
-              <Typography variant="subtitle1">{row.original.visits}</Typography>
+            <Stack direction='row' alignItems='center' spacing={0.75}>
+              <Typography variant='subtitle1'>{row.original.visits}</Typography>
               <>
                 {row.original?.age > 30 ? (
-                  <Typography variant="caption" color="success.main" sx={{ display: 'flex', alignItems: 'center', gap: 0.25 }}>
+                  <Typography variant='caption' color='success.main' sx={{ display: 'flex', alignItems: 'center', gap: 0.25 }}>
                     +{(row.original.age * 3) / 10}
                     <ArrowUp size={12} />
                   </Typography>
                 ) : (
-                  <Typography variant="caption" color="error.dark" sx={{ display: 'flex', alignItems: 'center', gap: 0.25 }}>
+                  <Typography variant='caption' color='error.dark' sx={{ display: 'flex', alignItems: 'center', gap: 0.25 }}>
                     -{(row.original.age * 3) / 10}
                     <ArrowDown size={12} />
                   </Typography>
@@ -270,24 +270,24 @@ export default function Products() {
               <Typography></Typography>
             </Stack>
           );
-        }
+        },
       },
       {
         header: 'Rating',
         accessorKey: 'progress',
         cell: ({ row }) => {
           return (
-            <Stack direction="row" alignItems="center" spacing={0.5}>
-              <Star1 variant="Bold" color={theme.palette.warning.main} size={18} />
-              <Typography variant="subtitle1">{randomIntFromInterval(1, 10) / 2}</Typography>
-              <Typography color="text.secondary">({row.original.progress})</Typography>
+            <Stack direction='row' alignItems='center' spacing={0.5}>
+              <Star1 variant='Bold' color={theme.palette.warning.main} size={18} />
+              <Typography variant='subtitle1'>{randomIntFromInterval(1, 10) / 2}</Typography>
+              <Typography color='text.secondary'>({row.original.progress})</Typography>
             </Stack>
           );
-        }
-      }
+        },
+      },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [],
   );
 
   return (

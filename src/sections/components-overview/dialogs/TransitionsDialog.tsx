@@ -27,7 +27,7 @@ export default function AlertDialogSlide() {
 
   return (
     <>
-      <Button variant="contained" onClick={handleClickOpen}>
+      <Button variant='contained' onClick={handleClickOpen}>
         Slide in dialog
       </Button>
       <Dialog
@@ -35,20 +35,20 @@ export default function AlertDialogSlide() {
         TransitionComponent={PopupTransition}
         keepMounted
         onClose={handleClose}
-        aria-describedby="alert-dialog-slide-description"
+        aria-describedby='alert-dialog-slide-description'
       >
         <Box sx={{ p: 1, py: 1.5 }}>
           <DialogTitle>Use Google&apos;ss location service?</DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-slide-description">
+            <DialogContentText id='alert-dialog-slide-description'>
               Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button color="error" onClick={handleClose}>
+            <Button color='error' onClick={handleClose}>
               Disagree
             </Button>
-            <Button variant="contained" onClick={handleClose}>
+            <Button variant='contained' onClick={handleClose}>
               Agree
             </Button>
           </DialogActions>

@@ -44,27 +44,27 @@ function ReactTable({ columns, data }: ReactTableProps) {
     getCoreRowModel: getCoreRowModel(),
     debugTable: true,
     debugHeaders: true,
-    debugColumns: true
+    debugColumns: true,
   });
 
   let headers: LabelKeyObject[] = [];
-  table.getAllColumns().map((columns) =>
+  table.getAllColumns().map(columns =>
     headers.push({
       label: typeof columns.columnDef.header === 'string' ? columns.columnDef.header : '#',
       // @ts-ignore
-      key: columns.columnDef.accessorKey
-    })
+      key: columns.columnDef.accessorKey,
+    }),
   );
 
   return (
-    <MainCard content={false} title="Column Resizing" secondary={<CSVExport {...{ data, headers, filename: 'column-resizing.csv' }} />}>
+    <MainCard content={false} title='Column Resizing' secondary={<CSVExport {...{ data, headers, filename: 'column-resizing.csv' }} />}>
       <ScrollX>
         <TableContainer component={Paper}>
           <Table {...{ style: { width: table.getCenterTotalSize() } }}>
             <TableHead>
               {table.getHeaderGroups().map((headerGroup: HeaderGroup<any>) => (
                 <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
+                  {headerGroup.headers.map(header => (
                     <TableCell
                       key={header.id}
                       {...header.column.columnDef.meta}
@@ -76,10 +76,10 @@ function ReactTable({ columns, data }: ReactTableProps) {
                           onMouseDown: header.getResizeHandler(),
                           onTouchStart: header.getResizeHandler(),
                           className: `resizer ${header.column.getIsResizing() ? 'isResizing' : ''}`,
-                          sx: { position: 'absolute', opacity: 0, zIndex: 1 }
+                          sx: { position: 'absolute', opacity: 0, zIndex: 1 },
                         }}
                       >
-                        <Minus style={{ transform: 'rotate(90deg)' }} size="32" variant="Outline" />
+                        <Minus style={{ transform: 'rotate(90deg)' }} size='32' variant='Outline' />
                       </Box>
                     </TableCell>
                   ))}
@@ -87,9 +87,9 @@ function ReactTable({ columns, data }: ReactTableProps) {
               ))}
             </TableHead>
             <TableBody>
-              {table.getRowModel().rows.map((row) => (
+              {table.getRowModel().rows.map(row => (
                 <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
+                  {row.getVisibleCells().map(cell => (
                     <TableCell key={cell.id} {...cell.column.columnDef.meta} sx={{ width: cell.column.getSize() }}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
@@ -114,57 +114,57 @@ export default function ColumnResizing() {
       {
         header: 'First Name',
         accessorKey: 'firstName',
-        dataType: 'text'
+        dataType: 'text',
       },
       {
         header: 'Last Name',
         accessorKey: 'lastName',
-        dataType: 'text'
+        dataType: 'text',
       },
       {
         header: 'Email',
-        accessorKey: 'email'
+        accessorKey: 'email',
       },
       {
         header: 'Age',
         accessorKey: 'age',
-        meta: { className: 'cell-right' }
+        meta: { className: 'cell-right' },
       },
       {
         header: 'Role',
-        accessorKey: 'role'
+        accessorKey: 'role',
       },
       {
         header: 'Visits',
         accessorKey: 'visits',
-        meta: { className: 'cell-right' }
+        meta: { className: 'cell-right' },
       },
       {
         header: 'Country',
-        accessorKey: 'country'
+        accessorKey: 'country',
       },
       {
         header: 'Status',
         accessorKey: 'status',
-        cell: (cell) => {
+        cell: cell => {
           switch (cell.getValue()) {
             case 'Complicated':
-              return <Chip color="error" label="Complicated" size="small" variant="light" />;
+              return <Chip color='error' label='Complicated' size='small' variant='light' />;
             case 'Relationship':
-              return <Chip color="success" label="Relationship" size="small" variant="light" />;
+              return <Chip color='success' label='Relationship' size='small' variant='light' />;
             case 'Single':
             default:
-              return <Chip color="info" label="Single" size="small" variant="light" />;
+              return <Chip color='info' label='Single' size='small' variant='light' />;
           }
-        }
+        },
       },
       {
         header: 'Progress',
         accessorKey: 'progress',
-        cell: (cell) => <LinearWithLabel value={cell.getValue() as number} sx={{ minWidth: 100 }} />
-      }
+        cell: cell => <LinearWithLabel value={cell.getValue() as number} sx={{ minWidth: 100 }} />,
+      },
     ],
-    []
+    [],
   );
 
   return <ReactTable {...{ columns, data }} />;

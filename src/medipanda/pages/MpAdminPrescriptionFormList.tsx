@@ -16,7 +16,7 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
@@ -28,7 +28,7 @@ import {
   DateTimeString,
   deletePrescriptionPartner,
   getPrescriptionPartnerList,
-  PrescriptionPartnerResponse
+  PrescriptionPartnerResponse,
 } from 'medipanda/backend';
 import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
@@ -60,7 +60,7 @@ export default function MpAdminPrescriptionFormList() {
       prescriptionMonthStart: null as Date | null,
       prescriptionMonthEnd: null as Date | null,
       pageIndex: 0,
-      pageSize: 20
+      pageSize: 20,
     },
     onSubmit: async () => {
       if (formik.values.pageIndex !== 0) {
@@ -68,12 +68,12 @@ export default function MpAdminPrescriptionFormList() {
       } else {
         await fetchData();
       }
-    }
+    },
   });
 
   const handleApprove = async () => {
     try {
-      await Promise.all(selectedItems.map((id) => completePrescriptionPartner(id)));
+      await Promise.all(selectedItems.map(id => completePrescriptionPartner(id)));
       const count = selectedItems.length;
       const message = count === 1 ? '처방이 승인되었습니다.' : `${count}개 처방이 승인되었습니다.`;
       infoDialog.showInfo(message);
@@ -95,9 +95,9 @@ export default function MpAdminPrescriptionFormList() {
       header: () => (
         <Checkbox
           checked={selectedItems.length === data.length && data.length > 0}
-          onChange={(e) => {
+          onChange={e => {
             if (e.target.checked) {
-              setSelectedItems(data.map((item) => item.id));
+              setSelectedItems(data.map(item => item.id));
             } else {
               setSelectedItems([]);
             }
@@ -107,40 +107,40 @@ export default function MpAdminPrescriptionFormList() {
       cell: ({ row }) => (
         <Checkbox
           checked={selectedItems.includes(row.original.id)}
-          onChange={(e) => {
+          onChange={e => {
             if (e.target.checked) {
-              setSelectedItems((prev) => [...prev, row.original.id]);
+              setSelectedItems(prev => [...prev, row.original.id]);
             } else {
-              setSelectedItems((prev) => prev.filter((id) => id !== row.original.id));
+              setSelectedItems(prev => prev.filter(id => id !== row.original.id));
             }
           }}
         />
       ),
-      size: 50
+      size: 50,
     },
     {
       header: 'No',
       accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
-      size: 60
+      size: 60,
     },
     {
       header: '제약사명',
       accessorKey: 'drugCompany',
       cell: ({ row }) => row.original.drugCompany,
-      size: 120
+      size: 120,
     },
     {
       header: '회사명',
       accessorKey: 'companyName',
       cell: ({ row }) => row.original.companyName,
-      size: 120
+      size: 120,
     },
     {
       header: '거래처코드',
       accessorKey: 'institutionCode',
       cell: ({ row }) => row.original.institutionCode,
-      size: 100
+      size: 100,
     },
     {
       header: '거래처명',
@@ -150,37 +150,37 @@ export default function MpAdminPrescriptionFormList() {
           {row.original.dealerName}
         </Link>
       ),
-      size: 100
+      size: 100,
     },
     {
       header: '사업자등록번호',
       accessorKey: 'businessNumber',
       cell: ({ row }) => row.original.businessNumber,
-      size: 130
+      size: 130,
     },
     {
       header: '처방일',
       accessorKey: 'prescriptionMonth',
       cell: ({ row }) => formatYyyyMm(row.original.prescriptionMonth),
-      size: 100
+      size: 100,
     },
     {
       header: '접수일',
       accessorKey: 'settlementMonth',
       cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
-      size: 100
+      size: 100,
     },
     {
       header: '입력일',
       accessorKey: 'inputDate',
       cell: ({ row }) => formatYyyyMmDd(row.original.inputDate),
-      size: 100
+      size: 100,
     },
     {
       header: '처방금액',
       accessorKey: 'amount',
       cell: ({ row }) => `${row.original.amount.toLocaleString()}`,
-      size: 100
+      size: 100,
     },
     {
       header: '승인상태',
@@ -191,13 +191,13 @@ export default function MpAdminPrescriptionFormList() {
         const labels = {
           PENDING: '승인대기',
           IN_PROGRESS: '승인진행중',
-          COMPLETED: '승인완료'
+          COMPLETED: '승인완료',
         };
 
         return labels[status];
       },
-      size: 80
-    }
+      size: 80,
+    },
   ];
 
   const table = useReactTable({
@@ -208,11 +208,11 @@ export default function MpAdminPrescriptionFormList() {
     state: {
       pagination: {
         pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize
-      }
+        pageSize: formik.values.pageSize,
+      },
     },
     pageCount: totalPages,
-    manualPagination: true
+    manualPagination: true,
   });
 
   const fetchData = async () => {
@@ -226,7 +226,7 @@ export default function MpAdminPrescriptionFormList() {
         prescriptionMonthStart: formik.values.prescriptionMonthStart ? new DateTimeString(formik.values.prescriptionMonthStart) : undefined,
         prescriptionMonthEnd: formik.values.prescriptionMonthEnd ? new DateTimeString(formik.values.prescriptionMonthEnd) : undefined,
         page: formik.values.pageIndex,
-        size: formik.values.pageSize
+        size: formik.values.pageSize,
       });
 
       setData(withSequence(response).content);
@@ -262,7 +262,7 @@ export default function MpAdminPrescriptionFormList() {
       message: `선택한 ${selectedItems.length}개의 처방을 삭제하시겠습니까?`,
       onConfirm: async () => {
         try {
-          await Promise.all(selectedItems.map((id) => deletePrescriptionPartner(id)));
+          await Promise.all(selectedItems.map(id => deletePrescriptionPartner(id)));
           infoDialog.showInfo('처방이 삭제되었습니다.');
           setSelectedItems([]);
           fetchData();
@@ -274,14 +274,14 @@ export default function MpAdminPrescriptionFormList() {
             errorDialog.showError('처방 삭제에 실패했습니다.');
           }
         }
-      }
+      },
     });
   };
 
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant='h4' gutterBottom>
           처방입력
         </Typography>
       </Grid>
@@ -292,18 +292,18 @@ export default function MpAdminPrescriptionFormList() {
             <form onSubmit={formik.handleSubmit}>
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size="small">
+                  <FormControl fullWidth size='small'>
                     <InputLabel>상태</InputLabel>
-                    <Select name="status" value={formik.values.status} onChange={formik.handleChange}>
+                    <Select name='status' value={formik.values.status} onChange={formik.handleChange}>
                       <MenuItem value={'PENDING'}>승인대기</MenuItem>
                       <MenuItem value={'COMPLETED'}>승인완료</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size="small">
+                  <FormControl fullWidth size='small'>
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
+                    <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'companyName'}>회사명</MenuItem>
                       <MenuItem value={'dealerName'}>딜러명</MenuItem>
                       <MenuItem value={'drugCompany'}>제약사명</MenuItem>
@@ -311,26 +311,26 @@ export default function MpAdminPrescriptionFormList() {
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="prescriptionMonthStart" label="시작일" formik={formik} />
+                  <MpFormikDatePicker name='prescriptionMonthStart' label='시작일' formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name="prescriptionMonthEnd" label="종료일" formik={formik} />
+                  <MpFormikDatePicker name='prescriptionMonthEnd' label='종료일' formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
-                    name="searchKeyword"
-                    size="small"
-                    placeholder="검색어를 입력하세요"
+                    name='searchKeyword'
+                    size='small'
+                    placeholder='검색어를 입력하세요'
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
                   />
                 </SearchFilterItem>
                 <SearchFilterActions>
-                  <Button variant="contained" size="small" type="submit">
+                  <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant="outlined" size="small" onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={handleReset}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -343,18 +343,18 @@ export default function MpAdminPrescriptionFormList() {
       <Grid item xs={12}>
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Stack direction="row" spacing={2}>
-                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
-                <Typography variant="subtitle1" sx={{ ml: 2 }}>
+            <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+              <Stack direction='row' spacing={2}>
+                <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
+                <Typography variant='subtitle1' sx={{ ml: 2 }}>
                   총 처방금액: {data.reduce((sum, item) => sum + item.amount, 0).toLocaleString()}원
                 </Typography>
               </Stack>
-              <Stack direction="row" spacing={1}>
-                <Button variant="contained" color="success" size="small" onClick={handleApprove} disabled={selectedItems.length === 0}>
+              <Stack direction='row' spacing={1}>
+                <Button variant='contained' color='success' size='small' onClick={handleApprove} disabled={selectedItems.length === 0}>
                   승인완료
                 </Button>
-                <Button variant="contained" size="small" color="error" disabled={selectedItems.length === 0} onClick={handleDelete}>
+                <Button variant='contained' size='small' color='error' disabled={selectedItems.length === 0} onClick={handleDelete}>
                   삭제
                 </Button>
               </Stack>
@@ -362,11 +362,11 @@ export default function MpAdminPrescriptionFormList() {
 
             <ScrollX>
               <TableContainer>
-                <Table size="small">
+                <Table size='small'>
                   <TableHead>
-                    {table.getHeaderGroups().map((headerGroup) => (
+                    {table.getHeaderGroups().map(headerGroup => (
                       <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => (
+                        {headerGroup.headers.map(header => (
                           <TableCell key={header.id} style={{ width: header.getSize() }}>
                             {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                           </TableCell>
@@ -377,24 +377,24 @@ export default function MpAdminPrescriptionFormList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : (
-                      table.getRowModel().rows.map((row) => (
+                      table.getRowModel().rows.map(row => (
                         <TableRow key={row.id}>
-                          {row.getVisibleCells().map((cell) => (
+                          {row.getVisibleCells().map(cell => (
                             <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                           ))}
                         </TableRow>
@@ -405,13 +405,13 @@ export default function MpAdminPrescriptionFormList() {
               </TableContainer>
             </ScrollX>
 
-            <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
+            <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
                 page={formik.values.pageIndex + 1}
                 onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
-                color="primary"
-                variant="outlined"
+                color='primary'
+                variant='outlined'
                 showFirstButton
                 showLastButton
               />

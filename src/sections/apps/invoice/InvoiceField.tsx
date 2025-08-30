@@ -17,7 +17,7 @@ export default function InvoiceField({ onEditItem, cellData }: any) {
         label={cellData.label}
         error={Boolean(cellData.errors && cellData.touched)}
         inputProps={{
-          ...(cellData.type === 'number' && { min: 0 })
+          ...(cellData.type === 'number' && { min: 0 }),
         }}
       />
     </TableCell>

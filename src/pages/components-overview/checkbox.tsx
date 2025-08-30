@@ -34,8 +34,8 @@ export default function ComponentCheckbox() {
 
   const children = (
     <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
-      <FormControlLabel label="Child 1" control={<Checkbox checked={checked[0]} onChange={handleChange2} />} />
-      <FormControlLabel label="Child 2" control={<Checkbox checked={checked[1]} onChange={handleChange3} />} />
+      <FormControlLabel label='Child 1' control={<Checkbox checked={checked[0]} onChange={handleChange2} />} />
+      <FormControlLabel label='Child 2' control={<Checkbox checked={checked[1]} onChange={handleChange3} />} />
     </Box>
   );
 
@@ -87,16 +87,16 @@ export default function ComponentCheckbox() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Checkbox"
-        caption="Checkboxes allow the user to select one or more items from a set."
-        directory="src/pages/components-overview/checkbox"
-        link="https://mui.com/material-ui/react-checkbox/"
+        title='Checkbox'
+        caption='Checkboxes allow the user to select one or more items from a set.'
+        directory='src/pages/components-overview/checkbox'
+        link='https://mui.com/material-ui/react-checkbox/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={6}>
             <Stack spacing={3}>
-              <MainCard title="Basic" codeHighlight codeString={basicCheckboxCodeString}>
+              <MainCard title='Basic' codeHighlight codeString={basicCheckboxCodeString}>
                 <>
                   <Checkbox />
                   <Checkbox defaultChecked />
@@ -105,47 +105,47 @@ export default function ComponentCheckbox() {
                   <Checkbox disabled />
                 </>
               </MainCard>
-              <MainCard title="Size" codeString={sizeCheckboxCodeString}>
+              <MainCard title='Size' codeString={sizeCheckboxCodeString}>
                 <>
-                  <Checkbox defaultChecked className="size-small" />
+                  <Checkbox defaultChecked className='size-small' />
                   <Checkbox defaultChecked />
-                  <Checkbox defaultChecked className="size-large" />
+                  <Checkbox defaultChecked className='size-large' />
                 </>
               </MainCard>
-              <MainCard title="Colors" codeString={colorCheckboxCodeString}>
+              <MainCard title='Colors' codeString={colorCheckboxCodeString}>
                 <>
                   <Checkbox />
-                  <Checkbox defaultChecked color="secondary" />
-                  <Checkbox defaultChecked color="success" />
-                  <Checkbox defaultChecked color="warning" />
-                  <Checkbox defaultChecked color="info" />
-                  <Checkbox defaultChecked color="error" />
+                  <Checkbox defaultChecked color='secondary' />
+                  <Checkbox defaultChecked color='success' />
+                  <Checkbox defaultChecked color='warning' />
+                  <Checkbox defaultChecked color='info' />
+                  <Checkbox defaultChecked color='error' />
                 </>
               </MainCard>
             </Stack>
           </Grid>
           <Grid item xs={12} lg={6}>
             <Stack spacing={3}>
-              <MainCard title="Label Placement" codeString={labelCheckboxCodeString}>
-                <FormControl component="fieldset">
-                  <FormGroup aria-label="position" row>
-                    <FormControlLabel value="top" control={<Checkbox />} label="Top" labelPlacement="top" />
+              <MainCard title='Label Placement' codeString={labelCheckboxCodeString}>
+                <FormControl component='fieldset'>
+                  <FormGroup aria-label='position' row>
+                    <FormControlLabel value='top' control={<Checkbox />} label='Top' labelPlacement='top' />
                     <FormControlLabel
-                      value="start"
+                      value='start'
                       control={<Checkbox defaultChecked />}
-                      label="Start"
-                      labelPlacement="start"
+                      label='Start'
+                      labelPlacement='start'
                       sx={{ mr: 1 }}
                     />
-                    <FormControlLabel value="bottom" control={<Checkbox />} label="Bottom" labelPlacement="bottom" />
-                    <FormControlLabel value="end" control={<Checkbox defaultChecked />} label="End" labelPlacement="end" sx={{ ml: 1 }} />
+                    <FormControlLabel value='bottom' control={<Checkbox />} label='Bottom' labelPlacement='bottom' />
+                    <FormControlLabel value='end' control={<Checkbox defaultChecked />} label='End' labelPlacement='end' sx={{ ml: 1 }} />
                   </FormGroup>
                 </FormControl>
               </MainCard>
-              <MainCard title="Indeterminate" codeString={indeterminateCheckboxCodeString}>
+              <MainCard title='Indeterminate' codeString={indeterminateCheckboxCodeString}>
                 <>
                   <FormControlLabel
-                    label="Parent"
+                    label='Parent'
                     control={
                       <Checkbox checked={checked[0] && checked[1]} indeterminate={checked[0] !== checked[1]} onChange={handleChange1} />
                     }

@@ -11,17 +11,17 @@ import { NavItemType } from 'types/menu';
 
 // icons
 const icons = {
-  samplePage: DocumentCode2
+  samplePage: DocumentCode2,
 };
 
 // ==============================|| MENU ITEMS - SAMPLE PAGE ||============================== //
 
 const samplePage: NavItemType = {
   id: 'sample-page',
-  title: <FormattedMessage id="sample-page" />,
+  title: <FormattedMessage id='sample-page' />,
   type: 'group',
   url: '/sample-page',
-  icon: icons.samplePage
+  icon: icons.samplePage,
 };
 
 export default samplePage;

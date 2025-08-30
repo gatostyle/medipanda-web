@@ -69,17 +69,17 @@ function ConfirmationDialogRaw({ onClose, value: valueProp, open, ...other }: Co
     >
       <DialogTitle>Phone Ringtone</DialogTitle>
       <DialogContent dividers>
-        <RadioGroup row={!matchDownMD} ref={radioGroupRef} aria-label="ringtone" name="ringtone" value={value} onChange={handleChange}>
-          {options.map((option) => (
+        <RadioGroup row={!matchDownMD} ref={radioGroupRef} aria-label='ringtone' name='ringtone' value={value} onChange={handleChange}>
+          {options.map(option => (
             <FormControlLabel value={option} key={option} control={<Radio />} label={option} />
           ))}
         </RadioGroup>
       </DialogContent>
       <DialogActions>
-        <Button color="error" onClick={handleCancel}>
+        <Button color='error' onClick={handleCancel}>
           Cancel
         </Button>
-        <Button variant="contained" onClick={handleOk} sx={{ mr: 0.5 }}>
+        <Button variant='contained' onClick={handleOk} sx={{ mr: 0.5 }}>
           Done
         </Button>
       </DialogActions>
@@ -105,23 +105,23 @@ export default function ConfirmationDialog() {
 
   return (
     <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-      <List role="group">
+      <List role='group'>
         <ListItemButton divider disabled>
-          <ListItemText primary="Interruptions" />
+          <ListItemText primary='Interruptions' />
         </ListItemButton>
         <ListItemButton
           divider
-          aria-haspopup="true"
-          aria-controls="ringtone-menu"
-          aria-label="phone ringtone"
+          aria-haspopup='true'
+          aria-controls='ringtone-menu'
+          aria-label='phone ringtone'
           onClick={handleClickListItem}
         >
-          <ListItemText primary="Phone Ringtone" secondary={value} />
+          <ListItemText primary='Phone Ringtone' secondary={value} />
         </ListItemButton>
         <ListItemButton divider disabled>
-          <ListItemText primary="Default Notification Ringtone" secondary="Tethys" />
+          <ListItemText primary='Default Notification Ringtone' secondary='Tethys' />
         </ListItemButton>
-        <ConfirmationDialogRaw id="ringtone-menu" keepMounted open={open} onClose={handleClose} value={value} />
+        <ConfirmationDialogRaw id='ringtone-menu' keepMounted open={open} onClose={handleClose} value={value} />
       </List>
     </Box>
   );

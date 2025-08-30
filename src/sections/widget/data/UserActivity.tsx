@@ -25,32 +25,32 @@ import Avatar3 from 'assets/images/users/avatar-7.png';
 export default function UserActivity() {
   return (
     <MainCard
-      title="User Activity"
+      title='User Activity'
       content={false}
       secondary={
-        <Link component={RouterLink} to="#" color="primary">
+        <Link component={RouterLink} to='#' color='primary'>
           View all
         </Link>
       }
     >
       <CardContent>
-        <Grid container spacing={3} alignItems="center">
+        <Grid container spacing={3} alignItems='center'>
           <Grid item xs={12}>
             <Grid container spacing={2}>
               <Grid item>
-                <Badge variant="dot" overlap="circular" color="error" anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
-                  <Avatar alt="image" src={Avatar1} />
+                <Badge variant='dot' overlap='circular' color='error' anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+                  <Avatar alt='image' src={Avatar1} />
                 </Badge>
               </Grid>
               <Grid item xs zeroMinWidth>
-                <Typography variant="subtitle1">John Deo</Typography>
-                <Typography variant="caption" color="secondary">
+                <Typography variant='subtitle1'>John Deo</Typography>
+                <Typography variant='caption' color='secondary'>
                   Lorem Ipsum is simply dummy text.
                 </Typography>
               </Grid>
               <Grid item>
-                <Stack direction="row" spacing={0.5} alignItems="center">
-                  <Typography variant="caption" color="secondary">
+                <Stack direction='row' spacing={0.5} alignItems='center'>
+                  <Typography variant='caption' color='secondary'>
                     now
                   </Typography>
                   <Clock size={14} />
@@ -62,20 +62,20 @@ export default function UserActivity() {
             <Grid container spacing={2}>
               <Grid item>
                 <Box sx={{ position: 'relative' }}>
-                  <Badge variant="dot" overlap="circular" color="success" anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
-                    <Avatar alt="image" src={Avatar2} />
+                  <Badge variant='dot' overlap='circular' color='success' anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+                    <Avatar alt='image' src={Avatar2} />
                   </Badge>
                 </Box>
               </Grid>
               <Grid item xs zeroMinWidth>
-                <Typography variant="subtitle1">John Deo</Typography>
-                <Typography variant="caption" color="secondary">
+                <Typography variant='subtitle1'>John Deo</Typography>
+                <Typography variant='caption' color='secondary'>
                   Lorem Ipsum is simply dummy text.
                 </Typography>
               </Grid>
               <Grid item>
-                <Stack direction="row" spacing={0.5} alignItems="center">
-                  <Typography variant="caption" color="secondary">
+                <Stack direction='row' spacing={0.5} alignItems='center'>
+                  <Typography variant='caption' color='secondary'>
                     2 min ago
                   </Typography>
                   <Clock size={14} />
@@ -87,20 +87,20 @@ export default function UserActivity() {
             <Grid container spacing={2}>
               <Grid item>
                 <Box sx={{ position: 'relative' }}>
-                  <Badge variant="dot" overlap="circular" color="primary" anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
-                    <Avatar alt="image" src={Avatar3} />
+                  <Badge variant='dot' overlap='circular' color='primary' anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+                    <Avatar alt='image' src={Avatar3} />
                   </Badge>
                 </Box>
               </Grid>
               <Grid item xs zeroMinWidth>
-                <Typography variant="subtitle1">John Deo</Typography>
-                <Typography variant="caption" color="secondary">
+                <Typography variant='subtitle1'>John Deo</Typography>
+                <Typography variant='caption' color='secondary'>
                   Lorem Ipsum is simply dummy text.
                 </Typography>
               </Grid>
               <Grid item>
-                <Stack direction="row" spacing={0.5} alignItems="center">
-                  <Typography variant="caption" color="secondary">
+                <Stack direction='row' spacing={0.5} alignItems='center'>
+                  <Typography variant='caption' color='secondary'>
                     1 day ago
                   </Typography>
                   <Clock size={14} />
@@ -112,20 +112,20 @@ export default function UserActivity() {
             <Grid container spacing={2}>
               <Grid item>
                 <Box sx={{ position: 'relative' }}>
-                  <Badge variant="dot" overlap="circular" color="warning" anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
-                    <Avatar alt="image" src={Avatar1} />
+                  <Badge variant='dot' overlap='circular' color='warning' anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+                    <Avatar alt='image' src={Avatar1} />
                   </Badge>
                 </Box>
               </Grid>
               <Grid item xs zeroMinWidth>
-                <Typography variant="subtitle1">John Deo</Typography>
-                <Typography variant="caption" color="secondary">
+                <Typography variant='subtitle1'>John Deo</Typography>
+                <Typography variant='caption' color='secondary'>
                   Lorem Ipsum is simply dummy text.
                 </Typography>
               </Grid>
               <Grid item>
-                <Stack direction="row" spacing={0.5} alignItems="center">
-                  <Typography variant="caption" color="secondary">
+                <Stack direction='row' spacing={0.5} alignItems='center'>
+                  <Typography variant='caption' color='secondary'>
                     3 week ago
                   </Typography>
                   <Clock size={14} />

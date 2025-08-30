@@ -22,8 +22,8 @@ function GeoJSONAnimation({ ...other }: MapBoxProps) {
     type: 'circle',
     paint: {
       'circle-radius': 10,
-      'circle-color': theme.palette.error.main
-    }
+      'circle-color': theme.palette.error.main,
+    },
   };
 
   const [pointData, setPointData] = useState<
@@ -40,9 +40,9 @@ function GeoJSONAnimation({ ...other }: MapBoxProps) {
         pointOnCircle({
           center: [72.8636084, 21.2335611],
           angle: Date.now() / 1000,
-          radius: 2
-        })
-      )
+          radius: 2,
+        }),
+      ),
     );
 
     return () => window.cancelAnimationFrame(animation);
@@ -53,14 +53,14 @@ function GeoJSONAnimation({ ...other }: MapBoxProps) {
       initialViewState={{
         latitude: 21.2335611,
         longitude: 72.8636084,
-        zoom: 6
+        zoom: 6,
       }}
-      mapStyle="mapbox://styles/mapbox/satellite-streets-v11"
+      mapStyle='mapbox://styles/mapbox/satellite-streets-v11'
       {...other}
     >
       <MapControl />
       {pointData && (
-        <Source type="geojson" data={pointData}>
+        <Source type='geojson' data={pointData}>
           <Layer {...pointLayer} />
         </Source>
       )}
@@ -73,6 +73,6 @@ export default memo(GeoJSONAnimation);
 function pointOnCircle({ center, angle, radius }: { center: [number, number]; angle: number; radius: number }) {
   return {
     type: 'Point',
-    coordinates: [center[0] + Math.cos(angle) * radius, center[1] + Math.sin(angle) * radius]
+    coordinates: [center[0] + Math.cos(angle) * radius, center[1] + Math.sin(angle) * radius],
   };
 }

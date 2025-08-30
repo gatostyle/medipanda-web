@@ -14,7 +14,7 @@ declare global {
 const initialState = {
   session: null as MemberDetailsResponse | null,
   isLoading: true,
-  login: (userId: string, password: string) => Promise.resolve()
+  login: (userId: string, password: string) => Promise.resolve(),
 };
 
 export const MpSessionContext = createContext(initialState);
@@ -50,7 +50,7 @@ export function MpSessionProvider({ children }: { children: React.ReactNode }) {
         try {
           const { refreshToken } = await apiRefreshToken({
             userId: member.userId,
-            refreshToken: savedRefreshToken ?? ''
+            refreshToken: savedRefreshToken ?? '',
           });
           localStorage.setItem('refreshToken', refreshToken);
         } catch (e) {
@@ -64,7 +64,7 @@ export function MpSessionProvider({ children }: { children: React.ReactNode }) {
           }
         }
       },
-      import.meta.env.VITE_APP_TOKEN_ROTATE_INTERVAL
+      import.meta.env.VITE_APP_TOKEN_ROTATE_INTERVAL,
     );
 
     return member;
@@ -74,7 +74,7 @@ export function MpSessionProvider({ children }: { children: React.ReactNode }) {
     const encryptedPassword = import.meta.env.VITE_SKIP_PASSWORD_ENCRYPTION === 'true' ? password : await encryptRSA(password);
     const { refreshToken } = await apiLogin({
       userId,
-      password: encryptedPassword
+      password: encryptedPassword,
     });
     localStorage.setItem('refreshToken', refreshToken);
 
@@ -99,7 +99,7 @@ export function MpSessionProvider({ children }: { children: React.ReactNode }) {
       value={{
         session,
         isLoading,
-        login
+        login,
       }}
     >
       {children}

@@ -9,9 +9,9 @@ export default function ListItemIcon(theme: Theme) {
       styleOverrides: {
         root: {
           minWidth: 28,
-          color: theme.palette.secondary.main
-        }
-      }
-    }
+          color: theme.palette.secondary.main,
+        },
+      },
+    },
   };
 }

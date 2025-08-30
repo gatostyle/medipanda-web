@@ -21,10 +21,10 @@ export default function ComponentDateTimePicker() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Date / Time Picker"
-        caption="Date pickers let the user select a date."
-        directory="src/pages/components-overview/date-time-picker"
-        link="https://mui.com/x/react-date-pickers/getting-started/"
+        title='Date / Time Picker'
+        caption='Date pickers let the user select a date.'
+        directory='src/pages/components-overview/date-time-picker'
+        link='https://mui.com/x/react-date-pickers/getting-started/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>

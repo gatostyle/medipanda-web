@@ -64,11 +64,11 @@ export default function FixedAccordion() {
 </Accordion>`;
 
   return (
-    <MainCard title="Fixed" codeString={fixedAccordionCodeString}>
+    <MainCard title='Fixed' codeString={fixedAccordionCodeString}>
       <>
         <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
-          <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-            <Typography variant="h6">Accordion 01</Typography>
+          <AccordionSummary aria-controls='panel1d-content' id='panel1d-header'>
+            <Typography variant='h6'>Accordion 01</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Typography>
@@ -78,8 +78,8 @@ export default function FixedAccordion() {
           </AccordionDetails>
         </Accordion>
         <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
-          <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-            <Typography variant="h6">Accordion 02</Typography>
+          <AccordionSummary aria-controls='panel2d-content' id='panel2d-header'>
+            <Typography variant='h6'>Accordion 02</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Typography>
@@ -89,8 +89,8 @@ export default function FixedAccordion() {
           </AccordionDetails>
         </Accordion>
         <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
-          <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
-            <Typography variant="h6">Accordion 03</Typography>
+          <AccordionSummary aria-controls='panel3d-content' id='panel3d-header'>
+            <Typography variant='h6'>Accordion 03</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Typography>
@@ -100,8 +100,8 @@ export default function FixedAccordion() {
           </AccordionDetails>
         </Accordion>
         <Accordion expanded>
-          <AccordionSummary aria-controls="panel4d-content" id="panel4d-header">
-            <Typography variant="h6">Accordion 04</Typography>
+          <AccordionSummary aria-controls='panel4d-content' id='panel4d-header'>
+            <Typography variant='h6'>Accordion 04</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Typography>

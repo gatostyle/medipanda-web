@@ -37,27 +37,27 @@ export default function AuthCodeVerification() {
             border: '1px solid',
             borderColor: { borderColor },
             borderRadius: 4,
-            ':hover': { borderColor: theme.palette.primary.main }
+            ':hover': { borderColor: theme.palette.primary.main },
           }}
           focusStyle={{
             outline: 'none',
             boxShadow: theme.customShadows.primary,
             border: '1px solid',
-            borderColor: theme.palette.primary.main
+            borderColor: theme.palette.primary.main,
           }}
         />
       </Grid>
       <Grid item xs={12}>
         <AnimateButton>
-          <Button disableElevation fullWidth size="large" type="submit" variant="contained">
+          <Button disableElevation fullWidth size='large' type='submit' variant='contained'>
             Continue
           </Button>
         </AnimateButton>
       </Grid>
       <Grid item xs={12}>
-        <Stack direction="row" justifyContent="space-between" alignItems="baseline">
+        <Stack direction='row' justifyContent='space-between' alignItems='baseline'>
           <Typography>Not received Code?</Typography>
-          <Typography variant="body1" sx={{ minWidth: 85, ml: 2, textDecoration: 'none', cursor: 'pointer' }} color="primary">
+          <Typography variant='body1' sx={{ minWidth: 85, ml: 2, textDecoration: 'none', cursor: 'pointer' }} color='primary'>
             Resend code
           </Typography>
         </Stack>

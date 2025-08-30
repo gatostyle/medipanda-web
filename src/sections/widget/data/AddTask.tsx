@@ -40,20 +40,20 @@ export default function AddTask() {
 
   return (
     <MainCard>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1} sx={{ mb: 2 }}>
-        <Typography variant="h5">Add new task</Typography>
+      <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1} sx={{ mb: 2 }}>
+        <Typography variant='h5'>Add new task</Typography>
         <IconButton
-          color="secondary"
-          id="wallet-button"
+          color='secondary'
+          id='wallet-button'
           aria-controls={open ? 'wallet-menu' : undefined}
-          aria-haspopup="true"
+          aria-haspopup='true'
           aria-expanded={open ? 'true' : undefined}
           onClick={handleClick}
         >
           <MoreIcon />
         </IconButton>
         <Menu
-          id="wallet-menu"
+          id='wallet-menu'
           anchorEl={anchorEl}
           open={open}
           onClose={handleClose}
@@ -68,37 +68,37 @@ export default function AddTask() {
       </Stack>
       <Grid container spacing={1.5}>
         <Grid item xs={12}>
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <Avatar color="success" variant="rounded">
+          <Stack direction='row' alignItems='center' spacing={1}>
+            <Avatar color='success' variant='rounded'>
               <Task />
             </Avatar>
-            <Typography variant="h5">New Task</Typography>
-            <Chip label="20" size="small" />
+            <Typography variant='h5'>New Task</Typography>
+            <Chip label='20' size='small' />
           </Stack>
         </Grid>
         <Grid item xs={12}>
           <Stack spacing={1}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between">
+            <Stack direction='row' alignItems='center' justifyContent='space-between'>
               <Typography>Tasks done</Typography>
               <Typography>42%</Typography>
             </Stack>
-            <LinearProgress variant="determinate" value={42} />
+            <LinearProgress variant='determinate' value={42} />
           </Stack>
         </Grid>
         <Grid item xs={12}>
           <List>
             <ListItemButton>
               <ListItemIcon>
-                <Dot color="warning" />
+                <Dot color='warning' />
               </ListItemIcon>
-              <ListItemText primary="Introduction for client" />
+              <ListItemText primary='Introduction for client' />
               <Chip
                 label={
                   <Typography sx={{ display: 'flex', alignItems: 'center', gap: 0.5, '& svg': { width: 12, height: 12 } }}>
                     <Link1 />2
                   </Typography>
                 }
-                size="small"
+                size='small'
                 sx={{ borderRadius: 1 }}
               />
             </ListItemButton>
@@ -106,21 +106,21 @@ export default function AddTask() {
               <ListItemIcon>
                 <Dot />
               </ListItemIcon>
-              <ListItemText primary="Creating wireframes" />
+              <ListItemText primary='Creating wireframes' />
               <Chip
                 label={
                   <Typography sx={{ display: 'flex', alignItems: 'center', gap: 0.5, '& svg': { width: 12, height: 12 } }}>
                     <Link1 />8
                   </Typography>
                 }
-                size="small"
+                size='small'
                 sx={{ borderRadius: 1 }}
               />
             </ListItemButton>
           </List>
         </Grid>
         <Grid item xs={12}>
-          <Button fullWidth variant="contained" startIcon={<Add />}>
+          <Button fullWidth variant='contained' startIcon={<Add />}>
             Add task
           </Button>
         </Grid>

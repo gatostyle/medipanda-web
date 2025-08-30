@@ -50,37 +50,37 @@ export default function TabAccount() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <MainCard title="General Settings">
+        <MainCard title='General Settings'>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <Stack spacing={1}>
-                <InputLabel htmlFor="my-account-username">Username</InputLabel>
-                <TextField fullWidth defaultValue="Asoka_Tana_16" id="my-account-username" placeholder="Username" autoFocus />
+                <InputLabel htmlFor='my-account-username'>Username</InputLabel>
+                <TextField fullWidth defaultValue='Asoka_Tana_16' id='my-account-username' placeholder='Username' autoFocus />
               </Stack>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Stack spacing={1}>
-                <InputLabel htmlFor="my-account-email">Account Email</InputLabel>
-                <TextField fullWidth defaultValue="user@tana.com" id="my-account-email" placeholder="Account Email" />
+                <InputLabel htmlFor='my-account-email'>Account Email</InputLabel>
+                <TextField fullWidth defaultValue='user@tana.com' id='my-account-email' placeholder='Account Email' />
               </Stack>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Stack spacing={1}>
-                <InputLabel htmlFor="my-account-lang">Language</InputLabel>
-                <TextField fullWidth defaultValue="New York" id="my-account-lang" placeholder="Language" />
+                <InputLabel htmlFor='my-account-lang'>Language</InputLabel>
+                <TextField fullWidth defaultValue='New York' id='my-account-lang' placeholder='Language' />
               </Stack>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Stack spacing={1}>
-                <InputLabel htmlFor="my-account-signing">Signing Using</InputLabel>
-                <Select fullWidth id="my-account-signing" value={signing} onChange={handleChange} MenuProps={MenuProps}>
-                  <MenuItem value="form">Basic Form</MenuItem>
-                  <MenuItem value="firebase">Firebase - Auth</MenuItem>
-                  <MenuItem value="facebook">Facebook</MenuItem>
-                  <MenuItem value="twitter">Twitter</MenuItem>
-                  <MenuItem value="gmail">Gmail</MenuItem>
-                  <MenuItem value="jwt">JWT</MenuItem>
-                  <MenuItem value="auth0">AUTH0</MenuItem>
+                <InputLabel htmlFor='my-account-signing'>Signing Using</InputLabel>
+                <Select fullWidth id='my-account-signing' value={signing} onChange={handleChange} MenuProps={MenuProps}>
+                  <MenuItem value='form'>Basic Form</MenuItem>
+                  <MenuItem value='firebase'>Firebase - Auth</MenuItem>
+                  <MenuItem value='facebook'>Facebook</MenuItem>
+                  <MenuItem value='twitter'>Twitter</MenuItem>
+                  <MenuItem value='gmail'>Gmail</MenuItem>
+                  <MenuItem value='jwt'>JWT</MenuItem>
+                  <MenuItem value='auth0'>AUTH0</MenuItem>
                 </Select>
               </Stack>
             </Grid>
@@ -88,50 +88,50 @@ export default function TabAccount() {
         </MainCard>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <MainCard title="Advance Settings" content={false}>
+        <MainCard title='Advance Settings' content={false}>
           <List sx={{ p: 0 }}>
             <ListItem divider>
               <ListItemText
-                id="switch-list-label-sb"
-                primary="Secure Browsing"
+                id='switch-list-label-sb'
+                primary='Secure Browsing'
                 secondary="Browsing Securely ( https ) when it's necessary"
               />
               <Switch
-                edge="end"
+                edge='end'
                 onChange={handleToggle('sb')}
                 checked={checked.indexOf('sb') !== -1}
                 inputProps={{
-                  'aria-labelledby': 'switch-list-label-sb'
+                  'aria-labelledby': 'switch-list-label-sb',
                 }}
               />
             </ListItem>
             <ListItem divider>
               <ListItemText
-                id="switch-list-label-ln"
-                primary="Login Notifications"
-                secondary="Notify when login attempted from other place"
+                id='switch-list-label-ln'
+                primary='Login Notifications'
+                secondary='Notify when login attempted from other place'
               />
               <Switch
-                edge="end"
+                edge='end'
                 onChange={handleToggle('ln')}
                 checked={checked.indexOf('ln') !== -1}
                 inputProps={{
-                  'aria-labelledby': 'switch-list-label-ln'
+                  'aria-labelledby': 'switch-list-label-ln',
                 }}
               />
             </ListItem>
             <ListItem>
               <ListItemText
-                id="switch-list-label-la"
-                primary="Login Approvals"
-                secondary="Approvals is not required when login from unrecognized devices."
+                id='switch-list-label-la'
+                primary='Login Approvals'
+                secondary='Approvals is not required when login from unrecognized devices.'
               />
               <Switch
-                edge="end"
+                edge='end'
                 onChange={handleToggle('la')}
                 checked={checked.indexOf('la') !== -1}
                 inputProps={{
-                  'aria-labelledby': 'switch-list-label-la'
+                  'aria-labelledby': 'switch-list-label-la',
                 }}
               />
             </ListItem>
@@ -139,25 +139,25 @@ export default function TabAccount() {
         </MainCard>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <MainCard title="Recognized Devices" content={false}>
+        <MainCard title='Recognized Devices' content={false}>
           <List sx={{ p: 0 }}>
             <ListItem divider>
-              <ListItemText primary="Cent Desktop" secondary="4351 Deans Lane, Chelmsford" />
-              <Stack direction="row" alignItems="center" spacing={0.75}>
+              <ListItemText primary='Cent Desktop' secondary='4351 Deans Lane, Chelmsford' />
+              <Stack direction='row' alignItems='center' spacing={0.75}>
                 <Box sx={{ width: 6, height: 6, bgcolor: 'success.main', borderRadius: '50%' }} />
                 <Typography sx={{ display: { xs: 'none', sm: 'block' } }}>Active</Typography>
               </Stack>
             </ListItem>
             <ListItem divider>
-              <ListItemText primary="Imho Tablet" secondary="4185 Michigan Avenue" />
-              <Stack direction="row" alignItems="center" spacing={0.75}>
+              <ListItemText primary='Imho Tablet' secondary='4185 Michigan Avenue' />
+              <Stack direction='row' alignItems='center' spacing={0.75}>
                 <Box sx={{ width: 6, height: 6, bgcolor: 'secondary.main', borderRadius: '50%' }} />
                 <Typography sx={{ display: { xs: 'none', sm: 'block' } }}>Active 5 days ago</Typography>
               </Stack>
             </ListItem>
             <ListItem>
-              <ListItemText primary="Albs Mobile" secondary="3462 Fairfax Drive, Montcalm" />
-              <Stack direction="row" alignItems="center" spacing={0.75}>
+              <ListItemText primary='Albs Mobile' secondary='3462 Fairfax Drive, Montcalm' />
+              <Stack direction='row' alignItems='center' spacing={0.75}>
                 <Box sx={{ width: 6, height: 6, bgcolor: 'secondary.main', borderRadius: '50%' }} />
                 <Typography sx={{ display: { xs: 'none', sm: 'block' } }}>Active 1 month ago</Typography>
               </Stack>
@@ -166,14 +166,14 @@ export default function TabAccount() {
         </MainCard>
       </Grid>
       <Grid item xs={12}>
-        <MainCard title="Active Sessions" content={false}>
+        <MainCard title='Active Sessions' content={false}>
           <List sx={{ p: 0 }}>
             <ListItem divider>
-              <ListItemText primary={<Typography variant="h5">Cent Desktop</Typography>} secondary="4351 Deans Lane, Chelmsford" />
+              <ListItemText primary={<Typography variant='h5'>Cent Desktop</Typography>} secondary='4351 Deans Lane, Chelmsford' />
               <Button>Logout</Button>
             </ListItem>
             <ListItem>
-              <ListItemText primary={<Typography variant="h5">Moon Tablet</Typography>} secondary="4185 Michigan Avenue" />
+              <ListItemText primary={<Typography variant='h5'>Moon Tablet</Typography>} secondary='4185 Michigan Avenue' />
               <Button>Logout</Button>
             </ListItem>
           </List>
@@ -181,11 +181,11 @@ export default function TabAccount() {
       </Grid>
 
       <Grid item xs={12}>
-        <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2}>
-          <Button variant="outlined" color="secondary">
+        <Stack direction='row' justifyContent='flex-end' alignItems='center' spacing={2}>
+          <Button variant='outlined' color='secondary'>
             Cancel
           </Button>
-          <Button variant="contained">Update Profile</Button>
+          <Button variant='contained'>Update Profile</Button>
         </Stack>
       </Grid>
     </Grid>

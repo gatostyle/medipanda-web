@@ -19,8 +19,8 @@ const RowStyled = styled(Box)(({ theme }) => ({
   textTransform: 'capitalize',
   justifyContent: 'space-between',
   '&:not(:last-of-type)': {
-    marginBottom: theme.spacing(1)
-  }
+    marginBottom: theme.spacing(1),
+  },
 }));
 
 const camelPattern = /(^|[A-Z])[a-z]*/g;
@@ -42,17 +42,17 @@ function ControlPanel({ settings, onChange }: Props) {
       case 'boolean':
         return (
           <RowStyled key={name}>
-            <Typography variant="body2">{formatSettingName(name)}</Typography>
-            <Switch size="small" checked={value} onChange={(event) => onChange(name, event.target.checked)} />
+            <Typography variant='body2'>{formatSettingName(name)}</Typography>
+            <Switch size='small' checked={value} onChange={event => onChange(name, event.target.checked)} />
           </RowStyled>
         );
       case 'number':
         return (
           <RowStyled key={name}>
-            <Typography variant="body2">{formatSettingName(name)}</Typography>
+            <Typography variant='body2'>{formatSettingName(name)}</Typography>
             <InputBase
               value={value}
-              onChange={(event) => onChange(name, Number(event.target.value))}
+              onChange={event => onChange(name, Number(event.target.value))}
               inputProps={{ type: 'number' }}
               sx={{
                 '& input': {
@@ -61,8 +61,8 @@ function ControlPanel({ settings, onChange }: Props) {
                   fontSize: 14,
                   borderRadius: 1,
                   textAlign: 'center',
-                  bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12)
-                }
+                  bgcolor: theme => alpha(theme.palette.grey[500], 0.12),
+                },
               }}
             />
           </RowStyled>
@@ -74,7 +74,7 @@ function ControlPanel({ settings, onChange }: Props) {
 
   return (
     <ControlPanelStyled>
-      {Object.keys(settings).map((name) => renderSetting(name as MapControlKeys, settings[name as MapControlKeys]))}
+      {Object.keys(settings).map(name => renderSetting(name as MapControlKeys, settings[name as MapControlKeys]))}
     </ControlPanelStyled>
   );
 }

@@ -29,7 +29,7 @@ import { Add } from 'iconsax-react';
 import { KanbanUserStory } from 'types/kanban';
 
 const getDropWrapper = (isDraggingOver: boolean, theme: Theme) => ({
-  bgcolor: isDraggingOver ? alpha(theme.palette.secondary.lighter, 0.65) : 'transparent'
+  bgcolor: isDraggingOver ? alpha(theme.palette.secondary.lighter, 0.65) : 'transparent',
 });
 
 // ==============================|| KANBAN - BACKLOGS ||============================== //
@@ -75,7 +75,7 @@ export default function Backlogs() {
       // updated column
       const newSourceUserStory = {
         ...sourceUserStory,
-        itemIds: newItemIds
+        itemIds: newItemIds,
       };
 
       newUserStory = backlogs?.userStory.map((story: KanbanUserStory) => {
@@ -93,7 +93,7 @@ export default function Backlogs() {
       // updated dragged items's column
       const newSourceUserStory = {
         ...sourceUserStory,
-        itemIds: newSourceItemIds
+        itemIds: newSourceItemIds,
       };
 
       const newDestinationItemIds = Array.from(destinationUserStory.itemIds);
@@ -104,7 +104,7 @@ export default function Backlogs() {
       // updated dropped item's column
       const newDestinationSourceUserStory = {
         ...destinationUserStory,
-        itemIds: newDestinationItemIds
+        itemIds: newDestinationItemIds,
       };
 
       newUserStory = backlogs?.userStory.map((story: KanbanUserStory) => {
@@ -124,22 +124,22 @@ export default function Backlogs() {
   // drawer
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const handleDrawerOpen = () => {
-    setOpenDrawer((prevState) => !prevState);
+    setOpenDrawer(prevState => !prevState);
   };
 
   const addStory = () => {
-    setOpenDrawer((prevState) => !prevState);
+    setOpenDrawer(prevState => !prevState);
   };
 
   return (
     <MainCard content={false}>
       <TableContainer sx={{ '& .MuiTableCell-root': { p: 1.25 } }}>
         <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable droppableId="user-story" type="user-story">
+          <Droppable droppableId='user-story' type='user-story'>
             {(provided, snapshot) => (
               <Table
-                size="small"
-                aria-label="collapsible table"
+                size='small'
+                aria-label='collapsible table'
                 {...provided.droppableProps}
                 ref={provided.innerRef}
                 sx={getDropWrapper(snapshot.isDraggingOver, theme)}
@@ -149,13 +149,13 @@ export default function Backlogs() {
                     bgcolor: theme.palette.background.paper,
                     borderTop: 'none',
                     borderBottomWidth: '1px',
-                    '& th,& td': { whiteSpace: 'nowrap' }
+                    '& th,& td': { whiteSpace: 'nowrap' },
                   }}
                 >
                   <TableRow>
                     <TableCell sx={{ pl: 3 }}>
-                      <Tooltip title="Add User Story">
-                        <Button variant="dashed" size="extraSmall" color="secondary" onClick={addStory} endIcon={<Add size={14} />}>
+                      <Tooltip title='Add User Story'>
+                        <Button variant='dashed' size='extraSmall' color='secondary' onClick={addStory} endIcon={<Add size={14} />}>
                           ADD
                         </Button>
                       </Tooltip>
@@ -174,9 +174,9 @@ export default function Backlogs() {
                   sx={{
                     '& th,& td': { whiteSpace: 'nowrap' },
                     '& .MuiTableRow-root:last-of-type .MuiTable-root .MuiTableCell-root': {
-                      borderBottom: `1px solid ${theme.palette.divider}`
+                      borderBottom: `1px solid ${theme.palette.divider}`,
                     },
-                    '& .MuiTableRow-root:hover': { bgcolor: 'transparent' }
+                    '& .MuiTableRow-root:hover': { bgcolor: 'transparent' },
                   }}
                 >
                   {backlogs?.userStoryOrder.map((storyId: string, index: number) => {

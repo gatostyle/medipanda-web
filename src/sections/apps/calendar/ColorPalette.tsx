@@ -27,30 +27,30 @@ export default function ColorPalette({ color, value, isLight }: Props) {
     <Tooltip title={color}>
       <FormControlLabel
         value={value}
-        label=""
+        label=''
         control={
           <Radio
             icon={
-              <Avatar variant="rounded" type="combined" size="xs" sx={{ backgroundColor: color, borderColor: 'divider' }}>
+              <Avatar variant='rounded' type='combined' size='xs' sx={{ backgroundColor: color, borderColor: 'divider' }}>
                 <Box sx={{ display: 'none' }} />
               </Avatar>
             }
             checkedIcon={
               <Avatar
-                variant="rounded"
-                type="combined"
-                size="xs"
+                variant='rounded'
+                type='combined'
+                size='xs'
                 sx={{
                   backgroundColor: color,
                   color: isLight ? 'secondary.dark' : 'secondary.lighter',
                   ...(theme.palette.mode === ThemeMode.DARK && {
-                    color: 'secondary.lighter'
+                    color: 'secondary.lighter',
                   }),
                   borderColor: 'divider',
-                  '& svg': { width: 20, height: 20 }
+                  '& svg': { width: 20, height: 20 },
                 }}
               >
-                <TickSquare variant="Bold" />
+                <TickSquare variant='Bold' />
               </Avatar>
             }
             sx={{ '&:hover': { bgcolor: 'transparent' } }}

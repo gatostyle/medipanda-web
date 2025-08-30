@@ -26,26 +26,26 @@ export default function AnalyticsDataCard({ color = 'primary', title, count, per
     <MainCard content={false}>
       <Box sx={{ p: 2.25 }}>
         <Stack spacing={0.5}>
-          <Typography variant="h6" color="text.secondary">
+          <Typography variant='h6' color='text.secondary'>
             {title}
           </Typography>
-          <Stack direction="row" alignItems="center">
-            <Typography variant="h4" color="inherit">
+          <Stack direction='row' alignItems='center'>
+            <Typography variant='h4' color='inherit'>
               {count}
             </Typography>
             {percentage && (
               <Chip
-                variant="combined"
+                variant='combined'
                 color={color}
                 icon={
                   <>
-                    {!isLoss && <TrendUp variant="Bold" />}
-                    {isLoss && <TrendDown variant="Bold" />}
+                    {!isLoss && <TrendUp variant='Bold' />}
+                    {isLoss && <TrendDown variant='Bold' />}
                   </>
                 }
                 label={`${percentage}%`}
                 sx={{ ml: 1.25, pl: 0.5, borderRadius: 1 }}
-                size="small"
+                size='small'
               />
             )}
           </Stack>

@@ -17,10 +17,10 @@ export default function MapControl({ hideScale, hideGeolocate, hideFullscreen, h
   return (
     <>
       <MapControlsStyled />
-      {!hideGeolocate && <GeolocateControl position="top-left" positionOptions={{ enableHighAccuracy: true }} />}
-      {!hideFullscreen && <FullscreenControl position="top-left" />}
-      {!hideScale && <ScaleControl position="bottom-left" />}
-      {!hideNavigationn && <NavigationControl position="bottom-left" />}
+      {!hideGeolocate && <GeolocateControl position='top-left' positionOptions={{ enableHighAccuracy: true }} />}
+      {!hideFullscreen && <FullscreenControl position='top-left' />}
+      {!hideScale && <ScaleControl position='bottom-left' />}
+      {!hideNavigationn && <NavigationControl position='bottom-left' />}
     </>
   );
 }

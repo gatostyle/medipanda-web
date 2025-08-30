@@ -20,10 +20,10 @@ export default function ComponentTreeView() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Tree View"
-        caption="A tree view widget presents a hierarchical list."
-        directory="src/pages/components-overview/treeview"
-        link="https://mui.com/material-ui/react-tree-view/"
+        title='Tree View'
+        caption='A tree view widget presents a hierarchical list.'
+        directory='src/pages/components-overview/treeview'
+        link='https://mui.com/material-ui/react-tree-view/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>

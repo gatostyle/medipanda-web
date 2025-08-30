@@ -14,19 +14,19 @@ export function useMedipandaEditor({ ...options }: Omit<UseTiptapOptions, 'image
 
   const onImageInsert = async (file: File): Promise<string | ArrayBuffer | null> => {
     const response = await uploadEditorFile({ file });
-    setAttachments((prev) => [...prev, response]);
+    setAttachments(prev => [...prev, response]);
     return response.fileUrl;
   };
 
   const onImageDelete = (fileUrl: string) => {
-    setAttachments((prev) => prev.filter((file) => file.fileUrl !== fileUrl));
+    setAttachments(prev => prev.filter(file => file.fileUrl !== fileUrl));
   };
 
   const { editor } = useTiptap({
     ...options,
     imageMimeTypes,
     onImageInsert,
-    onImageDelete
+    onImageDelete,
   });
 
   return { editor, attachments, setAttachments };

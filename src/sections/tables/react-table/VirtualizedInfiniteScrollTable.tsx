@@ -22,7 +22,7 @@ import {
   HeaderGroup,
   Row,
   SortingState,
-  useReactTable
+  useReactTable,
 } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { keepPreviousData, useInfiniteQuery, QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -59,8 +59,8 @@ export const fetchData = (start: number, size: number, sorting: SortingState) =>
   return {
     data: dbData.slice(start, start + size),
     meta: {
-      totalRowCount: dbData.length
-    }
+      totalRowCount: dbData.length,
+    },
   };
 };
 
@@ -76,52 +76,52 @@ function ReactTable() {
     () => [
       {
         header: 'First Name',
-        accessorKey: 'firstName'
+        accessorKey: 'firstName',
       },
       {
         header: 'Last Name',
-        accessorKey: 'lastName'
+        accessorKey: 'lastName',
       },
       {
         header: 'Email',
-        accessorKey: 'email'
+        accessorKey: 'email',
       },
       {
         header: 'Age',
         accessorKey: 'age',
-        meta: { className: 'cell-right' }
+        meta: { className: 'cell-right' },
       },
       {
         header: 'Role',
-        accessorKey: 'role'
+        accessorKey: 'role',
       },
       {
         header: 'Visits',
         accessorKey: 'visits',
-        meta: { className: 'cell-right' }
+        meta: { className: 'cell-right' },
       },
       {
         header: 'Status',
         accessorKey: 'status',
-        cell: (cell) => {
+        cell: cell => {
           switch (cell.getValue()) {
             case 'Complicated':
-              return <Chip color="error" label="Complicated" size="small" variant="light" />;
+              return <Chip color='error' label='Complicated' size='small' variant='light' />;
             case 'Relationship':
-              return <Chip color="success" label="Relationship" size="small" variant="light" />;
+              return <Chip color='success' label='Relationship' size='small' variant='light' />;
             case 'Single':
             default:
-              return <Chip color="info" label="Single" size="small" variant="light" />;
+              return <Chip color='info' label='Single' size='small' variant='light' />;
           }
-        }
+        },
       },
       {
         header: 'Profile Progress',
         accessorKey: 'progress',
-        cell: (cell) => <LinearWithLabel value={cell.getValue() as number} sx={{ minWidth: 75 }} />
-      }
+        cell: cell => <LinearWithLabel value={cell.getValue() as number} sx={{ minWidth: 75 }} />,
+      },
     ],
-    []
+    [],
   );
 
   // react-query has an useInfiniteQuery hook just for this situation!
@@ -135,11 +135,11 @@ function ReactTable() {
     initialPageParam: 1,
     getNextPageParam: (_lastGroup, groups) => groups.length,
     placeholderData: keepPreviousData,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
   });
 
   // we must flatten the array of arrays from the useInfiniteQuery hook
-  const flatData = useMemo(() => data?.pages?.flatMap((page) => page.data) ?? [], [data]);
+  const flatData = useMemo(() => data?.pages?.flatMap(page => page.data) ?? [], [data]);
   const totalDBRowCount = data?.pages?.[0]?.meta!.totalRowCount ?? 0;
   const totalFetched = flatData.length;
 
@@ -154,7 +154,7 @@ function ReactTable() {
         }
       }
     },
-    [fetchNextPage, isFetching, totalFetched, totalDBRowCount]
+    [fetchNextPage, isFetching, totalFetched, totalDBRowCount],
   );
 
   //a check on mount and after a fetch to see if the table is already scrolled to the bottom and immediately needs to fetch more data
@@ -166,12 +166,12 @@ function ReactTable() {
     data: flatData,
     columns,
     state: {
-      sorting
+      sorting,
     },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    debugTable: true
+    debugTable: true,
   });
 
   const { rows } = table.getRowModel();
@@ -181,7 +181,7 @@ function ReactTable() {
     count: rows.length,
     getScrollElement: () => tableContainerRef.current,
     estimateSize: () => 34,
-    overscan: 10
+    overscan: 10,
   });
 
   const virtualRows = rowVirtualizer.getVirtualItems();
@@ -191,21 +191,21 @@ function ReactTable() {
   const paddingBottom = virtualRows.length > 0 ? totalSize - (virtualRows?.[virtualRows.length - 1]?.end || 0) : 0;
 
   let headers: LabelKeyObject[] = [];
-  table.getAllColumns().map((columns) =>
+  table.getAllColumns().map(columns =>
     headers.push({
       label: typeof columns.columnDef.header === 'string' ? columns.columnDef.header : '#',
       // @ts-ignore
-      key: columns.columnDef.accessorKey
-    })
+      key: columns.columnDef.accessorKey,
+    }),
   );
 
   return (
     <MainCard
       content={false}
-      title="Virtualized Infinite Scroll"
+      title='Virtualized Infinite Scroll'
       secondary={
         <CSVExport
-          {...{ data: virtualRows.map((virtualRow) => rows[virtualRow.index].original), headers, filename: 'virtualized-ininite.csv' }}
+          {...{ data: virtualRows.map(virtualRow => rows[virtualRow.index].original), headers, filename: 'virtualized-ininite.csv' }}
         />
       }
     >
@@ -213,17 +213,17 @@ function ReactTable() {
         <TableContainer
           component={Paper}
           ref={tableContainerRef}
-          onScroll={(e) => fetchMoreOnBottomReached(e.target as HTMLDivElement)}
+          onScroll={e => fetchMoreOnBottomReached(e.target as HTMLDivElement)}
           sx={{ height: 544, overflow: 'auto' }}
         >
           <Table>
             <TableHead>
               {table.getHeaderGroups().map((headerGroup: HeaderGroup<any>) => (
                 <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
+                  {headerGroup.headers.map(header => {
                     if (header.column.columnDef.meta !== undefined && header.column.getCanSort()) {
                       Object.assign(header.column.columnDef.meta, {
-                        className: header.column.columnDef.meta.className + ' cursor-pointer prevent-select'
+                        className: header.column.columnDef.meta.className + ' cursor-pointer prevent-select',
                       });
                     }
 
@@ -234,11 +234,11 @@ function ReactTable() {
                         onClick={header.column.getToggleSortingHandler()}
                         {...(header.column.getCanSort() &&
                           header.column.columnDef.meta === undefined && {
-                            className: 'cursor-pointer prevent-select'
+                            className: 'cursor-pointer prevent-select',
                           })}
                       >
                         {header.isPlaceholder ? null : (
-                          <Stack direction="row" spacing={1} alignItems="center">
+                          <Stack direction='row' spacing={1} alignItems='center'>
                             <Box>{flexRender(header.column.columnDef.header, header.getContext())}</Box>
                             {header.column.getCanSort() && <HeaderSort column={header.column} />}
                           </Stack>
@@ -255,11 +255,11 @@ function ReactTable() {
                   <TableCell sx={{ height: `${paddingTop}px`, whiteSpace: 'nowrap' }} />
                 </TableRow>
               )}
-              {virtualRows.map((virtualRow) => {
+              {virtualRows.map(virtualRow => {
                 const row = rows[virtualRow.index] as Row<TableDataProps>;
                 return (
                   <TableRow key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
+                    {row.getVisibleCells().map(cell => (
                       <TableCell sx={{ whiteSpace: 'nowrap' }} key={cell.id} {...cell.column.columnDef.meta}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>

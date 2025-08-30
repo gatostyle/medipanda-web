@@ -15,7 +15,7 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
@@ -37,7 +37,7 @@ interface PerformanceStatsResponseWithMockData extends PerformanceStatsResponse 
 function withMock<T extends PerformanceStatsResponse>(data: T): T & PerformanceStatsResponseWithMockData {
   return {
     ...data,
-    baseFeeRate: 0.1
+    baseFeeRate: 0.1,
   };
 }
 
@@ -55,7 +55,7 @@ export default function MpAdminStatisticsList() {
       searchKeyword: '',
       settlementDate: null as Date | null,
       pageIndex: 0,
-      pageSize: 20
+      pageSize: 20,
     },
     onSubmit: async () => {
       if (formik.values.pageIndex !== 0) {
@@ -63,7 +63,7 @@ export default function MpAdminStatisticsList() {
       } else {
         await fetchData();
       }
-    }
+    },
   });
 
   const fetchData = async () => {
@@ -77,7 +77,7 @@ export default function MpAdminStatisticsList() {
         startMonth: formik.values.settlementDate ? new DateString(formik.values.settlementDate) : undefined,
         endMonth: formik.values.settlementDate ? new DateString(formik.values.settlementDate) : undefined,
         page: formik.values.pageIndex,
-        size: formik.values.pageSize
+        size: formik.values.pageSize,
       });
 
       setData(withSequence(response).content.map(withMock));
@@ -109,68 +109,68 @@ export default function MpAdminStatisticsList() {
       header: 'No',
       accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
-      size: 60
+      size: 60,
     },
     {
       header: '제약사명',
       accessorKey: 'drugCompany',
       cell: ({ row }) => row.original.drugCompany,
-      size: 120
+      size: 120,
     },
     {
       header: '회사명',
       accessorKey: 'companyName',
       cell: ({ row }) => row.original.companyName,
-      size: 120
+      size: 120,
     },
     {
       header: '딜러명',
       accessorKey: 'dealerName',
       cell: ({ row }) => row.original.dealerName,
-      size: 100
+      size: 100,
     },
     {
       header: '거래처코드',
       accessorKey: 'institutionCode',
       cell: ({ row }) => row.original.institutionCode,
-      size: 120
+      size: 120,
     },
     {
       header: '거래처명',
       accessorKey: 'institutionName',
       cell: ({ row }) => row.original.institutionName,
-      size: 120
+      size: 120,
     },
     {
       header: '정산월',
       accessorKey: 'settlementMonth',
       cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
-      size: 100
+      size: 100,
     },
     {
       header: '처방금액',
       accessorKey: 'prescriptionAmount',
       cell: ({ row }) => row.original.prescriptionAmount.toLocaleString(),
-      size: 120
+      size: 120,
     },
     {
       header: '합계금액',
       accessorKey: 'totalAmount',
       cell: ({ row }) => row.original.totalAmount.toLocaleString(),
-      size: 120
+      size: 120,
     },
     {
       header: '수수료금액',
       accessorKey: 'feeAmount',
       cell: ({ row }) => row.original.feeAmount.toLocaleString(),
-      size: 120
+      size: 120,
     },
     {
       header: '기본수수료율',
       accessorKey: 'baseFeeRate',
       cell: ({ row }) => row.original.baseFeeRate.toLocaleString(),
-      size: 100
-    }
+      size: 100,
+    },
   ];
 
   const table = useReactTable({
@@ -181,17 +181,17 @@ export default function MpAdminStatisticsList() {
     state: {
       pagination: {
         pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize
-      }
+        pageSize: formik.values.pageSize,
+      },
     },
     pageCount: totalPages,
-    manualPagination: true
+    manualPagination: true,
   });
 
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant='h4' gutterBottom>
           실적통계
         </Typography>
       </Grid>
@@ -202,9 +202,9 @@ export default function MpAdminStatisticsList() {
             <form onSubmit={formik.handleSubmit}>
               <SearchFilterBar>
                 <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size="small">
+                  <FormControl fullWidth size='small'>
                     <InputLabel>검색유형</InputLabel>
-                    <Select name="searchType" value={formik.values.searchType} onChange={formik.handleChange}>
+                    <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'drugCompany'}>제약사명</MenuItem>
                       <MenuItem value={'companyName'}>회사명</MenuItem>
                       <MenuItem value={'dealerName'}>딜러명</MenuItem>
@@ -214,28 +214,28 @@ export default function MpAdminStatisticsList() {
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
                   <MpFormikDatePicker
-                    name="settlementDate"
-                    placeholder="월 선택"
-                    format="yyyy-MM"
+                    name='settlementDate'
+                    placeholder='월 선택'
+                    format='yyyy-MM'
                     views={['year', 'month']}
                     formik={formik}
                   />
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
-                    name="searchKeyword"
-                    size="small"
-                    placeholder="검색어를 입력하세요"
+                    name='searchKeyword'
+                    size='small'
+                    placeholder='검색어를 입력하세요'
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
                   />
                 </SearchFilterItem>
                 <SearchFilterActions>
-                  <Button variant="contained" size="small" type="submit">
+                  <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant="outlined" size="small" onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={handleReset}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -248,16 +248,16 @@ export default function MpAdminStatisticsList() {
       <Grid item xs={12}>
         <MainCard content={false}>
           <Box sx={{ p: 2 }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-              <Stack direction="row" spacing={2}>
-                <Typography variant="subtitle1">검색결과: {totalElements.toLocaleString()} 건</Typography>
-                <Typography variant="subtitle1">총 처방금액: {totalPrescriptionAmount.toLocaleString()}원</Typography>
+            <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+              <Stack direction='row' spacing={2}>
+                <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
+                <Typography variant='subtitle1'>총 처방금액: {totalPrescriptionAmount.toLocaleString()}원</Typography>
               </Stack>
-              <Stack direction="row" spacing={1}>
+              <Stack direction='row' spacing={1}>
                 <Button
-                  variant="contained"
-                  color="success"
-                  size="small"
+                  variant='contained'
+                  color='success'
+                  size='small'
                   href={getDownloadPerformanceExcel({
                     drugCompany: formik.values.searchType === 'drugCompany' ? formik.values.searchKeyword : undefined,
                     companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
@@ -266,9 +266,9 @@ export default function MpAdminStatisticsList() {
                     startMonth: formik.values.settlementDate ? new DateString(formik.values.settlementDate) : undefined,
                     endMonth: formik.values.settlementDate ? new DateString(formik.values.settlementDate) : undefined,
                     page: formik.values.pageIndex,
-                    size: formik.values.pageSize
+                    size: formik.values.pageSize,
                   })}
-                  target="_blank"
+                  target='_blank'
                   startIcon={<DocumentDownload size={16} />}
                 >
                   Excel
@@ -277,11 +277,11 @@ export default function MpAdminStatisticsList() {
             </Stack>
             <ScrollX>
               <TableContainer>
-                <Table size="small">
+                <Table size='small'>
                   <TableHead>
-                    {table.getHeaderGroups().map((headerGroup) => (
+                    {table.getHeaderGroups().map(headerGroup => (
                       <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => (
+                        {headerGroup.headers.map(header => (
                           <TableCell key={header.id} style={{ width: header.getSize() }}>
                             {flexRender(header.column.columnDef.header, header.getContext())}
                           </TableCell>
@@ -292,24 +292,24 @@ export default function MpAdminStatisticsList() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             데이터를 로드하는 중입니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : table.getRowModel().rows.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                          <Typography variant="body2" color="text.secondary">
+                        <TableCell colSpan={columns.length} align='center' sx={{ py: 3 }}>
+                          <Typography variant='body2' color='text.secondary'>
                             검색 결과가 없습니다.
                           </Typography>
                         </TableCell>
                       </TableRow>
                     ) : (
-                      table.getRowModel().rows.map((row) => (
+                      table.getRowModel().rows.map(row => (
                         <TableRow key={row.id}>
-                          {row.getVisibleCells().map((cell) => (
+                          {row.getVisibleCells().map(cell => (
                             <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                           ))}
                         </TableRow>
@@ -320,13 +320,13 @@ export default function MpAdminStatisticsList() {
               </TableContainer>
             </ScrollX>
 
-            <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
+            <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
                 page={formik.values.pageIndex + 1}
                 onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
-                color="primary"
-                variant="outlined"
+                color='primary'
+                variant='outlined'
                 showFirstButton
                 showLastButton
               />

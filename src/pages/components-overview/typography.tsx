@@ -124,138 +124,138 @@ export default function ComponentTypography() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Typography"
-        caption="Use typography to present your design and content as clearly and efficiently as possible."
-        directory="src/pages/components-overview/typography"
-        link="https://mui.com/material-ui/react-typography/"
+        title='Typography'
+        caption='Use typography to present your design and content as clearly and efficiently as possible.'
+        directory='src/pages/components-overview/typography'
+        link='https://mui.com/material-ui/react-typography/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={6}>
             <Stack spacing={3}>
-              <MainCard title="Basic" codeHighlight codeString={basicTypographyCodeString}>
+              <MainCard title='Basic' codeHighlight codeString={basicTypographyCodeString}>
                 <Stack spacing={0.75} sx={{ mt: -1.5 }}>
-                  <Typography variant="h1">Inter</Typography>
-                  <Typography variant="h5">Font Family</Typography>
-                  <Breadcrumbs aria-label="breadcrumb">
-                    <Typography variant="h6">Regular</Typography>
-                    <Typography variant="h6">Medium</Typography>
-                    <Typography variant="h6">Bold</Typography>
+                  <Typography variant='h1'>Inter</Typography>
+                  <Typography variant='h5'>Font Family</Typography>
+                  <Breadcrumbs aria-label='breadcrumb'>
+                    <Typography variant='h6'>Regular</Typography>
+                    <Typography variant='h6'>Medium</Typography>
+                    <Typography variant='h6'>Bold</Typography>
                   </Breadcrumbs>
                 </Stack>
               </MainCard>
-              <MainCard title="Heading" codeString={headingTypographyCodeString}>
+              <MainCard title='Heading' codeString={headingTypographyCodeString}>
                 <Stack spacing={2}>
-                  <Typography variant="h1">H1 Heading</Typography>
-                  <Breadcrumbs aria-label="breadcrumb">
-                    <Typography variant="h6">Size: 38px</Typography>
-                    <Typography variant="h6">Weight: Bold</Typography>
-                    <Typography variant="h6">Line Height: 46px</Typography>
+                  <Typography variant='h1'>H1 Heading</Typography>
+                  <Breadcrumbs aria-label='breadcrumb'>
+                    <Typography variant='h6'>Size: 38px</Typography>
+                    <Typography variant='h6'>Weight: Bold</Typography>
+                    <Typography variant='h6'>Line Height: 46px</Typography>
                   </Breadcrumbs>
                   <Divider />
 
-                  <Typography variant="h2">H2 Heading</Typography>
-                  <Breadcrumbs aria-label="breadcrumb">
-                    <Typography variant="h6">Size: 30px</Typography>
-                    <Typography variant="h6">Weight: Bold</Typography>
-                    <Typography variant="h6">Line Height: 38px</Typography>
+                  <Typography variant='h2'>H2 Heading</Typography>
+                  <Breadcrumbs aria-label='breadcrumb'>
+                    <Typography variant='h6'>Size: 30px</Typography>
+                    <Typography variant='h6'>Weight: Bold</Typography>
+                    <Typography variant='h6'>Line Height: 38px</Typography>
                   </Breadcrumbs>
                   <Divider />
 
-                  <Typography variant="h3">H3 Heading</Typography>
-                  <Breadcrumbs aria-label="breadcrumb">
-                    <Typography variant="h6">Size: 24px</Typography>
-                    <Typography variant="h6">Weight: Regular & Bold</Typography>
-                    <Typography variant="h6">Line Height: 32px</Typography>
+                  <Typography variant='h3'>H3 Heading</Typography>
+                  <Breadcrumbs aria-label='breadcrumb'>
+                    <Typography variant='h6'>Size: 24px</Typography>
+                    <Typography variant='h6'>Weight: Regular & Bold</Typography>
+                    <Typography variant='h6'>Line Height: 32px</Typography>
                   </Breadcrumbs>
                   <Divider />
 
-                  <Typography variant="h4">H4 Heading</Typography>
-                  <Breadcrumbs aria-label="breadcrumb">
-                    <Typography variant="h6">Size: 20px</Typography>
-                    <Typography variant="h6">Weight: Bold</Typography>
-                    <Typography variant="h6">Line Height: 28px</Typography>
+                  <Typography variant='h4'>H4 Heading</Typography>
+                  <Breadcrumbs aria-label='breadcrumb'>
+                    <Typography variant='h6'>Size: 20px</Typography>
+                    <Typography variant='h6'>Weight: Bold</Typography>
+                    <Typography variant='h6'>Line Height: 28px</Typography>
                   </Breadcrumbs>
                   <Divider />
 
-                  <Typography variant="h5">H5 Heading</Typography>
-                  <Breadcrumbs aria-label="breadcrumb">
-                    <Typography variant="h6">Size: 16px</Typography>
-                    <Typography variant="h6">Weight: Regular & Medium & Bold</Typography>
-                    <Typography variant="h6">Line Height: 24px</Typography>
+                  <Typography variant='h5'>H5 Heading</Typography>
+                  <Breadcrumbs aria-label='breadcrumb'>
+                    <Typography variant='h6'>Size: 16px</Typography>
+                    <Typography variant='h6'>Weight: Regular & Medium & Bold</Typography>
+                    <Typography variant='h6'>Line Height: 24px</Typography>
                   </Breadcrumbs>
                   <Divider />
 
-                  <Typography variant="h6">H6 Heading / Subheading</Typography>
-                  <Breadcrumbs aria-label="breadcrumb">
-                    <Typography variant="h6">Size: 14px</Typography>
-                    <Typography variant="h6">Weight: Regular</Typography>
-                    <Typography variant="h6">Line Height: 22px</Typography>
+                  <Typography variant='h6'>H6 Heading / Subheading</Typography>
+                  <Breadcrumbs aria-label='breadcrumb'>
+                    <Typography variant='h6'>Size: 14px</Typography>
+                    <Typography variant='h6'>Weight: Regular</Typography>
+                    <Typography variant='h6'>Line Height: 22px</Typography>
                   </Breadcrumbs>
                 </Stack>
               </MainCard>
-              <MainCard title="Body 1" codeString={body1TypographyCodeString}>
+              <MainCard title='Body 1' codeString={body1TypographyCodeString}>
                 <>
-                  <Typography variant="body1" gutterBottom>
+                  <Typography variant='body1' gutterBottom>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua.
                   </Typography>
-                  <Breadcrumbs aria-label="breadcrumb">
-                    <Typography variant="h6">Size: 14px</Typography>
-                    <Typography variant="h6">Weight: Regular</Typography>
-                    <Typography variant="h6">Line Height: 22px</Typography>
+                  <Breadcrumbs aria-label='breadcrumb'>
+                    <Typography variant='h6'>Size: 14px</Typography>
+                    <Typography variant='h6'>Weight: Regular</Typography>
+                    <Typography variant='h6'>Line Height: 22px</Typography>
                   </Breadcrumbs>
                 </>
               </MainCard>
-              <MainCard title="Body 2" codeString={body2TypographyCodeString}>
+              <MainCard title='Body 2' codeString={body2TypographyCodeString}>
                 <>
-                  <Typography variant="body2" gutterBottom>
+                  <Typography variant='body2' gutterBottom>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua.
                   </Typography>
-                  <Breadcrumbs aria-label="breadcrumb">
-                    <Typography variant="h6">Size: 12px</Typography>
-                    <Typography variant="h6">Weight: Regular</Typography>
-                    <Typography variant="h6">Line Height: 20px</Typography>
+                  <Breadcrumbs aria-label='breadcrumb'>
+                    <Typography variant='h6'>Size: 12px</Typography>
+                    <Typography variant='h6'>Weight: Regular</Typography>
+                    <Typography variant='h6'>Line Height: 20px</Typography>
                   </Breadcrumbs>
                 </>
               </MainCard>
-              <MainCard title="Subtitle 1" codeString={subtitle1TypographyCodeString}>
+              <MainCard title='Subtitle 1' codeString={subtitle1TypographyCodeString}>
                 <>
-                  <Typography variant="subtitle1" gutterBottom>
+                  <Typography variant='subtitle1' gutterBottom>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua.
                   </Typography>
-                  <Breadcrumbs aria-label="breadcrumb">
-                    <Typography variant="h6">Size: 14px</Typography>
-                    <Typography variant="h6">Weight: Medium</Typography>
-                    <Typography variant="h6">Line Height: 22px</Typography>
+                  <Breadcrumbs aria-label='breadcrumb'>
+                    <Typography variant='h6'>Size: 14px</Typography>
+                    <Typography variant='h6'>Weight: Medium</Typography>
+                    <Typography variant='h6'>Line Height: 22px</Typography>
                   </Breadcrumbs>
                 </>
               </MainCard>
-              <MainCard title="Subtitle 2" codeString={subtitle2TypographyCodeString}>
+              <MainCard title='Subtitle 2' codeString={subtitle2TypographyCodeString}>
                 <>
-                  <Typography variant="subtitle2" gutterBottom>
+                  <Typography variant='subtitle2' gutterBottom>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua.
                   </Typography>
-                  <Breadcrumbs aria-label="breadcrumb">
-                    <Typography variant="h6">Size: 12px</Typography>
-                    <Typography variant="h6">Weight: Medium</Typography>
-                    <Typography variant="h6">Line Height: 20px</Typography>
+                  <Breadcrumbs aria-label='breadcrumb'>
+                    <Typography variant='h6'>Size: 12px</Typography>
+                    <Typography variant='h6'>Weight: Medium</Typography>
+                    <Typography variant='h6'>Line Height: 20px</Typography>
                   </Breadcrumbs>
                 </>
               </MainCard>
-              <MainCard title="Caption" codeString={captionTypographyCodeString}>
+              <MainCard title='Caption' codeString={captionTypographyCodeString}>
                 <Stack spacing={1}>
-                  <Typography variant="caption">
+                  <Typography variant='caption'>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua.
                   </Typography>
-                  <Breadcrumbs aria-label="breadcrumb">
-                    <Typography variant="h6">Size: 12px</Typography>
-                    <Typography variant="h6">Weight: Regular</Typography>
-                    <Typography variant="h6">Line Height: 20px</Typography>
+                  <Breadcrumbs aria-label='breadcrumb'>
+                    <Typography variant='h6'>Size: 12px</Typography>
+                    <Typography variant='h6'>Weight: Regular</Typography>
+                    <Typography variant='h6'>Line Height: 20px</Typography>
                   </Breadcrumbs>
                 </Stack>
               </MainCard>
@@ -263,115 +263,115 @@ export default function ComponentTypography() {
           </Grid>
           <Grid item xs={12} lg={6}>
             <Stack spacing={3}>
-              <MainCard title="Alignment" codeString={alignmentTypographyCodeString}>
+              <MainCard title='Alignment' codeString={alignmentTypographyCodeString}>
                 <>
-                  <Typography variant="body2" gutterBottom>
+                  <Typography variant='body2' gutterBottom>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua. sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                   </Typography>
-                  <Typography variant="body2" textAlign="center" gutterBottom>
+                  <Typography variant='body2' textAlign='center' gutterBottom>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua. sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                   </Typography>
-                  <Typography variant="body2" textAlign="right">
+                  <Typography variant='body2' textAlign='right'>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua. sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                   </Typography>
                 </>
               </MainCard>
-              <MainCard title="Gutter Bottom" codeString={gutterTypographyCodeString}>
+              <MainCard title='Gutter Bottom' codeString={gutterTypographyCodeString}>
                 <>
-                  <Typography variant="body1" gutterBottom>
+                  <Typography variant='body1' gutterBottom>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua.
                   </Typography>
-                  <Typography variant="body2" gutterBottom>
+                  <Typography variant='body2' gutterBottom>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua.
                   </Typography>
-                  <Breadcrumbs aria-label="breadcrumb">
-                    <Typography variant="h6">Size: 12px</Typography>
-                    <Typography variant="h6">Weight: Regular</Typography>
-                    <Typography variant="h6">Line Height: 20px</Typography>
+                  <Breadcrumbs aria-label='breadcrumb'>
+                    <Typography variant='h6'>Size: 12px</Typography>
+                    <Typography variant='h6'>Weight: Regular</Typography>
+                    <Typography variant='h6'>Line Height: 20px</Typography>
                   </Breadcrumbs>
                 </>
               </MainCard>
-              <MainCard title="Overline" codeString={overlineTypographyCodeString}>
+              <MainCard title='Overline' codeString={overlineTypographyCodeString}>
                 <Stack spacing={1.5}>
-                  <Typography variant="overline">
+                  <Typography variant='overline'>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua.
                   </Typography>
-                  <Breadcrumbs aria-label="breadcrumb">
-                    <Typography variant="h6">Size: 12px</Typography>
-                    <Typography variant="h6">Weight: Regular</Typography>
-                    <Typography variant="h6">Line Height: 20px</Typography>
+                  <Breadcrumbs aria-label='breadcrumb'>
+                    <Typography variant='h6'>Size: 12px</Typography>
+                    <Typography variant='h6'>Weight: Regular</Typography>
+                    <Typography variant='h6'>Line Height: 20px</Typography>
                   </Breadcrumbs>
                 </Stack>
               </MainCard>
-              <MainCard title="Link" codeString={lineTypographyCodeString}>
+              <MainCard title='Link' codeString={lineTypographyCodeString}>
                 <Stack spacing={1.5}>
-                  <Link href="#">#able-pro</Link>
-                  <Breadcrumbs aria-label="breadcrumb">
-                    <Typography variant="h6">Size: 12px</Typography>
-                    <Typography variant="h6">Weight: Regular</Typography>
-                    <Typography variant="h6">Line Height: 20px</Typography>
+                  <Link href='#'>#able-pro</Link>
+                  <Breadcrumbs aria-label='breadcrumb'>
+                    <Typography variant='h6'>Size: 12px</Typography>
+                    <Typography variant='h6'>Weight: Regular</Typography>
+                    <Typography variant='h6'>Line Height: 20px</Typography>
                   </Breadcrumbs>
                 </Stack>
               </MainCard>
-              <MainCard title="Colors" codeString={colorTypographyCodeString}>
+              <MainCard title='Colors' codeString={colorTypographyCodeString}>
                 <>
-                  <Typography variant="h6" color="text.primary" gutterBottom>
+                  <Typography variant='h6' color='text.primary' gutterBottom>
                     This is textPrimary text color.
                   </Typography>
-                  <Typography variant="h6" color="text.secondary" gutterBottom>
+                  <Typography variant='h6' color='text.secondary' gutterBottom>
                     This is textSecondary text color.
                   </Typography>
-                  <Typography variant="h6" color="primary" gutterBottom>
+                  <Typography variant='h6' color='primary' gutterBottom>
                     This is primary text color.
                   </Typography>
-                  <Typography variant="h6" color="secondary" gutterBottom>
+                  <Typography variant='h6' color='secondary' gutterBottom>
                     This is secondary text color.
                   </Typography>
-                  <Typography variant="h6" color="success" gutterBottom>
+                  <Typography variant='h6' color='success' gutterBottom>
                     This is success text color.
                   </Typography>
-                  <Typography variant="h6" sx={{ color: 'warning.main' }} gutterBottom>
+                  <Typography variant='h6' sx={{ color: 'warning.main' }} gutterBottom>
                     This is warning text color.
                   </Typography>
-                  <Typography variant="h6" color="error" gutterBottom>
+                  <Typography variant='h6' color='error' gutterBottom>
                     This is error text color.
                   </Typography>
                 </>
               </MainCard>
-              <MainCard title="Paragraph" codeString={parapraphyTypographyCodeString}>
+              <MainCard title='Paragraph' codeString={parapraphyTypographyCodeString}>
                 <>
-                  <Typography variant="body1" gutterBottom>
+                  <Typography variant='body1' gutterBottom>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
                     magna aliqua.
                   </Typography>
-                  <Breadcrumbs aria-label="breadcrumb">
-                    <Typography variant="h6">Size: 14px</Typography>
-                    <Typography variant="h6">Weight: Regular</Typography>
-                    <Typography variant="h6">Line Height: 22px</Typography>
+                  <Breadcrumbs aria-label='breadcrumb'>
+                    <Typography variant='h6'>Size: 14px</Typography>
+                    <Typography variant='h6'>Weight: Regular</Typography>
+                    <Typography variant='h6'>Line Height: 22px</Typography>
                   </Breadcrumbs>
                 </>
               </MainCard>
-              <MainCard title="Font Style" codeString={fontTypographyCodeString}>
+              <MainCard title='Font Style' codeString={fontTypographyCodeString}>
                 <>
-                  <Typography variant="body1" gutterBottom sx={{ fontStyle: 'italic' }}>
+                  <Typography variant='body1' gutterBottom sx={{ fontStyle: 'italic' }}>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua.
                   </Typography>
-                  <Typography variant="subtitle1" gutterBottom sx={{ fontStyle: 'italic' }}>
+                  <Typography variant='subtitle1' gutterBottom sx={{ fontStyle: 'italic' }}>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua.
                   </Typography>
-                  <Breadcrumbs aria-label="breadcrumb">
-                    <Typography variant="h6">Size: 14px</Typography>
-                    <Typography variant="h6">Weight: Italic Regular & Italic Bold</Typography>
-                    <Typography variant="h6">Line Height: 22px</Typography>
+                  <Breadcrumbs aria-label='breadcrumb'>
+                    <Typography variant='h6'>Size: 14px</Typography>
+                    <Typography variant='h6'>Weight: Italic Regular & Italic Bold</Typography>
+                    <Typography variant='h6'>Line Height: 22px</Typography>
                   </Breadcrumbs>
                 </>
               </MainCard>

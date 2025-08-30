@@ -26,35 +26,35 @@ export default function AcquisitionChart() {
       width: '100%',
       stacked: true,
       toolbar: {
-        show: false
-      }
+        show: false,
+      },
     },
     xaxis: {
       axisBorder: {
-        show: false
+        show: false,
       },
       axisTicks: {
-        show: false
+        show: false,
       },
       labels: {
-        show: false
-      }
+        show: false,
+      },
     },
     yaxis: {
       axisBorder: {
-        show: false
+        show: false,
       },
       axisTicks: {
-        show: false
+        show: false,
       },
       labels: {
-        show: false
-      }
+        show: false,
+      },
     },
     tooltip: {
       x: {
-        show: false
-      }
+        show: false,
+      },
     },
     legend: {
       show: true,
@@ -64,50 +64,50 @@ export default function AcquisitionChart() {
       markers: {
         width: 8,
         height: 8,
-        radius: '50%'
-      }
+        radius: '50%',
+      },
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     grid: {
-      show: false
+      show: false,
     },
     stroke: {
       colors: ['transparent'],
-      width: 1
-    }
+      width: 1,
+    },
   };
 
   const [options, setOptions] = useState<ChartProps>(barChartOptions);
   const [series] = useState([
     {
       name: 'Direct',
-      data: [21, 17, 15, 13, 15, 13, 16, 13, 8, 14, 11, 9, 7, 5, 3, 3, 7]
+      data: [21, 17, 15, 13, 15, 13, 16, 13, 8, 14, 11, 9, 7, 5, 3, 3, 7],
     },
     {
       name: 'Referral',
-      data: [28, 30, 20, 26, 18, 27, 22, 28, 20, 21, 15, 14, 12, 10, 8, 18, 16]
+      data: [28, 30, 20, 26, 18, 27, 22, 28, 20, 21, 15, 14, 12, 10, 8, 18, 16],
     },
     {
       name: 'Social',
-      data: [50, 51, 60, 54, 53, 48, 55, 40, 44, 42, 44, 44, 42, 40, 42, 32, 16]
-    }
+      data: [50, 51, 60, 54, 53, 48, 55, 40, 44, 42, 44, 44, 42, 40, 42, 32, 16],
+    },
   ]);
   useEffect(() => {
-    setOptions((prevState) => ({
+    setOptions(prevState => ({
       ...prevState,
       colors: [theme.palette.secondary.darker, theme.palette.primary.main, theme.palette.primary[200]],
       legend: {
         labels: {
-          colors: 'secondary.main'
-        }
+          colors: 'secondary.main',
+        },
       },
       theme: {
-        mode: mode === ThemeMode.DARK ? 'dark' : 'light'
-      }
+        mode: mode === ThemeMode.DARK ? 'dark' : 'light',
+      },
     }));
   }, [mode, primary, secondary, line, theme]);
 
-  return <ReactApexChart options={options} series={series} type="bar" height={250} />;
+  return <ReactApexChart options={options} series={series} type='bar' height={250} />;
 }

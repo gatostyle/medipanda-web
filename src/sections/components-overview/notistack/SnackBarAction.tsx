@@ -13,18 +13,18 @@ import MainCard from 'components/MainCard';
 export default function SnackBarAction() {
   const { closeSnackbar } = useSnackbar();
   const actionTask = (snackbarId: SnackbarKey) => (
-    <Stack direction="row" spacing={0.5}>
+    <Stack direction='row' spacing={0.5}>
       <Button
-        size="small"
-        color="error"
-        variant="contained"
+        size='small'
+        color='error'
+        variant='contained'
         onClick={() => {
           alert(`I belong to snackbar with id ${snackbarId}`);
         }}
       >
         Undo
       </Button>
-      <Button size="small" color="secondary" variant="contained" onClick={() => closeSnackbar(snackbarId)}>
+      <Button size='small' color='secondary' variant='contained' onClick={() => closeSnackbar(snackbarId)}>
         Dismiss
       </Button>
     </Stack>
@@ -50,9 +50,9 @@ export default function SnackBarAction() {
 </Button>`;
 
   return (
-    <MainCard title="With Action" codeString={NotistackActionCodeString}>
+    <MainCard title='With Action' codeString={NotistackActionCodeString}>
       <Button
-        variant="contained"
+        variant='contained'
         fullWidth
         sx={{ marginBlockStart: 2 }}
         onClick={() => enqueueSnackbar('Your notification here', { action: (key: any) => actionTask(key) })}

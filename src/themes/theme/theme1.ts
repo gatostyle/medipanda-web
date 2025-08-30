@@ -37,7 +37,7 @@ export default function Theme1(mode: ThemeMode): PaletteThemeProps {
       700: primaryColors[7],
       darker: primaryColors[8],
       900: primaryColors[9],
-      contrastText
+      contrastText,
     },
     secondary: {
       lighter: secondaryColors[0],
@@ -50,7 +50,7 @@ export default function Theme1(mode: ThemeMode): PaletteThemeProps {
       dark: secondaryColors[7],
       800: secondaryColors[8],
       darker: secondaryColors[9],
-      contrastText
+      contrastText,
     },
     error: {
       lighter: errorColors[0],
@@ -58,7 +58,7 @@ export default function Theme1(mode: ThemeMode): PaletteThemeProps {
       main: errorColors[2],
       dark: errorColors[3],
       darker: errorColors[4],
-      contrastText
+      contrastText,
     },
     warning: {
       lighter: warningColors[0],
@@ -66,7 +66,7 @@ export default function Theme1(mode: ThemeMode): PaletteThemeProps {
       main: warningColors[2],
       dark: warningColors[3],
       darker: warningColors[4],
-      contrastText: secondaryColors[5]
+      contrastText: secondaryColors[5],
     },
     info: {
       lighter: infoColors[0],
@@ -74,7 +74,7 @@ export default function Theme1(mode: ThemeMode): PaletteThemeProps {
       main: infoColors[2],
       dark: infoColors[3],
       darker: infoColors[4],
-      contrastText
+      contrastText,
     },
     success: {
       lighter: successColors[0],
@@ -82,7 +82,7 @@ export default function Theme1(mode: ThemeMode): PaletteThemeProps {
       main: successColors[2],
       dark: successColors[3],
       darker: successColors[4],
-      contrastText
-    }
+      contrastText,
+    },
   };
 }

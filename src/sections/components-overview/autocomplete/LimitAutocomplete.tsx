@@ -47,15 +47,15 @@ export default function LimitAutocomplete() {
 />`;
 
   return (
-    <MainCard title="Limit Tags" codeString={limitAutocompleteCodeString}>
+    <MainCard title='Limit Tags' codeString={limitAutocompleteCodeString}>
       <Autocomplete
         multiple
         limitTags={2}
-        id="multiple-limit-tags"
+        id='multiple-limit-tags'
         options={data}
-        getOptionLabel={(option) => option.label}
+        getOptionLabel={option => option.label}
         defaultValue={[data[13], data[12], data[11]]}
-        renderInput={(params) => <TextField {...params} placeholder="Limit Tags" />}
+        renderInput={params => <TextField {...params} placeholder='Limit Tags' />}
         sx={{
           '& .MuiOutlinedInput-root': { p: 1 },
           '& .MuiAutocomplete-tag': {
@@ -72,9 +72,9 @@ export default function LimitAutocomplete() {
               color: 'primary.main',
               ml: 1,
               mr: -0.75,
-              '&:hover': { color: 'primary.dark' }
-            }
-          }
+              '&:hover': { color: 'primary.dark' },
+            },
+          },
         }}
       />
     </MainCard>

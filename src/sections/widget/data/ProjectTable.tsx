@@ -31,7 +31,7 @@ const createData = (
   product: string,
   date: string,
   badgeText: string,
-  badgeType: ChipProps['color']
+  badgeType: ChipProps['color'],
 ) => ({ avtar, name, designation, product, date, badgeText, badgeType });
 
 const rows = [
@@ -39,7 +39,7 @@ const rows = [
   createData(Avatar2, 'Jenifer Vintage', 'Web Designer', 'Mashable', 'March, 31', 'Lower', 'error'),
   createData(Avatar3, 'William Jem', 'Developer', 'Flatable', 'Aug, 02', 'Medium', 'primary'),
   createData(Avatar4, 'David Jones', 'Developer', 'Guruable', 'Sep, 22', 'High', 'info'),
-  createData(Avatar6, 'Stebin Ben', 'Leader', 'Able Pro', 'Sep, 22', 'Higher', 'success')
+  createData(Avatar6, 'Stebin Ben', 'Leader', 'Able Pro', 'Sep, 22', 'Higher', 'success'),
 ];
 
 // ===========================|| DATA WIDGET - PROJECT TABLE ||=========================== //
@@ -47,10 +47,10 @@ const rows = [
 export default function ProjectTable() {
   return (
     <MainCard
-      title="Projects"
+      title='Projects'
       content={false}
       secondary={
-        <Link component={RouterLink} to="#" color="primary">
+        <Link component={RouterLink} to='#' color='primary'>
           View all
         </Link>
       }
@@ -62,7 +62,7 @@ export default function ProjectTable() {
               <TableCell sx={{ pl: 3 }}>Assigned</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Due Date</TableCell>
-              <TableCell align="right" sx={{ pr: 3 }}>
+              <TableCell align='right' sx={{ pr: 3 }}>
                 Priority
               </TableCell>
             </TableRow>
@@ -71,13 +71,13 @@ export default function ProjectTable() {
             {rows.map((row, index) => (
               <TableRow hover key={index}>
                 <TableCell sx={{ pl: 3 }}>
-                  <Grid container spacing={2} alignItems="center" sx={{ flexWrap: 'nowrap' }}>
+                  <Grid container spacing={2} alignItems='center' sx={{ flexWrap: 'nowrap' }}>
                     <Grid item>
-                      <Avatar alt="User 1" src={row.avtar} />
+                      <Avatar alt='User 1' src={row.avtar} />
                     </Grid>
                     <Grid item xs zeroMinWidth>
-                      <Typography variant="subtitle1">{row.name}</Typography>
-                      <Typography variant="caption" color="secondary">
+                      <Typography variant='subtitle1'>{row.name}</Typography>
+                      <Typography variant='caption' color='secondary'>
                         {row.designation}
                       </Typography>
                     </Grid>
@@ -85,8 +85,8 @@ export default function ProjectTable() {
                 </TableCell>
                 <TableCell>{row.product}</TableCell>
                 <TableCell>{row.date}</TableCell>
-                <TableCell align="right" sx={{ pr: 3 }}>
-                  <Chip color={row.badgeType} label={row.badgeText} size="small" />
+                <TableCell align='right' sx={{ pr: 3 }}>
+                  <Chip color={row.badgeType} label={row.badgeText} size='small' />
                 </TableCell>
               </TableRow>
             ))}

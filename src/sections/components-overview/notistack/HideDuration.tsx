@@ -44,20 +44,20 @@ export default function HideDuration() {
 </Button>`;
 
   return (
-    <MainCard title="Hide Duration" codeString={NotistackHideDurationCodeString}>
+    <MainCard title='Hide Duration' codeString={NotistackHideDurationCodeString}>
       <Slider
         value={value}
         min={1}
         step={2}
         max={11}
-        valueLabelDisplay="on"
+        valueLabelDisplay='on'
         marks={marks}
         getAriaValueText={valueLabelFormat}
         valueLabelFormat={valueLabelFormat}
         onChange={handleChange}
       />
       <Button
-        variant="contained"
+        variant='contained'
         fullWidth
         sx={{ marginBlockStart: 2 }}
         onClick={() => {

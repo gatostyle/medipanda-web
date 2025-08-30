@@ -23,23 +23,23 @@ import Avatar5 from 'assets/images/users/avatar-5.png';
 
 export default function NewCustomers() {
   return (
-    <MainCard title="New Customers" content={false}>
+    <MainCard title='New Customers' content={false}>
       <SimpleBar sx={{ height: 432 }}>
         <CardContent>
-          <Grid container spacing={3} alignItems="center">
+          <Grid container spacing={3} alignItems='center'>
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item>
-                  <Avatar alt="coverimage" src={Avatar1} />
+                  <Avatar alt='coverimage' src={Avatar1} />
                 </Grid>
                 <Grid item xs zeroMinWidth>
-                  <Typography variant="subtitle1">Alex Thompson</Typography>
+                  <Typography variant='subtitle1'>Alex Thompson</Typography>
                   <Grid container spacing={2}>
                     <Grid item xs zeroMinWidth>
-                      <Typography color="text.secondary">Cheers!</Typography>
+                      <Typography color='text.secondary'>Cheers!</Typography>
                     </Grid>
                     <Grid item sx={{ display: 'flex' }}>
-                      <Dot color="success" size={10} />
+                      <Dot color='success' size={10} />
                     </Grid>
                   </Grid>
                 </Grid>
@@ -48,16 +48,16 @@ export default function NewCustomers() {
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item>
-                  <Avatar alt="coverimage" src={Avatar2} />
+                  <Avatar alt='coverimage' src={Avatar2} />
                 </Grid>
                 <Grid item xs zeroMinWidth>
-                  <Typography variant="subtitle1">John Doue</Typography>
+                  <Typography variant='subtitle1'>John Doue</Typography>
                   <Grid container spacing={2}>
                     <Grid item xs zeroMinWidth>
-                      <Typography color="text.secondary">stay hungry stay foolish!</Typography>
+                      <Typography color='text.secondary'>stay hungry stay foolish!</Typography>
                     </Grid>
                     <Grid item sx={{ display: 'flex' }}>
-                      <Dot color="success" size={10} />
+                      <Dot color='success' size={10} />
                     </Grid>
                   </Grid>
                 </Grid>
@@ -66,18 +66,18 @@ export default function NewCustomers() {
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item>
-                  <Avatar alt="coverimage" src={Avatar3} />
+                  <Avatar alt='coverimage' src={Avatar3} />
                 </Grid>
                 <Grid item xs zeroMinWidth>
-                  <Typography variant="subtitle1">Alex Thompson</Typography>
+                  <Typography variant='subtitle1'>Alex Thompson</Typography>
                   <Grid container spacing={2}>
                     <Grid item xs zeroMinWidth>
-                      <Typography color="text.secondary">Cheers!</Typography>
+                      <Typography color='text.secondary'>Cheers!</Typography>
                     </Grid>
                     <Grid item>
-                      <Stack direction="row" spacing={1} alignItems="center">
+                      <Stack direction='row' spacing={1} alignItems='center'>
                         <Clock size={14} />
-                        <Typography color="text.secondary">30 min ago</Typography>
+                        <Typography color='text.secondary'>30 min ago</Typography>
                       </Stack>
                     </Grid>
                   </Grid>
@@ -87,18 +87,18 @@ export default function NewCustomers() {
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item>
-                  <Avatar alt="coverimage" src={Avatar4} />
+                  <Avatar alt='coverimage' src={Avatar4} />
                 </Grid>
                 <Grid item xs zeroMinWidth>
-                  <Typography variant="subtitle1">John Doue</Typography>
+                  <Typography variant='subtitle1'>John Doue</Typography>
                   <Grid container spacing={2}>
                     <Grid item xs zeroMinWidth>
-                      <Typography color="text.secondary">stay hungry stay foolish!</Typography>
+                      <Typography color='text.secondary'>stay hungry stay foolish!</Typography>
                     </Grid>
                     <Grid item>
-                      <Stack direction="row" spacing={1} alignItems="center">
+                      <Stack direction='row' spacing={1} alignItems='center'>
                         <Clock size={14} />
-                        <Typography color="text.secondary">10 min ago</Typography>
+                        <Typography color='text.secondary'>10 min ago</Typography>
                       </Stack>
                     </Grid>
                   </Grid>
@@ -108,18 +108,18 @@ export default function NewCustomers() {
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item>
-                  <Avatar alt="coverimage" src={Avatar5} />
+                  <Avatar alt='coverimage' src={Avatar5} />
                 </Grid>
                 <Grid item xs zeroMinWidth>
-                  <Typography variant="subtitle1">Shirley Hoe</Typography>
+                  <Typography variant='subtitle1'>Shirley Hoe</Typography>
                   <Grid container spacing={2}>
                     <Grid item xs zeroMinWidth>
-                      <Typography color="text.secondary">Cheers!</Typography>
+                      <Typography color='text.secondary'>Cheers!</Typography>
                     </Grid>
                     <Grid item>
-                      <Stack direction="row" spacing={1} alignItems="center">
+                      <Stack direction='row' spacing={1} alignItems='center'>
                         <Clock size={14} />
-                        <Typography color="text.secondary">30 min ago</Typography>
+                        <Typography color='text.secondary'>30 min ago</Typography>
                       </Stack>
                     </Grid>
                   </Grid>
@@ -129,16 +129,16 @@ export default function NewCustomers() {
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item>
-                  <Avatar alt="coverimage" src={Avatar1} />
+                  <Avatar alt='coverimage' src={Avatar1} />
                 </Grid>
                 <Grid item xs zeroMinWidth>
-                  <Typography variant="subtitle1">Alex Thompson</Typography>
+                  <Typography variant='subtitle1'>Alex Thompson</Typography>
                   <Grid container spacing={2}>
                     <Grid item xs zeroMinWidth>
-                      <Typography color="text.secondary">Cheers!</Typography>
+                      <Typography color='text.secondary'>Cheers!</Typography>
                     </Grid>
                     <Grid item sx={{ display: 'flex' }}>
-                      <Dot color="success" size={10} />
+                      <Dot color='success' size={10} />
                     </Grid>
                   </Grid>
                 </Grid>
@@ -147,16 +147,16 @@ export default function NewCustomers() {
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item>
-                  <Avatar alt="coverimage" src={Avatar2} />
+                  <Avatar alt='coverimage' src={Avatar2} />
                 </Grid>
                 <Grid item xs zeroMinWidth>
-                  <Typography variant="subtitle1">John Doue</Typography>
+                  <Typography variant='subtitle1'>John Doue</Typography>
                   <Grid container spacing={2}>
                     <Grid item xs zeroMinWidth>
-                      <Typography color="text.secondary">stay hungry stay foolish!</Typography>
+                      <Typography color='text.secondary'>stay hungry stay foolish!</Typography>
                     </Grid>
                     <Grid item sx={{ display: 'flex' }}>
-                      <Dot color="success" size={10} />
+                      <Dot color='success' size={10} />
                     </Grid>
                   </Grid>
                 </Grid>
@@ -165,18 +165,18 @@ export default function NewCustomers() {
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item>
-                  <Avatar alt="coverimage" src={Avatar3} />
+                  <Avatar alt='coverimage' src={Avatar3} />
                 </Grid>
                 <Grid item xs zeroMinWidth>
-                  <Typography variant="subtitle1">Alex Thompson</Typography>
+                  <Typography variant='subtitle1'>Alex Thompson</Typography>
                   <Grid container spacing={2}>
                     <Grid item xs zeroMinWidth>
-                      <Typography color="text.secondary">Cheers!</Typography>
+                      <Typography color='text.secondary'>Cheers!</Typography>
                     </Grid>
                     <Grid item>
-                      <Stack direction="row" spacing={1} alignItems="center">
+                      <Stack direction='row' spacing={1} alignItems='center'>
                         <Clock size={14} />
-                        <Typography color="text.secondary">10 min ago</Typography>
+                        <Typography color='text.secondary'>10 min ago</Typography>
                       </Stack>
                     </Grid>
                   </Grid>
@@ -186,18 +186,18 @@ export default function NewCustomers() {
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item>
-                  <Avatar alt="coverimage" src={Avatar4} />
+                  <Avatar alt='coverimage' src={Avatar4} />
                 </Grid>
                 <Grid item xs zeroMinWidth>
-                  <Typography variant="subtitle1">John Doue</Typography>
+                  <Typography variant='subtitle1'>John Doue</Typography>
                   <Grid container spacing={2}>
                     <Grid item xs zeroMinWidth>
-                      <Typography color="text.secondary">stay hungry stay foolish!</Typography>
+                      <Typography color='text.secondary'>stay hungry stay foolish!</Typography>
                     </Grid>
                     <Grid item>
-                      <Stack direction="row" spacing={1} alignItems="center">
+                      <Stack direction='row' spacing={1} alignItems='center'>
                         <Clock size={14} />
-                        <Typography color="text.secondary">10 min ago</Typography>
+                        <Typography color='text.secondary'>10 min ago</Typography>
                       </Stack>
                     </Grid>
                   </Grid>
@@ -207,18 +207,18 @@ export default function NewCustomers() {
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item>
-                  <Avatar alt="coverimage" src={Avatar5} />
+                  <Avatar alt='coverimage' src={Avatar5} />
                 </Grid>
                 <Grid item xs zeroMinWidth>
-                  <Typography variant="subtitle1">Shirley Hoe</Typography>
+                  <Typography variant='subtitle1'>Shirley Hoe</Typography>
                   <Grid container spacing={2}>
                     <Grid item xs zeroMinWidth>
-                      <Typography color="text.secondary">Cheers!</Typography>
+                      <Typography color='text.secondary'>Cheers!</Typography>
                     </Grid>
                     <Grid item>
-                      <Stack direction="row" spacing={1} alignItems="center">
+                      <Stack direction='row' spacing={1} alignItems='center'>
                         <Clock size={14} />
-                        <Typography color="text.secondary">30 min ago</Typography>
+                        <Typography color='text.secondary'>30 min ago</Typography>
                       </Stack>
                     </Grid>
                   </Grid>

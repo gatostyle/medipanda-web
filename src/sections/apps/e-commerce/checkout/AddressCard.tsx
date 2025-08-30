@@ -38,21 +38,21 @@ export default function AddressCard({ address, change, handleClickOpen, billingA
       {address && (
         <Grid container spacing={0.5}>
           <Grid item xs={12}>
-            <Stack direction="row" justifyContent="space-between">
-              <Stack direction="row" alignItems="center" spacing={0.5}>
-                <Typography variant="subtitle1">{address.name}</Typography>
-                <Typography color="text.secondary" sx={{ textTransform: 'capitalize' }}>
+            <Stack direction='row' justifyContent='space-between'>
+              <Stack direction='row' alignItems='center' spacing={0.5}>
+                <Typography variant='subtitle1'>{address.name}</Typography>
+                <Typography color='text.secondary' sx={{ textTransform: 'capitalize' }}>
                   ({address.destination})
                 </Typography>
                 {address.isDefault && (
-                  <Chip sx={{ color: 'primary.main', bgcolor: 'primary.lighter', borderRadius: '10px' }} label="Default" size="small" />
+                  <Chip sx={{ color: 'primary.main', bgcolor: 'primary.lighter', borderRadius: '10px' }} label='Default' size='small' />
                 )}
               </Stack>
               {change && (
                 <Button
-                  variant="outlined"
-                  size="small"
-                  color="secondary"
+                  variant='outlined'
+                  size='small'
+                  color='secondary'
                   startIcon={<Edit />}
                   onClick={() => {
                     if (handleClickOpen) {
@@ -67,10 +67,10 @@ export default function AddressCard({ address, change, handleClickOpen, billingA
           </Grid>
           <Grid item xs={12}>
             <Stack spacing={2}>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant='body2' color='text.secondary'>
                 {`${address.building}, ${address.street}, ${address.city}, ${address.state}, ${address.country} - ${address.post}`}
               </Typography>
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant='caption' color='text.secondary'>
                 {address.phone}
               </Typography>
             </Stack>

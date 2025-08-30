@@ -37,27 +37,27 @@ function ReactTable({ columns, data }: ReactTableProps) {
   const table = useReactTable({
     data,
     columns,
-    getCoreRowModel: getCoreRowModel()
+    getCoreRowModel: getCoreRowModel(),
   });
 
   let headers: LabelKeyObject[] = [];
-  table.getAllColumns().map((columns) =>
+  table.getAllColumns().map(columns =>
     headers.push({
       label: typeof columns.columnDef.header === 'string' ? columns.columnDef.header : '#',
       // @ts-ignore
-      key: columns.columnDef.accessorKey
-    })
+      key: columns.columnDef.accessorKey,
+    }),
   );
 
   return (
-    <MainCard title="Footer" content={false} secondary={<CSVExport {...{ data, headers, filename: 'footer.csv' }} />}>
+    <MainCard title='Footer' content={false} secondary={<CSVExport {...{ data, headers, filename: 'footer.csv' }} />}>
       <ScrollX>
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
               {table.getHeaderGroups().map((headerGroup: HeaderGroup<any>) => (
                 <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
+                  {headerGroup.headers.map(header => (
                     <TableCell key={header.id} {...header.column.columnDef.meta}>
                       {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableCell>
@@ -66,9 +66,9 @@ function ReactTable({ columns, data }: ReactTableProps) {
               ))}
             </TableHead>
             <TableBody>
-              {table.getRowModel().rows.map((row) => (
+              {table.getRowModel().rows.map(row => (
                 <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
+                  {row.getVisibleCells().map(cell => (
                     <TableCell key={cell.id} {...cell.column.columnDef.meta}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
@@ -77,9 +77,9 @@ function ReactTable({ columns, data }: ReactTableProps) {
               ))}
             </TableBody>
             <TableFooter>
-              {table.getFooterGroups().map((footerGroup) => (
+              {table.getFooterGroups().map(footerGroup => (
                 <TableRow key={footerGroup.id}>
-                  {footerGroup.headers.map((footer) => (
+                  {footerGroup.headers.map(footer => (
                     <TableCell key={footer.id} {...footer.column.columnDef.meta}>
                       {footer.isPlaceholder ? null : flexRender(footer.column.columnDef.header, footer.getContext())}
                     </TableCell>
@@ -104,63 +104,63 @@ export default function FooterTable() {
       {
         header: 'First Name',
         footer: 'First Name',
-        accessorKey: 'firstName'
+        accessorKey: 'firstName',
       },
       {
         header: 'Last Name',
         footer: 'LAST NAME',
-        accessorKey: 'lastName'
+        accessorKey: 'lastName',
       },
       {
         header: 'Email',
         footer: 'Email',
-        accessorKey: 'email'
+        accessorKey: 'email',
       },
       {
         header: 'Age',
         footer: 'Age',
         accessorKey: 'age',
         meta: {
-          className: 'cell-right'
-        }
+          className: 'cell-right',
+        },
       },
       {
         header: 'Role',
         footer: 'Role',
-        accessorKey: 'role'
+        accessorKey: 'role',
       },
       {
         header: 'Visits',
         footer: 'Visits',
         accessorKey: 'visits',
         meta: {
-          className: 'cell-right'
-        }
+          className: 'cell-right',
+        },
       },
       {
         header: 'Status',
         footer: 'Status',
         accessorKey: 'status',
-        cell: (props) => {
+        cell: props => {
           switch (props.getValue()) {
             case 'Complicated':
-              return <Chip color="error" label="Complicated" size="small" variant="light" />;
+              return <Chip color='error' label='Complicated' size='small' variant='light' />;
             case 'Relationship':
-              return <Chip color="success" label="Relationship" size="small" variant="light" />;
+              return <Chip color='success' label='Relationship' size='small' variant='light' />;
             case 'Single':
             default:
-              return <Chip color="info" label="Single" size="small" variant="light" />;
+              return <Chip color='info' label='Single' size='small' variant='light' />;
           }
-        }
+        },
       },
       {
         header: 'Profile Progress',
         footer: 'Profile Progress',
         accessorKey: 'progress',
-        cell: (props) => <LinearWithLabel value={props.getValue() as number} sx={{ minWidth: 75 }} />
-      }
+        cell: props => <LinearWithLabel value={props.getValue() as number} sx={{ minWidth: 75 }} />,
+      },
     ],
-    []
+    [],
   );
 
   return <ReactTable {...{ data, columns }} />;

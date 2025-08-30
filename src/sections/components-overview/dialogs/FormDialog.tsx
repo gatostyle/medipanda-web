@@ -25,7 +25,7 @@ export default function FormDialog() {
 
   return (
     <>
-      <Button variant="contained" onClick={handleClickOpen}>
+      <Button variant='contained' onClick={handleClickOpen}>
         Open form dialog
       </Button>
       <Dialog open={open} onClose={handleClose}>
@@ -35,13 +35,13 @@ export default function FormDialog() {
             <DialogContentText sx={{ mb: 2 }}>
               To subscribe to this website, please enter your email address here. We will send updates occasionally.
             </DialogContentText>
-            <TextField id="name" placeholder="Email Address" type="email" fullWidth variant="outlined" />
+            <TextField id='name' placeholder='Email Address' type='email' fullWidth variant='outlined' />
           </DialogContent>
           <DialogActions>
-            <Button color="error" onClick={handleClose}>
+            <Button color='error' onClick={handleClose}>
               Cancel
             </Button>
-            <Button variant="contained" onClick={handleClose}>
+            <Button variant='contained' onClick={handleClose}>
               Subscribe
             </Button>
           </DialogActions>

@@ -9,7 +9,7 @@ const chance = new Chance();
 const LOCAL_STORAGE = 'mantis-ts-cart';
 
 export const endpoints = {
-  key: 'cart'
+  key: 'cart',
 };
 
 const initialState: CartCheckoutStateProps = {
@@ -23,8 +23,8 @@ const initialState: CartCheckoutStateProps = {
   payment: {
     type: 'free',
     method: 'card',
-    card: ''
-  }
+    card: '',
+  },
 };
 
 export function useGetCart() {
@@ -40,8 +40,8 @@ export function useGetCart() {
       revalidateOnReconnect: false,
       onSuccess(data) {
         localStorage.setItem(LOCAL_STORAGE, JSON.stringify(data));
-      }
-    }
+      },
+    },
   );
 
   const memoizedValue = useMemo(() => ({ cart: data!, cartLoading: isLoading }), [data, isLoading]);
@@ -62,10 +62,10 @@ export function addToCart(product: ProductCardProps, products: ProductCardProps[
   inCartProduct = filter(products, {
     id: newProduct.id,
     color: newProduct.color,
-    size: newProduct.size
+    size: newProduct.size,
   });
   if (inCartProduct && inCartProduct.length > 0) {
-    const newProducts = products.map((item) => {
+    const newProducts = products.map(item => {
       if (newProduct.id === item.id && newProduct.color === item.color && newProduct.size === item.size) {
         return { ...newProduct, quantity: newProduct.quantity + inCartProduct[0].quantity };
       }
@@ -83,13 +83,13 @@ export function addToCart(product: ProductCardProps, products: ProductCardProps[
         ...currentCart,
         products: latestProducts,
         subtotal: currentCart.subtotal + subtotal,
-        total: currentCart.total + subtotal
+        total: currentCart.total + subtotal,
       };
 
       localStorage.setItem(LOCAL_STORAGE, JSON.stringify(newCart));
       return newCart;
     },
-    false
+    false,
   );
 }
 
@@ -105,7 +105,7 @@ export function updateCartProduct(id: string | number, quantity: number, product
   subtotal = quantity * newProduct.offerPrice!;
   oldSubTotal = 0;
 
-  latestProducts = products.map((item) => {
+  latestProducts = products.map(item => {
     if (id === item.itemId) {
       oldSubTotal = item.quantity * (item.offerPrice || 0);
       return { ...item, quantity };
@@ -120,13 +120,13 @@ export function updateCartProduct(id: string | number, quantity: number, product
         ...currentCart,
         products: latestProducts,
         subtotal: currentCart.subtotal - oldSubTotal + subtotal,
-        total: currentCart.total - oldSubTotal + subtotal
+        total: currentCart.total - oldSubTotal + subtotal,
       };
 
       localStorage.setItem(LOCAL_STORAGE, JSON.stringify(newCart));
       return newCart;
     },
-    false
+    false,
   );
 }
 
@@ -139,7 +139,7 @@ export function removeCartProduct(id: string | number, products: ProductCardProp
   newProduct = filter(products, { itemId: id })[0];
 
   subtotal = newProduct.quantity * newProduct.offerPrice!;
-  latestProducts = filter(products, (item) => item.itemId !== id);
+  latestProducts = filter(products, item => item.itemId !== id);
 
   mutate(
     endpoints.key,
@@ -148,13 +148,13 @@ export function removeCartProduct(id: string | number, products: ProductCardProp
         ...currentCart,
         products: latestProducts,
         subtotal: currentCart.subtotal - subtotal,
-        total: currentCart.total - subtotal
+        total: currentCart.total - subtotal,
       };
 
       localStorage.setItem(LOCAL_STORAGE, JSON.stringify(newCart));
       return newCart;
     },
-    false
+    false,
   );
 }
 
@@ -165,13 +165,13 @@ export function setCheckoutStep(step: number) {
     (currentCart: any) => {
       const newCart = {
         ...currentCart,
-        step
+        step,
       };
 
       localStorage.setItem(LOCAL_STORAGE, JSON.stringify(newCart));
       return newCart;
     },
-    false
+    false,
   );
 }
 
@@ -182,13 +182,13 @@ export function setNextStep() {
     (currentCart: any) => {
       const newCart = {
         ...currentCart,
-        step: currentCart.step + 1
+        step: currentCart.step + 1,
       };
 
       localStorage.setItem(LOCAL_STORAGE, JSON.stringify(newCart));
       return newCart;
     },
-    false
+    false,
   );
 }
 
@@ -199,13 +199,13 @@ export function setBackStep() {
     (currentCart: any) => {
       const newCart = {
         ...currentCart,
-        step: currentCart.step - 1
+        step: currentCart.step - 1,
       };
 
       localStorage.setItem(LOCAL_STORAGE, JSON.stringify(newCart));
       return newCart;
     },
-    false
+    false,
   );
 }
 
@@ -216,13 +216,13 @@ export function setBillingAddress(billing: Address | null) {
     (currentCart: any) => {
       const newCart = {
         ...currentCart,
-        billing
+        billing,
       };
 
       localStorage.setItem(LOCAL_STORAGE, JSON.stringify(newCart));
       return newCart;
     },
-    false
+    false,
   );
 }
 
@@ -260,13 +260,13 @@ export function setCartDiscount(code: string, total: number) {
       const newCart = {
         ...currentCart,
         discount: amount,
-        total: currentCart.total + difference - amount
+        total: currentCart.total + difference - amount,
       };
 
       localStorage.setItem(LOCAL_STORAGE, JSON.stringify(newCart));
       return newCart;
     },
-    false
+    false,
   );
 }
 
@@ -289,14 +289,14 @@ export function setShippingCharge(charge: string, shipping: number) {
         total: currentCart.total + newShipping,
         payment: {
           ...currentCart.payment,
-          type: charge
-        }
+          type: charge,
+        },
       };
 
       localStorage.setItem(LOCAL_STORAGE, JSON.stringify(newCart));
       return newCart;
     },
-    false
+    false,
   );
 }
 
@@ -310,7 +310,7 @@ export function setPaymentMethod(method: string) {
       localStorage.setItem(LOCAL_STORAGE, JSON.stringify(newCart));
       return newCart;
     },
-    false
+    false,
   );
 }
 
@@ -324,7 +324,7 @@ export function setPaymentCard(card: string) {
       localStorage.setItem(LOCAL_STORAGE, JSON.stringify(newCart));
       return newCart;
     },
-    false
+    false,
   );
 }
 
@@ -336,6 +336,6 @@ export function resetCart() {
       localStorage.setItem(LOCAL_STORAGE, JSON.stringify(initialState));
       return initialState;
     },
-    false
+    false,
   );
 }

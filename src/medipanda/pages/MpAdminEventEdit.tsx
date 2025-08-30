@@ -38,15 +38,15 @@ export default function MpAdminEventEdit() {
       content: '',
       videoUrl: '',
       note: '',
-      internalName: ''
+      internalName: '',
     },
     validationSchema: Yup.object({
       title: Yup.string().required('제목을 입력해주세요'),
       content: Yup.string().required('내용을 입력해주세요'),
       startDate: Yup.date().nullable().required('시작일을 선택해주세요'),
-      endDate: Yup.date().nullable().required('종료일을 선택해주세요')
+      endDate: Yup.date().nullable().required('종료일을 선택해주세요'),
     }),
-    onSubmit: async (values) => {
+    onSubmit: async values => {
       try {
         if (isNew) {
           await createEventBoard({
@@ -61,17 +61,17 @@ export default function MpAdminEventEdit() {
               isExposed: values.isExposed,
               editorFileIds: null,
               exposureRange: values.exposureRange,
-              noticeProperties: null
+              noticeProperties: null,
             },
             eventRequest: {
               startAt: formatYyyyMmDd(values.startDate),
               endAt: formatYyyyMmDd(values.endDate),
               description: values.description,
               videoUrl: values.videoUrl,
-              note: values.note
+              note: values.note,
             },
             thumbnail: thumbnailFile!,
-            files: undefined
+            files: undefined,
           });
           infoDialog.showInfo('이벤트가 등록되었습니다.');
         } else {
@@ -84,17 +84,17 @@ export default function MpAdminEventEdit() {
               exposureRange: values.exposureRange,
               keepFileIds: [],
               editorFileIds: [],
-              noticeProperties: null
+              noticeProperties: null,
             },
             eventRequest: {
               startAt: formatYyyyMmDd(values.startDate),
               endAt: formatYyyyMmDd(values.endDate),
               description: values.description,
               videoUrl: values.videoUrl,
-              note: values.note
+              note: values.note,
             },
             thumbnail: thumbnailFile ?? undefined,
-            newFiles: undefined
+            newFiles: undefined,
           });
           infoDialog.showInfo('이벤트가 수정되었습니다.');
         }
@@ -107,7 +107,7 @@ export default function MpAdminEventEdit() {
           errorDialog.showError('이벤트 저장에 실패했습니다.');
         }
       }
-    }
+    },
   });
 
   useEffect(() => {
@@ -126,7 +126,7 @@ export default function MpAdminEventEdit() {
             content: event.boardPostDetail.content,
             videoUrl: event.videoUrl ?? '',
             note: event.note ?? '',
-            internalName: ''
+            internalName: '',
           });
           if (event.thumbnailUrl) {
             setThumbnailPreview(event.thumbnailUrl);
@@ -166,7 +166,7 @@ export default function MpAdminEventEdit() {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+      <Box display='flex' justifyContent='center' alignItems='center' minHeight='400px'>
         <CircularProgress />
       </Box>
     );
@@ -175,7 +175,7 @@ export default function MpAdminEventEdit() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant='h4' gutterBottom>
           이벤트 {isNew ? '등록' : '수정'}
         </Typography>
       </Grid>
@@ -185,48 +185,48 @@ export default function MpAdminEventEdit() {
           <form onSubmit={formik.handleSubmit}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom>
+                <Typography variant='subtitle1' gutterBottom>
                   노출상태 *
                 </Typography>
                 <RadioGroup
                   row
-                  name="isExposed"
+                  name='isExposed'
                   value={formik.values.isExposed ? 'true' : 'false'}
-                  onChange={(e) => formik.setFieldValue('isExposed', e.target.value === 'true')}
+                  onChange={e => formik.setFieldValue('isExposed', e.target.value === 'true')}
                 >
-                  <FormControlLabel value={'true'} control={<Radio />} label="노출" />
-                  <FormControlLabel value={'false'} control={<Radio />} label="미노출" />
+                  <FormControlLabel value={'true'} control={<Radio />} label='노출' />
+                  <FormControlLabel value={'false'} control={<Radio />} label='미노출' />
                 </RadioGroup>
               </Grid>
 
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom>
+                <Typography variant='subtitle1' gutterBottom>
                   노출범위 *
                 </Typography>
-                <RadioGroup row name="exposureRange" value={formik.values.exposureRange} onChange={formik.handleChange}>
-                  <FormControlLabel value={'ALL'} control={<Radio />} label="전체" />
-                  <FormControlLabel value={'CONTRACT  ED'} control={<Radio />} label="계약" />
-                  <FormControlLabel value={'UNCONTRACTED'} control={<Radio />} label="미계약" />
+                <RadioGroup row name='exposureRange' value={formik.values.exposureRange} onChange={formik.handleChange}>
+                  <FormControlLabel value={'ALL'} control={<Radio />} label='전체' />
+                  <FormControlLabel value={'CONTRACT  ED'} control={<Radio />} label='계약' />
+                  <FormControlLabel value={'UNCONTRACTED'} control={<Radio />} label='미계약' />
                 </RadioGroup>
               </Grid>
 
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom>
+                <Typography variant='subtitle1' gutterBottom>
                   이벤트기간 *
                 </Typography>
-                <Stack direction="row" spacing={2} alignItems="center">
-                  <MpFormikDatePicker name="startDate" label="시작일" formik={formik} />
+                <Stack direction='row' spacing={2} alignItems='center'>
+                  <MpFormikDatePicker name='startDate' label='시작일' formik={formik} />
                   <Typography>~</Typography>
-                  <MpFormikDatePicker name="endDate" label="종료일" formik={formik} />
+                  <MpFormikDatePicker name='endDate' label='종료일' formik={formik} />
                 </Stack>
               </Grid>
 
               <Grid item xs={12}>
                 <TextField
-                  name="title"
-                  label="제목 *"
+                  name='title'
+                  label='제목 *'
                   fullWidth
-                  placeholder=""
+                  placeholder=''
                   value={formik.values.title}
                   onChange={formik.handleChange}
                   error={formik.touched.title && Boolean(formik.errors.title)}
@@ -236,25 +236,25 @@ export default function MpAdminEventEdit() {
 
               <Grid item xs={12}>
                 <TextField
-                  name="description"
-                  label="이벤트 설명"
+                  name='description'
+                  label='이벤트 설명'
                   fullWidth
-                  placeholder=""
+                  placeholder=''
                   value={formik.values.description}
                   onChange={formik.handleChange}
                 />
               </Grid>
 
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom>
+                <Typography variant='subtitle1' gutterBottom>
                   썸네일 *
                 </Typography>
-                <Stack direction="row" spacing={2} alignItems="center">
-                  <Button variant="contained" component="label" color="success">
+                <Stack direction='row' spacing={2} alignItems='center'>
+                  <Button variant='contained' component='label' color='success'>
                     첨부파일
-                    <input type="file" hidden accept="image/*" onChange={handleThumbnailChange} />
+                    <input type='file' hidden accept='image/*' onChange={handleThumbnailChange} />
                   </Button>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant='body2' color='text.secondary'>
                     {thumbnailFile ? thumbnailFile.name : '파일을 선택해주세요'}
                   </Typography>
                 </Stack>
@@ -262,13 +262,13 @@ export default function MpAdminEventEdit() {
                   <Box mt={2}>
                     <img
                       src={thumbnailPreview}
-                      alt="썸네일 미리보기"
+                      alt='썸네일 미리보기'
                       style={{
                         maxWidth: '300px',
                         maxHeight: '200px',
                         objectFit: 'contain',
                         border: '1px solid #e0e0e0',
-                        borderRadius: '4px'
+                        borderRadius: '4px',
                       }}
                     />
                   </Box>
@@ -276,17 +276,17 @@ export default function MpAdminEventEdit() {
               </Grid>
 
               <Grid item xs={12}>
-                <TextField name="internalName" label="썸네일" fullWidth value={formik.values.internalName} onChange={formik.handleChange} />
+                <TextField name='internalName' label='썸네일' fullWidth value={formik.values.internalName} onChange={formik.handleChange} />
               </Grid>
 
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom>
+                <Typography variant='subtitle1' gutterBottom>
                   내용 *
                 </Typography>
                 <TiptapEditor
                   content={formik.values.content}
-                  onChange={(content) => formik.setFieldValue('content', content)}
-                  placeholder=""
+                  onChange={content => formik.setFieldValue('content', content)}
+                  placeholder=''
                   error={!!(formik.touched.content && formik.errors.content)}
                   helperText={formik.touched.content && formik.errors.content ? formik.errors.content : undefined}
                 />
@@ -294,10 +294,10 @@ export default function MpAdminEventEdit() {
 
               <Grid item xs={12}>
                 <TextField
-                  name="videoUrl"
-                  label="영상url"
+                  name='videoUrl'
+                  label='영상url'
                   fullWidth
-                  placeholder=""
+                  placeholder=''
                   value={formik.values.videoUrl}
                   onChange={formik.handleChange}
                 />
@@ -305,23 +305,23 @@ export default function MpAdminEventEdit() {
 
               <Grid item xs={12}>
                 <TextField
-                  name="note"
-                  label="비고"
+                  name='note'
+                  label='비고'
                   fullWidth
                   multiline
                   rows={3}
-                  placeholder=""
+                  placeholder=''
                   value={formik.values.note}
                   onChange={formik.handleChange}
                 />
               </Grid>
 
               <Grid item xs={12}>
-                <Stack direction="row" spacing={2} justifyContent="center">
-                  <Button variant="outlined" size="large" onClick={handleCancel}>
+                <Stack direction='row' spacing={2} justifyContent='center'>
+                  <Button variant='outlined' size='large' onClick={handleCancel}>
                     취소
                   </Button>
-                  <Button variant="contained" size="large" color="success" type="submit" disabled={formik.isSubmitting}>
+                  <Button variant='contained' size='large' color='success' type='submit' disabled={formik.isSubmitting}>
                     저장
                   </Button>
                 </Stack>

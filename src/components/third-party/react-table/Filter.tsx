@@ -26,28 +26,28 @@ function NumberInput({ columnFilterValue, getFacetedMinMaxValues, setFilterValue
   const max = Number(maxOpt);
 
   return (
-    <Stack direction="row" spacing={1} alignItems="center">
+    <Stack direction='row' spacing={1} alignItems='center'>
       <DebouncedInput
-        type="number"
+        type='number'
         value={columnFilterValue?.[0] ?? ''}
-        onFilterChange={(value) => setFilterValue((old: [number, number]) => [value, old?.[1]])}
+        onFilterChange={value => setFilterValue((old: [number, number]) => [value, old?.[1]])}
         placeholder={`Min ${minOpt ? `(${min})` : ''}`}
         fullWidth
         inputProps={{ min: min, max: max }}
-        size="small"
+        size='small'
         startAdornment={false}
       />
       <>
-        <Minus size="32" color="#FF8A65" variant="Outline" />
+        <Minus size='32' color='#FF8A65' variant='Outline' />
       </>
       <DebouncedInput
-        type="number"
+        type='number'
         value={columnFilterValue?.[1] ?? ''}
-        onFilterChange={(value) => setFilterValue((old: [number, number]) => [old?.[0], value])}
+        onFilterChange={value => setFilterValue((old: [number, number]) => [old?.[0], value])}
         placeholder={`Max ${maxOpt ? `(${max})` : ''}`}
         fullWidth
         inputProps={{ min: min, max: max }}
-        size="small"
+        size='small'
         startAdornment={false}
       />
     </Stack>
@@ -68,13 +68,13 @@ function TextInput({ columnId, columnFilterValue, header, setFilterValue }: Text
 
   return (
     <DebouncedInput
-      type="text"
+      type='text'
       fullWidth
       value={columnFilterValue ?? ''}
-      onFilterChange={(value) => setFilterValue(value)}
+      onFilterChange={value => setFilterValue(value)}
       placeholder={`Search ${header}`}
       inputProps={{ list: dataListId }}
-      size="small"
+      size='small'
       startAdornment={false}
     />
   );

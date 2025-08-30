@@ -38,7 +38,7 @@ function MarkersPopups({ data, ...other }: Props) {
       initialViewState={{
         latitude: 21.2335611,
         longitude: 72.8636084,
-        zoom: 2
+        zoom: 2,
       }}
       {...other}
     >
@@ -67,15 +67,15 @@ function MarkersPopups({ data, ...other }: Props) {
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
-                backgroundImage: `url(https://cdn.staticaly.com/gh/hjnilsson/country-flags/master/svg/${popupInfo.country_code.toLowerCase()}.svg)`
+                backgroundImage: `url(https://cdn.staticaly.com/gh/hjnilsson/country-flags/master/svg/${popupInfo.country_code.toLowerCase()}.svg)`,
               }}
             />
-            <Typography variant="subtitle2">{popupInfo.name}</Typography>
+            <Typography variant='subtitle2'>{popupInfo.name}</Typography>
           </Box>
           <Stack spacing={0.5}>
-            <Typography variant="caption">Timezones: {popupInfo.timezones}</Typography>
-            <Typography variant="caption">Lat: {popupInfo.latlng[0]}</Typography>
-            <Typography variant="caption">Long: {popupInfo.latlng[1]}</Typography>
+            <Typography variant='caption'>Timezones: {popupInfo.timezones}</Typography>
+            <Typography variant='caption'>Lat: {popupInfo.latlng[0]}</Typography>
+            <Typography variant='caption'>Long: {popupInfo.latlng[1]}</Typography>
           </Stack>
         </MapPopup>
       )}

@@ -15,7 +15,7 @@ export default function SyntaxHighlight({ children, ...others }: { children: str
 
   return (
     <SyntaxHighlighter
-      language="javascript"
+      language='javascript'
       showLineNumbers
       style={theme.palette.mode === ThemeMode.DARK ? a11yLight : a11yDark}
       {...others}

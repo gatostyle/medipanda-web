@@ -32,10 +32,10 @@ export default function ComponentCard() {
   const cardAction = (
     <ToggleButtonGroup
       fullWidth
-      color="primary"
+      color='primary'
       exclusive
-      aria-label="text alignment"
-      size="small"
+      aria-label='text alignment'
+      size='small'
       sx={{
         p: 1,
         '& .MuiToggleButton-root': {
@@ -44,17 +44,17 @@ export default function ComponentCard() {
           '&:not(.Mui-selected)': { borderTopColor: 'transparent', borderBottomColor: 'transparent' },
           '&:first-of-type': { borderLeftColor: 'transparent' },
           '&:last-of-type': { borderRightColor: 'transparent' },
-          '&:hover': { bgcolor: 'transparent', color: 'primary.main' }
-        }
+          '&:hover': { bgcolor: 'transparent', color: 'primary.main' },
+        },
       }}
     >
-      <ToggleButton value="web" aria-label="web">
+      <ToggleButton value='web' aria-label='web'>
         <Setting />
       </ToggleButton>
-      <ToggleButton value="android" aria-label="android">
+      <ToggleButton value='android' aria-label='android'>
         <Edit />
       </ToggleButton>
-      <ToggleButton value="ios" aria-label="ios">
+      <ToggleButton value='ios' aria-label='ios'>
         <MoreIcon />
       </ToggleButton>
     </ToggleButtonGroup>
@@ -406,28 +406,28 @@ export default function ComponentCard() {
   return (
     <ComponentSkeleton>
       <ComponentHeader
-        title="Card"
-        caption="Cards contain content and actions about a single subject."
-        directory="src/pages/components-overview/cards"
-        link="https://mui.com/material-ui/react-card/"
+        title='Card'
+        caption='Cards contain content and actions about a single subject.'
+        directory='src/pages/components-overview/cards'
+        link='https://mui.com/material-ui/react-card/'
       />
       <ComponentWrapper>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Basic" codeString={basicCardCodeString}>
+            <MainCard title='Basic' codeString={basicCardCodeString}>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
                   <MainCard border={false} shadow={theme.customShadows.z1} sx={{ height: '100%' }}>
-                    <Typography variant="h6">Card Subtitle</Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant='h6'>Card Subtitle</Typography>
+                    <Typography variant='caption' color='text.secondary'>
                       This is card description
                     </Typography>
                   </MainCard>
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <MainCard title="Card Title" border={false} shadow={theme.customShadows.z1} sx={{ height: '100%' }}>
-                    <Typography variant="h6">Card Subtitle</Typography>
-                    <Typography variant="caption" color="text.secondary">
+                  <MainCard title='Card Title' border={false} shadow={theme.customShadows.z1} sx={{ height: '100%' }}>
+                    <Typography variant='h6'>Card Subtitle</Typography>
+                    <Typography variant='caption' color='text.secondary'>
                       This is card description
                     </Typography>
                   </MainCard>
@@ -436,20 +436,20 @@ export default function ComponentCard() {
             </MainCard>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Outlined" codeString={outlinedCardCodeString}>
+            <MainCard title='Outlined' codeString={outlinedCardCodeString}>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
                   <MainCard sx={{ height: '100%' }}>
-                    <Typography variant="h6">Card Subtitle</Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant='h6'>Card Subtitle</Typography>
+                    <Typography variant='caption' color='text.secondary'>
                       This is card description
                     </Typography>
                   </MainCard>
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <MainCard title="Card Title" sx={{ height: '100%' }}>
-                    <Typography variant="h6">Card Subtitle</Typography>
-                    <Typography variant="caption" color="text.secondary">
+                  <MainCard title='Card Title' sx={{ height: '100%' }}>
+                    <Typography variant='h6'>Card Subtitle</Typography>
+                    <Typography variant='caption' color='text.secondary'>
                       This is card description
                     </Typography>
                   </MainCard>
@@ -458,38 +458,38 @@ export default function ComponentCard() {
             </MainCard>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Action" codeString={actionCardCodeString}>
+            <MainCard title='Action' codeString={actionCardCodeString}>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
                   <MainCard
-                    title="Card Title"
+                    title='Card Title'
                     secondary={
-                      <Link component={RouterLink} to="#" color="primary">
+                      <Link component={RouterLink} to='#' color='primary'>
                         More
                       </Link>
                     }
                   >
-                    <Typography variant="h5" color="text.secondary" gutterBottom>
+                    <Typography variant='h5' color='text.secondary' gutterBottom>
                       Card Subtitle
                     </Typography>
-                    <Typography variant="body1">
+                    <Typography variant='body1'>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque non libero dignissim.
                     </Typography>
                   </MainCard>
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <MainCard
-                    title="Card Title"
+                    title='Card Title'
                     secondary={
-                      <IconButton size="small" color="secondary" sx={{ transform: 'rotate(90deg)' }}>
+                      <IconButton size='small' color='secondary' sx={{ transform: 'rotate(90deg)' }}>
                         <MoreIcon />
                       </IconButton>
                     }
                   >
-                    <Typography variant="h5" color="text.secondary" gutterBottom>
+                    <Typography variant='h5' color='text.secondary' gutterBottom>
                       Card Subtitle
                     </Typography>
-                    <Typography variant="body1">
+                    <Typography variant='body1'>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque non libero dignissim, viverra augue eu, semper
                       ligula. Mauris purus sem.
                     </Typography>
@@ -497,19 +497,19 @@ export default function ComponentCard() {
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <MainCard
-                    title="Card Title"
+                    title='Card Title'
                     secondary={
-                      <IconButton size="small" color="secondary" sx={{ transform: 'rotate(90deg)' }}>
+                      <IconButton size='small' color='secondary' sx={{ transform: 'rotate(90deg)' }}>
                         <MoreIcon />
                       </IconButton>
                     }
                     content={false}
                   >
                     <CardContent>
-                      <Typography variant="h5" color="text.secondary" gutterBottom>
+                      <Typography variant='h5' color='text.secondary' gutterBottom>
                         Card Subtitle
                       </Typography>
-                      <Typography variant="body1">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</Typography>
+                      <Typography variant='body1'>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</Typography>
                     </CardContent>
                     <Divider />
                     {cardAction}
@@ -519,7 +519,7 @@ export default function ComponentCard() {
             </MainCard>
           </Grid>
           <Grid item xs={12} lg={6}>
-            <MainCard title="Complex Interaction" codeString={complexCardCodeString}>
+            <MainCard title='Complex Interaction' codeString={complexCardCodeString}>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
                   <MainCard content={false}>
@@ -528,11 +528,11 @@ export default function ComponentCard() {
                 </Grid>
                 <Grid item xs={12}>
                   <MainCard
-                    title="Card Title"
+                    title='Card Title'
                     divider={false}
                     content={false}
                     secondary={
-                      <Link component={RouterLink} to="#" color="primary">
+                      <Link component={RouterLink} to='#' color='primary'>
                         More
                       </Link>
                     }
@@ -544,16 +544,16 @@ export default function ComponentCard() {
             </MainCard>
           </Grid>
           <Grid item xs={12} xl={9}>
-            <MainCard title="Media" codeString={mediaCardCodeString}>
+            <MainCard title='Media' codeString={mediaCardCodeString}>
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={6} lg={4}>
                   <MainCard content={false}>
-                    <CardMedia component="img" image={media} alt="green iguana" />
+                    <CardMedia component='img' image={media} alt='green iguana' />
                     <CardContent>
-                      <Typography variant="h5" color="text.secondary" gutterBottom>
+                      <Typography variant='h5' color='text.secondary' gutterBottom>
                         Card Subtitle
                       </Typography>
-                      <Typography variant="body1">
+                      <Typography variant='body1'>
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque non libero dignissim, viverra augue eu.
                       </Typography>
                     </CardContent>
@@ -563,20 +563,20 @@ export default function ComponentCard() {
                 </Grid>
                 <Grid item xs={12} sm={6} lg={4}>
                   <MainCard
-                    title="Card Title"
+                    title='Card Title'
                     secondary={
-                      <IconButton size="small" color="secondary" sx={{ transform: 'rotate(90deg)' }}>
+                      <IconButton size='small' color='secondary' sx={{ transform: 'rotate(90deg)' }}>
                         <MoreIcon />
                       </IconButton>
                     }
                     content={false}
                   >
-                    <CardMedia component="img" image={media} alt="green iguana" />
+                    <CardMedia component='img' image={media} alt='green iguana' />
                     <CardContent>
-                      <Typography variant="h5" color="text.secondary" gutterBottom>
+                      <Typography variant='h5' color='text.secondary' gutterBottom>
                         Card Subtitle
                       </Typography>
-                      <Typography variant="body1">
+                      <Typography variant='body1'>
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque non libero dignissim, viverra augue eu,
                       </Typography>
                     </CardContent>
@@ -584,20 +584,20 @@ export default function ComponentCard() {
                 </Grid>
                 <Grid item xs={12} sm={6} lg={4}>
                   <MainCard
-                    title="Card Title"
+                    title='Card Title'
                     secondary={
-                      <IconButton size="small" color="secondary" sx={{ transform: 'rotate(90deg)' }}>
+                      <IconButton size='small' color='secondary' sx={{ transform: 'rotate(90deg)' }}>
                         <MoreIcon />
                       </IconButton>
                     }
                     content={false}
                   >
-                    <CardMedia component="img" image={media} alt="green iguana" />
+                    <CardMedia component='img' image={media} alt='green iguana' />
                     <CardContent>
-                      <Typography variant="h5" color="text.secondary" gutterBottom>
+                      <Typography variant='h5' color='text.secondary' gutterBottom>
                         Card Subtitle
                       </Typography>
-                      <Typography variant="body1">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</Typography>
+                      <Typography variant='body1'>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</Typography>
                     </CardContent>
                     <Divider />
                     {cardAction}

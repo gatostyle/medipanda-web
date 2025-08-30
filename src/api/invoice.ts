@@ -11,7 +11,7 @@ const countries: CountryType[] = [
   { code: 'US', label: 'United States Dollar', currency: 'Dollar', prefix: '$' },
   { code: 'GB', label: 'United Kingdom Pound', currency: 'Pound', prefix: '£' },
   { code: 'IN', label: 'India Rupee', currency: 'Rupee', prefix: '₹' },
-  { code: 'JP', label: 'Japan Yun', currency: 'Yun', prefix: '¥' }
+  { code: 'JP', label: 'Japan Yun', currency: 'Yun', prefix: '¥' },
 ];
 
 const initialState: InvoiceProps = {
@@ -20,7 +20,7 @@ const initialState: InvoiceProps = {
   open: false,
   country: countries[2],
   countries: countries,
-  alertPopup: false
+  alertPopup: false,
 };
 
 export const endpoints = {
@@ -29,14 +29,14 @@ export const endpoints = {
   list: '/list', // server URL
   insert: '/insert', // server URL
   update: '/update', // server URL
-  delete: '/delete' // server URL
+  delete: '/delete', // server URL
 };
 
 export function useGetInvoice() {
   const { data, isLoading, error, isValidating } = useSWR(endpoints.key + endpoints.list, fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
-    revalidateOnReconnect: false
+    revalidateOnReconnect: false,
   });
 
   const memoizedValue = useMemo(
@@ -45,9 +45,9 @@ export function useGetInvoice() {
       invoiceLoading: isLoading,
       invoiceError: error,
       invoiceValidating: isValidating,
-      invoiceEmpty: !isLoading && !data?.invoice?.length
+      invoiceEmpty: !isLoading && !data?.invoice?.length,
     }),
-    [data, error, isLoading, isValidating]
+    [data, error, isLoading, isValidating],
   );
 
   return memoizedValue;
@@ -63,10 +63,10 @@ export async function insertInvoice(newInvoice: InvoiceList) {
 
       return {
         ...currentInvoice,
-        invoice: addedInvoice
+        invoice: addedInvoice,
       };
     },
-    false
+    false,
   );
 
   // to hit server
@@ -81,15 +81,15 @@ export async function updateInvoice(invoiceId: number, updatedInvoice: InvoiceLi
     endpoints.key + endpoints.list,
     (currentInvoice: any) => {
       const newInvoice: InvoiceList[] = currentInvoice.invoice.map((invoice: InvoiceList) =>
-        invoice.id === invoiceId ? { ...invoice, ...updatedInvoice } : invoice
+        invoice.id === invoiceId ? { ...invoice, ...updatedInvoice } : invoice,
       );
 
       return {
         ...currentInvoice,
-        invoice: newInvoice
+        invoice: newInvoice,
       };
     },
-    false
+    false,
   );
 
   // to hit server
@@ -107,10 +107,10 @@ export async function deleteInvoice(invoiceId: number) {
 
       return {
         ...currentInvoice,
-        invoice: nonDeletedInvoice
+        invoice: nonDeletedInvoice,
       };
     },
-    false
+    false,
   );
 
   // to hit server
@@ -123,15 +123,15 @@ export function useGetInvoiceMaster() {
   const { data, isLoading } = useSWR(endpoints.key + endpoints.actions, () => initialState, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
-    revalidateOnReconnect: false
+    revalidateOnReconnect: false,
   });
 
   const memoizedValue = useMemo(
     () => ({
       invoiceMaster: data,
-      invoiceMasterLoading: isLoading
+      invoiceMasterLoading: isLoading,
     }),
-    [data, isLoading]
+    [data, isLoading],
   );
 
   return memoizedValue;
@@ -144,7 +144,7 @@ export function handlerCustomerTo(isCustomerOpen: boolean) {
     (currentInvoicemaster: any) => {
       return { ...currentInvoicemaster, isCustomerOpen };
     },
-    false
+    false,
   );
 }
 
@@ -155,7 +155,7 @@ export function handlerCustomerFrom(open: boolean) {
     (currentInvoicemaster: any) => {
       return { ...currentInvoicemaster, open };
     },
-    false
+    false,
   );
 }
 
@@ -166,7 +166,7 @@ export function selectCountry(country: CountryType | null) {
     (currentInvoicemaster: any) => {
       return { ...currentInvoicemaster, country };
     },
-    false
+    false,
   );
 }
 
@@ -177,7 +177,7 @@ export function handlerPreview(isOpen: boolean) {
     (currentInvoicemaster: any) => {
       return { ...currentInvoicemaster, isOpen };
     },
-    false
+    false,
   );
 }
 
@@ -188,6 +188,6 @@ export function handlerDelete(alertPopup: boolean) {
     (currentInvoicemaster: any) => {
       return { ...currentInvoicemaster, alertPopup };
     },
-    false
+    false,
   );
 }

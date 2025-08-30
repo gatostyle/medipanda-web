@@ -11,7 +11,7 @@ import { Column } from '@tanstack/react-table';
 
 enum SortType {
   ASC = 'asc',
-  DESC = 'desc'
+  DESC = 'desc',
 }
 
 const SortToggler = ({ type }: { type?: SortType }) => {
@@ -19,14 +19,14 @@ const SortToggler = ({ type }: { type?: SortType }) => {
   return (
     <Stack sx={{ color: 'secondary.light' }}>
       <ArrowUp2
-        size="15"
-        variant="Bold"
+        size='15'
+        variant='Bold'
         style={{ fontSize: '0.625rem', color: type === SortType.ASC ? theme.palette.text.secondary : 'inherit' }}
       />
 
       <ArrowDown2
-        size="15"
-        variant="Bold"
+        size='15'
+        variant='Bold'
         style={{ fontSize: '0.625rem', marginTop: -8, color: type === SortType.DESC ? theme.palette.text.secondary : 'inherit' }}
       />
     </Stack>
@@ -45,7 +45,7 @@ export default function HeaderSort({ column, sort }: HeaderSortProps) {
     <Box {...(sort && { onClick: column.getToggleSortingHandler(), className: 'cursor-pointer prevent-select' })}>
       {{
         asc: <SortToggler type={SortType.ASC} />,
-        desc: <SortToggler type={SortType.DESC} />
+        desc: <SortToggler type={SortType.DESC} />,
       }[column.getIsSorted() as string] ?? <SortToggler />}
     </Box>
   );

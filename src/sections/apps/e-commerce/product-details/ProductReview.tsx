@@ -42,15 +42,15 @@ interface ProgressProps {
 function LinearProgressWithLabel({ star, color, value, ...others }: ProgressProps) {
   return (
     <>
-      <Stack direction="row" spacing={1} alignItems="center">
+      <Stack direction='row' spacing={1} alignItems='center'>
         <LinearProgress
           value={value}
-          variant="determinate"
+          variant='determinate'
           color={color}
           {...others}
           sx={{ width: '100%', bgcolor: 'secondary.lighter' }}
         />
-        <Typography variant="body2" sx={{ minWidth: 50 }} color="text.secondary">{`${Math.round(star)} Star`}</Typography>
+        <Typography variant='body2' sx={{ minWidth: 50 }} color='text.secondary'>{`${Math.round(star)} Star`}</Typography>
       </Stack>
     </>
   );
@@ -65,7 +65,7 @@ export default function ProductReviews({ product }: { product: Products }) {
   const [loader, setLoader] = useState<boolean>(true);
 
   (async () => {
-    await getProductReviews().then((response) => {
+    await getProductReviews().then(response => {
       setReviews(response.data.productReviews);
       setLoader(false);
     });
@@ -76,19 +76,19 @@ export default function ProductReviews({ product }: { product: Products }) {
       <List>
         {[1, 2, 3].map((index: number) => (
           <MainCard content={false} key={index} sx={{ mb: 2.5 }}>
-            <ListItem alignItems="flex-start">
+            <ListItem alignItems='flex-start'>
               <ListItemAvatar sx={{ minWidth: 72 }}>
-                <Skeleton variant="rectangular" width={62} height={62} />
+                <Skeleton variant='rectangular' width={62} height={62} />
               </ListItemAvatar>
               <ListItemText
-                primary={<Skeleton animation="wave" height={22} />}
+                primary={<Skeleton animation='wave' height={22} />}
                 secondary={
                   <>
-                    <Skeleton animation="wave" height={14} width="60%" />
-                    <Skeleton animation="wave" height={18} width="20%" />
-                    <Skeleton animation="wave" height={14} width="35%" sx={{ mt: 1.25 }} />
-                    <Skeleton animation="wave" height={14} width="100%" />
-                    <Skeleton animation="wave" height={14} width="55%" />
+                    <Skeleton animation='wave' height={14} width='60%' />
+                    <Skeleton animation='wave' height={18} width='20%' />
+                    <Skeleton animation='wave' height={14} width='35%' sx={{ mt: 1.25 }} />
+                    <Skeleton animation='wave' height={14} width='100%' />
+                    <Skeleton animation='wave' height={14} width='55%' />
                   </>
                 }
               />
@@ -119,23 +119,23 @@ export default function ProductReviews({ product }: { product: Products }) {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <MainCard>
-          <Grid container justifyContent="space-between" alignItems="center" spacing={2.5}>
+          <Grid container justifyContent='space-between' alignItems='center' spacing={2.5}>
             <Grid item>
               {product && (
                 <Stack spacing={1} sx={{ height: '100%' }}>
                   <Stack spacing={1}>
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <Typography variant="h2">
+                    <Stack direction='row' spacing={1} alignItems='center'>
+                      <Typography variant='h2'>
                         {Number((product.rating! < 4 ? product.rating! + 1 : product.rating!).toFixed(1))}
                       </Typography>
-                      <Typography variant="h4" color="text.secondary">
+                      <Typography variant='h4' color='text.secondary'>
                         /5
                       </Typography>
                     </Stack>
-                    <Typography color="text.secondary">Based on {product.offerPrice?.toFixed(0)} reviews</Typography>
+                    <Typography color='text.secondary'>Based on {product.offerPrice?.toFixed(0)} reviews</Typography>
                   </Stack>
                   <Rating
-                    name="simple-controlled"
+                    name='simple-controlled'
                     value={product.rating! < 4 ? product.rating! + 1 : product.rating}
                     readOnly
                     precision={0.1}
@@ -144,21 +144,21 @@ export default function ProductReviews({ product }: { product: Products }) {
               )}
             </Grid>
             <Grid item>
-              <Grid container alignItems="center" justifyContent="space-between" spacing={1}>
+              <Grid container alignItems='center' justifyContent='space-between' spacing={1}>
                 <Grid item xs={12}>
-                  <LinearProgressWithLabel color="warning" star={5} value={100} />
+                  <LinearProgressWithLabel color='warning' star={5} value={100} />
                 </Grid>
                 <Grid item xs={12}>
-                  <LinearProgressWithLabel color="warning" star={4} value={80} />
+                  <LinearProgressWithLabel color='warning' star={4} value={80} />
                 </Grid>
                 <Grid item xs={12}>
-                  <LinearProgressWithLabel color="warning" star={3} value={60} />
+                  <LinearProgressWithLabel color='warning' star={3} value={60} />
                 </Grid>
                 <Grid item xs={12}>
-                  <LinearProgressWithLabel color="warning" star={2} value={40} />
+                  <LinearProgressWithLabel color='warning' star={2} value={40} />
                 </Grid>
                 <Grid item xs={12}>
-                  <LinearProgressWithLabel color="warning" star={1} value={20} />
+                  <LinearProgressWithLabel color='warning' star={1} value={20} />
                 </Grid>
               </Grid>
             </Grid>
@@ -168,8 +168,8 @@ export default function ProductReviews({ product }: { product: Products }) {
 
       {productReview}
       <Grid item xs={12}>
-        <Stack direction="row" justifyContent="center">
-          <Button variant="text" sx={{ textTransform: 'none' }}>
+        <Stack direction='row' justifyContent='center'>
+          <Button variant='text' sx={{ textTransform: 'none' }}>
             {' '}
             View more comments{' '}
           </Button>
@@ -177,17 +177,17 @@ export default function ProductReviews({ product }: { product: Products }) {
       </Grid>
       <Grid item xs={12}>
         <Box sx={{ p: 2, pb: 1.5, border: '1px solid', borderColor: theme.palette.divider }}>
-          <Grid container alignItems="center" spacing={0.5}>
+          <Grid container alignItems='center' spacing={0.5}>
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                placeholder="Add Comment"
+                placeholder='Add Comment'
                 sx={{
                   mb: 3,
                   '& input': { bgcolor: 'transparent', p: 0, borderRadius: '0px' },
                   '& fieldset': { display: 'none' },
                   '& .MuiFormHelperText-root': { ml: 0 },
-                  '& .MuiOutlinedInput-root': { bgcolor: 'transparent', '&.Mui-focused': { boxShadow: 'none' } }
+                  '& .MuiOutlinedInput-root': { bgcolor: 'transparent', '&.Mui-focused': { boxShadow: 'none' } },
                 }}
               />
             </Grid>
@@ -208,7 +208,7 @@ export default function ProductReviews({ product }: { product: Products }) {
             </Grid>
             <Grid item xs zeroMinWidth />
             <Grid item>
-              <Button size="small" variant="contained" color="primary">
+              <Button size='small' variant='contained' color='primary'>
                 Comment
               </Button>
             </Grid>

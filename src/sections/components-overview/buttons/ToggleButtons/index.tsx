@@ -141,7 +141,7 @@ const toggleButtonCodeString = `// ExclusiveToggleButtons.tsx
 
 export default function ToggleButtons() {
   return (
-    <MainCard title="Toggle Button" codeString={toggleButtonCodeString}>
+    <MainCard title='Toggle Button' codeString={toggleButtonCodeString}>
       <Stack spacing={2} sx={{ mb: 2 }}>
         <ExclusiveToggleButtons />
         <MultipleToggleButtons />

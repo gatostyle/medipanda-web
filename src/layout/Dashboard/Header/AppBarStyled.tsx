@@ -11,14 +11,14 @@ interface Props extends MuiAppBarProps {
 
 // ==============================|| HEADER - APP BAR STYLED ||============================== //
 
-const AppBarStyled = styled(AppBar, { shouldForwardProp: (prop) => prop !== 'open' })<Props>(({ theme }) => ({
+const AppBarStyled = styled(AppBar, { shouldForwardProp: prop => prop !== 'open' })<Props>(({ theme }) => ({
   zIndex: theme.zIndex.drawer + 1,
   marginLeft: DRAWER_WIDTH,
   width: `calc(100% - ${DRAWER_WIDTH}px)`,
   transition: theme.transitions.create(['width', 'margin'], {
     easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen
-  })
+    duration: theme.transitions.duration.enteringScreen,
+  }),
 }));
 
 export default AppBarStyled;

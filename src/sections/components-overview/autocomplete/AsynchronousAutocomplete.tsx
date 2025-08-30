@@ -14,7 +14,7 @@ interface Film {
 }
 
 function sleep(delay = 0) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(resolve, delay);
   });
 }
@@ -83,9 +83,9 @@ export default function AsynchronousAutocomplete() {
 />`;
 
   return (
-    <MainCard title="Asynchronous" codeString={asyancAutocompleteCodeString}>
+    <MainCard title='Asynchronous' codeString={asyancAutocompleteCodeString}>
       <Autocomplete
-        id="asynchronous-demo"
+        id='asynchronous-demo'
         sx={{ width: 300 }}
         open={open}
         onOpen={() => {
@@ -95,21 +95,21 @@ export default function AsynchronousAutocomplete() {
           setOpen(false);
         }}
         isOptionEqualToValue={(option, value) => option.title === value.title}
-        getOptionLabel={(option) => option.title}
+        getOptionLabel={option => option.title}
         options={options}
         loading={loading}
-        renderInput={(params) => (
+        renderInput={params => (
           <TextField
             {...params}
-            placeholder="Asynchronous"
+            placeholder='Asynchronous'
             InputProps={{
               ...params.InputProps,
               endAdornment: (
                 <>
-                  {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                  {loading ? <CircularProgress color='inherit' size={20} /> : null}
                   {params.InputProps.endAdornment}
                 </>
-              )
+              ),
             }}
           />
         )}
@@ -129,23 +129,23 @@ const topFilms = [
   { title: 'Pulp Fiction', year: 1994 },
   {
     title: 'The Lord of the Rings: The Return of the King',
-    year: 2003
+    year: 2003,
   },
   { title: 'The Good, the Bad and the Ugly', year: 1966 },
   { title: 'Fight Club', year: 1999 },
   {
     title: 'The Lord of the Rings: The Fellowship of the Ring',
-    year: 2001
+    year: 2001,
   },
   {
     title: 'Star Wars: Episode V - The Empire Strikes Back',
-    year: 1980
+    year: 1980,
   },
   { title: 'Forrest Gump', year: 1994 },
   { title: 'Inception', year: 2010 },
   {
     title: 'The Lord of the Rings: The Two Towers',
-    year: 2002
+    year: 2002,
   },
   { title: "One Flew Over the Cuckoo's Nest", year: 1975 },
   { title: 'Goodfellas', year: 1990 },
@@ -153,7 +153,7 @@ const topFilms = [
   { title: 'Seven Samurai', year: 1954 },
   {
     title: 'Star Wars: Episode IV - A New Hope',
-    year: 1977
+    year: 1977,
   },
   { title: 'City of God', year: 2002 },
   { title: 'Se7en', year: 1995 },
@@ -166,5 +166,5 @@ const topFilms = [
   { title: 'Saving Private Ryan', year: 1998 },
   { title: 'Once Upon a Time in the West', year: 1968 },
   { title: 'American History X', year: 1998 },
-  { title: 'Interstellar', year: 2014 }
+  { title: 'Interstellar', year: 2014 },
 ];

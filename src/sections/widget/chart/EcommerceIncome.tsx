@@ -33,34 +33,34 @@ function EcommerceDataChart() {
       id: 'new-stack-chart',
       type: 'bar',
       sparkline: {
-        enabled: true
+        enabled: true,
       },
       toolbar: {
-        show: false
+        show: false,
       },
-      offsetX: -4
+      offsetX: -4,
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     plotOptions: {
       bar: {
-        columnWidth: '80%'
-      }
+        columnWidth: '80%',
+      },
     },
     xaxis: {
       crosshairs: {
-        width: 1
-      }
+        width: 1,
+      },
     },
     tooltip: {
       fixed: {
-        enabled: false
+        enabled: false,
       },
       x: {
-        show: false
-      }
-    }
+        show: false,
+      },
+    },
   };
 
   const { primary, secondary } = theme.palette.text;
@@ -69,23 +69,23 @@ function EcommerceDataChart() {
   const [options, setOptions] = useState<ChartProps>(areaChartOptions);
 
   useEffect(() => {
-    setOptions((prevState) => ({
+    setOptions(prevState => ({
       ...prevState,
       colors: [theme.palette.success.main],
       theme: {
-        mode: mode === ThemeMode.DARK ? 'dark' : 'light'
-      }
+        mode: mode === ThemeMode.DARK ? 'dark' : 'light',
+      },
     }));
   }, [mode, primary, secondary, line, theme]);
 
   const [series] = useState([
     {
       name: 'Users',
-      data: [10, 30, 40, 20, 60, 50, 20, 15, 20, 25, 30, 25]
-    }
+      data: [10, 30, 40, 20, 60, 50, 20, 15, 20, 25, 30, 25],
+    },
   ]);
 
-  return <ReactApexChart options={options} series={series} type="bar" height={80} />;
+  return <ReactApexChart options={options} series={series} type='bar' height={80} />;
 }
 
 // ==============================|| CHART WIDGET - ECOMMERCE INCOME  ||============================== //
@@ -106,36 +106,36 @@ export default function EcommerceIncome() {
     <MainCard>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between">
-            <Avatar variant="rounded" color="secondary" sx={{ color: 'text.secondary' }}>
+          <Stack direction='row' alignItems='center' justifyContent='space-between'>
+            <Avatar variant='rounded' color='secondary' sx={{ color: 'text.secondary' }}>
               <DollarCircle />
             </Avatar>
             <IconButton
-              color="secondary"
-              id="wallet-button"
+              color='secondary'
+              id='wallet-button'
               aria-controls={open ? 'wallet-menu' : undefined}
-              aria-haspopup="true"
+              aria-haspopup='true'
               aria-expanded={open ? 'true' : undefined}
               onClick={handleClick}
             >
               <MoreIcon />
             </IconButton>
             <Menu
-              id="wallet-menu"
+              id='wallet-menu'
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
               MenuListProps={{
                 'aria-labelledby': 'wallet-button',
-                sx: { p: 1.25, minWidth: 150 }
+                sx: { p: 1.25, minWidth: 150 },
               }}
               anchorOrigin={{
                 vertical: 'bottom',
-                horizontal: 'right'
+                horizontal: 'right',
               }}
               transformOrigin={{
                 vertical: 'top',
-                horizontal: 'right'
+                horizontal: 'right',
               }}
             >
               <ListItemButton onClick={handleClose}>Today</ListItemButton>
@@ -146,8 +146,8 @@ export default function EcommerceIncome() {
         </Grid>
         <Grid item xs={12}>
           <Stack>
-            <Typography variant="subtitle1">$30,200.00</Typography>
-            <Typography variant="caption">Income</Typography>
+            <Typography variant='subtitle1'>$30,200.00</Typography>
+            <Typography variant='caption'>Income</Typography>
           </Stack>
           <EcommerceDataChart />
         </Grid>

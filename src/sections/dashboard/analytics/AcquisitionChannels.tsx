@@ -27,7 +27,7 @@ const actionSX = {
   top: 'auto',
   right: 'auto',
   alignSelf: 'flex-start',
-  transform: 'none'
+  transform: 'none',
 };
 
 // ==============================|| ANALYTICS - ACQUISITION CHANNELS ||============================== //
@@ -40,10 +40,10 @@ export default function AcquisitionChannels() {
         <List sx={{ p: 0, '& .MuiListItemButton-root': { pt: 2, pb: 0 } }}>
           <ListItemButton sx={{ '&:hover': { bgcolor: 'transparent' }, cursor: 'text' }}>
             <ListItemText
-              primary={<Typography variant="subtitle1">Acquisition Channels</Typography>}
+              primary={<Typography variant='subtitle1'>Acquisition Channels</Typography>}
               secondary={<Typography>Marketing</Typography>}
             />
-            <Typography variant="h5" color="primary">
+            <Typography variant='h5' color='primary'>
               -128
             </Typography>
           </ListItemButton>
@@ -53,15 +53,15 @@ export default function AcquisitionChannels() {
         </Box>
 
         <List
-          component="nav"
+          component='nav'
           sx={{
             p: 0,
             '& .MuiListItemButton-root': {
               py: 1.5,
               borderRadius: 0,
               '& .MuiAvatar-root': avatarSX,
-              '& .MuiListItemSecondaryAction-root': { ...actionSX, position: 'relative' }
-            }
+              '& .MuiListItemSecondaryAction-root': { ...actionSX, position: 'relative' },
+            },
           }}
         >
           <ListItemButton divider>
@@ -69,17 +69,17 @@ export default function AcquisitionChannels() {
               <Avatar
                 sx={{
                   color: `${theme.palette.secondary.darker}`,
-                  bgcolor: `${theme.palette.secondary[200]}`
+                  bgcolor: `${theme.palette.secondary[200]}`,
                 }}
               >
                 <Chainlink />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary={<Typography variant="subtitle1">Top Channels</Typography>} secondary="Today, 2:00 AM" />
+            <ListItemText primary={<Typography variant='subtitle1'>Top Channels</Typography>} secondary='Today, 2:00 AM' />
             <ListItemSecondaryAction>
-              <Stack alignItems="flex-end">
-                <Typography variant="subtitle1">+ $1,430</Typography>
-                <Typography color="text.secondary" noWrap>
+              <Stack alignItems='flex-end'>
+                <Typography variant='subtitle1'>+ $1,430</Typography>
+                <Typography color='text.secondary' noWrap>
                   35%
                 </Typography>
               </Stack>
@@ -90,19 +90,19 @@ export default function AcquisitionChannels() {
               <Avatar
                 sx={{
                   color: 'primary.main',
-                  bgcolor: 'primary.lighter'
+                  bgcolor: 'primary.lighter',
                 }}
               >
                 <DocumentText />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary={<Typography variant="subtitle1">Top Pages</Typography>} secondary="Today 6:00 AM" />
+            <ListItemText primary={<Typography variant='subtitle1'>Top Pages</Typography>} secondary='Today 6:00 AM' />
             <ListItemSecondaryAction>
-              <Stack alignItems="flex-end">
-                <Typography variant="subtitle1" noWrap>
+              <Stack alignItems='flex-end'>
+                <Typography variant='subtitle1' noWrap>
                   - $1430
                 </Typography>
-                <Typography color="text.secondary" noWrap>
+                <Typography color='text.secondary' noWrap>
                   35%
                 </Typography>
               </Stack>

@@ -18,16 +18,16 @@ export default function FreePage() {
   const theme = useTheme();
   return (
     <Container>
-      <Grid container spacing={3} alignItems="center" justifyContent="center" sx={{ mt: { md: 10, xs: 2.5 }, mb: { md: 10, xs: 2.5 } }}>
+      <Grid container spacing={3} alignItems='center' justifyContent='center' sx={{ mt: { md: 10, xs: 2.5 }, mb: { md: 10, xs: 2.5 } }}>
         <Grid item xs={12} md={8}>
           <FadeInWhenVisible>
-            <Grid container spacing={2} justifyContent="center">
+            <Grid container spacing={2} justifyContent='center'>
               <Grid item xs={12}>
-                <Typography variant="h2">
+                <Typography variant='h2'>
                   <Box
-                    component="span"
+                    component='span'
                     sx={{
-                      color: theme.palette.primary.main
+                      color: theme.palette.primary.main,
                     }}
                   >
                     TRY{' '}
@@ -43,28 +43,28 @@ export default function FreePage() {
         </Grid>
         <Grid item xs={12} md={4}>
           <FadeInWhenVisible>
-            <Grid container spacing={2} justifyContent="end" alignItems="center">
+            <Grid container spacing={2} justifyContent='end' alignItems='center'>
               <Grid item>
                 <Button
-                  variant="outlined"
-                  color="secondary"
-                  size="large"
+                  variant='outlined'
+                  color='secondary'
+                  size='large'
                   component={Link}
-                  href="https://ableproadmin.com/dashboard/index.html"
-                  target="_blank"
+                  href='https://ableproadmin.com/dashboard/index.html'
+                  target='_blank'
                 >
                   Check out Pro Version
                 </Button>
               </Grid>
               <Grid item>
                 <Button
-                  variant="contained"
-                  color="primary"
-                  size="large"
+                  variant='contained'
+                  color='primary'
+                  size='large'
                   startIcon={<ExportSquare />}
                   component={Link}
-                  href="https://github.com/phoenixcoded/able-pro-free-admin-dashboard-template"
-                  target="_blank"
+                  href='https://github.com/phoenixcoded/able-pro-free-admin-dashboard-template'
+                  target='_blank'
                 >
                   Free (Soon)
                 </Button>

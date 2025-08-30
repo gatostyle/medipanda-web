@@ -34,12 +34,12 @@ export default function HelperTextSelect() {
 </FormControl>`;
 
   return (
-    <MainCard title="With Helper Text" codeString={helperSelectCodeString}>
+    <MainCard title='With Helper Text' codeString={helperSelectCodeString}>
       <Stack spacing={1}>
-        <InputLabel id="demo-simple-select-helper-label">Number</InputLabel>
+        <InputLabel id='demo-simple-select-helper-label'>Number</InputLabel>
         <FormControl fullWidth>
-          <Select labelId="demo-simple-select-helper-label" id="demo-simple-select-helper" value={age} onChange={handleChange}>
-            <MenuItem value="">
+          <Select labelId='demo-simple-select-helper-label' id='demo-simple-select-helper' value={age} onChange={handleChange}>
+            <MenuItem value=''>
               <em>Select Number</em>
             </MenuItem>
             <MenuItem value={10}>Ten</MenuItem>

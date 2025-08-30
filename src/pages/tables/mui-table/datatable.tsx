@@ -31,7 +31,7 @@ function createData(name: string, calories: number, fat: number, carbs: number, 
     calories,
     fat,
     carbs,
-    protein
+    protein,
   };
 }
 
@@ -48,7 +48,7 @@ const rows: CreateDataType[] = [
   createData('Lollipop', 392, 0.2, 98, 0.0),
   createData('Marshmallow', 318, 0, 81, 2.0),
   createData('Nougat', 360, 19.0, 9, 37.0),
-  createData('Oreo', 437, 18.0, 63, 4.0)
+  createData('Oreo', 437, 18.0, 63, 4.0),
 ];
 
 // table filter
@@ -72,7 +72,7 @@ function stableSort(array: CreateDataType[], comparator: (a: KeyedObject, b: Key
     if (order !== 0) return order;
     return (a[1] as number) - (b[1] as number);
   });
-  return stabilizedThis.map((el) => el[0]);
+  return stabilizedThis.map(el => el[0]);
 }
 
 // table header
@@ -81,32 +81,32 @@ const headCells: HeadCell[] = [
     id: 'name',
     numeric: false,
     disablePadding: true,
-    label: 'Dessert (100g serving)'
+    label: 'Dessert (100g serving)',
   },
   {
     id: 'calories',
     numeric: true,
     disablePadding: false,
-    label: 'Calories'
+    label: 'Calories',
   },
   {
     id: 'fat',
     numeric: true,
     disablePadding: false,
-    label: 'Fat (g)'
+    label: 'Fat (g)',
   },
   {
     id: 'carbs',
     numeric: true,
     disablePadding: false,
-    label: 'Carbs (g)'
+    label: 'Carbs (g)',
   },
   {
     id: 'protein',
     numeric: true,
     disablePadding: false,
-    label: 'Protein (g)'
-  }
+    label: 'Protein (g)',
+  },
 ];
 
 function EnhancedTableHead({ onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort }: EnhancedTableHeadProps) {
@@ -117,18 +117,18 @@ function EnhancedTableHead({ onSelectAllClick, order, orderBy, numSelected, rowC
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox" sx={{ pl: 3 }}>
+        <TableCell padding='checkbox' sx={{ pl: 3 }}>
           <Checkbox
-            color="primary"
+            color='primary'
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
             inputProps={{
-              'aria-label': 'select all desserts'
+              'aria-label': 'select all desserts',
             }}
           />
         </TableCell>
-        {headCells.map((headCell) => (
+        {headCells.map(headCell => (
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
@@ -171,7 +171,7 @@ export default function EnhancedTable() {
 
   const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelectedId: string[] = rows.map((n) => n.name);
+      const newSelectedId: string[] = rows.map(n => n.name);
       setSelected(newSelectedId);
       return;
     }
@@ -191,7 +191,7 @@ export default function EnhancedTable() {
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
     }
-    const selectedRowData: SetStateAction<any> = rows.filter((row) => newSelected.includes(row.name.toString()));
+    const selectedRowData: SetStateAction<any> = rows.filter(row => newSelected.includes(row.name.toString()));
     setSelectedValue(selectedRowData);
     setSelected(newSelected);
   };
@@ -213,13 +213,13 @@ export default function EnhancedTable() {
   return (
     <MainCard
       content={false}
-      title="Data Tables"
+      title='Data Tables'
       secondary={<CSVExport data={selectedValue.length > 0 ? selectedValue : rows} headers={header} filename={'selected-table-data.csv'} />}
     >
       <RowSelection selected={selected.length} />
       {/* table */}
       <TableContainer>
-        <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
+        <Table sx={{ minWidth: 750 }} aria-labelledby='tableTitle' size={dense ? 'small' : 'medium'}>
           <EnhancedTableHead
             numSelected={selected.length}
             order={order}
@@ -239,29 +239,29 @@ export default function EnhancedTable() {
                 return (
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, row.name)}
-                    role="checkbox"
+                    onClick={event => handleClick(event, row.name)}
+                    role='checkbox'
                     aria-checked={isItemSelected}
                     tabIndex={-1}
                     key={row.name}
                     selected={isItemSelected}
                   >
-                    <TableCell padding="checkbox" sx={{ pl: 3 }}>
+                    <TableCell padding='checkbox' sx={{ pl: 3 }}>
                       <Checkbox
-                        color="primary"
+                        color='primary'
                         checked={isItemSelected}
                         inputProps={{
-                          'aria-labelledby': labelId
+                          'aria-labelledby': labelId,
                         }}
                       />
                     </TableCell>
-                    <TableCell component="th" id={labelId} scope="row" padding="none">
+                    <TableCell component='th' id={labelId} scope='row' padding='none'>
                       {row.name}
                     </TableCell>
-                    <TableCell align="right">{row.calories}</TableCell>
-                    <TableCell align="right">{row.fat}</TableCell>
-                    <TableCell align="right">{row.carbs}</TableCell>
-                    <TableCell sx={{ pr: 3 }} align="right">
+                    <TableCell align='right'>{row.calories}</TableCell>
+                    <TableCell align='right'>{row.fat}</TableCell>
+                    <TableCell align='right'>{row.carbs}</TableCell>
+                    <TableCell sx={{ pr: 3 }} align='right'>
                       {row.protein}
                     </TableCell>
                   </TableRow>
@@ -279,7 +279,7 @@ export default function EnhancedTable() {
       {/* table data */}
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
-        component="div"
+        component='div'
         count={rows.length}
         rowsPerPage={rowsPerPage}
         page={page}

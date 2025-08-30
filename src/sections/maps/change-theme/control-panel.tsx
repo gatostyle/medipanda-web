@@ -22,13 +22,13 @@ type Props = {
 function ControlPanel({ themes, selectTheme, onChangeTheme }: Props) {
   return (
     <ControlPanelStyled>
-      <Typography gutterBottom variant="subtitle2">
+      <Typography gutterBottom variant='subtitle2'>
         Select variants:
       </Typography>
 
       <RadioGroup value={selectTheme} onChange={(event, newValue) => onChangeTheme(newValue)}>
-        {Object.keys(themes).map((item) => (
-          <FormControlLabel key={item} value={item} control={<Radio size="small" />} label={item} sx={{ textTransform: 'capitalize' }} />
+        {Object.keys(themes).map(item => (
+          <FormControlLabel key={item} value={item} control={<Radio size='small' />} label={item} sx={{ textTransform: 'capitalize' }} />
         ))}
       </RadioGroup>
     </ControlPanelStyled>

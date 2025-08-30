@@ -14,7 +14,7 @@ interface InfoDialogState {
 
 const initialState: MpInfoDialogContextType = {
   showInfo: () => {},
-  hideInfo: () => {}
+  hideInfo: () => {},
 };
 
 export const MpInfoDialogContext = createContext<MpInfoDialogContextType>(initialState);
@@ -31,13 +31,13 @@ const MpInfoDialog = ({ open, title, message, onClose }: MpInfoDialogProps) => {
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth="sm"
+      maxWidth='sm'
       fullWidth
-      aria-labelledby="info-dialog-title"
-      aria-describedby="info-dialog-description"
+      aria-labelledby='info-dialog-title'
+      aria-describedby='info-dialog-description'
     >
-      <DialogTitle id="info-dialog-title">
-        <Box display="flex" alignItems="center">
+      <DialogTitle id='info-dialog-title'>
+        <Box display='flex' alignItems='center'>
           <Box
             sx={{
               width: 24,
@@ -47,7 +47,7 @@ const MpInfoDialog = ({ open, title, message, onClose }: MpInfoDialogProps) => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              mr: 1
+              mr: 1,
             }}
           >
             <Typography sx={{ color: 'white', fontSize: '14px', fontWeight: 'bold' }}>i</Typography>
@@ -56,10 +56,10 @@ const MpInfoDialog = ({ open, title, message, onClose }: MpInfoDialogProps) => {
         </Box>
       </DialogTitle>
       <DialogContent>
-        <DialogContentText id="info-dialog-description">{message}</DialogContentText>
+        <DialogContentText id='info-dialog-description'>{message}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} variant="contained" sx={{ bgcolor: '#10B981' }} autoFocus>
+        <Button onClick={onClose} variant='contained' sx={{ bgcolor: '#10B981' }} autoFocus>
           확인
         </Button>
       </DialogActions>
@@ -75,26 +75,26 @@ export function MpInfoDialogProvider({ children }: MpInfoDialogProviderProps) {
   const [dialogState, setDialogState] = useState<InfoDialogState>({
     open: false,
     message: '',
-    title: '알림'
+    title: '알림',
   });
 
   const showInfo = useCallback((message: string, title?: string) => {
     setDialogState({
       open: true,
       message,
-      title: title || '알림'
+      title: title || '알림',
     });
   }, []);
 
   const hideInfo = useCallback(() => {
-    setDialogState((prev) => ({ ...prev, open: false }));
+    setDialogState(prev => ({ ...prev, open: false }));
   }, []);
 
   return (
     <MpInfoDialogContext.Provider
       value={{
         showInfo,
-        hideInfo
+        hideInfo,
       }}
     >
       {children}

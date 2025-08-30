@@ -16,90 +16,90 @@ const border = '#f0f0f0';
 
 const styles = StyleSheet.create({
   page: {
-    padding: 30
+    padding: 30,
   },
   container: {
     flexDirection: 'column',
     '@media max-width: 400': {
-      flexDirection: 'column'
-    }
+      flexDirection: 'column',
+    },
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16
+    gap: 16,
   },
   image: {
     width: 40,
     height: 40,
     borderRadius: '50%',
-    objectFit: 'cover'
+    objectFit: 'cover',
   },
   CardInfo: {
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   title: {
     fontSize: 14,
     lineHeight: 1.57,
-    color: textPrimary
+    color: textPrimary,
   },
   role: {
     fontSize: 10,
     lineHeight: 1.66,
-    color: textSecondary
+    color: textSecondary,
   },
   hr: {
     borderBottom: `1px solid ${border}`,
     marginTop: 10,
-    marginBottom: 10
+    marginBottom: 10,
   },
   card: {
     border: `1px solid ${border}`,
-    marginBottom: '15px'
+    marginBottom: '15px',
   },
   cardTitle: {
     fontSize: '12px',
     borderBottom: `1px solid ${border}`,
-    padding: 15
+    padding: 15,
   },
   cardContent: {
-    padding: 15
+    padding: 15,
   },
   about: {
     padding: 15,
     fontSize: '11px',
-    color: textPrimary
+    color: textPrimary,
   },
   IconContainer: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   IconRow: {
     width: '48%',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    gap: 5
+    gap: 5,
   },
   icon: {
     width: 12,
-    height: 10
+    height: 10,
   },
   iconTitle: {
     fontSize: 10,
-    color: textPrimary
+    color: textPrimary,
   },
   mainTitle: {
     fontSize: '11px',
-    color: textSecondary
+    color: textSecondary,
   },
   chip: {
     border: `1px solid ${textSecondary}`,
     alignItems: 'center',
     borderRadius: '4px',
     marginRight: 4,
-    marginBottom: 8
+    marginBottom: 8,
   },
   chipTitle: {
     color: textSecondary,
@@ -107,23 +107,23 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     paddingRight: 8,
     paddingBottom: 4,
-    paddingTop: 4
+    paddingTop: 4,
   },
   leftColumn: {
     paddingTop: '10px',
-    width: '75%'
+    width: '75%',
   },
   rightColumn: {
     paddingTop: '10px',
-    width: '25%'
+    width: '25%',
   },
   infoCard: {
-    padding: 10
+    padding: 10,
   },
   userDetails: {
     rowGap: 5,
-    marginBottom: 15
-  }
+    marginBottom: 15,
+  },
 });
 
 interface Props {
@@ -137,7 +137,7 @@ export default function ListCard({ customer }: Props) {
 
   return (
     <Document title={`${customer?.fatherName}`}>
-      <Page size="A4" style={styles.page}>
+      <Page size='A4' style={styles.page}>
         <View style={styles.container}>
           <View style={styles.row}>
             <Image style={styles.image} src={getImageUrl(`avatar-${!customer.avatar ? 1 : customer.avatar}.png`, ImagePath.USERS)} />

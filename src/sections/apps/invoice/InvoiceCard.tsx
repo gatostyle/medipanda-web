@@ -18,11 +18,11 @@ export default function InvoiceCard() {
       <Grid container spacing={3}>
         <Grid item xs={4} sm={2} lg={6}>
           <MainCard content={false} sx={{ py: 2.5 }}>
-            <Stack alignItems="center" spacing={2}>
-              <Avatar size="md" type="filled">
-                <DocumentText variant="Bold" />
+            <Stack alignItems='center' spacing={2}>
+              <Avatar size='md' type='filled'>
+                <DocumentText variant='Bold' />
               </Avatar>
-              <Typography variant="subtitle1" color="text.secondary">
+              <Typography variant='subtitle1' color='text.secondary'>
                 All Invoices
               </Typography>
             </Stack>
@@ -30,11 +30,11 @@ export default function InvoiceCard() {
         </Grid>
         <Grid item xs={4} sm={2} lg={6}>
           <MainCard>
-            <Stack alignItems="center" spacing={2}>
-              <Avatar size="md" type="filled" color="info">
-                <ArchiveBook variant="Bold" />
+            <Stack alignItems='center' spacing={2}>
+              <Avatar size='md' type='filled' color='info'>
+                <ArchiveBook variant='Bold' />
               </Avatar>
-              <Typography variant="subtitle1" color="text.secondary">
+              <Typography variant='subtitle1' color='text.secondary'>
                 Reports
               </Typography>
             </Stack>
@@ -42,11 +42,11 @@ export default function InvoiceCard() {
         </Grid>
         <Grid item xs={4} sm={2} lg={6}>
           <MainCard>
-            <Stack alignItems="center" spacing={2}>
-              <Avatar size="md" type="filled" color="success">
-                <DollarCircle variant="Bold" />
+            <Stack alignItems='center' spacing={2}>
+              <Avatar size='md' type='filled' color='success'>
+                <DollarCircle variant='Bold' />
               </Avatar>
-              <Typography variant="subtitle1" color="text.secondary">
+              <Typography variant='subtitle1' color='text.secondary'>
                 Paid
               </Typography>
             </Stack>
@@ -54,11 +54,11 @@ export default function InvoiceCard() {
         </Grid>
         <Grid item xs={4} sm={2} lg={6}>
           <MainCard>
-            <Stack alignItems="center" spacing={2}>
-              <Avatar size="md" type="filled" color="warning">
-                <FilterSquare variant="Bold" />
+            <Stack alignItems='center' spacing={2}>
+              <Avatar size='md' type='filled' color='warning'>
+                <FilterSquare variant='Bold' />
               </Avatar>
-              <Typography variant="subtitle1" color="text.secondary">
+              <Typography variant='subtitle1' color='text.secondary'>
                 Pending
               </Typography>
             </Stack>
@@ -66,11 +66,11 @@ export default function InvoiceCard() {
         </Grid>
         <Grid item xs={4} sm={2} lg={6}>
           <MainCard>
-            <Stack alignItems="center" spacing={2}>
-              <Avatar size="md" type="filled" color="error">
-                <CloseCircle variant="Bold" />
+            <Stack alignItems='center' spacing={2}>
+              <Avatar size='md' type='filled' color='error'>
+                <CloseCircle variant='Bold' />
               </Avatar>
-              <Typography variant="subtitle1" color="text.secondary">
+              <Typography variant='subtitle1' color='text.secondary'>
                 Cancelled
               </Typography>
             </Stack>
@@ -78,11 +78,11 @@ export default function InvoiceCard() {
         </Grid>
         <Grid item xs={4} sm={2} lg={6}>
           <MainCard>
-            <Stack alignItems="center" spacing={2}>
-              <Avatar size="md" type="filled">
-                <ShoppingBag variant="Bold" />
+            <Stack alignItems='center' spacing={2}>
+              <Avatar size='md' type='filled'>
+                <ShoppingBag variant='Bold' />
               </Avatar>
-              <Typography variant="subtitle1" color="text.secondary">
+              <Typography variant='subtitle1' color='text.secondary'>
                 Draft
               </Typography>
             </Stack>

@@ -10,9 +10,9 @@ export default function TableFooter(theme: Theme) {
         root: {
           backgroundColor: theme.palette.secondary.lighter,
           borderTop: `2px solid ${theme.palette.divider}`,
-          borderBottom: `1px solid ${theme.palette.divider}`
-        }
-      }
-    }
+          borderBottom: `1px solid ${theme.palette.divider}`,
+        },
+      },
+    },
   };
 }

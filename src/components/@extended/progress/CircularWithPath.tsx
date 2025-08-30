@@ -14,7 +14,7 @@ export default function CircularWithPath({ value, size, variant, thickness, show
   return (
     <Box sx={{ position: 'relative', display: 'inline-flex' }}>
       <CircularProgress
-        variant="determinate"
+        variant='determinate'
         sx={{ color: pathColor ? pathColor : 'secondary.200' }}
         size={size}
         thickness={thickness}
@@ -31,10 +31,10 @@ export default function CircularWithPath({ value, size, variant, thickness, show
             position: 'absolute',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
           }}
         >
-          <Typography variant="caption" color="text.secondary">
+          <Typography variant='caption' color='text.secondary'>
             {value ? `${Math.round(value)}%` : '0%'}
           </Typography>
         </Box>
@@ -46,8 +46,8 @@ export default function CircularWithPath({ value, size, variant, thickness, show
           position: 'absolute',
           left: 0,
           [`& .${circularProgressClasses.circle}`]: {
-            strokeLinecap: 'round'
-          }
+            strokeLinecap: 'round',
+          },
         }}
         size={size}
         thickness={thickness}

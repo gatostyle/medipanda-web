@@ -72,7 +72,7 @@ const newPerson = (index: number) => {
     about: tempData.text.sentence,
     avatar: tempData.number.status(1, 10),
     skills: tempData.skill,
-    time: tempData.time
+    time: tempData.time,
   };
 };
 
@@ -83,7 +83,7 @@ export default function makeData(...lens: any[]) {
     const len = lens[depth];
     return range(len).map((d, index) => ({
       ...newPerson(index + 1),
-      subRows: lens[depth + 1] ? makeDataLevel(depth + 1) : undefined
+      subRows: lens[depth + 1] ? makeDataLevel(depth + 1) : undefined,
     }));
   };
 

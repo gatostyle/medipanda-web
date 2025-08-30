@@ -43,7 +43,7 @@ function ListProduct({ product }: { product: Products }) {
       open: true,
       message: 'Added to favourites',
       variant: 'alert',
-      alert: { color: 'success' }
+      alert: { color: 'success' },
     } as SnackbarProps);
   };
 
@@ -55,32 +55,32 @@ function ListProduct({ product }: { product: Products }) {
     <ListItemButton divider onClick={() => linkHandler(product.id)}>
       <ListItemAvatar>
         <Avatar
-          alt="Avatar"
-          size="xl"
-          color="secondary"
-          variant="rounded"
-          type="combined"
+          alt='Avatar'
+          size='xl'
+          color='secondary'
+          variant='rounded'
+          type='combined'
           src={product.image ? getImageUrl(`thumbs/${product.image}`, ImagePath.ECOMMERCE) : ''}
           sx={{ borderColor: theme.palette.divider, mr: 1.15 }}
         />
       </ListItemAvatar>
       <ListItemText
         disableTypography
-        primary={<Typography variant="subtitle1">{product.name}</Typography>}
+        primary={<Typography variant='subtitle1'>{product.name}</Typography>}
         secondary={
           <Stack spacing={1}>
-            <Typography color="text.secondary">{product.description}</Typography>
+            <Typography color='text.secondary'>{product.description}</Typography>
             <Stack spacing={1}>
-              <Stack direction="row" alignItems="center" spacing={0.5}>
-                <Typography variant="h5">{product.salePrice ? `$${product.salePrice}` : `$${product.offerPrice}`}</Typography>
+              <Stack direction='row' alignItems='center' spacing={0.5}>
+                <Typography variant='h5'>{product.salePrice ? `$${product.salePrice}` : `$${product.offerPrice}`}</Typography>
                 {product.salePrice && (
-                  <Typography variant="h6" color="text.secondary" sx={{ textDecoration: 'line-through' }}>
+                  <Typography variant='h6' color='text.secondary' sx={{ textDecoration: 'line-through' }}>
                     ${product.offerPrice}
                   </Typography>
                 )}
               </Stack>
               <Rating
-                name="simple-controlled"
+                name='simple-controlled'
                 value={product.rating! < 4 ? product.rating! + 1 : product.rating}
                 readOnly
                 precision={0.1}
@@ -92,13 +92,13 @@ function ListProduct({ product }: { product: Products }) {
       />
       <ListItemSecondaryAction>
         <IconButton
-          size="medium"
-          color="secondary"
+          size='medium'
+          color='secondary'
           sx={{ opacity: wishlisted ? 1 : 0.5, '&:hover': { bgcolor: 'transparent' }, mt: -1 }}
           onClick={addToFavourite}
         >
           {wishlisted ? (
-            <Heart variant="Bold" style={{ fontSize: '1.15rem', color: theme.palette.error.main }} />
+            <Heart variant='Bold' style={{ fontSize: '1.15rem', color: theme.palette.error.main }} />
           ) : (
             <Heart style={{ fontSize: '1.15rem' }} />
           )}
@@ -115,7 +115,7 @@ export default function RelatedProducts({ id }: { id?: string }) {
   const [loader, setLoader] = useState<boolean>(true);
 
   (async () => {
-    await getRelatedProducts(id).then((response) => {
+    await getRelatedProducts(id).then(response => {
       setRelated(response.data);
       setLoader(false);
     });
@@ -126,15 +126,15 @@ export default function RelatedProducts({ id }: { id?: string }) {
       {[1, 2, 3].map((index: number) => (
         <ListItem key={index}>
           <ListItemAvatar sx={{ minWidth: 72 }}>
-            <Skeleton variant="rectangular" width={62} height={62} />
+            <Skeleton variant='rectangular' width={62} height={62} />
           </ListItemAvatar>
           <ListItemText
-            primary={<Skeleton animation="wave" height={22} />}
+            primary={<Skeleton animation='wave' height={22} />}
             secondary={
               <>
-                <Skeleton animation="wave" height={14} width="60%" />
-                <Skeleton animation="wave" height={18} width="20%" />
-                <Skeleton animation="wave" height={14} width="35%" />
+                <Skeleton animation='wave' height={14} width='60%' />
+                <Skeleton animation='wave' height={18} width='20%' />
+                <Skeleton animation='wave' height={14} width='35%' />
               </>
             }
           />
@@ -146,7 +146,7 @@ export default function RelatedProducts({ id }: { id?: string }) {
   if (related && !loader) {
     productResult = (
       <List
-        component="nav"
+        component='nav'
         sx={{
           '& .MuiListItemButton-root': {
             borderRadius: 0,
@@ -160,11 +160,11 @@ export default function RelatedProducts({ id }: { id?: string }) {
               position: 'relative',
               right: 'auto',
               top: 'auto',
-              transform: 'none'
+              transform: 'none',
             },
-            '& .MuiListItemAvatar-root': { mr: '7px', mt: 0.75 }
+            '& .MuiListItemAvatar-root': { mr: '7px', mt: 0.75 },
           },
-          p: 0
+          p: 0,
         }}
       >
         {related.map((product: Products, index) => (
@@ -179,7 +179,7 @@ export default function RelatedProducts({ id }: { id?: string }) {
       <Grid item>
         <Stack>
           {productResult}
-          <Button color="secondary" variant="outlined" sx={{ mx: 2, my: 4, textTransform: 'none' }}>
+          <Button color='secondary' variant='outlined' sx={{ mx: 2, my: 4, textTransform: 'none' }}>
             View all Products
           </Button>
         </Stack>

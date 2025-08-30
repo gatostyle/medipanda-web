@@ -27,7 +27,7 @@ function EcommerceDataChart({ color }: Props) {
   const areaChartOptions = {
     chart: {
       id: 'new-stack-chart',
-      type: 'radialBar'
+      type: 'radialBar',
     },
     plotOptions: {
       radialBar: {
@@ -37,17 +37,17 @@ function EcommerceDataChart({ color }: Props) {
           background: 'transparent',
           imageOffsetX: 0,
           imageOffsetY: 0,
-          position: 'front'
+          position: 'front',
         },
         track: {
           background: alpha(color, 0.5),
-          strokeWidth: '50%'
+          strokeWidth: '50%',
         },
 
         dataLabels: {
           show: true,
           name: {
-            show: false
+            show: false,
           },
           value: {
             formatter: (val: number) => val,
@@ -55,11 +55,11 @@ function EcommerceDataChart({ color }: Props) {
             color: color,
             fontSize: '20px',
             fontWeight: '700',
-            show: true
-          }
-        }
-      }
-    }
+            show: true,
+          },
+        },
+      },
+    },
   };
 
   const { primary, secondary } = theme.palette.text;
@@ -68,18 +68,18 @@ function EcommerceDataChart({ color }: Props) {
   const [options, setOptions] = useState<ChartProps>(areaChartOptions);
 
   useEffect(() => {
-    setOptions((prevState) => ({
+    setOptions(prevState => ({
       ...prevState,
       colors: [color],
       theme: {
-        mode: mode === ThemeMode.DARK ? 'dark' : 'light'
-      }
+        mode: mode === ThemeMode.DARK ? 'dark' : 'light',
+      },
     }));
   }, [color, mode, primary, secondary, line, theme]);
 
   const [series] = useState([30]);
 
-  return <ReactApexChart options={options} series={series} type="radialBar" height={150} />;
+  return <ReactApexChart options={options} series={series} type='radialBar' height={150} />;
 }
 
 // ==============================|| CHART WIDGET - ECOMMERCE RADIAL  ||============================== //
@@ -87,13 +87,13 @@ function EcommerceDataChart({ color }: Props) {
 export default function EcommerceRadial({ color }: { color: string }) {
   return (
     <MainCard content={false}>
-      <Stack direction="row" alignItems="center" spacing={2} sx={{ px: 2 }}>
+      <Stack direction='row' alignItems='center' spacing={2} sx={{ px: 2 }}>
         <Box sx={{ width: 120 }}>
           <EcommerceDataChart color={color} />
         </Box>
         <Stack>
           <Typography>Total Earning</Typography>
-          <Typography variant="subtitle1">$45,890</Typography>
+          <Typography variant='subtitle1'>$45,890</Typography>
         </Stack>
       </Stack>
     </MainCard>

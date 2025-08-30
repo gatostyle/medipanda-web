@@ -48,7 +48,7 @@ export default function AddStoryComment({ storyId }: Props) {
       const newComment: KanbanComment = {
         id: `${chance.integer({ min: 1000, max: 9999 })}`,
         comment,
-        profileId: 'profile-3'
+        profileId: 'profile-3',
       };
 
       addStoryComment(storyId, newComment);
@@ -58,8 +58,8 @@ export default function AddStoryComment({ storyId }: Props) {
         anchorOrigin: { vertical: 'top', horizontal: 'right' },
         variant: 'alert',
         alert: {
-          color: 'success'
-        }
+          color: 'success',
+        },
       } as SnackbarProps);
       setComment('');
     } else {
@@ -79,11 +79,11 @@ export default function AddStoryComment({ storyId }: Props) {
 
   return (
     <Box sx={{ p: 2, pb: 1.5, border: '1px solid', borderColor: theme.palette.divider }}>
-      <Grid container alignItems="center" spacing={0.5}>
+      <Grid container alignItems='center' spacing={0.5}>
         <Grid item xs={12}>
           <TextField
             fullWidth
-            placeholder="Add Comment"
+            placeholder='Add Comment'
             value={comment}
             onChange={handleStoryComment}
             sx={{
@@ -91,14 +91,14 @@ export default function AddStoryComment({ storyId }: Props) {
               '& input': { bgcolor: 'transparent', p: 0, borderRadius: '0px' },
               '& fieldset': { display: 'none' },
               '& .MuiFormHelperText-root': {
-                ml: 0
+                ml: 0,
               },
               '& .MuiOutlinedInput-root': {
                 bgcolor: 'transparent',
                 '&.Mui-focused': {
-                  boxShadow: 'none'
-                }
-              }
+                  boxShadow: 'none',
+                },
+              },
             }}
             onKeyUp={handleAddStoryComment}
             helperText={isComment ? 'Comment is required.' : ''}
@@ -122,7 +122,7 @@ export default function AddStoryComment({ storyId }: Props) {
         </Grid>
         <Grid item xs zeroMinWidth />
         <Grid item>
-          <Button size="small" variant="contained" color="primary" onClick={addNewStoryComment}>
+          <Button size='small' variant='contained' color='primary' onClick={addNewStoryComment}>
             Comment
           </Button>
         </Grid>

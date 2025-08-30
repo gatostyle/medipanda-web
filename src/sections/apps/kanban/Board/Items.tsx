@@ -40,7 +40,7 @@ function getDragWrapper(
   isDragging: boolean,
   draggableStyle: DraggingStyle | NotDraggingStyle | undefined,
   theme: Theme,
-  radius: string
+  radius: string,
 ): CSSProperties | undefined {
   const bgcolor = alpha(theme.palette.background.paper, 0.99);
   return {
@@ -51,7 +51,7 @@ function getDragWrapper(
     borderColor: theme.palette.divider,
     backgroundColor: isDragging ? bgcolor : theme.palette.background.paper,
     borderRadius: radius,
-    ...draggableStyle
+    ...draggableStyle,
   };
 }
 
@@ -62,7 +62,7 @@ export default function Items({ item, index }: Props) {
   const { backlogs } = useGetBacklogs();
 
   const backProfile = !!item.image;
-  const itemStory = backlogs?.userStory.filter((story: KanbanUserStory) => story?.itemIds?.filter((itemId) => itemId === item.id)[0])[0];
+  const itemStory = backlogs?.userStory.filter((story: KanbanUserStory) => story?.itemIds?.filter(itemId => itemId === item.id)[0])[0];
 
   const handlerDetails = (id: string) => {
     handlerKanbanDialog(id);
@@ -88,19 +88,19 @@ export default function Items({ item, index }: Props) {
         anchorOrigin: { vertical: 'top', horizontal: 'right' },
         variant: 'alert',
         alert: {
-          color: 'success'
-        }
+          color: 'success',
+        },
       } as SnackbarProps);
     }
   };
 
   const [openStoryDrawer, setOpenStoryDrawer] = useState<boolean>(false);
   const handleStoryDrawerOpen = () => {
-    setOpenStoryDrawer((prevState) => !prevState);
+    setOpenStoryDrawer(prevState => !prevState);
   };
 
   const editStory = () => {
-    setOpenStoryDrawer((prevState) => !prevState);
+    setOpenStoryDrawer(prevState => !prevState);
   };
 
   return (
@@ -112,10 +112,10 @@ export default function Items({ item, index }: Props) {
           {...provided.dragHandleProps}
           style={getDragWrapper(snapshot.isDragging, provided.draggableProps.style, theme, `12px`)}
         >
-          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: itemStory ? -0.75 : 0 }}>
+          <Stack direction='row' justifyContent='space-between' alignItems='center' sx={{ mb: itemStory ? -0.75 : 0 }}>
             <Typography
               onClick={() => handlerDetails(item.id)}
-              variant="subtitle1"
+              variant='subtitle1'
               sx={{
                 display: 'inline-block',
                 width: 'calc(100% - 34px)',
@@ -125,30 +125,30 @@ export default function Items({ item, index }: Props) {
                 verticalAlign: 'middle',
                 cursor: 'pointer',
                 '&:hover': {
-                  textDecoration: 'underline'
-                }
+                  textDecoration: 'underline',
+                },
               }}
             >
               {item.title}
             </Typography>
 
-            <IconButton size="small" color="secondary" onClick={handleClick} aria-controls="menu-comment" aria-haspopup="true">
+            <IconButton size='small' color='secondary' onClick={handleClick} aria-controls='menu-comment' aria-haspopup='true'>
               <MoreIcon />
             </IconButton>
             <Menu
-              id="menu-comment"
+              id='menu-comment'
               anchorEl={anchorEl}
               keepMounted
               open={Boolean(anchorEl)}
               onClose={handleClose}
-              variant="selectedMenu"
+              variant='selectedMenu'
               anchorOrigin={{
                 vertical: 'bottom',
-                horizontal: 'right'
+                horizontal: 'right',
               }}
               transformOrigin={{
                 vertical: 'top',
-                horizontal: 'right'
+                horizontal: 'right',
               }}
             >
               <MenuItem
@@ -172,12 +172,12 @@ export default function Items({ item, index }: Props) {
           </Stack>
           {itemStory && (
             <>
-              <Stack direction="row" spacing={0.5} alignItems="center">
-                <Tooltip title="User Story">
+              <Stack direction='row' spacing={0.5} alignItems='center'>
+                <Tooltip title='User Story'>
                   <Hierarchy size={16} style={{ color: theme.palette.primary.dark }} />
                 </Tooltip>
                 <Tooltip title={itemStory.title}>
-                  <Link variant="caption" color="primary.dark" underline="hover" onClick={editStory} sx={{ cursor: 'pointer', pt: 0.5 }}>
+                  <Link variant='caption' color='primary.dark' underline='hover' onClick={editStory} sx={{ cursor: 'pointer', pt: 0.5 }}>
                     User Story #{itemStory.id}
                   </Link>
                 </Tooltip>
@@ -187,10 +187,10 @@ export default function Items({ item, index }: Props) {
           )}
           {backProfile && (
             <CardMedia
-              component="img"
+              component='img'
               image={getImageUrl(`${item.image}`, ImagePath.PROFILE)}
               sx={{ width: '100%', borderRadius: 1, mt: 1.5 }}
-              title="Slider5 image"
+              title='Slider5 image'
             />
           )}
         </div>

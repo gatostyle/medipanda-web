@@ -23,20 +23,20 @@ function getColorStyle({ color, theme }: ExtendedStyleProps) {
     boxShadow: shadows,
     '&:hover': {
       boxShadow: 'none',
-      backgroundColor: dark
+      backgroundColor: dark,
     },
     '&:focus-visible': {
       outline: `2px solid ${dark}`,
-      outlineOffset: 2
+      outlineOffset: 2,
     },
     '&::after': {
       borderRadius: '50px',
-      boxShadow: `0 0 5px 5px ${alpha(main, 0.9)}`
+      boxShadow: `0 0 5px 5px ${alpha(main, 0.9)}`,
     },
     '&:active::after': {
       borderRadius: '50px',
-      boxShadow: `0 0 0 0 ${alpha(main, 0.9)}`
-    }
+      boxShadow: `0 0 0 0 ${alpha(main, 0.9)}`,
+    },
   };
 }
 
@@ -49,11 +49,11 @@ export default function Fab(theme: Theme) {
         root: {
           '& svg': {
             width: 20,
-            height: 20
+            height: 20,
           },
           fontWeight: 400,
           '&.Mui-disabled': {
-            backgroundColor: theme.palette.secondary[200]
+            backgroundColor: theme.palette.secondary[200],
           },
           '&.MuiFab-primary': getColorStyle({ color: 'primary', theme }),
           '&.MuiFab-secondary': getColorStyle({ color: 'secondary', theme }),
@@ -71,7 +71,7 @@ export default function Fab(theme: Theme) {
             height: '100%',
             borderRadius: 4,
             opacity: 0,
-            transition: 'all 0.5s'
+            transition: 'all 0.5s',
           },
 
           '&:active::after': {
@@ -80,10 +80,10 @@ export default function Fab(theme: Theme) {
             left: 0,
             top: 0,
             opacity: 1,
-            transition: '0s'
-          }
-        }
-      }
-    }
+            transition: '0s',
+          },
+        },
+      },
+    },
   };
 }

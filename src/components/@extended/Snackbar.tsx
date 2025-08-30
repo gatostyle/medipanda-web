@@ -21,19 +21,19 @@ import { Add } from 'iconsax-react';
 
 // animation function
 function TransitionSlideLeft(props: SlideProps) {
-  return <Slide {...props} direction="left" />;
+  return <Slide {...props} direction='left' />;
 }
 
 function TransitionSlideUp(props: SlideProps) {
-  return <Slide {...props} direction="up" />;
+  return <Slide {...props} direction='up' />;
 }
 
 function TransitionSlideRight(props: SlideProps) {
-  return <Slide {...props} direction="right" />;
+  return <Slide {...props} direction='right' />;
 }
 
 function TransitionSlideDown(props: SlideProps) {
-  return <Slide {...props} direction="down" />;
+  return <Slide {...props} direction='down' />;
 }
 
 function GrowTransition(props: SlideProps) {
@@ -47,7 +47,7 @@ const animation: KeyedObject = {
   SlideRight: TransitionSlideRight,
   SlideDown: TransitionSlideDown,
   Grow: GrowTransition,
-  Fade
+  Fade,
 };
 
 // ==============================|| SNACKBAR ||============================== //
@@ -75,10 +75,10 @@ export default function Snackbar() {
           TransitionComponent={animation[snackbar.transition]}
           action={
             <>
-              <Button color="secondary" size="small" onClick={handleClose}>
+              <Button color='secondary' size='small' onClick={handleClose}>
                 UNDO
               </Button>
-              <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+              <IconButton size='small' aria-label='close' color='inherit' onClick={handleClose}>
                 <Add style={{ transform: 'rotate(45deg)' }} />
               </IconButton>
             </>
@@ -99,14 +99,14 @@ export default function Snackbar() {
             variant={snackbar.alert.variant}
             color={snackbar.alert.color}
             action={
-              <Stack direction="row" alignItems="center">
+              <Stack direction='row' alignItems='center'>
                 {snackbar.actionButton !== false && (
-                  <Button color={snackbar.alert.color} size="small" onClick={handleClose}>
+                  <Button color={snackbar.alert.color} size='small' onClick={handleClose}>
                     UNDO
                   </Button>
                 )}
                 {snackbar.close && (
-                  <IconButton size="small" aria-label="close" variant="contained" color={snackbar.alert.color} onClick={handleClose}>
+                  <IconButton size='small' aria-label='close' variant='contained' color={snackbar.alert.color} onClick={handleClose}>
                     <Add style={{ transform: 'rotate(45deg)' }} />
                   </IconButton>
                 )}
@@ -115,8 +115,8 @@ export default function Snackbar() {
             sx={{
               ...snackbar.alert.sx,
               ...(snackbar.alert.variant === 'outlined' && {
-                bgcolor: 'background.default'
-              })
+                bgcolor: 'background.default',
+              }),
             }}
           >
             {snackbar.message}

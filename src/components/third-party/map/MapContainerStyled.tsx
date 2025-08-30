@@ -11,8 +11,8 @@ const MapContainerStyled = styled(Box)({
   position: 'relative',
   borderRadius: 4,
   '& .mapboxgl-ctrl-logo, .mapboxgl-ctrl-bottom-right': {
-    display: 'none'
-  }
+    display: 'none',
+  },
 });
 
 export default MapContainerStyled;
