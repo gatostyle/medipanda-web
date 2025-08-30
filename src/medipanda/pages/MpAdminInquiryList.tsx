@@ -77,37 +77,31 @@ export default function MpAdminInquiryList() {
   const columns: ColumnDef<Sequenced<BoardPostResponseWithMockData>>[] = [
     {
       header: 'No',
-      accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
       size: 60,
     },
     {
       header: '회원번호',
-      accessorKey: 'id',
       cell: ({ row }) => row.original.id,
       size: 100,
     },
     {
       header: '아이디',
-      accessorKey: 'userId',
       cell: ({ row }) => row.original.userId,
       size: 120,
     },
     {
       header: '회원명',
-      accessorKey: 'name',
       cell: ({ row }) => row.original.name,
       size: 100,
     },
     {
       header: '회사명',
-      accessorKey: 'drugCompany',
       cell: ({ row }) => row.original.drugCompany,
       size: 150,
     },
     {
       header: '제목',
-      accessorKey: 'title',
       cell: ({ row }) => (
         <Link to={`/admin/inquiries/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
           {row.original.title}
@@ -117,13 +111,11 @@ export default function MpAdminInquiryList() {
     },
     {
       header: '문의일',
-      accessorKey: 'createdAt',
       cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
       size: 100,
     },
     {
       header: '답변일',
-      accessorKey: 'responseCreatedAt',
       cell: ({ row }) => {
         const value = row.original.responseCreatedAt;
 
@@ -133,7 +125,6 @@ export default function MpAdminInquiryList() {
     },
     {
       header: '처리상태',
-      accessorKey: 'responseStatus',
       cell: ({ row }) => {
         switch (row.original.responseStatus) {
           case 'PENDING':

@@ -90,31 +90,26 @@ export default function MpAdminCommunityBlindList() {
     },
     {
       header: 'No',
-      accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
       size: 60,
     },
     {
       header: '아이디',
-      accessorKey: 'userId',
       cell: ({ row }) => row.original.userId,
       size: 120,
     },
     {
       header: '회원명',
-      accessorKey: 'memberName',
       cell: ({ row }) => row.original.memberName,
       size: 100,
     },
     {
       header: '닉네임',
-      accessorKey: 'nickname',
       cell: ({ row }) => row.original.nickname,
       size: 100,
     },
     {
       header: '글 유형',
-      accessorKey: 'postType',
       cell: ({ row }) => {
         const postType = row.original.postType;
         const label = postType === 'BOARD' ? '포스트' : '댓글';
@@ -124,7 +119,6 @@ export default function MpAdminCommunityBlindList() {
     },
     {
       header: '글 내용',
-      accessorKey: 'content',
       cell: ({ row }) => {
         const content = row.original.content;
         return (
@@ -143,7 +137,6 @@ export default function MpAdminCommunityBlindList() {
     },
     {
       header: '블라인드 처리일',
-      accessorKey: 'blindAt',
       cell: ({ row }) => formatYyyyMmDdHhMm(row.original.blindAt),
       size: 150,
     },

@@ -61,25 +61,21 @@ export default function MpAdminMemberList() {
   const columns: ColumnDef<Sequenced<MemberResponse>>[] = [
     {
       header: 'No',
-      accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
       size: 60,
     },
     {
       header: '회원번호',
-      accessorKey: 'id',
       cell: ({ row }) => row.original.id,
       size: 80,
     },
     {
       header: '아이디',
-      accessorKey: 'userId',
       cell: ({ row }) => row.original.userId,
       size: 120,
     },
     {
       header: '회원명',
-      accessorKey: 'name',
       cell: ({ row }) => (
         <Link to={`/admin/members/${row.original.userId}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
           {row.original.name}
@@ -89,55 +85,46 @@ export default function MpAdminMemberList() {
     },
     {
       header: '회사명',
-      accessorKey: 'companyName',
       cell: ({ row }) => row.original.companyName,
       size: 150,
     },
     {
       header: '휴대폰번호',
-      accessorKey: 'phoneNumber',
       cell: ({ row }) => row.original.phoneNumber,
       size: 130,
     },
     {
       header: '이메일',
-      accessorKey: 'email',
       cell: ({ row }) => row.original.email,
       size: 200,
     },
     {
       header: '파트너사 계약여부',
-      accessorKey: 'partnerContractStatus',
       cell: ({ row }) => (row.original.partnerContractStatus !== 'NONE' ? '계약' : '미계약'),
       size: 130,
     },
     {
       header: 'CSO신고증 유무',
-      accessorKey: 'hasCsoCert',
       cell: ({ row }) => (row.original.hasCsoCert ? 'Y' : 'N'),
       size: 120,
     },
     {
       header: '계정상태',
-      accessorKey: 'accountStatus',
       cell: ({ row }) => MEMBER_ACCOUNT_STATUS_LABELS[row.original.accountStatus],
       size: 90,
     },
     {
       header: '마케팅수신동의',
-      accessorKey: 'marketingConsent',
       cell: ({ row }) => CONSENT_LABELS[String(row.original.marketingConsent)],
       size: 120,
     },
     {
       header: '가입일',
-      accessorKey: 'registrationDate',
       cell: ({ row }) => formatYyyyMmDd(row.original.registrationDate),
       size: 150,
     },
     {
       header: '최종접속일',
-      accessorKey: 'lastLoginDate',
       cell: ({ row }) => formatYyyyMmDd(row.original.lastLoginDate),
       size: 110,
     },

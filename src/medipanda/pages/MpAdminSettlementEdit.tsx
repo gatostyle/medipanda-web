@@ -89,31 +89,26 @@ export default function MpAdminSettlementEdit() {
     () => [
       {
         header: 'No',
-        accessorKey: 'sequence',
         cell: ({ row }) => row.original.sequence,
         size: 60,
       },
       {
         header: '회사명',
-        accessorKey: 'companyName',
         cell: ({ row }) => row.original.companyName,
         size: 120,
       },
       {
         header: '딜러명',
-        accessorKey: 'dealerName',
         cell: ({ row }) => row.original.dealerName,
         size: 100,
       },
       {
         header: '거래처코드',
-        accessorKey: 'institutionCode',
         cell: ({ row }) => row.original.institutionCode,
         size: 120,
       },
       {
         header: '거래처명',
-        accessorKey: 'institutionCode',
         cell: ({ row }) => (
           <Link
             to={`/admin/settlements/${id}/business-partners/${row.original.institutionCode}`}
@@ -126,25 +121,21 @@ export default function MpAdminSettlementEdit() {
       },
       {
         header: '사업자등록번호',
-        accessorKey: 'businessNumber',
         cell: ({ row }) => row.original.businessNumber,
         size: 140,
       },
       {
         header: '공급가액',
-        accessorKey: 'supplyAmount',
         cell: ({ row }) => row.original.supplyAmount.toLocaleString(),
         size: 120,
       },
       {
         header: '세액',
-        accessorKey: 'taxAmount',
         cell: ({ row }) => row.original.taxAmount.toLocaleString(),
         size: 100,
       },
       {
         header: '합계금액(수수료금액)',
-        accessorKey: 'totalAmount',
         cell: ({ row }) => row.original.totalAmount.toLocaleString(),
         size: 130,
       },

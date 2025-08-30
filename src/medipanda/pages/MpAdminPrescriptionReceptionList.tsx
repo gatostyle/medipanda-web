@@ -105,49 +105,41 @@ export default function MpAdminPrescriptionReceptionList() {
   const columns: ColumnDef<Sequenced<PrescriptionResponse>>[] = [
     {
       header: 'No',
-      accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
       size: 60,
     },
     {
       header: '딜러번호',
-      accessorKey: 'dealerId',
       cell: ({ row }) => row.original.dealerId,
       size: 100,
     },
     {
       header: '아이디',
-      accessorKey: 'userId',
       cell: ({ row }) => row.original.userId,
       size: 120,
     },
     {
       header: '회사명',
-      accessorKey: 'companyName',
       cell: ({ row }) => row.original.companyName,
       size: 150,
     },
     {
       header: '딜러명',
-      accessorKey: 'dealerName',
       cell: ({ row }) => row.original.dealerName,
       size: 100,
     },
     {
       header: '처방월',
-      accessorKey: 'prescriptionMonth',
       cell: ({ row }) => formatYyyyMm(row.original.prescriptionMonth),
       size: 100,
     },
     {
       header: '정산월',
-      accessorKey: 'settlementMonth',
       cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
       size: 100,
     },
     {
       header: '접수신청일',
-      accessorKey: 'submittedAt',
       cell: ({ row }) => formatYyyyMmDd(row.original.submittedAt),
       size: 120,
     },
@@ -168,7 +160,6 @@ export default function MpAdminPrescriptionReceptionList() {
     },
     {
       header: '접수상태',
-      accessorKey: 'status',
       cell: ({ row }) => {
         const status = row.original.status;
 

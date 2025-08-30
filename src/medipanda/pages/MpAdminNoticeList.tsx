@@ -104,19 +104,16 @@ export default function MpAdminNoticeList() {
     },
     {
       header: 'No',
-      accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
       size: 60,
     },
     {
       header: '게시판',
-      accessorKey: 'boardType',
       cell: ({ row }) => BOARD_TYPE_LABELS[row.original.boardType],
       size: 100,
     },
     {
       header: '공지분류',
-      accessorKey: 'noticeType',
       cell: ({ row }) => {
         const noticeType = row.original.noticeProperties!.noticeType;
         if (!noticeType) return '-';
@@ -126,13 +123,11 @@ export default function MpAdminNoticeList() {
     },
     {
       header: '제약사명',
-      accessorKey: 'drugCompany',
       cell: ({ row }) => row.original.drugCompany,
       size: 120,
     },
     {
       header: '제목',
-      accessorKey: 'title',
       cell: ({ row }) => (
         <Link to={`/admin/notices/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
           {row.original.title}
@@ -141,25 +136,21 @@ export default function MpAdminNoticeList() {
     },
     {
       header: '상태',
-      accessorKey: 'isExposed',
       cell: ({ row }) => (row.original.isExposed ? '노출' : '미노출'),
       size: 80,
     },
     {
       header: '노출범위',
-      accessorKey: 'exposureRange',
       cell: ({ row }) => EXPOSURE_RANGE_LABELS[row.original.exposureRange],
       size: 80,
     },
     {
       header: '조회수',
-      accessorKey: 'viewsCount',
       cell: ({ row }) => row.original.viewsCount.toLocaleString(),
       size: 80,
     },
     {
       header: '작성일',
-      accessorKey: 'createdAt',
       cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
       size: 100,
     },

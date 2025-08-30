@@ -96,31 +96,26 @@ export default function MpAdminExpenseReportList() {
   const columns: ColumnDef<Sequenced<ExpenseReportResponse>>[] = [
     {
       header: 'No',
-      accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
       size: 60,
     },
     {
       header: '아이디',
-      accessorKey: 'userId',
       cell: ({ row }) => row.original.userId,
       size: 100,
     },
     {
       header: '회사명',
-      accessorKey: 'companyName',
       cell: ({ row }) => row.original.companyName,
       size: 120,
     },
     {
       header: '제품명',
-      accessorKey: 'productName',
       cell: ({ row }) => row.original.productName,
       size: 150,
     },
     {
       header: '유형',
-      accessorKey: 'reportType',
       cell: ({ row }) => {
         const value = row.original.reportType;
         return EXPENSE_REPORT_CLASSIFICATION_LABELS[value];
@@ -129,7 +124,6 @@ export default function MpAdminExpenseReportList() {
     },
     {
       header: '시행일시',
-      accessorKey: 'eventStartAt',
       cell: ({ row }) => {
         return `${row.original.eventStartAt !== null ? formatYyyyMmDd(row.original.eventStartAt) : '-'} ~ ${row.original.eventEndAt !== null ? formatYyyyMmDd(row.original.eventEndAt) : '-'}`;
       },
@@ -137,13 +131,11 @@ export default function MpAdminExpenseReportList() {
     },
     {
       header: '지원금액',
-      accessorKey: 'supportAmount',
       cell: ({ row }) => `${row.original.supportAmount.toLocaleString()}원`,
       size: 120,
     },
     {
       header: '신고상태',
-      accessorKey: 'status',
       cell: ({ row }) => EXPENSE_REPORT_STATUS_LABELS[row.original.status],
       size: 100,
     },

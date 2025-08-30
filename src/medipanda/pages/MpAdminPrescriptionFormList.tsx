@@ -120,31 +120,26 @@ export default function MpAdminPrescriptionFormList() {
     },
     {
       header: 'No',
-      accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
       size: 60,
     },
     {
       header: '제약사명',
-      accessorKey: 'drugCompany',
       cell: ({ row }) => row.original.drugCompany,
       size: 120,
     },
     {
       header: '회사명',
-      accessorKey: 'companyName',
       cell: ({ row }) => row.original.companyName,
       size: 120,
     },
     {
       header: '거래처코드',
-      accessorKey: 'institutionCode',
       cell: ({ row }) => row.original.institutionCode,
       size: 100,
     },
     {
       header: '거래처명',
-      accessorKey: 'dealerName',
       cell: ({ row }) => (
         <Link to={`/admin/prescription-forms/${row.original.id}/products`} style={{ textDecoration: 'none', color: '#1976d2' }}>
           {row.original.dealerName}
@@ -154,37 +149,31 @@ export default function MpAdminPrescriptionFormList() {
     },
     {
       header: '사업자등록번호',
-      accessorKey: 'businessNumber',
       cell: ({ row }) => row.original.businessNumber,
       size: 130,
     },
     {
       header: '처방일',
-      accessorKey: 'prescriptionMonth',
       cell: ({ row }) => formatYyyyMm(row.original.prescriptionMonth),
       size: 100,
     },
     {
       header: '접수일',
-      accessorKey: 'settlementMonth',
       cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
       size: 100,
     },
     {
       header: '입력일',
-      accessorKey: 'inputDate',
       cell: ({ row }) => formatYyyyMmDd(row.original.inputDate),
       size: 100,
     },
     {
       header: '처방금액',
-      accessorKey: 'amount',
       cell: ({ row }) => `${row.original.amount.toLocaleString()}`,
       size: 100,
     },
     {
       header: '승인상태',
-      accessorKey: 'status',
       cell: ({ row }) => {
         const status = row.original.status;
 

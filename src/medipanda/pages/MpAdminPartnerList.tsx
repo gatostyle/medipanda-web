@@ -110,37 +110,31 @@ export default function MpAdminPartnerList() {
     },
     {
       header: 'No',
-      accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
       size: 60,
     },
     {
       header: '제약사명',
-      accessorKey: 'drugCompany',
       cell: ({ row }) => row.original.drugCompanyName,
       size: 150,
     },
     {
       header: '회사명',
-      accessorKey: 'companyName',
       cell: ({ row }) => row.original.companyName,
       size: 120,
     },
     {
       header: '계약유형',
-      accessorKey: 'contractType',
       cell: ({ row }) => (row.original.contractType === 'CONTRACT' ? '계약' : '미계약'),
       size: 80,
     },
     {
       header: '거래처코드',
-      accessorKey: 'institutionCode',
       cell: ({ row }) => row.original.institutionCode,
       size: 100,
     },
     {
       header: '거래처명',
-      accessorKey: 'institutionName',
       cell: ({ row }) => (
         <Link to={`/admin/partners/${row.original.id}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
           {row.original.institutionName}
@@ -150,19 +144,16 @@ export default function MpAdminPartnerList() {
     },
     {
       header: '사업자등록번호',
-      accessorKey: 'businessNumber',
       cell: ({ row }) => row.original.businessNumber,
       size: 130,
     },
     {
       header: '진료과',
-      accessorKey: 'medicalDepartment',
       cell: ({ row }) => row.original.medicalDepartment ?? '-',
       size: 100,
     },
     {
       header: '문전약국',
-      accessorKey: 'hasPharmacy',
       cell: ({ row }) => (row.original.hasPharmacy ? 'Y' : 'N'),
       size: 80,
     },

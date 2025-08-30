@@ -157,13 +157,11 @@ export default function MpAdminHospitalList() {
     },
     {
       header: 'No',
-      accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
       size: 60,
     },
     {
       header: '지역',
-      accessorKey: 'sido',
       cell: ({ row }) => {
         const value = row.original.sido;
         const sidoMap: Record<string, string> = {
@@ -191,19 +189,16 @@ export default function MpAdminHospitalList() {
     },
     {
       header: '병의원명',
-      accessorKey: 'name',
       cell: ({ row }) => row.original.name,
       size: 200,
     },
     {
       header: '주소',
-      accessorKey: 'address',
       cell: ({ row }) => row.original.address,
       size: 400,
     },
     {
       header: '허가예정일',
-      accessorKey: 'scheduledOpenDate',
       cell: ({ row }) => {
         const value = row.original.scheduledOpenDate;
 
@@ -213,7 +208,6 @@ export default function MpAdminHospitalList() {
     },
     {
       header: '분류',
-      accessorKey: 'source',
       cell: ({ row }) => row.original.source,
       size: 120,
     },

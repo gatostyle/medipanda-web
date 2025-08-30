@@ -97,13 +97,11 @@ export default function MpAdminEventList() {
     },
     {
       header: 'No',
-      accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
       size: 60,
     },
     {
       header: '이벤트 상태',
-      accessorKey: 'eventStatus',
       cell: ({ row }) => {
         const status = row.original.eventStatus;
         return (
@@ -114,7 +112,6 @@ export default function MpAdminEventList() {
     },
     {
       header: '썸네일',
-      accessorKey: 'thumbnailUrl',
       cell: ({ row }) => {
         const thumbnail = row.original.thumbnailUrl;
         if (thumbnail) {
@@ -139,7 +136,6 @@ export default function MpAdminEventList() {
     },
     {
       header: '제목',
-      accessorKey: 'title',
       cell: ({ row }) => (
         <Link to={`/admin/events/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
           {row.original.title}
@@ -149,13 +145,11 @@ export default function MpAdminEventList() {
     },
     {
       header: '조회 수',
-      accessorKey: 'viewCount',
       cell: ({ row }) => row.original.viewCount.toLocaleString(),
       size: 100,
     },
     {
       header: '작성일',
-      accessorKey: 'createdDate',
       cell: ({ row }) => {
         return formatYyyyMmDd(row.original.createdDate);
       },
@@ -163,7 +157,6 @@ export default function MpAdminEventList() {
     },
     {
       header: '노출상태',
-      accessorKey: 'isExposed',
       cell: ({ row }) => {
         const isExposed = row.original.isExposed;
         return <Chip label={isExposed ? '노출' : '미노출'} color={isExposed ? 'primary' : 'default'} variant='light' size='small' />;
@@ -172,7 +165,6 @@ export default function MpAdminEventList() {
     },
     {
       header: '이벤트 기간',
-      accessorKey: 'eventStartAt',
       cell: ({ row }) => {
         return `${formatYyyyMmDd(row.original.eventStartAt)} ~ ${formatYyyyMmDd(row.original.eventEndAt)}`;
       },

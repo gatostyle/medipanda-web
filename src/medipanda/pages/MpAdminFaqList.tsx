@@ -91,13 +91,11 @@ export default function MpAdminFaqList() {
     },
     {
       header: 'No',
-      accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
       size: 80,
     },
     {
       header: '제목',
-      accessorKey: 'title',
       cell: ({ row }) => (
         <Link to={`/admin/faqs/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
           {row.original.title}
@@ -106,7 +104,6 @@ export default function MpAdminFaqList() {
     },
     {
       header: '상태',
-      accessorKey: 'isExposed',
       cell: ({ row }) => {
         const isExposed = row.original.isExposed;
         return <Chip label={isExposed ? '노출' : '미노출'} color={isExposed ? 'success' : 'default'} variant='light' size='small' />;
@@ -115,13 +112,11 @@ export default function MpAdminFaqList() {
     },
     {
       header: '조회수',
-      accessorKey: 'viewsCount',
       cell: ({ row }) => row.original.viewsCount.toLocaleString(),
       size: 100,
     },
     {
       header: '작성일',
-      accessorKey: 'createdAt',
       cell: ({ row }) => {
         return formatYyyyMmDd(row.original.createdAt);
       },

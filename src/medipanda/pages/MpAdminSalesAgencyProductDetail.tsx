@@ -47,43 +47,36 @@ export default function MpAdminSalesAgencyProductDetail() {
     () => [
       {
         header: 'No',
-        accessorKey: 'sequence',
         cell: ({ row }) => row.original.sequence,
         size: 60,
       },
       {
         header: '회원번호',
-        accessorKey: 'id',
         cell: ({ row }) => row.original.id,
         size: 100,
       },
       {
         header: '아이디',
-        accessorKey: 'userId',
         cell: ({ row }) => row.original.userId,
         size: 120,
       },
       {
         header: '회원명',
-        accessorKey: 'memberName',
         cell: ({ row }) => row.original.memberName,
         size: 100,
       },
       {
         header: '핸드폰번호',
-        accessorKey: 'phoneNumber',
         cell: ({ row }) => row.original.phoneNumber,
         size: 140,
       },
       {
         header: '신청일',
-        accessorKey: 'appliedDate',
         cell: ({ row }) => formatYyyyMmDd(row.original.appliedDate),
         size: 120,
       },
       {
         header: '파트너사 계약여부',
-        accessorKey: 'contractStatus',
         cell: ({ row }) => (
           <Chip
             label={row.original.contractStatus === 'CONTRACT' ? 'Y' : 'N'}
@@ -95,7 +88,6 @@ export default function MpAdminSalesAgencyProductDetail() {
       },
       {
         header: '비고',
-        accessorKey: 'note',
         cell: ({ row }) => row.original.note,
         size: 100,
       },

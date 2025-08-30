@@ -62,19 +62,16 @@ export default function MpAdminAdminList() {
   const columns: ColumnDef<Sequenced<MemberResponse>>[] = [
     {
       header: 'No',
-      accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
       size: 60,
     },
     {
       header: '아이디',
-      accessorKey: 'userId',
       cell: ({ row }) => row.original.userId,
       size: 120,
     },
     {
       header: '관리자',
-      accessorKey: 'name',
       cell: ({ row }) => (
         <Link to={`/admin/admins/${row.original.userId}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
           {row.original.name}
@@ -84,13 +81,11 @@ export default function MpAdminAdminList() {
     },
     {
       header: '이메일',
-      accessorKey: 'email',
       cell: ({ row }) => row.original.email,
       size: 200,
     },
     {
       header: '연락처',
-      accessorKey: 'phoneNumber',
       cell: ({ row }) => row.original.phoneNumber,
       size: 150,
     },
@@ -110,7 +105,6 @@ export default function MpAdminAdminList() {
     },
     {
       header: '등록일',
-      accessorKey: 'registrationDate',
       cell: ({ row }) => formatYyyyMmDdHhMm(row.original.registrationDate),
       size: 150,
     },

@@ -105,13 +105,11 @@ export default function MpAdminCommunityPostList() {
     },
     {
       header: 'No',
-      accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
       size: 60,
     },
     {
       header: '게시판유형',
-      accessorKey: 'boardType',
       cell: ({ row }) => {
         const boardType = row.original.boardType;
         return <Chip label={BOARD_TYPE_LABELS[boardType]} color='primary' variant='light' size='small' />;
@@ -120,31 +118,26 @@ export default function MpAdminCommunityPostList() {
     },
     {
       header: '아이디',
-      accessorKey: 'userId',
       cell: ({ row }) => row.original.userId,
       size: 100,
     },
     {
       header: '회원명',
-      accessorKey: 'name',
       cell: ({ row }) => row.original.name,
       size: 100,
     },
     {
       header: '닉네임',
-      accessorKey: 'nickname',
       cell: ({ row }) => row.original.nickname,
       size: 100,
     },
     {
       header: '파트너사 계약여부',
-      accessorKey: 'memberType',
       cell: ({ row }) => (row.original.memberType !== 'NONE' ? 'Y' : 'N'),
       size: 120,
     },
     {
       header: '제목',
-      accessorKey: 'title',
       cell: ({ row }) => (
         <Link to={`/admin/community-posts/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
           {row.original.title}
@@ -153,31 +146,26 @@ export default function MpAdminCommunityPostList() {
     },
     {
       header: '좋아요 수',
-      accessorKey: 'likesCount',
       cell: ({ row }) => row.original.likesCount,
       size: 100,
     },
     {
       header: '댓글 수',
-      accessorKey: 'commentCount',
       cell: ({ row }) => row.original.commentCount,
       size: 100,
     },
     {
       header: '조회수',
-      accessorKey: 'viewsCount',
       cell: ({ row }) => row.original.viewsCount,
       size: 100,
     },
     {
       header: '블라인드 여부',
-      accessorKey: 'isBlind',
       cell: ({ row }) => (row.original.isBlind ? 'Y' : 'N'),
       size: 120,
     },
     {
       header: '등록일',
-      accessorKey: 'createdAt',
       cell: ({ row }) => formatYyyyMmDdHhMm(row.original.createdAt),
       size: 150,
     },

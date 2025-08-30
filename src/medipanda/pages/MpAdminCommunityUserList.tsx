@@ -91,61 +91,51 @@ export default function MpAdminCommunityUserList() {
   const columns: ColumnDef<Sequenced<BoardMemberStatsResponse>>[] = [
     {
       header: 'No',
-      accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
       size: 60,
     },
     {
       header: '회원번호',
-      accessorKey: 'id',
       cell: ({ row }) => row.original.id,
       size: 100,
     },
     {
       header: '아이디',
-      accessorKey: 'userId',
       cell: ({ row }) => row.original.userId,
       size: 120,
     },
     {
       header: '회원명',
-      accessorKey: 'name',
       cell: ({ row }) => row.original.name,
       size: 100,
     },
     {
       header: '휴대폰번호',
-      accessorKey: 'phoneNumber',
       cell: ({ row }) => row.original.phoneNumber,
       size: 130,
     },
     {
       header: '파트너사 계약여부',
-      accessorKey: 'contractStatus',
       cell: ({ row }) => (row.original.contractStatus === 'CONTRACT' ? '계약' : '미계약'),
       size: 130,
     },
     {
       header: '작성글 수',
-      accessorKey: 'postCount',
       cell: ({ row }) => row.original.postCount,
       size: 100,
     },
     {
       header: '댓글 수',
-      accessorKey: 'commentCount',
       cell: ({ row }) => row.original.commentCount,
       size: 100,
     },
     {
       header: '좋아요 수',
-      accessorKey: 'totalLikes',
       cell: ({ row }) => row.original.totalLikes,
       size: 100,
     },
     {
       header: '블라인드 글 수',
-      accessorKey: 'blindPostCount',
       cell: ({ row }) => row.original.blindPostCount,
       size: 120,
     },

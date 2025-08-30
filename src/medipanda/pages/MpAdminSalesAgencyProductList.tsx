@@ -99,13 +99,11 @@ export default function MpAdminSalesAgencyProductList() {
     },
     {
       header: 'No',
-      accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
       size: 60,
     },
     {
       header: '썸네일',
-      accessorKey: 'thumbnailUrl',
       cell: ({ row }) => (
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <img src={row.original.thumbnailUrl ?? ''} alt='썸네일' style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 4 }} />
@@ -115,13 +113,11 @@ export default function MpAdminSalesAgencyProductList() {
     },
     {
       header: '위탁사',
-      accessorKey: 'clientName',
       cell: ({ row }) => row.original.clientName,
       size: 150,
     },
     {
       header: '상품명',
-      accessorKey: 'productName',
       cell: ({ row }) => (
         <Link to={`/admin/sales-agency-products/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
           {row.original.productName}
@@ -131,19 +127,16 @@ export default function MpAdminSalesAgencyProductList() {
     },
     {
       header: '판매가',
-      accessorKey: 'price',
       cell: ({ row }) => row.original.price.toLocaleString(),
       size: 100,
     },
     {
       header: '계약일',
-      accessorKey: 'contractDate',
       cell: ({ row }) => formatYyyyMmDd(row.original.contractDate),
       size: 120,
     },
     {
       header: '노출상태',
-      accessorKey: 'isExposed',
       cell: ({ row }) => {
         const isExposed = row.original.isExposed;
         return <Chip label={isExposed ? '노출' : '미노출'} size='small' color={isExposed ? 'success' : 'default'} />;
@@ -152,7 +145,6 @@ export default function MpAdminSalesAgencyProductList() {
     },
     {
       header: '게시기간',
-      accessorKey: 'startAt',
       cell: ({ row }) => {
         return `${formatYyyyMmDd(row.original.startAt)} ~ ${formatYyyyMmDd(row.original.endAt)}`;
       },
@@ -160,13 +152,11 @@ export default function MpAdminSalesAgencyProductList() {
     },
     {
       header: '신청자 수',
-      accessorKey: 'appliedCount',
       cell: ({ row }) => `${row.original.appliedCount}명`,
       size: 100,
     },
     {
       header: '판매수량',
-      accessorKey: 'quantity',
       cell: ({ row }) => row.original.quantity.toLocaleString(),
       size: 100,
     },

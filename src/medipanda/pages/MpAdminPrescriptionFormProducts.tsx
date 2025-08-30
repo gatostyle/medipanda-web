@@ -108,20 +108,16 @@ export default function MpAdminPrescriptionFormProducts() {
     () => [
       {
         header: 'No',
-        accessorKey: 'sequence',
         cell: ({ row }) => row.original.sequence,
         size: 60,
       },
       {
         header: '보험코드',
-        accessorKey: 'productCode',
         cell: ({ row }) => row.original.productCode,
         size: 120,
       },
       {
         header: '제품명',
-        accessorKey: 'productName',
-        size: 200,
         cell: ({ row }) => (
           <Stack direction='row' spacing={1} alignItems='center'>
             <TextField size='small' fullWidth value={row.original.productName} placeholder='제품명 검색' disabled />
@@ -136,16 +132,15 @@ export default function MpAdminPrescriptionFormProducts() {
             </IconButton>
           </Stack>
         ),
+        size: 200,
       },
       {
         header: '단위',
-        accessorKey: 'unit',
         cell: ({ row }) => row.original.unit,
         size: 80,
       },
       {
         header: '수량',
-        accessorKey: 'quantity',
         cell: ({ row }) => (
           <TextField
             size='small'
@@ -159,13 +154,11 @@ export default function MpAdminPrescriptionFormProducts() {
       },
       {
         header: '약가',
-        accessorKey: 'unitPrice',
         cell: ({ row }) => row.original.unitPrice.toLocaleString(),
         size: 100,
       },
       {
         header: '총 금액',
-        accessorKey: 'totalPrice',
         cell: ({ row }) => (
           <TextField
             size='small'
@@ -180,7 +173,6 @@ export default function MpAdminPrescriptionFormProducts() {
       },
       {
         header: '기본수수료율',
-        accessorKey: 'baseFeeRate',
         cell: ({ row }) => (
           <TextField
             size='small'
@@ -195,7 +187,6 @@ export default function MpAdminPrescriptionFormProducts() {
       },
       {
         header: '수수료 금액',
-        accessorKey: 'feeAmount',
         cell: ({ row }) => (
           <TextField
             size='small'
@@ -210,7 +201,6 @@ export default function MpAdminPrescriptionFormProducts() {
       },
       {
         header: '비고',
-        accessorKey: 'note',
         cell: ({ row }) => (
           <TextField
             size='small'

@@ -93,43 +93,36 @@ export default function MpAdminCommunityCommentList() {
     },
     {
       header: 'No',
-      accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
       size: 60,
     },
     {
       header: '아이디',
-      accessorKey: 'userId',
       cell: ({ row }) => row.original.userId,
       size: 150,
     },
     {
       header: '회원명',
-      accessorKey: 'name',
       cell: ({ row }) => row.original.name,
       size: 100,
     },
     {
       header: '닉네임',
-      accessorKey: 'nickname',
       cell: ({ row }) => row.original.nickname,
       size: 150,
     },
     {
       header: '계약유무',
-      accessorKey: 'contractStatus',
       cell: ({ row }) => CONTRACT_STATUS_LABELS[row.original.contractStatus],
       size: 100,
     },
     {
       header: '유형',
-      accessorKey: 'commentType',
       cell: ({ row }) => (row.original.commentType === 'COMMENT' ? '댓글' : '대댓글'),
       size: 80,
     },
     {
       header: '댓글내용',
-      accessorKey: 'content',
       cell: ({ row }) => {
         const content = row.original.content;
         return (
@@ -148,13 +141,11 @@ export default function MpAdminCommunityCommentList() {
     },
     {
       header: '좋아요 수',
-      accessorKey: 'likesCount',
       cell: ({ row }) => row.original.likesCount,
       size: 100,
     },
     {
       header: '등록일',
-      accessorKey: 'createdAt',
       cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
       size: 150,
     },

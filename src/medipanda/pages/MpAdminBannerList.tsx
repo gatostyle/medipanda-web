@@ -63,13 +63,11 @@ export default function MpAdminBannerList() {
   const columns: ColumnDef<Sequenced<BannerResponse>>[] = [
     {
       header: 'No',
-      accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
       size: 60,
     },
     {
       header: '배너위치',
-      accessorKey: 'position',
       cell: ({ row }) => {
         const position = row.original.position;
         switch (position) {
@@ -89,7 +87,6 @@ export default function MpAdminBannerList() {
     },
     {
       header: '배너제목',
-      accessorKey: 'title',
       cell: ({ row }) => (
         <Link to={`/admin/banners/${row.original.id}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
           {row.original.title}
@@ -99,7 +96,6 @@ export default function MpAdminBannerList() {
     },
     {
       header: '노출상태',
-      accessorKey: 'status',
       cell: ({ row }) => {
         const status = row.original.status;
         return (
@@ -115,7 +111,6 @@ export default function MpAdminBannerList() {
     },
     {
       header: '노출범위',
-      accessorKey: 'scope',
       cell: ({ row }) => {
         const scope = row.original.scope;
         switch (scope) {
@@ -133,7 +128,6 @@ export default function MpAdminBannerList() {
     },
     {
       header: '게시기간',
-      accessorKey: 'startAt',
       cell: ({ row }) => {
         return `${formatYyyyMmDdHhMm(row.original.startAt)} ~ ${formatYyyyMmDdHhMm(row.original.endAt)}`;
       },
@@ -141,7 +135,6 @@ export default function MpAdminBannerList() {
     },
     {
       header: '등록일',
-      accessorKey: 'startAt',
       cell: ({ row }) => {
         return formatYyyyMmDd(row.original.startAt);
       },
@@ -149,25 +142,21 @@ export default function MpAdminBannerList() {
     },
     {
       header: '노출순서',
-      accessorKey: 'displayOrder',
       cell: ({ row }) => row.original.displayOrder,
       size: 80,
     },
     {
       header: '노출수',
-      accessorKey: 'viewCount',
       cell: ({ row }) => row.original.viewCount.toLocaleString(),
       size: 100,
     },
     {
       header: '클릭수',
-      accessorKey: 'clickCount',
       cell: ({ row }) => row.original.clickCount.toLocaleString(),
       size: 100,
     },
     {
       header: 'CTR',
-      accessorKey: 'ctr',
       cell: ({ row }) => `${row.original.ctr}%`,
       size: 80,
     },

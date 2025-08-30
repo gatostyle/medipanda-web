@@ -138,19 +138,16 @@ export default function MpAdminProductList() {
     },
     {
       header: 'No',
-      accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
       size: 60,
     },
     {
       header: '제약사',
-      accessorKey: 'manufacturerName',
       cell: ({ row }) => row.original.manufacturerName ?? '-',
       size: 150,
     },
     {
       header: '제품명',
-      accessorKey: 'productName',
       cell: ({ row }) => (
         <Link to={`/admin/products/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
           {row.original.productName ?? '-'}
@@ -160,19 +157,16 @@ export default function MpAdminProductList() {
     },
     {
       header: '성분명',
-      accessorKey: 'composition',
       cell: ({ row }) => row.original.composition ?? '-',
       size: 250,
     },
     {
       header: '제품코드',
-      accessorKey: 'productCode',
       cell: ({ row }) => row.original.productCode,
       size: 120,
     },
     {
       header: '약가',
-      accessorKey: 'price',
       cell: ({ row }) => {
         return row.original.price !== null ? `${row.original.price.toLocaleString()}` : '-';
       },
@@ -180,25 +174,21 @@ export default function MpAdminProductList() {
     },
     {
       header: '기본수수료율',
-      accessorKey: 'feeRate',
       cell: ({ row }) => (row.original.feeRate !== null ? `${row.original.feeRate}%` : '-'),
       size: 120,
     },
     {
       header: '변경요율',
-      accessorKey: 'changedFeeRate',
       cell: ({ row }) => getChangedRateDisplay(row.original),
       size: 120,
     },
     {
       header: '상태',
-      accessorKey: 'status',
       cell: ({ row }) => getStatusDisplay(row.original),
       size: 200,
     },
     {
       header: '비고',
-      accessorKey: 'note',
       cell: ({ row }) => row.original.note ?? '-',
       size: 200,
     },

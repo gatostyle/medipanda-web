@@ -97,31 +97,26 @@ export default function MpAdminSettlementList() {
     },
     {
       header: 'No',
-      accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
       size: 60,
     },
     {
       header: '딜러번호',
-      accessorKey: 'dealerId',
       cell: ({ row }) => row.original.dealerId,
       size: 100,
     },
     {
       header: '정산월',
-      accessorKey: 'settlementMonth',
       cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
       size: 100,
     },
     {
       header: '회사명',
-      accessorKey: 'companyName',
       cell: ({ row }) => row.original.companyName,
       size: 150,
     },
     {
       header: '딜러명',
-      accessorKey: 'dealerName',
       cell: ({ row }) => (
         <Link to={`/admin/settlements/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
           {row.original.dealerName}
@@ -131,31 +126,26 @@ export default function MpAdminSettlementList() {
     },
     {
       header: '처방금액',
-      accessorKey: 'prescriptionAmount',
       cell: ({ row }) => row.original.prescriptionAmount.toLocaleString(),
       size: 120,
     },
     {
       header: '공급가액',
-      accessorKey: 'supplyAmount',
       cell: ({ row }) => row.original.supplyAmount.toLocaleString(),
       size: 120,
     },
     {
       header: '세액',
-      accessorKey: 'taxAmount',
       cell: ({ row }) => row.original.taxAmount.toLocaleString(),
       size: 100,
     },
     {
       header: '합계금액',
-      accessorKey: 'totalAmount',
       cell: ({ row }) => row.original.totalAmount.toLocaleString(),
       size: 120,
     },
     {
       header: '사용자확인',
-      accessorKey: 'status',
       cell: ({ row }) => {
         const value = row.original.status;
 

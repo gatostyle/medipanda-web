@@ -107,67 +107,56 @@ export default function MpAdminStatisticsList() {
   const columns: ColumnDef<Sequenced<PerformanceStatsResponseWithMockData>>[] = [
     {
       header: 'No',
-      accessorKey: 'sequence',
       cell: ({ row }) => row.original.sequence,
       size: 60,
     },
     {
       header: '제약사명',
-      accessorKey: 'drugCompany',
       cell: ({ row }) => row.original.drugCompany,
       size: 120,
     },
     {
       header: '회사명',
-      accessorKey: 'companyName',
       cell: ({ row }) => row.original.companyName,
       size: 120,
     },
     {
       header: '딜러명',
-      accessorKey: 'dealerName',
       cell: ({ row }) => row.original.dealerName,
       size: 100,
     },
     {
       header: '거래처코드',
-      accessorKey: 'institutionCode',
       cell: ({ row }) => row.original.institutionCode,
       size: 120,
     },
     {
       header: '거래처명',
-      accessorKey: 'institutionName',
       cell: ({ row }) => row.original.institutionName,
       size: 120,
     },
     {
       header: '정산월',
-      accessorKey: 'settlementMonth',
       cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
       size: 100,
     },
     {
       header: '처방금액',
-      accessorKey: 'prescriptionAmount',
       cell: ({ row }) => row.original.prescriptionAmount.toLocaleString(),
       size: 120,
     },
     {
       header: '합계금액',
-      accessorKey: 'totalAmount',
       cell: ({ row }) => row.original.totalAmount.toLocaleString(),
       size: 120,
     },
     {
       header: '수수료금액',
-      accessorKey: 'feeAmount',
       cell: ({ row }) => row.original.feeAmount.toLocaleString(),
       size: 120,
     },
     {
       header: '기본수수료율',
-      accessorKey: 'baseFeeRate',
       cell: ({ row }) => row.original.baseFeeRate.toLocaleString(),
       size: 100,
     },

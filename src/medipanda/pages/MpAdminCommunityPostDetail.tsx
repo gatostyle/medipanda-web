@@ -110,37 +110,31 @@ export default function MpAdminCommunityPostDetail() {
     () => [
       {
         header: 'No',
-        accessorKey: 'sequence',
         cell: ({ row }) => row.original.sequence,
         size: 60,
       },
       {
         header: '아이디',
-        accessorKey: 'userId',
         cell: ({ row }) => row.original.userId,
         size: 120,
       },
       {
         header: '회원명',
-        accessorKey: 'name',
         cell: ({ row }) => row.original.name,
         size: 100,
       },
       {
         header: '닉네임',
-        accessorKey: 'nickname',
         cell: ({ row }) => row.original.nickname,
         size: 120,
       },
       {
         header: '댓글내용',
-        accessorKey: 'content',
         cell: ({ row }) => row.original.content,
         size: 300,
       },
       {
         header: '작성일시',
-        accessorKey: 'createdAt',
         cell: ({ row }) => formatYyyyMmDdHhMm(row.original.createdAt),
         size: 160,
       },
@@ -152,37 +146,31 @@ export default function MpAdminCommunityPostDetail() {
     () => [
       {
         header: 'No',
-        accessorKey: 'sequence',
         cell: ({ row }) => row.original.sequence,
         size: 60,
       },
       {
         header: '아이디',
-        accessorKey: 'userId',
         cell: ({ row }) => row.original.userId,
         size: 120,
       },
       {
         header: '회원명',
-        accessorKey: 'memberName',
         cell: ({ row }) => row.original.memberName,
         size: 100,
       },
       {
         header: '닉네임',
-        accessorKey: 'nickname',
         cell: ({ row }) => row.original.nickname,
         size: 120,
       },
       {
         header: '신고유형',
-        accessorKey: 'reportType',
         cell: ({ row }) => row.original.reportType,
         size: 150,
       },
       {
         header: '신고일시',
-        accessorKey: 'reportDateTime',
         cell: ({ row }) => formatYyyyMmDdHhMm(row.original.reportDateTime),
         size: 160,
       },
