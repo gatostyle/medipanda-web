@@ -52,7 +52,7 @@ export default function AnonymousList() {
   const { content: noticePage } = usePageFetchFormik({
     fetcher: () => {
       return getFixedTopNotices({
-        boardType: 'NOTICE',
+        boardType: 'ANONYMOUS',
       });
     },
     initialContent: [],
@@ -102,7 +102,7 @@ export default function AnonymousList() {
                       )}
                       <Link
                         component={RouterLink}
-                        to={`/customer-service/notice/${post.id}`}
+                        to={noticePage.includes(post) ? `/customer-service/notice/${post.id}` : `/community/anonymous/${post.id}`}
                         underline='hover'
                         sx={{
                           color: noticePage.includes(post) ? colors.gray80 : colors.gray70,

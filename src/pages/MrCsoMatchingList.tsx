@@ -34,7 +34,7 @@ export default function MrCsoMatchingList() {
   const { content: noticePage } = usePageFetchFormik({
     fetcher: () => {
       return getFixedTopNotices({
-        boardType: 'NOTICE',
+        boardType: 'MR_CSO_MATCHING',
       });
     },
     initialContent: [],
@@ -84,7 +84,7 @@ export default function MrCsoMatchingList() {
                       )}
                       <Link
                         component={RouterLink}
-                        to={`/customer-service/notice/${post.id}`}
+                        to={noticePage.includes(post) ? `/customer-service/notice/${post.id}` : `/community/mr-cso-matching/${post.id}`}
                         underline='hover'
                         sx={{
                           color: noticePage.includes(post) ? colors.gray80 : colors.gray70,

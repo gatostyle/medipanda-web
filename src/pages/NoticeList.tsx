@@ -1,4 +1,4 @@
-import { getBoards } from '@/backend';
+import { getBoards, getFixedTopNotices } from '@/backend';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
 import { colors, typography } from '@/themes';
@@ -28,6 +28,15 @@ export default function NoticeList() {
     },
     contentSelector: response => response.content,
     pageCountSelector: response => response.totalPages,
+    initialContent: [],
+  });
+
+  const { content: fixedPage } = usePageFetchFormik({
+    fetcher: () => {
+      return getFixedTopNotices({
+        boardType: 'NOTICE',
+      });
+    },
     initialContent: [],
   });
 
@@ -95,14 +104,12 @@ export default function NoticeList() {
         }}
       >
         <TableBody>
-          {page.map((notice, index) => (
+          {[...fixedPage, ...page].map(notice => (
             <TableRow
               key={notice.id}
               sx={{
                 borderBottom: `1px solid ${colors.gray10}`,
-                ...(index < 2 && {
-                  backgroundColor: colors.gray10,
-                }),
+                backgroundColor: fixedPage.includes(notice) ? colors.gray10 : undefined,
               }}
             >
               <TableCell>
@@ -132,7 +139,7 @@ export default function NoticeList() {
                       gap: '4px',
                     }}
                   >
-                    {index < 2 && (
+                    {fixedPage.includes(notice) && (
                       <img
                         src='/assets/icons/icon-pin.svg'
                         style={{
