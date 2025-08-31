@@ -1,6 +1,6 @@
-import { getBoards } from '@/backend';
+import type { NoticeType } from '@/backend-types';
 
-export const NoticeLabels: Record<NonNullable<NonNullable<Parameters<typeof getBoards>[0]>['noticeType']>, string> = {
+export const NoticeLabels: Record<NoticeType, string> = {
   PRODUCT_STATUS: '제품현황',
   MANUFACTURING_SUSPENSION: '정산 및 생산중단',
   NEW_PRODUCT: '신제품 정보',

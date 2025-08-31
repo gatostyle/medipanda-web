@@ -156,7 +156,7 @@ export default function CommunityDetail() {
             width: '400px',
           }}
         >
-          <CommunityTrendingList />
+          <CommunityTrendingList boardType={'ANONYMOUS'} />
         </Stack>
       </Stack>
 

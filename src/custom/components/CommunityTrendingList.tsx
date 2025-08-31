@@ -1,9 +1,46 @@
-import { withSequence } from '@/lib/withSequence';
+import { type BoardPostResponse, getBoards } from '@/backend';
+import type { BoardSortType, BoardType } from '@/backend-types';
 import { colors, typography } from '@/themes';
 import { Button, Link, Stack, Table, TableBody, TableCell, TableRow, Typography } from '@mui/material';
+import { useFormik } from 'formik';
+import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router';
 
-export function CommunityTrendingList() {
+export function CommunityTrendingList({ boardType }: { boardType: BoardType }) {
+  const [content, setContent] = useState<BoardPostResponse[] | null>(null);
+  const [pageCount, setPageCount] = useState(-1);
+
+  const formik = useFormik({
+    initialValues: {
+      boardType: boardType,
+      sortType: 'LIKES' as BoardSortType,
+      page: 0,
+      size: 10,
+    },
+    onSubmit: async (values, { setFieldValue }) => {
+      if (values.page !== 0) {
+        await setFieldValue('page', 0);
+      } else {
+        await fetchData();
+      }
+    },
+  });
+
+  const fetchData = async () => {
+    const response = await getBoards(formik.values);
+
+    setContent(response.content);
+    setPageCount(response.totalPages);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [formik.values.page, formik.values.size]);
+
+  useEffect(() => {
+    fetchData();
+  }, [formik.values.sortType]);
+
   return (
     <Stack
       sx={{
@@ -16,6 +53,7 @@ export function CommunityTrendingList() {
         <Button
           variant='outlined'
           startIcon={<img src='/assets/icons/icon-fire.svg' />}
+          onClick={() => formik.setFieldValue('sortType', 'LIKES')}
           sx={{
             ...typography.smallTextM,
             color: colors.vividViolet,
@@ -30,6 +68,7 @@ export function CommunityTrendingList() {
         <Button
           variant='outlined'
           startIcon={<img src='/assets/icons/icon-chat-light.svg' />}
+          onClick={() => formik.setFieldValue('sortType', 'COMMENTS')}
           sx={{
             ...typography.smallTextM,
             color: colors.vividViolet,
@@ -44,15 +83,7 @@ export function CommunityTrendingList() {
       </Stack>
       <Table sx={{ marginTop: '20px' }}>
         <TableBody>
-          {withSequence(
-            Array.from({ length: 10 }).map((_, index) => {
-              return {
-                id: index,
-                title: '[노하우 공유] "이런 원장님/교수님은 이렇게 뚫었다!" 나만의 디...',
-                url: '/community/anonymous/1',
-              };
-            }),
-          ).map(item => (
+          {content?.map((item, index) => (
             <TableRow
               key={item.id}
               sx={{
@@ -69,7 +100,7 @@ export function CommunityTrendingList() {
                 }}
               >
                 <Typography variant='smallTextB' sx={{ color: colors.gray80 }}>
-                  {item.sequence}
+                  {index + 1}
                 </Typography>
               </TableCell>
               <TableCell
@@ -81,7 +112,7 @@ export function CommunityTrendingList() {
                 <Link
                   underline='hover'
                   component={RouterLink}
-                  to={item.url}
+                  to={boardType === 'ANONYMOUS' ? `/community/anonymous/${item.id}` : `/community/mr-cso-matching/${item.id}`}
                   sx={{
                     color: colors.gray80,
                     '&:hover': {

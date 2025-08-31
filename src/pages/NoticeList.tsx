@@ -1,4 +1,5 @@
 import { getBoards, getFixedTopNotices } from '@/backend';
+import type { NoticeType } from '@/backend-types';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { MedipandaTextLink } from '@/custom/components/MedipandaTextLink';
 import { NoticeLabels } from '@/labels';
@@ -17,7 +18,7 @@ export default function NoticeList() {
   } = usePageFetchFormik({
     initialFormValues: {
       searchKeyword: '',
-      noticeType: '' as NonNullable<NonNullable<Parameters<typeof getBoards>[0]>['noticeType']> | '',
+      noticeType: '' as NoticeType | '',
     },
     fetcher: values => {
       return getBoards({

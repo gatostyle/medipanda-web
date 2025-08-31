@@ -1,4 +1,5 @@
 import { getProductDetails, getProductSummaries, type ProductDetailsResponse, type ProductSummaryResponse } from '@/backend';
+import type { ProductSortType } from '@/backend-types';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaDialog, MedipandaDialogTitle } from '@/custom/components/MedipandaDialog';
 import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
@@ -57,7 +58,7 @@ export default function ProductList() {
     initialFormValues: {
       searchType: 'composition' as 'composition' | 'productName' | 'manufacturerName',
       searchKeyword: '',
-      sortType: 'FEE_RATE_DESC' as NonNullable<NonNullable<Parameters<typeof getProductSummaries>[0]>['sortType']>,
+      sortType: 'FEE_RATE_DESC' as ProductSortType,
       advancedSearchOpen: false,
       composition: '',
       manufacturerName: '',

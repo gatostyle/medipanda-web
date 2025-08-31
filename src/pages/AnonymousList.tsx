@@ -226,7 +226,7 @@ export default function AnonymousList() {
             </Button>
           </Stack>
 
-          <CommunityTrendingList />
+          <CommunityTrendingList boardType={'ANONYMOUS'} />
 
           <CommunityBanners />
         </Stack>
