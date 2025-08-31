@@ -45,7 +45,7 @@ export function PartnerSelectDialog({
         await pageFormik.submitForm();
       })();
     }
-  }, [open, pageFormik]);
+  }, [open]);
 
   const table = useReactTable({
     data: page,

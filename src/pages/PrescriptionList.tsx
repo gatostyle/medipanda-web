@@ -203,10 +203,12 @@ function EdiIndividualUploadForm() {
             dealerId: values.dealer!.id,
             prescriptionMonth: new DateTimeString(values.prescriptionMonth!),
             partnerId: values.partner!.id,
-            drugCompanyIds: values.drugCompanies.map(drugCompany => drugCompany.id),
+            drugCompanyId: values.drugCompanies.map(drugCompany => drugCompany.id)[0],
           },
           files: values.files,
         });
+        alert('EDI 파일이 성공적으로 업로드되었습니다.');
+        formik.resetForm();
       } catch (error) {
         console.error('Error uploading EDI files:', error);
         alert('EDI 파일 업로드 중 오류가 발생했습니다. 다시 시도해주세요.');
@@ -283,7 +285,6 @@ function EdiIndividualUploadForm() {
       </Stack>
       {(formik.values.drugCompanies as (DrugCompanyResponse | null)[]).concat(null).map((drugCompany, index) => (
         <Stack key={drugCompany?.id ?? ''} direction='row' alignItems='center'>
-          {JSON.stringify(drugCompany?.id)}
           <Typography variant='largeTextM' sx={{ color: colors.gray80, width: '120px' }}>
             {index === 0 ? '거래제약사' : ''}
           </Typography>
