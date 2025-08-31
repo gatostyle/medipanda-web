@@ -1,10 +1,16 @@
+import { getPushPreferences, patchPushPreferences, updateMember } from '@/backend';
 import { MedipandaCheckbox } from '@/custom/components/MedipandaCheckbox';
 import { MedipandaSwitch } from '@/custom/components/MedipandaSwitch';
+import { useSession } from '@/hooks/useSession';
 import { colors } from '@/themes';
 import { Button, FormControlLabel, Stack, Typography } from '@mui/material';
 import { useFormik } from 'formik';
+import { useEffect } from 'react';
+import { Link as RouterLink } from 'react-router';
 
 export default function MypageNotification() {
+  const { session } = useSession();
+
   const formik = useFormik({
     initialValues: {
       notice: true,
@@ -16,8 +22,62 @@ export default function MypageNotification() {
       marketingEmail: true,
       marketingAppPush: true,
     },
-    onSubmit: async values => {},
+    onSubmit: async values => {
+      try {
+        await Promise.all([
+          updateMember(session!.userId, {
+            request: {
+              password: null,
+              name: null,
+              birthDate: null,
+              phoneNumber: null,
+              email: null,
+              nickname: null,
+              referralCode: null,
+              note: null,
+              marketingAgreement: {
+                sms: values.marketingSms,
+                email: values.marketingEmail,
+                push: values.marketingAppPush,
+              },
+            },
+          }),
+          patchPushPreferences({
+            allowNotice: values.notice,
+            allowSalesAgency: values.newProduct,
+            allowPrescription: values.prescription,
+            allowSettlement: values.settlement,
+            allowCommunity: values.community,
+          }),
+        ]);
+
+        alert('수신 정보가 수정되었습니다.');
+        fetchPushReferences();
+      } catch (e) {
+        console.error(e);
+        alert('수신 정보 수정 중 오류가 발생했습니다.');
+      }
+    },
   });
+
+  useEffect(() => {
+    fetchPushReferences();
+  }, []);
+
+  const fetchPushReferences = async () => {
+    const { allowNotice, allowSalesAgency, allowPrescription, allowSettlement, allowCommunity } = await getPushPreferences();
+
+    formik.setValues({
+      notice: allowNotice,
+      newProduct: allowSalesAgency,
+      prescription: allowPrescription,
+      settlement: allowSettlement,
+      community: allowCommunity,
+      marketingSms: session!.marketingAgreements.sms,
+      marketingEmail: session!.marketingAgreements.email,
+      marketingAppPush: session!.marketingAgreements.push,
+    });
+  };
 
   return (
     <>
@@ -26,6 +86,8 @@ export default function MypageNotification() {
       </Typography>
 
       <Stack
+        component='form'
+        onSubmit={formik.handleSubmit}
         sx={{
           alignSelf: 'center',
           width: '434px',
@@ -222,6 +284,8 @@ export default function MypageNotification() {
           <Button
             fullWidth
             variant='outlined'
+            component={RouterLink}
+            to={'/'}
             sx={{
               width: '160px',
               height: '49px',
@@ -232,6 +296,7 @@ export default function MypageNotification() {
             취소
           </Button>
           <Button
+            type='submit'
             fullWidth
             variant='contained'
             sx={{

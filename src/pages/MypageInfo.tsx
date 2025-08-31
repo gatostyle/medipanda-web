@@ -1,10 +1,13 @@
+import { changePassword, createAuthRequest, result as getAuthResult, updateMember } from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
+import { MedipandaFileUploadButton } from '@/custom/components/MedipandaFileUploadButton';
 import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/components/MedipandaTab';
+import { useSession } from '@/hooks/useSession';
 import { colors, typography } from '@/themes';
-import { GetApp } from '@mui/icons-material';
-import { Alert, Box, Button, CircularProgress, FormControl, MenuItem, Select, Snackbar, Stack, TextField, Typography } from '@mui/material';
+import { Box, FormControl, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useState } from 'react';
+import { AxiosError } from 'axios';
+import { useFormik } from 'formik';
 import { Link as RouterLink } from 'react-router';
 
 const MypageFormRow = styled(Stack)({
@@ -28,92 +31,118 @@ const MypageFormExtra = styled(Box)({
   marginLeft: '10px',
 });
 
-const FileUploadButton = styled(Button)({
-  backgroundColor: colors.white,
-  border: `1px solid ${colors.gray300}`,
-  color: colors.gray600,
-  padding: '12px 24px',
-  textTransform: 'none',
-  fontSize: '14px',
-  '&:hover': {
-    backgroundColor: colors.gray50,
-    borderColor: colors.vividViolet,
-    color: colors.vividViolet,
-  },
-});
-
 export default function MypageInfo() {
-  const [formData, setFormData] = useState({
-    id: 'kandm',
-    password: '••••••••',
-    name: '김판다',
-    phone: '01099887766',
-    emailId: 'kandm',
-    emailDomain: 'naver.com',
-    nickname: 'CSO가 좋아요',
-    referralCode: 'cx312',
-  });
-  const [newPassword, setNewPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error' | 'warning'>('success');
-  const [uploadedFileName, setUploadedFileName] = useState('');
+  const { session } = useSession();
 
-  const showSnackbar = (message: string, severity: 'success' | 'error' | 'warning' = 'success') => {
-    setSnackbarMessage(message);
-    setSnackbarSeverity(severity);
-    setSnackbarOpen(true);
-  };
-
-  const handleInputChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: event.target.value,
-    }));
-  };
-
-  const handlePasswordChange = () => {
-    if (!newPassword.trim()) {
-      showSnackbar('새 비밀번호를 입력해주세요.', 'warning');
-      return;
-    }
-    if (newPassword.length < 8) {
-      showSnackbar('비밀번호는 8자 이상이어야 합니다.', 'warning');
-      return;
-    }
-    showSnackbar('비밀번호가 성공적으로 변경되었습니다.', 'success');
-    setNewPassword('');
-  };
-
-  const handlePhoneChange = () => {
-    if (!formData.phone.trim()) {
-      showSnackbar('휴대폰 번호를 입력해주세요.', 'warning');
-      return;
-    }
-    showSnackbar('휴대폰 번호가 성공적으로 변경되었습니다.', 'success');
-  };
-
-  const handleFileUpload = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.jpg,.jpeg,.pdf,.png';
-    input.onchange = e => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        setUploadedFileName(file.name);
-        showSnackbar('CSO 등록증 파일이 업로드되었습니다.', 'success');
+  const formik = useFormik({
+    initialValues: {
+      userId: session?.userId || '',
+      password: '',
+      passwordConfirm: '',
+      name: session?.name || '',
+      phoneNumber: session?.phoneNumber || '',
+      emailId: session?.email ? session.email.split('@')[0] : '',
+      emailDomain: session?.email ? session.email.split('@')[1] : '',
+      csoRegistrationFile: null as File | null,
+    },
+    onSubmit: async values => {
+      if (values.name === '') {
+        alert('이름을 입력해주세요.');
+        return;
       }
-    };
-    input.click();
+
+      if (values.phoneNumber === '') {
+        alert('휴대폰 번호를 입력해주세요.');
+        return;
+      }
+
+      if (values.emailId === '' || values.emailDomain === '') {
+        alert('이메일 정보를 입력해주세요.');
+        return;
+      }
+
+      try {
+        await updateMember(session!.userId, {
+          request: {
+            password: null,
+            name: values.name,
+            birthDate: null,
+            phoneNumber: null,
+            email: `${values.emailId}@${values.emailDomain}`,
+            nickname: null,
+            referralCode: null,
+            note: null,
+            marketingAgreement: null,
+          },
+          file: values.csoRegistrationFile ?? undefined,
+        });
+
+        alert('정보가 수정되었습니다.');
+      } catch (e) {
+        console.error(e);
+        alert('정보 수정 중 오류가 발생했습니다.');
+      }
+    },
+  });
+
+  const handlePhoneChange = async () => {
+    const { certNum } = await createAuthRequest({
+      cpId: 'XQWT1001',
+      urlCode: '001001',
+      certMet: 'M',
+      plusInfo: 'WEB',
+    });
+
+    const certUrl = `https://prod.api.medipanda.co.kr/v1/kmc/auth/launch?certNum=${certNum}`;
+
+    const popup = window.open(certUrl, '_blank', 'width=500,height=700');
+
+    const authResult = await new Promise<Record<string, {}>>(resolve => {
+      const interval = setInterval(async () => {
+        getAuthResult({ certNum })
+          .then(result => {
+            if (result.status == 'SUCCESS' || result.status == 'FAIL' || result.status == 'NOT_FOUND') {
+              clearInterval(interval);
+              popup?.close();
+              resolve(result);
+            }
+          })
+          .catch();
+      }, 500);
+    });
+
+    formik.setFieldValue('phoneNumber', authResult.phone);
   };
 
-  const handleSave = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      showSnackbar('내 정보가 성공적으로 수정되었습니다!', 'success');
-    }, 1500);
+  const handlePasswordChange = async () => {
+    if (formik.values.password === '' || formik.values.passwordConfirm === '') {
+      alert('비밀번호를 입력해주세요.');
+      return;
+    }
+
+    if (formik.values.password !== formik.values.passwordConfirm) {
+      alert('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+
+    try {
+      await changePassword(session!.userId, {
+        userId: session!.userId,
+        currentPassword: formik.values.password,
+        newPassword: formik.values.passwordConfirm,
+      });
+
+      alert('비밀번호가 변경되었습니다.');
+      formik.setFieldValue('password', '');
+      formik.setFieldValue('passwordConfirm', '');
+    } catch (e) {
+      if (e instanceof AxiosError && e.response?.status === 400) {
+        alert('현재 비밀번호가 일치하지 않습니다.');
+      } else {
+        console.error(e);
+        alert('비밀번호 변경 중 오류가 발생했습니다.');
+      }
+    }
   };
 
   return (
@@ -140,7 +169,7 @@ export default function MypageInfo() {
               <MypageFormLabel>ID*</MypageFormLabel>
               <MypageFormInput>
                 <TextField
-                  value={formData.id}
+                  value={formik.values.userId}
                   disabled
                   sx={{
                     flex: 1,
@@ -157,13 +186,10 @@ export default function MypageInfo() {
               <MypageFormInput gap={'5px'}>
                 <TextField
                   type='password'
-                  value={formData.password}
-                  disabled
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      backgroundColor: '#f8f9fa',
-                    },
-                  }}
+                  name='password'
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  placeholder='비밀번호를 입력해주세요'
                 />
               </MypageFormInput>
               <MypageFormExtra>
@@ -183,9 +209,10 @@ export default function MypageInfo() {
               <MypageFormInput>
                 <TextField
                   type='password'
+                  name='passwordConfirm'
+                  value={formik.values.passwordConfirm}
+                  onChange={formik.handleChange}
                   placeholder='새 비밀번호를 입력해주세요'
-                  value={newPassword}
-                  onChange={e => setNewPassword(e.target.value)}
                   sx={{
                     '& .MuiOutlinedInput-root': {},
                   }}
@@ -197,14 +224,14 @@ export default function MypageInfo() {
             <MypageFormRow direction='row'>
               <MypageFormLabel>이름*</MypageFormLabel>
               <MypageFormInput>
-                <TextField value={formData.name} onChange={handleInputChange('name')} sx={{ flex: 1 }} />
+                <TextField name='name' value={formik.values.name} onChange={formik.handleChange} sx={{ flex: 1 }} />
               </MypageFormInput>
             </MypageFormRow>
 
             <MypageFormRow direction='row'>
               <MypageFormLabel>휴대폰 번호</MypageFormLabel>
               <MypageFormInput>
-                <TextField value={formData.phone} onChange={handleInputChange('phone')} sx={{ flex: 1 }} />
+                <TextField name='phoneNumber' value={formik.values.phoneNumber} disabled sx={{ flex: 1 }} />
               </MypageFormInput>
               <MypageFormExtra>
                 <MedipandaButton fullWidth variant='contained' size='large' onClick={handlePhoneChange}>
@@ -222,10 +249,10 @@ export default function MypageInfo() {
                   alignItems: 'center',
                 }}
               >
-                <TextField value={formData.emailId} onChange={handleInputChange('emailId')} sx={{ flex: 1 }} />
+                <TextField name='emailId' value={formik.values.emailId} onChange={formik.handleChange} sx={{ flex: 1 }} />
                 <Typography sx={{ color: '#666' }}>@</Typography>
                 <FormControl sx={{ minWidth: 140 }}>
-                  <Select value={formData.emailDomain} onChange={e => setFormData(prev => ({ ...prev, emailDomain: e.target.value }))}>
+                  <Select name='emailDomain' value={formik.values.emailDomain} onChange={formik.handleChange}>
                     <MenuItem value='naver.com'>naver.com</MenuItem>
                     <MenuItem value='gmail.com'>gmail.com</MenuItem>
                     <MenuItem value='daum.net'>daum.net</MenuItem>
@@ -250,22 +277,26 @@ export default function MypageInfo() {
           }}
         >
           <Stack sx={{ width: '544px' }}>
-            <MypageFormRow direction='row'>
-              <MypageFormLabel>닉네임</MypageFormLabel>
-              <MypageFormInput>
-                <TextField value={formData.nickname} onChange={handleInputChange('nickname')} fullWidth sx={{ marginBottom: 1 }} />
-                <Typography sx={{ color: '#f44336', fontSize: '12px' }}>닉네임 변경은 1달에 1회 가능합니다.</Typography>
-              </MypageFormInput>
-            </MypageFormRow>
+            {/*<MypageFormRow direction='row'>*/}
+            {/*  <MypageFormLabel>닉네임</MypageFormLabel>*/}
+            {/*  <MypageFormInput>*/}
+            {/*    <TextField value={formData.nickname} onChange={handleInputChange('nickname')} fullWidth sx={{ marginBottom: 1 }} />*/}
+            {/*    <Typography sx={{ color: '#f44336', fontSize: '12px' }}>닉네임 변경은 1달에 1회 가능합니다.</Typography>*/}
+            {/*  </MypageFormInput>*/}
+            {/*</MypageFormRow>*/}
 
             <MypageFormRow direction='row'>
               <MypageFormLabel>CSO 등록증</MypageFormLabel>
               <MypageFormInput>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: 1 }}>
-                  <FileUploadButton startIcon={<GetApp />} onClick={handleFileUpload}>
-                    파일 올리기
-                  </FileUploadButton>
-                  {uploadedFileName && <Typography sx={{ color: '#666' }}>{uploadedFileName}</Typography>}
+                  <MedipandaFileUploadButton
+                    onChange={files => {
+                      formik.setFieldValue('csoRegistrationFile', files[0] ?? null);
+                    }}
+                  />
+                  {formik.values.csoRegistrationFile !== null && (
+                    <Typography sx={{ color: '#666' }}>{formik.values.csoRegistrationFile.name}</Typography>
+                  )}
                 </Box>
                 <Typography sx={{ color: '#f44336', fontSize: '12px', display: 'block' }}>
                   jpg, jpeg, pdf, png 파일만 업로드 가능합니다
@@ -273,18 +304,20 @@ export default function MypageInfo() {
               </MypageFormInput>
             </MypageFormRow>
 
-            <MypageFormRow direction='row'>
-              <MypageFormLabel>추천인 코드</MypageFormLabel>
-              <MypageFormInput>
-                <TextField value={formData.referralCode} onChange={handleInputChange('referralCode')} sx={{ flex: 1 }} />
-              </MypageFormInput>
-            </MypageFormRow>
+            {/*<MypageFormRow direction='row'>*/}
+            {/*  <MypageFormLabel>추천인 코드</MypageFormLabel>*/}
+            {/*  <MypageFormInput>*/}
+            {/*    <TextField value={formData.referralCode} onChange={handleInputChange('referralCode')} sx={{ flex: 1 }} />*/}
+            {/*  </MypageFormInput>*/}
+            {/*</MypageFormRow>*/}
           </Stack>
         </Stack>
 
         <Stack
           direction='row'
           gap='10px'
+          component='form'
+          onSubmit={formik.handleSubmit}
           sx={{
             alignSelf: 'center',
             width: '330px',
@@ -293,24 +326,11 @@ export default function MypageInfo() {
           <MedipandaButton variant='outlined' size='large' color='secondary' fullWidth component={RouterLink} to={'/'}>
             취소
           </MedipandaButton>
-          <MedipandaButton onClick={handleSave} disabled={loading} variant='contained' fullWidth size='large' color='secondary'>
-            {loading ? <CircularProgress size={20} color='inherit' sx={{ mr: 1 }} /> : null}
+          <MedipandaButton type='submit' variant='contained' fullWidth size='large' color='secondary'>
             수정
           </MedipandaButton>
         </Stack>
       </>
-
-      {/* Snackbar for notifications */}
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </>
   );
 }

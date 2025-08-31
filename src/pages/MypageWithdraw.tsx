@@ -1,40 +1,28 @@
+import { deleteMember } from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
+import { useSession } from '@/hooks/useSession';
 import { colors } from '@/themes';
-import {
-  Alert,
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Snackbar,
-  Stack,
-  Typography,
-} from '@mui/material';
-import { useState } from 'react';
+import { Button, Stack, Typography } from '@mui/material';
 import { Link as RouterLink } from 'react-router';
 
 export default function MypageWithdraw() {
-  const [confirmDialog, setConfirmDialog] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const { session } = useSession();
 
-  const showSnackbar = (message, severity = 'success') => {
-    setSnackbarMessage(message);
-    setSnackbarSeverity(severity);
-    setSnackbarOpen(true);
-  };
+  const handleWithdraw = async () => {
+    const confirmed = confirm('정말로 탈퇴하시겠습니까?');
 
-  const handleWithdraw = () => {
-    setConfirmDialog(false);
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      showSnackbar('회원 탈퇴가 완료되었습니다.', 'success');
-    }, 2000);
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await deleteMember(session!.userId);
+      alert('회원 탈퇴가 완료되었습니다. 그동안 메디판다를 이용해주셔서 감사합니다.');
+      window.location.href = '/logout';
+    } catch (e) {
+      console.error(e);
+      alert('회원 탈퇴 중 오류가 발생했습니다.');
+    }
   };
 
   return (
@@ -133,50 +121,15 @@ export default function MypageWithdraw() {
               backgroundColor: colors.gray50,
               color: colors.white,
             }}
-            onClick={() => setConfirmDialog(true)}
-            disabled={loading}
+            onClick={handleWithdraw}
           >
-            {loading ? <CircularProgress size={20} color='inherit' sx={{ mr: 1 }} /> : null}
             탈퇴하기
           </Button>
-          <MedipandaButton fullWidth variant='contained' size='large' component={RouterLink} to='/mypage/info'>
+          <MedipandaButton fullWidth variant='contained' size='large' component={RouterLink} to='/'>
             취소하기
           </MedipandaButton>
         </Stack>
       </Stack>
-
-      {/* Confirmation Dialog */}
-      <Dialog open={confirmDialog} onClose={() => setConfirmDialog(false)} maxWidth='sm' fullWidth>
-        <DialogTitle sx={{ color: '#d32f2f', fontWeight: 'bold' }}>회원 탈퇴 확인</DialogTitle>
-        <DialogContent>
-          <Typography sx={{ marginBottom: 2 }}>정말로 회원을 탈퇴하시겠습니까?</Typography>
-          <Typography sx={{ color: '#666', marginBottom: 1 }}>• 탈퇴 시 모든 데이터가 삭제됩니다</Typography>
-          <Typography sx={{ color: '#666', marginBottom: 1 }}>• 동일한 아이디로 재가입이 불가능합니다</Typography>
-          <Typography sx={{ color: '#666' }}>• 탈퇴 후 복구가 불가능합니다</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setConfirmDialog(false)}>취소</Button>
-          <Button
-            variant='contained'
-            onClick={handleWithdraw}
-            sx={{ backgroundColor: '#d32f2f', '&:hover': { backgroundColor: '#b71c1c' } }}
-          >
-            탈퇴하기
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Snackbar for notifications */}
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={4000}
-        onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </>
   );
 }
