@@ -7,4 +7,4 @@ export const MedipandaOutlinedInput = styled(OutlinedInput)({
   '& .MuiOutlinedInput-input': {
     boxSizing: 'border-box',
   },
-});
+}) as unknown as typeof OutlinedInput;

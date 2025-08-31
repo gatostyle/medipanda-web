@@ -40,7 +40,7 @@ const InquiryList = LazyComponent(lazy(() => import('pages/InquiryList')));
 const InquiryDetail = LazyComponent(lazy(() => import('pages/InquiryDetail')));
 const InquiryEdit = LazyComponent(lazy(() => import('@/pages/InquiryEdit')));
 
-const MypageGuard = LazyComponent(lazy(() => import('pages/MypageGuard')));
+const MypageGuard = LazyComponent(lazy(() => import('@/guards/MypageGuard')));
 const MypageInfo = LazyComponent(lazy(() => import('pages/MypageInfo')));
 const MypageNotification = LazyComponent(lazy(() => import('pages/MypageNotification')));
 const MypageWithdraw = LazyComponent(lazy(() => import('pages/MypageWithdraw')));
@@ -77,48 +77,40 @@ const route: RouteObject[] = [
       {
         path: 'mypage',
         element: (
-          <SidebarLayout
-            title='마이페이지'
-            tabConfig={[
-              {
-                label: '내정보관리',
-                to: '/mypage/info',
-              },
-              {
-                label: '수신설정',
-                to: '/mypage/notification',
-              },
-              {
-                label: '회원탈퇴',
-                to: '/mypage/withdraw',
-              },
-            ]}
-          />
+          <LoginGuard>
+            <MypageGuard>
+              <SidebarLayout
+                title='마이페이지'
+                tabConfig={[
+                  {
+                    label: '내정보관리',
+                    to: '/mypage/info',
+                  },
+                  {
+                    label: '수신설정',
+                    to: '/mypage/notification',
+                  },
+                  {
+                    label: '회원탈퇴',
+                    to: '/mypage/withdraw',
+                  },
+                ]}
+              />
+            </MypageGuard>
+          </LoginGuard>
         ),
         children: [
           {
             path: 'info',
-            element: (
-              <LoginGuard>
-                <MypageInfo />
-              </LoginGuard>
-            ),
+            element: <MypageInfo />,
           },
           {
             path: 'notification',
-            element: (
-              <LoginGuard>
-                <MypageNotification />
-              </LoginGuard>
-            ),
+            element: <MypageNotification />,
           },
           {
             path: 'withdraw',
-            element: (
-              <LoginGuard>
-                <MypageWithdraw />
-              </LoginGuard>
-            ),
+            element: <MypageWithdraw />,
           },
         ],
       },
@@ -141,91 +133,81 @@ const route: RouteObject[] = [
       {
         path: '',
         element: (
-          <TabbedLayout
-            title='실적관리'
-            tabConfig={[
-              {
-                label: '실적입력(EDI)',
-                to: '/prescriptions',
-              },
-              {
-                label: '소속딜러 관리',
-                to: '/dealers',
-              },
-            ]}
-          />
+          <LoginGuard>
+            <TabbedLayout
+              title='실적관리'
+              tabConfig={[
+                {
+                  label: '실적입력(EDI)',
+                  to: '/prescriptions',
+                },
+                {
+                  label: '소속딜러 관리',
+                  to: '/dealers',
+                },
+              ]}
+            />
+          </LoginGuard>
         ),
         children: [
           {
             path: 'prescriptions',
-            element: (
-              <LoginGuard>
-                <PrescriptionList />
-              </LoginGuard>
-            ),
+            element: <PrescriptionList />,
           },
           {
             path: 'dealers',
-            element: (
-              <LoginGuard>
-                <DealerList />
-              </LoginGuard>
-            ),
+            element: <DealerList />,
           },
         ],
       },
       {
         path: '',
         element: (
-          <TabbedLayout
-            title='정산'
-            tabConfig={[
-              {
-                label: '정산내역',
-                to: '/settlement-list',
-              },
-              {
-                label: '매출통계',
-                to: '/sales-statistic',
-              },
-            ]}
-          />
+          <LoginGuard>
+            <TabbedLayout
+              title='정산'
+              tabConfig={[
+                {
+                  label: '정산내역',
+                  to: '/settlement-list',
+                },
+                {
+                  label: '매출통계',
+                  to: '/sales-statistic',
+                },
+              ]}
+            />
+          </LoginGuard>
         ),
         children: [
           {
             path: 'settlement-list',
-            element: (
-              <LoginGuard>
-                <SettlementList />
-              </LoginGuard>
-            ),
+            element: <SettlementList />,
           },
           {
             path: 'sales-statistic',
-            element: (
-              <LoginGuard>
-                <SalesStatistic />
-              </LoginGuard>
-            ),
+            element: <SalesStatistic />,
           },
         ],
       },
       {
         path: 'community',
         element: (
-          <TabbedLayout
-            title='커뮤니티'
-            tabConfig={[
-              {
-                label: '익명게시판',
-                to: '/community/anonymous',
-              },
-              {
-                label: 'MR-CSO 매칭',
-                to: '/community/mr-cso-matching',
-              },
-            ]}
-          />
+          <LoginGuard>
+            <TabbedLayout
+              title='커뮤니티'
+              tabConfig={[
+                {
+                  label: '익명게시판',
+                  to: '/community/anonymous',
+                },
+                {
+                  label: 'MR-CSO 매칭',
+                  to: '/community/mr-cso-matching',
+                },
+              ]}
+            />
+          </LoginGuard>
         ),
         children: [
           {
@@ -234,43 +216,23 @@ const route: RouteObject[] = [
           },
           {
             path: ':communityType/:id',
-            element: (
-              <LoginGuard>
-                <CommunityDetail />
-              </LoginGuard>
-            ),
+            element: <CommunityDetail />,
           },
           {
             path: ':communityType/:id/edit',
-            element: (
-              <LoginGuard>
-                <CommunityEdit />
-              </LoginGuard>
-            ),
+            element: <CommunityEdit />,
           },
           {
             path: ':communityType/new',
-            element: (
-              <LoginGuard>
-                <CommunityEdit />
-              </LoginGuard>
-            ),
+            element: <CommunityEdit />,
           },
           {
             path: 'anonymous',
-            element: (
-              <LoginGuard>
-                <AnonymousList />
-              </LoginGuard>
-            ),
+            element: <AnonymousList />,
           },
           {
             path: 'mr-cso-matching',
-            element: (
-              <LoginGuard>
-                <MrCsoMatchingList />
-              </LoginGuard>
-            ),
+            element: <MrCsoMatchingList />,
           },
         ],
       },
@@ -309,80 +271,54 @@ const route: RouteObject[] = [
       {
         path: 'customer-service',
         element: (
-          <SidebarLayout
-            title='고객센터'
-            tabConfig={[
-              {
-                label: '공지사항',
-                to: '/customer-service/notice',
-              },
-              {
-                label: 'FAQ',
-                to: '/customer-service/faq',
-              },
-              {
-                label: '1:1 문의내역',
-                to: '/customer-service/inquiry',
-              },
-            ]}
-          />
+          <LoginGuard>
+            <SidebarLayout
+              title='고객센터'
+              tabConfig={[
+                {
+                  label: '공지사항',
+                  to: '/customer-service/notice',
+                },
+                {
+                  label: 'FAQ',
+                  to: '/customer-service/faq',
+                },
+                {
+                  label: '1:1 문의내역',
+                  to: '/customer-service/inquiry',
+                },
+              ]}
+            />
+          </LoginGuard>
         ),
         children: [
           {
             path: 'notice',
-            element: (
-              <LoginGuard>
-                <NoticeList />
-              </LoginGuard>
-            ),
+            element: <NoticeList />,
           },
           {
             path: 'notice/:id',
-            element: (
-              <LoginGuard>
-                <NoticeDetail />
-              </LoginGuard>
-            ),
+            element: <NoticeDetail />,
           },
           {
             path: 'faq',
-            element: (
-              <LoginGuard>
-                <FaqList />
-              </LoginGuard>
-            ),
+            element: <FaqList />,
           },
           {
             path: 'inquiry',
-            element: (
-              <LoginGuard>
-                <InquiryList />
-              </LoginGuard>
-            ),
+            element: <InquiryList />,
           },
           {
             path: 'inquiry/:id',
-            element: (
-              <LoginGuard>
-                <InquiryDetail />
-              </LoginGuard>
-            ),
+            element: <InquiryDetail />,
           },
           {
             path: 'inquiry/:id/edit',
-            element: (
-              <LoginGuard>
-                <InquiryEdit />
-              </LoginGuard>
-            ),
+            element: <InquiryEdit />,
           },
           {
             path: 'inquiry/new',
-            element: (
-              <LoginGuard>
-                <InquiryEdit />
-              </LoginGuard>
-            ),
+            element: <InquiryEdit />,
           },
         ],
       },
