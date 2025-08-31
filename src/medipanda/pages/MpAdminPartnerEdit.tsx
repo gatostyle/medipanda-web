@@ -70,7 +70,7 @@ export default function MpAdminPartnerEdit() {
       // setPharmacyRows([{ ...emptyRow, id: 1 }]);
 
       formik.setValues({
-        drugCompany: { id: -1, name: partnerDetails.drugCompanyName },
+        drugCompany: { id: -1, name: partnerDetails.drugCompanyName, code: '' },
         companyName: partnerDetails.companyName,
         contractType: partnerDetails.contractType,
         institutionCode: partnerDetails.institutionCode,

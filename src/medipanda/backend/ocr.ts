@@ -12,6 +12,7 @@ export interface OcrResponse {
 }
 
 export async function requestOcr(data: {
+  drugCompanyCode: string;
   file: Blob;
   originalFile: Blob;
   originalFileName: string;
@@ -20,6 +21,7 @@ export async function requestOcr(data: {
   points: { x: number; y: number }[];
 }): Promise<OcrResponse[]> {
   const form = new FormData();
+  form.append('drug-company-code', data.drugCompanyCode);
   form.append('cropped-image', data.file, `${data.originalFileName}_scanned.jpg`);
   form.append('original-image', data.originalFile, data.originalFileName);
 

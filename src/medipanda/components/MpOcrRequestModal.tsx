@@ -11,13 +11,14 @@ interface Point {
 }
 
 interface OcrRequestModalProps {
+  drugCompanyCode: string;
   open: boolean;
   onClose: () => void;
   onSubmit: (response: OcrResponse[]) => void;
   imageUrls: string[];
 }
 
-export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrRequestModalProps) {
+export function MpOcrRequestModal({ drugCompanyCode, open, onClose, onSubmit, imageUrls }: OcrRequestModalProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const transformedCanvasRef = useRef<HTMLCanvasElement>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -469,6 +470,7 @@ export function MpOcrRequestModal({ open, onClose, onSubmit, imageUrls }: OcrReq
       const imageScale = 1 / scale;
 
       const ocrData = await requestOcr({
+        drugCompanyCode: drugCompanyCode,
         file: blob,
         originalFile: originalBlob,
         originalFileName: new URL(currentImageUrl!).pathname.split('/').pop()!,

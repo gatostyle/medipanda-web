@@ -104,7 +104,7 @@ export interface AttachmentResponse {
   s3fileId: number;
   fileUrl: string;
   type: 'ATTACHMENT' | 'EDITOR';
-  fileName: string;
+  originalFileName: string;
 }
 
 export interface BannerCreateRequest {
@@ -152,10 +152,10 @@ export interface BlindPostResponse {
   content: string;
   userId: string;
   likesCount: number;
+  nickname: string;
+  reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
   blindAt: string;
   postType: 'BOARD' | 'COMMENT';
-  reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
-  nickname: string;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
 }
 
@@ -190,13 +190,13 @@ export interface BoardDetailsResponse {
 export interface BoardMemberStatsResponse {
   name: string;
   id: number;
+  phoneNumber: string;
   userId: string;
   commentCount: number;
-  phoneNumber: string;
+  blindPostCount: number;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   postCount: number;
   totalLikes: number;
-  blindPostCount: number;
 }
 
 export interface BoardPostCreateRequest {
@@ -275,13 +275,13 @@ export interface CommentMemberResponse {
   name: string;
   id: number;
   content: string;
+  commentType: 'COMMENT' | 'REPLY';
   userId: string;
   likesCount: number;
-  commentType: 'COMMENT' | 'REPLY';
-  createdAt: string;
   nickname: string;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  createdAt: string;
   isBlind: boolean;
+  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
 }
 
 export interface CommentResponse {
@@ -320,19 +320,16 @@ export interface DealerResponse {
 }
 
 export interface DeviceRequest {
+  deviceUuid: string | null;
   platform: 'android' | 'ios' | 'other';
   appVersion: string | null;
   fcmToken: string | null;
 }
 
-export interface DeviceUuidResponse {
-  userId: string;
-  deviceUuid: string | null;
-}
-
 export interface DrugCompanyResponse {
   id: number;
   name: string;
+  code: string;
 }
 
 export interface EventBoardCreateRequest {
@@ -357,6 +354,7 @@ export interface EventBoardDetailsResponse {
 export interface EventBoardSummaryResponse {
   id: number;
   title: string;
+  description: string;
   thumbnailUrl: string;
   eventStartAt: string;
   eventEndAt: string;
@@ -388,6 +386,7 @@ export interface ExpenseReportResponse {
 }
 
 export interface FcmTokenRequest {
+  platform: 'android' | 'ios' | 'other';
   fcmToken: string;
   deviceUuid: string | null;
 }
@@ -437,11 +436,13 @@ export interface KmcAuthResponse {
 export interface LoginRequest {
   userId: string;
   password: string;
+  device: DeviceRequest | null;
 }
 
 export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
+  deviceUuid: string | null;
 }
 
 export interface MarketingAgreements {
@@ -452,12 +453,10 @@ export interface MarketingAgreements {
 
 export interface MedicalPersonInfo {
   name: string;
-  employeeCode: string;
 }
 
 export interface MedicalPersonWithSignature {
   name: string;
-  employeeCode: string;
   signatureFile: AttachmentResponse;
 }
 
@@ -510,7 +509,6 @@ export interface MemberSignupRequest {
   nickname: string | null;
   referralCode: string | null;
   marketingAgreement: MarketingAgreements;
-  device: DeviceRequest | null;
 }
 
 export interface MemberUpdateRequest {
@@ -566,9 +564,9 @@ export interface PageBannerResponse {
   content: BannerResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -580,9 +578,9 @@ export interface PageBlindPostResponse {
   content: BlindPostResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -594,9 +592,9 @@ export interface PageBoardMemberStatsResponse {
   content: BoardMemberStatsResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -608,9 +606,9 @@ export interface PageBoardPostResponse {
   content: BoardPostResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -622,9 +620,9 @@ export interface PageCommentMemberResponse {
   content: CommentMemberResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -636,9 +634,9 @@ export interface PageEventBoardSummaryResponse {
   content: EventBoardSummaryResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -650,9 +648,9 @@ export interface PageExpenseReportResponse {
   content: ExpenseReportResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -664,9 +662,9 @@ export interface PageHospitalResponse {
   content: HospitalResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -678,9 +676,9 @@ export interface PageMemberResponse {
   content: MemberResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -692,9 +690,9 @@ export interface PagePartnerResponse {
   content: PartnerResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -706,9 +704,9 @@ export interface PagePerformanceStatsResponse {
   content: PerformanceStatsResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -720,9 +718,9 @@ export interface PagePrescriptionPartnerResponse {
   content: PrescriptionPartnerResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -734,9 +732,9 @@ export interface PagePrescriptionResponse {
   content: PrescriptionResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -748,9 +746,9 @@ export interface PageProductSummaryResponse {
   content: ProductSummaryResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -762,9 +760,9 @@ export interface PageSalesAgencyProductApplicantResponse {
   content: SalesAgencyProductApplicantResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -776,9 +774,9 @@ export interface PageSalesAgencyProductSummaryResponse {
   content: SalesAgencyProductSummaryResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -790,9 +788,9 @@ export interface PageSettlementPartnerResponse {
   content: SettlementPartnerResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -804,9 +802,9 @@ export interface PageSettlementResponse {
   content: SettlementResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -959,6 +957,7 @@ export interface PrescriptionPartnerResponse {
   id: number;
   companyName: string;
   drugCompany: string;
+  drugCompanyCode: string;
   institutionName: string;
   institutionCode: string;
   prescriptionMonth: string;
@@ -1139,6 +1138,22 @@ export interface ProductSummaryResponse {
   isPromotion: boolean | null;
   isOutOfStock: boolean | null;
   isStopSelling: boolean | null;
+}
+
+export interface PushPreferenceResponse {
+  allowNotice: boolean;
+  allowSalesAgency: boolean;
+  allowPrescription: boolean;
+  allowSettlement: boolean;
+  allowCommunity: boolean;
+}
+
+export interface PushPreferenceUpdateRequest {
+  allowNotice: boolean | null;
+  allowSalesAgency: boolean | null;
+  allowPrescription: boolean | null;
+  allowSettlement: boolean | null;
+  allowCommunity: boolean | null;
 }
 
 export interface RefreshTokenRequest {
@@ -1878,18 +1893,17 @@ export async function getUserMembers(options?: {
  * 회원가입
  * POST /v1/members
  */
-export async function signup(data: { request: MemberSignupRequest; file?: File }): Promise<DeviceUuidResponse> {
+export async function signup(data: { request: MemberSignupRequest; file?: File }): Promise<void> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   if (data.file !== undefined) {
     form.append('file', data.file);
   }
-  const response = await axios.request<DeviceUuidResponse>({
+  await axios.request({
     method: 'POST',
     url: '/v1/members',
     data: form,
   });
-  return response.data;
 }
 
 /**
@@ -2316,12 +2330,13 @@ export async function verifyCodeForFindId(options?: { phoneNumber?: string; veri
  * 아이디 비밀번호 찾기용 휴대폰 인증번호 전송
  * POST /v1/auth/verification-code/account/send
  */
-export async function sendVerificationCodeForFindAccount(options?: { phoneNumber?: string }): Promise<void> {
-  await axios.request({
+export async function sendVerificationCodeForFindAccount(options?: { phoneNumber?: string }): Promise<string> {
+  const response = await axios.request<string>({
     method: 'POST',
     url: '/v1/auth/verification-code/account/send',
     params: options,
   });
+  return response.data;
 }
 
 /**
@@ -2354,13 +2369,12 @@ export async function login(data: LoginRequest): Promise<LoginResponse> {
  * FCM 토큰 등록
  * POST /v1/auth/fcm-token
  */
-export async function registerFcmToken(data: FcmTokenRequest): Promise<DeviceUuidResponse> {
-  const response = await axios.request<DeviceUuidResponse>({
+export async function registerFcmToken(data: FcmTokenRequest): Promise<void> {
+  await axios.request({
     method: 'POST',
     url: '/v1/auth/fcm-token',
     data,
   });
-  return response.data;
 }
 
 /**
@@ -2589,6 +2603,31 @@ export async function approveOrRejectCso(
     url: `/v1/members/${userId}/cso-approval`,
     params: options,
   });
+}
+
+/**
+ * 푸시 설정 조회
+ * GET /v1/members/me/push-preferences
+ */
+export async function getPushPreferences(): Promise<PushPreferenceResponse> {
+  const response = await axios.request<PushPreferenceResponse>({
+    method: 'GET',
+    url: '/v1/members/me/push-preferences',
+  });
+  return response.data;
+}
+
+/**
+ * 푸시 설정 부분 수정
+ * PATCH /v1/members/me/push-preferences
+ */
+export async function patchPushPreferences(data: PushPreferenceUpdateRequest): Promise<PushPreferenceResponse> {
+  const response = await axios.request<PushPreferenceResponse>({
+    method: 'PATCH',
+    url: '/v1/members/me/push-preferences',
+    data,
+  });
+  return response.data;
 }
 
 /**
@@ -2826,18 +2865,6 @@ export async function tetSms(options?: { message?: string; phoneNumber?: string 
 }
 
 /**
- * 앱 푸시 메시지 전송 테스트
- * GET /v1/test/push
- */
-export async function testPush(options?: { userId?: string; message?: string }): Promise<void> {
-  await axios.request({
-    method: 'GET',
-    url: '/v1/test/push',
-    params: options,
-  });
-}
-
-/**
  * email 전송 테스트
  * GET /v1/test/email
  */
@@ -2941,6 +2968,7 @@ export async function getPerformanceStats(options?: {
   companyName?: string;
   dealerName?: string;
   institutionName?: string;
+  institutionCode?: string;
   startMonth?: DateString;
   endMonth?: DateString;
   page?: number;
@@ -2983,6 +3011,7 @@ export function getDownloadPerformanceExcel(options?: {
   companyName?: string;
   dealerName?: string;
   institutionName?: string;
+  institutionCode?: string;
   startMonth?: DateString;
   endMonth?: DateString;
   page?: number;
@@ -3017,7 +3046,7 @@ export async function getPerformanceByInstitution(options?: {
  * GET /v1/settlements/performance/by-drug-company
  */
 export async function getPerformanceByDrugCompany(options?: {
-  partnerId?: number;
+  institutionCode?: string;
   startMonth?: DateString;
   endMonth?: DateString;
 }): Promise<PerformanceStatsByDrugCompany[]> {
@@ -3034,7 +3063,7 @@ export async function getPerformanceByDrugCompany(options?: {
  * GET /v1/settlements/performance/by-drug-company/monthly
  */
 export async function getPerformanceByDrugCompanyMonthly(options?: {
-  partnerId?: number;
+  institutionCode?: string;
   startMonth?: DateString;
   endMonth?: DateString;
 }): Promise<PerformanceStatsByDrugCompanyMonthly[]> {
@@ -3580,6 +3609,17 @@ export async function downloadExpenseReportFiles(options?: { ids?: number[] }): 
     method: 'GET',
     url: '/v1/expense-reports/files/download',
     params: options,
+  });
+}
+
+/**
+ * 지출보고서 첨부파일 ZIP 다운로드
+ * GET /v1/expense-reports/expense-reports/{expenseReportId}/files/download
+ */
+export async function downloadExpenseReportFilesZip(expenseReportId: number): Promise<void> {
+  await axios.request({
+    method: 'GET',
+    url: `/v1/expense-reports/expense-reports/${expenseReportId}/files/download`,
   });
 }
 

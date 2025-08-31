@@ -65,6 +65,7 @@ export default function MpAdminPrescriptionFormProducts() {
   const formik = useFormik({
     initialValues: {
       drugCompany: '',
+      drugCompanyCode: '',
       companyName: '',
       institutionName: '',
       institutionCode: '',
@@ -333,6 +334,7 @@ export default function MpAdminPrescriptionFormProducts() {
 
         formik.setValues({
           drugCompany: formDetail.drugCompany,
+          drugCompanyCode: formDetail.drugCompanyCode,
           companyName: formDetail.companyName,
           institutionName: formDetail.partnerName,
           institutionCode: formDetail.institutionCode,
@@ -565,6 +567,7 @@ export default function MpAdminPrescriptionFormProducts() {
         prescriptionFormId={id ? parseInt(id) : undefined}
       />
       <MpOcrRequestModal
+        drugCompanyCode={formik.values.drugCompanyCode}
         open={ocrModalOpen}
         onClose={() => setOcrModalOpen(false)}
         onSubmit={handleOcrSubmit}

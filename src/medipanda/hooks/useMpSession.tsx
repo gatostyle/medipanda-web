@@ -75,6 +75,7 @@ export function MpSessionProvider({ children }: { children: React.ReactNode }) {
     const { refreshToken } = await apiLogin({
       userId,
       password: encryptedPassword,
+      device: null,
     });
     localStorage.setItem('refreshToken', refreshToken);
 
