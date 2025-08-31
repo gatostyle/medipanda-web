@@ -213,9 +213,9 @@ export default function MypageNotification() {
 
         <Stack
           direction='row'
+          justifyContent='center'
           gap='10px'
           sx={{
-            width: '330px',
             marginTop: '40px',
           }}
         >
@@ -223,6 +223,7 @@ export default function MypageNotification() {
             fullWidth
             variant='outlined'
             sx={{
+              width: '160px',
               height: '49px',
               borderColor: colors.navy,
               color: colors.gray600,
@@ -234,6 +235,7 @@ export default function MypageNotification() {
             fullWidth
             variant='contained'
             sx={{
+              width: '160px',
               height: '49px',
               backgroundColor: colors.navy,
             }}
