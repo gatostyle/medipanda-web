@@ -1,4 +1,4 @@
-import { getBanners, getBoards } from '@/backend';
+import { DateString, getBanners, getBoards, getRecentlyOpenedCount, monthlyCount, monthlyFee } from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaCarousel, type MedipandaCarouselHandle } from '@/custom/components/MedipandaCarousel';
 import { MedipandaTable } from '@/custom/components/MedipandaTable';
@@ -9,15 +9,18 @@ import { colors, typography } from '@/themes';
 import { formatYyyyMmDd } from '@/lib/dateFormat';
 import { withSequence } from '@/lib/withSequence';
 import { KeyboardArrowRight } from '@mui/icons-material';
-import { Box, Button, Link, Stack, type TableProps } from '@mui/material';
+import { Box, Button, Link, Stack, type TableProps, Typography } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link as RouterLink } from 'react-router';
 
 export default function Home() {
   const { session } = useSession();
 
   const [recentBoardType, setRecentBoardType] = useState<'ANONYMOUS' | 'MR_CSO_MATCHING'>('ANONYMOUS');
+  const [monthlyPrescriptionCount, setMonthlyPrescriptionCount] = useState<number | null>(null);
+  const [monthlyFeeAmount, setMonthlyFeeAmount] = useState<number | null>(null);
+  const [recentlyOpenedCount, setRecentlyOpenedCount] = useState<number | null>(null);
 
   const { content: banners } = usePageFetchFormik({
     fetcher: () => {
@@ -32,9 +35,28 @@ export default function Home() {
 
   const carouselRef = useRef<MedipandaCarouselHandle>(null);
 
+  useEffect(() => {
+    fetchHomeBanner();
+  }, []);
+
+  const fetchHomeBanner = async () => {
+    const { count } = await monthlyCount({ referenceDate: Number(formatYyyyMmDd(new Date()).replace(/-/g, '')) });
+    const { feeAmount } = await monthlyFee({ referenceDate: Number(formatYyyyMmDd(new Date()).replace(/-/g, '')) });
+    const recentlyOpenedCount = await getRecentlyOpenedCount({ referenceDate: new DateString(new Date()) });
+
+    setMonthlyPrescriptionCount(count);
+    setMonthlyFeeAmount(feeAmount / 1_000_000);
+    setRecentlyOpenedCount(recentlyOpenedCount);
+  };
+
   return (
     <>
-      <Box sx={{ marginBottom: '32px' }}>
+      <Box
+        sx={{
+          position: 'relative',
+          marginBottom: '32px',
+        }}
+      >
         <LazyImage
           src='/assets/hero.svg'
           alt='Hero Section'
@@ -44,6 +66,60 @@ export default function Home() {
             display: 'block',
           }}
         />
+        <span
+          style={{
+            position: 'absolute',
+            top: '69px',
+            left: '702px',
+            color: colors.white,
+          }}
+        >
+          <Typography
+            variant='heading2B'
+            sx={{
+              fontSize: '50px',
+            }}
+          >
+            {monthlyPrescriptionCount !== null ? monthlyPrescriptionCount.toLocaleString() : '-'}
+          </Typography>
+          <Typography variant='heading2R'>건</Typography>
+        </span>
+        <span
+          style={{
+            position: 'absolute',
+            top: '211px',
+            left: '702px',
+            color: colors.white,
+          }}
+        >
+          <Typography
+            variant='heading2B'
+            sx={{
+              fontSize: '50px',
+            }}
+          >
+            {monthlyFeeAmount !== null ? monthlyFeeAmount.toLocaleString() : '-'}
+          </Typography>
+          <Typography variant='heading2R'>백만원</Typography>
+        </span>
+        <span
+          style={{
+            position: 'absolute',
+            top: '353px',
+            left: '702px',
+            color: colors.white,
+          }}
+        >
+          <Typography
+            variant='heading2B'
+            sx={{
+              fontSize: '50px',
+            }}
+          >
+            {recentlyOpenedCount !== null ? recentlyOpenedCount.toLocaleString() : '-'}
+          </Typography>
+          <Typography variant='heading2R'>개사</Typography>
+        </span>
       </Box>
 
       <Stack direction='row' alignItems='center' gap='20px' sx={{ marginBottom: 0 }}>
