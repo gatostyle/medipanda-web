@@ -6,9 +6,6 @@ import { Link as RouterLink } from 'react-router';
 
 export function CommunityBanners() {
   const { content } = usePageFetchFormik({
-    initialFormValues: {
-      bannerStatus: 'VISIBLE' as 'VISIBLE' | 'HIDDEN',
-    },
     fetcher: () => {
       return getBanners({
         bannerStatus: 'VISIBLE',

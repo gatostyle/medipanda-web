@@ -57,7 +57,7 @@ export default function ProductList() {
     initialFormValues: {
       searchType: 'composition' as 'composition' | 'productName' | 'manufacturerName',
       searchKeyword: '',
-      sortType: 'FEE_RATE_DESC' as 'PRICE_ASC' | 'PRICE_DESC' | 'FEE_RATE_ASC' | 'FEE_RATE_DESC',
+      sortType: 'FEE_RATE_DESC' as NonNullable<NonNullable<Parameters<typeof getProductSummaries>[0]>['sortType']>,
       advancedSearchOpen: false,
       composition: '',
       manufacturerName: '',

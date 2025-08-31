@@ -20,9 +20,6 @@ export default function Home() {
   const [recentBoardType, setRecentBoardType] = useState<'ANONYMOUS' | 'MR_CSO_MATCHING'>('ANONYMOUS');
 
   const { content: banners } = usePageFetchFormik({
-    initialFormValues: {
-      bannerStatus: 'VISIBLE' as 'VISIBLE' | 'HIDDEN',
-    },
     fetcher: () => {
       return getBanners({
         bannerStatus: 'VISIBLE',
