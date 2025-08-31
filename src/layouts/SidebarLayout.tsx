@@ -46,7 +46,7 @@ function SidebarLayout({ title, tabConfig }: SidebarLayoutProps) {
               key={to}
               component={RouterLink}
               to={to}
-              selected={new URL(to, window.location.origin).pathname.startsWith(currentPath)}
+              selected={new URL(currentPath, window.location.origin).pathname.startsWith(to)}
             >
               <ListItemText primary={label} />
             </SidebarLink>
