@@ -1,4 +1,4 @@
-import { type BoardDetailsResponse, type CommentResponse, createComment, getBoardDetails } from '@/backend';
+import { type BoardDetailsResponse, type CommentResponse, createComment, getBoardDetails, toggleLike, toggleLike_1 } from '@/backend';
 import { CommunityTrendingList } from '@/custom/components/CommunityTrendingList';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
@@ -51,6 +51,11 @@ export default function CommunityDetail() {
 
   const handleCommentUpdate = () => {
     fetchDetail(boardPostId);
+  };
+
+  const handleLike = async () => {
+    await toggleLike_1(boardPostId);
+    await fetchDetail(boardPostId);
   };
 
   const [postPopupAnchor, setPostPopupAnchor] = useState<HTMLElement | null>(null);
@@ -117,7 +122,20 @@ export default function CommunityDetail() {
             <EditorContent editor={editor} />
 
             <Stack direction='row' alignItems='center' gap='30px'>
-              <Stack direction='row' alignItems='center' gap='5px'>
+              <Stack
+                direction='row'
+                alignItems='center'
+                gap='5px'
+                onClick={handleLike}
+                sx={{
+                  borderBottom: `1px solid transparent`,
+                  cursor: 'pointer',
+                  '&:hover': {
+                    borderColor: colors.gray60,
+                    boxSizing: 'border-box',
+                  },
+                }}
+              >
                 <img src='/assets/icons/icon-favorite.svg' />
                 <Typography variant='smallTextR' sx={{ color: colors.gray60 }}>
                   {detail.likesCount.toLocaleString()}
@@ -234,13 +252,14 @@ function CommentSection({
 
           return (
             <Stack key={comment.id} gap='10px'>
-              <Comment comment={comment} replies={replies} onClick={onClick} />
+              <Comment comment={comment} replies={replies} onClick={onClick} onUpdate={onUpdate} />
               {replies.map(reply => (
                 <Comment
                   key={reply.id}
                   comment={reply}
                   replies={null}
                   onClick={onClick}
+                  onUpdate={onUpdate}
                   sx={{
                     padding: '10px 20px',
                     backgroundColor: colors.gray10,
@@ -316,12 +335,19 @@ function Comment({
   comment,
   replies,
   onClick,
+  onUpdate,
   ...props
 }: {
   comment: CommentResponse;
   replies: CommentResponse[] | null;
   onClick?: (event: MouseEvent<HTMLElement>, comment: CommentResponse) => void;
+  onUpdate?: () => Promise<void> | void;
 } & Omit<StackProps, 'onClick'>): ReturnType<typeof Stack> {
+  const handleLike = async () => {
+    await toggleLike(comment.id);
+    await onUpdate?.();
+  };
+
   return (
     <Stack {...props}>
       <Stack direction='row' alignItems='flex-start'>
@@ -357,7 +383,20 @@ function Comment({
         <Typography variant='smallTextR' sx={{ color: colors.gray60 }}>
           {formatRelativeTime(comment.createdAt)}
         </Typography>
-        <Stack direction='row' alignItems='center' gap='5px'>
+        <Stack
+          direction='row'
+          alignItems='center'
+          gap='5px'
+          onClick={handleLike}
+          sx={{
+            borderBottom: `1px solid transparent`,
+            cursor: 'pointer',
+            '&:hover': {
+              borderColor: colors.gray60,
+              boxSizing: 'border-box',
+            },
+          }}
+        >
           <img src='/assets/icons/icon-favorite.svg' />
           <Typography variant='smallTextR' sx={{ color: colors.gray60 }}>
             좋아요 {comment.likesCount.toLocaleString()}
