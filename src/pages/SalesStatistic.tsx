@@ -409,17 +409,19 @@ function ChartView({
 
   return (
     <>
-      <LineChart
-        xAxis={[
-          {
-            scaleType: 'point',
-            data: getMonthRange(startMonth, endMonth).map(date => formatYyyy년Mm월(date)),
-          },
-        ]}
-        series={filteredChartSeries}
-        height={550}
-        sx={{}}
-      />
+      {filteredChartSeries.length > 0 && (
+        <LineChart
+          xAxis={[
+            {
+              scaleType: 'point',
+              data: getMonthRange(startMonth, endMonth).map(date => formatYyyy년Mm월(date)),
+            },
+          ]}
+          series={filteredChartSeries}
+          height={550}
+          sx={{}}
+        />
+      )}
 
       <Stack gap='10px' alignItems='center'>
         <Typography variant='largeTextR' sx={{ color: colors.red }}>
