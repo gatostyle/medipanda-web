@@ -2,7 +2,6 @@ import js from '@eslint/js';
 import globals from 'globals';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
-import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
 import { globalIgnores } from 'eslint/config';
 import prettier from 'eslint-plugin-prettier';
@@ -21,7 +20,6 @@ export default tseslint.config([
       react.configs.flat.recommended,
       react.configs.flat['jsx-runtime'],
       reactHooks.configs['recommended-latest'],
-      reactRefresh.configs.vite,
     ],
     languageOptions: {
       parserOptions: {
@@ -32,14 +30,15 @@ export default tseslint.config([
       globals: globals.browser,
     },
     rules: {
-      "prettier/prettier": [
-        "error",
+      'prettier/prettier': [
+        'error',
         {},
         {
-          "usePrettierrc": true
-        }
+          usePrettierrc: true,
+        },
       ],
-"@typescript-eslint/no-non-null-assertion": 'warn'
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_+$', varsIgnorePattern: '^_+$' }],
     },
   },
 ]);
