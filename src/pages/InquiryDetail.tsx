@@ -59,7 +59,7 @@ export default function InquiryDetail() {
   const handleFileDownload = (attachment: AttachmentResponse) => {
     const link = document.createElement('a');
     link.href = attachment.fileUrl;
-    link.download = attachment.fileName;
+    link.download = attachment.originalFileName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

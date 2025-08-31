@@ -105,7 +105,7 @@ export default function NoticeDetail() {
                 },
               }}
             >
-              <Typography variant='largeTextR'>{file.fileName}</Typography>
+              <Typography variant='largeTextR'>{file.originalFileName}</Typography>
             </Link>
           ))}
         </Stack>

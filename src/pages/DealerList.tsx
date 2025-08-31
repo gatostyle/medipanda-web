@@ -84,6 +84,9 @@ function DealerCreateForm() {
       try {
         await createDealer({
           dealerName: values.dealerName,
+          bankName: null,
+          accountNumber: null,
+          drugCompanyIds: values.drugCompanies.map(company => company.id),
         });
       } catch (error) {
         console.error('Error creating dealer:', error);

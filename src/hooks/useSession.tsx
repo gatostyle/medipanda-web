@@ -60,6 +60,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     const { refreshToken } = await apiLogin({
       userId,
       password: encryptedPassword,
+      device: null,
     });
     localStorage.setItem('refreshToken', refreshToken);
 

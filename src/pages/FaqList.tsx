@@ -158,7 +158,7 @@ export default function FaqList() {
                             marginBottom: 1,
                           }}
                         >
-                          {file.fileName}
+                          {file.originalFileName}
                         </Link>
                       ))}
                     </Box>

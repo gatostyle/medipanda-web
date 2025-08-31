@@ -113,7 +113,7 @@ export function EditorExample() {
       <Stack>
         {attachedFiles.map(attachment => (
           <Box key={attachment.s3fileId} sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Typography variant='body1'>{attachment.fileName}</Typography>
+            <Typography variant='body1'>{attachment.originalFileName}</Typography>
             <Button
               variant='outlined'
               size='small'
