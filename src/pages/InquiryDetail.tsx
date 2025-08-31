@@ -157,6 +157,7 @@ export default function InquiryDetail() {
 
       <Stack
         direction='row'
+        justifyContent='center'
         gap='10px'
         sx={{
           marginTop: '40px',
