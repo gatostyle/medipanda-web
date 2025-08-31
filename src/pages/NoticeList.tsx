@@ -1,13 +1,13 @@
 import { getBoards, getFixedTopNotices } from '@/backend';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
+import { MedipandaTextLink } from '@/custom/components/MedipandaTextLink';
+import { NoticeLabels } from '@/labels';
 import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
-import { colors, typography } from '@/themes';
+import { colors } from '@/themes';
 import { formatYyyyMmDd } from '@/lib/dateFormat';
 import { Search } from '@mui/icons-material';
-import { Box, Button, InputAdornment, Stack, Table, TableBody, TableCell, TableRow, TextField, Typography } from '@mui/material';
+import { Box, InputAdornment, Stack, Table, TableBody, TableCell, TableRow, TextField, Typography } from '@mui/material';
 import { Link as RouterLink } from 'react-router';
-
-const categories = ['전체', '제품현황', '정산 및 생산중단', '신제품 정보', '제약사 정책', '일반공지'];
 
 export default function NoticeList() {
   const {
@@ -17,11 +17,13 @@ export default function NoticeList() {
   } = usePageFetchFormik({
     initialFormValues: {
       searchKeyword: '',
+      noticeType: '' as NonNullable<NonNullable<Parameters<typeof getBoards>[0]>['noticeType']> | '',
     },
     fetcher: values => {
       return getBoards({
         boardType: 'NOTICE',
         boardTitle: values.searchKeyword !== '' ? values.searchKeyword : undefined,
+        noticeType: values.noticeType !== '' ? values.noticeType : undefined,
         page: values.pageIndex,
         size: values.pageSize,
       });
@@ -55,26 +57,22 @@ export default function NoticeList() {
           marginTop: '30px',
         }}
       >
-        <Stack direction='row' alignItems='center' sx={{ justifyContent: 'space-between' }}>
-          {categories.map((category, index) => (
-            <Button
-              key={category}
-              variant='text'
+        <Stack direction='row' alignItems='center' gap='20px'>
+          {(['', 'PRODUCT_STATUS', 'MANUFACTURING_SUSPENSION', 'NEW_PRODUCT', 'POLICY', 'GENERAL'] as const).map(noticeType => (
+            <MedipandaTextLink
+              key={noticeType}
+              underline='hover'
+              onClick={() => {
+                pageFormik.setFieldValue('noticeType', noticeType);
+                pageFormik.submitForm();
+              }}
               sx={{
-                ...typography.mediumTextB,
-                color: colors.gray50,
-                '&:hover': {
-                  color: colors.vividViolet,
-                  textDecoration: 'underline',
-                },
-                ...(index === 0 && {
-                  color: colors.vividViolet,
-                  textDecoration: 'underline',
-                }),
+                color: pageFormik.values.noticeType === noticeType ? colors.vividViolet : colors.gray50,
+                cursor: 'pointer',
               }}
             >
-              {category}
-            </Button>
+              {noticeType === '' ? '전체' : NoticeLabels[noticeType]}
+            </MedipandaTextLink>
           ))}
         </Stack>
         <TextField
