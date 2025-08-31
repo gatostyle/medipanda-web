@@ -31,7 +31,6 @@ export function MedipandaFileUploadButton({
       sx={{
         ...props.sx,
         height: '50px',
-        marginLeft: 'auto',
         borderColor: colors.gray40,
         color: colors.gray50,
       }}

@@ -1,11 +1,12 @@
 import { type AttachmentResponse, type BoardDetailsResponse, getBoardDetails } from '@/backend';
 import { InquiryStatusChip } from '@/components/InquiryStatusChip';
+import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/components/MedipandaTab';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
 import { colors } from '@/themes';
 import { formatYyyyMmDdHhMm } from '@/lib/dateFormat';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Button, Link, Stack, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router';
@@ -100,6 +101,34 @@ export default function InquiryDetail() {
         </Typography>
       </Stack>
 
+      {detail.attachments && detail.attachments.length > 0 && (
+        <Stack
+          sx={{
+            padding: '15px 20px',
+            backgroundColor: colors.gray30,
+            boxSizing: 'border-box',
+          }}
+        >
+          {detail.attachments.map(file => (
+            <Link
+              key={file.s3fileId}
+              underline='hover'
+              component={RouterLink}
+              to={file.fileUrl}
+              target='_blank'
+              sx={{
+                color: colors.gray80,
+                '&:hover': {
+                  color: colors.vividViolet,
+                },
+              }}
+            >
+              <Typography variant='largeTextR'>{file.originalFileName}</Typography>
+            </Link>
+          ))}
+        </Stack>
+      )}
+
       <EditorContent
         editor={editor}
         style={{
@@ -177,6 +206,21 @@ export default function InquiryDetail() {
         >
           목록
         </Button>
+        {detail.children.length === 0 && (
+          <MedipandaButton
+            fullWidth
+            component={RouterLink}
+            to={`/customer-service/inquiry/${inquiryId}/edit`}
+            variant='contained'
+            color='primary'
+            sx={{
+              width: '160px',
+              height: '50px',
+            }}
+          >
+            수정
+          </MedipandaButton>
+        )}
       </Stack>
     </>
   );

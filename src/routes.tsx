@@ -38,7 +38,7 @@ const NoticeDetail = LazyComponent(lazy(() => import('pages/NoticeDetail')));
 const FaqList = LazyComponent(lazy(() => import('pages/FaqList')));
 const InquiryList = LazyComponent(lazy(() => import('pages/InquiryList')));
 const InquiryDetail = LazyComponent(lazy(() => import('pages/InquiryDetail')));
-const InquiryNew = LazyComponent(lazy(() => import('pages/InquiryNew')));
+const InquiryEdit = LazyComponent(lazy(() => import('@/pages/InquiryEdit')));
 
 const MypageGuard = LazyComponent(lazy(() => import('pages/MypageGuard')));
 const MypageInfo = LazyComponent(lazy(() => import('pages/MypageInfo')));
@@ -369,10 +369,18 @@ const route: RouteObject[] = [
             ),
           },
           {
+            path: 'inquiry/:id/edit',
+            element: (
+              <LoginGuard>
+                <InquiryEdit />
+              </LoginGuard>
+            ),
+          },
+          {
             path: 'inquiry/new',
             element: (
               <LoginGuard>
-                <InquiryNew />
+                <InquiryEdit />
               </LoginGuard>
             ),
           },
