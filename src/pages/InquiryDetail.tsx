@@ -72,7 +72,7 @@ export default function InquiryDetail() {
   return (
     <>
       <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
-        1:1 문의내엵
+        1:1 문의내역
       </Typography>
 
       <MedipandaTabs value={0} sx={{ marginTop: '30px' }}>
