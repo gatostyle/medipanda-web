@@ -2,6 +2,7 @@ import { getBanners, getBoards } from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaCarousel, type MedipandaCarouselHandle } from '@/custom/components/MedipandaCarousel';
 import { MedipandaTable } from '@/custom/components/MedipandaTable';
+import { useSession } from '@/hooks/useSession';
 import { LazyImage } from '@/lib/react/LazyImage';
 import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
 import { colors, typography } from '@/themes';
@@ -14,6 +15,8 @@ import { useRef, useState } from 'react';
 import { Link as RouterLink } from 'react-router';
 
 export default function Home() {
+  const { session } = useSession();
+
   const [recentBoardType, setRecentBoardType] = useState<'ANONYMOUS' | 'MR_CSO_MATCHING'>('ANONYMOUS');
 
   const { content: banners } = usePageFetchFormik({
@@ -61,103 +64,109 @@ export default function Home() {
             />
           </RouterLink>
         </Box>
-        <Box
-          sx={{
-            position: 'relative',
-          }}
-        >
-          <MedipandaCarousel ref={carouselRef} interval={5000} width={602}>
-            {banners.map(banner => (
-              <RouterLink key={banner.id} to={banner.linkUrl}>
-                <LazyImage
-                  src={banner.imageUrl}
-                  style={{
-                    width: '602px',
-                    height: '180px',
-                    borderRadius: '12px',
-                    cursor: 'pointer',
-                    display: 'block',
-                  }}
-                />
-              </RouterLink>
-            ))}
-          </MedipandaCarousel>
-          <img
-            src='/assets/carousel-left.svg'
-            onClick={carouselRef.current?.prev}
-            style={{
-              position: 'absolute',
-              top: '70px',
-              left: '10px',
-              cursor: 'pointer',
+        {session && banners.length > 0 && (
+          <Box
+            sx={{
+              position: 'relative',
             }}
-          />
-          <img
-            src='/assets/carousel-right.svg'
-            onClick={carouselRef.current?.next}
-            style={{
-              position: 'absolute',
-              top: '70px',
-              right: '10px',
-              cursor: 'pointer',
-            }}
-          />
-        </Box>
+          >
+            <MedipandaCarousel ref={carouselRef} interval={5000} width={602}>
+              {banners.map(banner => (
+                <RouterLink key={banner.id} to={banner.linkUrl}>
+                  <LazyImage
+                    src={banner.imageUrl}
+                    style={{
+                      width: '602px',
+                      height: '180px',
+                      borderRadius: '12px',
+                      cursor: 'pointer',
+                      display: 'block',
+                    }}
+                  />
+                </RouterLink>
+              ))}
+            </MedipandaCarousel>
+            <img
+              src='/assets/carousel-left.svg'
+              onClick={carouselRef.current?.prev}
+              style={{
+                position: 'absolute',
+                top: '70px',
+                left: '10px',
+                cursor: 'pointer',
+              }}
+            />
+            <img
+              src='/assets/carousel-right.svg'
+              onClick={carouselRef.current?.next}
+              style={{
+                position: 'absolute',
+                top: '70px',
+                right: '10px',
+                cursor: 'pointer',
+              }}
+            />
+          </Box>
+        )}
       </Stack>
 
-      <Stack
-        direction='row'
-        alignItems='center'
-        sx={{
-          marginTop: '40px',
-        }}
-      >
-        <Button
-          variant='text'
-          onClick={() => setRecentBoardType('ANONYMOUS')}
-          sx={{
-            ...typography.heading4B,
-            color: recentBoardType === 'ANONYMOUS' ? colors.gray80 : colors.gray40,
-          }}
-        >
-          익명게시판
-        </Button>
-        <Button
-          variant='text'
-          onClick={() => setRecentBoardType('MR_CSO_MATCHING')}
-          sx={{
-            ...typography.heading4B,
-            color: recentBoardType === 'MR_CSO_MATCHING' ? colors.gray80 : colors.gray40,
-            marginLeft: '30px',
-          }}
-        >
-          MR-CSO매칭
-        </Button>
-        <MedipandaButton
-          variant='contained'
-          startIcon={<img src='/assets/icons/icon-pen.svg' />}
-          component={RouterLink}
-          to={recentBoardType === 'ANONYMOUS' ? '/community/anonymous/new' : '/community/mr-cso-matching/new'}
-          sx={{
-            marginLeft: 'auto',
-          }}
-        >
-          글쓰기
-        </MedipandaButton>
-        <MedipandaButton
-          variant='outlined'
-          endIcon={<KeyboardArrowRight />}
-          component={RouterLink}
-          to={recentBoardType === 'ANONYMOUS' ? '/community/anonymous' : '/community/mr-cso-matching'}
-          sx={{
-            marginLeft: '10px',
-          }}
-        >
-          더보기
-        </MedipandaButton>
-      </Stack>
+      {session && (
+        <>
+          <Stack
+            direction='row'
+            alignItems='center'
+            sx={{
+              marginTop: '40px',
+            }}
+          >
+            <Button
+              variant='text'
+              onClick={() => setRecentBoardType('ANONYMOUS')}
+              sx={{
+                ...typography.heading4B,
+                color: recentBoardType === 'ANONYMOUS' ? colors.gray80 : colors.gray40,
+              }}
+            >
+              익명게시판
+            </Button>
+            <Button
+              variant='text'
+              onClick={() => setRecentBoardType('MR_CSO_MATCHING')}
+              sx={{
+                ...typography.heading4B,
+                color: recentBoardType === 'MR_CSO_MATCHING' ? colors.gray80 : colors.gray40,
+                marginLeft: '30px',
+              }}
+            >
+              MR-CSO매칭
+            </Button>
+            <MedipandaButton
+              variant='contained'
+              startIcon={<img src='/assets/icons/icon-pen.svg' />}
+              component={RouterLink}
+              to={recentBoardType === 'ANONYMOUS' ? '/community/anonymous/new' : '/community/mr-cso-matching/new'}
+              sx={{
+                marginLeft: 'auto',
+              }}
+            >
+              글쓰기
+            </MedipandaButton>
+            <MedipandaButton
+              variant='outlined'
+              endIcon={<KeyboardArrowRight />}
+              component={RouterLink}
+              to={recentBoardType === 'ANONYMOUS' ? '/community/anonymous' : '/community/mr-cso-matching'}
+              sx={{
+                marginLeft: '10px',
+              }}
+            >
+              더보기
+            </MedipandaButton>
+          </Stack>
 
-      <RecentBoardTable boardType={recentBoardType} sx={{ marginTop: '15px' }} />
+          <RecentBoardTable boardType={recentBoardType} sx={{ marginTop: '15px' }} />
+        </>
+      )}
     </>
   );
 }
