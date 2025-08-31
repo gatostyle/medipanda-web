@@ -1,4 +1,4 @@
-import { getProductDetails, getProductSummaries, type ProductDetailsResponse, type ProductSummaryResponse } from '@/backend';
+import { getProductDetails, getProductSummaries, type ProductDetailsResponse } from '@/backend';
 import type { ProductSortType } from '@/backend-types';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaDialog, MedipandaDialogTitle } from '@/custom/components/MedipandaDialog';
@@ -612,8 +612,6 @@ function ReplaceableProductDialog({ open, onClose, productId }: { open?: boolean
     setDetail(response);
   };
 
-  const [page, setPage] = useState<ProductSummaryResponse[]>([]);
-
   if (!open) {
     return null;
   }
@@ -676,17 +674,17 @@ function ReplaceableProductDialog({ open, onClose, productId }: { open?: boolean
             </MedipandaTableRow>
           </TableHead>
           <TableBody>
-            {page.map(product => (
-              <Fragment key={product.id}>
+            {detail?.alternativeProducts.map(product => (
+              <Fragment key={product.kdCode}>
                 <MedipandaTableRow sx={{ borderBottomWidth: '0 !important' }}>
                   <MedipandaTableCell rowSpan={2}>
                     <Typography variant='smallTextR' sx={{ whiteSpace: 'pre-line' }}>
-                      {'-'}
+                      {product.substituent ?? '-'}
                     </Typography>
                   </MedipandaTableCell>
                   <MedipandaTableCell rowSpan={2}>
                     <Typography variant='smallTextR' sx={{ whiteSpace: 'pre-line' }}>
-                      {product.manufacturerName}
+                      {product.manufacturer ?? '-'}
                     </Typography>
                   </MedipandaTableCell>
                   <MedipandaTableCell sx={{ textAlign: 'left' }}>
@@ -707,13 +705,8 @@ function ReplaceableProductDialog({ open, onClose, productId }: { open?: boolean
                   <MedipandaTableCell align='center'>
                     <Typography sx={{ fontWeight: 500 }}>{product.feeRate ?? '-'}</Typography>
                   </MedipandaTableCell>
-                  <MedipandaTableCell align='center'>
-                    {Object.keys(statusLabel)
-                      .map(key => (product[key] ? statusLabel[key] : ''))
-                      .filter(Boolean)
-                      .join(', ') || '-'}
-                  </MedipandaTableCell>
-                  <MedipandaTableCell align='center'>{product.changedFeeRate ?? '-'}</MedipandaTableCell>
+                  <MedipandaTableCell align='center'>{product.note ?? '-'}</MedipandaTableCell>
+                  <MedipandaTableCell align='center'>{product.feeRate ?? '-'}</MedipandaTableCell>
                 </MedipandaTableRow>
                 <MedipandaTableRow>
                   <MedipandaTableCell colSpan={6} sx={{ textAlign: 'left' }}>
