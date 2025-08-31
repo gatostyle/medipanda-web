@@ -108,9 +108,6 @@ function GlobalLayout() {
                     </MedipandaTextLink>
                   )}
                 </Box>
-                <Box>
-                  <img src='/assets/icons/icon-bell.svg' width={48} height={48} style={{ display: 'block' }} />
-                </Box>
               </Stack>
             </Stack>
           </MaxWidthContainer>
