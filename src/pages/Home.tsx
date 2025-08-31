@@ -86,26 +86,30 @@ export default function Home() {
                 </RouterLink>
               ))}
             </MedipandaCarousel>
-            <img
-              src='/assets/carousel-left.svg'
-              onClick={carouselRef.current?.prev}
-              style={{
-                position: 'absolute',
-                top: '70px',
-                left: '10px',
-                cursor: 'pointer',
-              }}
-            />
-            <img
-              src='/assets/carousel-right.svg'
-              onClick={carouselRef.current?.next}
-              style={{
-                position: 'absolute',
-                top: '70px',
-                right: '10px',
-                cursor: 'pointer',
-              }}
-            />
+            {banners.length > 1 && (
+              <>
+                <img
+                  src='/assets/carousel-left.svg'
+                  onClick={carouselRef.current?.prev}
+                  style={{
+                    position: 'absolute',
+                    top: '70px',
+                    left: '10px',
+                    cursor: 'pointer',
+                  }}
+                />
+                <img
+                  src='/assets/carousel-right.svg'
+                  onClick={carouselRef.current?.next}
+                  style={{
+                    position: 'absolute',
+                    top: '70px',
+                    right: '10px',
+                    cursor: 'pointer',
+                  }}
+                />
+              </>
+            )}
           </Box>
         )}
       </Stack>
