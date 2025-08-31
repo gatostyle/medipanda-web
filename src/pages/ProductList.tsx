@@ -1,5 +1,7 @@
 import { getProductDetails, getProductSummaries, type ProductDetailsResponse, type ProductSummaryResponse } from '@/backend';
+import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaDialog, MedipandaDialogTitle } from '@/custom/components/MedipandaDialog';
+import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { MedipandaTableCell, MedipandaTableRow } from '@/custom/components/MedipandaTable';
 import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
@@ -56,12 +58,40 @@ export default function ProductList() {
       searchType: 'composition' as 'composition' | 'productName' | 'manufacturerName',
       searchKeyword: '',
       sortType: 'FEE_RATE_DESC' as 'PRICE_ASC' | 'PRICE_DESC' | 'FEE_RATE_ASC' | 'FEE_RATE_DESC',
+      advancedSearchOpen: false,
+      composition: '',
+      manufacturerName: '',
+      productName: '',
+      isAcquisition: false,
+      isPromotion: false,
+      isOutOfStock: false,
     },
     fetcher: values => {
       return getProductSummaries({
-        composition: values.searchType === 'composition' ? values.searchKeyword : undefined,
-        productName: values.searchType === 'productName' ? values.searchKeyword : undefined,
-        manufacturerName: values.searchType === 'manufacturerName' ? values.searchKeyword : undefined,
+        composition: values.advancedSearchOpen
+          ? values.composition !== ''
+            ? values.composition
+            : undefined
+          : values.searchType === 'composition'
+            ? values.searchKeyword
+            : undefined,
+        productName: values.advancedSearchOpen
+          ? values.productName !== ''
+            ? values.productName
+            : undefined
+          : values.searchType === 'productName'
+            ? values.searchKeyword
+            : undefined,
+        manufacturerName: values.advancedSearchOpen
+          ? values.manufacturerName !== ''
+            ? values.manufacturerName
+            : undefined
+          : values.searchType === 'manufacturerName'
+            ? values.searchKeyword
+            : undefined,
+        isAcquisition: values.advancedSearchOpen && values.isAcquisition ? values.isAcquisition : undefined,
+        isPromotion: values.advancedSearchOpen && values.isPromotion ? values.isPromotion : undefined,
+        isOutOfStock: values.advancedSearchOpen && values.isOutOfStock ? values.isOutOfStock : undefined,
         sortType: values.sortType,
         page: values.pageIndex,
         size: values.pageSize,
@@ -118,6 +148,7 @@ export default function ProductList() {
           {searchTypeDropdownOpen && (
             <Stack
               sx={{
+                zIndex: 1,
                 position: 'absolute',
                 top: 0,
                 right: 0,
@@ -197,6 +228,7 @@ export default function ProductList() {
           }}
         />
         <Box
+          onClick={() => pageFormik.setFieldValue('advancedSearchOpen', !pageFormik.values.advancedSearchOpen)}
           sx={{
             display: 'flex',
             alignItems: 'center',
@@ -209,6 +241,223 @@ export default function ProductList() {
           <img src='/assets/icons/icon-search-detail.svg' />
         </Box>
       </Stack>
+      {pageFormik.values.advancedSearchOpen && (
+        <Stack
+          component='form'
+          onSubmit={pageFormik.handleSubmit}
+          sx={{
+            padding: '30px',
+            backgroundColor: colors.gray10,
+          }}
+        >
+          <Stack direction='row' justifyContent='center' alignItems='center' gap='100px'>
+            <Stack direction='row' alignItems='center' gap='16px'>
+              <Typography
+                variant='largeTextM'
+                sx={{
+                  width: '42px',
+                  color: colors.gray70,
+                }}
+              >
+                성분명
+              </Typography>
+              <MedipandaOutlinedInput
+                name='composition'
+                value={pageFormik.values.composition}
+                onChange={pageFormik.handleChange}
+                placeholder='성분명을 입력하세요.'
+                sx={{
+                  width: '400px',
+                  height: '50px',
+                  border: `1px solid ${colors.vividViolet}`,
+                  borderRadius: '50px',
+                  backgroundColor: colors.white,
+                }}
+              />
+            </Stack>
+            <Stack direction='row' alignItems='center' gap='16px'>
+              <Typography
+                variant='largeTextM'
+                sx={{
+                  width: '42px',
+                  color: colors.gray70,
+                }}
+              >
+                제약사
+              </Typography>
+              <MedipandaOutlinedInput
+                name='manufacturerName'
+                value={pageFormik.values.manufacturerName}
+                onChange={pageFormik.handleChange}
+                placeholder='제약사를 입력하세요.'
+                sx={{
+                  width: '400px',
+                  height: '50px',
+                  border: `1px solid ${colors.vividViolet}`,
+                  borderRadius: '50px',
+                  backgroundColor: colors.white,
+                }}
+              />
+            </Stack>
+          </Stack>
+          <Stack
+            direction='row'
+            justifyContent='center'
+            alignItems='center'
+            gap='100px'
+            sx={{
+              marginTop: '15px',
+            }}
+          >
+            <Stack direction='row' alignItems='center' gap='16px'>
+              <Typography
+                variant='largeTextM'
+                sx={{
+                  width: '42px',
+                  color: colors.gray70,
+                }}
+              >
+                제품명
+              </Typography>
+              <MedipandaOutlinedInput
+                name='productName'
+                value={pageFormik.values.productName}
+                onChange={pageFormik.handleChange}
+                placeholder='제품명을 입력하세요.'
+                sx={{
+                  width: '400px',
+                  height: '50px',
+                  border: `1px solid ${colors.vividViolet}`,
+                  borderRadius: '50px',
+                  backgroundColor: colors.white,
+                }}
+              />
+            </Stack>
+            <Stack direction='row' alignItems='center' gap='16px'>
+              <Typography
+                variant='largeTextM'
+                sx={{
+                  width: '42px',
+                  color: colors.gray70,
+                }}
+              >
+                상태
+              </Typography>
+              <Stack direction='row' alignItems='center' gap='8px'>
+                <MedipandaButton
+                  onClick={() => {
+                    pageFormik.setValues({
+                      ...pageFormik.values,
+                      isAcquisition: false,
+                      isPromotion: false,
+                      isOutOfStock: false,
+                    });
+                  }}
+                  variant={
+                    !pageFormik.values.isAcquisition && !pageFormik.values.isPromotion && !pageFormik.values.isOutOfStock
+                      ? 'contained'
+                      : 'outlined'
+                  }
+                  color='secondary'
+                  sx={{
+                    width: '94px',
+                    borderRadius: '50px',
+                    backgroundColor:
+                      !pageFormik.values.isAcquisition && !pageFormik.values.isPromotion && !pageFormik.values.isOutOfStock
+                        ? undefined
+                        : colors.white,
+                  }}
+                >
+                  전체
+                </MedipandaButton>
+                <MedipandaButton
+                  onClick={() => {
+                    pageFormik.setFieldValue('isAcquisition', !pageFormik.values.isAcquisition);
+                  }}
+                  variant={pageFormik.values.isAcquisition ? 'contained' : 'outlined'}
+                  color='secondary'
+                  sx={{
+                    width: '94px',
+                    borderRadius: '50px',
+                    backgroundColor: pageFormik.values.isAcquisition ? undefined : colors.white,
+                  }}
+                >
+                  취급품목
+                </MedipandaButton>
+                <MedipandaButton
+                  onClick={() => {
+                    pageFormik.setFieldValue('isPromotion', !pageFormik.values.isPromotion);
+                  }}
+                  variant={pageFormik.values.isPromotion ? 'contained' : 'outlined'}
+                  color='secondary'
+                  sx={{
+                    width: '94px',
+                    borderRadius: '50px',
+                    backgroundColor: pageFormik.values.isPromotion ? undefined : colors.white,
+                  }}
+                >
+                  프로모션
+                </MedipandaButton>
+                <MedipandaButton
+                  onClick={() => {
+                    pageFormik.setFieldValue('isOutOfStock', !pageFormik.values.isOutOfStock);
+                  }}
+                  variant={pageFormik.values.isOutOfStock ? 'contained' : 'outlined'}
+                  color='secondary'
+                  sx={{
+                    width: '94px',
+                    borderRadius: '50px',
+                    backgroundColor: pageFormik.values.isOutOfStock ? undefined : colors.white,
+                  }}
+                >
+                  품절
+                </MedipandaButton>
+              </Stack>
+            </Stack>
+          </Stack>
+          <Stack
+            direction='row'
+            justifyContent='center'
+            alignItems='center'
+            gap='10px'
+            sx={{
+              marginTop: '30px',
+            }}
+          >
+            <MedipandaButton
+              onClick={() => {
+                pageFormik.setValues({
+                  ...pageFormik.values,
+                  composition: '',
+                  manufacturerName: '',
+                  productName: '',
+                  isAcquisition: false,
+                  isPromotion: false,
+                  isOutOfStock: false,
+                });
+              }}
+              variant='contained'
+              size='large'
+              sx={{
+                width: '160px',
+                backgroundColor: colors.gray50,
+              }}
+            >
+              초기화
+            </MedipandaButton>
+            <MedipandaButton
+              type='submit'
+              variant='contained'
+              size='large'
+              sx={{
+                width: '160px',
+              }}
+            >
+              상세검색
+            </MedipandaButton>
+          </Stack>
+        </Stack>
+      )}
 
       <Stack direction='row' sx={{ alignItems: 'center', marginTop: '40px' }}>
         <Typography variant='mediumTextR' sx={{ color: colors.navy }}>
