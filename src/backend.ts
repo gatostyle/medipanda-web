@@ -296,6 +296,7 @@ export interface CommentResponse {
   parentId: number | null;
   createdAt: string;
   modifiedAt: string;
+  replies: CommentResponse[];
 }
 
 export interface CommentUpdateRequest {

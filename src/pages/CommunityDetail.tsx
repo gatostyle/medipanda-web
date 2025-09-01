@@ -245,63 +245,61 @@ function CommentSection({
 
   return (
     <Stack {...props} gap='20px'>
-      {comments
-        .filter(comment => comment.parentId === null)
-        .map(comment => {
-          const replies = comments.filter(it => it.parentId === comment.id);
+      {comments.map(comment => {
+        const replies = comment.replies;
 
-          return (
-            <Stack key={comment.id} gap='10px'>
-              <Comment comment={comment} replies={replies} onClick={onClick} onUpdate={onUpdate} />
-              {replies.map(reply => (
-                <Comment
-                  key={reply.id}
-                  comment={reply}
-                  replies={null}
-                  onClick={onClick}
-                  onUpdate={onUpdate}
-                  sx={{
-                    padding: '10px 20px',
-                    backgroundColor: colors.gray10,
-                  }}
-                />
-              ))}
-              <Stack
-                component='form'
-                onSubmit={event => handleCommentSubmit(event, comment.id)}
+        return (
+          <Stack key={comment.id} gap='10px'>
+            <Comment comment={comment} replies={replies} onClick={onClick} onUpdate={onUpdate} />
+            {replies.map(reply => (
+              <Comment
+                key={reply.id}
+                comment={reply}
+                replies={null}
+                onClick={onClick}
+                onUpdate={onUpdate}
                 sx={{
-                  padding: '20px',
+                  padding: '10px 20px',
                   backgroundColor: colors.gray10,
                 }}
-              >
-                <MedipandaOutlinedInput
-                  name='content'
-                  placeholder='댓글을 남겨주세요'
-                  fullWidth
-                  endAdornment={
-                    <MedipandaButton
-                      type='submit'
-                      variant='contained'
-                      size='small'
-                      color='secondary'
-                      sx={{
-                        paddingX: '22px',
-                        borderRadius: '20px',
-                      }}
-                    >
-                      등록하기
-                    </MedipandaButton>
-                  }
-                  sx={{
-                    height: '43px',
-                    backgroundColor: colors.white,
-                    border: `1px solid ${colors.gray50}`,
-                  }}
-                />
-              </Stack>
+              />
+            ))}
+            <Stack
+              component='form'
+              onSubmit={event => handleCommentSubmit(event, comment.id)}
+              sx={{
+                padding: '20px',
+                backgroundColor: colors.gray10,
+              }}
+            >
+              <MedipandaOutlinedInput
+                name='content'
+                placeholder='댓글을 남겨주세요'
+                fullWidth
+                endAdornment={
+                  <MedipandaButton
+                    type='submit'
+                    variant='contained'
+                    size='small'
+                    color='secondary'
+                    sx={{
+                      paddingX: '22px',
+                      borderRadius: '20px',
+                    }}
+                  >
+                    등록하기
+                  </MedipandaButton>
+                }
+                sx={{
+                  height: '43px',
+                  backgroundColor: colors.white,
+                  border: `1px solid ${colors.gray50}`,
+                }}
+              />
             </Stack>
-          );
-        })}
+          </Stack>
+        );
+      })}
       <Stack component='form' onSubmit={event => handleCommentSubmit(event, null)}>
         <MedipandaOutlinedInput
           name='content'
