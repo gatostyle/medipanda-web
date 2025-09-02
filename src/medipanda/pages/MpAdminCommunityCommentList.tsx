@@ -173,7 +173,6 @@ export default function MpAdminCommunityCommentList() {
         startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
         endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
         commentType: formik.values.commentType !== '' ? formik.values.commentType : undefined,
-        filterDeleted: false,
         page: formik.values.pageIndex,
         size: formik.values.pageSize,
       });
