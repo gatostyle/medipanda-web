@@ -1,4 +1,11 @@
-import { login as apiLogin, logout as apiLogout, type MemberDetailsResponse, refreshToken as apiRefreshToken, whoAmI } from '@/backend';
+import {
+  getPublicKey,
+  login as apiLogin,
+  logout as apiLogout,
+  type MemberDetailsResponse,
+  refreshToken as apiRefreshToken,
+  whoAmI,
+} from '@/backend';
 import { encryptRSA } from '@/lib/rsa';
 import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
 
@@ -56,7 +63,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   };
 
   const login = async (userId: string, password: string) => {
-    const encryptedPassword = import.meta.env.VITE_APP_ENCRYPT_PASSWORD === 'true' ? password : await encryptRSA(password);
+    const { publicKey } = await getPublicKey();
+    const encryptedPassword = import.meta.env.VITE_APP_ENCRYPT_PASSWORD === 'true' ? password : await encryptRSA(publicKey, password);
     const { refreshToken } = await apiLogin({
       userId,
       password: encryptedPassword,
