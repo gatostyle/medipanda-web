@@ -1,4 +1,4 @@
-import axios from '@/utils/axios';
+import axios from 'utils/axios';
 
 export class DateTimeString extends String {
   public constructor(value: string | Date) {
@@ -150,9 +150,9 @@ export interface BlindPostResponse {
   id: number;
   memberName: string;
   content: string;
-  userId: string;
-  likesCount: number;
   nickname: string;
+  likesCount: number;
+  userId: string;
   reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
   blindAt: string;
   postType: 'BOARD' | 'COMMENT';
@@ -190,13 +190,13 @@ export interface BoardDetailsResponse {
 export interface BoardMemberStatsResponse {
   name: string;
   id: number;
-  phoneNumber: string;
   userId: string;
+  phoneNumber: string;
   commentCount: number;
   blindPostCount: number;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   postCount: number;
   totalLikes: number;
+  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
 }
 
 export interface BoardPostCreateRequest {
@@ -235,6 +235,7 @@ export interface BoardPostResponse {
 export interface BoardPostUpdateRequest {
   title: string | null;
   content: string | null;
+  hiddenNickname: boolean | null;
   isBlind: boolean | null;
   isExposed: boolean | null;
   exposureRange: ('ALL' | 'CONTRACTED' | 'UNCONTRACTED') | null;
@@ -276,11 +277,11 @@ export interface CommentMemberResponse {
   id: number;
   content: string;
   commentType: 'COMMENT' | 'REPLY';
-  userId: string;
-  likesCount: number;
-  nickname: string;
-  createdAt: string;
   isBlind: boolean;
+  nickname: string;
+  likesCount: number;
+  userId: string;
+  createdAt: string;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
 }
 
@@ -564,9 +565,9 @@ export interface PageBannerResponse {
   content: BannerResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -578,9 +579,9 @@ export interface PageBlindPostResponse {
   content: BlindPostResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -592,9 +593,9 @@ export interface PageBoardMemberStatsResponse {
   content: BoardMemberStatsResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -606,9 +607,9 @@ export interface PageBoardPostResponse {
   content: BoardPostResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -620,9 +621,9 @@ export interface PageCommentMemberResponse {
   content: CommentMemberResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -634,9 +635,9 @@ export interface PageEventBoardSummaryResponse {
   content: EventBoardSummaryResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -648,9 +649,9 @@ export interface PageExpenseReportResponse {
   content: ExpenseReportResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -662,9 +663,9 @@ export interface PageHospitalResponse {
   content: HospitalResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -676,9 +677,9 @@ export interface PageMemberResponse {
   content: MemberResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -690,9 +691,9 @@ export interface PagePartnerResponse {
   content: PartnerResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -704,9 +705,9 @@ export interface PagePerformanceStatsResponse {
   content: PerformanceStatsResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -718,9 +719,9 @@ export interface PagePrescriptionPartnerResponse {
   content: PrescriptionPartnerResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -732,9 +733,9 @@ export interface PagePrescriptionResponse {
   content: PrescriptionResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -746,9 +747,9 @@ export interface PageProductSummaryResponse {
   content: ProductSummaryResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -760,9 +761,9 @@ export interface PageSalesAgencyProductApplicantResponse {
   content: SalesAgencyProductApplicantResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -774,9 +775,9 @@ export interface PageSalesAgencyProductSummaryResponse {
   content: SalesAgencyProductSummaryResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -788,9 +789,9 @@ export interface PageSettlementPartnerResponse {
   content: SettlementPartnerResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -802,9 +803,9 @@ export interface PageSettlementResponse {
   content: SettlementResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -957,7 +958,6 @@ export interface PrescriptionPartnerResponse {
   id: number;
   companyName: string;
   drugCompany: string;
-  drugCompanyCode: string;
   institutionName: string;
   institutionCode: string;
   prescriptionMonth: string;
@@ -1159,6 +1159,11 @@ export interface PushPreferenceUpdateRequest {
 export interface RefreshTokenRequest {
   userId: string;
   refreshToken: string;
+}
+
+export interface RegionCategoryResponse {
+  id: number;
+  name: string;
 }
 
 export interface ReportCreateRequest {
@@ -3549,8 +3554,7 @@ export async function launch(options?: { certNum?: string }): Promise<string> {
  * GET /v1/hospitals
  */
 export async function getHospitals(options?: {
-  sido?: string;
-  sigungu?: string;
+  regionCategoryId?: number;
   startDate?: DateTimeString;
   endDate?: DateTimeString;
   page?: number;
@@ -3560,6 +3564,30 @@ export async function getHospitals(options?: {
     method: 'GET',
     url: '/v1/hospitals',
     params: options,
+  });
+  return response.data;
+}
+
+/**
+ * 전체 시/도 목록(depth=1)
+ * GET /v1/hospitals/regions/sido
+ */
+export async function getAllSido(): Promise<RegionCategoryResponse[]> {
+  const response = await axios.request<RegionCategoryResponse[]>({
+    method: 'GET',
+    url: '/v1/hospitals/regions/sido',
+  });
+  return response.data;
+}
+
+/**
+ * 특정 시/도의 시군구 목록(depth=2, parent=sido)
+ * GET /v1/hospitals/regions/sido/{sidoId}/sigungu
+ */
+export async function getSigunguBySido(sidoId: number): Promise<RegionCategoryResponse[]> {
+  const response = await axios.request<RegionCategoryResponse[]>({
+    method: 'GET',
+    url: `/v1/hospitals/regions/sido/${sidoId}/sigungu`,
   });
   return response.data;
 }
@@ -3644,6 +3672,18 @@ export function getDownloadExpenseReportListExcel(options?: {
     .map(([key, value]) => [key, String(value)]);
   const params = new URLSearchParams(paramsInit);
   return `${baseUrl}?${params.toString()}`;
+}
+
+/**
+ * 제약사 전체 목록 조회
+ * GET /v1/drug-companies
+ */
+export async function getAllDrugCompanies(): Promise<DrugCompanyResponse[]> {
+  const response = await axios.request<DrugCompanyResponse[]>({
+    method: 'GET',
+    url: '/v1/drug-companies',
+  });
+  return response.data;
 }
 
 /**

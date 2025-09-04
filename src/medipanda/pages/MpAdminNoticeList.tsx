@@ -22,7 +22,7 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { BoardPostResponse, DateString, deleteBoardPost, DrugCompanyResponse, getBoards, getDrugCompanies } from '@/backend';
+import { BoardPostResponse, DateString, deleteBoardPost, DrugCompanyResponse, getAllDrugCompanies, getBoards } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
@@ -209,7 +209,7 @@ export default function MpAdminNoticeList() {
   useEffect(() => {
     const fetchManufacturers = async () => {
       try {
-        const manufacturers = await getDrugCompanies();
+        const manufacturers = await getAllDrugCompanies();
         setManufacturerOptions(manufacturers);
       } catch (error) {
         console.error('Failed to fetch manufacturer list:', error);

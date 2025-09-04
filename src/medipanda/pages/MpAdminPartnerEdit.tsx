@@ -27,7 +27,7 @@ import { SearchNormal1 } from 'iconsax-react';
 import {
   createPartner,
   DrugCompanyResponse,
-  getDrugCompanies,
+  getAllDrugCompanies,
   getPartnerDetails,
   getPartners,
   PartnerResponse,
@@ -54,7 +54,7 @@ export default function MpAdminPartnerEdit() {
   const isNew = id === undefined;
 
   useEffect(() => {
-    getDrugCompanies().then(setDrugCompanies);
+    getAllDrugCompanies().then(setDrugCompanies);
     if (id) {
       fetchPartnerData(parseInt(id));
     }
@@ -94,7 +94,7 @@ export default function MpAdminPartnerEdit() {
     initialValues: {
       drugCompany: null as DrugCompanyResponse | null,
       companyName: '',
-      contractType: null as ('CONTRACT' | 'NON_CONTRACT') | null,
+      contractType: 'CONTRACT' as 'CONTRACT' | 'NON_CONTRACT',
       institutionCode: '',
       institutionName: '',
       businessNumber: '',
@@ -219,7 +219,7 @@ export default function MpAdminPartnerEdit() {
                 fullWidth
                 label='제약사명'
                 name='drugCompany'
-                value={formik.values.drugCompany?.name}
+                value={formik.values.drugCompany?.name ?? ''}
                 required
                 disabled
                 InputProps={{
@@ -260,7 +260,7 @@ export default function MpAdminPartnerEdit() {
                 label='거래처코드'
                 name='institutionCode'
                 value={formik.values.institutionCode}
-                disabled
+                onChange={formik.handleChange}
                 placeholder={isNew ? '' : formik.values.institutionCode}
               />
             </Grid>
@@ -297,10 +297,10 @@ export default function MpAdminPartnerEdit() {
                 onChange={formik.handleChange}
               >
                 <MenuItem value=''>선택</MenuItem>
-                <MenuItem value={'DERMATOLOGY'}>피부과</MenuItem>
-                <MenuItem value={'INTERNAL_MEDICINE'}>내과</MenuItem>
-                <MenuItem value={'ORTHOPEDICS'}>정형외과</MenuItem>
-                <MenuItem value={'PEDIATRICS'}>소아과</MenuItem>
+                <MenuItem value={'피부과'}>피부과</MenuItem>
+                <MenuItem value={'내과'}>내과</MenuItem>
+                <MenuItem value={'정형외과'}>정형외과</MenuItem>
+                <MenuItem value={'소아과'}>소아과</MenuItem>
               </TextField>
             </Grid>
 
