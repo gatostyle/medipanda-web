@@ -1,5 +1,5 @@
 import { MenuOrientation } from 'config';
-import { getPermissions, login as apiLogin, MemberDetailsResponse, refreshToken as apiRefreshToken, whoAmI } from '@/backend';
+import { getPermissions, getPublicKey, login as apiLogin, MemberDetailsResponse, refreshToken as apiRefreshToken, whoAmI } from '@/backend';
 import { filterMenuByPermissions, mpAdminMenu, mpMemberMenu } from '@/medipanda/menu-items';
 import { encryptRSA } from '@/medipanda/utils/rsa';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -71,7 +71,8 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   };
 
   const login = async (userId: string, password: string) => {
-    const encryptedPassword = import.meta.env.VITE_SKIP_PASSWORD_ENCRYPTION === 'true' ? password : await encryptRSA(password);
+    const { publicKey } = await getPublicKey();
+    const encryptedPassword = import.meta.env.VITE_SKIP_PASSWORD_ENCRYPTION === 'true' ? password : await encryptRSA(publicKey, password);
     const { refreshToken } = await apiLogin({
       userId,
       password: encryptedPassword,
