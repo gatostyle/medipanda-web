@@ -1,4 +1,4 @@
-import { MemberUpdateRequest } from '@/medipanda/backend';
+import { MemberUpdateRequest } from '@/backend';
 import { mockString } from '@/medipanda/mockup';
 import { NotImplementedError } from './NotImplementedError';
 

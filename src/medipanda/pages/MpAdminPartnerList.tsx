@@ -28,7 +28,7 @@ import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
-import { deletePartner, getPartners, PartnerResponse, uploadPartnersExcel } from '@/medipanda/backend';
+import { deletePartner, getPartners, PartnerResponse, uploadPartnersExcel } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';

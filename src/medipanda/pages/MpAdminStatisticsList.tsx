@@ -22,7 +22,7 @@ import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-react';
-import { DateString, getDownloadPerformanceExcel, getPerformanceStats, PerformanceStatsResponse } from '@/medipanda/backend';
+import { DateString, getDownloadPerformanceExcel, getPerformanceStats, PerformanceStatsResponse } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';

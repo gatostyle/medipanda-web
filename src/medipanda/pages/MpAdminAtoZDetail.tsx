@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
-import { BoardDetailsResponse, getBoardDetails } from '@/medipanda/backend';
+import { BoardDetailsResponse, getBoardDetails } from '@/backend';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';

@@ -1,7 +1,7 @@
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Box, Button, CircularProgress, Grid, Link as MuiLink, Typography } from '@mui/material';
 import MainCard from 'components/MainCard';
-import { BoardDetailsResponse, getBoardDetails } from '@/medipanda/backend';
+import { BoardDetailsResponse, getBoardDetails } from '@/backend';
 import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';

@@ -15,7 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import MainCard from 'components/MainCard';
-import { BoardDetailsResponse, getBoardDetails } from '@/medipanda/backend';
+import { BoardDetailsResponse, getBoardDetails } from '@/backend';
 import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { EXPOSURE_RANGE_LABELS, NOTICE_TYPE_LABELS } from '@/medipanda/ui-labels';
 import { useSnackbar } from 'notistack';

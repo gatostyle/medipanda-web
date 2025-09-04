@@ -20,7 +20,7 @@ import {
 } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
-import { createBoardPost, getBoardDetails, updateBoardPost } from '@/medipanda/backend';
+import { createBoardPost, getBoardDetails, updateBoardPost } from '@/backend';
 import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { useSession } from '@/medipanda/hooks/useSession';
 import { mockNumber } from '@/medipanda/mockup';

@@ -15,7 +15,7 @@ import {
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
 import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
-import { createBanner, DateTimeString, getBanner, updateBanner } from '@/medipanda/backend';
+import { createBanner, DateTimeString, getBanner, updateBanner } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';

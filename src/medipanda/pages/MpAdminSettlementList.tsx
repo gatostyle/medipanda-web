@@ -25,7 +25,7 @@ import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-react';
 import { mpDownloadSettlementEDI, mpPrintSettlementEDI } from '@/medipanda/api-definitions/MpSettlement';
 import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
-import { DateString, getDownloadSettlementListExcel, getSettlements, SettlementResponse, uploadSettlementExcel } from '@/medipanda/backend';
+import { DateString, getDownloadSettlementListExcel, getSettlements, SettlementResponse, uploadSettlementExcel } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';

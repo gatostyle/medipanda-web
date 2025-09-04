@@ -19,7 +19,7 @@ import {
 import { useFormik } from 'formik';
 import { mpUpdateMemberFile } from '@/medipanda/api-definitions/MpMember';
 import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
-import { approveOrRejectCso, getContractDetails, getMemberDetails } from '@/medipanda/backend';
+import { approveOrRejectCso, getContractDetails, getMemberDetails } from '@/backend';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';

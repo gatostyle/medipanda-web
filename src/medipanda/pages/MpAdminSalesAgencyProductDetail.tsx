@@ -24,7 +24,7 @@ import {
   getSalesAgencyProductDetails,
   SalesAgencyProductApplicantResponse,
   SalesAgencyProductDetailsResponse,
-} from '@/medipanda/backend';
+} from '@/backend';
 import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';

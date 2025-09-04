@@ -29,7 +29,7 @@ import {
   deletePrescriptionPartner,
   getPrescriptionPartnerList,
   PrescriptionPartnerResponse,
-} from '@/medipanda/backend';
+} from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';

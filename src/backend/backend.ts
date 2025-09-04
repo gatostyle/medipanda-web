@@ -1,4 +1,4 @@
-import axios from 'utils/axios';
+import axios from '@/utils/axios';
 
 export class DateTimeString extends String {
   public constructor(value: string | Date) {

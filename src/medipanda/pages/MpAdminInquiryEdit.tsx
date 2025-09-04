@@ -3,7 +3,7 @@ import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
 import { mpCreateInquiryResponse, mpUpdateInquiryResponse } from '@/medipanda/api-definitions/MpInquiry';
 import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
-import { BoardDetailsResponse, getBoardDetails } from '@/medipanda/backend';
+import { BoardDetailsResponse, getBoardDetails } from '@/backend';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';

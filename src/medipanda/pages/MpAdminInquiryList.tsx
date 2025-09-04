@@ -22,7 +22,7 @@ import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { InquiryResponseStatusFilter, InquirySearchType } from '@/medipanda/api-definitions/MpInquiry';
-import { BoardPostResponse, getBoards } from '@/medipanda/backend';
+import { BoardPostResponse, getBoards } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';

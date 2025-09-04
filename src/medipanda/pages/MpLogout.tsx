@@ -2,7 +2,7 @@ import Loader from 'components/Loader';
 import { useSnackbar } from 'notistack';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { logout } from '../backend';
+import { logout } from '../../backend';
 
 export default function MpLogout() {
   const navigate = useNavigate();

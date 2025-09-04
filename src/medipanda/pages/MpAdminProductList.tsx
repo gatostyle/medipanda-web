@@ -37,7 +37,7 @@ import {
   ProductSummaryResponse,
   updateProductExtraInfo_1,
   uploadProductExtraInfo,
-} from '@/medipanda/backend';
+} from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';

@@ -28,14 +28,7 @@ import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
-import {
-  confirmPrescription,
-  DateString,
-  DateTimeString,
-  PrescriptionResponse,
-  searchPrescriptions,
-  uploadEdiZip,
-} from '@/medipanda/backend';
+import { confirmPrescription, DateString, DateTimeString, PrescriptionResponse, searchPrescriptions, uploadEdiZip } from '@/backend';
 import MpDatePicker from '@/medipanda/components/MpDatePicker';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';

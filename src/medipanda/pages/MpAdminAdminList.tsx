@@ -22,7 +22,7 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { getAdminMembers, MemberResponse } from '@/medipanda/backend';
+import { getAdminMembers, MemberResponse } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { MEMBER_ACCOUNT_STATUS_LABELS, MEMBER_ROLE_LABELS } from '@/medipanda/ui-labels';

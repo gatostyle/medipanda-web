@@ -28,7 +28,7 @@ import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
-import { DateTimeString, getHospitals, HospitalResponse, softDeleteHospital, uploadHospitalExcel } from '@/medipanda/backend';
+import { DateTimeString, getHospitals, HospitalResponse, softDeleteHospital, uploadHospitalExcel } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';

@@ -24,7 +24,7 @@ import {
   SettlementPartnerProductResponse,
   SettlementPartnerResponse,
   SettlementResponse,
-} from '@/medipanda/backend';
+} from '@/backend';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';

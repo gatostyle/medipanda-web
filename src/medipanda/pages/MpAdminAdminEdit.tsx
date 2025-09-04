@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
-import { getMemberDetails, getPermissions, signupByAdmin, updateByAdmin } from '@/medipanda/backend';
+import { getMemberDetails, getPermissions, signupByAdmin, updateByAdmin } from '@/backend';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { isSuperAdmin, useSession } from '@/medipanda/hooks/useSession';

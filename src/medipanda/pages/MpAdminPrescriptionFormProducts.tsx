@@ -31,7 +31,7 @@ import {
   PrescriptionPartnerProductResponse,
   PrescriptionProductItem,
   ProductSummaryResponse,
-} from '@/medipanda/backend';
+} from '@/backend';
 import { MpChangeHistoryDialog } from '@/medipanda/components/MpChangeHistoryDialog';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { MpOcrRequestModal } from '@/medipanda/components/MpOcrRequestModal';

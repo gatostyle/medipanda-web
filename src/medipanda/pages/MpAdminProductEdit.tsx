@@ -1,7 +1,7 @@
 import { Box, Button, Card, Checkbox, CircularProgress, FormControlLabel, Grid, Stack, TextField, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
-import { AlternativeProductDto, createProductExtraInfo, getProductDetails, updateProductExtraInfo } from '@/medipanda/backend';
+import { AlternativeProductDto, createProductExtraInfo, getProductDetails, updateProductExtraInfo } from '@/backend';
 import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';

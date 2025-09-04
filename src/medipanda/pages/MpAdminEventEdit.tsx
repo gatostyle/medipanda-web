@@ -2,7 +2,7 @@ import { Box, Button, CircularProgress, FormControlLabel, Grid, Radio, RadioGrou
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
 import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
-import { createEventBoard, getEventBoardDetails, updateEventBoard } from '@/medipanda/backend';
+import { createEventBoard, getEventBoardDetails, updateEventBoard } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';

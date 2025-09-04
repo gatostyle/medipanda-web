@@ -1,6 +1,6 @@
 import { Box, Button, Chip, CircularProgress, Divider, Grid, Stack, Typography } from '@mui/material';
 import MainCard from 'components/MainCard';
-import { EventBoardDetailsResponse, getEventBoardDetails } from '@/medipanda/backend';
+import { EventBoardDetailsResponse, getEventBoardDetails } from '@/backend';
 import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { useSnackbar } from 'notistack';

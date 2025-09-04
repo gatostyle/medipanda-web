@@ -33,7 +33,7 @@ import {
   SalesAgencyProductDetailsResponse,
   updateApplicantNotes,
   updateSalesAgencyProductBoard,
-} from '@/medipanda/backend';
+} from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';

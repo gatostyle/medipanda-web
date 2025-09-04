@@ -1,5 +1,5 @@
 import Loader from 'components/Loader';
-import { getPermissions } from '@/medipanda/backend';
+import { getPermissions } from '@/backend';
 import { isAdmin, isSuperAdmin, useSession } from '@/medipanda/hooks/useSession';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
