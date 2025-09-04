@@ -1,6 +1,6 @@
 import Loader from 'components/Loader';
 import { getPermissions } from '@/medipanda/backend';
-import { isMpAdmin, isMpSuperAdmin, useMpSession } from '@/medipanda/hooks/useMpSession';
+import { isAdmin, isSuperAdmin, useSession } from '@/medipanda/hooks/useSession';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { GuardProps } from 'types/auth';
@@ -24,7 +24,7 @@ interface MpAdminGuardProps extends GuardProps {
 }
 
 export function MpAdminGuard({ children, requiredPermission }: MpAdminGuardProps) {
-  const { session, isLoading } = useMpSession();
+  const { session, isLoading } = useSession();
   const navigate = useNavigate();
   const location = useLocation();
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -40,13 +40,13 @@ export function MpAdminGuard({ children, requiredPermission }: MpAdminGuardProps
         return;
       }
 
-      if (!isMpAdmin(session)) {
+      if (!isAdmin(session)) {
         navigate('/', { replace: true });
         return;
       }
 
       if (requiredPermission) {
-        if (isMpSuperAdmin(session)) {
+        if (isSuperAdmin(session)) {
           setHasPermission(true);
         } else {
           try {
@@ -77,7 +77,7 @@ export function MpAdminGuard({ children, requiredPermission }: MpAdminGuardProps
     return <Loader />;
   }
 
-  if (!session || !isMpAdmin(session) || (requiredPermission && hasPermission === false)) {
+  if (!session || !isAdmin(session) || (requiredPermission && hasPermission === false)) {
     return <Loader />;
   }
 

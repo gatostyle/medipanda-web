@@ -16,7 +16,7 @@ import { useFormik } from 'formik';
 import { getMemberDetails, getPermissions, signupByAdmin, updateByAdmin } from '@/medipanda/backend';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
-import { isMpSuperAdmin, useMpSession } from '@/medipanda/hooks/useMpSession';
+import { isSuperAdmin, useSession } from '@/medipanda/hooks/useSession';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import * as yup from 'yup';
@@ -61,14 +61,14 @@ const createValidationSchema = (isNew: boolean) =>
 export default function MpAdminAdminEdit() {
   const { userId } = useParams();
   const navigate = useNavigate();
-  const { session } = useMpSession();
+  const { session } = useSession();
   const [, setLoading] = useState(false);
   const errorDialog = useMpErrorDialog();
   const infoDialog = useMpInfoDialog();
   const isNew = userId === undefined;
 
   useEffect(() => {
-    if (!isNew && session && !isMpSuperAdmin(session)) {
+    if (!isNew && session && !isSuperAdmin(session)) {
       infoDialog.showInfo('최고관리자만 관리자 편집이 가능합니다.');
       navigate('/admin/admins');
     }

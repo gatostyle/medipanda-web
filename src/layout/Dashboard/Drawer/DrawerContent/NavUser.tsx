@@ -15,7 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 // project import
 import Avatar from 'components/@extended/Avatar';
 import { useGetMenuMaster } from 'api/menu';
-import { useMpSession } from '@/medipanda/hooks/useMpSession';
+import { useSession } from '@/medipanda/hooks/useSession';
 
 // assets
 import { ArrowRight2 } from 'iconsax-react';
@@ -52,7 +52,7 @@ export default function UserList() {
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
 
-  const { session } = useMpSession();
+  const { session } = useSession();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);

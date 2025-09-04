@@ -9,7 +9,7 @@ import { SxProps } from '@mui/system';
 import Logo from './LogoMain';
 import LogoIcon from './LogoIcon';
 import { APP_DEFAULT_PATH } from 'config';
-import { useMpSession } from '@/medipanda/hooks/useMpSession';
+import { useSession } from '@/medipanda/hooks/useSession';
 
 interface Props {
   isIcon?: boolean;
@@ -20,7 +20,7 @@ interface Props {
 // ==============================|| MAIN LOGO ||============================== //
 
 export default function LogoSection({ isIcon, sx, to }: Props) {
-  const { session } = useMpSession();
+  const { session } = useSession();
 
   return (
     <ButtonBase disableRipple {...(session && { component: Link, to: !to ? APP_DEFAULT_PATH : to, sx })}>

@@ -23,7 +23,7 @@ import Avatar from 'components/@extended/Avatar';
 import MainCard from 'components/MainCard';
 import Transitions from 'components/@extended/Transitions';
 import IconButton from 'components/@extended/IconButton';
-import { useMpSession } from '@/medipanda/hooks/useMpSession';
+import { useSession } from '@/medipanda/hooks/useSession';
 
 import { ThemeMode } from 'config';
 
@@ -68,7 +68,7 @@ export default function ProfilePage() {
   const theme = useTheme();
   const navigate = useNavigate();
 
-  const { session } = useMpSession();
+  const { session } = useSession();
   const handleLogout = () => {
     navigate('/logout');
   };

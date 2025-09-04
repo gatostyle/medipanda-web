@@ -2,7 +2,7 @@ import { Button, FormHelperText, Grid, InputAdornment, OutlinedInput, Stack } fr
 import IconButton from 'components/@extended/IconButton';
 import { useFormik } from 'formik';
 import { Eye, EyeSlash } from 'iconsax-react';
-import { useMpSession } from '@/medipanda/hooks/useMpSession';
+import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { SyntheticEvent, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -10,7 +10,7 @@ import AuthWrapper from 'sections/auth/AuthWrapper';
 import * as Yup from 'yup';
 
 export default function MpLogin() {
-  const { login } = useMpSession();
+  const { login } = useSession();
   const navigate = useNavigate();
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();

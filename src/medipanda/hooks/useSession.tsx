@@ -17,9 +17,9 @@ const initialState = {
   login: (userId: string, password: string) => Promise.resolve(),
 };
 
-export const MpSessionContext = createContext(initialState);
+export const SessionContext = createContext(initialState);
 
-export function MpSessionProvider({ children }: { children: React.ReactNode }) {
+export function SessionProvider({ children }: { children: React.ReactNode }) {
   const { setMenuItems, setMenuOrientation } = useMpMenu();
   const [session, setSession] = useState(initialState.session);
   const [isLoading, setIsLoading] = useState(true);
@@ -27,8 +27,8 @@ export function MpSessionProvider({ children }: { children: React.ReactNode }) {
   const getSession = async () => {
     const member = await whoAmI();
 
-    if (isMpAdmin(member)) {
-      if (!isMpSuperAdmin(member)) {
+    if (isAdmin(member)) {
+      if (!isSuperAdmin(member)) {
         const permissions = (await getPermissions(member.userId)).permissions;
 
         const filteredMenu = filterMenuByPermissions(mpAdminMenu, permissions);
@@ -96,7 +96,7 @@ export function MpSessionProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <MpSessionContext.Provider
+    <SessionContext.Provider
       value={{
         session,
         isLoading,
@@ -104,18 +104,18 @@ export function MpSessionProvider({ children }: { children: React.ReactNode }) {
       }}
     >
       {children}
-    </MpSessionContext.Provider>
+    </SessionContext.Provider>
   );
 }
 
-export function useMpSession() {
-  return useContext(MpSessionContext);
+export function useSession() {
+  return useContext(SessionContext);
 }
 
-export function isMpAdmin(member: MemberDetailsResponse) {
+export function isAdmin(member: MemberDetailsResponse) {
   return member.role === 'SUPER_ADMIN' || member.role === 'ADMIN';
 }
 
-export function isMpSuperAdmin(member: MemberDetailsResponse) {
+export function isSuperAdmin(member: MemberDetailsResponse) {
   return member.role === 'SUPER_ADMIN';
 }

@@ -37,7 +37,7 @@ import {
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { useMpSession } from '@/medipanda/hooks/useMpSession';
+import { useSession } from '@/medipanda/hooks/useSession';
 import { EXPOSURE_RANGE_LABELS } from '@/medipanda/ui-labels';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
@@ -66,7 +66,7 @@ export default function MpAdminSalesAgencyProductEdit() {
   const navigate = useNavigate();
   const errorDialog = useMpErrorDialog();
   const { enqueueSnackbar } = useSnackbar();
-  const { session } = useMpSession();
+  const { session } = useSession();
   const [loading, setLoading] = useState(false);
   const [tabValue, setTabValue] = useState(0);
   const [productDetail, setProductDetail] = useState<SalesAgencyProductDetailsResponse | null>(null);

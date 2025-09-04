@@ -15,7 +15,7 @@ import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
 import { AttachmentResponse, createBoardPost, getBoardDetails, updateBoardPost } from '@/medipanda/backend';
-import { useMpSession } from '@/medipanda/hooks/useMpSession';
+import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -26,7 +26,7 @@ export default function MpAdminAtoZEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const { session } = useMpSession();
+  const { session } = useSession();
   const [loading, setLoading] = useState(false);
 
   const isNew = id === undefined;

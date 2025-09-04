@@ -36,10 +36,10 @@ import {
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useMpSession } from '../hooks/useMpSession';
+import { useSession } from '../hooks/useSession';
 
 export default function MpAdminPartnerEdit() {
-  const { session } = useMpSession();
+  const { session } = useSession();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();

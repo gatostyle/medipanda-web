@@ -11,7 +11,7 @@ import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplemented
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
-import { useMpSession } from '../hooks/useMpSession';
+import { useSession } from '../hooks/useSession';
 import { DateFix, formatYyyyMmDd } from '../utils/dateFormat';
 
 export default function MpAdminEventEdit() {
@@ -23,7 +23,7 @@ export default function MpAdminEventEdit() {
   const notImplementedDialog = useMpNotImplementedDialog();
   const infoDialog = useMpInfoDialog();
   const errorDialog = useMpErrorDialog();
-  const { session } = useMpSession();
+  const { session } = useSession();
 
   const isNew = id === undefined;
 

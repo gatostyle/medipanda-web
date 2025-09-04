@@ -5,7 +5,7 @@ import { AlternativeProductDto, createProductExtraInfo, getProductDetails, updat
 import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
-import { useMpSession } from '@/medipanda/hooks/useMpSession';
+import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -18,7 +18,7 @@ export default function MpAdminProductEdit() {
   const [loading, setLoading] = useState(false);
   const notImplementedDialog = useMpNotImplementedDialog();
   const errorDialog = useMpErrorDialog();
-  const { session } = useMpSession();
+  const { session } = useSession();
 
   const isNew = id === undefined;
 

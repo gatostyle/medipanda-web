@@ -4,12 +4,12 @@ import { MpErrorDialogProvider } from './hooks/useMpErrorDialog';
 import { MpInfoDialogProvider } from './hooks/useMpInfoDialog';
 import { MpMenuProvider } from './hooks/useMpMenu';
 import { MpNotImplementedDialogProvider } from './hooks/useMpNotImplementedDialog';
-import { MpSessionProvider } from './hooks/useMpSession';
+import { SessionProvider } from './hooks/useSession';
 
 export function MpProviders({ children }: { children: ReactNode }) {
   return (
     <MpMenuProvider>
-      <MpSessionProvider>
+      <SessionProvider>
         <MpInfoDialogProvider>
           <MpErrorDialogProvider>
             <MpNotImplementedDialogProvider>
@@ -17,7 +17,7 @@ export function MpProviders({ children }: { children: ReactNode }) {
             </MpNotImplementedDialogProvider>
           </MpErrorDialogProvider>
         </MpInfoDialogProvider>
-      </MpSessionProvider>
+      </SessionProvider>
     </MpMenuProvider>
   );
 }
