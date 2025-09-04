@@ -1,3 +1,4 @@
+import { Base64ErrorBoundary } from '@/lib/react/Base64ErrorBoundary';
 import Loadable from 'components/Loadable';
 import AuthLayout from 'layout/Auth';
 import DashboardLayout from 'layout/Dashboard';
@@ -520,4 +521,5 @@ const adminRoute: RouteObject = {
 export const MpRoutes: RouteObject = {
   path: '/',
   children: [...authRoutes, adminRoute, { path: '*', element: <MaintenanceError /> }],
+  errorElement: <Base64ErrorBoundary />,
 };
