@@ -1,9 +1,17 @@
-import { MenuOrientation } from 'config';
-import { getPermissions, getPublicKey, login as apiLogin, MemberDetailsResponse, refreshToken as apiRefreshToken, whoAmI } from '@/backend';
+import {
+  getPermissions,
+  getPublicKey,
+  login as apiLogin,
+  logout as apiLogout,
+  type MemberDetailsResponse,
+  refreshToken as apiRefreshToken,
+  whoAmI,
+} from '@/backend';
+import { MenuOrientation } from '@/config';
+import { encryptRSA } from '@/lib/rsa';
+import { useMpMenu } from '@/medipanda/hooks/useMpMenu';
 import { filterMenuByPermissions, mpAdminMenu, mpMemberMenu } from '@/medipanda/menu-items';
-import { encryptRSA } from '@/medipanda/utils/rsa';
-import { createContext, useContext, useEffect, useState } from 'react';
-import { useMpMenu } from './useMpMenu';
+import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
 
 declare global {
   interface Window {
@@ -14,12 +22,13 @@ declare global {
 const initialState = {
   session: null as MemberDetailsResponse | null,
   isLoading: true,
-  login: (userId: string, password: string) => Promise.resolve(),
+  login: Promise.resolve as (userId: string, password: string) => Promise<void>,
+  logout: Promise.resolve as () => Promise<void>,
 };
 
-export const SessionContext = createContext(initialState);
+const SessionContext = createContext(initialState);
 
-export function SessionProvider({ children }: { children: React.ReactNode }) {
+export function SessionProvider({ children }: { children: ReactNode }) {
   const { setMenuItems, setMenuOrientation } = useMpMenu();
   const [session, setSession] = useState(initialState.session);
   const [isLoading, setIsLoading] = useState(true);
@@ -54,14 +63,11 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
           });
           localStorage.setItem('refreshToken', refreshToken);
         } catch (e) {
-          if ((e as any)?.response?.status === 401) {
-            clearInterval(window.refreshTokenRotateInterval);
-            localStorage.removeItem('refreshToken');
-            const currentUrl = window.location.pathname + window.location.search;
-            window.location.replace(`/logout?authError=true&redirectTo=${encodeURIComponent(currentUrl)}`);
-          } else {
-            console.error(e);
-          }
+          console.error(e);
+          clearInterval(window.refreshTokenRotateInterval);
+          localStorage.removeItem('refreshToken');
+
+          setSession(null);
         }
       },
       import.meta.env.VITE_APP_TOKEN_ROTATE_INTERVAL,
@@ -72,7 +78,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (userId: string, password: string) => {
     const { publicKey } = await getPublicKey();
-    const encryptedPassword = import.meta.env.VITE_SKIP_PASSWORD_ENCRYPTION === 'true' ? password : await encryptRSA(publicKey, password);
+    const encryptedPassword = import.meta.env.VITE_APP_ENCRYPT_PASSWORD === 'true' ? password : await encryptRSA(publicKey, password);
     const { refreshToken } = await apiLogin({
       userId,
       password: encryptedPassword,
@@ -83,18 +89,30 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     setSession(await getSession());
   };
 
+  const logout = async () => {
+    try {
+      await apiLogout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setSession(null);
+    }
+  };
+
   useEffect(() => {
-    (async () => {
-      try {
-        setSession(await getSession());
-      } catch (error) {
-        console.error(error);
-        setSession(null);
-      } finally {
-        setIsLoading(false);
-      }
-    })();
+    refreshSession();
   }, []);
+
+  const refreshSession = async () => {
+    try {
+      setSession(await getSession());
+    } catch (error) {
+      console.error(error);
+      setSession(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <SessionContext.Provider
@@ -102,6 +120,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
         session,
         isLoading,
         login,
+        logout,
       }}
     >
       {children}
