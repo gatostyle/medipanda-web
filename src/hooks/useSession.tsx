@@ -15,18 +15,11 @@ declare global {
   }
 }
 
-interface SessionState {
-  session: MemberDetailsResponse | null;
-  isLoading: boolean;
-  login: (userId: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
-}
-
-const initialState: SessionState = {
-  session: null,
+const initialState = {
+  session: null as MemberDetailsResponse | null,
   isLoading: true,
-  login: Promise.resolve,
-  logout: Promise.resolve,
+  login: Promise.resolve as (userId: string, password: string) => Promise<void>,
+  logout: Promise.resolve as () => Promise<void>,
 };
 
 const SessionContext = createContext(initialState);
