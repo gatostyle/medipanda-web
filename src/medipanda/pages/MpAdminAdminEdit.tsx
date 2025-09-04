@@ -13,10 +13,10 @@ import {
 } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
-import { getMemberDetails, getPermissions, signupByAdmin, updateByAdmin } from 'medipanda/backend';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
-import { isMpSuperAdmin, useMpSession } from 'medipanda/hooks/useMpSession';
+import { getMemberDetails, getPermissions, signupByAdmin, updateByAdmin } from '@/medipanda/backend';
+import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
+import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
+import { isMpSuperAdmin, useMpSession } from '@/medipanda/hooks/useMpSession';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import * as yup from 'yup';

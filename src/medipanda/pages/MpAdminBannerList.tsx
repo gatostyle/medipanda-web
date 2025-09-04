@@ -22,12 +22,12 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { BannerResponse, DateTimeString, getBanners } from 'medipanda/backend';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
-import { formatYyyyMmDd, formatYyyyMmDdHhMm } from 'medipanda/utils/dateFormat';
-import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { BannerResponse, DateTimeString, getBanners } from '@/medipanda/backend';
+import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
+import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
+import { formatYyyyMmDd, formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
+import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 

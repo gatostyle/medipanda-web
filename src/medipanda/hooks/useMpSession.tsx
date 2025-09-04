@@ -1,7 +1,7 @@
 import { MenuOrientation } from 'config';
-import { getPermissions, login as apiLogin, MemberDetailsResponse, refreshToken as apiRefreshToken, whoAmI } from 'medipanda/backend';
-import { filterMenuByPermissions, mpAdminMenu, mpMemberMenu } from 'medipanda/menu-items';
-import { encryptRSA } from 'medipanda/utils/rsa';
+import { getPermissions, login as apiLogin, MemberDetailsResponse, refreshToken as apiRefreshToken, whoAmI } from '@/medipanda/backend';
+import { filterMenuByPermissions, mpAdminMenu, mpMemberMenu } from '@/medipanda/menu-items';
+import { encryptRSA } from '@/medipanda/utils/rsa';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useMpMenu } from './useMpMenu';
 

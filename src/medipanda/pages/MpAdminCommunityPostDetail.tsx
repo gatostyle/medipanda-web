@@ -17,10 +17,10 @@ import {
 } from '@mui/material';
 import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import ScrollX from 'components/ScrollX';
-import { BoardReportResponse, CommentResponse, getBoardDetails } from 'medipanda/backend';
-import { BOARD_TYPE_LABELS } from 'medipanda/ui-labels';
-import { formatYyyyMmDd, formatYyyyMmDdHhMm } from 'medipanda/utils/dateFormat';
-import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { BoardReportResponse, CommentResponse, getBoardDetails } from '@/medipanda/backend';
+import { BOARD_TYPE_LABELS } from '@/medipanda/ui-labels';
+import { formatYyyyMmDd, formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
+import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';

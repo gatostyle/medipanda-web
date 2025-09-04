@@ -1,5 +1,5 @@
 import Loader from 'components/Loader';
-import { isMpAdmin, useMpSession } from 'medipanda/hooks/useMpSession';
+import { isMpAdmin, useMpSession } from '@/medipanda/hooks/useMpSession';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GuardProps } from 'types/auth';

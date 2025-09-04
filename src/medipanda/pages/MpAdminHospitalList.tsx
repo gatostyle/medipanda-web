@@ -27,16 +27,16 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
-import { DateTimeString, getHospitals, HospitalResponse, softDeleteHospital, uploadHospitalExcel } from 'medipanda/backend';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
-import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
-import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
-import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
+import { DateTimeString, getHospitals, HospitalResponse, softDeleteHospital, uploadHospitalExcel } from '@/medipanda/backend';
+import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
+import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
+import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
+import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
+import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
+import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
+import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
 
 export default function MpAdminHospitalList() {

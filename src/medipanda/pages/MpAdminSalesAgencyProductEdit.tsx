@@ -33,12 +33,12 @@ import {
   SalesAgencyProductDetailsResponse,
   updateApplicantNotes,
   updateSalesAgencyProductBoard,
-} from 'medipanda/backend';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import { TiptapEditor } from 'medipanda/components/TiptapEditor';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
-import { useMpSession } from 'medipanda/hooks/useMpSession';
-import { EXPOSURE_RANGE_LABELS } from 'medipanda/ui-labels';
+} from '@/medipanda/backend';
+import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
+import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
+import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
+import { useMpSession } from '@/medipanda/hooks/useMpSession';
+import { EXPOSURE_RANGE_LABELS } from '@/medipanda/ui-labels';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';

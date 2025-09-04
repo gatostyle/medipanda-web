@@ -13,9 +13,9 @@ import {
 } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
-import { createBoardPost, getBoardDetails, updateBoardPost } from 'medipanda/backend';
-import { TiptapEditor } from 'medipanda/components/TiptapEditor';
-import { useMpSession } from 'medipanda/hooks/useMpSession';
+import { createBoardPost, getBoardDetails, updateBoardPost } from '@/medipanda/backend';
+import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
+import { useMpSession } from '@/medipanda/hooks/useMpSession';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';

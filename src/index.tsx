@@ -40,7 +40,7 @@ import '@fontsource/public-sans/700.css';
 import App from './App';
 import { ConfigProvider } from 'contexts/ConfigContext';
 import reportWebVitals from './reportWebVitals';
-import { MpProviders } from 'medipanda/providers';
+import { MpProviders } from '@/medipanda/providers';
 
 const container = document.getElementById('root');
 const root = createRoot(container!);

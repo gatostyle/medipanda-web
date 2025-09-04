@@ -22,13 +22,13 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { BlindPostResponse, DateString, getBlindPosts, unblindPost } from 'medipanda/backend';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
-import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
-import { formatYyyyMmDdHhMm } from 'medipanda/utils/dateFormat';
-import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { BlindPostResponse, DateString, getBlindPosts, unblindPost } from '@/medipanda/backend';
+import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
+import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
+import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
+import { formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
+import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
 
 export default function MpAdminCommunityBlindList() {

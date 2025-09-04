@@ -22,22 +22,22 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
+import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
 import {
   completePrescriptionPartner,
   DateTimeString,
   deletePrescriptionPartner,
   getPrescriptionPartnerList,
   PrescriptionPartnerResponse,
-} from 'medipanda/backend';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
-import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
-import { formatYyyyMm, formatYyyyMmDd } from 'medipanda/utils/dateFormat';
-import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+} from '@/medipanda/backend';
+import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
+import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
+import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
+import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
+import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
+import { formatYyyyMm, formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
+import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 

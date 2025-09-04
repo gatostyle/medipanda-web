@@ -1,6 +1,6 @@
 import { TextFieldProps } from '@mui/material/TextField';
 import { DatePicker, DatePickerProps } from '@mui/x-date-pickers/DatePicker';
-import { DATEFORMAT_YYYY_MM_DD } from 'medipanda/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD } from '@/medipanda/utils/dateFormat';
 import React from 'react';
 
 export type MpDatePickerView = 'day' | 'month' | 'year';

@@ -31,12 +31,12 @@ import {
   PrescriptionPartnerProductResponse,
   PrescriptionProductItem,
   ProductSummaryResponse,
-} from 'medipanda/backend';
-import { MpChangeHistoryDialog } from 'medipanda/components/MpChangeHistoryDialog';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import { MpOcrRequestModal } from 'medipanda/components/MpOcrRequestModal';
-import { MpPartnerSearchModal } from 'medipanda/components/MpPartnerSearchModal';
-import { Sequenced } from 'medipanda/utils/withSequence';
+} from '@/medipanda/backend';
+import { MpChangeHistoryDialog } from '@/medipanda/components/MpChangeHistoryDialog';
+import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
+import { MpOcrRequestModal } from '@/medipanda/components/MpOcrRequestModal';
+import { MpPartnerSearchModal } from '@/medipanda/components/MpPartnerSearchModal';
+import { Sequenced } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';

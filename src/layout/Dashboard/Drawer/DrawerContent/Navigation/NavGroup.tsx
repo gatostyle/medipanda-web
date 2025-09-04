@@ -34,7 +34,7 @@ import { More2 } from 'iconsax-react';
 
 // types
 import { NavItemType } from 'types/menu';
-import { useMpMenu } from 'medipanda/hooks/useMpMenu';
+import { useMpMenu } from '@/medipanda/hooks/useMpMenu';
 
 interface Props {
   item: NavItemType;

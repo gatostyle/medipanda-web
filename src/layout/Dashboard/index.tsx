@@ -17,7 +17,7 @@ import Breadcrumbs from 'components/@extended/Breadcrumbs';
 import { DRAWER_WIDTH } from 'config';
 import useConfig from 'hooks/useConfig';
 import { useGetMenuMaster } from 'api/menu';
-import { MpAdminGuard } from 'medipanda/utils/route-guard';
+import { MpAdminGuard } from '@/medipanda/utils/route-guard';
 
 // ==============================|| MAIN LAYOUT ||============================== //
 

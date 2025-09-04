@@ -21,13 +21,13 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { InquiryResponseStatusFilter, InquirySearchType } from 'medipanda/api-definitions/MpInquiry';
-import { BoardPostResponse, getBoards } from 'medipanda/backend';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
-import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
-import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { InquiryResponseStatusFilter, InquirySearchType } from '@/medipanda/api-definitions/MpInquiry';
+import { BoardPostResponse, getBoards } from '@/medipanda/backend';
+import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
+import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
+import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
+import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 

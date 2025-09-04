@@ -21,7 +21,7 @@ import { useGetMenuMaster } from 'api/menu';
 
 // types
 import { LinkTarget, NavItemType } from 'types/menu';
-import { useMpMenu } from 'medipanda/hooks/useMpMenu';
+import { useMpMenu } from '@/medipanda/hooks/useMpMenu';
 
 interface Props {
   item: NavItemType;

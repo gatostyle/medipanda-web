@@ -16,7 +16,7 @@ import { useGetMenuMaster } from 'api/menu';
 
 // types
 import { NavItemType } from 'types/menu';
-import { useMpMenu } from 'medipanda/hooks/useMpMenu';
+import { useMpMenu } from '@/medipanda/hooks/useMpMenu';
 
 // ==============================|| DRAWER CONTENT - NAVIGATION ||============================== //
 

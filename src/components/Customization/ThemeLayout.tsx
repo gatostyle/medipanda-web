@@ -15,7 +15,7 @@ import MainCard from 'components/MainCard';
 
 import { MenuOrientation, ThemeDirection } from 'config';
 import useConfig from 'hooks/useConfig';
-import { useMpMenu } from 'medipanda/hooks/useMpMenu';
+import { useMpMenu } from '@/medipanda/hooks/useMpMenu';
 
 // assets
 import defaultLayout from 'assets/images/customization/ltr.svg';

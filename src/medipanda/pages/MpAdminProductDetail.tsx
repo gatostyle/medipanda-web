@@ -1,6 +1,6 @@
 import { Box, Button, Card, Checkbox, CircularProgress, FormControlLabel, Grid, Stack, Typography } from '@mui/material';
-import { getProductDetails, ProductDetailsResponse } from 'medipanda/backend';
-import { TiptapEditor } from 'medipanda/components/TiptapEditor';
+import { getProductDetails, ProductDetailsResponse } from '@/medipanda/backend';
+import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';

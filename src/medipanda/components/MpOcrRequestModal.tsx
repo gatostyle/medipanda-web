@@ -2,7 +2,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, LinearProgress, Typography } from '@mui/material';
-import { OcrResponse, requestOcr } from 'medipanda/backend';
+import { OcrResponse, requestOcr } from '@/medipanda/backend';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 interface Point {

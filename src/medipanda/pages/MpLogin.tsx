@@ -2,7 +2,7 @@ import { Button, FormHelperText, Grid, InputAdornment, OutlinedInput, Stack } fr
 import IconButton from 'components/@extended/IconButton';
 import { useFormik } from 'formik';
 import { Eye, EyeSlash } from 'iconsax-react';
-import { useMpSession } from 'medipanda/hooks/useMpSession';
+import { useMpSession } from '@/medipanda/hooks/useMpSession';
 import { useSnackbar } from 'notistack';
 import { SyntheticEvent, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';

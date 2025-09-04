@@ -17,13 +17,13 @@ import {
   Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
-import { mpUpdateMemberFile } from 'medipanda/api-definitions/MpMember';
-import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
-import { approveOrRejectCso, getContractDetails, getMemberDetails } from 'medipanda/backend';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
-import { mockString } from 'medipanda/mockup';
+import { mpUpdateMemberFile } from '@/medipanda/api-definitions/MpMember';
+import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
+import { approveOrRejectCso, getContractDetails, getMemberDetails } from '@/medipanda/backend';
+import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
+import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
+import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
+import { mockString } from '@/medipanda/mockup';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';

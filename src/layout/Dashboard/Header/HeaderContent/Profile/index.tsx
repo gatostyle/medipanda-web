@@ -23,7 +23,7 @@ import Avatar from 'components/@extended/Avatar';
 import MainCard from 'components/MainCard';
 import Transitions from 'components/@extended/Transitions';
 import IconButton from 'components/@extended/IconButton';
-import { useMpSession } from 'medipanda/hooks/useMpSession';
+import { useMpSession } from '@/medipanda/hooks/useMpSession';
 
 import { ThemeMode } from 'config';
 

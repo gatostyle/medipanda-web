@@ -23,17 +23,17 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { BoardPostResponse, DateString, getBoards, toggleBlindStatus_1 } from 'medipanda/backend';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
-import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
-import { BOARD_TYPE_LABELS } from 'medipanda/ui-labels';
-import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { BoardPostResponse, DateString, getBoards, toggleBlindStatus_1 } from '@/medipanda/backend';
+import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
+import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
+import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
+import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
+import { BOARD_TYPE_LABELS } from '@/medipanda/ui-labels';
+import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { formatYyyyMmDdHhMm } from 'medipanda/utils/dateFormat';
+import { formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
 
 export default function MpAdminCommunityPostList() {
   const [data, setData] = useState<Sequenced<BoardPostResponse>[]>([]);

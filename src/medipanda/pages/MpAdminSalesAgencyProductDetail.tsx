@@ -24,10 +24,10 @@ import {
   getSalesAgencyProductDetails,
   SalesAgencyProductApplicantResponse,
   SalesAgencyProductDetailsResponse,
-} from 'medipanda/backend';
-import { TiptapEditor } from 'medipanda/components/TiptapEditor';
-import { formatYyyyMmDd } from 'medipanda/utils/dateFormat';
-import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+} from '@/medipanda/backend';
+import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
+import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
+import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';

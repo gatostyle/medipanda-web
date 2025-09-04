@@ -1,6 +1,6 @@
 import Loader from 'components/Loader';
-import { getPermissions } from 'medipanda/backend';
-import { isMpAdmin, isMpSuperAdmin, useMpSession } from 'medipanda/hooks/useMpSession';
+import { getPermissions } from '@/medipanda/backend';
+import { isMpAdmin, isMpSuperAdmin, useMpSession } from '@/medipanda/hooks/useMpSession';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { GuardProps } from 'types/auth';

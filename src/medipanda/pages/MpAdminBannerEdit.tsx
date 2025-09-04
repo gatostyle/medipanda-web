@@ -14,13 +14,13 @@ import {
 } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
-import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
-import { createBanner, DateTimeString, getBanner, updateBanner } from 'medipanda/backend';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
-import { DateFix, formatYyyyMmDd } from 'medipanda/utils/dateFormat';
+import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
+import { createBanner, DateTimeString, getBanner, updateBanner } from '@/medipanda/backend';
+import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
+import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
+import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
+import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
+import { DateFix, formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 

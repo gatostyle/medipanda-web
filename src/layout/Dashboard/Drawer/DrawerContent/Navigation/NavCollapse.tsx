@@ -31,7 +31,7 @@ import { ArrowDown2, ArrowUp2, ArrowRight2, Copy } from 'iconsax-react';
 
 // types
 import { NavItemType } from 'types/menu';
-import { useMpMenu } from 'medipanda/hooks/useMpMenu';
+import { useMpMenu } from '@/medipanda/hooks/useMpMenu';
 
 type VirtualElement = {
   getBoundingClientRect: () => DOMRect;

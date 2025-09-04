@@ -20,8 +20,8 @@ import {
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { SearchNormal1 } from 'iconsax-react';
-import { getProductSummaries, ProductSummaryResponse } from 'medipanda/backend';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
+import { getProductSummaries, ProductSummaryResponse } from '@/medipanda/backend';
+import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import React, { useEffect, useState } from 'react';
 
 interface MpProductSearchModalProps {

@@ -20,8 +20,8 @@ import {
   Typography,
 } from '@mui/material';
 import { SearchNormal1 } from 'iconsax-react';
-import { getPartners, PartnerResponse } from 'medipanda/backend';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
+import { getPartners, PartnerResponse } from '@/medipanda/backend';
+import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import React, { useCallback, useState } from 'react';
 
 interface MpPartnerSearchModalProps {

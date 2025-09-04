@@ -9,7 +9,7 @@ import { SxProps } from '@mui/system';
 import Logo from './LogoMain';
 import LogoIcon from './LogoIcon';
 import { APP_DEFAULT_PATH } from 'config';
-import { useMpSession } from 'medipanda/hooks/useMpSession';
+import { useMpSession } from '@/medipanda/hooks/useMpSession';
 
 interface Props {
   isIcon?: boolean;

@@ -23,18 +23,18 @@ import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-react';
-import { mpDownloadSettlementEDI, mpPrintSettlementEDI } from 'medipanda/api-definitions/MpSettlement';
-import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
-import { DateString, getDownloadSettlementListExcel, getSettlements, SettlementResponse, uploadSettlementExcel } from 'medipanda/backend';
-import MpFormikDatePicker from 'medipanda/components/MpFormikDatePicker';
-import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
-import { formatYyyyMm } from 'medipanda/utils/dateFormat';
-import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+import { mpDownloadSettlementEDI, mpPrintSettlementEDI } from '@/medipanda/api-definitions/MpSettlement';
+import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
+import { DateString, getDownloadSettlementListExcel, getSettlements, SettlementResponse, uploadSettlementExcel } from '@/medipanda/backend';
+import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
+import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
+import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
+import { formatYyyyMm } from '@/medipanda/utils/dateFormat';
+import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
+import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 
 export default function MpAdminSettlementList() {
   const [data, setData] = useState<Sequenced<SettlementResponse>[]>([]);

@@ -15,9 +15,9 @@ import {
   Typography,
 } from '@mui/material';
 import MainCard from 'components/MainCard';
-import { BoardDetailsResponse, getBoardDetails } from 'medipanda/backend';
-import { TiptapEditor } from 'medipanda/components/TiptapEditor';
-import { EXPOSURE_RANGE_LABELS, NOTICE_TYPE_LABELS } from 'medipanda/ui-labels';
+import { BoardDetailsResponse, getBoardDetails } from '@/medipanda/backend';
+import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
+import { EXPOSURE_RANGE_LABELS, NOTICE_TYPE_LABELS } from '@/medipanda/ui-labels';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';

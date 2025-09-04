@@ -14,8 +14,8 @@ import {
 import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
-import { AttachmentResponse, createBoardPost, getBoardDetails, updateBoardPost } from 'medipanda/backend';
-import { useMpSession } from 'medipanda/hooks/useMpSession';
+import { AttachmentResponse, createBoardPost, getBoardDetails, updateBoardPost } from '@/medipanda/backend';
+import { useMpSession } from '@/medipanda/hooks/useMpSession';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';

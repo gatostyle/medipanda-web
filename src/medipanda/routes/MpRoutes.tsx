@@ -1,7 +1,7 @@
 import Loadable from 'components/Loadable';
 import AuthLayout from 'layout/Auth';
 import DashboardLayout from 'layout/Dashboard';
-import { MpAdminGuard } from 'medipanda/utils/route-guard/MpAdminGuard';
+import { MpAdminGuard } from '@/medipanda/utils/route-guard/MpAdminGuard';
 import React, { lazy } from 'react';
 import { Navigate, RouteObject } from 'react-router-dom';
 

@@ -1,5 +1,5 @@
-import { MemberUpdateRequest } from 'medipanda/backend';
-import { mockString } from 'medipanda/mockup';
+import { MemberUpdateRequest } from '@/medipanda/backend';
+import { mockString } from '@/medipanda/mockup';
 import { NotImplementedError } from './NotImplementedError';
 
 export const mpUpdateMemberFile = async (userId: string, data: MemberUpdateRequest, file?: File): Promise<void> => {

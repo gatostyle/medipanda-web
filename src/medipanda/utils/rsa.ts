@@ -1,4 +1,4 @@
-import { getPublicKey } from 'medipanda/backend';
+import { getPublicKey } from '@/medipanda/backend';
 
 const pem = await (async (): Promise<string> => {
   try {

@@ -30,20 +30,20 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
+import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
 import {
   getDownloadProductSummariesExcel,
   getProductSummaries,
   ProductSummaryResponse,
   updateProductExtraInfo_1,
   uploadProductExtraInfo,
-} from 'medipanda/backend';
-import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from 'medipanda/components/SearchFilterBar';
-import { useMpDeleteDialog } from 'medipanda/hooks/useMpDeleteDialog';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from 'medipanda/hooks/useMpInfoDialog';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
-import { Sequenced, withSequence } from 'medipanda/utils/withSequence';
+} from '@/medipanda/backend';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
+import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
+import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
+import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
+import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
+import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Link } from 'react-router-dom';

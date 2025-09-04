@@ -1,11 +1,11 @@
 import { Box, Button, Card, Checkbox, CircularProgress, FormControlLabel, Grid, Stack, TextField, Typography } from '@mui/material';
 import { useFormik } from 'formik';
-import { NotImplementedError } from 'medipanda/api-definitions/NotImplementedError';
-import { AlternativeProductDto, createProductExtraInfo, getProductDetails, updateProductExtraInfo } from 'medipanda/backend';
-import { TiptapEditor } from 'medipanda/components/TiptapEditor';
-import { useMpErrorDialog } from 'medipanda/hooks/useMpErrorDialog';
-import { useMpNotImplementedDialog } from 'medipanda/hooks/useMpNotImplementedDialog';
-import { useMpSession } from 'medipanda/hooks/useMpSession';
+import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
+import { AlternativeProductDto, createProductExtraInfo, getProductDetails, updateProductExtraInfo } from '@/medipanda/backend';
+import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
+import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
+import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
+import { useMpSession } from '@/medipanda/hooks/useMpSession';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
