@@ -6,7 +6,7 @@ import { Close } from '@mui/icons-material';
 import { Box, Link, Popover, Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { memo, useState } from 'react';
-import { Link as RouterLink, Outlet, useLocation } from 'react-router';
+import { Link as RouterLink, Outlet, useLocation } from 'react-router-dom';
 
 const MaxWidthContainerWrapper = styled(Stack)({
   justifyContent: 'center',

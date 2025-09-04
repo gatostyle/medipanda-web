@@ -4,7 +4,7 @@ import { colors, typography } from '@/themes';
 import { Button, Link, Stack, Table, TableBody, TableCell, TableRow, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router';
+import { Link as RouterLink } from 'react-router-dom';
 
 export function CommunityTrendingList({ boardType }: { boardType: BoardType }) {
   const [content, setContent] = useState<BoardPostResponse[] | null>(null);

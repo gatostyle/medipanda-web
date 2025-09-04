@@ -5,7 +5,7 @@ import { Box, Button, CircularProgress, FormControlLabel, OutlinedInput, Stack, 
 import { styled } from '@mui/material/styles';
 import { ArrowDown2 } from 'iconsax-reactjs';
 import { useState } from 'react';
-import { useSearchParams } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
 
 const PartnerContractFormRow = styled(Stack)({
   flexDirection: 'row',

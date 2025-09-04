@@ -7,7 +7,7 @@ import { colors } from '@/themes';
 import { formatYyyyMmDdHhMm } from '@/lib/dateFormat';
 import { Search } from '@mui/icons-material';
 import { Box, Button, InputAdornment, Link, Stack, Table, TableBody, TableHead, TextField, Typography } from '@mui/material';
-import { Link as RouterLink } from 'react-router';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function MrCsoMatchingList() {
   const {

@@ -8,7 +8,7 @@ import { colors } from '@/themes';
 import { formatYyyyMmDd } from '@/lib/dateFormat';
 import { Search } from '@mui/icons-material';
 import { Box, InputAdornment, Stack, Table, TableBody, TableCell, TableRow, TextField, Typography } from '@mui/material';
-import { Link as RouterLink } from 'react-router';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function NoticeList() {
   const {

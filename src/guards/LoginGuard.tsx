@@ -1,7 +1,7 @@
 import { useSession } from '@/hooks/useSession';
 import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
 import { type ReactNode, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export function LoginGuard({ children }: { children: ReactNode }) {
   const { session } = useSession();

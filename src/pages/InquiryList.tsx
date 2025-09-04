@@ -9,7 +9,7 @@ import { formatYyyyMmDdHhMm } from '@/lib/dateFormat';
 import { withSequence } from '@/lib/withSequence';
 import { Search } from '@mui/icons-material';
 import { Fab, InputAdornment, Link, Stack, Table, TableBody, TableHead, TextField, Typography } from '@mui/material';
-import { Link as RouterLink } from 'react-router';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function InquiryList() {
   const {

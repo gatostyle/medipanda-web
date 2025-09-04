@@ -8,7 +8,7 @@ import { Box, FormControl, MenuItem, Select, Stack, TextField, Typography } from
 import { styled } from '@mui/material/styles';
 import { AxiosError } from 'axios';
 import { useFormik } from 'formik';
-import { Link as RouterLink } from 'react-router';
+import { Link as RouterLink } from 'react-router-dom';
 
 const MypageFormRow = styled(Stack)({
   alignItems: 'center',

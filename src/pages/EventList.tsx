@@ -4,7 +4,7 @@ import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
 import { colors } from '@/themes';
 import { formatYyyyMmDd, isExpired } from '@/lib/dateFormat';
 import { Box, Stack, Typography } from '@mui/material';
-import { Link as RouterLink } from 'react-router';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function EventList() {
   const {

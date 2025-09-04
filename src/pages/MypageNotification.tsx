@@ -6,7 +6,7 @@ import { colors } from '@/themes';
 import { Button, FormControlLabel, Stack, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { useEffect } from 'react';
-import { Link as RouterLink } from 'react-router';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function MypageNotification() {
   const { session } = useSession();

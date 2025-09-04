@@ -7,7 +7,7 @@ import { formatYyyyMmDd, isExpired } from '@/lib/dateFormat';
 import { Box, Stack, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function SalesAgencyProductDetail() {
   const { id: paramId } = useParams();

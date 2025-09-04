@@ -1,5 +1,5 @@
 import { Button, Grid, Stack, Typography } from '@mui/material';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 export default function Error404() {
   return (

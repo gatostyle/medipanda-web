@@ -1,7 +1,8 @@
 import { LoginGuard } from '@/guards/LoginGuard';
+import { Base64ErrorBoundary } from '@/lib/react/Base64ErrorBoundary';
 import { LazyComponent } from '@/lib/react/LazyComponent';
 import { lazy } from 'react';
-import { createBrowserRouter, Navigate, type RouteObject } from 'react-router';
+import { createBrowserRouter, Navigate, type RouteObject } from 'react-router-dom';
 
 const GlobalLayout = LazyComponent(lazy(() => import('layouts/GlobalLayout')));
 const TabbedLayout = LazyComponent(lazy(() => import('layouts/TabbedLayout')));
@@ -339,4 +340,14 @@ const route: RouteObject[] = [
   { path: '*', element: <Error404 /> },
 ];
 
-export const router = createBrowserRouter(route, { basename: import.meta.env.VITE_BASE_NAME });
+export const router = createBrowserRouter(
+  [
+    {
+      errorElement: <Base64ErrorBoundary />,
+      children: route,
+    },
+  ],
+  {
+    basename: import.meta.env.VITE_BASE_NAME,
+  },
+);

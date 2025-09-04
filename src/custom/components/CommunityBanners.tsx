@@ -2,7 +2,7 @@ import { getBanners } from '@/backend';
 import { LazyImage } from '@/lib/react/LazyImage';
 import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
 import { colors } from '@/themes';
-import { Link as RouterLink } from 'react-router';
+import { Link as RouterLink } from 'react-router-dom';
 
 export function CommunityBanners() {
   const { content } = usePageFetchFormik({

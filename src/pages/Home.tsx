@@ -12,7 +12,7 @@ import { KeyboardArrowRight } from '@mui/icons-material';
 import { Box, Button, Link, Stack, type TableProps, Typography } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useEffect, useRef, useState } from 'react';
-import { Link as RouterLink } from 'react-router';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function Home() {
   const { session } = useSession();

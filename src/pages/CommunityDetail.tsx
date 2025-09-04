@@ -11,7 +11,7 @@ import { MoreHoriz } from '@mui/icons-material';
 import { IconButton, Popover, Stack, type StackProps, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import { type FormEvent, type MouseEvent, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function CommunityDetail() {
   const { session } = useSession();

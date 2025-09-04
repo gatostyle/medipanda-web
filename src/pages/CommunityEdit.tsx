@@ -11,7 +11,7 @@ import { FormControlLabel, Stack, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
-import { Link as RouterLink, useNavigate, useParams } from 'react-router';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 
 export default function CommunityEdit() {
   const { session } = useSession();

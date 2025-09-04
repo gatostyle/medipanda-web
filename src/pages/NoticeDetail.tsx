@@ -7,7 +7,7 @@ import { formatYyyyMmDd } from '@/lib/dateFormat';
 import { Button, Link, Stack, Typography } from '@mui/material';
 import { EditorContent, useEditorState } from '@tiptap/react';
 import { useEffect, useState } from 'react';
-import { Link as RouterLink, useNavigate, useParams } from 'react-router';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 
 export default function NoticeDetail() {
   const { id: paramId } = useParams();

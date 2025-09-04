@@ -9,7 +9,7 @@ import { formatYyyyMmDdHhMm } from '@/lib/dateFormat';
 import { Box, Button, Link, Stack, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import { useEffect, useState } from 'react';
-import { Link as RouterLink, useNavigate, useParams } from 'react-router';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 
 export default function InquiryDetail() {
   const { id: paramId } = useParams();

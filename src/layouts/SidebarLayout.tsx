@@ -2,7 +2,7 @@ import { colors, typography } from '@/themes';
 import { List, ListItemButton, ListItemText, Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { memo } from 'react';
-import { Link as RouterLink, Outlet, useLocation } from 'react-router';
+import { Link as RouterLink, Outlet, useLocation } from 'react-router-dom';
 
 const SidebarLink = styled(ListItemButton)({
   color: colors.gray80,

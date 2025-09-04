@@ -2,7 +2,7 @@ import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/componen
 import { colors } from '@/themes';
 import { Typography } from '@mui/material';
 import { memo } from 'react';
-import { Link as RouterLink, Outlet, useLocation } from 'react-router';
+import { Link as RouterLink, Outlet, useLocation } from 'react-router-dom';
 
 interface TabbedLayoutProps {
   title: string;

@@ -6,7 +6,7 @@ import { formatYyyyMmDd } from '@/lib/dateFormat';
 import { Stack, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function EventDetail() {
   const { id: paramId } = useParams();

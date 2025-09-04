@@ -3,7 +3,7 @@ import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { useSession } from '@/hooks/useSession';
 import { colors } from '@/themes';
 import { Button, Stack, Typography } from '@mui/material';
-import { Link as RouterLink } from 'react-router';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function MypageWithdraw() {
   const { session } = useSession();

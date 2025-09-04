@@ -10,7 +10,7 @@ import { colors } from '@/themes';
 import { Search } from '@mui/icons-material';
 import { Box, Button, InputAdornment, Link, Stack, Table, TableBody, TableHead, TextField, Typography } from '@mui/material';
 import { useEffect, useRef } from 'react';
-import { Link as RouterLink, useSearchParams } from 'react-router';
+import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 
 export default function AnonymousList() {
   const [searchParams] = useSearchParams();
