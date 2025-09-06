@@ -22,6 +22,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { AxiosError } from 'axios';
 import { useFormik } from 'formik';
 import { SearchNormal1 } from 'iconsax-react';
 import {
@@ -105,40 +106,51 @@ export default function MpAdminPartnerEdit() {
       note: '',
     },
     onSubmit: async values => {
-      if (isNew) {
-        await createPartner({
-          drugCompanyId: values.drugCompany!.id,
-          userId: session!.userId,
-          drugCompany: values.drugCompany!.name,
-          companyName: values.companyName,
-          contractType: values.contractType!,
-          institutionCode: values.institutionCode,
-          institutionName: values.institutionName,
-          businessNumber: values.businessNumber,
-          medicalDepartment: values.medicalDepartment,
-          pharmacyName: values.pharmacyName,
-          pharmacyAddress: values.pharmacyAddress,
-          pharmacyStatus: values.pharmacyStatus!,
-          note: values.note,
-        });
-      } else
-        await updatePartner(parseInt(id!), {
-          drugCompanyId: null,
-          drugCompanyName: null,
-          companyName: values.companyName,
-          contractType: values.contractType,
-          institutionCode: values.institutionCode,
-          institutionName: values.institutionName,
-          businessNumber: values.businessNumber,
-          medicalDepartment: values.medicalDepartment,
-          pharmacyName: values.pharmacyName,
-          pharmacyAddress: values.pharmacyAddress,
-          pharmacyStatus: values.pharmacyStatus,
-          note: values.note,
-        });
+      try {
+        if (isNew) {
+          await createPartner({
+            drugCompanyId: values.drugCompany!.id,
+            userId: session!.userId,
+            drugCompany: values.drugCompany!.name,
+            companyName: values.companyName,
+            contractType: values.contractType!,
+            institutionCode: values.institutionCode,
+            institutionName: values.institutionName,
+            businessNumber: values.businessNumber,
+            medicalDepartment: values.medicalDepartment,
+            pharmacyName: values.pharmacyName,
+            pharmacyAddress: values.pharmacyAddress,
+            pharmacyStatus: values.pharmacyStatus!,
+            note: values.note,
+          });
+        } else {
+          await updatePartner(parseInt(id!), {
+            drugCompanyId: null,
+            drugCompanyName: null,
+            companyName: values.companyName,
+            contractType: values.contractType,
+            institutionCode: values.institutionCode,
+            institutionName: values.institutionName,
+            businessNumber: values.businessNumber,
+            medicalDepartment: values.medicalDepartment,
+            pharmacyName: values.pharmacyName,
+            pharmacyAddress: values.pharmacyAddress,
+            pharmacyStatus: values.pharmacyStatus,
+            note: values.note,
+          });
+        }
 
-      alert('거래선 정보가 저장되었습니다.');
-      navigate('/admin/partners');
+        alert('거래선 정보가 저장되었습니다.');
+        navigate('/admin/partners');
+      } catch (e) {
+        if (e instanceof AxiosError && e.response?.status === 409) {
+          alert('해당 제약사-거래처 조합이 이미 등록되어 있습니다. 다시 확인해주세요.');
+          return;
+        }
+
+        console.error(e);
+        alert('거래선 정보 저장에 실패했습니다. 다시 시도해주세요.');
+      }
     },
   });
 
