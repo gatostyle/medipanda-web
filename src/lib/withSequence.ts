@@ -29,5 +29,6 @@ export function withSequence<T, P extends PagedResponse<object>>(
       ...item,
       sequence: responseOrArray.totalElements - responseOrArray.size * responseOrArray.number - index,
     })),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any;
 }

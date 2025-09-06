@@ -12,6 +12,8 @@ const medipandaButtonTheme = createTheme({
       contrastText: colors.white,
     },
   },
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   typography: {
     allVariants: {
       fontFamily: 'Pretendard',
@@ -61,8 +63,8 @@ interface ExtendedProps {
   rounded?: boolean;
 }
 
-export const MedipandaButton: ExtendButtonBase<ButtonTypeMap<ExtendedProps>> = ((props: ButtonProps) => (
+export const MedipandaButton = ((props: ButtonProps) => (
   <ThemeProvider theme={medipandaButtonTheme}>
     <Button {...props} />
   </ThemeProvider>
-)) as any;
+)) as ExtendButtonBase<ButtonTypeMap<ExtendedProps>>;

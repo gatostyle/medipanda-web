@@ -28,8 +28,10 @@ type MedipandaTypographyKeys =
   | 'smallTextR';
 
 declare module '@mui/material' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface TypographyVariantsOptions extends Record<MedipandaTypographyKeys, CSSProperties> {}
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface TypographyPropsVariantOverrides extends Record<MedipandaTypographyKeys, true> {}
 }
 

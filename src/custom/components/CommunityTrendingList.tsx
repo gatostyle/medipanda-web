@@ -8,7 +8,6 @@ import { Link as RouterLink } from 'react-router-dom';
 
 export function CommunityTrendingList({ boardType }: { boardType: BoardType }) {
   const [content, setContent] = useState<BoardPostResponse[] | null>(null);
-  const [pageCount, setPageCount] = useState(-1);
 
   const formik = useFormik({
     initialValues: {
@@ -30,7 +29,6 @@ export function CommunityTrendingList({ boardType }: { boardType: BoardType }) {
     const response = await getBoards(formik.values);
 
     setContent(response.content);
-    setPageCount(response.totalPages);
   };
 
   useEffect(() => {

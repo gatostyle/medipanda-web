@@ -97,7 +97,7 @@ export default function MypageInfo() {
 
     const popup = window.open(certUrl, '_blank', 'width=500,height=700');
 
-    const authResult = await new Promise<Record<string, {}>>(resolve => {
+    const authResult = await new Promise<Record<string, unknown>>(resolve => {
       const interval = setInterval(async () => {
         getAuthResult({ certNum })
           .then(result => {

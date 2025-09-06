@@ -92,7 +92,7 @@ export default function PartnerContract() {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
         setUploadedFiles(prev => ({ ...prev, [fileType]: file.name }));
-        alert(`${fileType} 파일이 업로드되었습니다.`, 'success');
+        alert(`${fileType} 파일이 업로드되었습니다.`);
       }
     };
     input.click();
@@ -100,19 +100,19 @@ export default function PartnerContract() {
 
   const handleSubmit = () => {
     if (!formData.companyName.trim()) {
-      alert('회사명을 입력해주세요.', 'warning');
+      alert('회사명을 입력해주세요.');
       return;
     }
     if (!formData.businessNumber.trim()) {
-      alert('사업자등록번호를 입력해주세요.', 'warning');
+      alert('사업자등록번호를 입력해주세요.');
       return;
     }
     if (!formData.bankName) {
-      alert('정산은행을 선택해주세요.', 'warning');
+      alert('정산은행을 선택해주세요.');
       return;
     }
     if (!formData.accountNumber.trim()) {
-      alert('계좌번호를 입력해주세요.', 'warning');
+      alert('계좌번호를 입력해주세요.');
       return;
     }
 

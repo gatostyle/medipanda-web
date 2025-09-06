@@ -32,7 +32,7 @@ export default function Login() {
         const redirectTo = params.get('redirectTo');
 
         navigate(redirectTo ?? '/', { replace: true });
-      } catch (e: any) {
+      } catch (e) {
         setErrors({ submit: `오류: ${JSON.stringify(e)}` });
       }
     },

@@ -1,4 +1,4 @@
-import { forwardRef, type ReactNode, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, type ReactNode, type Ref, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 export function useCarousel(length: number, intervalMs = 3000) {
   const [index, setIndex] = useState(0);
@@ -40,29 +40,29 @@ interface MedipandaCarouselProps {
   width?: number;
 }
 
-export const MedipandaCarousel = forwardRef<MedipandaCarouselHandle, MedipandaCarouselProps>(
-  ({ children, interval = 3000, width = 300 }, ref) => {
-    const { getOffset, next, prev } = useCarousel(children.length, interval);
+function MedipandaCarousel_({ children, interval = 3000, width = 300 }: MedipandaCarouselProps, ref: Ref<MedipandaCarouselHandle>) {
+  const { getOffset, next, prev } = useCarousel(children.length, interval);
 
-    useImperativeHandle(ref, () => ({ next, prev }), [next, prev]);
+  useImperativeHandle(ref, () => ({ next, prev }), [next, prev]);
 
-    return (
-      <div style={{ overflow: 'hidden', width }}>
-        <div
-          style={{
-            display: 'flex',
-            width: `${children.length * width}px`,
-            transform: `translateX(-${getOffset(0) * width}px)`,
-            transition: 'transform 0.5s ease-in-out',
-          }}
-        >
-          {children.map((child, i) => (
-            <div key={i} style={{ flex: '0 0 auto', width }}>
-              {child}
-            </div>
-          ))}
-        </div>
+  return (
+    <div style={{ overflow: 'hidden', width }}>
+      <div
+        style={{
+          display: 'flex',
+          width: `${children.length * width}px`,
+          transform: `translateX(-${getOffset(0) * width}px)`,
+          transition: 'transform 0.5s ease-in-out',
+        }}
+      >
+        {children.map((child, i) => (
+          <div key={i} style={{ flex: '0 0 auto', width }}>
+            {child}
+          </div>
+        ))}
       </div>
-    );
-  },
-);
+    </div>
+  );
+}
+
+export const MedipandaCarousel = forwardRef(MedipandaCarousel_);

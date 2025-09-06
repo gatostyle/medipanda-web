@@ -3523,8 +3523,8 @@ export async function getPermissions(userId: string): Promise<AdminPermissionRes
 /**
  * GET /v1/kmc/auth/result
  */
-export async function result(options?: { certNum?: string }): Promise<Record<string, {}>> {
-  const response = await axios.request<Record<string, {}>>({
+export async function result(options?: { certNum?: string }): Promise<Record<string, unknown>> {
+  const response = await axios.request<Record<string, unknown>>({
     method: 'GET',
     url: '/v1/kmc/auth/result',
     params: options,
