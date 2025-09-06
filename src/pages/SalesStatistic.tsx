@@ -1,4 +1,10 @@
-import { DateString, getPerformanceByDrugCompany, getPerformanceByDrugCompanyMonthly, getPerformanceByInstitution } from '@/backend';
+import {
+  DateString,
+  getPerformanceByDrugCompany,
+  getPerformanceByDrugCompanyMonthly,
+  getPerformanceByInstitution,
+  type PerformanceStatsByDrugCompany,
+} from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaCheckbox } from '@/custom/components/MedipandaCheckbox';
 import { MedipandaDatePicker } from '@/custom/components/MedipandaDatePicker';
@@ -149,7 +155,8 @@ function TotalSalesStatistic() {
 }
 
 function PartnerSalesStatistic() {
-  const [partnerId, setPartnerId] = useState<number | null>(null);
+  const [institutionCode, setInstitutionCode] = useState<string | null>(null);
+  const [performanceData, setPerformanceData] = useState<PerformanceStatsByDrugCompany[] | null>(null);
 
   const {
     content: page,
@@ -169,7 +176,7 @@ function PartnerSalesStatistic() {
       return response.filter(item => values.searchKeyword === '' || item.institutionName?.includes(values.searchKeyword));
     },
     initialContent: [],
-    onFetch: () => setPartnerId(null),
+    onFetch: () => setPerformanceData(null),
   });
 
   useEffect(() => {
@@ -199,7 +206,7 @@ function PartnerSalesStatistic() {
         header: '관리',
         cell: ({ row }) => (
           <MedipandaButton
-            onClick={() => setPartnerId(Number(row.original.institutionCode))}
+            onClick={() => fetchPerformance(row.original.institutionCode)}
             size='small'
             variant='contained'
             rounded
@@ -212,6 +219,18 @@ function PartnerSalesStatistic() {
     ],
     getCoreRowModel: getCoreRowModel(),
   });
+
+  const fetchPerformance = async (institutionCode: string | null) => {
+    setInstitutionCode(institutionCode);
+
+    const response = await getPerformanceByDrugCompany({
+      institutionCode: institutionCode ?? undefined,
+      startMonth: pageFormik.values.startMonth !== null ? new DateString(pageFormik.values.startMonth) : undefined,
+      endMonth: pageFormik.values.endMonth !== null ? new DateString(pageFormik.values.endMonth) : undefined,
+    });
+
+    setPerformanceData(response);
+  };
 
   return (
     <>
@@ -267,12 +286,12 @@ function PartnerSalesStatistic() {
           조회하고 싶은 기간을 입력해주세요.
         </Typography>
       ) : page.length > 0 ? (
-        partnerId !== null ? (
+        performanceData !== null ? (
           <ChartView
-            data={page}
+            institutionCode={institutionCode ?? undefined}
+            data={performanceData}
             startMonth={pageFormik.values.startMonth}
             endMonth={pageFormik.values.endMonth}
-            partnerId={partnerId ?? undefined}
           />
         ) : (
           <MedipandaTable table={table} />
@@ -289,17 +308,17 @@ function PartnerSalesStatistic() {
 }
 
 function ChartView({
-  partnerId,
+  institutionCode,
   data,
   startMonth,
   endMonth,
 }: {
-  partnerId?: number;
+  institutionCode?: string;
   data: { drugCompany: string | null; prescriptionAmount: number; totalAmount: number }[];
   startMonth: Date;
   endMonth: Date;
 }) {
-  console.log(data);
+  console.log(institutionCode);
   const dateRange = useMemo(() => getMonthRange(startMonth, endMonth), [startMonth, endMonth]);
 
   const [checkedIndexes, setCheckedIndexes] = useState<number[]>([]);
@@ -309,9 +328,9 @@ function ChartView({
   }, [chartSeries, checkedIndexes]);
 
   const fetchChartData = useCallback(
-    async (startMonth: Date, endMonth: Date, partnerId?: number) => {
+    async (startMonth: Date, endMonth: Date, institutionCode?: string) => {
       const data = await getPerformanceByDrugCompanyMonthly({
-        partnerId,
+        institutionCode,
         startMonth: new DateString(startMonth),
         endMonth: new DateString(endMonth),
       });
@@ -352,8 +371,8 @@ function ChartView({
   );
 
   useEffect(() => {
-    fetchChartData(startMonth, endMonth, partnerId);
-  }, [fetchChartData, partnerId, startMonth, endMonth]);
+    fetchChartData(startMonth, endMonth, institutionCode);
+  }, [fetchChartData, institutionCode, startMonth, endMonth]);
 
   useEffect(() => {
     setCheckedIndexes([]);
