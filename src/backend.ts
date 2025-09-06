@@ -150,13 +150,13 @@ export interface BlindPostResponse {
   id: number;
   memberName: string;
   content: string;
-  userId: string;
-  likesCount: number;
-  nickname: string;
-  reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
   blindAt: string;
-  postType: 'BOARD' | 'COMMENT';
+  likesCount: number;
+  userId: string;
+  reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
+  nickname: string;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  postType: 'BOARD' | 'COMMENT';
 }
 
 export interface BlindUpdateRequest {
@@ -173,7 +173,9 @@ export interface BoardDetailsResponse {
   title: string;
   content: string;
   nickname: string;
+  hiddenNickname: boolean;
   isBlind: boolean;
+  likedByMe: boolean;
   likesCount: number;
   viewsCount: number;
   commentCount: number;
@@ -190,13 +192,13 @@ export interface BoardDetailsResponse {
 export interface BoardMemberStatsResponse {
   name: string;
   id: number;
-  phoneNumber: string;
   userId: string;
+  phoneNumber: string;
   commentCount: number;
-  blindPostCount: number;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   postCount: number;
   totalLikes: number;
+  blindPostCount: number;
 }
 
 export interface BoardPostCreateRequest {
@@ -221,6 +223,7 @@ export interface BoardPostResponse {
   boardType: 'ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z' | 'EVENT' | 'SALES_AGENCY' | 'PRODUCT';
   title: string;
   nickname: string;
+  hiddenNickname: boolean;
   isBlind: boolean;
   likesCount: number;
   viewsCount: number;
@@ -235,6 +238,7 @@ export interface BoardPostResponse {
 export interface BoardPostUpdateRequest {
   title: string | null;
   content: string | null;
+  hiddenNickname: boolean | null;
   isBlind: boolean | null;
   isExposed: boolean | null;
   exposureRange: ('ALL' | 'CONTRACTED' | 'UNCONTRACTED') | null;
@@ -276,12 +280,12 @@ export interface CommentMemberResponse {
   id: number;
   content: string;
   commentType: 'COMMENT' | 'REPLY';
-  userId: string;
   likesCount: number;
-  nickname: string;
+  userId: string;
   createdAt: string;
-  isBlind: boolean;
+  nickname: string;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  isBlind: boolean;
 }
 
 export interface CommentResponse {
@@ -297,6 +301,7 @@ export interface CommentResponse {
   createdAt: string;
   modifiedAt: string;
   replies: CommentResponse[];
+  likedByMe: boolean;
 }
 
 export interface CommentUpdateRequest {
@@ -465,6 +470,7 @@ export interface MemberDetailsResponse {
   id: number;
   userId: string;
   name: string;
+  nickname: string;
   gender: ('MALE' | 'FEMALE') | null;
   phoneNumber: string;
   birthDate: string;
@@ -485,6 +491,7 @@ export interface MemberResponse {
   id: number;
   userId: string;
   name: string;
+  nickname: string;
   phoneNumber: string;
   birthDate: string;
   email: string;
@@ -532,6 +539,21 @@ export interface MonthlyFeeAmountResponse {
 export interface MonthlyPrescriptionCountResponse {
   month: number;
   count: number;
+}
+
+export interface NicknameCheckRequest {
+  nickname: string;
+}
+
+export interface NicknameCheckResponse {
+  available: boolean;
+  duplicated: boolean;
+  recentlyChanged: boolean;
+  changedAt: string | null;
+}
+
+export interface NicknameUpdateRequest {
+  nickname: string;
 }
 
 export interface NoteUpdateItem {
@@ -1161,6 +1183,11 @@ export interface RefreshTokenRequest {
   refreshToken: string;
 }
 
+export interface RegionCategoryResponse {
+  id: number;
+  name: string;
+}
+
 export interface ReportCreateRequest {
   postId: number | null;
   commentId: number | null;
@@ -1206,6 +1233,7 @@ export interface SalesAgencyProductDetailsResponse {
 }
 
 export interface SalesAgencyProductNoteUpdateRequest {
+  productId: number;
   updates: NoteUpdateItem[];
 }
 
@@ -1542,6 +1570,18 @@ export async function notifyAdminForSettlements(data: SettlementNotifyRequest): 
   await axios.request({
     method: 'POST',
     url: '/v1/settlements/notify-admin',
+    data,
+  });
+}
+
+/**
+ * 이의신청 알림 전송 (선택된 정산건 관리자에게 이메일)
+ * POST /v1/settlements/notify-admin/objections
+ */
+export async function notifyAdminForObjections(data: SettlementNotifyRequest): Promise<void> {
+  await axios.request({
+    method: 'POST',
+    url: '/v1/settlements/notify-admin/objections',
     data,
   });
 }
@@ -1907,6 +1947,18 @@ export async function signup(data: { request: MemberSignupRequest; file?: File }
 }
 
 /**
+ * 닉네임 변경
+ * POST /v1/members/{userId}/nickname
+ */
+export async function updateNickname(data: NicknameUpdateRequest): Promise<void> {
+  await axios.request({
+    method: 'POST',
+    url: '/v1/members/{userId}/nickname',
+    data,
+  });
+}
+
+/**
  * 비밀번호 확인 (현재 로그인 사용자)
  * POST /v1/members/check-password
  */
@@ -1915,6 +1967,32 @@ export async function checkPassword(options?: { password?: string }): Promise<bo
     method: 'POST',
     url: '/v1/members/check-password',
     params: options,
+  });
+  return response.data;
+}
+
+/**
+ * 전화번호 중복 확인
+ * POST /v1/members/available-phone
+ */
+export async function checkPhone(options?: { phone?: string }): Promise<boolean> {
+  const response = await axios.request<boolean>({
+    method: 'POST',
+    url: '/v1/members/available-phone',
+    params: options,
+  });
+  return response.data;
+}
+
+/**
+ * 닉네임 중복 확인
+ * POST /v1/members/available-nickname
+ */
+export async function isAvailableNickname(data: NicknameCheckRequest): Promise<NicknameCheckResponse> {
+  const response = await axios.request<NicknameCheckResponse>({
+    method: 'POST',
+    url: '/v1/members/available-nickname',
+    data,
   });
   return response.data;
 }
@@ -2568,23 +2646,6 @@ export async function changePassword_1(userId: string, data: ChangePasswordForFi
     method: 'PATCH',
     url: `/v1/members/${userId}/password-for-find-account`,
     data,
-  });
-}
-
-/**
- * 닉네임 변경
- * PATCH /v1/members/{userId}/nickname
- */
-export async function updateNickname(
-  userId: string,
-  options?: {
-    nickname?: string;
-  },
-): Promise<void> {
-  await axios.request({
-    method: 'PATCH',
-    url: `/v1/members/${userId}/nickname`,
-    params: options,
   });
 }
 
@@ -3496,19 +3557,6 @@ export function getDownloadUserMembersExcel(options?: {
 }
 
 /**
- * 닉네임 중복 확인
- * GET /v1/members/available-nickname
- */
-export async function isAvailableNickname(options?: { nickname?: string }): Promise<boolean> {
-  const response = await axios.request<boolean>({
-    method: 'GET',
-    url: '/v1/members/available-nickname',
-    params: options,
-  });
-  return response.data;
-}
-
-/**
  * 관리자 권한 조회
  * GET /v1/members/admins/{userId}/permissions
  */
@@ -3549,8 +3597,7 @@ export async function launch(options?: { certNum?: string }): Promise<string> {
  * GET /v1/hospitals
  */
 export async function getHospitals(options?: {
-  sido?: string;
-  sigungu?: string;
+  regionCategoryId?: number;
   startDate?: DateTimeString;
   endDate?: DateTimeString;
   page?: number;
@@ -3560,6 +3607,30 @@ export async function getHospitals(options?: {
     method: 'GET',
     url: '/v1/hospitals',
     params: options,
+  });
+  return response.data;
+}
+
+/**
+ * 전체 시/도 목록(depth=1)
+ * GET /v1/hospitals/regions/sido
+ */
+export async function getAllSido(): Promise<RegionCategoryResponse[]> {
+  const response = await axios.request<RegionCategoryResponse[]>({
+    method: 'GET',
+    url: '/v1/hospitals/regions/sido',
+  });
+  return response.data;
+}
+
+/**
+ * 특정 시/도의 시군구 목록(depth=2, parent=sido)
+ * GET /v1/hospitals/regions/sido/{sidoId}/sigungu
+ */
+export async function getSigunguBySido(sidoId: number): Promise<RegionCategoryResponse[]> {
+  const response = await axios.request<RegionCategoryResponse[]>({
+    method: 'GET',
+    url: `/v1/hospitals/regions/sido/${sidoId}/sigungu`,
   });
   return response.data;
 }
@@ -3644,6 +3715,18 @@ export function getDownloadExpenseReportListExcel(options?: {
     .map(([key, value]) => [key, String(value)]);
   const params = new URLSearchParams(paramsInit);
   return `${baseUrl}?${params.toString()}`;
+}
+
+/**
+ * 제약사 전체 목록 조회
+ * GET /v1/drug-companies
+ */
+export async function getAllDrugCompanies(): Promise<DrugCompanyResponse[]> {
+  const response = await axios.request<DrugCompanyResponse[]>({
+    method: 'GET',
+    url: '/v1/drug-companies',
+  });
+  return response.data;
 }
 
 /**

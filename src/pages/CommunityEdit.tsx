@@ -88,6 +88,7 @@ export default function CommunityEdit() {
             updateRequest: {
               title: values.title,
               content: editor.getHTML(),
+              hiddenNickname: values.hiddenNickname,
               isBlind: null,
               isExposed: null,
               exposureRange: null,

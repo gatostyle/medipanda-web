@@ -39,6 +39,7 @@ export default function InquiryEdit() {
             updateRequest: {
               title: values.title,
               content: editor.getHTML(),
+              hiddenNickname: false,
               isBlind: null,
               isExposed: null,
               exposureRange: null,
