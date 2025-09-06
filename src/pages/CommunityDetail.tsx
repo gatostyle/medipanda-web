@@ -130,26 +130,33 @@ export default function CommunityDetail() {
                 sx={{
                   borderBottom: `1px solid transparent`,
                   cursor: 'pointer',
+                  color: detail.likedByMe ? colors.vividViolet : colors.gray60,
                   '&:hover': {
                     borderColor: colors.gray60,
                     boxSizing: 'border-box',
                   },
                 }}
               >
-                <img src='/assets/icons/icon-favorite.svg' />
-                <Typography variant='smallTextR' sx={{ color: colors.gray60 }}>
+                <svg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                  <path
+                    d='M2.96745 9.27345L7.60252 13.6276C7.65436 13.6763 7.68028 13.7007 7.70496 13.7187C7.88082 13.8475 8.11983 13.8475 8.29569 13.7187C8.32037 13.7007 8.34629 13.6763 8.39813 13.6276L13.0332 9.27344C14.3373 8.04836 14.4957 6.03237 13.3989 4.61868L13.1926 4.35286C11.8805 2.66169 9.24675 2.94531 8.32477 4.87707C8.19454 5.14994 7.80612 5.14994 7.67588 4.87707C6.75391 2.94531 4.12014 2.66169 2.80802 4.35286L2.60178 4.61868C1.50496 6.03237 1.66333 8.04836 2.96745 9.27345Z'
+                    stroke='currentColor'
+                    stroke-width='1.5'
+                  />
+                </svg>
+                <Typography variant='smallTextR' sx={{ marginTop: '2px', lineHeight: '16px' }}>
                   {detail.likesCount.toLocaleString()}
                 </Typography>
               </Stack>
               <Stack direction='row' alignItems='center' gap='5px'>
                 <img src='/assets/icons/icon-chat.svg' />
-                <Typography variant='smallTextR' sx={{ color: colors.gray60 }}>
+                <Typography variant='smallTextR' sx={{ color: colors.gray60, marginTop: '2px', lineHeight: '16px' }}>
                   {detail.commentCount.toLocaleString()}
                 </Typography>
               </Stack>
               <Stack direction='row' alignItems='center' gap='5px'>
                 <img src='/assets/icons/icon-view-alt.svg' />
-                <Typography variant='smallTextR' sx={{ color: colors.gray60 }}>
+                <Typography variant='smallTextR' sx={{ color: colors.gray60, marginTop: '2px', lineHeight: '16px' }}>
                   {detail.viewsCount.toLocaleString()}
                 </Typography>
               </Stack>
@@ -370,15 +377,8 @@ function Comment({
           <MoreHoriz />
         </IconButton>
       </Stack>
-      <Stack
-        direction='row'
-        alignItems='center'
-        gap='30px'
-        sx={{
-          height: '28px',
-        }}
-      >
-        <Typography variant='smallTextR' sx={{ color: colors.gray60 }}>
+      <Stack direction='row' alignItems='center' gap='30px'>
+        <Typography variant='smallTextR' sx={{ color: colors.gray60, marginTop: '2px', lineHeight: '16px' }}>
           {formatRelativeTime(comment.createdAt)}
         </Typography>
         <Stack
@@ -388,6 +388,7 @@ function Comment({
           onClick={handleLike}
           sx={{
             borderBottom: `1px solid transparent`,
+            color: comment.likedByMe ? colors.vividViolet : colors.gray60,
             cursor: 'pointer',
             '&:hover': {
               borderColor: colors.gray60,
@@ -395,15 +396,21 @@ function Comment({
             },
           }}
         >
-          <img src='/assets/icons/icon-favorite.svg' />
-          <Typography variant='smallTextR' sx={{ color: colors.gray60 }}>
+          <svg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'>
+            <path
+              d='M2.96745 9.27345L7.60252 13.6276C7.65436 13.6763 7.68028 13.7007 7.70496 13.7187C7.88082 13.8475 8.11983 13.8475 8.29569 13.7187C8.32037 13.7007 8.34629 13.6763 8.39813 13.6276L13.0332 9.27344C14.3373 8.04836 14.4957 6.03237 13.3989 4.61868L13.1926 4.35286C11.8805 2.66169 9.24675 2.94531 8.32477 4.87707C8.19454 5.14994 7.80612 5.14994 7.67588 4.87707C6.75391 2.94531 4.12014 2.66169 2.80802 4.35286L2.60178 4.61868C1.50496 6.03237 1.66333 8.04836 2.96745 9.27345Z'
+              stroke='currentColor'
+              stroke-width='1.5'
+            />
+          </svg>
+          <Typography variant='smallTextR' sx={{ marginTop: '2px', lineHeight: '16px' }}>
             좋아요 {comment.likesCount.toLocaleString()}
           </Typography>
         </Stack>
         {replies !== null && (
           <Stack direction='row' alignItems='center' gap='5px'>
             <img src='/assets/icons/icon-chat.svg' />
-            <Typography variant='smallTextR' sx={{ color: colors.gray60 }}>
+            <Typography variant='smallTextR' sx={{ color: colors.gray60, marginTop: '2px', lineHeight: '16px' }}>
               대댓글 {replies.length.toLocaleString()}
             </Typography>
           </Stack>
