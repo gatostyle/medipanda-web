@@ -9,7 +9,7 @@ import { styled } from '@mui/material/styles';
 import { useFormik } from 'formik';
 import { ArrowDown2 } from 'iconsax-reactjs';
 import { useEffect, useState } from 'react';
-import { useSearchParams, Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 const PartnerContractFormRow = styled(Stack)({
   flexDirection: 'row',
@@ -149,7 +149,7 @@ export default function PartnerContract() {
 
   const fetchContractDetails = async () => {
     try {
-      const detail = await getContractDetails(session!!.userId);
+      const detail = await getContractDetails(session!.userId);
       setContractDetails(detail);
 
       formik.setValues({
