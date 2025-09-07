@@ -1,17 +1,18 @@
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
 import { useSession } from '@/hooks/useSession';
+import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Box, Card, FormControl, FormHelperText, IconButton, InputAdornment, Stack, Typography } from '@mui/material';
 import { useFormik } from 'formik';
-import { type SyntheticEvent, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { type SyntheticEvent, useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as Yup from 'yup';
 
 export default function Login() {
-  const { login } = useSession();
+  const { session, login } = useSession();
   const navigate = useNavigate();
-  const location = useLocation();
+  const [urlSearchParams] = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
 
   const { values, touched, errors, isSubmitting, handleChange, handleBlur, handleSubmit } = useFormik({
@@ -28,10 +29,7 @@ export default function Login() {
       try {
         await login(values.userId, values.password);
 
-        const params = new URLSearchParams(location.search);
-        const redirectTo = params.get('redirectTo');
-
-        navigate(redirectTo ?? '/', { replace: true });
+        onLoginSuccess(urlSearchParams);
       } catch (e) {
         setErrors({ submit: `오류: ${JSON.stringify(e)}` });
       }
@@ -45,6 +43,20 @@ export default function Login() {
   const handleMouseDownPassword = (event: SyntheticEvent) => {
     event.preventDefault();
   };
+
+  const onLoginSuccess = (urlSearchParams: URLSearchParams) => {
+    navigate(urlSearchParams.get('redirectTo') ?? '/', { replace: true });
+  };
+
+  useEffect(() => {
+    if (session !== null) {
+      onLoginSuccess(urlSearchParams);
+    }
+  }, [session, navigate, urlSearchParams]);
+
+  if (session !== null) {
+    return <FixedLinearLoader />;
+  }
 
   return (
     <Box sx={{ minHeight: '100vh' }}>
