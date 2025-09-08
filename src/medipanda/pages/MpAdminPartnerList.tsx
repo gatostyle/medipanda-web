@@ -35,7 +35,6 @@ import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
 import { mockString } from '@/medipanda/mockup';
-import { backendNotImplemented } from '@/medipanda/utils/backendNotImplemented';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -64,7 +63,7 @@ export default function MpAdminPartnerList() {
 
   const formik = useFormik({
     initialValues: {
-      searchType: 'company' as 'company' | 'partner' | 'pharmaceutical' | 'member',
+      searchType: 'companyName' as 'companyName' | 'institutionName' | 'institutionCode',
       searchKeyword: '',
       contractType: '' as 'CONTRACT' | 'NON_CONTRACT' | '',
       pageIndex: 0,
@@ -175,15 +174,16 @@ export default function MpAdminPartnerList() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      backendNotImplemented();
       const response = await getPartners({
         page: formik.values.pageIndex,
         size: formik.values.pageSize,
         contractType: formik.values.contractType !== '' ? formik.values.contractType : undefined,
-        companyName: formik.values.searchType === 'company' ? formik.values.searchKeyword : undefined,
-        // partnerName: formik.values.searchType === 'partner' ? formik.values.searchKeyword : undefined,
-        // drugCompany: formik.values.searchType === 'pharmaceutical' ? formik.values.searchKeyword : undefined,
-        // memberName: formik.values.searchType === 'member' ? formik.values.searchKeyword : undefined
+        companyName:
+          formik.values.searchType === 'companyName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        institutionName:
+          formik.values.searchType === 'institutionName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        institutionCode:
+          formik.values.searchType === 'institutionCode' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
       });
 
       setData(withSequence(response).content);
@@ -285,10 +285,9 @@ export default function MpAdminPartnerList() {
                   <FormControl fullWidth size='small'>
                     <InputLabel>검색유형</InputLabel>
                     <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
-                      <MenuItem value={'company'}>회사명</MenuItem>
-                      <MenuItem value={'partner'}>거래처명</MenuItem>
-                      <MenuItem value={'pharmaceutical'}>제약사명</MenuItem>
-                      <MenuItem value={'member'}>회원명</MenuItem>
+                      <MenuItem value={'companyName'}>회사명</MenuItem>
+                      <MenuItem value={'institutionName'}>거래처명</MenuItem>
+                      <MenuItem value={'institutionCode'}>거래처코드</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>

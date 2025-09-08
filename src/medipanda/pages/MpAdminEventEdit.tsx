@@ -79,6 +79,7 @@ export default function MpAdminEventEdit() {
             request: {
               title: values.title,
               content: values.content,
+              hiddenNickname: null,
               isBlind: null,
               isExposed: values.isExposed,
               exposureRange: values.exposureRange,

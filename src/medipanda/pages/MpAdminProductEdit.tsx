@@ -1,13 +1,32 @@
-import { Box, Button, Card, Checkbox, CircularProgress, FormControlLabel, Grid, Stack, TextField, Typography } from '@mui/material';
+import { TiptapMenuBar } from '@/medipanda/components/Tiptap';
+import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
+import {
+  Box,
+  Button,
+  Card,
+  Checkbox,
+  CircularProgress,
+  FormControlLabel,
+  Grid,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { EditorContent } from '@tiptap/react';
+import { isAxiosError } from 'axios';
 import { useFormik } from 'formik';
 import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
-import { AlternativeProductDto, createProductExtraInfo, getProductDetails, updateProductExtraInfo } from '@/backend';
-import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
+import { createProductExtraInfo, getProductDetails, ProductDetailsResponse, updateProductExtraInfo } from '@/backend';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
 import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 
@@ -19,6 +38,7 @@ export default function MpAdminProductEdit() {
   const notImplementedDialog = useMpNotImplementedDialog();
   const errorDialog = useMpErrorDialog();
   const { session } = useSession();
+  const [productDetail, setProductDetail] = useState<ProductDetailsResponse | null>(null);
 
   const isNew = id === undefined;
 
@@ -37,7 +57,6 @@ export default function MpAdminProductEdit() {
       isOutOfStock: false,
       isStopSelling: false,
       note: '',
-      alternativeProducts: [] as AlternativeProductDto[],
       detailContent: '',
     },
     validationSchema: Yup.object().shape({
@@ -54,79 +73,87 @@ export default function MpAdminProductEdit() {
     onSubmit: async (values, { setSubmitting }) => {
       try {
         if (isNew) {
-          const boardPostCreateRequest = {
-            boardType: 'PRODUCT' as const,
-            userId: session!.userId,
-            nickname: session!.name,
-            hiddenNickname: false,
-            title: values.productName,
-            content: values.detailContent,
-            parentId: null,
-            isExposed: true,
-            editorFileIds: null,
-            exposureRange: 'ALL' as const,
-            noticeProperties: null,
-          };
-          const productExtraInfoRequest = {
-            manufacturer: values.manufacturer,
-            productName: values.productName,
-            composition: values.composition,
-            productCode: values.productCode,
-            changedFeeRate: values.changedFeeRate?.toString() ?? null,
-            changedMonth: values.changedMonth,
-            priceUnit: 'KRW' as const,
-            feeRate: values.feeRate.toString(),
-            price: values.price,
-            note: values.note,
-            detailInfo: values.alternativeProducts.join(', '),
-            isPromotion: values.isPromotion,
-            isOutOfStock: values.isOutOfStock,
-            isStopSelling: values.isStopSelling,
-            isAcquisition: values.isAcquisition,
-          };
           await createProductExtraInfo({
-            boardPostCreateRequest: boardPostCreateRequest,
-            productExtraInfoCreateRequest: productExtraInfoRequest,
+            boardPostCreateRequest: {
+              boardType: 'PRODUCT',
+              userId: session!.userId,
+              nickname: session!.userId,
+              hiddenNickname: false,
+              title: values.productName,
+              content: editor.getHTML(),
+              parentId: null,
+              isExposed: true,
+              editorFileIds: editorAttachments.map(image => image.s3fileId),
+              exposureRange: 'ALL',
+              noticeProperties: null,
+            },
+            productExtraInfoCreateRequest: {
+              manufacturer: values.manufacturer,
+              productName: values.productName,
+              composition: values.composition,
+              productCode: values.productCode,
+              changedFeeRate: values.changedFeeRate?.toString() ?? null,
+              changedMonth: values.changedMonth,
+              priceUnit: 'KRW',
+              feeRate: values.feeRate.toString(),
+              price: values.price,
+              note: values.note,
+              detailInfo: editor.getHTML(),
+              isPromotion: values.isPromotion,
+              isOutOfStock: values.isOutOfStock,
+              isStopSelling: values.isStopSelling,
+              isAcquisition: values.isAcquisition,
+            },
             files: undefined,
           });
           enqueueSnackbar('제품이 성공적으로 등록되었습니다.', { variant: 'success' });
         } else {
-          const boardPostUpdateRequest = {
-            title: values.productName,
-            content: values.detailContent,
-            isBlind: null,
-            isExposed: true,
-            exposureRange: 'ALL' as const,
-            keepFileIds: [], // Empty array for now
-            editorFileIds: null,
-            noticeProperties: null,
-          };
-          const productExtraInfoRequest = {
-            manufacturer: values.manufacturer,
-            productName: values.productName,
-            composition: values.composition,
-            productCode: values.productCode,
-            changedFeeRate: values.changedFeeRate?.toString() ?? null,
-            changedMonth: values.changedMonth,
-            priceUnit: 'KRW' as const,
-            feeRate: values.feeRate.toString(),
-            price: values.price,
-            note: values.note,
-            detailInfo: values.alternativeProducts.join(', '),
-            isPromotion: values.isPromotion,
-            isOutOfStock: values.isOutOfStock,
-            isStopSelling: values.isStopSelling,
-            isAcquisition: values.isAcquisition,
-          };
           await updateProductExtraInfo(parseInt(id!, 10), {
-            boardPostUpdateRequest: boardPostUpdateRequest,
-            productExtraInfoCreateRequest: productExtraInfoRequest,
-            newFiles: undefined,
+            boardPostUpdateRequest: {
+              title: values.productName,
+              content: editor.getHTML(),
+              hiddenNickname: null,
+              isBlind: null,
+              isExposed: null,
+              exposureRange: null,
+              keepFileIds: [...editorAttachments].map(image => image.s3fileId),
+              editorFileIds: editorAttachments.map(image => image.s3fileId),
+              noticeProperties: null,
+            },
+            productExtraInfoCreateRequest: {
+              manufacturer: values.manufacturer,
+              productName: values.productName,
+              composition: values.composition,
+              productCode: values.productCode,
+              changedFeeRate: values.changedFeeRate?.toString() ?? null,
+              changedMonth: values.changedMonth,
+              priceUnit: 'KRW',
+              feeRate: values.feeRate.toString(),
+              price: values.price,
+              note: values.note,
+              detailInfo: editor.getHTML(),
+              isPromotion: values.isPromotion,
+              isOutOfStock: values.isOutOfStock,
+              isStopSelling: values.isStopSelling,
+              isAcquisition: values.isAcquisition,
+            },
+            newFiles: [],
           });
           enqueueSnackbar('제품이 성공적으로 수정되었습니다.', { variant: 'success' });
         }
         navigate('/admin/products');
       } catch (error) {
+        if (isAxiosError(error)) {
+          if (
+            error.response !== undefined &&
+            typeof error.response.data === 'string' &&
+            error.response.data.startsWith('Bad request: Invalid product code format:')
+          ) {
+            alert(`"${values.productCode}"는 잘못된 코드 형식입니다.`);
+            return;
+          }
+        }
+
         if (error instanceof NotImplementedError) {
           notImplementedDialog.open(error.message);
         } else {
@@ -139,6 +166,8 @@ export default function MpAdminProductEdit() {
     },
   });
 
+  const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
+
   useEffect(() => {
     if (!isNew && id) {
       fetchData(parseInt(id, 10));
@@ -149,6 +178,12 @@ export default function MpAdminProductEdit() {
     setLoading(true);
     try {
       const response = await getProductDetails(productId);
+      setProductDetail(response);
+      editor.commands.setContent(response.boardDetailsResponse.content);
+      setEditorAttachments(response.boardDetailsResponse.attachments.filter(a => a.type === 'EDITOR'));
+
+      const changedMonth = Number(response.changedMonth?.slice(-2));
+
       formik.setValues({
         manufacturer: response.manufacturer ?? '',
         productName: response.productName ?? '',
@@ -157,13 +192,12 @@ export default function MpAdminProductEdit() {
         price: response.price ?? 0,
         feeRate: response.feeRate ?? 0,
         changedFeeRate: response.changedFeeRate ?? undefined,
-        changedMonth: response.changedMonth ?? '',
+        changedMonth: Number.isNaN(changedMonth) ? '' : changedMonth.toString(),
         isAcquisition: response.isAcquisition ?? false,
         isPromotion: response.isPromotion ?? false,
         isOutOfStock: response.isOutOfStock ?? false,
         isStopSelling: response.isStopSelling ?? false,
         note: response.note ?? '',
-        alternativeProducts: response.alternativeProducts ?? [],
         detailContent: response.boardDetailsResponse.content ?? '',
       });
     } catch (error) {
@@ -356,7 +390,7 @@ export default function MpAdminProductEdit() {
                     <TextField
                       size='small'
                       name='changedMonth'
-                      placeholder='변경월 (예: 4월)'
+                      placeholder='변경월 (예: 4)'
                       value={formik.values.changedMonth}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
@@ -416,15 +450,78 @@ export default function MpAdminProductEdit() {
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={9} md={10}>
-                  <TextField
-                    fullWidth
-                    size='small'
-                    name='alternativeProducts'
-                    placeholder='대체가능의약품을 입력하세요'
-                    value={formik.values.alternativeProducts.join(', ')}
-                    onChange={e => formik.setFieldValue('alternativeProducts', e.target.value.split(', '))}
-                    onBlur={formik.handleBlur}
-                  />
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>대체</TableCell>
+                        <TableCell>제약사명</TableCell>
+                        <TableCell>제품정보</TableCell>
+                        <TableCell>약가</TableCell>
+                        <TableCell>급여정보</TableCell>
+                        <TableCell>기본 수수료율</TableCell>
+                        <TableCell>상태</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {productDetail?.alternativeProducts.map(product => (
+                        <Fragment key={product.kdCode}>
+                          <TableRow>
+                            <TableCell rowSpan={2}>
+                              <Typography sx={{ whiteSpace: 'pre-line' }}>{product.substituent ?? '-'}</Typography>
+                            </TableCell>
+                            <TableCell rowSpan={2}>
+                              <Typography sx={{ whiteSpace: 'pre-line' }}>{product.manufacturer ?? '-'}</Typography>
+                            </TableCell>
+                            <TableCell sx={{ borderBottom: 'none', textAlign: 'left' }}>
+                              <Stack gap='5px'>
+                                <Typography>{product.productName}</Typography>
+                                <Typography
+                                  sx={{
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                  }}
+                                >
+                                  {product.composition}
+                                </Typography>
+                              </Stack>
+                            </TableCell>
+                            <TableCell align='center' sx={{ borderBottom: 'none' }}>
+                              {product.price?.toLocaleString() ?? '-'}
+                            </TableCell>
+                            <TableCell align='center' sx={{ borderBottom: 'none' }}>
+                              {product.note ?? '-'}
+                            </TableCell>
+                            <TableCell align='center' sx={{ borderBottom: 'none' }}>
+                              <Typography sx={{ fontWeight: 500 }}>{product.feeRate ?? '-'}</Typography>
+                            </TableCell>
+                            <TableCell align='center' sx={{ borderBottom: 'none' }}>
+                              {product.note ?? '-'}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell
+                              colSpan={6}
+                              sx={{
+                                borderBottom: '1px solid rgba(219, 224, 229, 0.65) !important',
+                                textAlign: 'left',
+                              }}
+                            >
+                              <Typography
+                                sx={{
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap',
+                                }}
+                              >
+                                {product.note}
+                              </Typography>
+                            </TableCell>
+                          </TableRow>
+                        </Fragment>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </Grid>
               </Grid>
             </Card>
@@ -436,11 +533,18 @@ export default function MpAdminProductEdit() {
                 디테일 정보
               </Typography>
 
-              <TiptapEditor
-                content={formik.values.detailContent}
-                onChange={content => formik.setFieldValue('detailContent', content)}
-                placeholder='제품 상세 정보를 입력하세요'
-              />
+              <Stack
+                gap='10px'
+                sx={{
+                  '.tiptap[contenteditable=true]': {
+                    border: `1px solid #cccccc`,
+                    padding: '12px 15px',
+                  },
+                }}
+              >
+                <TiptapMenuBar editor={editor} />
+                <EditorContent editor={editor} placeholder='제품 상세 정보를 입력하세요' />
+              </Stack>
             </Card>
           </Grid>
 

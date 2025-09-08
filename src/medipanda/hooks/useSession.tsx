@@ -10,7 +10,7 @@ import {
 import { MenuOrientation } from '@/config';
 import { encryptRSA } from '@/lib/rsa';
 import { useMpMenu } from '@/medipanda/hooks/useMpMenu';
-import { filterMenuByPermissions, mpAdminMenu, mpMemberMenu } from '@/medipanda/menu-items';
+import { filterMenuByPermissions, mpAdminMenu } from '@/medipanda/menu-items';
 import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
 
 declare global {
@@ -36,21 +36,21 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const getSession = async () => {
     const member = await whoAmI();
 
-    if (isAdmin(member)) {
-      if (!isSuperAdmin(member)) {
-        const permissions = (await getPermissions(member.userId)).permissions;
-
-        const filteredMenu = filterMenuByPermissions(mpAdminMenu, permissions);
-        setMenuItems(filteredMenu);
-      } else {
-        setMenuItems(mpAdminMenu);
-      }
-
-      setMenuOrientation(MenuOrientation.VERTICAL);
-    } else {
-      setMenuItems(mpMemberMenu);
-      setMenuOrientation(MenuOrientation.VERTICAL);
+    if (!isAdmin(member)) {
+      await apiLogout();
+      throw new NotAdminError();
     }
+
+    if (!isSuperAdmin(member)) {
+      const permissions = (await getPermissions(member.userId)).permissions;
+
+      const filteredMenu = filterMenuByPermissions(mpAdminMenu, permissions);
+      setMenuItems(filteredMenu);
+    } else {
+      setMenuItems(mpAdminMenu);
+    }
+
+    setMenuOrientation(MenuOrientation.VERTICAL);
 
     window.refreshTokenRotateInterval = setInterval(
       async () => {
@@ -138,4 +138,11 @@ export function isAdmin(member: MemberDetailsResponse) {
 
 export function isSuperAdmin(member: MemberDetailsResponse) {
   return member.role === 'SUPER_ADMIN';
+}
+
+export class NotAdminError extends Error {
+  constructor() {
+    super('Access denied. Admins only.');
+    this.name = 'NotAdminError';
+  }
 }

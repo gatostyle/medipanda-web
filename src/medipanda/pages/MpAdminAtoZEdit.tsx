@@ -71,10 +71,11 @@ export default function MpAdminAtoZEdit() {
             updateRequest: {
               title: values.title,
               content: editor.getHTML(),
+              hiddenNickname: null,
               isBlind: null,
               isExposed: values.isExposed,
               exposureRange: 'ALL',
-              keepFileIds: values.attachedFiles.map(file => file.s3fileId),
+              keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
               editorFileIds: editorAttachments.map(image => image.s3fileId),
               noticeProperties: null,
             },

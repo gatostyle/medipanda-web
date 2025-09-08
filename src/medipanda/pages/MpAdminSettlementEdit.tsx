@@ -69,9 +69,12 @@ export default function MpAdminSettlementEdit() {
     try {
       const response = await getSettlementPartnerSummary({
         settlementId: parseInt(id),
-        institutionName: formik.values.searchType === 'institutionName' ? formik.values.searchKeyword : undefined,
-        businessNumber: formik.values.searchType === 'businessNumber' ? formik.values.searchKeyword : undefined,
-        institutionCode: formik.values.searchType === 'institutionCode' ? formik.values.searchKeyword : undefined,
+        institutionName:
+          formik.values.searchType === 'institutionName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        businessNumber:
+          formik.values.searchType === 'businessNumber' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        institutionCode:
+          formik.values.searchType === 'institutionCode' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
         page: pagination.pageIndex,
         size: pagination.pageSize,
       });
@@ -212,11 +215,18 @@ export default function MpAdminSettlementEdit() {
               color='success'
               href={getDownloadSettlementPartnerSummaryExcel({
                 settlementId: parseInt(id!),
-                institutionName: formik.values.searchType === 'institutionName' ? formik.values.searchKeyword : undefined,
-                businessNumber: formik.values.searchType === 'businessNumber' ? formik.values.searchKeyword : undefined,
-                institutionCode: formik.values.searchType === 'institutionCode' ? formik.values.searchKeyword : undefined,
-                page: pagination.pageIndex,
-                size: pagination.pageSize,
+                institutionName:
+                  formik.values.searchType === 'institutionName' && formik.values.searchKeyword !== ''
+                    ? formik.values.searchKeyword
+                    : undefined,
+                businessNumber:
+                  formik.values.searchType === 'businessNumber' && formik.values.searchKeyword !== ''
+                    ? formik.values.searchKeyword
+                    : undefined,
+                institutionCode:
+                  formik.values.searchType === 'institutionCode' && formik.values.searchKeyword !== ''
+                    ? formik.values.searchKeyword
+                    : undefined,
               })}
               target='_blank'
             >

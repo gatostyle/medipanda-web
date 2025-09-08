@@ -110,6 +110,7 @@ export default function MpAdminSalesAgencyProductEdit() {
             boardPostUpdateRequest: {
               title: values.productName,
               content: values.content,
+              hiddenNickname: null,
               isBlind: null,
               isExposed: values.isExposed,
               exposureRange: values.exposureRange,
@@ -259,6 +260,7 @@ export default function MpAdminSalesAgencyProductEdit() {
       const applicant = applicants.find(a => a.id === applicantId);
       if (applicant) {
         await updateApplicantNotes({
+          productId: parseInt(id!),
           updates: [{ userId: applicant.userId, note: notes }],
         });
         setApplicants(prev => prev.map(a => (a.id === applicantId ? { ...a, notes } : a)));

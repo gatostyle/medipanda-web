@@ -211,11 +211,15 @@ export default function MpAdminProductList() {
     setLoading(true);
     try {
       const response = await getProductSummaries({
-        productName: formik.values.searchType === 'productName' ? formik.values.searchKeyword : undefined,
-        composition: formik.values.searchType === 'composition' ? formik.values.searchKeyword : undefined,
-        productCode: formik.values.searchType === 'productCode' ? formik.values.searchKeyword : undefined,
-        manufacturerName: formik.values.searchType === 'manufacturerName' ? formik.values.searchKeyword : undefined,
-        note: formik.values.searchType === 'note' ? formik.values.searchKeyword : undefined,
+        productName:
+          formik.values.searchType === 'productName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        composition:
+          formik.values.searchType === 'composition' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        productCode:
+          formik.values.searchType === 'productCode' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        manufacturerName:
+          formik.values.searchType === 'manufacturerName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        note: formik.values.searchType === 'note' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
         isAcquisition: formik.values.isAcquisition || undefined,
         isPromotion: formik.values.isPromotion || undefined,
         isOutOfStock: formik.values.isOutOfStock || undefined,
@@ -390,17 +394,28 @@ export default function MpAdminProductList() {
                   color='success'
                   size='small'
                   href={getDownloadProductSummariesExcel({
-                    productName: formik.values.searchType === 'productName' ? formik.values.searchKeyword : undefined,
-                    composition: formik.values.searchType === 'composition' ? formik.values.searchKeyword : undefined,
-                    productCode: formik.values.searchType === 'productCode' ? formik.values.searchKeyword : undefined,
-                    manufacturerName: formik.values.searchType === 'manufacturerName' ? formik.values.searchKeyword : undefined,
-                    note: formik.values.searchType === 'note' ? formik.values.searchKeyword : undefined,
+                    productName:
+                      formik.values.searchType === 'productName' && formik.values.searchKeyword !== ''
+                        ? formik.values.searchKeyword
+                        : undefined,
+                    composition:
+                      formik.values.searchType === 'composition' && formik.values.searchKeyword !== ''
+                        ? formik.values.searchKeyword
+                        : undefined,
+                    productCode:
+                      formik.values.searchType === 'productCode' && formik.values.searchKeyword !== ''
+                        ? formik.values.searchKeyword
+                        : undefined,
+                    manufacturerName:
+                      formik.values.searchType === 'manufacturerName' && formik.values.searchKeyword !== ''
+                        ? formik.values.searchKeyword
+                        : undefined,
+                    note:
+                      formik.values.searchType === 'note' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
                     isAcquisition: formik.values.isAcquisition || undefined,
                     isPromotion: formik.values.isPromotion || undefined,
                     isOutOfStock: formik.values.isOutOfStock || undefined,
                     isStopSelling: formik.values.isStopSelling || undefined,
-                    page: formik.values.pageIndex,
-                    size: formik.values.pageSize,
                   })}
                   target='_blank'
                   startIcon={<DocumentDownload size={16} />}

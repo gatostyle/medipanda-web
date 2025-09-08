@@ -173,7 +173,9 @@ export interface BoardDetailsResponse {
   title: string;
   content: string;
   nickname: string;
+  hiddenNickname: boolean;
   isBlind: boolean;
+  likedByMe: boolean;
   likesCount: number;
   viewsCount: number;
   commentCount: number;
@@ -190,12 +192,12 @@ export interface BoardDetailsResponse {
 export interface BoardMemberStatsResponse {
   name: string;
   id: number;
-  userId: string;
   phoneNumber: string;
+  userId: string;
   commentCount: number;
-  blindPostCount: number;
   postCount: number;
   totalLikes: number;
+  blindPostCount: number;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
 }
 
@@ -221,6 +223,7 @@ export interface BoardPostResponse {
   boardType: 'ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z' | 'EVENT' | 'SALES_AGENCY' | 'PRODUCT';
   title: string;
   nickname: string;
+  hiddenNickname: boolean;
   isBlind: boolean;
   likesCount: number;
   viewsCount: number;
@@ -229,6 +232,9 @@ export interface BoardPostResponse {
   isExposed: boolean;
   exposureRange: 'ALL' | 'CONTRACTED' | 'UNCONTRACTED';
   noticeProperties: NoticeProperties | null;
+  noticeType:
+    | ('PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING')
+    | null;
   hasChildren: boolean;
 }
 
@@ -277,12 +283,12 @@ export interface CommentMemberResponse {
   id: number;
   content: string;
   commentType: 'COMMENT' | 'REPLY';
-  isBlind: boolean;
   nickname: string;
   likesCount: number;
   userId: string;
   createdAt: string;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  isBlind: boolean;
 }
 
 export interface CommentResponse {
@@ -297,6 +303,7 @@ export interface CommentResponse {
   parentId: number | null;
   createdAt: string;
   modifiedAt: string;
+  likedByMe: boolean;
 }
 
 export interface CommentUpdateRequest {
@@ -465,6 +472,7 @@ export interface MemberDetailsResponse {
   id: number;
   userId: string;
   name: string;
+  nickname: string;
   gender: ('MALE' | 'FEMALE') | null;
   phoneNumber: string;
   birthDate: string;
@@ -485,6 +493,7 @@ export interface MemberResponse {
   id: number;
   userId: string;
   name: string;
+  nickname: string;
   phoneNumber: string;
   birthDate: string;
   email: string;
@@ -534,6 +543,21 @@ export interface MonthlyPrescriptionCountResponse {
   count: number;
 }
 
+export interface NicknameCheckRequest {
+  nickname: string;
+}
+
+export interface NicknameCheckResponse {
+  available: boolean;
+  duplicated: boolean;
+  recentlyChanged: boolean;
+  changedAt: string | null;
+}
+
+export interface NicknameUpdateRequest {
+  nickname: string;
+}
+
 export interface NoteUpdateItem {
   userId: string;
   note: string | null;
@@ -565,9 +589,9 @@ export interface PageBannerResponse {
   content: BannerResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -579,9 +603,9 @@ export interface PageBlindPostResponse {
   content: BlindPostResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -593,9 +617,9 @@ export interface PageBoardMemberStatsResponse {
   content: BoardMemberStatsResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -607,9 +631,9 @@ export interface PageBoardPostResponse {
   content: BoardPostResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -621,9 +645,9 @@ export interface PageCommentMemberResponse {
   content: CommentMemberResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -635,9 +659,9 @@ export interface PageEventBoardSummaryResponse {
   content: EventBoardSummaryResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -649,9 +673,9 @@ export interface PageExpenseReportResponse {
   content: ExpenseReportResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -663,9 +687,9 @@ export interface PageHospitalResponse {
   content: HospitalResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -677,9 +701,9 @@ export interface PageMemberResponse {
   content: MemberResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -691,9 +715,9 @@ export interface PagePartnerResponse {
   content: PartnerResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -705,9 +729,9 @@ export interface PagePerformanceStatsResponse {
   content: PerformanceStatsResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -719,9 +743,9 @@ export interface PagePrescriptionPartnerResponse {
   content: PrescriptionPartnerResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -733,9 +757,9 @@ export interface PagePrescriptionResponse {
   content: PrescriptionResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -747,9 +771,9 @@ export interface PageProductSummaryResponse {
   content: ProductSummaryResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -761,9 +785,9 @@ export interface PageSalesAgencyProductApplicantResponse {
   content: SalesAgencyProductApplicantResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -775,9 +799,9 @@ export interface PageSalesAgencyProductSummaryResponse {
   content: SalesAgencyProductSummaryResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -789,9 +813,9 @@ export interface PageSettlementPartnerResponse {
   content: SettlementPartnerResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -803,9 +827,9 @@ export interface PageSettlementResponse {
   content: SettlementResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -819,6 +843,7 @@ export interface PageableObject {
 }
 
 export interface PartnerContractDetailsResponse {
+  id: number;
   contractType: 'INDIVIDUAL' | 'ORGANIZATION';
   companyName: string;
   businessNumber: string;
@@ -863,6 +888,7 @@ export interface PartnerCreateRequest {
 
 export interface PartnerResponse {
   id: number;
+  memberName: string;
   drugCompanyName: string;
   companyName: string;
   contractType: 'CONTRACT' | 'NON_CONTRACT';
@@ -958,6 +984,7 @@ export interface PrescriptionPartnerResponse {
   id: number;
   companyName: string;
   drugCompany: string;
+  drugCompanyCode: string;
   institutionName: string;
   institutionCode: string;
   prescriptionMonth: string;
@@ -1111,7 +1138,7 @@ export interface ProductExtraInfoRequest {
   composition: string | null;
   productCode: string;
   changedFeeRate: string | null;
-  changedMonth: string | null;
+  changedMonth: number | null;
   priceUnit: 'KRW' | 'USD' | 'EUR';
   feeRate: string | null;
   price: number | null;
@@ -1211,6 +1238,7 @@ export interface SalesAgencyProductDetailsResponse {
 }
 
 export interface SalesAgencyProductNoteUpdateRequest {
+  productId: number;
   updates: NoteUpdateItem[];
 }
 
@@ -1481,7 +1509,7 @@ export async function updateBoardPost(
   form.append('updateRequest', new Blob([JSON.stringify(data.updateRequest)], { type: 'application/json' }));
   if (data.newFiles !== undefined) {
     for (const v of data.newFiles) {
-      form.append('newFiles', v);
+      form.append('newFiles', v, v.name.normalize('NFC'));
     }
   }
   const response = await axios.request<string>({
@@ -1552,6 +1580,18 @@ export async function notifyAdminForSettlements(data: SettlementNotifyRequest): 
 }
 
 /**
+ * 이의신청 알림 전송 (선택된 정산건 관리자에게 이메일)
+ * POST /v1/settlements/notify-admin/objections
+ */
+export async function notifyAdminForObjections(data: SettlementNotifyRequest): Promise<void> {
+  await axios.request({
+    method: 'POST',
+    url: '/v1/settlements/notify-admin/objections',
+    data,
+  });
+}
+
+/**
  * 영업대행 상품 목록 조회
  * GET /v1/sales-agency-products
  */
@@ -1560,6 +1600,7 @@ export async function getSalesAgencyProducts(options?: {
   clientName?: string;
   startAt?: DateString;
   endAt?: DateString;
+  isExposed?: boolean;
   page?: number;
   size?: number;
 }): Promise<PageSalesAgencyProductSummaryResponse> {
@@ -1587,10 +1628,10 @@ export async function createSalesAgencyProductBoard(data: {
     'salesAgencyProductCreateRequest',
     new Blob([JSON.stringify(data.salesAgencyProductCreateRequest)], { type: 'application/json' }),
   );
-  form.append('thumbnail', data.thumbnail);
+  form.append('thumbnail', data.thumbnail, data.thumbnail.name.normalize('NFC'));
   if (data.files !== undefined) {
     for (const v of data.files) {
-      form.append('files', v);
+      form.append('files', v, v.name.normalize('NFC'));
     }
   }
   const response = await axios.request<string>({
@@ -1643,7 +1684,7 @@ export async function uploadFromS3(options?: { prefix?: string }): Promise<strin
  */
 export async function uploadProductExtraInfo(data: { file: File }): Promise<void> {
   const form = new FormData();
-  form.append('file', data.file);
+  form.append('file', data.file, data.file.name.normalize('NFC'));
   await axios.request({
     method: 'POST',
     url: '/v1/products/product-extra-info/upload',
@@ -1668,7 +1709,7 @@ export async function createProductExtraInfo(data: {
   );
   if (data.files !== undefined) {
     for (const v of data.files) {
-      form.append('files', v);
+      form.append('files', v, v.name.normalize('NFC'));
     }
   }
   await axios.request({
@@ -1685,12 +1726,14 @@ export async function createProductExtraInfo(data: {
 export async function uploadEdiZip(data: {
   prescriptionMonth: string;
   settlementMonth: string;
+  partnerUserId: string;
   file: File;
 }): Promise<PrescriptionZipUploadResult> {
   const form = new FormData();
   form.append('prescriptionMonth', data.prescriptionMonth);
   form.append('settlementMonth', data.settlementMonth);
-  form.append('file', data.file);
+  form.append('partnerUserId', data.partnerUserId);
+  form.append('file', data.file, data.file.name.normalize('NFC'));
   const response = await axios.request<PrescriptionZipUploadResult>({
     method: 'POST',
     url: '/v1/prescriptions/zip',
@@ -1719,7 +1762,7 @@ export async function uploadPartnerEdiFiles(data: { request: PrescriptionCreateR
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   for (const v of data.files) {
-    form.append('files', v);
+    form.append('files', v, v.name.normalize('NFC'));
   }
   await axios.request({
     method: 'POST',
@@ -1782,7 +1825,7 @@ export async function uploadPartnersExcel(
   },
 ): Promise<void> {
   const form = new FormData();
-  form.append('file', data.file);
+  form.append('file', data.file, data.file.name.normalize('NFC'));
   await axios.request({
     method: 'POST',
     url: `/v1/partners/upload/${userId}`,
@@ -1803,10 +1846,10 @@ export async function applyContract(data: {
 }): Promise<void> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  form.append('business_registration', data.business_registration);
-  form.append('subcontract_agreement', data.subcontract_agreement);
-  form.append('cso_certificate', data.cso_certificate);
-  form.append('education_certificate', data.education_certificate);
+  form.append('business_registration', data.business_registration, data.business_registration.name.normalize('NFC'));
+  form.append('subcontract_agreement', data.subcontract_agreement, data.subcontract_agreement.name.normalize('NFC'));
+  form.append('cso_certificate', data.cso_certificate, data.cso_certificate.name.normalize('NFC'));
+  form.append('education_certificate', data.education_certificate, data.education_certificate.name.normalize('NFC'));
   await axios.request({
     method: 'POST',
     url: '/v1/partner-contracts',
@@ -1850,16 +1893,16 @@ export async function updateContract(data: {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   if (data.business_registration !== undefined) {
-    form.append('business_registration', data.business_registration);
+    form.append('business_registration', data.business_registration, data.business_registration.name.normalize('NFC'));
   }
   if (data.subcontract_agreement !== undefined) {
-    form.append('subcontract_agreement', data.subcontract_agreement);
+    form.append('subcontract_agreement', data.subcontract_agreement, data.subcontract_agreement.name.normalize('NFC'));
   }
   if (data.cso_certificate !== undefined) {
-    form.append('cso_certificate', data.cso_certificate);
+    form.append('cso_certificate', data.cso_certificate, data.cso_certificate.name.normalize('NFC'));
   }
   if (data.education_certificate !== undefined) {
-    form.append('education_certificate', data.education_certificate);
+    form.append('education_certificate', data.education_certificate, data.education_certificate.name.normalize('NFC'));
   }
   await axios.request({
     method: 'POST',
@@ -1902,12 +1945,24 @@ export async function signup(data: { request: MemberSignupRequest; file?: File }
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   if (data.file !== undefined) {
-    form.append('file', data.file);
+    form.append('file', data.file, data.file.name.normalize('NFC'));
   }
   await axios.request({
     method: 'POST',
     url: '/v1/members',
     data: form,
+  });
+}
+
+/**
+ * 닉네임 변경
+ * POST /v1/members/{userId}/nickname
+ */
+export async function updateNickname(data: NicknameUpdateRequest): Promise<void> {
+  await axios.request({
+    method: 'POST',
+    url: '/v1/members/{userId}/nickname',
+    data,
   });
 }
 
@@ -1920,6 +1975,32 @@ export async function checkPassword(options?: { password?: string }): Promise<bo
     method: 'POST',
     url: '/v1/members/check-password',
     params: options,
+  });
+  return response.data;
+}
+
+/**
+ * 전화번호 중복 확인
+ * POST /v1/members/available-phone
+ */
+export async function checkPhone(options?: { phone?: string }): Promise<boolean> {
+  const response = await axios.request<boolean>({
+    method: 'POST',
+    url: '/v1/members/available-phone',
+    params: options,
+  });
+  return response.data;
+}
+
+/**
+ * 닉네임 중복 확인
+ * POST /v1/members/available-nickname
+ */
+export async function isAvailableNickname(data: NicknameCheckRequest): Promise<NicknameCheckResponse> {
+  const response = await axios.request<NicknameCheckResponse>({
+    method: 'POST',
+    url: '/v1/members/available-nickname',
+    data,
   });
   return response.data;
 }
@@ -1979,7 +2060,7 @@ export async function handleCallback(options?: { apiToken?: string; certNum?: st
  */
 export async function uploadHospitalExcel(data: { file: File }): Promise<string> {
   const form = new FormData();
-  form.append('file', data.file);
+  form.append('file', data.file, data.file.name.normalize('NFC'));
   const response = await axios.request<string>({
     method: 'POST',
     url: '/v1/hospitals/upload',
@@ -2000,7 +2081,7 @@ export async function createSampleProvideReport(data: {
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   if (data.attachmentFiles !== undefined) {
     for (const v of data.attachmentFiles) {
-      form.append('attachmentFiles', v);
+      form.append('attachmentFiles', v, v.name.normalize('NFC'));
     }
   }
   await axios.request({
@@ -2022,11 +2103,11 @@ export async function createProductBriefingSingleReport(data: {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   for (const v of data.signatureFiles) {
-    form.append('signatureFiles', v);
+    form.append('signatureFiles', v, v.name.normalize('NFC'));
   }
   if (data.attachmentFiles !== undefined) {
     for (const v of data.attachmentFiles) {
-      form.append('attachmentFiles', v);
+      form.append('attachmentFiles', v, v.name.normalize('NFC'));
     }
   }
   await axios.request({
@@ -2048,7 +2129,7 @@ export async function createProductBriefingMultiReport(data: {
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   if (data.attachmentFiles !== undefined) {
     for (const v of data.attachmentFiles) {
-      form.append('attachmentFiles', v);
+      form.append('attachmentFiles', v, v.name.normalize('NFC'));
     }
   }
   await axios.request({
@@ -2091,10 +2172,10 @@ export async function createEventBoard(data: {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   form.append('eventRequest', new Blob([JSON.stringify(data.eventRequest)], { type: 'application/json' }));
-  form.append('thumbnail', data.thumbnail);
+  form.append('thumbnail', data.thumbnail, data.thumbnail.name.normalize('NFC'));
   if (data.files !== undefined) {
     for (const v of data.files) {
-      form.append('files', v);
+      form.append('files', v, v.name.normalize('NFC'));
     }
   }
   const response = await axios.request<string>({
@@ -2193,7 +2274,7 @@ export async function createBoardPost(data: { request: BoardPostCreateRequest; f
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   if (data.files !== undefined) {
     for (const v of data.files) {
-      form.append('files', v);
+      form.append('files', v, v.name.normalize('NFC'));
     }
   }
   const response = await axios.request<string>({
@@ -2221,7 +2302,7 @@ export async function toggleLike_1(id: number): Promise<void> {
  */
 export async function uploadEditorFile(data: { file: File }): Promise<AttachmentResponse> {
   const form = new FormData();
-  form.append('file', data.file);
+  form.append('file', data.file, data.file.name.normalize('NFC'));
   const response = await axios.request<AttachmentResponse>({
     method: 'POST',
     url: '/v1/boards/uploads',
@@ -2257,7 +2338,7 @@ export async function getBanners(options?: {
 export async function createBanner(data: { request: BannerCreateRequest; imageFile: File }): Promise<string> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  form.append('imageFile', data.imageFile);
+  form.append('imageFile', data.imageFile, data.imageFile.name.normalize('NFC'));
   const response = await axios.request<string>({
     method: 'POST',
     url: '/v1/banners',
@@ -2418,11 +2499,11 @@ export async function updateSalesAgencyProductBoard(
     );
   }
   if (data.thumbnail !== undefined) {
-    form.append('thumbnail', data.thumbnail);
+    form.append('thumbnail', data.thumbnail, data.thumbnail.name.normalize('NFC'));
   }
   if (data.newFiles !== undefined) {
     for (const v of data.newFiles) {
-      form.append('newFiles', v);
+      form.append('newFiles', v, v.name.normalize('NFC'));
     }
   }
   await axios.request({
@@ -2475,7 +2556,7 @@ export async function updateProductExtraInfo(
   );
   if (data.newFiles !== undefined) {
     for (const v of data.newFiles) {
-      form.append('newFiles', v);
+      form.append('newFiles', v, v.name.normalize('NFC'));
     }
   }
   await axios.request({
@@ -2532,7 +2613,7 @@ export async function updateMember(
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   if (data.file !== undefined) {
-    form.append('file', data.file);
+    form.append('file', data.file, data.file.name.normalize('NFC'));
   }
   await axios.request({
     method: 'PATCH',
@@ -2573,23 +2654,6 @@ export async function changePassword_1(userId: string, data: ChangePasswordForFi
     method: 'PATCH',
     url: `/v1/members/${userId}/password-for-find-account`,
     data,
-  });
-}
-
-/**
- * 닉네임 변경
- * PATCH /v1/members/{userId}/nickname
- */
-export async function updateNickname(
-  userId: string,
-  options?: {
-    nickname?: string;
-  },
-): Promise<void> {
-  await axios.request({
-    method: 'PATCH',
-    url: `/v1/members/${userId}/nickname`,
-    params: options,
   });
 }
 
@@ -2674,7 +2738,7 @@ export async function updateSampleProvideReport(
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   if (data.newFiles !== undefined) {
     for (const v of data.newFiles) {
-      form.append('newFiles', v);
+      form.append('newFiles', v, v.name.normalize('NFC'));
     }
   }
   await axios.request({
@@ -2712,12 +2776,12 @@ export async function updateProductBriefingSingleReport(
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   if (data.signatureFiles !== undefined) {
     for (const v of data.signatureFiles) {
-      form.append('signatureFiles', v);
+      form.append('signatureFiles', v, v.name.normalize('NFC'));
     }
   }
   if (data.newFiles !== undefined) {
     for (const v of data.newFiles) {
-      form.append('newFiles', v);
+      form.append('newFiles', v, v.name.normalize('NFC'));
     }
   }
   await axios.request({
@@ -2754,7 +2818,7 @@ export async function updateProductBriefingMultiReport(
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   if (data.newFiles !== undefined) {
     for (const v of data.newFiles) {
-      form.append('newFiles', v);
+      form.append('newFiles', v, v.name.normalize('NFC'));
     }
   }
   await axios.request({
@@ -2797,11 +2861,11 @@ export async function updateEventBoard(
     form.append('eventRequest', new Blob([JSON.stringify(data.eventRequest)], { type: 'application/json' }));
   }
   if (data.thumbnail !== undefined) {
-    form.append('thumbnail', data.thumbnail);
+    form.append('thumbnail', data.thumbnail, data.thumbnail.name.normalize('NFC'));
   }
   if (data.newFiles !== undefined) {
     for (const v of data.newFiles) {
-      form.append('newFiles', v);
+      form.append('newFiles', v, v.name.normalize('NFC'));
     }
   }
   await axios.request({
@@ -2848,7 +2912,7 @@ export async function updateBanner(
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   if (data.imageFile !== undefined) {
-    form.append('imageFile', data.imageFile);
+    form.append('imageFile', data.imageFile, data.imageFile.name.normalize('NFC'));
   }
   await axios.request({
     method: 'PATCH',
@@ -3206,6 +3270,7 @@ export function getDownloadSalesAgencyProductsExcel(options?: {
   clientName?: string;
   startAt?: DateString;
   endAt?: DateString;
+  isExposed?: boolean;
   page?: number;
   size?: number;
 }): string {
@@ -3501,19 +3566,6 @@ export function getDownloadUserMembersExcel(options?: {
 }
 
 /**
- * 닉네임 중복 확인
- * GET /v1/members/available-nickname
- */
-export async function isAvailableNickname(options?: { nickname?: string }): Promise<boolean> {
-  const response = await axios.request<boolean>({
-    method: 'GET',
-    url: '/v1/members/available-nickname',
-    params: options,
-  });
-  return response.data;
-}
-
-/**
  * 관리자 권한 조회
  * GET /v1/members/admins/{userId}/permissions
  */
@@ -3705,6 +3757,8 @@ export async function getDealerIdByUserId(userId: string): Promise<number> {
 export async function getFixedTopNotices(options?: {
   boardType?: 'ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z' | 'EVENT' | 'SALES_AGENCY' | 'PRODUCT';
   noticeType?: 'PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING';
+  filterBlind?: boolean;
+  filterDeleted?: boolean;
 }): Promise<BoardPostResponse[]> {
   const response = await axios.request<BoardPostResponse[]>({
     method: 'GET',

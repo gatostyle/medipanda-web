@@ -64,9 +64,11 @@ export default function MpAdminExpenseReportList() {
         page: formik.values.pageIndex,
         size: formik.values.pageSize,
         ...(formik.values.reportStatus !== '' && { reportStatus: formik.values.reportStatus }),
-        companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
-        userId: formik.values.searchType === 'userId' ? formik.values.searchKeyword : undefined,
-        productName: formik.values.searchType === 'productName' ? formik.values.searchKeyword : undefined,
+        companyName:
+          formik.values.searchType === 'companyName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        userId: formik.values.searchType === 'userId' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        productName:
+          formik.values.searchType === 'productName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
         eventDateFrom: formik.values.eventDateFrom ? new DateTimeString(formik.values.eventDateFrom) : undefined,
         eventDateTo: formik.values.eventDateTo ? new DateTimeString(formik.values.eventDateTo) : undefined,
       });
@@ -230,12 +232,17 @@ export default function MpAdminExpenseReportList() {
                   color='success'
                   startIcon={<DocumentDownload size={16} />}
                   href={getDownloadExpenseReportListExcel({
-                    page: formik.values.pageIndex,
-                    size: formik.values.pageSize,
                     ...(formik.values.reportStatus !== '' && { reportStatus: formik.values.reportStatus }),
-                    companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
-                    userId: formik.values.searchType === 'userId' ? formik.values.searchKeyword : undefined,
-                    productName: formik.values.searchType === 'productName' ? formik.values.searchKeyword : undefined,
+                    companyName:
+                      formik.values.searchType === 'companyName' && formik.values.searchKeyword !== ''
+                        ? formik.values.searchKeyword
+                        : undefined,
+                    userId:
+                      formik.values.searchType === 'userId' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+                    productName:
+                      formik.values.searchType === 'productName' && formik.values.searchKeyword !== ''
+                        ? formik.values.searchKeyword
+                        : undefined,
                     eventDateFrom: formik.values.eventDateFrom ? new DateTimeString(formik.values.eventDateFrom) : undefined,
                     eventDateTo: formik.values.eventDateTo ? new DateTimeString(formik.values.eventDateTo) : undefined,
                   })}

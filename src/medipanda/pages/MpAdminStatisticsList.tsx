@@ -70,10 +70,14 @@ export default function MpAdminStatisticsList() {
     setLoading(true);
     try {
       const response = await getPerformanceStats({
-        drugCompany: formik.values.searchType === 'drugCompany' ? formik.values.searchKeyword : undefined,
-        companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
-        dealerName: formik.values.searchType === 'dealerName' ? formik.values.searchKeyword : undefined,
-        institutionName: formik.values.searchType === 'institutionName' ? formik.values.searchKeyword : undefined,
+        drugCompany:
+          formik.values.searchType === 'drugCompany' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        companyName:
+          formik.values.searchType === 'companyName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        dealerName:
+          formik.values.searchType === 'dealerName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        institutionName:
+          formik.values.searchType === 'institutionName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
         startMonth: formik.values.settlementDate ? new DateString(formik.values.settlementDate) : undefined,
         endMonth: formik.values.settlementDate ? new DateString(formik.values.settlementDate) : undefined,
         page: formik.values.pageIndex,
@@ -246,14 +250,24 @@ export default function MpAdminStatisticsList() {
                   color='success'
                   size='small'
                   href={getDownloadPerformanceExcel({
-                    drugCompany: formik.values.searchType === 'drugCompany' ? formik.values.searchKeyword : undefined,
-                    companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
-                    dealerName: formik.values.searchType === 'dealerName' ? formik.values.searchKeyword : undefined,
-                    institutionName: formik.values.searchType === 'institutionName' ? formik.values.searchKeyword : undefined,
+                    drugCompany:
+                      formik.values.searchType === 'drugCompany' && formik.values.searchKeyword !== ''
+                        ? formik.values.searchKeyword
+                        : undefined,
+                    companyName:
+                      formik.values.searchType === 'companyName' && formik.values.searchKeyword !== ''
+                        ? formik.values.searchKeyword
+                        : undefined,
+                    dealerName:
+                      formik.values.searchType === 'dealerName' && formik.values.searchKeyword !== ''
+                        ? formik.values.searchKeyword
+                        : undefined,
+                    institutionName:
+                      formik.values.searchType === 'institutionName' && formik.values.searchKeyword !== ''
+                        ? formik.values.searchKeyword
+                        : undefined,
                     startMonth: formik.values.settlementDate ? new DateString(formik.values.settlementDate) : undefined,
                     endMonth: formik.values.settlementDate ? new DateString(formik.values.settlementDate) : undefined,
-                    page: formik.values.pageIndex,
-                    size: formik.values.pageSize,
                   })}
                   target='_blank'
                   startIcon={<DocumentDownload size={16} />}

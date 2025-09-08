@@ -16,17 +16,26 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { isAxiosError } from 'axios';
 import { useFormik } from 'formik';
 import { mpUpdateMemberFile } from '@/medipanda/api-definitions/MpMember';
 import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
-import { approveOrRejectCso, getContractDetails, getMemberDetails } from '@/backend';
+import {
+  approveContract,
+  approveOrRejectCso,
+  getContractDetails,
+  getMemberDetails,
+  MemberDetailsResponse,
+  PartnerContractDetailsResponse,
+  updateMember,
+} from '@/backend';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
 import { mockString } from '@/medipanda/mockup';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import { formatYyyyMmDd } from '../utils/dateFormat';
 
 export default function MpAdminMemberEdit() {
@@ -36,117 +45,128 @@ export default function MpAdminMemberEdit() {
   const infoDialog = useMpInfoDialog();
   const errorDialog = useMpErrorDialog();
   const { enqueueSnackbar } = useSnackbar();
-  const [loading, setLoading] = useState(true);
-  const [hasPartnerContract, setHasPartnerContract] = useState(false);
   const [isContractApproved, setIsContractApproved] = useState(false);
+  const [memberDetail, setMemberDetail] = useState<MemberDetailsResponse | null>(null);
+  const [contractDetail, setContractDetail] = useState<PartnerContractDetailsResponse | null>(null);
 
   const formik = useFormik({
     initialValues: {
-      memberId: -1,
-      userId: '',
       password: '',
       confirmPassword: '',
-      name: '',
       phoneNumber: '',
-      birthDate: '',
-      gender: '',
       email: '',
-      referralCode: '',
-      registrationDate: '',
-      lastLoginDate: '',
       accountStatus: 'ACTIVATED',
-      csoLicenseFile: '',
-      contractType: 'ORGANIZATION',
-      contractStatus: '미계약',
-      companyName: '',
-      businessNumber: '',
       settlementBank: '',
       subcontractFile: '',
       educationCertificate: '',
-      contractDate: '',
       commissionRate: 0,
       note: '',
-      marketingAgreements: {
-        sms: false,
-        email: false,
-        push: false,
-      },
+      marketingAgreementsSms: false,
+      marketingAgreementsEmail: false,
+      marketingAgreementsPush: false,
     },
     onSubmit: async values => {
-      console.log('Form submitted:', values);
-      navigate('/admin/members');
-    },
-  });
+      if (values.password !== '' && values.password !== values.confirmPassword) {
+        alert('입력한 비밀번호가 불일치합니다.');
+        return;
+      }
 
-  useEffect(() => {
-    const fetchMemberData = async () => {
-      if (!userId) {
-        setLoading(false);
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
+        alert('올바른 이메일 형식이 아닙니다.');
+        return;
+      }
+
+      if (values.phoneNumber !== memberDetail?.phoneNumber && values.phoneNumber === '') {
+        alert('휴대폰번호를 입력하세요.');
         return;
       }
 
       try {
-        setLoading(true);
-
-        const memberDetail = await getMemberDetails(userId);
-        let formikValues = formik.values;
-
-        formikValues = {
-          ...formikValues,
-          memberId: memberDetail.id,
-          userId: memberDetail.userId,
-          name: memberDetail.name,
-          phoneNumber: memberDetail.phoneNumber,
-          birthDate: memberDetail.birthDate,
-          gender: memberDetail.gender ?? '',
-          email: memberDetail.email,
-          referralCode: memberDetail.referralCode ?? '',
-          registrationDate: memberDetail.registrationDate,
-          lastLoginDate: memberDetail.lastLoginDate,
-          accountStatus: 'ACTIVATED',
-          csoLicenseFile: memberDetail.csoCertUrl ?? '',
-          note: memberDetail.note ?? '',
-          marketingAgreements: memberDetail.marketingAgreements || {
-            sms: false,
-            email: false,
-            push: false,
+        await updateMember(userId!, {
+          request: {
+            password: values.password !== '' ? values.password : null,
+            name: null,
+            birthDate: null,
+            phoneNumber: values.phoneNumber !== memberDetail?.phoneNumber ? values.phoneNumber : null,
+            email: values.email,
+            nickname: null,
+            referralCode: null,
+            note: values.note,
+            marketingAgreement: {
+              sms: values.marketingAgreementsSms,
+              email: values.marketingAgreementsEmail,
+              push: values.marketingAgreementsPush,
+            },
           },
-        };
+        });
 
-        try {
-          const contractData = await getContractDetails(userId);
-          setHasPartnerContract(true);
-          setIsContractApproved(contractData.status === 'APPROVED');
-
-          formikValues = {
-            ...formikValues,
-            contractType: contractData.contractType || 'ORGANIZATION',
-            contractStatus: contractData.status === 'APPROVED' ? '계약' : '미계약',
-            companyName: contractData.companyName ?? '',
-            businessNumber: contractData.businessNumber ?? '',
-            settlementBank: `${contractData.bankName ?? ''} ${contractData.accountNumber ?? ''}`.trim(),
-            subcontractFile: contractData.fileUrls?.subcontractAgreement ?? '',
-            educationCertificate: contractData.fileUrls?.educationCertificate ?? '',
-            contractDate: contractData.contractDate?.toString() ?? '',
-            commissionRate: 0,
-          };
-        } catch (e) {
-          setHasPartnerContract(false);
-          console.log('No partner contract found for member:', userId);
-        }
-
-        formik.setValues(formikValues);
-      } catch (error) {
-        console.error('Failed to fetch member data:', error);
-        enqueueSnackbar('회원 정보를 불러오는데 실패했습니다.', { variant: 'error' });
+        alert('회원정보가 수정되었습니다.');
         navigate('/admin/members');
-      } finally {
-        setLoading(false);
+      } catch (e) {
+        switch (true) {
+          case isAxiosError(e) && e.response?.data === `Bad request: phone number ${values.phoneNumber} already exists.`:
+            alert('이미 사용중인 휴대폰번호입니다.');
+            break;
+          default:
+            console.error(e);
+            alert('회원정보 수정 중 오류가 발생했습니다.');
+            break;
+        }
       }
-    };
+    },
+  });
 
+  useEffect(() => {
     fetchMemberData();
   }, [userId]);
+
+  const fetchMemberData = async () => {
+    if (!userId) {
+      alert('잘못된 접근입니다.');
+      navigate('/admin/members');
+      return;
+    }
+
+    try {
+      const memberDetail = await getMemberDetails(userId);
+      setMemberDetail(memberDetail);
+      await formik.setValues({
+        ...formik.values,
+        phoneNumber: memberDetail.phoneNumber,
+        email: memberDetail.email,
+        accountStatus: 'ACTIVATED',
+        note: memberDetail.note ?? '',
+        marketingAgreementsSms: memberDetail.marketingAgreements?.sms ?? false,
+        marketingAgreementsEmail: memberDetail.marketingAgreements?.email ?? false,
+        marketingAgreementsPush: memberDetail.marketingAgreements?.push ?? false,
+      });
+
+      await fetchPartnerContract();
+    } catch (error) {
+      console.error('Failed to fetch member data:', error);
+      enqueueSnackbar('회원 정보를 불러오는데 실패했습니다.', { variant: 'error' });
+      navigate('/admin/members');
+    }
+  };
+
+  const fetchPartnerContract = async () => {
+    try {
+      const contractDetail = await getContractDetails(userId!);
+      setContractDetail(contractDetail);
+      setIsContractApproved(contractDetail.status === 'APPROVED');
+
+      await formik.setValues({
+        ...formik.values,
+        settlementBank: `${contractDetail.bankName ?? ''} ${contractDetail.accountNumber ?? ''}`.trim(),
+        subcontractFile: contractDetail.fileUrls?.subcontractAgreement ?? '',
+        educationCertificate: contractDetail.fileUrls?.educationCertificate ?? '',
+        commissionRate: 0,
+      });
+    } catch (e) {
+      setContractDetail(null);
+      console.log('No partner contract found for member:', userId);
+    }
+  };
 
   const handleCancel = () => {
     navigate('/admin/members');
@@ -156,6 +176,7 @@ export default function MpAdminMemberEdit() {
     try {
       await approveOrRejectCso(userId!, { isApproved: true });
       infoDialog.showInfo('CSO 신고증이 승인되었습니다.');
+      await fetchMemberData();
     } catch (error) {
       if (error instanceof NotImplementedError) {
         notImplementedDialog.open(error.message);
@@ -170,6 +191,7 @@ export default function MpAdminMemberEdit() {
     try {
       await approveOrRejectCso(userId!, { isApproved: false });
       infoDialog.showInfo('CSO 신고증이 반려되었습니다.');
+      await fetchMemberData();
     } catch (error) {
       if (error instanceof NotImplementedError) {
         notImplementedDialog.open(error.message);
@@ -180,9 +202,52 @@ export default function MpAdminMemberEdit() {
     }
   };
 
-  const handleContractApprove = () => {
-    setIsContractApproved(true);
-    formik.setFieldValue('contractStatus', '계약');
+  const handleCsoUpload = async () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.onchange = async (event: any) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      try {
+        await updateMember(userId!, {
+          request: {
+            password: null,
+            name: null,
+            birthDate: null,
+            phoneNumber: null,
+            email: null,
+            nickname: null,
+            referralCode: null,
+            note: null,
+            marketingAgreement: null,
+          },
+          file: file,
+        });
+
+        alert('CSO 신고증이 업로드되었습니다.');
+        await fetchMemberData();
+      } catch (e) {
+        console.error('Failed to upload CSO report:', e);
+        alert('CSO 신고증 업로드 중 오류가 발생했습니다.');
+      }
+    };
+    input.click();
+  };
+
+  const handleContractApprove = async () => {
+    try {
+      await approveContract(contractDetail!.id);
+      infoDialog.showInfo('파트너사 계약이 승인되었습니다.');
+      await fetchPartnerContract();
+    } catch (error) {
+      if (error instanceof NotImplementedError) {
+        notImplementedDialog.open(error.message);
+      } else {
+        console.error('Failed to approve partner contract:', error);
+        errorDialog.showError('파트너사 계약 승인 중 오류가 발생했습니다.');
+      }
+    }
   };
 
   const handleFileChange = async (field: string) => {
@@ -192,13 +257,17 @@ export default function MpAdminMemberEdit() {
         userId!,
         {
           password: null,
-          name: formik.values.name,
+          name: null,
           nickname: null,
-          birthDate: formik.values.birthDate,
+          birthDate: null,
           phoneNumber: formik.values.phoneNumber,
           email: formik.values.email,
-          referralCode: formik.values.referralCode || null,
-          marketingAgreement: formik.values.marketingAgreements,
+          referralCode: null,
+          marketingAgreement: {
+            sms: formik.values.marketingAgreementsSms,
+            email: formik.values.marketingAgreementsEmail,
+            push: formik.values.marketingAgreementsPush,
+          },
           note: mockString(`${field} 파일 업데이트`),
         },
         file,
@@ -214,7 +283,7 @@ export default function MpAdminMemberEdit() {
     }
   };
 
-  if (loading) {
+  if (memberDetail === null) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
         <CircularProgress />
@@ -243,14 +312,14 @@ export default function MpAdminMemberEdit() {
                       <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         회원번호
                       </Typography>
-                      <Typography variant='body1'>{formik.values.memberId}</Typography>
+                      <Typography variant='body1'>{memberDetail.id}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
                       <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         아이디
                       </Typography>
-                      <Typography variant='body1'>{formik.values.userId}</Typography>
+                      <Typography variant='body1'>{memberDetail.userId}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
@@ -281,7 +350,7 @@ export default function MpAdminMemberEdit() {
                       <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         회원명
                       </Typography>
-                      <Typography variant='body1'>{formik.values.name}</Typography>
+                      <Typography variant='body1'>{memberDetail.name}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
@@ -300,7 +369,7 @@ export default function MpAdminMemberEdit() {
                         생년월일
                       </Typography>
                       <Typography variant='body1'>
-                        {formatYyyyMmDd(formik.values.birthDate)} {formik.values.gender}
+                        {formatYyyyMmDd(memberDetail.birthDate)} {memberDetail.gender}
                       </Typography>
                     </Grid>
 
@@ -319,21 +388,21 @@ export default function MpAdminMemberEdit() {
                       <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         추천코드
                       </Typography>
-                      <Typography variant='body1'>{formik.values.referralCode}</Typography>
+                      <Typography variant='body1'>{memberDetail.referralCode}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
                       <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         가입일
                       </Typography>
-                      <Typography variant='body1'>{formatYyyyMmDd(formik.values.registrationDate)}</Typography>
+                      <Typography variant='body1'>{formatYyyyMmDd(memberDetail.registrationDate)}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
                       <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         최종접속일
                       </Typography>
-                      <Typography variant='body1'>{formatYyyyMmDd(formik.values.lastLoginDate)}</Typography>
+                      <Typography variant='body1'>{formatYyyyMmDd(memberDetail.lastLoginDate)}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
@@ -346,32 +415,38 @@ export default function MpAdminMemberEdit() {
                       </FormControl>
                     </Grid>
 
-                    {formik.values.csoLicenseFile !== '' && (
-                      <Grid item xs={12}>
-                        <Stack direction='row' spacing={2} alignItems='center'>
-                          <Typography variant='subtitle2' color='text.secondary'>
-                            CSO 신고증
-                          </Typography>
-                          <MuiLink href={formik.values.csoLicenseFile} download target='_blank' rel='noopener noreferrer' underline='hover'>
-                            {new URL(formik.values.csoLicenseFile).pathname.split('/').pop()}
-                          </MuiLink>
-                          <Button variant='text' color='primary' size='small'></Button>
-                          <Button variant='outlined' color='error' size='small' onClick={handleCsoReject}>
-                            반려
+                    <Grid item xs={12}>
+                      <Stack direction='row' spacing={2} alignItems='center'>
+                        <Typography variant='subtitle2' color='text.secondary'>
+                          CSO 신고증
+                        </Typography>
+                        {memberDetail.csoCertUrl !== null ? (
+                          <>
+                            <MuiLink href={memberDetail.csoCertUrl} download target='_blank' rel='noopener noreferrer' underline='hover'>
+                              다운로드
+                            </MuiLink>
+                            <Button variant='text' color='primary' size='small'></Button>
+                            <Button variant='outlined' color='error' size='small' onClick={handleCsoReject}>
+                              반려
+                            </Button>
+                            <Button variant='contained' color='success' size='small' onClick={handleCsoApprove}>
+                              승인
+                            </Button>
+                          </>
+                        ) : (
+                          <Button variant='text' color='primary' size='small' onClick={handleCsoUpload}>
+                            업로드
                           </Button>
-                          <Button variant='contained' color='success' size='small' onClick={handleCsoApprove}>
-                            승인
-                          </Button>
-                        </Stack>
-                      </Grid>
-                    )}
+                        )}
+                      </Stack>
+                    </Grid>
                   </Grid>
                 </Card>
               </Grid>
 
               <Grid item xs={12} md={6}>
                 <Stack spacing={3}>
-                  {hasPartnerContract && (
+                  {contractDetail !== null && (
                     <Card sx={{ p: 3 }}>
                       <Stack direction='row' justifyContent='space-between' alignItems='center' sx={{ mb: 3 }}>
                         <Typography variant='h6'>파트너사 계약</Typography>
@@ -387,7 +462,7 @@ export default function MpAdminMemberEdit() {
                         <Grid item xs={6}>
                           <FormControl fullWidth size='small'>
                             <InputLabel>유형</InputLabel>
-                            <Select name='contractType' value={formik.values.contractType} onChange={formik.handleChange}>
+                            <Select name='contractType' value={contractDetail.contractType} onChange={formik.handleChange}>
                               <MenuItem value={'ORGANIZATION'}>법인계약</MenuItem>
                               <MenuItem value={'INDIVIDUAL'}>개인계약</MenuItem>
                             </Select>
@@ -398,21 +473,21 @@ export default function MpAdminMemberEdit() {
                           <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                             계약상태
                           </Typography>
-                          <Typography variant='body1'>{formik.values.contractStatus}</Typography>
+                          <Typography variant='body1'>{contractDetail.status}</Typography>
                         </Grid>
 
                         <Grid item xs={6}>
                           <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                             회사명
                           </Typography>
-                          <Typography variant='body1'>{formik.values.companyName}</Typography>
+                          <Typography variant='body1'>{contractDetail.companyName}</Typography>
                         </Grid>
 
                         <Grid item xs={6}>
                           <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                             사업자등록번호
                           </Typography>
-                          <Typography variant='body1'>{formik.values.businessNumber}</Typography>
+                          <Typography variant='body1'>{contractDetail.businessNumber}</Typography>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -429,10 +504,38 @@ export default function MpAdminMemberEdit() {
                         <Grid item xs={12}>
                           <Stack direction='row' spacing={2} alignItems='center'>
                             <Typography variant='subtitle2' color='text.secondary'>
+                              CSO 신고증
+                            </Typography>
+                            <Button
+                              variant='text'
+                              color='primary'
+                              size='small'
+                              component={RouterLink}
+                              to={contractDetail.fileUrls['CSO_CERTIFICATE']}
+                              target='_blank'
+                            >
+                              다운로드
+                            </Button>
+                            <Button variant='outlined' size='small' onClick={() => handleFileChange('subcontractFile')}>
+                              파일변경
+                            </Button>
+                          </Stack>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                          <Stack direction='row' spacing={2} alignItems='center'>
+                            <Typography variant='subtitle2' color='text.secondary'>
                               재위탁계약서
                             </Typography>
-                            <Button variant='text' color='primary' size='small'>
-                              {formik.values.subcontractFile}
+                            <Button
+                              variant='text'
+                              color='primary'
+                              size='small'
+                              component={RouterLink}
+                              to={contractDetail.fileUrls['SUBCONTRACT_AGREEMENT']}
+                              target='_blank'
+                            >
+                              다운로드
                             </Button>
                             <Button variant='outlined' size='small' onClick={() => handleFileChange('subcontractFile')}>
                               파일변경
@@ -445,8 +548,15 @@ export default function MpAdminMemberEdit() {
                             <Typography variant='subtitle2' color='text.secondary'>
                               판매위수탁 교육이수증
                             </Typography>
-                            <Button variant='text' color='primary' size='small'>
-                              {formik.values.educationCertificate}
+                            <Button
+                              variant='text'
+                              color='primary'
+                              size='small'
+                              component={RouterLink}
+                              to={contractDetail.fileUrls['SALES_EDUCATION_CERT']}
+                              target='_blank'
+                            >
+                              다운로드
                             </Button>
                             <Button variant='outlined' size='small' onClick={() => handleFileChange('educationCertificate')}>
                               파일변경
@@ -458,7 +568,7 @@ export default function MpAdminMemberEdit() {
                           <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                             계약일
                           </Typography>
-                          <Typography variant='body1'>{formatYyyyMmDd(formik.values.contractDate)}</Typography>
+                          <Typography variant='body1'>{formatYyyyMmDd(contractDetail.contractDate)}</Typography>
                         </Grid>
 
                         <Grid item xs={6}>
@@ -507,8 +617,8 @@ export default function MpAdminMemberEdit() {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={formik.values.marketingAgreements.sms}
-                      onChange={e => formik.setFieldValue('marketingAgreements.sms', e.target.checked)}
+                      checked={formik.values.marketingAgreementsSms}
+                      onChange={e => formik.setFieldValue('marketingAgreementsSms', e.target.checked)}
                     />
                   }
                   label='SMS'
@@ -516,8 +626,8 @@ export default function MpAdminMemberEdit() {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={formik.values.marketingAgreements.email}
-                      onChange={e => formik.setFieldValue('marketingAgreements.email', e.target.checked)}
+                      checked={formik.values.marketingAgreementsEmail}
+                      onChange={e => formik.setFieldValue('marketingAgreementsEmail', e.target.checked)}
                     />
                   }
                   label='이메일'
@@ -525,8 +635,8 @@ export default function MpAdminMemberEdit() {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={formik.values.marketingAgreements.push}
-                      onChange={e => formik.setFieldValue('marketingAgreements.push', e.target.checked)}
+                      checked={formik.values.marketingAgreementsPush}
+                      onChange={e => formik.setFieldValue('marketingAgreementsPush', e.target.checked)}
                     />
                   }
                   label={`App Push`}

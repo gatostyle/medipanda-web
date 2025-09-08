@@ -207,9 +207,12 @@ export default function MpAdminPrescriptionFormList() {
     try {
       const response = await getPrescriptionPartnerList({
         status: formik.values.status !== '' ? formik.values.status : undefined,
-        companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
-        drugCompany: formik.values.searchType === 'drugCompany' ? formik.values.searchKeyword : undefined,
-        dealerName: formik.values.searchType === 'dealerName' ? formik.values.searchKeyword : undefined,
+        companyName:
+          formik.values.searchType === 'companyName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        drugCompany:
+          formik.values.searchType === 'drugCompany' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        dealerName:
+          formik.values.searchType === 'dealerName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
         prescriptionMonthStart: formik.values.prescriptionMonthStart ? new DateTimeString(formik.values.prescriptionMonthStart) : undefined,
         prescriptionMonthEnd: formik.values.prescriptionMonthEnd ? new DateTimeString(formik.values.prescriptionMonthEnd) : undefined,
         page: formik.values.pageIndex,

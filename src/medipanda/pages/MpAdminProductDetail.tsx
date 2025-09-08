@@ -1,8 +1,23 @@
-import { Box, Button, Card, Checkbox, CircularProgress, FormControlLabel, Grid, Stack, Typography } from '@mui/material';
+import {
+  TableCell,
+  Box,
+  Button,
+  Card,
+  Checkbox,
+  CircularProgress,
+  FormControlLabel,
+  Grid,
+  Stack,
+  Table,
+  TableBody,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@mui/material';
 import { getProductDetails, ProductDetailsResponse } from '@/backend';
 import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { useSnackbar } from 'notistack';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export default function MpAdminProductDetail() {
@@ -174,7 +189,78 @@ export default function MpAdminProductDetail() {
                 </Typography>
               </Grid>
               <Grid item xs={10}>
-                <Typography variant='body1'>{productDetail.alternativeProducts.join(', ')}</Typography>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>대체</TableCell>
+                      <TableCell>제약사명</TableCell>
+                      <TableCell>제품정보</TableCell>
+                      <TableCell>약가</TableCell>
+                      <TableCell>급여정보</TableCell>
+                      <TableCell>기본 수수료율</TableCell>
+                      <TableCell>상태</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {productDetail?.alternativeProducts.map(product => (
+                      <Fragment key={product.kdCode}>
+                        <TableRow>
+                          <TableCell rowSpan={2}>
+                            <Typography sx={{ whiteSpace: 'pre-line' }}>{product.substituent ?? '-'}</Typography>
+                          </TableCell>
+                          <TableCell rowSpan={2}>
+                            <Typography sx={{ whiteSpace: 'pre-line' }}>{product.manufacturer ?? '-'}</Typography>
+                          </TableCell>
+                          <TableCell sx={{ borderBottom: 'none', textAlign: 'left' }}>
+                            <Stack gap='5px'>
+                              <Typography>{product.productName}</Typography>
+                              <Typography
+                                sx={{
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap',
+                                }}
+                              >
+                                {product.composition}
+                              </Typography>
+                            </Stack>
+                          </TableCell>
+                          <TableCell align='center' sx={{ borderBottom: 'none' }}>
+                            {product.price?.toLocaleString() ?? '-'}
+                          </TableCell>
+                          <TableCell align='center' sx={{ borderBottom: 'none' }}>
+                            {product.note ?? '-'}
+                          </TableCell>
+                          <TableCell align='center' sx={{ borderBottom: 'none' }}>
+                            <Typography sx={{ fontWeight: 500 }}>{product.feeRate ?? '-'}</Typography>
+                          </TableCell>
+                          <TableCell align='center' sx={{ borderBottom: 'none' }}>
+                            {product.note ?? '-'}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell
+                            colSpan={6}
+                            sx={{
+                              borderBottom: '1px solid rgba(219, 224, 229, 0.65) !important',
+                              textAlign: 'left',
+                            }}
+                          >
+                            <Typography
+                              sx={{
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                              }}
+                            >
+                              {product.note}
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      </Fragment>
+                    ))}
+                  </TableBody>
+                </Table>
               </Grid>
             </Grid>
           </Card>

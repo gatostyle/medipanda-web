@@ -181,7 +181,8 @@ export default function MpAdminSettlementList() {
       const response = await getSettlements({
         dealerName: undefined,
         dealerId: formik.values.searchType === 'dealerId' ? parseInt(formik.values.searchKeyword) : undefined,
-        companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
+        companyName:
+          formik.values.searchType === 'companyName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
         status: formik.values.status !== '' ? formik.values.status : undefined,
         startMonth: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
         endMonth: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
@@ -330,12 +331,13 @@ export default function MpAdminSettlementList() {
                   href={getDownloadSettlementListExcel({
                     dealerName: undefined,
                     dealerId: formik.values.searchType === 'dealerId' ? parseInt(formik.values.searchKeyword) : undefined,
-                    companyName: formik.values.searchType === 'companyName' ? formik.values.searchKeyword : undefined,
+                    companyName:
+                      formik.values.searchType === 'companyName' && formik.values.searchKeyword !== ''
+                        ? formik.values.searchKeyword
+                        : undefined,
                     status: formik.values.status !== '' ? formik.values.status : undefined,
                     startMonth: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
                     endMonth: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
-                    page: formik.values.pageIndex,
-                    size: formik.values.pageSize,
                   })}
                   target='_blank'
                   startIcon={<DocumentDownload size={16} />}

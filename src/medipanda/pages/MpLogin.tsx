@@ -1,8 +1,9 @@
 import { Button, FormHelperText, Grid, InputAdornment, OutlinedInput, Stack } from '@mui/material';
+import { isAxiosError } from 'axios';
 import IconButton from 'components/@extended/IconButton';
 import { useFormik } from 'formik';
 import { Eye, EyeSlash } from 'iconsax-react';
-import { useSession } from '@/medipanda/hooks/useSession';
+import { NotAdminError, useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { SyntheticEvent, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -47,8 +48,16 @@ export default function MpLogin() {
         const redirectTo = params.get('redirectTo');
 
         navigate(redirectTo ?? '/', { replace: true });
-      } catch (e: any) {
-        setErrors({ submit: `오류: ${JSON.stringify(e)}` });
+      } catch (e) {
+        if (isAxiosError(e) && e.response?.status === 401) {
+          setErrors({ submit: '아이디 또는 비밀번호가 올바르지 않습니다.' });
+        } else if (e instanceof NotAdminError) {
+          setErrors({ submit: '관리자 권한이 없습니다.' });
+        } else if (e instanceof Error) {
+          setErrors({ submit: e.message });
+        } else {
+          setErrors({ submit: `오류: ${JSON.stringify(e)}` });
+        }
       }
     },
   });

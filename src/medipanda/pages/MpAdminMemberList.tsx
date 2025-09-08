@@ -27,7 +27,7 @@ import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { CONSENT_LABELS, MEMBER_ACCOUNT_STATUS_LABELS } from '@/medipanda/ui-labels';
-import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
+import { formatYyyyMmDd, formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -42,7 +42,7 @@ export default function MpAdminMemberList() {
   const formik = useFormik({
     initialValues: {
       contractStatus: '' as 'CONTRACT' | 'NON_CONTRACT' | '',
-      searchType: 'name' as 'name' | 'id' | 'userId' | 'phoneNumber' | 'email' | 'companyName',
+      searchType: 'name' as 'name' | 'memberId' | 'userId' | 'phoneNumber' | 'email' | 'companyName',
       searchKeyword: '',
       startAt: null as Date | null,
       endAt: null as Date | null,
@@ -122,7 +122,7 @@ export default function MpAdminMemberList() {
       },
       {
         header: '가입일',
-        cell: ({ row }) => formatYyyyMmDd(row.original.registrationDate),
+        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.registrationDate),
         size: 150,
       },
       {
@@ -149,6 +149,7 @@ export default function MpAdminMemberList() {
       const response = await getUserMembers({
         contractStatus: formik.values.contractStatus !== '' ? formik.values.contractStatus : undefined,
         name: formik.values.searchType === 'name' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
+        memberId: formik.values.searchType === 'memberId' && formik.values.searchKeyword ? Number(formik.values.searchKeyword) : undefined,
         userId: formik.values.searchType === 'userId' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
         phoneNumber:
           formik.values.searchType === 'phoneNumber' && formik.values.searchKeyword
@@ -211,7 +212,7 @@ export default function MpAdminMemberList() {
                     <InputLabel>검색유형</InputLabel>
                     <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'name'}>회원명</MenuItem>
-                      <MenuItem value={'id'}>회원번호</MenuItem>
+                      <MenuItem value={'memberId'}>회원번호</MenuItem>
                       <MenuItem value={'userId'}>아이디</MenuItem>
                       <MenuItem value={'phoneNumber'}>휴대폰번호</MenuItem>
                       <MenuItem value={'email'}>이메일</MenuItem>
@@ -265,6 +266,10 @@ export default function MpAdminMemberList() {
                   href={getDownloadUserMembersExcel({
                     contractStatus: formik.values.contractStatus !== '' ? formik.values.contractStatus : undefined,
                     name: formik.values.searchType === 'name' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
+                    memberId:
+                      formik.values.searchType === 'memberId' && formik.values.searchKeyword
+                        ? Number(formik.values.searchKeyword)
+                        : undefined,
                     userId: formik.values.searchType === 'userId' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
                     phoneNumber:
                       formik.values.searchType === 'phoneNumber' && formik.values.searchKeyword
@@ -275,8 +280,6 @@ export default function MpAdminMemberList() {
                       formik.values.searchType === 'companyName' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
                     startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
                     endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
-                    page: formik.values.pageIndex,
-                    size: formik.values.pageSize,
                   })}
                   startIcon={<DocumentDownload size={16} />}
                 >

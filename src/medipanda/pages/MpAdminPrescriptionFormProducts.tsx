@@ -1,3 +1,4 @@
+import { OcrResponse } from '@/ocr';
 import {
   Box,
   Button,
@@ -26,7 +27,6 @@ import {
   getAttachedEdiFiles,
   getPartnerProducts,
   getPrescriptionPartner,
-  OcrResponse,
   PartnerResponse,
   PrescriptionPartnerProductResponse,
   PrescriptionProductItem,
@@ -280,7 +280,7 @@ export default function MpAdminPrescriptionFormProducts() {
   };
 
   const handleOcrSubmit = (response: OcrResponse[]) => {
-    const maxSequence = Math.max(...partnerProducts.map(p => p.sequence || 0));
+    const maxSequence = Math.max(...partnerProducts.map(p => p.sequence), 0);
 
     setPartnerProducts([
       ...partnerProducts,

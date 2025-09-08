@@ -183,8 +183,10 @@ export default function MpAdminSalesAgencyProductList() {
     setLoading(true);
     try {
       const response = await getSalesAgencyProducts({
-        productName: formik.values.searchType === 'productName' ? formik.values.searchKeyword : undefined,
-        clientName: formik.values.searchType === 'clientName' ? formik.values.searchKeyword : undefined,
+        productName:
+          formik.values.searchType === 'productName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        clientName:
+          formik.values.searchType === 'clientName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
         startAt: formik.values.date ? new DateString(formik.values.date) : undefined,
         endAt: formik.values.date ? new DateString(formik.values.date) : undefined,
         page: formik.values.pageIndex,
@@ -298,12 +300,16 @@ export default function MpAdminSalesAgencyProductList() {
                   color='success'
                   size='small'
                   href={getDownloadSalesAgencyProductsExcel({
-                    productName: formik.values.searchType === 'productName' ? formik.values.searchKeyword : undefined,
-                    clientName: formik.values.searchType === 'clientName' ? formik.values.searchKeyword : undefined,
+                    productName:
+                      formik.values.searchType === 'productName' && formik.values.searchKeyword !== ''
+                        ? formik.values.searchKeyword
+                        : undefined,
+                    clientName:
+                      formik.values.searchType === 'clientName' && formik.values.searchKeyword !== ''
+                        ? formik.values.searchKeyword
+                        : undefined,
                     startAt: formik.values.date ? new DateString(formik.values.date) : undefined,
                     endAt: formik.values.date ? new DateString(formik.values.date) : undefined,
-                    page: formik.values.pageIndex,
-                    size: formik.values.pageSize,
                   })}
                   target='_blank'
                   startIcon={<DocumentDownload size={16} />}

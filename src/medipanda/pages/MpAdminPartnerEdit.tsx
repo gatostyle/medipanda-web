@@ -30,27 +30,23 @@ import {
   DrugCompanyResponse,
   getAllDrugCompanies,
   getPartnerDetails,
-  getPartners,
-  PartnerResponse,
+  getUserMembers,
+  MemberResponse,
   updatePartner,
 } from '@/backend';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useSession } from '../hooks/useSession';
 
 export default function MpAdminPartnerEdit() {
-  const { session } = useSession();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [pharmaceuticalSearchOpen, setPharmaceuticalSearchOpen] = useState(false);
-  const [companySearchOpen, setCompanySearchOpen] = useState(false);
+  const [memberSearchDialogOpen, setMemberSearchDialogOpen] = useState(false);
   const [drugCompanies, setDrugCompanies] = useState<DrugCompanyResponse[]>([]);
-  const [partnerSearchResult, setPartnerSearchResult] = useState<PartnerResponse[]>([]);
-  // const [emptyPharmacyRow, setEmptyPharmacyRow] = useState<MpPartnerPharmacyRow | null>(null);
-  // const [pharmacyRows, setPharmacyRows] = useState<MpPartnerPharmacyRow[]>([]);
+  const [memberSearchDialogResult, setMemberSearchDialogResult] = useState<MemberResponse[]>([]);
 
   const isNew = id === undefined;
 
@@ -72,6 +68,7 @@ export default function MpAdminPartnerEdit() {
 
       formik.setValues({
         drugCompany: { id: -1, name: partnerDetails.drugCompanyName, code: '' },
+        member: null,
         companyName: partnerDetails.companyName,
         contractType: partnerDetails.contractType,
         institutionCode: partnerDetails.institutionCode,
@@ -94,6 +91,7 @@ export default function MpAdminPartnerEdit() {
   const formik = useFormik({
     initialValues: {
       drugCompany: null as DrugCompanyResponse | null,
+      member: null as MemberResponse | null,
       companyName: '',
       contractType: 'CONTRACT' as 'CONTRACT' | 'NON_CONTRACT',
       institutionCode: '',
@@ -106,11 +104,21 @@ export default function MpAdminPartnerEdit() {
       note: '',
     },
     onSubmit: async values => {
+      if (values.drugCompany === null) {
+        alert('제약사를 선택해주세요.');
+        return;
+      }
+
+      if (values.member === null) {
+        alert('사용자를 선택해주세요.');
+        return;
+      }
+
       try {
         if (isNew) {
           await createPartner({
             drugCompanyId: values.drugCompany!.id,
-            userId: session!.userId,
+            userId: values.member!.userId,
             drugCompany: values.drugCompany!.name,
             companyName: values.companyName,
             contractType: values.contractType!,
@@ -154,19 +162,17 @@ export default function MpAdminPartnerEdit() {
     },
   });
 
-  const partnerSearchFormik = useFormik({
+  const memberSearchFormik = useFormik({
     initialValues: {
-      companyName: '',
+      searchKeyword: '',
       pageIndex: 0,
-      pageSize: 20,
     },
     onSubmit: async values => {
-      const response = await getPartners({
-        companyName: values.companyName !== '' ? values.companyName : undefined,
+      const response = await getUserMembers({
+        name: values.searchKeyword !== '' ? values.searchKeyword : undefined,
         page: values.pageIndex,
-        size: values.pageSize,
       });
-      setPartnerSearchResult(response.content);
+      setMemberSearchDialogResult(response.content);
     },
   });
 
@@ -179,31 +185,18 @@ export default function MpAdminPartnerEdit() {
     setPharmaceuticalSearchOpen(false);
   };
 
-  const handleCompanySearch = () => {
-    partnerSearchFormik.submitForm();
-    setCompanySearchOpen(true);
+  const handleMemberSearch = async () => {
+    await memberSearchFormik.setFieldValue('searchKeyword', '');
+    await memberSearchFormik.submitForm();
+    setMemberSearchDialogOpen(true);
   };
 
-  const handlePartnerSelect = (partner: PartnerResponse) => {
-    formik.setFieldValue('companyName', partner.companyName);
-    setCompanySearchOpen(false);
+  const handleMemberSelect = (member: MemberResponse) => {
+    formik.setFieldValue('member', member);
+    formik.setFieldValue('companyName', member.companyName);
+
+    setMemberSearchDialogOpen(false);
   };
-
-  // const handleAddPharmacy = () => {
-  //   if (!emptyPharmacyRow) return;
-  //   const newId = Math.max(...pharmacyRows.map((r) => r.id)) + 1;
-  //   setPharmacyRows([...pharmacyRows, { ...emptyPharmacyRow, id: newId }]);
-  // };
-
-  // const handleRemovePharmacy = (id: number) => {
-  //   if (pharmacyRows.length > 1) {
-  //     setPharmacyRows(pharmacyRows.filter((row) => row.id !== id));
-  //   }
-  // };
-
-  // const handlePharmacyChange = (id: number, field: keyof MpPartnerPharmacyRow, value: unknown) => {
-  //   setPharmacyRows(pharmacyRows.map((row) => (row.id === id ? { ...row, [field]: value } : row)));
-  // };
 
   const handleCancel = () => {
     navigate('/admin/partners');
@@ -249,15 +242,14 @@ export default function MpAdminPartnerEdit() {
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label='회사명'
-                name='companyName'
-                value={formik.values.companyName}
-                onChange={formik.handleChange}
+                label='사용자명'
+                value={formik.values.member?.name ?? ''}
                 required
+                disabled
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position='end'>
-                      <IconButton onClick={handleCompanySearch} edge='end'>
+                      <IconButton onClick={handleMemberSearch} edge='end'>
                         <SearchNormal1 size={20} />
                       </IconButton>
                     </InputAdornment>
@@ -265,6 +257,26 @@ export default function MpAdminPartnerEdit() {
                 }}
               />
             </Grid>
+
+            {/*<Grid item xs={12} md={6}>*/}
+            {/*  <TextField*/}
+            {/*    fullWidth*/}
+            {/*    label='회사명'*/}
+            {/*    name='companyName'*/}
+            {/*    value={formik.values.companyName}*/}
+            {/*    onChange={formik.handleChange}*/}
+            {/*    required*/}
+            {/*    InputProps={{*/}
+            {/*      endAdornment: (*/}
+            {/*        <InputAdornment position='end'>*/}
+            {/*          <IconButton onClick={handleCompanySearch} edge='end'>*/}
+            {/*            <SearchNormal1 size={20} />*/}
+            {/*          </IconButton>*/}
+            {/*        </InputAdornment>*/}
+            {/*      ),*/}
+            {/*    }}*/}
+            {/*  />*/}
+            {/*</Grid>*/}
 
             <Grid item xs={12} md={6}>
               <TextField
@@ -442,17 +454,17 @@ export default function MpAdminPartnerEdit() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={companySearchOpen} onClose={() => setCompanySearchOpen(false)} maxWidth='sm' fullWidth>
-        <DialogTitle>회사명 조회</DialogTitle>
+      <Dialog open={memberSearchDialogOpen} onClose={() => setMemberSearchDialogOpen(false)} maxWidth='sm' fullWidth>
+        <DialogTitle>사용자명 조회</DialogTitle>
         <DialogContent>
           <Stack spacing={2}>
-            <Stack direction='row' spacing={1} component='form' noValidate onSubmit={partnerSearchFormik.handleSubmit}>
+            <Stack direction='row' spacing={1} component='form' noValidate onSubmit={memberSearchFormik.handleSubmit}>
               <TextField
                 fullWidth
                 size='small'
                 placeholder='검색어를 입력하세요'
-                name='companyName'
-                onChange={partnerSearchFormik.handleChange}
+                name='searchKeyword'
+                onChange={memberSearchFormik.handleChange}
               />
               <Button variant='contained' size='small' type='submit'>
                 검색
@@ -463,6 +475,7 @@ export default function MpAdminPartnerEdit() {
               <Table size='small'>
                 <TableHead>
                   <TableRow>
+                    <TableCell>사용자명</TableCell>
                     <TableCell>회사명</TableCell>
                     <TableCell align='center' width={100}>
                       선택
@@ -470,11 +483,12 @@ export default function MpAdminPartnerEdit() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {partnerSearchResult.map(partner => (
-                    <TableRow key={partner.id}>
-                      <TableCell>{partner.companyName}</TableCell>
+                  {memberSearchDialogResult.map(member => (
+                    <TableRow key={member.id}>
+                      <TableCell>{member.name}</TableCell>
+                      <TableCell>{member.companyName}</TableCell>
                       <TableCell align='center'>
-                        <Button variant='contained' size='small' onClick={() => handlePartnerSelect(partner)}>
+                        <Button variant='contained' size='small' onClick={() => handleMemberSelect(member)}>
                           선택
                         </Button>
                       </TableCell>
@@ -485,7 +499,7 @@ export default function MpAdminPartnerEdit() {
             </TableContainer>
 
             <Stack direction='row' justifyContent='center'>
-              <Button onClick={() => setCompanySearchOpen(false)}>취소</Button>
+              <Button onClick={() => setMemberSearchDialogOpen(false)}>취소</Button>
             </Stack>
           </Stack>
         </DialogContent>

@@ -168,8 +168,8 @@ export default function MpAdminCommunityCommentList() {
     setLoading(true);
     try {
       const response = await getCommentMembers({
-        userId: formik.values.searchType === 'userId' ? formik.values.searchKeyword : undefined,
-        nickname: formik.values.searchType === 'nickname' ? formik.values.searchKeyword : undefined,
+        userId: formik.values.searchType === 'userId' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        nickname: formik.values.searchType === 'nickname' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
         startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
         endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
         commentType: formik.values.commentType !== '' ? formik.values.commentType : undefined,

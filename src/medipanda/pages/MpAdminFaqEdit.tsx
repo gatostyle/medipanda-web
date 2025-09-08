@@ -72,6 +72,7 @@ export default function MpAdminFaqEdit() {
             updateRequest: {
               title: values.title,
               content: values.content,
+              hiddenNickname: null,
               isBlind: null,
               isExposed: values.isExposed,
               exposureRange: 'ALL',

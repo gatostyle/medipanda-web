@@ -232,8 +232,8 @@ export default function MpAdminHospitalList() {
       const response = await getHospitals({
         page: formik.values.pageIndex,
         size: formik.values.pageSize,
-        sido: formik.values.sido !== '' ? formik.values.sido : undefined,
-        sigungu: formik.values.sigungu !== '' ? formik.values.sigungu : undefined,
+        // sido: formik.values.sido !== '' ? formik.values.sido : undefined,
+        // sigungu: formik.values.sigungu !== '' ? formik.values.sigungu : undefined,
         // searchKeyword: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
         startDate: formik.values.startDate ? new DateTimeString(formik.values.startDate) : undefined,
         endDate: formik.values.endDate ? new DateTimeString(formik.values.endDate) : undefined,

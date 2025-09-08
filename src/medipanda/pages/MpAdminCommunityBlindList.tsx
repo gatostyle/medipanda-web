@@ -160,7 +160,8 @@ export default function MpAdminCommunityBlindList() {
     try {
       const response = await getBlindPosts({
         postType: formik.values.postType,
-        memberName: formik.values.searchType === 'memberName' ? formik.values.searchKeyword : undefined,
+        memberName:
+          formik.values.searchType === 'memberName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
         startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
         endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
         page: formik.values.pageIndex,

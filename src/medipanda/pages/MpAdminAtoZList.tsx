@@ -141,15 +141,15 @@ export default function MpAdminAtoZList() {
     try {
       const response = await getBoards({
         boardType: 'CSO_A_TO_Z',
-        userId: formik.values.searchType === 'userId' ? formik.values.searchKeyword : undefined,
-        name: formik.values.searchType === 'name' ? formik.values.searchKeyword : undefined,
-        nickname: formik.values.searchType === 'nickname' ? formik.values.searchKeyword : undefined,
+        userId: formik.values.searchType === 'userId' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        name: formik.values.searchType === 'name' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        nickname: formik.values.searchType === 'nickname' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
         startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
         endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
         page: formik.values.pageIndex,
         size: formik.values.pageSize,
         filterBlind: undefined,
-        boardTitle: formik.values.searchType === 'title' ? formik.values.searchKeyword : undefined,
+        boardTitle: formik.values.searchType === 'title' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
         filterDeleted: undefined,
         isExposed: formik.values.isExposed !== '' ? formik.values.isExposed : undefined,
       });
