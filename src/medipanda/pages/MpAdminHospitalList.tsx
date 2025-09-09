@@ -27,19 +27,28 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
-import { DateTimeString, getHospitals, HospitalResponse, softDeleteHospital, uploadHospitalExcel } from '@/backend';
+import {
+  DateTimeString,
+  getAllSido,
+  getHospitals,
+  getSigunguBySido,
+  HospitalResponse,
+  RegionCategoryResponse,
+  softDeleteHospital,
+  uploadHospitalExcel,
+} from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
-import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
 
 export default function MpAdminHospitalList() {
+  const [sido, setSido] = useState<RegionCategoryResponse[]>([]);
+  const [sigungu, setSigungu] = useState<Record<number, RegionCategoryResponse[]>>({});
   const [data, setData] = useState<Sequenced<HospitalResponse>[]>([]);
   const [loading, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
@@ -47,15 +56,14 @@ export default function MpAdminHospitalList() {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [excelUploadDialogOpen, setExcelUploadDialogOpen] = useState(false);
   const [excelFile, setExcelFile] = useState<File | null>(null);
-  const notImplementedDialog = useMpNotImplementedDialog();
   const errorDialog = useMpErrorDialog();
   const infoDialog = useMpInfoDialog();
   const deleteDialog = useMpDeleteDialog();
 
   const formik = useFormik({
     initialValues: {
-      sido: '',
-      sigungu: '',
+      sido: -1,
+      sigungu: -1,
       searchKeyword: '',
       startDate: null as Date | null,
       endDate: null as Date | null,
@@ -88,12 +96,8 @@ export default function MpAdminHospitalList() {
       setExcelFile(null);
       fetchData();
     } catch (error) {
-      if (error instanceof NotImplementedError) {
-        notImplementedDialog.open(error.message);
-      } else {
-        console.error('Failed to upload excel:', error);
-        errorDialog.showError('엑셀 업로드 중 오류가 발생했습니다.');
-      }
+      console.error('Failed to upload excel:', error);
+      errorDialog.showError('엑셀 업로드 중 오류가 발생했습니다.');
     }
   };
 
@@ -115,12 +119,8 @@ export default function MpAdminHospitalList() {
           setSelectedItems([]);
           fetchData();
         } catch (error) {
-          if (error instanceof NotImplementedError) {
-            notImplementedDialog.open(error.message);
-          } else {
-            console.error('Failed to delete hospitals:', error);
-            errorDialog.showError('개원병원 삭제 중 오류가 발생했습니다.');
-          }
+          console.error('Failed to delete hospitals:', error);
+          errorDialog.showError('개원병원 삭제 중 오류가 발생했습니다.');
         }
       },
     });
@@ -164,29 +164,7 @@ export default function MpAdminHospitalList() {
       },
       {
         header: '지역',
-        cell: ({ row }) => {
-          const value = row.original.sido;
-          const sidoMap: Record<string, string> = {
-            SEOUL: '서울',
-            GYEONGGI: '경기',
-            INCHEON: '인천',
-            BUSAN: '부산',
-            DAEGU: '대구',
-            DAEJEON: '대전',
-            GWANGJU: '광주',
-            ULSAN: '울산',
-            SEJONG: '세종',
-            GANGWON: '강원',
-            CHUNGBUK: '충북',
-            CHUNGNAM: '충남',
-            JEONBUK: '전북',
-            JEONNAM: '전남',
-            GYEONGBUK: '경북',
-            GYEONGNAM: '경남',
-            JEJU: '제주',
-          };
-          return sidoMap[value] ?? value;
-        },
+        cell: ({ row }) => row.original.sido,
         size: 80,
       },
       {
@@ -229,12 +207,17 @@ export default function MpAdminHospitalList() {
   const fetchData = async () => {
     setLoading(true);
     try {
+      const sidoResponse = await getAllSido();
+      setSido(sidoResponse);
+
+      const sigunguResponse = await Promise.all(sidoResponse.map(async sido => [sido.id, await getSigunguBySido(sido.id)]));
+      setSigungu(Object.fromEntries(sigunguResponse));
+
       const response = await getHospitals({
         page: formik.values.pageIndex,
         size: formik.values.pageSize,
-        // sido: formik.values.sido !== '' ? formik.values.sido : undefined,
-        // sigungu: formik.values.sigungu !== '' ? formik.values.sigungu : undefined,
-        // searchKeyword: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        regionCategoryId: formik.values.sigungu !== -1 ? formik.values.sigungu : formik.values.sido !== -1 ? formik.values.sido : undefined,
+        hospitalName: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
         startDate: formik.values.startDate ? new DateTimeString(formik.values.startDate) : undefined,
         endDate: formik.values.endDate ? new DateTimeString(formik.values.endDate) : undefined,
       });
@@ -272,95 +255,24 @@ export default function MpAdminHospitalList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size='small'>
                     <InputLabel>시/도</InputLabel>
-                    <Select name='sido' value={formik.values.sido} onChange={formik.handleChange}>
-                      <MenuItem value='SEOUL'>서울</MenuItem>
-                      <MenuItem value='GYEONGGI'>경기</MenuItem>
-                      <MenuItem value='INCHEON'>인천</MenuItem>
-                      <MenuItem value='BUSAN'>부산</MenuItem>
-                      <MenuItem value='DAEGU'>대구</MenuItem>
-                      <MenuItem value='DAEJEON'>대전</MenuItem>
-                      <MenuItem value='GWANGJU'>광주</MenuItem>
-                      <MenuItem value='ULSAN'>울산</MenuItem>
-                      <MenuItem value='SEJONG'>세종</MenuItem>
-                      <MenuItem value='GANGWON'>강원</MenuItem>
-                      <MenuItem value='CHUNGBUK'>충북</MenuItem>
-                      <MenuItem value='CHUNGNAM'>충남</MenuItem>
-                      <MenuItem value='JEONBUK'>전북</MenuItem>
-                      <MenuItem value='JEONNAM'>전남</MenuItem>
-                      <MenuItem value='GYEONGBUK'>경북</MenuItem>
-                      <MenuItem value='GYEONGNAM'>경남</MenuItem>
-                      <MenuItem value='JEJU'>제주</MenuItem>
+                    <Select name='sido' value={formik.values.sido ?? ''} onChange={formik.handleChange}>
+                      {sido.map(region => (
+                        <MenuItem key={region.id} value={region.id}>
+                          {region.name}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size='small'>
                     <InputLabel>시/군/구</InputLabel>
-                    <Select name='sigungu' value={formik.values.sigungu} onChange={formik.handleChange}>
-                      {formik.values.sido === 'SEOUL' && (
-                        <>
-                          <MenuItem value='gangnam'>강남구</MenuItem>
-                          <MenuItem value='gangdong'>강동구</MenuItem>
-                          <MenuItem value='gangbuk'>강북구</MenuItem>
-                          <MenuItem value='gangseo'>강서구</MenuItem>
-                          <MenuItem value='gwanak'>관악구</MenuItem>
-                          <MenuItem value='gwangjin'>광진구</MenuItem>
-                          <MenuItem value='guro'>구로구</MenuItem>
-                          <MenuItem value='geumcheon'>금천구</MenuItem>
-                          <MenuItem value='nowon'>노원구</MenuItem>
-                          <MenuItem value='dobong'>도봉구</MenuItem>
-                          <MenuItem value='dongdaemun'>동대문구</MenuItem>
-                          <MenuItem value='dongjak'>동작구</MenuItem>
-                          <MenuItem value='mapo'>마포구</MenuItem>
-                          <MenuItem value='seodaemun'>서대문구</MenuItem>
-                          <MenuItem value='seocho'>서초구</MenuItem>
-                          <MenuItem value='seongdong'>성동구</MenuItem>
-                          <MenuItem value='seongbuk'>성북구</MenuItem>
-                          <MenuItem value='songpa'>송파구</MenuItem>
-                          <MenuItem value='yangcheon'>양천구</MenuItem>
-                          <MenuItem value='yeongdeungpo'>영등포구</MenuItem>
-                          <MenuItem value='yongsan'>용산구</MenuItem>
-                          <MenuItem value='eunpyeong'>은평구</MenuItem>
-                          <MenuItem value='jongno'>종로구</MenuItem>
-                          <MenuItem value='jung'>중구</MenuItem>
-                          <MenuItem value='jungnang'>중랑구</MenuItem>
-                        </>
-                      )}
-                      {formik.values.sido === 'GYEONGGI' && (
-                        <>
-                          <MenuItem value='goyang'>고양시</MenuItem>
-                          <MenuItem value='suwon'>수원시</MenuItem>
-                          <MenuItem value='seongnam'>성남시</MenuItem>
-                          <MenuItem value='yongin'>용인시</MenuItem>
-                          <MenuItem value='bucheon'>부천시</MenuItem>
-                          <MenuItem value='ansan'>안산시</MenuItem>
-                          <MenuItem value='anyang'>안양시</MenuItem>
-                          <MenuItem value='namyangju'>남양주시</MenuItem>
-                          <MenuItem value='hwaseong'>화성시</MenuItem>
-                          <MenuItem value='pyeongtaek'>평택시</MenuItem>
-                          <MenuItem value='uijeongbu'>의정부시</MenuItem>
-                          <MenuItem value='siheung'>시흥시</MenuItem>
-                          <MenuItem value='paju'>파주시</MenuItem>
-                          <MenuItem value='gimpo'>김포시</MenuItem>
-                          <MenuItem value='gwangmyeong'>광명시</MenuItem>
-                          <MenuItem value='gwangju'>광주시</MenuItem>
-                          <MenuItem value='gunpo'>군포시</MenuItem>
-                          <MenuItem value='hanam'>하남시</MenuItem>
-                          <MenuItem value='osan'>오산시</MenuItem>
-                          <MenuItem value='icheon'>이천시</MenuItem>
-                          <MenuItem value='anseong'>안성시</MenuItem>
-                          <MenuItem value='uiwang'>의왕시</MenuItem>
-                          <MenuItem value='yangju'>양주시</MenuItem>
-                          <MenuItem value='yeoju'>여주시</MenuItem>
-                          <MenuItem value='gwacheon'>과천시</MenuItem>
-                          <MenuItem value='guri'>구리시</MenuItem>
-                          <MenuItem value='pocheon'>포천시</MenuItem>
-                          <MenuItem value='dongducheon'>동두천시</MenuItem>
-                          <MenuItem value='gapyeong'>가평군</MenuItem>
-                          <MenuItem value='yangpyeong'>양평군</MenuItem>
-                          <MenuItem value='yeoncheon'>연천군</MenuItem>
-                        </>
-                      )}
+                    <Select name='sigungu' value={formik.values.sigungu ?? ''} onChange={formik.handleChange}>
+                      {(sigungu[formik.values.sido] ?? []).map(region => (
+                        <MenuItem key={region.id} value={region.id}>
+                          {region.name}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </SearchFilterItem>

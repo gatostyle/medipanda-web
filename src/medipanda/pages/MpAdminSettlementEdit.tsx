@@ -227,6 +227,7 @@ export default function MpAdminSettlementEdit() {
                   formik.values.searchType === 'institutionCode' && formik.values.searchKeyword !== ''
                     ? formik.values.searchKeyword
                     : undefined,
+                size: 2 ** 31 - 1,
               })}
               target='_blank'
             >

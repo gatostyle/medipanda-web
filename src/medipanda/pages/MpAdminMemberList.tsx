@@ -280,6 +280,7 @@ export default function MpAdminMemberList() {
                       formik.values.searchType === 'companyName' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
                     startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
                     endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
+                    size: 2 ** 31 - 1,
                   })}
                   startIcon={<DocumentDownload size={16} />}
                 >

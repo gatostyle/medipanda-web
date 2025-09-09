@@ -20,10 +20,8 @@ import {
 import { EditorContent } from '@tiptap/react';
 import { isAxiosError } from 'axios';
 import { useFormik } from 'formik';
-import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
 import { createProductExtraInfo, getProductDetails, ProductDetailsResponse, updateProductExtraInfo } from '@/backend';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
 import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { Fragment, useEffect, useState } from 'react';
@@ -35,7 +33,6 @@ export default function MpAdminProductEdit() {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
-  const notImplementedDialog = useMpNotImplementedDialog();
   const errorDialog = useMpErrorDialog();
   const { session } = useSession();
   const [productDetail, setProductDetail] = useState<ProductDetailsResponse | null>(null);
@@ -57,7 +54,6 @@ export default function MpAdminProductEdit() {
       isOutOfStock: false,
       isStopSelling: false,
       note: '',
-      detailContent: '',
     },
     validationSchema: Yup.object().shape({
       manufacturer: Yup.string().required('제약사를 입력해주세요.'),
@@ -154,12 +150,8 @@ export default function MpAdminProductEdit() {
           }
         }
 
-        if (error instanceof NotImplementedError) {
-          notImplementedDialog.open(error.message);
-        } else {
-          console.error('Failed to submit form:', error);
-          errorDialog.showError(isNew ? '제품 등록 중 오류가 발생했습니다.' : '제품 수정 중 오류가 발생했습니다.');
-        }
+        console.error('Failed to submit form:', error);
+        errorDialog.showError(isNew ? '제품 등록 중 오류가 발생했습니다.' : '제품 수정 중 오류가 발생했습니다.');
       } finally {
         setSubmitting(false);
       }
@@ -198,7 +190,6 @@ export default function MpAdminProductEdit() {
         isOutOfStock: response.isOutOfStock ?? false,
         isStopSelling: response.isStopSelling ?? false,
         note: response.note ?? '',
-        detailContent: response.boardDetailsResponse.content ?? '',
       });
     } catch (error) {
       console.error('Failed to fetch product detail:', error);

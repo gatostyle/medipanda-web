@@ -1,3 +1,4 @@
+import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { Download as ExcelIcon } from '@mui/icons-material';
 import {
   Box,
@@ -23,9 +24,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
 import {
+  AttachmentResponse,
   createSalesAgencyProductBoard,
   getProductApplicants,
   getSalesAgencyProductDetails,
@@ -77,6 +80,8 @@ export default function MpAdminSalesAgencyProductEdit() {
 
   const isNew = id === undefined;
 
+  const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
+
   const formik = useFormik({
     initialValues: {
       clientName: '',
@@ -85,13 +90,14 @@ export default function MpAdminSalesAgencyProductEdit() {
       exposureRange: 'ALL' as 'ALL' | 'CONTRACTED' | 'UNCONTRACTED',
       thumbnail: null as File | null,
       thumbnailUrl: '',
-      content: '',
       videoUrl: '',
       contractDate: null as Date | null,
       note: '',
       startDate: null as Date | null,
       endDate: null as Date | null,
       viewCount: 0,
+      attachedFiles: [] as AttachmentResponse[],
+      newFiles: [] as File[],
     },
     validationSchema: Yup.object({
       clientName: Yup.string().required('위탁사명은 필수입니다'),
@@ -109,13 +115,13 @@ export default function MpAdminSalesAgencyProductEdit() {
           await updateSalesAgencyProductBoard(parseInt(id!), {
             boardPostUpdateRequest: {
               title: values.productName,
-              content: values.content,
+              content: editor.getHTML(),
               hiddenNickname: null,
               isBlind: null,
               isExposed: values.isExposed,
               exposureRange: values.exposureRange,
-              keepFileIds: [],
-              editorFileIds: [],
+              keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
+              editorFileIds: editorAttachments.map(attachment => attachment.s3fileId),
               noticeProperties: null,
             },
             salesAgencyProductUpdateRequest: {
@@ -130,7 +136,7 @@ export default function MpAdminSalesAgencyProductEdit() {
             },
             thumbnail: values.thumbnail ?? undefined,
           });
-          navigate('/admin/sales-agency-products');
+          navigate(`/admin/sales-agency-products/${id}`);
         } else {
           await createSalesAgencyProductBoard({
             boardPostCreateRequest: {
@@ -139,11 +145,11 @@ export default function MpAdminSalesAgencyProductEdit() {
               nickname: session!.name,
               hiddenNickname: false,
               title: values.productName,
-              content: values.content,
+              content: editor.getHTML(),
               parentId: null,
               isExposed: values.isExposed,
               exposureRange: values.exposureRange,
-              editorFileIds: [],
+              editorFileIds: editorAttachments.map(image => image.s3fileId),
               noticeProperties: null,
             },
             salesAgencyProductCreateRequest: {
@@ -196,14 +202,17 @@ export default function MpAdminSalesAgencyProductEdit() {
         exposureRange: detail.boardPostDetail.exposureRange,
         thumbnail: null,
         thumbnailUrl: detail.thumbnailUrl,
-        content: detail.boardPostDetail.content,
         videoUrl: detail.videoUrl ?? '',
         contractDate: DateFix(detail.contractDate),
         note: detail.note ?? '',
         startDate: DateFix(detail.startDate),
         endDate: DateFix(detail.endDate),
         viewCount: detail.boardPostDetail.viewsCount,
+        attachedFiles: detail.boardPostDetail.attachments.filter(a => a.type === 'ATTACHMENT'),
+        newFiles: [],
       });
+      editor.commands.setContent(detail.boardPostDetail.content);
+      setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === 'EDITOR'));
     } catch (error) {
       console.error('Failed to load product detail:', error);
       enqueueSnackbar('영업대행상품 정보를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -385,12 +394,16 @@ export default function MpAdminSalesAgencyProductEdit() {
                 <Typography variant='subtitle2' gutterBottom>
                   내용 <span style={{ color: 'red' }}>*</span>
                 </Typography>
-                <TiptapEditor
-                  content={formik.values.content}
-                  onChange={content => formik.setFieldValue('content', content)}
-                  error={formik.touched.content && Boolean(formik.errors.content)}
-                  helperText={formik.touched.content && formik.errors.content ? String(formik.errors.content) : undefined}
-                />
+                <Stack
+                  sx={{
+                    '.tiptap': {
+                      border: `1px solid #cccccc`,
+                      padding: '20px 10px',
+                    },
+                  }}
+                >
+                  <EditorContent editor={editor} placeholder='내용을 입력하세요' />
+                </Stack>
               </Grid>
 
               <Grid item xs={12}>
@@ -434,7 +447,7 @@ export default function MpAdminSalesAgencyProductEdit() {
               <Button variant='outlined' size='large' onClick={handleCancel} sx={{ minWidth: 120 }}>
                 취소
               </Button>
-              <Button variant='contained' color='success' size='large' type='submit' sx={{ minWidth: 120 }}>
+              <Button variant='contained' color='success' size='large' sx={{ minWidth: 120 }} onClick={formik.submitForm}>
                 저장
               </Button>
             </Stack>

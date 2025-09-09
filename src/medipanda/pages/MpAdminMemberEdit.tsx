@@ -18,8 +18,6 @@ import {
 } from '@mui/material';
 import { isAxiosError } from 'axios';
 import { useFormik } from 'formik';
-import { mpUpdateMemberFile } from '@/medipanda/api-definitions/MpMember';
-import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
 import {
   approveContract,
   approveOrRejectCso,
@@ -31,8 +29,6 @@ import {
 } from '@/backend';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
-import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
-import { mockString } from '@/medipanda/mockup';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
@@ -41,7 +37,6 @@ import { formatYyyyMmDd } from '../utils/dateFormat';
 export default function MpAdminMemberEdit() {
   const { userId } = useParams();
   const navigate = useNavigate();
-  const notImplementedDialog = useMpNotImplementedDialog();
   const infoDialog = useMpInfoDialog();
   const errorDialog = useMpErrorDialog();
   const { enqueueSnackbar } = useSnackbar();
@@ -130,18 +125,27 @@ export default function MpAdminMemberEdit() {
     try {
       const memberDetail = await getMemberDetails(userId);
       setMemberDetail(memberDetail);
-      await formik.setValues({
-        ...formik.values,
+      const values: (typeof formik)['values'] = {
+        password: '',
+        confirmPassword: '',
         phoneNumber: memberDetail.phoneNumber,
         email: memberDetail.email,
         accountStatus: 'ACTIVATED',
+        settlementBank: '',
+        subcontractFile: '',
+        educationCertificate: '',
+        commissionRate: 0,
         note: memberDetail.note ?? '',
         marketingAgreementsSms: memberDetail.marketingAgreements?.sms ?? false,
         marketingAgreementsEmail: memberDetail.marketingAgreements?.email ?? false,
         marketingAgreementsPush: memberDetail.marketingAgreements?.push ?? false,
+      };
+
+      formik.resetForm({
+        values,
       });
 
-      await fetchPartnerContract();
+      await fetchPartnerContract(values);
     } catch (error) {
       console.error('Failed to fetch member data:', error);
       enqueueSnackbar('회원 정보를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -149,18 +153,20 @@ export default function MpAdminMemberEdit() {
     }
   };
 
-  const fetchPartnerContract = async () => {
+  const fetchPartnerContract = async (values: (typeof formik)['values']) => {
     try {
       const contractDetail = await getContractDetails(userId!);
       setContractDetail(contractDetail);
       setIsContractApproved(contractDetail.status === 'APPROVED');
 
-      await formik.setValues({
-        ...formik.values,
-        settlementBank: `${contractDetail.bankName ?? ''} ${contractDetail.accountNumber ?? ''}`.trim(),
-        subcontractFile: contractDetail.fileUrls?.subcontractAgreement ?? '',
-        educationCertificate: contractDetail.fileUrls?.educationCertificate ?? '',
-        commissionRate: 0,
+      formik.resetForm({
+        values: {
+          ...values,
+          settlementBank: `${contractDetail.bankName ?? ''} ${contractDetail.accountNumber ?? ''}`.trim(),
+          subcontractFile: contractDetail.fileUrls?.subcontractAgreement ?? '',
+          educationCertificate: contractDetail.fileUrls?.educationCertificate ?? '',
+          commissionRate: 0,
+        },
       });
     } catch (e) {
       setContractDetail(null);
@@ -178,12 +184,8 @@ export default function MpAdminMemberEdit() {
       infoDialog.showInfo('CSO 신고증이 승인되었습니다.');
       await fetchMemberData();
     } catch (error) {
-      if (error instanceof NotImplementedError) {
-        notImplementedDialog.open(error.message);
-      } else {
-        console.error('Failed to approve CSO report:', error);
-        errorDialog.showError('CSO 신고증 승인 중 오류가 발생했습니다.');
-      }
+      console.error('Failed to approve CSO report:', error);
+      errorDialog.showError('CSO 신고증 승인 중 오류가 발생했습니다.');
     }
   };
 
@@ -193,12 +195,8 @@ export default function MpAdminMemberEdit() {
       infoDialog.showInfo('CSO 신고증이 반려되었습니다.');
       await fetchMemberData();
     } catch (error) {
-      if (error instanceof NotImplementedError) {
-        notImplementedDialog.open(error.message);
-      } else {
-        console.error('Failed to reject CSO report:', error);
-        errorDialog.showError('CSO 신고증 반려 중 오류가 발생했습니다.');
-      }
+      console.error('Failed to reject CSO report:', error);
+      errorDialog.showError('CSO 신고증 반려 중 오류가 발생했습니다.');
     }
   };
 
@@ -239,47 +237,10 @@ export default function MpAdminMemberEdit() {
     try {
       await approveContract(contractDetail!.id);
       infoDialog.showInfo('파트너사 계약이 승인되었습니다.');
-      await fetchPartnerContract();
+      await fetchPartnerContract(formik.values);
     } catch (error) {
-      if (error instanceof NotImplementedError) {
-        notImplementedDialog.open(error.message);
-      } else {
-        console.error('Failed to approve partner contract:', error);
-        errorDialog.showError('파트너사 계약 승인 중 오류가 발생했습니다.');
-      }
-    }
-  };
-
-  const handleFileChange = async (field: string) => {
-    try {
-      const file = new File([], mockString('placeholder.pdf'));
-      await mpUpdateMemberFile(
-        userId!,
-        {
-          password: null,
-          name: null,
-          nickname: null,
-          birthDate: null,
-          phoneNumber: formik.values.phoneNumber,
-          email: formik.values.email,
-          referralCode: null,
-          marketingAgreement: {
-            sms: formik.values.marketingAgreementsSms,
-            email: formik.values.marketingAgreementsEmail,
-            push: formik.values.marketingAgreementsPush,
-          },
-          note: mockString(`${field} 파일 업데이트`),
-        },
-        file,
-      );
-      infoDialog.showInfo('파일이 변경되었습니다.');
-    } catch (error) {
-      if (error instanceof NotImplementedError) {
-        notImplementedDialog.open(error.message);
-      } else {
-        console.error('Failed to change file:', error);
-        errorDialog.showError('파일 변경 중 오류가 발생했습니다.');
-      }
+      console.error('Failed to approve partner contract:', error);
+      errorDialog.showError('파트너사 계약 승인 중 오류가 발생했습니다.');
     }
   };
 
@@ -516,9 +477,6 @@ export default function MpAdminMemberEdit() {
                             >
                               다운로드
                             </Button>
-                            <Button variant='outlined' size='small' onClick={() => handleFileChange('subcontractFile')}>
-                              파일변경
-                            </Button>
                           </Stack>
                         </Grid>
 
@@ -537,9 +495,6 @@ export default function MpAdminMemberEdit() {
                             >
                               다운로드
                             </Button>
-                            <Button variant='outlined' size='small' onClick={() => handleFileChange('subcontractFile')}>
-                              파일변경
-                            </Button>
                           </Stack>
                         </Grid>
 
@@ -557,9 +512,6 @@ export default function MpAdminMemberEdit() {
                               target='_blank'
                             >
                               다운로드
-                            </Button>
-                            <Button variant='outlined' size='small' onClick={() => handleFileChange('educationCertificate')}>
-                              파일변경
                             </Button>
                           </Stack>
                         </Grid>

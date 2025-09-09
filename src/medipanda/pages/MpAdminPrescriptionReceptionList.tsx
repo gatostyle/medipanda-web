@@ -29,7 +29,6 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
 import {
   confirmPrescription,
   DateString,
@@ -45,7 +44,6 @@ import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
-import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
 import { formatYyyyMm, formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { SearchNormal1 } from 'iconsax-react';
@@ -58,7 +56,6 @@ export default function MpAdminPrescriptionReceptionList() {
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
-  const notImplementedDialog = useMpNotImplementedDialog();
   const errorDialog = useMpErrorDialog();
   const infoDialog = useMpInfoDialog();
   const [memberSearchDialogOpen, setMemberSearchDialogOpen] = useState(false);
@@ -102,12 +99,8 @@ export default function MpAdminPrescriptionReceptionList() {
       infoDialog.showInfo('접수 확인되었습니다.');
       fetchData();
     } catch (error) {
-      if (error instanceof NotImplementedError) {
-        notImplementedDialog.open(error.message);
-      } else {
-        console.error('Failed to confirm reception:', error);
-        errorDialog.showError('접수 확인 중 오류가 발생했습니다.');
-      }
+      console.error('Failed to confirm reception:', error);
+      errorDialog.showError('접수 확인 중 오류가 발생했습니다.');
     }
   };
 
@@ -322,12 +315,8 @@ export default function MpAdminPrescriptionReceptionList() {
         setRegisterDialogOpen(false);
         await formik.submitForm();
       } catch (error) {
-        if (error instanceof NotImplementedError) {
-          notImplementedDialog.open(error.message);
-        } else {
-          console.error('Failed to upload rate table:', error);
-          errorDialog.showError('EDI 업로드 중 오류가 발생했습니다.');
-        }
+        console.error('Failed to upload rate table:', error);
+        errorDialog.showError('EDI 업로드 중 오류가 발생했습니다.');
       }
     },
   });

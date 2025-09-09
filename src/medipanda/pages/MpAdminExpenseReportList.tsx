@@ -40,7 +40,7 @@ export default function MpAdminExpenseReportList() {
 
   const formik = useFormik({
     initialValues: {
-      reportStatus: '' as 'PENDING' | 'COMPLETED' | '',
+      status: '' as 'PENDING' | 'COMPLETED' | '',
       searchType: '' as 'companyName' | 'userId' | 'productName',
       eventDateFrom: null as Date | null,
       eventDateTo: null as Date | null,
@@ -63,7 +63,7 @@ export default function MpAdminExpenseReportList() {
       const response = await getExpenseReportList({
         page: formik.values.pageIndex,
         size: formik.values.pageSize,
-        ...(formik.values.reportStatus !== '' && { reportStatus: formik.values.reportStatus }),
+        status: formik.values.status !== '' ? formik.values.status : undefined,
         companyName:
           formik.values.searchType === 'companyName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
         userId: formik.values.searchType === 'userId' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
@@ -172,7 +172,7 @@ export default function MpAdminExpenseReportList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size='small'>
                     <InputLabel>신고상태</InputLabel>
-                    <Select name='reportStatus' value={formik.values.reportStatus} onChange={formik.handleChange}>
+                    <Select name='status' value={formik.values.status} onChange={formik.handleChange}>
                       <MenuItem value={'PENDING'}>{EXPENSE_REPORT_STATUS_LABELS['PENDING']}</MenuItem>
                       <MenuItem value={'COMPLETED'}>{EXPENSE_REPORT_STATUS_LABELS['COMPLETED']}</MenuItem>
                     </Select>
@@ -232,7 +232,7 @@ export default function MpAdminExpenseReportList() {
                   color='success'
                   startIcon={<DocumentDownload size={16} />}
                   href={getDownloadExpenseReportListExcel({
-                    ...(formik.values.reportStatus !== '' && { reportStatus: formik.values.reportStatus }),
+                    status: formik.values.status !== '' ? formik.values.status : undefined,
                     companyName:
                       formik.values.searchType === 'companyName' && formik.values.searchKeyword !== ''
                         ? formik.values.searchKeyword
@@ -245,6 +245,7 @@ export default function MpAdminExpenseReportList() {
                         : undefined,
                     eventDateFrom: formik.values.eventDateFrom ? new DateTimeString(formik.values.eventDateFrom) : undefined,
                     eventDateTo: formik.values.eventDateTo ? new DateTimeString(formik.values.eventDateTo) : undefined,
+                    size: 2 ** 31 - 1,
                   })}
                   target='_blank'
                 >

@@ -1,13 +1,13 @@
+import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { Box, Button, CircularProgress, FormControlLabel, Grid, Radio, RadioGroup, Stack, TextField, Typography } from '@mui/material';
+import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
-import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
-import { createEventBoard, getEventBoardDetails, updateEventBoard } from '@/backend';
+import { AttachmentResponse, createEventBoard, getEventBoardDetails, updateEventBoard } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
-import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
@@ -20,12 +20,13 @@ export default function MpAdminEventEdit() {
   const [loading, setLoading] = useState(false);
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string>('');
-  const notImplementedDialog = useMpNotImplementedDialog();
   const infoDialog = useMpInfoDialog();
   const errorDialog = useMpErrorDialog();
   const { session } = useSession();
 
   const isNew = id === undefined;
+
+  const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
   const formik = useFormik({
     initialValues: {
@@ -35,14 +36,14 @@ export default function MpAdminEventEdit() {
       endDate: new Date(),
       title: '',
       description: '',
-      content: '',
       videoUrl: '',
       note: '',
       internalName: '',
+      attachedFiles: [] as AttachmentResponse[],
+      newFiles: [] as File[],
     },
     validationSchema: Yup.object({
       title: Yup.string().required('제목을 입력해주세요'),
-      content: Yup.string().required('내용을 입력해주세요'),
       startDate: Yup.date().nullable().required('시작일을 선택해주세요'),
       endDate: Yup.date().nullable().required('종료일을 선택해주세요'),
     }),
@@ -56,10 +57,10 @@ export default function MpAdminEventEdit() {
               nickname: session!.name,
               hiddenNickname: false,
               title: values.title,
-              content: values.content,
+              content: editor.getHTML(),
               parentId: null,
               isExposed: values.isExposed,
-              editorFileIds: null,
+              editorFileIds: editorAttachments.map(image => image.s3fileId),
               exposureRange: values.exposureRange,
               noticeProperties: null,
             },
@@ -71,20 +72,21 @@ export default function MpAdminEventEdit() {
               note: values.note,
             },
             thumbnail: thumbnailFile!,
-            files: undefined,
+            files: values.newFiles,
           });
           infoDialog.showInfo('이벤트가 등록되었습니다.');
+          navigate('/admin/events');
         } else {
           await updateEventBoard(parseInt(id), {
             request: {
               title: values.title,
-              content: values.content,
+              content: editor.getHTML(),
               hiddenNickname: null,
               isBlind: null,
               isExposed: values.isExposed,
               exposureRange: values.exposureRange,
-              keepFileIds: [],
-              editorFileIds: [],
+              keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
+              editorFileIds: editorAttachments.map(attachment => attachment.s3fileId),
               noticeProperties: null,
             },
             eventRequest: {
@@ -95,18 +97,14 @@ export default function MpAdminEventEdit() {
               note: values.note,
             },
             thumbnail: thumbnailFile ?? undefined,
-            newFiles: undefined,
+            newFiles: values.newFiles,
           });
           infoDialog.showInfo('이벤트가 수정되었습니다.');
+          navigate(`/admin/events/${id}`);
         }
-        navigate('/admin/events');
       } catch (error) {
-        if (error instanceof NotImplementedError) {
-          notImplementedDialog.open(error.message);
-        } else {
-          console.error('Failed to save event:', error);
-          errorDialog.showError('이벤트 저장에 실패했습니다.');
-        }
+        console.error('Failed to save event:', error);
+        errorDialog.showError('이벤트 저장에 실패했습니다.');
       }
     },
   });
@@ -124,21 +122,20 @@ export default function MpAdminEventEdit() {
             endDate: DateFix(event.eventEndDate),
             title: event.boardPostDetail.title,
             description: event.description,
-            content: event.boardPostDetail.content,
             videoUrl: event.videoUrl ?? '',
             note: event.note ?? '',
             internalName: '',
+            attachedFiles: event.boardPostDetail.attachments.filter(a => a.type === 'ATTACHMENT'),
+            newFiles: [],
           });
+          editor.commands.setContent(event.boardPostDetail.content);
+          setEditorAttachments(event.boardPostDetail.attachments.filter(a => a.type === 'EDITOR'));
           if (event.thumbnailUrl) {
             setThumbnailPreview(event.thumbnailUrl);
           }
         } catch (error) {
-          if (error instanceof NotImplementedError) {
-            notImplementedDialog.open(error.message);
-          } else {
-            console.error('Failed to fetch event detail:', error);
-            errorDialog.showError('이벤트 정보를 불러오는데 실패했습니다.');
-          }
+          console.error('Failed to fetch event detail:', error);
+          errorDialog.showError('이벤트 정보를 불러오는데 실패했습니다.');
           navigate('/admin/events');
         } finally {
           setLoading(false);
@@ -284,13 +281,16 @@ export default function MpAdminEventEdit() {
                 <Typography variant='subtitle1' gutterBottom>
                   내용 *
                 </Typography>
-                <TiptapEditor
-                  content={formik.values.content}
-                  onChange={content => formik.setFieldValue('content', content)}
-                  placeholder=''
-                  error={!!(formik.touched.content && formik.errors.content)}
-                  helperText={formik.touched.content && formik.errors.content ? formik.errors.content : undefined}
-                />
+                <Stack
+                  sx={{
+                    '.tiptap': {
+                      border: `1px solid #cccccc`,
+                      padding: '20px 10px',
+                    },
+                  }}
+                >
+                  <EditorContent editor={editor} placeholder='내용을 입력하세요' />
+                </Stack>
               </Grid>
 
               <Grid item xs={12}>

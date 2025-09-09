@@ -310,6 +310,7 @@ export default function MpAdminSalesAgencyProductList() {
                         : undefined,
                     startAt: formik.values.date ? new DateString(formik.values.date) : undefined,
                     endAt: formik.values.date ? new DateString(formik.values.date) : undefined,
+                    size: 2 ** 31 - 1,
                   })}
                   target='_blank'
                   startIcon={<DocumentDownload size={16} />}

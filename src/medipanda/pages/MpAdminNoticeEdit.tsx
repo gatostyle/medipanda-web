@@ -1,3 +1,4 @@
+import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
@@ -18,12 +19,12 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import Stack from '@mui/material/Stack';
+import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
-import { createBoardPost, getBoardDetails, updateBoardPost } from '@/backend';
-import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
+import { AttachmentResponse, BoardDetailsResponse, createBoardPost, getBoardDetails, updateBoardPost } from '@/backend';
 import { useSession } from '@/medipanda/hooks/useSession';
-import { mockNumber } from '@/medipanda/mockup';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -35,6 +36,7 @@ export default function MpAdminNoticeEdit() {
   const { enqueueSnackbar } = useSnackbar();
   const { session } = useSession();
   const [loading, setLoading] = useState(false);
+  const [detail, setDetail] = useState<BoardDetailsResponse | null>(null);
 
   const isNew = id === undefined;
 
@@ -63,13 +65,12 @@ export default function MpAdminNoticeEdit() {
       exposureRange: 'ALL' as 'ALL' | 'CONTRACTED' | 'UNCONTRACTED',
       isTopFixed: false,
       title: '',
-      content: '',
       files: [] as File[],
-      existingFiles: [] as string[],
+      attachedFiles: [] as AttachmentResponse[],
+      newFiles: [] as File[],
     },
     validationSchema: Yup.object().shape({
       title: Yup.string().required('제목을 입력해주세요.').max(100, '제목은 100자를 초과할 수 없습니다.'),
-      content: Yup.string().required('내용을 입력해주세요.'),
       noticeCategory: Yup.string().required('공지분류를 선택해주세요.'),
       manufacturerName: Yup.string().when('noticeCategory', {
         is: (val: string) => val !== 'GENERAL',
@@ -89,13 +90,13 @@ export default function MpAdminNoticeEdit() {
             request: {
               boardType: values.displayBoard,
               title: values.title,
-              content: values.content,
+              content: editor.getHTML(),
               userId: session.userId,
               nickname: session.name || session.userId,
               hiddenNickname: false,
               parentId: null,
               isExposed: values.isExposed,
-              editorFileIds: null,
+              editorFileIds: editorAttachments.map(image => image.s3fileId),
               exposureRange: values.exposureRange,
               noticeProperties: {
                 noticeType: values.noticeCategory,
@@ -106,17 +107,18 @@ export default function MpAdminNoticeEdit() {
             files: values.files,
           });
           enqueueSnackbar('공지사항이 성공적으로 등록되었습니다.', { variant: 'success' });
+          navigate('/admin/notices');
         } else {
           await updateBoardPost(parseInt(id!), {
             updateRequest: {
               title: values.title,
-              content: values.content,
+              content: editor.getHTML(),
               hiddenNickname: null,
               isBlind: null,
               isExposed: values.isExposed,
               exposureRange: values.exposureRange,
-              keepFileIds: values.existingFiles.map(att => mockNumber()).filter(Boolean),
-              editorFileIds: [],
+              keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
+              editorFileIds: editorAttachments.map(attachment => attachment.s3fileId),
               noticeProperties: {
                 noticeType: values.noticeCategory,
                 drugCompany: values.manufacturerName ?? '',
@@ -126,8 +128,8 @@ export default function MpAdminNoticeEdit() {
             newFiles: values.files,
           });
           enqueueSnackbar('공지사항이 성공적으로 수정되었습니다.', { variant: 'success' });
+          navigate(`/admin/notices/${id}`);
         }
-        navigate('/admin/notices');
       } catch (error) {
         console.error('Failed to submit form:', error);
         enqueueSnackbar(isNew ? '공지사항 등록에 실패했습니다.' : '공지사항 수정에 실패했습니다.', { variant: 'error' });
@@ -136,6 +138,8 @@ export default function MpAdminNoticeEdit() {
       }
     },
   });
+
+  const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
   useEffect(() => {
     if (!isNew && id) {
@@ -147,6 +151,7 @@ export default function MpAdminNoticeEdit() {
     setLoading(true);
     try {
       const response = await getBoardDetails(itemId);
+      setDetail(response);
       formik.setValues({
         displayBoard: response.boardType as
           | 'ANONYMOUS'
@@ -164,10 +169,12 @@ export default function MpAdminNoticeEdit() {
         exposureRange: response.exposureRange || 'ALL',
         isTopFixed: response.noticeProperties?.fixedTop || false,
         title: response.title,
-        content: response.content,
         files: [],
-        existingFiles: response.attachments.map(it => it.s3fileId.toString()) || [],
+        attachedFiles: response.attachments,
+        newFiles: [],
       });
+      editor.commands.setContent(response.content);
+      setEditorAttachments(response.attachments.filter(a => a.type === 'EDITOR'));
     } catch (error) {
       console.error('Failed to fetch notice detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -338,13 +345,16 @@ export default function MpAdminNoticeEdit() {
                 <Typography variant='body2' sx={{ mb: 1 }}>
                   내용 <span style={{ color: 'red' }}>*</span>
                 </Typography>
-                <TiptapEditor
-                  content={formik.values.content}
-                  onChange={content => formik.setFieldValue('content', content)}
-                  placeholder='내용을 입력하세요'
-                  error={!!(formik.touched.content && formik.errors.content)}
-                  helperText={formik.touched.content && formik.errors.content ? formik.errors.content : undefined}
-                />
+                <Stack
+                  sx={{
+                    '.tiptap': {
+                      border: `1px solid #cccccc`,
+                      padding: '20px 10px',
+                    },
+                  }}
+                >
+                  <EditorContent editor={editor} placeholder='내용을 입력하세요' />
+                </Stack>
               </Grid>
 
               <Grid item xs={12}>
@@ -356,19 +366,19 @@ export default function MpAdminNoticeEdit() {
                   <input type='file' hidden multiple onChange={handleFileChange} accept='*' />
                 </Button>
 
-                {formik.values.existingFiles && formik.values.existingFiles.length > 0 && (
+                {formik.values.attachedFiles && formik.values.attachedFiles.length > 0 && (
                   <Box sx={{ mb: 2 }}>
                     <Typography variant='body2' sx={{ mb: 1 }}>
                       기존 파일:
                     </Typography>
-                    {formik.values.existingFiles.map((file, index) => (
+                    {formik.values.attachedFiles.map((file, index) => (
                       <Chip
                         key={index}
-                        label={file}
+                        label={file.originalFileName}
                         onDelete={() => {
                           formik.setFieldValue(
-                            'existingFiles',
-                            formik.values.existingFiles.filter((_, i) => i !== index),
+                            'attachedFiles',
+                            formik.values.attachedFiles.filter((_, i) => i !== index),
                           );
                         }}
                         sx={{ mr: 1, mb: 1 }}

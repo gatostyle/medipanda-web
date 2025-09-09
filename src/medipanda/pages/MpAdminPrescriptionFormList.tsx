@@ -22,7 +22,6 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
 import {
   completePrescriptionPartner,
   DateTimeString,
@@ -35,7 +34,6 @@ import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipa
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
-import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
 import { formatYyyyMm, formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
@@ -47,7 +45,6 @@ export default function MpAdminPrescriptionFormList() {
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const notImplementedDialog = useMpNotImplementedDialog();
   const infoDialog = useMpInfoDialog();
   const errorDialog = useMpErrorDialog();
   const deleteDialog = useMpDeleteDialog();
@@ -80,12 +77,8 @@ export default function MpAdminPrescriptionFormList() {
       setSelectedItems([]);
       fetchData();
     } catch (error) {
-      if (error instanceof NotImplementedError) {
-        notImplementedDialog.open(error.message);
-      } else {
-        console.error('Failed to approve prescriptions:', error);
-        errorDialog.showError('처방 승인 중 오류가 발생했습니다.');
-      }
+      console.error('Failed to approve prescriptions:', error);
+      errorDialog.showError('처방 승인 중 오류가 발생했습니다.');
     }
   };
 
@@ -257,12 +250,8 @@ export default function MpAdminPrescriptionFormList() {
           setSelectedItems([]);
           fetchData();
         } catch (error) {
-          if (error instanceof NotImplementedError) {
-            notImplementedDialog.open(error.message);
-          } else {
-            console.error('Failed to delete prescriptions:', error);
-            errorDialog.showError('처방 삭제에 실패했습니다.');
-          }
+          console.error('Failed to delete prescriptions:', error);
+          errorDialog.showError('처방 삭제에 실패했습니다.');
         }
       },
     });

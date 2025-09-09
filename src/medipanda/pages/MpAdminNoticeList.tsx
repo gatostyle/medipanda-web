@@ -33,19 +33,8 @@ import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-interface BoardPostResponseWithMockData extends BoardPostResponse {
-  drugCompany: string;
-}
-
-function withMock<T extends BoardPostResponse>(data: T): T & BoardPostResponseWithMockData {
-  return {
-    ...data,
-    drugCompany: '제약사명',
-  };
-}
-
 export default function MpAdminNoticeList() {
-  const [data, setData] = useState<Sequenced<BoardPostResponseWithMockData>[]>([]);
+  const [data, setData] = useState<Sequenced<BoardPostResponse>[]>([]);
   const [loading, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -125,7 +114,7 @@ export default function MpAdminNoticeList() {
       },
       {
         header: '제약사명',
-        cell: ({ row }) => row.original.drugCompany,
+        cell: ({ row }) => row.original.noticeProperties!.drugCompany,
         size: 120,
       },
       {
@@ -188,7 +177,7 @@ export default function MpAdminNoticeList() {
         drugCompany: formik.values.drugCompany !== '' ? formik.values.drugCompany : undefined,
       });
 
-      setData(withSequence(response).content.map(withMock));
+      setData(withSequence(response).content);
       setTotalElements(response.totalElements);
       setTotalPages(response.totalPages);
     } catch (error) {

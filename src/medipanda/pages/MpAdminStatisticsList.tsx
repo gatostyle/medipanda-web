@@ -30,19 +30,8 @@ import { formatYyyyMm } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
 
-interface PerformanceStatsResponseWithMockData extends PerformanceStatsResponse {
-  baseFeeRate: number;
-}
-
-function withMock<T extends PerformanceStatsResponse>(data: T): T & PerformanceStatsResponseWithMockData {
-  return {
-    ...data,
-    baseFeeRate: 0.1,
-  };
-}
-
 export default function MpAdminStatisticsList() {
-  const [data, setData] = useState<Sequenced<PerformanceStatsResponseWithMockData>[]>([]);
+  const [data, setData] = useState<Sequenced<PerformanceStatsResponse>[]>([]);
   const [loading, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -84,7 +73,7 @@ export default function MpAdminStatisticsList() {
         size: formik.values.pageSize,
       });
 
-      setData(withSequence(response).content.map(withMock));
+      setData(withSequence(response).content);
       setTotalElements(response.totalElements);
       setTotalPages(response.totalPages);
       setTotalPrescriptionAmount(response.content.reduce((sum, item) => sum + item.prescriptionAmount, 0));
@@ -163,7 +152,7 @@ export default function MpAdminStatisticsList() {
       },
       {
         header: '기본수수료율',
-        cell: ({ row }) => row.original.baseFeeRate.toLocaleString(),
+        cell: ({ row }) => row.original.feeAmount.toLocaleString(),
         size: 100,
       },
     ],
@@ -268,6 +257,7 @@ export default function MpAdminStatisticsList() {
                         : undefined,
                     startMonth: formik.values.settlementDate ? new DateString(formik.values.settlementDate) : undefined,
                     endMonth: formik.values.settlementDate ? new DateString(formik.values.settlementDate) : undefined,
+                    size: 2 ** 31 - 1,
                   })}
                   target='_blank'
                   startIcon={<DocumentDownload size={16} />}

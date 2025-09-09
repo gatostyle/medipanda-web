@@ -30,7 +30,6 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
 import {
   getDownloadProductSummariesExcel,
   getProductSummaries,
@@ -42,7 +41,6 @@ import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipa
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
-import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -56,7 +54,6 @@ export default function MpAdminProductList() {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [rateTableDialogOpen, setRateTableDialogOpen] = useState(false);
   const [rateTableFile, setRateTableFile] = useState<File | null>(null);
-  const notImplementedDialog = useMpNotImplementedDialog();
   const deleteDialog = useMpDeleteDialog();
   const errorDialog = useMpErrorDialog();
   const infoDialog = useMpInfoDialog();
@@ -279,12 +276,8 @@ export default function MpAdminProductList() {
       infoDialog.showInfo('요율표를 성공적으로 업로드했습니다.');
       await fetchData();
     } catch (error) {
-      if (error instanceof NotImplementedError) {
-        notImplementedDialog.open(error.message);
-      } else {
-        console.error('Failed to upload rate table:', error);
-        errorDialog.showError('요율표 업로드 중 오류가 발생했습니다.');
-      }
+      console.error('Failed to upload rate table:', error);
+      errorDialog.showError('요율표 업로드 중 오류가 발생했습니다.');
     }
   };
 
@@ -416,6 +409,7 @@ export default function MpAdminProductList() {
                     isPromotion: formik.values.isPromotion || undefined,
                     isOutOfStock: formik.values.isOutOfStock || undefined,
                     isStopSelling: formik.values.isStopSelling || undefined,
+                    size: 2 ** 31 - 1,
                   })}
                   target='_blank'
                   startIcon={<DocumentDownload size={16} />}

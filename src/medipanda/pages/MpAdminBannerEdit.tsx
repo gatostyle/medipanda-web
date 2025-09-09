@@ -14,12 +14,10 @@ import {
 } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
-import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
 import { createBanner, DateTimeString, getBanner, updateBanner } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
-import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
 import { DateFix, formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -30,7 +28,6 @@ export default function MpAdminBannerEdit() {
   const [, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
-  const notImplementedDialog = useMpNotImplementedDialog();
   const infoDialog = useMpInfoDialog();
   const errorDialog = useMpErrorDialog();
 
@@ -90,12 +87,8 @@ export default function MpAdminBannerEdit() {
         }
         navigate('/admin/banners');
       } catch (error) {
-        if (error instanceof NotImplementedError) {
-          notImplementedDialog.open(error.message);
-        } else {
-          console.error('Failed to save banner:', error);
-          errorDialog.showError('배너 저장 중 오류가 발생했습니다');
-        }
+        console.error('Failed to save banner:', error);
+        errorDialog.showError('배너 저장 중 오류가 발생했습니다');
       }
     },
   });
@@ -131,12 +124,8 @@ export default function MpAdminBannerEdit() {
           setImagePreview(data.imageUrl);
         }
       } catch (error) {
-        if (error instanceof NotImplementedError) {
-          notImplementedDialog.open(error.message);
-        } else {
-          console.error('Failed to fetch banner detail:', error);
-          errorDialog.showError('배너 정보를 불러오는데 실패했습니다');
-        }
+        console.error('Failed to fetch banner detail:', error);
+        errorDialog.showError('배너 정보를 불러오는데 실패했습니다');
       } finally {
         setLoading(false);
       }

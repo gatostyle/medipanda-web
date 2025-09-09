@@ -1,93 +1,91 @@
+import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
+import { useSession } from '@/medipanda/hooks/useSession';
 import { Box, Button, CircularProgress, Grid, Stack, TextField, Typography } from '@mui/material';
+import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
-import { mpCreateInquiryResponse, mpUpdateInquiryResponse } from '@/medipanda/api-definitions/MpInquiry';
-import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
-import { BoardDetailsResponse, getBoardDetails } from '@/backend';
+import { BoardDetailsResponse, createBoardPost, getBoardDetails, updateBoardPost } from '@/backend';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
-import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
 import { formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-interface BoardDetailsResponseWithMockData extends BoardDetailsResponse {
-  member: {
-    id: number;
-    userId: string;
-    name: string;
-    drugCompany?: string;
-    phoneNumber: string;
-  };
-  responseContent: string;
-  responseCreatedAt: string | null;
-  notes: string;
-}
-
-function withMock<T extends BoardDetailsResponse>(data: T): T & BoardDetailsResponseWithMockData {
-  return {
-    ...data,
-    member: {
-      id: -1,
-      userId: '아이디',
-      name: '사용자명',
-      drugCompany: '제약사명',
-      phoneNumber: '010-1234-5678',
-    },
-    responseContent: '답변 내용',
-    responseCreatedAt: '2025-05-01',
-    notes: '비고 내용',
-  };
-}
-
 export default function MpAdminInquiryEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const [inquiry, setInquiry] = useState<BoardDetailsResponseWithMockData | null>(null);
+  const [inquiry, setInquiry] = useState<BoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
-  const notImplementedDialog = useMpNotImplementedDialog();
   const errorDialog = useMpErrorDialog();
   const infoDialog = useMpInfoDialog();
+  const { session } = useSession();
 
   const formik = useFormik({
     initialValues: {
-      responseContent: '',
-      notes: '',
+      newFiles: [] as File[],
     },
     onSubmit: async values => {
       if (id === undefined) return;
 
-      if (!values.responseContent.trim()) {
+      if (responseEditor.getHTML() === '<p></p>') {
         infoDialog.showInfo('답변 내용을 입력해주세요.');
         return;
       }
 
       try {
-        if (inquiry?.responseContent) {
-          await mpUpdateInquiryResponse(parseInt(id), {
-            responseContent: values.responseContent,
-            notes: values.notes,
+        if (inquiry!.children.length === 0) {
+          await createBoardPost({
+            request: {
+              boardType: 'INQUIRY',
+              title: '',
+              content: responseEditor.getHTML(),
+              userId: session!.userId,
+              nickname: session!.name,
+              hiddenNickname: false,
+              parentId: parseInt(id!),
+              isExposed: true,
+              editorFileIds: responseEditorAttachments.map(image => image.s3fileId),
+              exposureRange: 'ALL',
+              noticeProperties: null,
+            },
+            files: values.newFiles,
           });
         } else {
-          await mpCreateInquiryResponse(parseInt(id), {
-            responseContent: values.responseContent,
-            notes: values.notes,
+          await updateBoardPost(inquiry!.children[0].id, {
+            updateRequest: {
+              title: '',
+              content: responseEditor.getHTML(),
+              hiddenNickname: null,
+              isBlind: null,
+              isExposed: null,
+              exposureRange: 'ALL',
+              keepFileIds: [
+                ...(inquiry!.children[0].attachments.filter(a => a.type === 'ATTACHMENT') ?? []),
+                ...responseEditorAttachments,
+              ].map(file => file.s3fileId),
+              editorFileIds: responseEditorAttachments.map(image => image.s3fileId),
+              noticeProperties: null,
+            },
+            newFiles: values.newFiles,
           });
         }
         infoDialog.showInfo('답변이 저장되었습니다.');
         navigate('/admin/inquiries');
       } catch (error) {
-        if (error instanceof NotImplementedError) {
-          notImplementedDialog.open(error.message);
-        } else {
-          console.error('Failed to save response:', error);
-          errorDialog.showError('답변 저장 중 오류가 발생했습니다.');
-        }
+        console.error('Failed to save response:', error);
+        errorDialog.showError('답변 저장 중 오류가 발생했습니다.');
       }
     },
   });
+
+  const { editor, setAttachments: setEditorAttachments } = useMedipandaEditor();
+  const {
+    editor: responseEditor,
+    attachments: responseEditorAttachments,
+    setAttachments: setResponseEditorAttachments,
+  } = useMedipandaEditor();
 
   useEffect(() => {
     const fetchInquiryDetail = async () => {
@@ -95,12 +93,17 @@ export default function MpAdminInquiryEdit() {
 
       setLoading(true);
       try {
-        const data = withMock(await getBoardDetails(parseInt(id)));
+        const data = await getBoardDetails(parseInt(id));
 
         setInquiry(data);
+        editor.commands.setContent(data.content);
+        editor.setEditable(false);
+        setEditorAttachments(data.attachments.filter(a => a.type === 'EDITOR'));
 
-        formik.setFieldValue('responseContent', data.responseContent);
-        formik.setFieldValue('notes', data.notes);
+        if (data.children.length > 0) {
+          responseEditor.commands.setContent(data.children[0].content);
+          setResponseEditorAttachments(data.children[0].attachments.filter(a => a.type === 'EDITOR'));
+        }
       } catch (error) {
         console.error('Failed to fetch inquiry detail:', error);
         enqueueSnackbar('문의 정보를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -149,7 +152,7 @@ export default function MpAdminInquiryEdit() {
                     <TextField
                       fullWidth
                       size='small'
-                      value={`${inquiry.nickname}(${inquiry.member.id} / ${inquiry.member.userId})`}
+                      value={`${inquiry.nickname}(${inquiry.userId})`}
                       InputProps={{ readOnly: true }}
                       sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
                     />
@@ -163,11 +166,7 @@ export default function MpAdminInquiryEdit() {
                     <TextField
                       fullWidth
                       size='small'
-                      value={
-                        inquiry.member.drugCompany
-                          ? `${inquiry.member.drugCompany}${inquiry.member.drugCompany.includes('법인') ? '' : '(법인)'}`
-                          : '-'
-                      }
+                      value={'-'}
                       InputProps={{ readOnly: true }}
                       sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
                     />
@@ -181,7 +180,7 @@ export default function MpAdminInquiryEdit() {
                     <TextField
                       fullWidth
                       size='small'
-                      value={inquiry.member.phoneNumber}
+                      value={'-'}
                       InputProps={{ readOnly: true }}
                       sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
                     />
@@ -210,19 +209,7 @@ export default function MpAdminInquiryEdit() {
                 <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                   내용
                 </Typography>
-                <TextField
-                  fullWidth
-                  multiline
-                  rows={6}
-                  value={inquiry.content}
-                  InputProps={{ readOnly: true }}
-                  sx={{
-                    '& .MuiInputBase-root': {
-                      backgroundColor: '#f5f5f5',
-                      '& textarea': { cursor: 'default' },
-                    },
-                  }}
-                />
+                <EditorContent editor={editor} />
               </Box>
             </Grid>
 
@@ -245,26 +232,25 @@ export default function MpAdminInquiryEdit() {
               </Box>
             </Grid>
 
-            {formik.values.responseContent && (
-              <Grid item xs={12}>
-                <Box>
-                  <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-                    답변내용
-                  </Typography>
-                  <TextField
-                    name='responseContent'
-                    multiline
-                    rows={6}
-                    fullWidth
-                    placeholder=''
-                    value={formik.values.responseContent}
-                    onChange={formik.handleChange}
-                  />
-                </Box>
-              </Grid>
-            )}
+            <Grid item xs={12}>
+              <Box>
+                <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                  답변내용
+                </Typography>
+                <Stack
+                  sx={{
+                    '.tiptap': {
+                      padding: '20px 10px',
+                      border: '1px solid #c4c4c4',
+                    },
+                  }}
+                >
+                  <EditorContent editor={responseEditor} />
+                </Stack>
+              </Box>
+            </Grid>
 
-            {inquiry.responseCreatedAt !== null && (
+            {inquiry.children.length > 0 && (
               <Grid item xs={12}>
                 <Box>
                   <Typography variant='subtitle2' color='text.secondary' gutterBottom>
@@ -273,22 +259,13 @@ export default function MpAdminInquiryEdit() {
                   <TextField
                     fullWidth
                     size='small'
-                    value={formatYyyyMmDdHhMm(inquiry.responseCreatedAt)}
+                    value={formatYyyyMmDdHhMm(inquiry.children[0].createdAt)}
                     InputProps={{ readOnly: true }}
                     sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
                   />
                 </Box>
               </Grid>
             )}
-
-            <Grid item xs={12}>
-              <Box>
-                <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-                  비고
-                </Typography>
-                <TextField name='notes' multiline rows={4} fullWidth value={formik.values.notes} onChange={formik.handleChange} />
-              </Box>
-            </Grid>
 
             <Grid item xs={12}>
               <Stack direction='row' spacing={2} justifyContent='center'>

@@ -23,13 +23,10 @@ import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-react';
-import { mpDownloadSettlementEDI, mpPrintSettlementEDI } from '@/medipanda/api-definitions/MpSettlement';
-import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
 import { DateString, getDownloadSettlementListExcel, getSettlements, SettlementResponse, uploadSettlementExcel } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
 import { formatYyyyMm } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
@@ -42,7 +39,6 @@ export default function MpAdminSettlementList() {
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const notImplementedDialog = useMpNotImplementedDialog();
   const infoDialog = useMpInfoDialog();
   const errorDialog = useMpErrorDialog();
 
@@ -229,32 +225,6 @@ export default function MpAdminSettlementList() {
     input.click();
   };
 
-  const handleEDIDownload = async () => {
-    try {
-      await mpDownloadSettlementEDI();
-    } catch (error) {
-      if (error instanceof NotImplementedError) {
-        notImplementedDialog.open(error.message);
-      } else {
-        console.error('Failed to download EDI:', error);
-        errorDialog.showError('EDI 다운로드 중 오류가 발생했습니다.');
-      }
-    }
-  };
-
-  const handleEDIPrint = async () => {
-    try {
-      await mpPrintSettlementEDI();
-    } catch (error) {
-      if (error instanceof NotImplementedError) {
-        notImplementedDialog.open(error.message);
-      } else {
-        console.error('Failed to print EDI:', error);
-        errorDialog.showError('EDI 인쇄 중 오류가 발생했습니다.');
-      }
-    }
-  };
-
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -338,6 +308,7 @@ export default function MpAdminSettlementList() {
                     status: formik.values.status !== '' ? formik.values.status : undefined,
                     startMonth: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
                     endMonth: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
+                    size: 2 ** 31 - 1,
                   })}
                   target='_blank'
                   startIcon={<DocumentDownload size={16} />}
@@ -346,12 +317,6 @@ export default function MpAdminSettlementList() {
                 </Button>
                 <Button variant='contained' color='success' size='small' onClick={handleFileUpload}>
                   파일 업로드
-                </Button>
-                <Button variant='contained' color='success' size='small' onClick={handleEDIDownload}>
-                  EDI 다운로드
-                </Button>
-                <Button variant='contained' color='success' size='small' onClick={handleEDIPrint}>
-                  EDI인쇄
                 </Button>
               </Stack>
             </Stack>

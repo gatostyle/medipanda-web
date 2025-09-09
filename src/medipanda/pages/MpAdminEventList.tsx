@@ -23,14 +23,12 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
 import { DateString, EventBoardSummaryResponse, getEventBoards, softDeleteEventBoard } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
-import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
 import { EVENT_STATUS_LABELS } from '@/medipanda/ui-labels';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
@@ -43,7 +41,6 @@ export default function MpAdminEventList() {
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const notImplementedDialog = useMpNotImplementedDialog();
   const infoDialog = useMpInfoDialog();
   const errorDialog = useMpErrorDialog();
   const deleteDialog = useMpDeleteDialog();
@@ -240,12 +237,8 @@ export default function MpAdminEventList() {
           setSelectedItems([]);
           fetchData();
         } catch (error) {
-          if (error instanceof NotImplementedError) {
-            notImplementedDialog.open(error.message);
-          } else {
-            console.error('Failed to delete events:', error);
-            errorDialog.showError('이벤트 삭제에 실패했습니다.');
-          }
+          console.error('Failed to delete events:', error);
+          errorDialog.showError('이벤트 삭제에 실패했습니다.');
         }
       },
     });

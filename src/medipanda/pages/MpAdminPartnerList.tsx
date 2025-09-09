@@ -27,13 +27,11 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { NotImplementedError } from '@/medipanda/api-definitions/NotImplementedError';
 import { deletePartner, getPartners, PartnerResponse, uploadPartnersExcel } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
-import { useMpNotImplementedDialog } from '@/medipanda/hooks/useMpNotImplementedDialog';
 import { mockString } from '@/medipanda/mockup';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useCallback, useEffect, useState } from 'react';
@@ -49,7 +47,6 @@ export default function MpAdminPartnerList() {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const deleteDialog = useMpDeleteDialog();
-  const notImplementedDialog = useMpNotImplementedDialog();
   const errorDialog = useMpErrorDialog();
   const infoDialog = useMpInfoDialog();
 
@@ -226,12 +223,8 @@ export default function MpAdminPartnerList() {
           setSelectedItems([]);
           fetchData();
         } catch (error) {
-          if (error instanceof NotImplementedError) {
-            notImplementedDialog.open(error.message);
-          } else {
-            console.error('Failed to delete business partners:', error);
-            errorDialog.showError('거래선 삭제 중 오류가 발생했습니다.');
-          }
+          console.error('Failed to delete business partners:', error);
+          errorDialog.showError('거래선 삭제 중 오류가 발생했습니다.');
         }
       },
     });
@@ -250,12 +243,8 @@ export default function MpAdminPartnerList() {
       setUploadFile(null);
       fetchData();
     } catch (error) {
-      if (error instanceof NotImplementedError) {
-        notImplementedDialog.open(error.message);
-      } else {
-        console.error('Failed to upload file:', error);
-        errorDialog.showError('파일 업로드 중 오류가 발생했습니다.');
-      }
+      console.error('Failed to upload file:', error);
+      errorDialog.showError('파일 업로드 중 오류가 발생했습니다.');
     }
   };
 

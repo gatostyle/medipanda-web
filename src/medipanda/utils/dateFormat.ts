@@ -7,21 +7,30 @@ export const DATEFORMAT_YYYY_MM = 'yyyy-MM';
 export function formatYyyyMmDdHhMm(dateString: string): string;
 export function formatYyyyMmDdHhMm(date: Date): string;
 export function formatYyyyMmDdHhMm(dateOrString: Date | string): string {
-  return format(typeof dateOrString === 'string' ? new Date(DateFix(dateOrString)) : dateOrString, DATEFORMAT_YYYY_MM_DD_HH_MM);
+  return format(
+    typeof dateOrString === 'string' ? KoreanDateFix(new Date(DateFix(dateOrString))) : dateOrString,
+    DATEFORMAT_YYYY_MM_DD_HH_MM,
+  );
 }
 
 export function formatYyyyMmDd(dateString: string): string;
 export function formatYyyyMmDd(date: Date): string;
 export function formatYyyyMmDd(dateOrString: Date | string): string {
-  return format(typeof dateOrString === 'string' ? new Date(DateFix(dateOrString)) : dateOrString, DATEFORMAT_YYYY_MM_DD);
+  return format(typeof dateOrString === 'string' ? KoreanDateFix(new Date(DateFix(dateOrString))) : dateOrString, DATEFORMAT_YYYY_MM_DD);
 }
 
 export function formatYyyyMm(dateString: string): string;
 export function formatYyyyMm(date: Date): string;
 export function formatYyyyMm(dateOrString: Date | string): string {
-  return format(typeof dateOrString === 'string' ? new Date(DateFix(dateOrString)) : dateOrString, DATEFORMAT_YYYY_MM);
+  return format(typeof dateOrString === 'string' ? KoreanDateFix(new Date(DateFix(dateOrString))) : dateOrString, DATEFORMAT_YYYY_MM);
 }
 
 export function DateFix(str: string): Date {
   return new Date(str.replace(/"/g, ''));
+}
+
+export function KoreanDateFix(date: Date): Date {
+  const fixedDate = new Date(date);
+  fixedDate.setHours(fixedDate.getHours() + 9);
+  return fixedDate;
 }

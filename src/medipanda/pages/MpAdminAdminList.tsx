@@ -26,7 +26,6 @@ import { getAdminMembers, MemberResponse } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { MEMBER_ACCOUNT_STATUS_LABELS, MEMBER_ROLE_LABELS } from '@/medipanda/ui-labels';
-import { backendNotImplemented } from '@/medipanda/utils/backendNotImplemented';
 import { formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
@@ -41,8 +40,8 @@ export default function MpAdminAdminList() {
 
   const formik = useFormik({
     initialValues: {
-      type: 'name',
-      keyword: '',
+      searchType: '',
+      searchKeyword: '',
       pageIndex: 0,
       pageSize: 20,
     },
@@ -126,11 +125,15 @@ export default function MpAdminAdminList() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      if (formik.values.keyword) {
-        backendNotImplemented();
-      }
-
-      const response = await getAdminMembers({ page: formik.values.pageIndex, size: formik.values.pageSize });
+      const response = await getAdminMembers({
+        page: formik.values.pageIndex,
+        size: formik.values.pageSize,
+        name: formik.values.searchType === 'name' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        userId: formik.values.searchType === 'userId' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        email: formik.values.searchType === 'email' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        phoneNumber:
+          formik.values.searchType === 'phoneNumber' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+      });
 
       setData(withSequence(response).content);
       setTotalElements(response.totalElements);
@@ -166,7 +169,7 @@ export default function MpAdminAdminList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size='small'>
                     <InputLabel>검색유형</InputLabel>
-                    <Select name='type' value={formik.values.type} onChange={formik.handleChange}>
+                    <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'name'}>관리자명</MenuItem>
                       <MenuItem value={'userId'}>아이디</MenuItem>
                       <MenuItem value={'email'}>이메일</MenuItem>
@@ -176,11 +179,11 @@ export default function MpAdminAdminList() {
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
-                    name='keyword'
+                    name='searchKeyword'
                     size='small'
                     placeholder='검색어를 입력하세요'
                     fullWidth
-                    value={formik.values.keyword}
+                    value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
                   />
                 </SearchFilterItem>

@@ -458,9 +458,6 @@ export function MpOcrRequestModal({ drugCompanyCode, open, onClose, onSubmit, im
       const height = backgroundImage!.height;
 
       const canvas = canvasRef.current!;
-      const computedRect = canvas.getBoundingClientRect();
-      canvas.width = computedRect.width * window.devicePixelRatio;
-      canvas.height = computedRect.width * (window.innerHeight / window.innerWidth) * window.devicePixelRatio;
 
       const scale = Math.min(canvas.width / width, canvas.height / height);
       const w = width * scale;
@@ -607,7 +604,7 @@ export function MpOcrRequestModal({ drugCompanyCode, open, onClose, onSubmit, im
         <Box sx={{ mt: 2, textAlign: 'center' }}>
           <Typography variant='body1' color={currentPoints.length === 4 ? 'success.main' : 'text.secondary'} fontWeight='bold'>
             {currentPoints.length === 4
-              ? '문서 모서리가 모두 선택되었습니다!'
+              ? '문서 모서리가 모두 선택되었습니다.'
               : `4개 점을 클릭해서 문서 모서리를 선택해주세요 (${currentPoints.length}/4)`}
           </Typography>
           {hasImages && imageUrls.length > 1 && (

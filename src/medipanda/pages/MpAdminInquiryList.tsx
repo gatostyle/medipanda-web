@@ -21,8 +21,7 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { InquiryResponseStatusFilter, InquirySearchType } from '@/medipanda/api-definitions/MpInquiry';
-import { BoardPostResponse, getBoards } from '@/backend';
+import { BoardPostResponse, DateString, getBoards } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
@@ -31,25 +30,8 @@ import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-interface BoardPostResponseWithMockData extends BoardPostResponse {
-  drugCompany: string;
-  responseCreatedAt: string | null;
-  responseStatus: 'PENDING' | 'COMPLETED';
-}
-
-function withMock<T extends BoardPostResponse>(data: T): T & BoardPostResponseWithMockData {
-  return {
-    ...data,
-    userId: '아이디',
-    name: '사용자명',
-    drugCompany: '제약사명',
-    responseCreatedAt: '2025-01-01',
-    responseStatus: Math.random() > 0.5 ? 'PENDING' : 'COMPLETED',
-  };
-}
-
 export default function MpAdminInquiryList() {
-  const [data, setData] = useState<Sequenced<BoardPostResponseWithMockData>[]>([]);
+  const [data, setData] = useState<Sequenced<BoardPostResponse>[]>([]);
   const [loading, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -57,8 +39,8 @@ export default function MpAdminInquiryList() {
 
   const formik = useFormik({
     initialValues: {
-      responseStatusFilter: InquiryResponseStatusFilter.ALL,
-      searchType: InquirySearchType.MEMBER_NAME,
+      includeChild: '' as 'true' | 'false' | '',
+      searchType: '' as 'name' | 'drugCompany' | 'userId',
       searchKeyword: '',
       startAt: null as Date | null,
       endAt: null as Date | null,
@@ -99,7 +81,7 @@ export default function MpAdminInquiryList() {
       },
       {
         header: '회사명',
-        cell: ({ row }) => row.original.drugCompany,
+        cell: ({ row }) => '-',
         size: 150,
       },
       {
@@ -119,20 +101,21 @@ export default function MpAdminInquiryList() {
       {
         header: '답변일',
         cell: ({ row }) => {
-          const value = row.original.responseCreatedAt;
-
-          return value !== null ? formatYyyyMmDd(value) : '-';
+          if (row.original.hasChildren) {
+            return formatYyyyMmDd(row.original.createdAt);
+          } else {
+            return '-';
+          }
         },
         size: 100,
       },
       {
         header: '처리상태',
         cell: ({ row }) => {
-          switch (row.original.responseStatus) {
-            case 'PENDING':
-              return '처리중';
-            case 'COMPLETED':
-              return '처리완료';
+          if (row.original.hasChildren) {
+            return '처리완료';
+          } else {
+            return '처리중';
           }
         },
         size: 100,
@@ -157,14 +140,14 @@ export default function MpAdminInquiryList() {
         boardType: 'INQUIRY',
         page: formik.values.pageIndex,
         size: formik.values.pageSize,
-        // responseStatusFilter: formik.values.responseStatusFilter,
-        name: formik.values.searchType === InquirySearchType.MEMBER_NAME ? formik.values.searchKeyword : undefined,
-        drugCompany: formik.values.searchType === InquirySearchType.COMPANY_NAME ? formik.values.searchKeyword : undefined,
-        userId: formik.values.searchType === InquirySearchType.USER_ID ? formik.values.searchKeyword : undefined,
-        // startDate: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
-        // endDate: formik.values.endAt ? new DateString(formik.values.endAt) : undefined
+        includeChild: formik.values.includeChild === '' ? undefined : formik.values.includeChild === 'true',
+        name: formik.values.searchType === 'name' ? formik.values.searchKeyword : undefined,
+        drugCompany: formik.values.searchType === 'drugCompany' ? formik.values.searchKeyword : undefined,
+        userId: formik.values.searchType === 'userId' ? formik.values.searchKeyword : undefined,
+        startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
+        endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
       });
-      setData(withSequence(response).content.map(withMock));
+      setData(withSequence(response).content);
       setTotalElements(response.totalElements);
       setTotalPages(response.totalPages);
     } catch (error) {
@@ -202,10 +185,10 @@ export default function MpAdminInquiryList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size='small'>
                     <InputLabel>처리상태</InputLabel>
-                    <Select name='responseStatusFilter' value={formik.values.responseStatusFilter} onChange={formik.handleChange}>
-                      <MenuItem value={InquiryResponseStatusFilter.ALL}>처리상태(전체)</MenuItem>
-                      <MenuItem value={InquiryResponseStatusFilter.WAITING}>답변대기중</MenuItem>
-                      <MenuItem value={InquiryResponseStatusFilter.COMPLETED}>답변완료</MenuItem>
+                    <Select name='includeChild' value={formik.values.includeChild} onChange={formik.handleChange}>
+                      <MenuItem value={''}>전체</MenuItem>
+                      <MenuItem value={'false'}>답변대기중</MenuItem>
+                      <MenuItem value={'true'}>답변완료</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
@@ -213,9 +196,9 @@ export default function MpAdminInquiryList() {
                   <FormControl fullWidth size='small'>
                     <InputLabel>검색유형</InputLabel>
                     <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
-                      <MenuItem value={InquirySearchType.MEMBER_NAME}>회원명</MenuItem>
-                      <MenuItem value={InquirySearchType.COMPANY_NAME}>회사명</MenuItem>
-                      <MenuItem value={InquirySearchType.USER_ID}>아이디</MenuItem>
+                      <MenuItem value={'name'}>회원명</MenuItem>
+                      <MenuItem value={'drugCompany'}>회사명</MenuItem>
+                      <MenuItem value={'userId'}>아이디</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>

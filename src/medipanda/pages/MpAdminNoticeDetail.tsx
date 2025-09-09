@@ -1,3 +1,4 @@
+import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import {
   Box,
@@ -14,9 +15,10 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import Stack from '@mui/material/Stack';
+import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
 import { BoardDetailsResponse, getBoardDetails } from '@/backend';
-import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { EXPOSURE_RANGE_LABELS, NOTICE_TYPE_LABELS } from '@/medipanda/ui-labels';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
@@ -29,6 +31,8 @@ export default function MpAdminNoticeDetail() {
   const [data, setData] = useState<BoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const { editor, setAttachments: setEditorAttachments } = useMedipandaEditor();
+
   useEffect(() => {
     if (id) {
       fetchData(parseInt(id, 10));
@@ -40,6 +44,9 @@ export default function MpAdminNoticeDetail() {
     try {
       const response = await getBoardDetails(itemId);
       setData(response);
+      editor.commands.setContent(response.content);
+      editor.setEditable(false);
+      setEditorAttachments(response.attachments.filter(a => a.type === 'EDITOR'));
     } catch (error) {
       console.error('Failed to fetch notice detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -131,7 +138,15 @@ export default function MpAdminNoticeDetail() {
                     내용 <span style={{ color: 'red' }}>*</span>
                   </TableCell>
                   <TableCell colSpan={5}>
-                    <TiptapEditor content={data.content} readOnly />
+                    <Stack
+                      sx={{
+                        '.tiptap': {
+                          padding: '20px 10px',
+                        },
+                      }}
+                    >
+                      <EditorContent editor={editor} placeholder='내용을 입력하세요' />
+                    </Stack>
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -153,7 +168,7 @@ export default function MpAdminNoticeDetail() {
                               underline='hover'
                             >
                               <AttachFileIcon fontSize='small' />
-                              {new URL(file.fileUrl).pathname.split('/').pop()}
+                              {file.originalFileName}
                             </MuiLink>
                           );
                         })}

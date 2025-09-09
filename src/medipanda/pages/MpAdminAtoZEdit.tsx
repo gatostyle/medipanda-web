@@ -192,7 +192,7 @@ export default function MpAdminAtoZEdit() {
                 {formik.values.attachedFiles.map(attachedFile => {
                   return (
                     <Typography variant='body2' sx={{ mt: 1 }}>
-                      {new URL(attachedFile.fileUrl).pathname.split('/').pop()}
+                      {attachedFile.originalFileName}
                     </Typography>
                   );
                 })}

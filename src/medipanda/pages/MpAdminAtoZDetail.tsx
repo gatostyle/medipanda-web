@@ -110,7 +110,7 @@ export default function MpAdminAtoZDetail() {
                             underline='hover'
                           >
                             <AttachFileIcon fontSize='small' />
-                            {new URL(file.fileUrl).pathname.split('/').pop()}
+                            {file.originalFileName}
                           </MuiLink>
                         </Box>
                       );

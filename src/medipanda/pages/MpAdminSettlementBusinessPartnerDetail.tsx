@@ -29,23 +29,12 @@ import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-interface SettlementResponseWithMockData extends SettlementResponse {
-  prescriptionMonth: string;
-}
-
-function withMock<T extends SettlementResponse>(data: T): T & SettlementResponseWithMockData {
-  return {
-    ...data,
-    prescriptionMonth: '2025-01',
-  };
-}
-
 export default function MpAdminSettlementBusinessPartnerDetail() {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { settlementId, id } = useParams();
   const [loading, setLoading] = useState(true);
-  const [settlementDetail, setSettlementDetail] = useState<SettlementResponseWithMockData | null>(null);
+  const [settlementDetail, setSettlementDetail] = useState<SettlementResponse | null>(null);
   const [settlementPartnerDetail, setSettlementPartnerDetail] = useState<SettlementPartnerResponse | null>(null);
   const [products, setProducts] = useState<SettlementPartnerProductResponse[]>([]);
 
@@ -61,7 +50,7 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
         getSettlementPartnerProducts(parseInt(id!)),
       ]);
 
-      setSettlementDetail(settlementResponse.content.map(withMock)[0]);
+      setSettlementDetail(settlementResponse.content[0]);
       setSettlementPartnerDetail(partnerResponse.content[0]);
       setProducts(products);
     } catch (error) {
@@ -198,9 +187,6 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
               size='small'
               InputProps={{ readOnly: true }}
             />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <TextField label='처방월' value={settlementDetail.prescriptionMonth} fullWidth size='small' InputProps={{ readOnly: true }} />
           </Grid>
           <Grid item xs={12} md={4}>
             <TextField label='정산월' value={settlementDetail.settlementMonth} fullWidth size='small' InputProps={{ readOnly: true }} />
