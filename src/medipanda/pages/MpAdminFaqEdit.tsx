@@ -21,7 +21,6 @@ import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import * as Yup from 'yup';
 
 export default function MpAdminFaqEdit() {
   const navigate = useNavigate();
@@ -43,13 +42,9 @@ export default function MpAdminFaqEdit() {
       attachedFiles: [] as AttachmentResponse[],
       newFiles: [] as File[],
     },
-    validationSchema: Yup.object().shape({
-      title: Yup.string().required('제목을 입력해주세요.').max(100, '제목은 100자를 초과할 수 없습니다.'),
-      content: Yup.string().required('내용을 입력해주세요.'),
-    }),
     onSubmit: async (values, { setSubmitting }) => {
-      if (!session?.userId) {
-        enqueueSnackbar('로그인이 필요합니다.', { variant: 'error' });
+      if (values.title === '') {
+        alert('제목을 입력해주세요.');
         return;
       }
 
@@ -60,8 +55,8 @@ export default function MpAdminFaqEdit() {
               boardType: 'FAQ',
               title: values.title,
               content: editor.getHTML(),
-              userId: session.userId,
-              nickname: session.name,
+              userId: session!.userId,
+              nickname: session!.name,
               hiddenNickname: false,
               parentId: null,
               isExposed: values.isExposed,

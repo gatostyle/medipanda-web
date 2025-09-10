@@ -26,7 +26,6 @@ import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { Fragment, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
-import * as Yup from 'yup';
 
 export default function MpAdminProductEdit() {
   const navigate = useNavigate();
@@ -56,18 +55,37 @@ export default function MpAdminProductEdit() {
       isStopSelling: false,
       note: '',
     },
-    validationSchema: Yup.object().shape({
-      manufacturer: Yup.string().required('제약사를 입력해주세요.'),
-      productName: Yup.string().required('제품명을 입력해주세요.'),
-      productCode: Yup.string().required('제품코드를 입력해주세요.'),
-      composition: Yup.string().required('성분명을 입력해주세요.'),
-      price: Yup.number().required('약가를 입력해주세요.').min(0, '약가는 0 이상이어야 합니다.'),
-      feeRate: Yup.number()
-        .required('기본수수료율을 입력해주세요.')
-        .min(0, '수수료율은 0 이상이어야 합니다.')
-        .max(100, '수수료율은 100 이하여야 합니다.'),
-    }),
     onSubmit: async (values, { setSubmitting }) => {
+      if (values.manufacturer === '') {
+        alert('제약사를 입력해주세요.');
+        return;
+      }
+
+      if (values.productName === '') {
+        alert('제품명을 입력해주세요.');
+        return;
+      }
+
+      if (values.productCode === '') {
+        alert('제품코드를 입력해주세요.');
+        return;
+      }
+
+      if (values.composition === '') {
+        alert('성분명을 입력해주세요.');
+        return;
+      }
+
+      if (values.price <= 0) {
+        alert('약가는 0보다 커야 합니다.');
+        return;
+      }
+
+      if (values.feeRate < 0 || values.feeRate > 100) {
+        alert('기본수수료율은 0 이상 100 이하이어야 합니다.');
+        return;
+      }
+
       try {
         if (isNew) {
           await createProductExtraInfo({

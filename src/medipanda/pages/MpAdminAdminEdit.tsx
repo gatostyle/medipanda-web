@@ -19,44 +19,6 @@ import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { isSuperAdmin, useSession } from '@/medipanda/hooks/useSession';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import * as yup from 'yup';
-
-const createValidationSchema = (isNew: boolean) =>
-  yup.object({
-    name: yup.string().required('관리자 명은 필수입니다'),
-    userId: yup.string().required('아이디는 필수입니다'),
-    password: isNew
-      ? yup.string().required('패스워드는 필수입니다').min(8, '패스워드는 최소 8자 이상이어야 합니다')
-      : yup.string().test('password-match', '패스워드가 일치하지 않습니다', function (value) {
-          const { passwordConfirm } = this.parent;
-          if (!value && !passwordConfirm) return true; // Both empty is OK for edit mode
-          if (value && !passwordConfirm) return false; // Password filled but confirm empty
-          if (!value && passwordConfirm) return false; // Password empty but confirm filled
-          return value === passwordConfirm; // Both filled, must match
-        }),
-    passwordConfirm: isNew
-      ? yup
-          .string()
-          .required('패스워드 확인은 필수입니다')
-          .oneOf([yup.ref('password')], '패스워드가 일치하지 않습니다')
-      : yup.string().test('password-confirm-match', '패스워드가 일치하지 않습니다', function (value) {
-          const { password } = this.parent;
-          if (!value && !password) return true; // Both empty is OK for edit mode
-          if (value && !password) return false; // Confirm filled but password empty
-          if (!value && password) return false; // Confirm empty but password filled
-          return value === password; // Both filled, must match
-        }),
-    email: yup.string().required('이메일은 필수입니다').email('올바른 이메일 형식이 아닙니다'),
-    phoneNumber2: yup
-      .string()
-      .required('연락처를 입력해주세요')
-      .matches(/^\d{3,4}$/, '올바른 번호 형식이 아닙니다'),
-    phoneNumber3: yup
-      .string()
-      .required('연락처를 입력해주세요')
-      .matches(/^\d{4}$/, '올바른 번호 형식이 아닙니다'),
-    permissions: yup.array().min(1, '최소 하나 이상의 권한을 선택해주세요'),
-  });
 
 export default function MpAdminAdminEdit() {
   const navigate = useNavigate();
@@ -103,8 +65,47 @@ export default function MpAdminAdminEdit() {
         | 'ALL'
       )[],
     },
-    validationSchema: createValidationSchema(isNew),
     onSubmit: async values => {
+      if (values.name === '') {
+        alert('관리자 명은 필수입니다');
+        return;
+      }
+
+      if (values.userId === '') {
+        alert('아이디는 필수입니다');
+        return;
+      }
+
+      if (isNew && values.password === '') {
+        alert('패스워드는 필수입니다');
+        return;
+      }
+
+      if (isNew && values.password.length < 8) {
+        alert('패스워드는 최소 8자 이상이어야 합니다');
+        return;
+      }
+
+      if (isNew && values.password !== values.passwordConfirm) {
+        alert('패스워드가 일치하지 않습니다');
+        return;
+      }
+
+      if (values.email === '') {
+        alert('이메일은 필수입니다');
+        return;
+      }
+
+      if (values.phoneNumber1 === '' || values.phoneNumber2 === '' || values.phoneNumber3 === '') {
+        alert('연락처를 입력해주세요');
+        return;
+      }
+
+      if (values.permissions.length === 0) {
+        alert('최소 하나 이상의 권한을 선택해주세요');
+        return;
+      }
+
       try {
         const phoneNumber = `${values.phoneNumber1}-${values.phoneNumber2}-${values.phoneNumber3}`;
 

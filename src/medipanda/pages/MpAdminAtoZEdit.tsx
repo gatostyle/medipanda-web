@@ -19,7 +19,6 @@ import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
-import * as Yup from 'yup';
 import { useMedipandaEditor } from '../components/useMedipandaEditor';
 
 export default function MpAdminAtoZEdit() {
@@ -39,12 +38,9 @@ export default function MpAdminAtoZEdit() {
       newFiles: [] as File[],
       isExposed: true,
     },
-    validationSchema: Yup.object().shape({
-      title: Yup.string().required('제목을 입력해주세요.').max(100, '제목은 100자를 초과할 수 없습니다.'),
-    }),
     onSubmit: async (values, { setSubmitting }) => {
-      if (!session?.userId) {
-        enqueueSnackbar('로그인이 필요합니다.', { variant: 'error' });
+      if (values.title === '') {
+        alert('제목을 입력해주세요.');
         return;
       }
 
@@ -55,8 +51,8 @@ export default function MpAdminAtoZEdit() {
               boardType: 'CSO_A_TO_Z',
               title: values.title,
               content: editor.getHTML(),
-              userId: session.userId,
-              nickname: session.name,
+              userId: session!.userId,
+              nickname: session!.name,
               hiddenNickname: false,
               parentId: null,
               isExposed: values.isExposed,

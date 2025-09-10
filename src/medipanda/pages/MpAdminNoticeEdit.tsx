@@ -28,7 +28,6 @@ import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import * as Yup from 'yup';
 
 export default function MpAdminNoticeEdit() {
   const navigate = useNavigate();
@@ -70,18 +69,14 @@ export default function MpAdminNoticeEdit() {
       attachedFiles: [] as AttachmentResponse[],
       newFiles: [] as File[],
     },
-    validationSchema: Yup.object().shape({
-      title: Yup.string().required('제목을 입력해주세요.').max(100, '제목은 100자를 초과할 수 없습니다.'),
-      noticeCategory: Yup.string().required('공지분류를 선택해주세요.'),
-      manufacturerName: Yup.string().when('noticeCategory', {
-        is: (val: string) => val !== 'GENERAL',
-        then: schema => schema.required('제약사명을 선택해주세요.'),
-        otherwise: schema => schema,
-      }),
-    }),
     onSubmit: async (values, { setSubmitting }) => {
-      if (!session?.userId) {
-        enqueueSnackbar('로그인이 필요합니다.', { variant: 'error' });
+      if (values.title === '') {
+        alert('제목을 입력해주세요.');
+        return;
+      }
+
+      if (values.noticeCategory === 'GENERAL' && values.manufacturerName === '') {
+        alert('제약사명을 선택해주세요.');
         return;
       }
 
@@ -92,8 +87,8 @@ export default function MpAdminNoticeEdit() {
               boardType: values.displayBoard,
               title: values.title,
               content: editor.getHTML(),
-              userId: session.userId,
-              nickname: session.name || session.userId,
+              userId: session!.userId,
+              nickname: session!.name || session!.userId,
               hiddenNickname: false,
               parentId: null,
               isExposed: values.isExposed,

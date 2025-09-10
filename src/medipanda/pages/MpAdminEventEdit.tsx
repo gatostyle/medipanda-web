@@ -9,7 +9,6 @@ import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import * as Yup from 'yup';
 import { useSession } from '../hooks/useSession';
 import { DateFix, formatYyyyMmDd } from '../utils/dateFormat';
 
@@ -42,12 +41,22 @@ export default function MpAdminEventEdit() {
       attachedFiles: [] as AttachmentResponse[],
       newFiles: [] as File[],
     },
-    validationSchema: Yup.object({
-      title: Yup.string().required('제목을 입력해주세요'),
-      startDate: Yup.date().nullable().required('시작일을 선택해주세요'),
-      endDate: Yup.date().nullable().required('종료일을 선택해주세요'),
-    }),
     onSubmit: async values => {
+      if (values.title) {
+        alert('제목을 입력해주세요');
+        return;
+      }
+
+      if (values.startDate) {
+        alert('시작일을 선택해주세요');
+        return;
+      }
+
+      if (values.endDate) {
+        alert('종료일을 선택해주세요');
+        return;
+      }
+
       try {
         if (isNew) {
           await createEventBoard({

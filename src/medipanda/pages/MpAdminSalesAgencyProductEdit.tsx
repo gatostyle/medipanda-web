@@ -44,7 +44,6 @@ import { EXPOSURE_RANGE_LABELS } from '@/medipanda/ui-labels';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
-import * as Yup from 'yup';
 import { DateFix, formatYyyyMmDd } from '../utils/dateFormat';
 
 interface TabPanelProps {
@@ -87,7 +86,7 @@ export default function MpAdminSalesAgencyProductEdit() {
       clientName: '',
       productName: '',
       isExposed: true,
-      exposureRange: 'ALL' as 'ALL' | 'CONTRACTED' | 'UNCONTRACTED',
+      exposureRange: '' as 'ALL' | 'CONTRACTED' | 'UNCONTRACTED' | '',
       thumbnail: null as File | null,
       thumbnailUrl: '',
       videoUrl: '',
@@ -99,17 +98,40 @@ export default function MpAdminSalesAgencyProductEdit() {
       attachedFiles: [] as AttachmentResponse[],
       newFiles: [] as File[],
     },
-    validationSchema: Yup.object({
-      clientName: Yup.string().required('위탁사명은 필수입니다'),
-      productName: Yup.string().required('상품명은 필수입니다'),
-      exposureRange: Yup.string().oneOf(['ALL', 'CONTRACTED', 'UNCONTRACTED']).required('노출범위는 필수입니다'),
-      thumbnailUrl: Yup.string().required('썸네일은 필수입니다'),
-      content: Yup.string().required('내용은 필수입니다'),
-      contractDate: Yup.date().required('계약일은 필수입니다'),
-      startDate: Yup.date().required('게시 시작일은 필수입니다'),
-      endDate: Yup.date().required('게시 종료일은 필수입니다').min(Yup.ref('startDate'), '종료일은 시작일 이후여야 합니다'),
-    }),
     onSubmit: async values => {
+      if (values.clientName === '') {
+        alert('위탁사명은 필수입니다');
+        return;
+      }
+      if (values.productName === '') {
+        alert('상품명은 필수입니다');
+        return;
+      }
+      if (values.exposureRange === '') {
+        alert('노출범위는 필수입니다');
+        return;
+      }
+      if (values.thumbnailUrl === '') {
+        alert('썸네일은 필수입니다');
+        return;
+      }
+      if (values.contractDate === null) {
+        alert('계약일은 필수입니다');
+        return;
+      }
+      if (values.startDate === null) {
+        alert('게시 시작일은 필수입니다');
+        return;
+      }
+      if (values.endDate === null) {
+        alert('게시 종료일은 필수입니다');
+        return;
+      }
+      if (values.endDate < values.startDate) {
+        alert('종료일은 시작일 이후여야 합니다');
+        return;
+      }
+
       try {
         if (isNew) {
           await createSalesAgencyProductBoard({
