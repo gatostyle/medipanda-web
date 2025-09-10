@@ -241,8 +241,6 @@ export default function MpAdminEventEdit() {
                   placeholder=''
                   value={formik.values.title}
                   onChange={formik.handleChange}
-                  error={formik.touched.title && Boolean(formik.errors.title)}
-                  helperText={formik.touched.title && formik.errors.title}
                 />
               </Grid>
 

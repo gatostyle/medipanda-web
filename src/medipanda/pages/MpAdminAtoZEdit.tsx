@@ -158,9 +158,6 @@ export default function MpAdminAtoZEdit() {
                   required
                   value={formik.values.title}
                   onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={!!(formik.touched.title && formik.errors.title)}
-                  helperText={formik.touched.title && formik.errors.title}
                 />
               </Grid>
 

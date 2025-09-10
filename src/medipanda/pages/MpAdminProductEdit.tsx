@@ -260,9 +260,6 @@ export default function MpAdminProductEdit() {
                     required
                     value={formik.values.manufacturer}
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={!!(formik.touched.manufacturer && formik.errors.manufacturer)}
-                    helperText={formik.touched.manufacturer && formik.errors.manufacturer}
                   />
                 </Grid>
 
@@ -280,9 +277,6 @@ export default function MpAdminProductEdit() {
                     required
                     value={formik.values.productName}
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={!!(formik.touched.productName && formik.errors.productName)}
-                    helperText={formik.touched.productName && formik.errors.productName}
                   />
                 </Grid>
 
@@ -300,9 +294,6 @@ export default function MpAdminProductEdit() {
                     required
                     value={formik.values.composition}
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={!!(formik.touched.composition && formik.errors.composition)}
-                    helperText={formik.touched.composition && formik.errors.composition}
                   />
                 </Grid>
 
@@ -320,9 +311,6 @@ export default function MpAdminProductEdit() {
                     required
                     value={formik.values.productCode}
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={!!(formik.touched.productCode && formik.errors.productCode)}
-                    helperText={formik.touched.productCode && formik.errors.productCode}
                   />
                 </Grid>
 
@@ -341,9 +329,6 @@ export default function MpAdminProductEdit() {
                     type='number'
                     value={formik.values.price}
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={!!(formik.touched.price && formik.errors.price)}
-                    helperText={formik.touched.price && formik.errors.price}
                     InputProps={{
                       endAdornment: <Typography variant='body2'>원</Typography>,
                     }}
@@ -365,9 +350,6 @@ export default function MpAdminProductEdit() {
                     type='number'
                     value={formik.values.feeRate}
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={!!(formik.touched.feeRate && formik.errors.feeRate)}
-                    helperText={formik.touched.feeRate && formik.errors.feeRate}
                     InputProps={{
                       endAdornment: <Typography variant='body2'>%</Typography>,
                     }}
@@ -388,7 +370,6 @@ export default function MpAdminProductEdit() {
                       type='number'
                       value={formik.values.changedFeeRate ?? ''}
                       onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
                       InputProps={{
                         endAdornment: <Typography variant='body2'>%</Typography>,
                       }}
@@ -400,7 +381,6 @@ export default function MpAdminProductEdit() {
                       placeholder='변경월 (예: 4)'
                       value={formik.values.changedMonth}
                       onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
                       sx={{ width: { xs: '100%', sm: '200px' } }}
                     />
                   </Box>
@@ -447,7 +427,6 @@ export default function MpAdminProductEdit() {
                     placeholder='비고를 입력하세요'
                     value={formik.values.note}
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
                   />
                 </Grid>
 

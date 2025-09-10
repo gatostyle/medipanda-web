@@ -246,12 +246,7 @@ export default function MpAdminNoticeEdit() {
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth>
                   <InputLabel>공지분류 *</InputLabel>
-                  <Select
-                    name='noticeCategory'
-                    value={formik.values.noticeCategory}
-                    onChange={formik.handleChange}
-                    error={!!(formik.touched.noticeCategory && formik.errors.noticeCategory)}
-                  >
+                  <Select name='noticeCategory' value={formik.values.noticeCategory} onChange={formik.handleChange}>
                     <MenuItem value={'PRODUCT_STATUS'}>제약사 - 제품현향</MenuItem>
                     <MenuItem value={'MANUFACTURING_SUSPENSION'}>제약사 - 정산 및 생산중단</MenuItem>
                     <MenuItem value={'NEW_PRODUCT'}>제약사 - 신제품 정보</MenuItem>
@@ -272,9 +267,6 @@ export default function MpAdminNoticeEdit() {
                   disabled={formik.values.noticeCategory === 'GENERAL'}
                   value={formik.values.manufacturerName}
                   onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={!!(formik.touched.manufacturerName && formik.errors.manufacturerName)}
-                  helperText={formik.touched.manufacturerName && formik.errors.manufacturerName}
                   InputProps={{
                     endAdornment: formik.values.noticeCategory !== 'GENERAL' && (
                       <InputAdornment position='end'>
@@ -335,9 +327,6 @@ export default function MpAdminNoticeEdit() {
                   required
                   value={formik.values.title}
                   onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={!!(formik.touched.title && formik.errors.title)}
-                  helperText={(formik.touched.title && formik.errors.title) || `${formik.values.title.length}/100자`}
                   inputProps={{ maxLength: 100 }}
                 />
               </Grid>

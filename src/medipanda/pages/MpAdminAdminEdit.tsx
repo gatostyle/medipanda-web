@@ -232,17 +232,7 @@ export default function MpAdminAdminEdit() {
               </Grid>
 
               <Grid item xs={12}>
-                <TextField
-                  name='name'
-                  label='관리자 명'
-                  fullWidth
-                  required
-                  value={formik.values.name}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.name && Boolean(formik.errors.name)}
-                  helperText={formik.touched.name && formik.errors.name}
-                />
+                <TextField name='name' label='관리자 명' fullWidth required value={formik.values.name} onChange={formik.handleChange} />
               </Grid>
 
               <Grid item xs={12}>
@@ -254,9 +244,6 @@ export default function MpAdminAdminEdit() {
                   disabled={!isNew}
                   value={formik.values.userId}
                   onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.userId && Boolean(formik.errors.userId)}
-                  helperText={formik.touched.userId && formik.errors.userId}
                 />
               </Grid>
 
@@ -269,15 +256,6 @@ export default function MpAdminAdminEdit() {
                   required={isNew}
                   value={formik.values.password}
                   onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.password && Boolean(formik.errors.password)}
-                  helperText={
-                    formik.touched.password && formik.errors.password
-                      ? formik.errors.password
-                      : !isNew
-                        ? '변경하지 않으려면 비워두세요'
-                        : ''
-                  }
                 />
               </Grid>
 
@@ -290,9 +268,6 @@ export default function MpAdminAdminEdit() {
                   required={isNew}
                   value={formik.values.passwordConfirm}
                   onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.passwordConfirm && Boolean(formik.errors.passwordConfirm)}
-                  helperText={formik.touched.passwordConfirm && formik.errors.passwordConfirm}
                 />
               </Grid>
 
@@ -305,9 +280,6 @@ export default function MpAdminAdminEdit() {
                   required
                   value={formik.values.email}
                   onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.email && Boolean(formik.errors.email)}
-                  helperText={formik.touched.email && formik.errors.email}
                 />
               </Grid>
 
@@ -333,9 +305,6 @@ export default function MpAdminAdminEdit() {
                     sx={{ width: 100 }}
                     value={formik.values.phoneNumber2}
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.phoneNumber2 && Boolean(formik.errors.phoneNumber2)}
-                    helperText={formik.touched.phoneNumber2 && formik.errors.phoneNumber2}
                   />
                   <Typography>-</Typography>
                   <TextField
@@ -344,9 +313,6 @@ export default function MpAdminAdminEdit() {
                     sx={{ width: 100 }}
                     value={formik.values.phoneNumber3}
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.phoneNumber3 && Boolean(formik.errors.phoneNumber3)}
-                    helperText={formik.touched.phoneNumber3 && formik.errors.phoneNumber3}
                   />
                 </Stack>
               </Grid>
@@ -489,11 +455,6 @@ export default function MpAdminAdminEdit() {
                     />
                   </Grid>
                 </Grid>
-                {formik.touched.permissions && formik.errors.permissions && (
-                  <Typography color='error' variant='caption' sx={{ mt: 1 }}>
-                    {formik.errors.permissions}
-                  </Typography>
-                )}
               </Grid>
 
               <Grid item xs={12}>

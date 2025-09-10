@@ -162,16 +162,7 @@ export default function MpAdminFaqEdit() {
                 <Typography variant='body2' color='text.secondary' gutterBottom>
                   제목
                 </Typography>
-                <TextField
-                  fullWidth
-                  name='title'
-                  placeholder=''
-                  value={formik.values.title}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={!!(formik.touched.title && formik.errors.title)}
-                  helperText={formik.touched.title && formik.errors.title}
-                />
+                <TextField fullWidth name='title' placeholder='' value={formik.values.title} onChange={formik.handleChange} />
               </Grid>
 
               <Grid item xs={12}>

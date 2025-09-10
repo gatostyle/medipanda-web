@@ -342,8 +342,6 @@ export default function MpAdminSalesAgencyProductEdit() {
                   name='clientName'
                   value={formik.values.clientName}
                   onChange={formik.handleChange}
-                  error={formik.touched.clientName && Boolean(formik.errors.clientName)}
-                  helperText={formik.touched.clientName && formik.errors.clientName}
                   required
                 />
               </Grid>
@@ -355,8 +353,6 @@ export default function MpAdminSalesAgencyProductEdit() {
                   name='productName'
                   value={formik.values.productName}
                   onChange={formik.handleChange}
-                  error={formik.touched.productName && Boolean(formik.errors.productName)}
-                  helperText={formik.touched.productName && formik.errors.productName}
                   required
                 />
               </Grid>
@@ -401,13 +397,6 @@ export default function MpAdminSalesAgencyProductEdit() {
                 {formik.values.thumbnailUrl && (
                   <Box sx={{ mt: 2 }}>
                     <img src={formik.values.thumbnailUrl} alt='썸네일 미리보기' style={{ maxWidth: 200, maxHeight: 200 }} />
-                  </Box>
-                )}
-                {formik.touched.thumbnailUrl && formik.errors.thumbnailUrl && (
-                  <Box>
-                    <Typography variant='caption' color='error' sx={{ mt: 1 }}>
-                      {formik.errors.thumbnailUrl}
-                    </Typography>
                   </Box>
                 )}
               </Grid>
