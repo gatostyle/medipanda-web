@@ -36,7 +36,7 @@ export default function MpAdminCommunityUserList() {
   const navigate = useNavigate();
 
   const initialSearchParams = {
-    searchType: '' as 'userId' | '',
+    searchType: '' as 'userId' | 'name' | 'nickname' | 'phoneNumber' | 'email' | '',
     searchKeyword: '',
     contractStatus: '' as 'CONTRACT' | 'NON_CONTRACT' | '',
     page: '1',
@@ -83,9 +83,11 @@ export default function MpAdminCommunityUserList() {
     setLoading(true);
     try {
       const response = await getBoardMembers({
-        userId: searchType === 'userId' && searchKeyword ? searchKeyword : undefined,
-        name: undefined,
-        phoneNumber: undefined,
+        userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
+        name: searchType === 'name' && searchKeyword !== '' ? searchKeyword : undefined,
+        nickname: searchType === 'nickname' && searchKeyword !== '' ? searchKeyword : undefined,
+        phoneNumber: searchType === 'phoneNumber' && searchKeyword !== '' ? searchKeyword : undefined,
+        email: searchType === 'email' && searchKeyword !== '' ? searchKeyword : undefined,
         contractStatus: contractStatus !== '' ? contractStatus : undefined,
         startAt: undefined,
         endAt: undefined,
@@ -203,6 +205,10 @@ export default function MpAdminCommunityUserList() {
                     <InputLabel>검색유형</InputLabel>
                     <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'userId'}>아이디</MenuItem>
+                      <MenuItem value={'name'}>이름</MenuItem>
+                      <MenuItem value={'nickname'}>닉네임</MenuItem>
+                      <MenuItem value={'phoneNumber'}>연락처</MenuItem>
+                      <MenuItem value={'email'}>이메일</MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>

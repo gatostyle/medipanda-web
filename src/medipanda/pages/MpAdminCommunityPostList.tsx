@@ -128,7 +128,7 @@ export default function MpAdminCommunityPostList() {
         endAt: endAt ? new DateString(endAt) : undefined,
         page: page - 1,
         size: pageSize,
-        filterBlind: undefined,
+        filterBlind: true,
       });
 
       setContents(withSequence(response).content);

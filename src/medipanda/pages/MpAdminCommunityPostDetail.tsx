@@ -288,7 +288,7 @@ export default function MpAdminCommunityPostDetail() {
                   <Typography variant='body2' color='text.secondary'>
                     블라인드 여부
                   </Typography>
-                  <Typography variant='body1'>{postDetail.isBlind}</Typography>
+                  <Typography variant='body1'>{postDetail.isBlind ? 'Y' : 'N'}</Typography>
                 </Box>
                 <Box>
                   <Typography variant='body2' color='text.secondary'>

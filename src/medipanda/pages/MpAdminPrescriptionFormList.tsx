@@ -38,9 +38,9 @@ import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipa
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
-import { formatYyyyMm, formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
+import { formatYyyyMm, formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -48,7 +48,7 @@ export default function MpAdminPrescriptionFormList() {
   const navigate = useNavigate();
 
   const initialSearchParams = {
-    searchType: '' as 'companyName' | 'dealerName' | 'drugCompany' | '',
+    searchType: '' as 'companyName' | 'institutionName' | 'dealerName' | 'drugCompany' | '',
     searchKeyword: '',
     prescriptionMonthStart: '',
     prescriptionMonthEnd: '',
@@ -59,11 +59,13 @@ export default function MpAdminPrescriptionFormList() {
   const {
     searchType,
     searchKeyword,
-    prescriptionMonthStart,
-    prescriptionMonthEnd,
+    prescriptionMonthStart: paramPrescriptionMonthStart,
+    prescriptionMonthEnd: paramPrescriptionMonthEnd,
     status,
     page: paramPage,
   } = useSearchParamsOrDefault(initialSearchParams);
+  const prescriptionMonthStart = useMemo(() => SafeDate(paramPrescriptionMonthStart) ?? null, [paramPrescriptionMonthStart]);
+  const prescriptionMonthEnd = useMemo(() => SafeDate(paramPrescriptionMonthEnd) ?? null, [paramPrescriptionMonthEnd]);
   const page = Number(paramPage);
   const pageSize = 20;
 
@@ -80,12 +82,16 @@ export default function MpAdminPrescriptionFormList() {
   const formik = useFormik({
     initialValues: {
       ...initialSearchParams,
+      prescriptionMonthStart: null as Date | null,
+      prescriptionMonthEnd: null as Date | null,
       page: null,
     },
     onSubmit: values => {
       const url = setUrlParams(
         {
           ...values,
+          prescriptionMonthStart: values.prescriptionMonthStart !== null ? formatYyyyMmDd(values.prescriptionMonthStart) : undefined,
+          prescriptionMonthEnd: values.prescriptionMonthEnd !== null ? formatYyyyMmDd(values.prescriptionMonthEnd) : undefined,
           page: 1,
         },
         initialSearchParams,
@@ -108,6 +114,7 @@ export default function MpAdminPrescriptionFormList() {
     try {
       const response = await getPrescriptionPartnerList({
         companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
+        institutionName: searchType === 'institutionName' && searchKeyword !== '' ? searchKeyword : undefined,
         drugCompany: searchType === 'drugCompany' && searchKeyword !== '' ? searchKeyword : undefined,
         dealerName: searchType === 'dealerName' && searchKeyword !== '' ? searchKeyword : undefined,
         prescriptionMonthStart: prescriptionMonthStart ? new DateTimeString(prescriptionMonthStart) : undefined,
@@ -194,10 +201,14 @@ export default function MpAdminPrescriptionFormList() {
             to={`/admin/prescription-forms/${row.original.id}/products`}
             style={{ textDecoration: 'none', color: '#1976d2' }}
           >
-            {row.original.dealerName}
+            {row.original.institutionName}
           </Link>
         ),
         size: 100,
+      },
+      {
+        header: '딜러명',
+        cell: ({ row }) => row.original.dealerName,
       },
       {
         header: '사업자등록번호',
@@ -299,6 +310,7 @@ export default function MpAdminPrescriptionFormList() {
                     <InputLabel>상태</InputLabel>
                     <Select name='status' value={formik.values.status} onChange={formik.handleChange}>
                       <MenuItem value={'PENDING'}>승인대기</MenuItem>
+                      <MenuItem value={'IN_PROGRESS'}>승인진행중</MenuItem>
                       <MenuItem value={'COMPLETED'}>승인완료</MenuItem>
                     </Select>
                   </FormControl>
@@ -308,6 +320,7 @@ export default function MpAdminPrescriptionFormList() {
                     <InputLabel>검색유형</InputLabel>
                     <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
                       <MenuItem value={'companyName'}>회사명</MenuItem>
+                      <MenuItem value={'institutionName'}>거래처명</MenuItem>
                       <MenuItem value={'dealerName'}>딜러명</MenuItem>
                       <MenuItem value={'drugCompany'}>제약사명</MenuItem>
                     </Select>

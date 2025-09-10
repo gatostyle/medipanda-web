@@ -45,6 +45,7 @@ export default function MpAdminExpenseReportList() {
     eventDateFrom: '',
     eventDateTo: '',
     status: '' as 'PENDING' | 'COMPLETED' | '',
+    reportType: '' as 'SAMPLE_PROVIDE' | 'PRODUCT_BRIEFING_MULTI' | 'PRODUCT_BRIEFING_SINGLE' | '',
     page: '1',
   };
 
@@ -54,6 +55,7 @@ export default function MpAdminExpenseReportList() {
     eventDateFrom: paramEventDateFrom,
     eventDateTo: paramEventDateTo,
     status,
+    reportType,
     page: paramPage,
   } = useSearchParamsOrDefault(initialSearchParams);
   const eventDateFrom = useMemo(() => SafeDate(paramEventDateFrom) ?? null, [paramEventDateFrom]);
@@ -104,6 +106,7 @@ export default function MpAdminExpenseReportList() {
         companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
         userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
         productName: searchType === 'productName' && searchKeyword !== '' ? searchKeyword : undefined,
+        reportType: reportType !== '' ? reportType : undefined,
         eventDateFrom: eventDateFrom ? new DateTimeString(eventDateFrom) : undefined,
         eventDateTo: eventDateTo ? new DateTimeString(eventDateTo) : undefined,
         status: formik.values.status !== '' ? formik.values.status : undefined,
@@ -132,10 +135,11 @@ export default function MpAdminExpenseReportList() {
       eventDateFrom,
       eventDateTo,
       status,
+      reportType,
       page: null,
     });
     fetchContents();
-  }, [searchType, searchKeyword, eventDateFrom, eventDateTo, status, page]);
+  }, [searchType, searchKeyword, eventDateFrom, eventDateTo, status, reportType, page]);
 
   const table = useReactTable({
     data: contents,
@@ -219,6 +223,18 @@ export default function MpAdminExpenseReportList() {
                       <MenuItem value={'companyName'}>회사명</MenuItem>
                       <MenuItem value={'userId'}>아이디</MenuItem>
                       <MenuItem value={'productName'}>제품명</MenuItem>
+                    </Select>
+                  </FormControl>
+                </SearchFilterItem>
+                <SearchFilterItem minWidth={140}>
+                  <FormControl fullWidth size='small'>
+                    <InputLabel>유형</InputLabel>
+                    <Select name='reportType' value={formik.values.reportType} onChange={formik.handleChange}>
+                      <MenuItem value={'SAMPLE_PROVIDE'}>{EXPENSE_REPORT_CLASSIFICATION_LABELS['SAMPLE_PROVIDE']}</MenuItem>
+                      <MenuItem value={'PRODUCT_BRIEFING_MULTI'}>{EXPENSE_REPORT_CLASSIFICATION_LABELS['PRODUCT_BRIEFING_MULTI']}</MenuItem>
+                      <MenuItem value={'PRODUCT_BRIEFING_SINGLE'}>
+                        {EXPENSE_REPORT_CLASSIFICATION_LABELS['PRODUCT_BRIEFING_SINGLE']}
+                      </MenuItem>
                     </Select>
                   </FormControl>
                 </SearchFilterItem>

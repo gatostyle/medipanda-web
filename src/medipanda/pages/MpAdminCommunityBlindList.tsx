@@ -201,7 +201,7 @@ export default function MpAdminCommunityBlindList() {
       {
         header: '글 내용',
         cell: ({ row }) => {
-          const content = row.original.content;
+          const content = row.original.postType === 'BOARD' ? row.original.content : '';
           return (
             <Typography
               sx={{

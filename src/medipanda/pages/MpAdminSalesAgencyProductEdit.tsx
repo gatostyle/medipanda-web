@@ -161,6 +161,7 @@ export default function MpAdminSalesAgencyProductEdit() {
             thumbnail: values.thumbnail!,
             files: [],
           });
+          alert('영업대행상품이 등록되었습니다.');
           navigate('/admin/sales-agency-products');
         } else {
           await updateSalesAgencyProductBoard(salesAgencyProductId, {
@@ -187,6 +188,7 @@ export default function MpAdminSalesAgencyProductEdit() {
             },
             thumbnail: values.thumbnail ?? undefined,
           });
+          alert('영업대행상품이 수정되었습니다.');
           navigate(`/admin/sales-agency-products/${salesAgencyProductId}`);
         }
       } catch (error) {
@@ -381,8 +383,8 @@ export default function MpAdminSalesAgencyProductEdit() {
                 <FormControl>
                   <RadioGroup row name='exposureRange' value={formik.values.exposureRange} onChange={formik.handleChange}>
                     <FormControlLabel value={'ALL'} control={<Radio />} label={EXPOSURE_RANGE_LABELS['ALL']} />
-                    <FormControlLabel value={'CONTRACT'} control={<Radio />} label={EXPOSURE_RANGE_LABELS['CONTRACTED']} />
-                    <FormControlLabel value={'NON_CONTRACT'} control={<Radio />} label={EXPOSURE_RANGE_LABELS['UNCONTRACTED']} />
+                    <FormControlLabel value={'CONTRACTED'} control={<Radio />} label={EXPOSURE_RANGE_LABELS['CONTRACTED']} />
+                    <FormControlLabel value={'UNCONTRACTED'} control={<Radio />} label={EXPOSURE_RANGE_LABELS['UNCONTRACTED']} />
                   </RadioGroup>
                 </FormControl>
               </Grid>

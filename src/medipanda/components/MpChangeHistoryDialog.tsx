@@ -41,33 +41,7 @@ export function MpChangeHistoryDialog({ open, onClose, prescriptionFormId }: Cha
 
   useEffect(() => {
     if (open && prescriptionFormId) {
-      const mockData: ChangeHistory[] = [
-        {
-          id: 1,
-          settlementMonth: '2025-04',
-          beforeProductName: '구세',
-          beforeQuantity: 100,
-          afterProductName: '구세정',
-          afterQuantity: 200,
-        },
-        {
-          id: 2,
-          settlementMonth: '2025-04',
-          beforeProductName: '타이레놀',
-          beforeQuantity: 50,
-          afterProductName: '타이레놀정',
-          afterQuantity: 60,
-        },
-        {
-          id: 3,
-          settlementMonth: '2025-03',
-          beforeProductName: '부루펜',
-          beforeQuantity: 30,
-          afterProductName: '부루펜정',
-          afterQuantity: 40,
-        },
-      ];
-      setData(mockData);
+      setData([]);
       setTotalPages(1);
     }
   }, [open, prescriptionFormId]);
