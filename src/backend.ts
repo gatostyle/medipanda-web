@@ -152,11 +152,11 @@ export interface BlindPostResponse {
   memberName: string;
   content: string;
   userId: string;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
   likesCount: number;
   postType: 'BOARD' | 'COMMENT';
   blindAt: string;
+  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
 }
 
 export interface BlindUpdateRequest {
@@ -194,12 +194,12 @@ export interface BoardMemberStatsResponse {
   name: string;
   id: number;
   userId: string;
+  phoneNumber: string;
+  commentCount: number;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   postCount: number;
-  phoneNumber: string;
   totalLikes: number;
   blindPostCount: number;
-  commentCount: number;
 }
 
 export interface BoardPostCreateRequest {
@@ -284,11 +284,11 @@ export interface CommentMemberResponse {
   name: string;
   id: number;
   content: string;
-  userId: string;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   commentType: 'COMMENT' | 'REPLY';
+  userId: string;
   likesCount: number;
   createdAt: string;
+  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   isBlind: boolean;
 }
 
@@ -593,9 +593,9 @@ export interface PageBannerResponse {
   content: BannerResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -607,9 +607,9 @@ export interface PageBlindPostResponse {
   content: BlindPostResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -621,9 +621,9 @@ export interface PageBoardMemberStatsResponse {
   content: BoardMemberStatsResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -635,9 +635,9 @@ export interface PageBoardPostResponse {
   content: BoardPostResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -649,9 +649,9 @@ export interface PageCommentMemberResponse {
   content: CommentMemberResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -663,9 +663,9 @@ export interface PageEventBoardSummaryResponse {
   content: EventBoardSummaryResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -677,9 +677,9 @@ export interface PageExpenseReportResponse {
   content: ExpenseReportResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -691,9 +691,9 @@ export interface PageHospitalResponse {
   content: HospitalResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -705,9 +705,9 @@ export interface PageMemberResponse {
   content: MemberResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -719,9 +719,9 @@ export interface PagePartnerResponse {
   content: PartnerResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -733,9 +733,9 @@ export interface PagePerformanceStatsResponse {
   content: PerformanceStatsResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -747,9 +747,9 @@ export interface PagePrescriptionPartnerResponse {
   content: PrescriptionPartnerResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -761,9 +761,9 @@ export interface PagePrescriptionResponse {
   content: PrescriptionResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -775,9 +775,9 @@ export interface PageProductSummaryResponse {
   content: ProductSummaryResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -789,9 +789,9 @@ export interface PageSalesAgencyProductApplicantResponse {
   content: SalesAgencyProductApplicantResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -803,9 +803,9 @@ export interface PageSalesAgencyProductSummaryResponse {
   content: SalesAgencyProductSummaryResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -817,9 +817,9 @@ export interface PageSettlementPartnerResponse {
   content: SettlementPartnerResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -831,9 +831,9 @@ export interface PageSettlementResponse {
   content: SettlementResponse[];
   number: number;
   sort: SortObject;
-  numberOfElements: number;
   first: boolean;
   last: boolean;
+  numberOfElements: number;
   empty: boolean;
 }
 
@@ -1892,6 +1892,41 @@ export async function applyContract(data: {
 }
 
 /**
+ * 파트너 계약 수정
+ * POST /v1/partner-contracts/{contractId}/update
+ */
+export async function updateContract(
+  contractId: number,
+  data: {
+    request: PartnerContractUpdateRequest;
+    business_registration?: File;
+    subcontract_agreement?: File;
+    cso_certificate?: File;
+    education_certificate?: File;
+  },
+): Promise<void> {
+  const form = new FormData();
+  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  if (data.business_registration !== undefined) {
+    form.append('business_registration', data.business_registration, data.business_registration.name.normalize('NFC'));
+  }
+  if (data.subcontract_agreement !== undefined) {
+    form.append('subcontract_agreement', data.subcontract_agreement, data.subcontract_agreement.name.normalize('NFC'));
+  }
+  if (data.cso_certificate !== undefined) {
+    form.append('cso_certificate', data.cso_certificate, data.cso_certificate.name.normalize('NFC'));
+  }
+  if (data.education_certificate !== undefined) {
+    form.append('education_certificate', data.education_certificate, data.education_certificate.name.normalize('NFC'));
+  }
+  await axios.request({
+    method: 'POST',
+    url: `/v1/partner-contracts/${contractId}/update`,
+    data: form,
+  });
+}
+
+/**
  * 파트너 계약 거절
  * POST /v1/partner-contracts/{contractId}/reject
  */
@@ -1910,38 +1945,6 @@ export async function approveContract(contractId: number): Promise<void> {
   await axios.request({
     method: 'POST',
     url: `/v1/partner-contracts/${contractId}/approve`,
-  });
-}
-
-/**
- * 파트너 계약 수정
- * POST /v1/partner-contracts/update
- */
-export async function updateContract(data: {
-  request: PartnerContractUpdateRequest;
-  business_registration?: File;
-  subcontract_agreement?: File;
-  cso_certificate?: File;
-  education_certificate?: File;
-}): Promise<void> {
-  const form = new FormData();
-  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
-  if (data.business_registration !== undefined) {
-    form.append('business_registration', data.business_registration, data.business_registration.name.normalize('NFC'));
-  }
-  if (data.subcontract_agreement !== undefined) {
-    form.append('subcontract_agreement', data.subcontract_agreement, data.subcontract_agreement.name.normalize('NFC'));
-  }
-  if (data.cso_certificate !== undefined) {
-    form.append('cso_certificate', data.cso_certificate, data.cso_certificate.name.normalize('NFC'));
-  }
-  if (data.education_certificate !== undefined) {
-    form.append('education_certificate', data.education_certificate, data.education_certificate.name.normalize('NFC'));
-  }
-  await axios.request({
-    method: 'POST',
-    url: '/v1/partner-contracts/update',
-    data: form,
   });
 }
 

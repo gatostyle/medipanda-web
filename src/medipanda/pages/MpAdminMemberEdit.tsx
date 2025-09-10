@@ -26,6 +26,7 @@ import {
   getMemberDetails,
   MemberDetailsResponse,
   PartnerContractDetailsResponse,
+  updateContract,
   updateMember,
 } from '@/backend';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
@@ -54,10 +55,9 @@ export default function MpAdminMemberEdit() {
       confirmPassword: '',
       phoneNumber: '',
       email: '',
-      accountStatus: 'ACTIVATED' as 'ACTIVATED' | 'BLOCKED',
-      settlementBank: '',
-      subcontractFile: '',
-      educationCertificate: '',
+      accountStatus: 'ACTIVATED' as 'ACTIVATED' | 'BLOCKED' | 'DELETED',
+      contractType: 'INDIVIDUAL' as 'INDIVIDUAL' | 'ORGANIZATION',
+      bankName: '',
       commissionRate: 0,
       note: '',
       marketingAgreementsSms: false,
@@ -100,6 +100,22 @@ export default function MpAdminMemberEdit() {
           },
         });
 
+        if (contractDetail !== null) {
+          await updateContract(contractDetail.id, {
+            request: {
+              contractType: values.contractType,
+              companyName: null,
+              businessNumber: null,
+              bankName: values.bankName,
+              accountNumber: null,
+            },
+            business_registration: undefined,
+            subcontract_agreement: undefined,
+            cso_certificate: undefined,
+            education_certificate: undefined,
+          });
+        }
+
         alert('회원정보가 수정되었습니다.');
         navigate('/admin/members');
       } catch (e) {
@@ -132,9 +148,8 @@ export default function MpAdminMemberEdit() {
         phoneNumber: memberDetail.phoneNumber,
         email: memberDetail.email,
         accountStatus: memberDetail.accountStatus,
-        settlementBank: '',
-        subcontractFile: '',
-        educationCertificate: '',
+        contractType: 'INDIVIDUAL',
+        bankName: '',
         commissionRate: 0,
         note: memberDetail.note ?? '',
         marketingAgreementsSms: memberDetail.marketingAgreements?.sms ?? false,
@@ -163,9 +178,8 @@ export default function MpAdminMemberEdit() {
       formik.resetForm({
         values: {
           ...values,
-          settlementBank: `${contractDetail.bankName ?? ''} ${contractDetail.accountNumber ?? ''}`.trim(),
-          subcontractFile: contractDetail.fileUrls?.subcontractAgreement ?? '',
-          educationCertificate: contractDetail.fileUrls?.educationCertificate ?? '',
+          contractType: contractDetail.contractType,
+          bankName: `${contractDetail.bankName ?? ''} ${contractDetail.accountNumber ?? ''}`.trim(),
           commissionRate: 0,
         },
       });
@@ -424,7 +438,7 @@ export default function MpAdminMemberEdit() {
                         <Grid item xs={6}>
                           <FormControl fullWidth size='small'>
                             <InputLabel>유형</InputLabel>
-                            <Select name='contractType' value={contractDetail.contractType} onChange={formik.handleChange}>
+                            <Select name='contractType' value={formik.values.contractType} onChange={formik.handleChange}>
                               <MenuItem value={'ORGANIZATION'}>법인계약</MenuItem>
                               <MenuItem value={'INDIVIDUAL'}>개인계약</MenuItem>
                             </Select>
@@ -456,8 +470,8 @@ export default function MpAdminMemberEdit() {
                           <TextField
                             fullWidth
                             label='정산은행'
-                            name='settlementBank'
-                            value={formik.values.settlementBank}
+                            name='bankName'
+                            value={formik.values.bankName}
                             onChange={formik.handleChange}
                             size='small'
                           />
@@ -514,7 +528,6 @@ export default function MpAdminMemberEdit() {
                             fullWidth
                             label='구간수수료'
                             name='commissionRate'
-                            type='number'
                             value={formik.values.commissionRate}
                             onChange={formik.handleChange}
                             size='small'
