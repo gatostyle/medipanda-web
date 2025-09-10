@@ -31,8 +31,11 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 
 export default function MpAdminSettlementEdit() {
   const navigate = useNavigate();
+  const { settlementId: paramSettlementId } = useParams();
+  const isNew = paramSettlementId === undefined;
+  const settlementId = Number(paramSettlementId);
+
   const { enqueueSnackbar } = useSnackbar();
-  const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [totalElements] = useState(2);
   const [totalPages] = useState(1);
@@ -48,8 +51,8 @@ export default function MpAdminSettlementEdit() {
       searchKeyword: '',
     },
     onSubmit: values => {
-      if (id) {
-        fetchSettlementData();
+      if (!isNew) {
+        fetchSettlementData(settlementId);
       }
     },
   });
@@ -57,18 +60,21 @@ export default function MpAdminSettlementEdit() {
   const [data, setData] = useState<Sequenced<SettlementPartnerResponse>[]>([]);
 
   useEffect(() => {
-    if (id) {
-      fetchSettlementData();
+    if (!isNew) {
+      fetchSettlementData(settlementId);
     }
-  }, [id, pagination.pageIndex, pagination.pageSize]);
+  }, [isNew, settlementId, pagination.pageIndex, pagination.pageSize]);
 
-  const fetchSettlementData = async () => {
-    if (id === undefined) return;
+  const fetchSettlementData = async (settlementId: number) => {
+    if (Number.isNaN(settlementId)) {
+      alert('잘못된 접근입니다.');
+      return navigate('/admin/settlements');
+    }
 
     setLoading(true);
     try {
       const response = await getSettlementPartnerSummary({
-        settlementId: parseInt(id),
+        settlementId: settlementId,
         institutionName:
           formik.values.searchType === 'institutionName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
         businessNumber:
@@ -115,7 +121,7 @@ export default function MpAdminSettlementEdit() {
         header: '거래처명',
         cell: ({ row }) => (
           <Link
-            to={`/admin/settlements/${id}/business-partners/${row.original.institutionCode}`}
+            to={`/admin/settlements/${settlementId}/business-partners/${row.original.institutionCode}`}
             style={{ textDecoration: 'none', color: '#1976d2' }}
           >
             {row.original.institutionName}
@@ -214,7 +220,7 @@ export default function MpAdminSettlementEdit() {
               variant='contained'
               color='success'
               href={getDownloadSettlementPartnerSummaryExcel({
-                settlementId: parseInt(id!),
+                settlementId: parseInt(paramSettlementId!),
                 institutionName:
                   formik.values.searchType === 'institutionName' && formik.values.searchKeyword !== ''
                     ? formik.values.searchKeyword

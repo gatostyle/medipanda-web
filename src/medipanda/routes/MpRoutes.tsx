@@ -124,18 +124,18 @@ const adminRoute: RouteObject = {
       ),
     },
     {
-      path: 'sales-agency-products/:id/edit',
+      path: 'sales-agency-products/:salesAgencyProductId',
       element: (
         <MpAdminGuard requiredPermission={'CONTRACT_MANAGEMENT'}>
-          <MpAdminSalesAgencyProductEdit />
+          <MpAdminSalesAgencyProductDetail />
         </MpAdminGuard>
       ),
     },
     {
-      path: 'sales-agency-products/:id',
+      path: 'sales-agency-products/:salesAgencyProductId/edit',
       element: (
         <MpAdminGuard requiredPermission={'CONTRACT_MANAGEMENT'}>
-          <MpAdminSalesAgencyProductDetail />
+          <MpAdminSalesAgencyProductEdit />
         </MpAdminGuard>
       ),
     },
@@ -156,7 +156,7 @@ const adminRoute: RouteObject = {
       ),
     },
     {
-      path: 'partners/:id/edit',
+      path: 'partners/:partnerId/edit',
       element: (
         <MpAdminGuard requiredPermission={'TRANSACTION_MANAGEMENT'}>
           <MpAdminPartnerEdit />
@@ -180,18 +180,18 @@ const adminRoute: RouteObject = {
       ),
     },
     {
-      path: 'products/:id/edit',
+      path: 'products/:productId',
       element: (
         <MpAdminGuard requiredPermission={'PRODUCT_MANAGEMENT'}>
-          <MpAdminProductEdit />
+          <MpAdminProductDetail />
         </MpAdminGuard>
       ),
     },
     {
-      path: 'products/:id',
+      path: 'products/:productId/edit',
       element: (
         <MpAdminGuard requiredPermission={'PRODUCT_MANAGEMENT'}>
-          <MpAdminProductDetail />
+          <MpAdminProductEdit />
         </MpAdminGuard>
       ),
     },
@@ -220,7 +220,7 @@ const adminRoute: RouteObject = {
       ),
     },
     {
-      path: 'prescription-forms/:id/products',
+      path: 'prescription-forms/:prescriptionPartnerId/products',
       element: (
         <MpAdminGuard requiredPermission={'PRESCRIPTION_MANAGEMENT'}>
           <MpAdminPrescriptionFormProducts />
@@ -244,7 +244,7 @@ const adminRoute: RouteObject = {
       ),
     },
     {
-      path: 'settlements/:id',
+      path: 'settlements/:settlementId',
       element: (
         <MpAdminGuard requiredPermission={'SETTLEMENT_MANAGEMENT'}>
           <MpAdminSettlementEdit />
@@ -252,7 +252,7 @@ const adminRoute: RouteObject = {
       ),
     },
     {
-      path: 'settlements/:settlementId/business-partners/:id',
+      path: 'settlements/:settlementId/business-partners/:settlementPartnerId',
       element: (
         <MpAdminGuard requiredPermission={'SETTLEMENT_MANAGEMENT'}>
           <MpAdminSettlementBusinessPartnerDetail />
@@ -292,7 +292,7 @@ const adminRoute: RouteObject = {
       ),
     },
     {
-      path: 'community-posts/:id',
+      path: 'community-posts/:boardId',
       element: (
         <MpAdminGuard requiredPermission={'COMMUNITY_MANAGEMENT'}>
           <MpAdminCommunityPostDetail />
@@ -340,18 +340,18 @@ const adminRoute: RouteObject = {
       ),
     },
     {
-      path: 'atoz/:id/edit',
+      path: 'atoz/:boardId',
       element: (
         <MpAdminGuard requiredPermission={'CONTENT_MANAGEMENT'}>
-          <MpAdminAtoZEdit />
+          <MpAdminAtoZDetail />
         </MpAdminGuard>
       ),
     },
     {
-      path: 'atoz/:id',
+      path: 'atoz/:boardId/edit',
       element: (
         <MpAdminGuard requiredPermission={'CONTENT_MANAGEMENT'}>
-          <MpAdminAtoZDetail />
+          <MpAdminAtoZEdit />
         </MpAdminGuard>
       ),
     },
@@ -372,18 +372,18 @@ const adminRoute: RouteObject = {
       ),
     },
     {
-      path: 'notices/:id/edit',
+      path: 'notices/:boardId',
       element: (
         <MpAdminGuard requiredPermission={'CUSTOMER_SERVICE'}>
-          <MpAdminNoticeEdit />
+          <MpAdminNoticeDetail />
         </MpAdminGuard>
       ),
     },
     {
-      path: 'notices/:id',
+      path: 'notices/:boardId/edit',
       element: (
         <MpAdminGuard requiredPermission={'CUSTOMER_SERVICE'}>
-          <MpAdminNoticeDetail />
+          <MpAdminNoticeEdit />
         </MpAdminGuard>
       ),
     },
@@ -404,18 +404,18 @@ const adminRoute: RouteObject = {
       ),
     },
     {
-      path: 'faqs/:id/edit',
+      path: 'faqs/:boardId',
       element: (
         <MpAdminGuard requiredPermission={'CUSTOMER_SERVICE'}>
-          <MpAdminFaqEdit />
+          <MpAdminFaqDetail />
         </MpAdminGuard>
       ),
     },
     {
-      path: 'faqs/:id',
+      path: 'faqs/:boardId/edit',
       element: (
         <MpAdminGuard requiredPermission={'CUSTOMER_SERVICE'}>
-          <MpAdminFaqDetail />
+          <MpAdminFaqEdit />
         </MpAdminGuard>
       ),
     },
@@ -428,7 +428,7 @@ const adminRoute: RouteObject = {
       ),
     },
     {
-      path: 'inquiries/:id',
+      path: 'inquiries/:boardId',
       element: (
         <MpAdminGuard requiredPermission={'CUSTOMER_SERVICE'}>
           <MpAdminInquiryEdit />
@@ -452,18 +452,18 @@ const adminRoute: RouteObject = {
       ),
     },
     {
-      path: 'events/:id/edit',
+      path: 'events/:eventId',
       element: (
         <MpAdminGuard requiredPermission={'CONTENT_MANAGEMENT'}>
-          <MpAdminEventEdit />
+          <MpAdminEventDetail />
         </MpAdminGuard>
       ),
     },
     {
-      path: 'events/:id',
+      path: 'events/:eventId/edit',
       element: (
         <MpAdminGuard requiredPermission={'CONTENT_MANAGEMENT'}>
-          <MpAdminEventDetail />
+          <MpAdminEventEdit />
         </MpAdminGuard>
       ),
     },
@@ -484,7 +484,7 @@ const adminRoute: RouteObject = {
       ),
     },
     {
-      path: 'banners/:id/edit',
+      path: 'banners/:bannerId/edit',
       element: (
         <MpAdminGuard requiredPermission={'BANNER_MANAGEMENT'}>
           <MpAdminBannerEdit />

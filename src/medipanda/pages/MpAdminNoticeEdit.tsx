@@ -31,14 +31,15 @@ import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 
 export default function MpAdminNoticeEdit() {
-  const { id } = useParams();
   const navigate = useNavigate();
+  const { boardId: paramBoardId } = useParams();
+  const isNew = paramBoardId === undefined;
+  const boardId = Number(paramBoardId);
+
   const { enqueueSnackbar } = useSnackbar();
   const { session } = useSession();
   const [loading, setLoading] = useState(false);
   const [detail, setDetail] = useState<BoardDetailsResponse | null>(null);
-
-  const isNew = id === undefined;
 
   const formik = useFormik({
     initialValues: {
@@ -109,7 +110,7 @@ export default function MpAdminNoticeEdit() {
           enqueueSnackbar('공지사항이 성공적으로 등록되었습니다.', { variant: 'success' });
           navigate('/admin/notices');
         } else {
-          await updateBoardPost(parseInt(id!), {
+          await updateBoardPost(boardId, {
             updateRequest: {
               title: values.title,
               content: editor.getHTML(),
@@ -128,7 +129,7 @@ export default function MpAdminNoticeEdit() {
             newFiles: values.files,
           });
           enqueueSnackbar('공지사항이 성공적으로 수정되었습니다.', { variant: 'success' });
-          navigate(`/admin/notices/${id}`);
+          navigate(`/admin/notices/${paramBoardId}`);
         }
       } catch (error) {
         console.error('Failed to submit form:', error);
@@ -142,15 +143,20 @@ export default function MpAdminNoticeEdit() {
   const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
   useEffect(() => {
-    if (!isNew && id) {
-      fetchData(parseInt(id, 10));
+    if (!isNew) {
+      fetchData(boardId);
     }
-  }, [id, isNew]);
+  }, [isNew, boardId]);
 
-  const fetchData = async (itemId: number) => {
+  const fetchData = async (boardId: number) => {
+    if (Number.isNaN(boardId)) {
+      alert('잘못된 접근입니다.');
+      return navigate('/admin/notices');
+    }
+
     setLoading(true);
     try {
-      const response = await getBoardDetails(itemId);
+      const response = await getBoardDetails(boardId);
       setDetail(response);
       formik.setValues({
         displayBoard: response.boardType as

@@ -18,12 +18,15 @@ import MainCard from 'components/MainCard';
 import { BoardDetailsResponse, getBoardDetails } from '@/backend';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useMedipandaEditor } from '../components/useMedipandaEditor';
 import { formatYyyyMmDd } from '../utils/dateFormat';
 
 export default function MpAdminAtoZDetail() {
-  const { id } = useParams();
+  const navigate = useNavigate();
+  const { boardId: paramBoardId } = useParams();
+  const boardId = Number(paramBoardId);
+
   const { enqueueSnackbar } = useSnackbar();
   const [data, setData] = useState<BoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
@@ -34,15 +37,18 @@ export default function MpAdminAtoZDetail() {
   }, [editor]);
 
   useEffect(() => {
-    if (id) {
-      fetchData(parseInt(id, 10));
-    }
-  }, [id]);
+    fetchData(boardId);
+  }, [boardId]);
 
-  const fetchData = async (itemId: number) => {
+  const fetchData = async (boardId: number) => {
+    if (Number.isNaN(boardId)) {
+      alert('잘못된 접근입니다.');
+      return navigate('/admin/atoz');
+    }
+
     setLoading(true);
     try {
-      const response = await getBoardDetails(itemId);
+      const response = await getBoardDetails(boardId);
       setData(response);
       editor.commands.setContent(response.content);
       setEditorAttachments(response.attachments.filter(a => a.type === 'EDITOR'));
@@ -150,7 +156,7 @@ export default function MpAdminAtoZDetail() {
             <Button variant='outlined' component={Link} to='/admin/atoz' sx={{ minWidth: 120 }}>
               취소
             </Button>
-            <Button variant='contained' color='success' component={Link} to={`/admin/atoz/${id}/edit`} sx={{ minWidth: 120 }}>
+            <Button variant='contained' color='success' component={Link} to={`/admin/atoz/${boardId}/edit`} sx={{ minWidth: 120 }}>
               수정
             </Button>
           </Box>

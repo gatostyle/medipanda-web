@@ -18,9 +18,9 @@ import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { ArrowLeft } from 'iconsax-react';
 import {
+  getSettlement,
   getSettlementPartnerProducts,
   getSettlementPartnerSummary,
-  getSettlements,
   SettlementPartnerProductResponse,
   SettlementPartnerResponse,
   SettlementResponse,
@@ -31,26 +31,39 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 export default function MpAdminSettlementBusinessPartnerDetail() {
   const navigate = useNavigate();
+  const { settlementId: paramSettlementId, settlementPartnerId: paramSettlementPartnerId } = useParams();
+  const settlementId = Number(paramSettlementId);
+  const settlementPartnerId = Number(paramSettlementPartnerId);
+
   const { enqueueSnackbar } = useSnackbar();
-  const { settlementId, id } = useParams();
   const [loading, setLoading] = useState(true);
   const [settlementDetail, setSettlementDetail] = useState<SettlementResponse | null>(null);
   const [settlementPartnerDetail, setSettlementPartnerDetail] = useState<SettlementPartnerResponse | null>(null);
   const [products, setProducts] = useState<SettlementPartnerProductResponse[]>([]);
 
-  const fetchData = async () => {
+  const fetchData = async (settlementId: number, settlementPartnerId: number) => {
+    if (Number.isNaN(settlementId)) {
+      alert('잘못된 접근입니다.');
+      return navigate('/admin/settlements');
+    }
+
+    if (Number.isNaN(settlementPartnerId)) {
+      alert('잘못된 접근입니다.');
+      return navigate('/admin/settlements');
+    }
+
     try {
       setLoading(true);
       const [settlementResponse, partnerResponse, products] = await Promise.all([
-        getSettlements(),
+        getSettlement(settlementId),
         getSettlementPartnerSummary({
-          settlementId: parseInt(settlementId!),
-          institutionCode: id,
+          settlementId: settlementId,
+          institutionCode: settlementPartnerId,
         }),
-        getSettlementPartnerProducts(parseInt(id!)),
+        getSettlementPartnerProducts(settlementPartnerId),
       ]);
 
-      setSettlementDetail(settlementResponse.content[0]);
+      setSettlementDetail(settlementResponse);
       setSettlementPartnerDetail(partnerResponse.content[0]);
       setProducts(products);
     } catch (error) {
@@ -62,8 +75,8 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
   };
 
   useEffect(() => {
-    fetchData();
-  }, [id]);
+    fetchData(settlementId, settlementPartnerId);
+  }, [settlementId, settlementPartnerId]);
 
   const table = useReactTable({
     data: products,

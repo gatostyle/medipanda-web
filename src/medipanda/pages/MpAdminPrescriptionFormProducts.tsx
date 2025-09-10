@@ -45,7 +45,10 @@ import { DateFix } from '../utils/dateFormat';
 
 export default function MpAdminPrescriptionFormProducts() {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { prescriptionPartnerId: paramPrescriptionPartnerId } = useParams();
+  const isNew = paramPrescriptionPartnerId === undefined;
+  const prescriptionPartnerId = Number(paramPrescriptionPartnerId);
+
   const { enqueueSnackbar } = useSnackbar();
   const [changeHistoryOpen, setChangeHistoryOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -78,7 +81,7 @@ export default function MpAdminPrescriptionFormProducts() {
     onSubmit: async values => {
       try {
         await createPartnerProducts({
-          prescriptionPartnerId: parseInt(id!),
+          prescriptionPartnerId: prescriptionPartnerId,
           items: partnerProducts,
         });
 
@@ -318,53 +321,55 @@ export default function MpAdminPrescriptionFormProducts() {
   };
 
   useEffect(() => {
-    const fetchPrescriptionFormData = async () => {
-      if (id === undefined) {
-        setLoading(false);
-        return;
-      }
+    if (!isNew) {
+      fetchPrescriptionFormData(prescriptionPartnerId);
+    }
+  }, [isNew, prescriptionPartnerId]);
 
-      try {
-        setLoading(true);
-        const [formDetail, products, attachedFiles] = await Promise.all([
-          getPrescriptionPartner(parseInt(id)),
-          getPartnerProducts(parseInt(id)),
-          getAttachedEdiFiles(parseInt(id)),
-        ]);
+  const fetchPrescriptionFormData = async (prescriptionPartnerId: number) => {
+    if (Number.isNaN(prescriptionPartnerId)) {
+      alert('잘못된 접근입니다.');
+      return navigate('/admin/prescription-forms');
+    }
 
-        formik.setValues({
-          drugCompany: formDetail.drugCompany,
-          drugCompanyCode: formDetail.drugCompanyCode,
-          companyName: formDetail.companyName,
-          institutionName: formDetail.partnerName,
-          institutionCode: formDetail.institutionCode,
-          businessNumber: formDetail.businessNumber,
-          dealerName: formDetail.dealerName,
-          prescriptionMonth: DateFix(formDetail.prescriptionMonth),
-          settlementMonth: DateFix(formDetail.settlementMonth),
-          prescriptionAmount: formDetail.amount.toLocaleString(),
-        });
+    try {
+      setLoading(true);
+      const [formDetail, products, attachedFiles] = await Promise.all([
+        getPrescriptionPartner(prescriptionPartnerId),
+        getPartnerProducts(prescriptionPartnerId),
+        getAttachedEdiFiles(prescriptionPartnerId),
+      ]);
 
-        setPartnerProducts(
-          products.map((product, index) => ({
-            ...product,
-            sequence: index + 1,
-            ocrItem: null,
-          })),
-        );
+      formik.setValues({
+        drugCompany: formDetail.drugCompany,
+        drugCompanyCode: formDetail.drugCompanyCode,
+        companyName: formDetail.companyName,
+        institutionName: formDetail.partnerName,
+        institutionCode: formDetail.institutionCode,
+        businessNumber: formDetail.businessNumber,
+        dealerName: formDetail.dealerName,
+        prescriptionMonth: DateFix(formDetail.prescriptionMonth),
+        settlementMonth: DateFix(formDetail.settlementMonth),
+        prescriptionAmount: formDetail.amount.toLocaleString(),
+      });
 
-        setAttachedFiles(attachedFiles);
-      } catch (error) {
-        console.error('Failed to fetch prescription form data:', error);
-        enqueueSnackbar('처방입력 정보를 불러오는데 실패했습니다.', { variant: 'error' });
-        navigate('/admin/prescription-forms');
-      } finally {
-        setLoading(false);
-      }
-    };
+      setPartnerProducts(
+        products.map((product, index) => ({
+          ...product,
+          sequence: index + 1,
+          ocrItem: null,
+        })),
+      );
 
-    fetchPrescriptionFormData();
-  }, [id]);
+      setAttachedFiles(attachedFiles);
+    } catch (error) {
+      console.error('Failed to fetch prescription form data:', error);
+      enqueueSnackbar('처방입력 정보를 불러오는데 실패했습니다.', { variant: 'error' });
+      navigate('/admin/prescription-forms');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -564,7 +569,7 @@ export default function MpAdminPrescriptionFormProducts() {
       <MpChangeHistoryDialog
         open={changeHistoryOpen}
         onClose={() => setChangeHistoryOpen(false)}
-        prescriptionFormId={id ? parseInt(id) : undefined}
+        prescriptionFormId={paramPrescriptionPartnerId ? prescriptionPartnerId : undefined}
       />
       <MpOcrRequestModal
         drugCompanyCode={formik.values.drugCompanyCode}

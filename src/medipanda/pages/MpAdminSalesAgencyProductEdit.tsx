@@ -38,13 +38,12 @@ import {
   updateSalesAgencyProductBoard,
 } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
-import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useSession } from '@/medipanda/hooks/useSession';
 import { EXPOSURE_RANGE_LABELS } from '@/medipanda/ui-labels';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import * as Yup from 'yup';
 import { DateFix, formatYyyyMmDd } from '../utils/dateFormat';
 
@@ -65,8 +64,11 @@ function TabPanel(props: TabPanelProps) {
 }
 
 export default function MpAdminSalesAgencyProductEdit() {
-  const { id } = useParams();
   const navigate = useNavigate();
+  const { salesAgencyProductId: paramSalesAgencyProductId } = useParams();
+  const isNew = paramSalesAgencyProductId === undefined;
+  const salesAgencyProductId = Number(paramSalesAgencyProductId);
+
   const errorDialog = useMpErrorDialog();
   const { enqueueSnackbar } = useSnackbar();
   const { session } = useSession();
@@ -77,8 +79,6 @@ export default function MpAdminSalesAgencyProductEdit() {
   const [selectedApplicants, setSelectedApplicants] = useState<number[]>([]);
   const [applicantPage, setApplicantPage] = useState(1);
   const [applicantSearch, setApplicantSearch] = useState('');
-
-  const isNew = id === undefined;
 
   const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
@@ -111,33 +111,7 @@ export default function MpAdminSalesAgencyProductEdit() {
     }),
     onSubmit: async values => {
       try {
-        if (!isNew) {
-          await updateSalesAgencyProductBoard(parseInt(id!), {
-            boardPostUpdateRequest: {
-              title: values.productName,
-              content: editor.getHTML(),
-              hiddenNickname: null,
-              isBlind: null,
-              isExposed: values.isExposed,
-              exposureRange: values.exposureRange,
-              keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
-              editorFileIds: editorAttachments.map(attachment => attachment.s3fileId),
-              noticeProperties: null,
-            },
-            salesAgencyProductUpdateRequest: {
-              clientName: values.clientName,
-              productName: values.productName,
-              contractDate: formatYyyyMmDd(values.contractDate!),
-              videoUrl: values.videoUrl,
-              note: values.note,
-              startAt: formatYyyyMmDd(values.startDate!),
-              endAt: formatYyyyMmDd(values.endDate!),
-              quantity: null,
-            },
-            thumbnail: values.thumbnail ?? undefined,
-          });
-          navigate(`/admin/sales-agency-products/${id}`);
-        } else {
+        if (isNew) {
           await createSalesAgencyProductBoard({
             boardPostCreateRequest: {
               boardType: 'SALES_AGENCY',
@@ -166,6 +140,32 @@ export default function MpAdminSalesAgencyProductEdit() {
             files: [],
           });
           navigate('/admin/sales-agency-products');
+        } else {
+          await updateSalesAgencyProductBoard(salesAgencyProductId, {
+            boardPostUpdateRequest: {
+              title: values.productName,
+              content: editor.getHTML(),
+              hiddenNickname: null,
+              isBlind: null,
+              isExposed: values.isExposed,
+              exposureRange: values.exposureRange,
+              keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
+              editorFileIds: editorAttachments.map(attachment => attachment.s3fileId),
+              noticeProperties: null,
+            },
+            salesAgencyProductUpdateRequest: {
+              clientName: values.clientName,
+              productName: values.productName,
+              contractDate: formatYyyyMmDd(values.contractDate!),
+              videoUrl: values.videoUrl,
+              note: values.note,
+              startAt: formatYyyyMmDd(values.startDate!),
+              endAt: formatYyyyMmDd(values.endDate!),
+              quantity: null,
+            },
+            thumbnail: values.thumbnail ?? undefined,
+          });
+          navigate(`/admin/sales-agency-products/${salesAgencyProductId}`);
         }
       } catch (error) {
         console.error('Failed to save sales agency product:', error);
@@ -175,17 +175,21 @@ export default function MpAdminSalesAgencyProductEdit() {
 
   useEffect(() => {
     if (!isNew) {
-      loadProductDetail();
+      loadProductDetail(salesAgencyProductId);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, isNew]);
+  }, [isNew, salesAgencyProductId]);
 
-  const loadProductDetail = async () => {
+  const loadProductDetail = async (salesAgencyProductId: number) => {
+    if (Number.isNaN(salesAgencyProductId)) {
+      alert('잘못된 접근입니다.');
+      return navigate('/admin/sales-agency-products');
+    }
+
     setLoading(true);
     try {
       const [detail, applicantsResponse] = await Promise.all([
-        getSalesAgencyProductDetails(parseInt(id!)),
-        getProductApplicants(parseInt(id!)),
+        getSalesAgencyProductDetails(salesAgencyProductId),
+        getProductApplicants(salesAgencyProductId),
       ]);
       setProductDetail(detail);
 
@@ -223,10 +227,6 @@ export default function MpAdminSalesAgencyProductEdit() {
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
-  };
-
-  const handleCancel = () => {
-    navigate('/admin/sales-agency-products');
   };
 
   const handleFileUpload = async () => {
@@ -269,7 +269,7 @@ export default function MpAdminSalesAgencyProductEdit() {
       const applicant = applicants.find(a => a.id === applicantId);
       if (applicant) {
         await updateApplicantNotes({
-          productId: parseInt(id!),
+          productId: salesAgencyProductId,
           updates: [{ userId: applicant.userId, note: notes }],
         });
         setApplicants(prev => prev.map(a => (a.id === applicantId ? { ...a, notes } : a)));
@@ -444,7 +444,7 @@ export default function MpAdminSalesAgencyProductEdit() {
             </Grid>
 
             <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 4 }}>
-              <Button variant='outlined' size='large' onClick={handleCancel} sx={{ minWidth: 120 }}>
+              <Button variant='outlined' size='large' component={RouterLink} to={'/admin/sales-agency-products'} sx={{ minWidth: 120 }}>
                 취소
               </Button>
               <Button variant='contained' color='success' size='large' sx={{ minWidth: 120 }} onClick={formik.submitForm}>

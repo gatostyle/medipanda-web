@@ -30,11 +30,13 @@ import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminSalesAgencyProductDetail() {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { salesAgencyProductId: paramSalesAgencyProductId } = useParams();
+  const salesAgencyProductId = Number(paramSalesAgencyProductId);
+
   const { enqueueSnackbar } = useSnackbar();
   const [tabValue, setTabValue] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -106,21 +108,17 @@ export default function MpAdminSalesAgencyProductDetail() {
     setTabValue(newValue);
   };
 
-  const handleEdit = () => {
-    navigate(`/admin/sales-agency-products/${id}/edit`);
-  };
-
-  const fetchData = async () => {
-    if (id === undefined) {
-      setLoading(false);
-      return;
+  const fetchData = async (salesAgencyProductId: number) => {
+    if (Number.isNaN(salesAgencyProductId)) {
+      alert('잘못된 접근입니다.');
+      return navigate('/admin/sales-agency-products');
     }
 
     try {
       setLoading(true);
       const [detail, applicantsResponse] = await Promise.all([
-        getSalesAgencyProductDetails(parseInt(id)),
-        getProductApplicants(parseInt(id)),
+        getSalesAgencyProductDetails(salesAgencyProductId),
+        getProductApplicants(salesAgencyProductId),
       ]);
 
       setProductDetail(detail);
@@ -134,13 +132,9 @@ export default function MpAdminSalesAgencyProductDetail() {
     }
   };
 
-  const handleBackToList = () => {
-    navigate('/admin/sales-agency-products');
-  };
-
   useEffect(() => {
-    fetchData();
-  }, [id, navigate, enqueueSnackbar]);
+    fetchData(salesAgencyProductId);
+  }, [salesAgencyProductId]);
 
   if (loading) {
     return (
@@ -271,10 +265,15 @@ export default function MpAdminSalesAgencyProductDetail() {
 
               <Grid item xs={12}>
                 <Stack direction='row' spacing={2} justifyContent='center'>
-                  <Button variant='outlined' onClick={handleBackToList} sx={{ minWidth: 120 }}>
+                  <Button variant='outlined' component={RouterLink} to={'/admin/sales-agency-products'} sx={{ minWidth: 120 }}>
                     목록
                   </Button>
-                  <Button variant='contained' onClick={handleEdit} sx={{ minWidth: 120 }}>
+                  <Button
+                    variant='contained'
+                    component={RouterLink}
+                    to={`/admin/sales-agency-products/${salesAgencyProductId}/edit`}
+                    sx={{ minWidth: 120 }}
+                  >
                     수정
                   </Button>
                 </Stack>

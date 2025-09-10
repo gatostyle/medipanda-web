@@ -35,8 +35,11 @@ import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import { formatYyyyMmDd } from '../utils/dateFormat';
 
 export default function MpAdminMemberEdit() {
-  const { userId } = useParams();
   const navigate = useNavigate();
+  const { userId: paramUserId } = useParams();
+  const isNew = paramUserId === undefined;
+  const userId = paramUserId!;
+
   const infoDialog = useMpInfoDialog();
   const errorDialog = useMpErrorDialog();
   const { enqueueSnackbar } = useSnackbar();
@@ -77,7 +80,7 @@ export default function MpAdminMemberEdit() {
       }
 
       try {
-        await updateMember(userId!, {
+        await updateMember(userId, {
           request: {
             password: values.password !== '' ? values.password : null,
             name: null,
@@ -112,16 +115,12 @@ export default function MpAdminMemberEdit() {
   });
 
   useEffect(() => {
-    fetchMemberData();
-  }, [userId]);
-
-  const fetchMemberData = async () => {
-    if (!userId) {
-      alert('잘못된 접근입니다.');
-      navigate('/admin/members');
-      return;
+    if (!isNew) {
+      fetchMemberData(userId);
     }
+  }, [isNew, userId]);
 
+  const fetchMemberData = async (userId: string) => {
     try {
       const memberDetail = await getMemberDetails(userId);
       setMemberDetail(memberDetail);
@@ -155,7 +154,7 @@ export default function MpAdminMemberEdit() {
 
   const fetchPartnerContract = async (values: (typeof formik)['values']) => {
     try {
-      const contractDetail = await getContractDetails(userId!);
+      const contractDetail = await getContractDetails(userId);
       setContractDetail(contractDetail);
       setIsContractApproved(contractDetail.status === 'APPROVED');
 
@@ -180,9 +179,9 @@ export default function MpAdminMemberEdit() {
 
   const handleCsoApprove = async () => {
     try {
-      await approveOrRejectCso(userId!, { isApproved: true });
+      await approveOrRejectCso(userId, { isApproved: true });
       infoDialog.showInfo('CSO 신고증이 승인되었습니다.');
-      await fetchMemberData();
+      await fetchMemberData(userId);
     } catch (error) {
       console.error('Failed to approve CSO report:', error);
       errorDialog.showError('CSO 신고증 승인 중 오류가 발생했습니다.');
@@ -191,9 +190,9 @@ export default function MpAdminMemberEdit() {
 
   const handleCsoReject = async () => {
     try {
-      await approveOrRejectCso(userId!, { isApproved: false });
+      await approveOrRejectCso(userId, { isApproved: false });
       infoDialog.showInfo('CSO 신고증이 반려되었습니다.');
-      await fetchMemberData();
+      await fetchMemberData(userId);
     } catch (error) {
       console.error('Failed to reject CSO report:', error);
       errorDialog.showError('CSO 신고증 반려 중 오류가 발생했습니다.');
@@ -208,7 +207,7 @@ export default function MpAdminMemberEdit() {
       if (!file) return;
 
       try {
-        await updateMember(userId!, {
+        await updateMember(userId, {
           request: {
             password: null,
             name: null,
@@ -224,7 +223,7 @@ export default function MpAdminMemberEdit() {
         });
 
         alert('CSO 신고증이 업로드되었습니다.');
-        await fetchMemberData();
+        await fetchMemberData(userId);
       } catch (e) {
         console.error('Failed to upload CSO report:', e);
         alert('CSO 신고증 업로드 중 오류가 발생했습니다.');

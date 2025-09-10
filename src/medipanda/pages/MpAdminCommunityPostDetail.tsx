@@ -27,7 +27,9 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 export default function MpAdminCommunityPostDetail() {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { boardId: paramBoardId } = useParams();
+  const boardId = Number(paramBoardId);
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [tabValue, setTabValue] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -39,15 +41,15 @@ export default function MpAdminCommunityPostDetail() {
   //   editor.setEditable(false);
   // }, [editor]);
 
-  const fetchData = async () => {
-    if (id === undefined) {
-      setLoading(false);
-      return;
+  const fetchData = async (boardId: number) => {
+    if (Number.isNaN(boardId)) {
+      alert('잘못된 접근입니다.');
+      return navigate('/admin/community-posts');
     }
 
     try {
       setLoading(true);
-      const boardDetail = await getBoardDetails(parseInt(id));
+      const boardDetail = await getBoardDetails(boardId);
 
       setPostDetail({
         boardType: BOARD_TYPE_LABELS[boardDetail.boardType],
@@ -87,8 +89,8 @@ export default function MpAdminCommunityPostDetail() {
   }, [searchParams]);
 
   useEffect(() => {
-    fetchData();
-  }, [id, navigate, enqueueSnackbar]);
+    fetchData(boardId);
+  }, [boardId]);
 
   const [postDetail, setPostDetail] = useState({
     boardType: '',

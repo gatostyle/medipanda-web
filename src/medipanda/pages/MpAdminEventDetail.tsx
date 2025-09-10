@@ -5,21 +5,26 @@ import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminEventDetail() {
-  const { id } = useParams();
   const navigate = useNavigate();
+  const { eventId: paramEventId } = useParams();
+  const eventId = Number(paramEventId);
+
   const { enqueueSnackbar } = useSnackbar();
   const [event, setEvent] = useState<EventBoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const fetchData = async () => {
-    if (id === undefined) return;
+  const fetchData = async (eventId: number) => {
+    if (Number.isNaN(eventId)) {
+      alert('잘못된 접근입니다.');
+      return navigate('/admin/events');
+    }
 
     setLoading(true);
     try {
-      const data = await getEventBoardDetails(parseInt(id));
+      const data = await getEventBoardDetails(eventId);
       setEvent(data);
     } catch (error) {
       console.error('Failed to fetch event detail:', error);
@@ -31,16 +36,8 @@ export default function MpAdminEventDetail() {
   };
 
   useEffect(() => {
-    fetchData();
-  }, [id, navigate]);
-
-  const handleEdit = () => {
-    navigate(`/admin/events/${id}/edit`);
-  };
-
-  const handleCancel = () => {
-    navigate('/admin/events');
-  };
+    fetchData(eventId);
+  }, [eventId]);
 
   if (loading) {
     return (
@@ -214,10 +211,10 @@ export default function MpAdminEventDetail() {
 
             <Grid item xs={12}>
               <Stack direction='row' spacing={2} justifyContent='center'>
-                <Button variant='outlined' size='large' onClick={handleCancel}>
+                <Button variant='outlined' size='large' component={RouterLink} to={'/admin/events'}>
                   취소
                 </Button>
-                <Button variant='contained' size='large' color='success' onClick={handleEdit}>
+                <Button variant='contained' size='large' color='success' component={RouterLink} to={`/admin/events/${eventId}/edit`}>
                   수정
                 </Button>
               </Stack>

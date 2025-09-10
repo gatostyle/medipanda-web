@@ -5,25 +5,31 @@ import { BoardDetailsResponse, getBoardDetails } from '@/backend';
 import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { formatYyyyMmDd } from '../utils/dateFormat';
 
 export default function MpAdminCustomerCenterFaqDetail() {
-  const { id } = useParams();
+  const navigate = useNavigate();
+  const { boardId: paramBoardId } = useParams();
+  const boardId = Number(paramBoardId);
+
   const { enqueueSnackbar } = useSnackbar();
   const [data, setData] = useState<BoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (id) {
-      fetchData(parseInt(id, 10));
-    }
-  }, [id]);
+    fetchData(boardId);
+  }, [boardId]);
 
-  const fetchData = async (itemId: number) => {
+  const fetchData = async (boardId: number) => {
+    if (Number.isNaN(boardId)) {
+      alert('잘못된 접근입니다.');
+      return navigate('/admin/faqs');
+    }
+
     setLoading(true);
     try {
-      const response = await getBoardDetails(itemId);
+      const response = await getBoardDetails(boardId);
       setData(response);
     } catch (error) {
       console.error('Failed to fetch FAQ detail:', error);
@@ -142,7 +148,7 @@ export default function MpAdminCustomerCenterFaqDetail() {
             <Button
               variant='contained'
               component={Link}
-              to={`/admin/faqs/${id}/edit`}
+              to={`/admin/faqs/${boardId}/edit`}
               sx={{
                 minWidth: 120,
                 bgcolor: '#4caf50',

@@ -20,11 +20,14 @@ import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { DateFix, formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminBannerEdit() {
-  const { id } = useParams();
   const navigate = useNavigate();
+  const { bannerId: paramBannerId } = useParams();
+  const isNew = paramBannerId === undefined;
+  const bannerId = Number(paramBannerId);
+
   const [, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
@@ -54,8 +57,8 @@ export default function MpAdminBannerEdit() {
         const startAt = `${startDateStr}T${values.startHour.padStart(2, '0')}:${values.startMinute.padStart(2, '0')}:00`;
         const endAt = `${endDateStr}T${values.endHour.padStart(2, '0')}:${values.endMinute.padStart(2, '0')}:00`;
 
-        if (id && id !== 'new') {
-          await updateBanner(parseInt(id), {
+        if (isNew) {
+          await updateBanner(bannerId, {
             request: {
               position: values.position,
               status: values.status,
@@ -94,47 +97,50 @@ export default function MpAdminBannerEdit() {
   });
 
   useEffect(() => {
-    const fetchBannerDetail = async () => {
-      if (id === undefined) return;
-
-      setLoading(true);
-      try {
-        const data = await getBanner(parseInt(id));
-
-        const startDate = DateFix(data.startAt);
-        const endDate = DateFix(data.endAt);
-
-        formik.setValues({
-          position: data.position,
-          status: data.status,
-          scope: data.scope,
-          title: data.title,
-          linkUrl: data.linkUrl,
-          startDate: startDate,
-          startHour: startDate.getHours().toString(),
-          startMinute: startDate.getMinutes().toString(),
-          endDate: endDate,
-          endHour: endDate.getHours().toString(),
-          endMinute: endDate.getMinutes().toString(),
-          displayOrder: data.displayOrder,
-          note: data.note ?? '',
-        });
-
-        if (data.imageUrl) {
-          setImagePreview(data.imageUrl);
-        }
-      } catch (error) {
-        console.error('Failed to fetch banner detail:', error);
-        errorDialog.showError('배너 정보를 불러오는데 실패했습니다');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id && id !== 'new') {
-      fetchBannerDetail();
+    if (!isNew) {
+      fetchBannerDetail(bannerId);
     }
-  }, [id]);
+  }, [isNew, bannerId]);
+
+  const fetchBannerDetail = async (bannerId: number) => {
+    if (Number.isNaN(bannerId)) {
+      alert('잘못된 접근입니다.');
+      return navigate('/admin/banners');
+    }
+
+    setLoading(true);
+    try {
+      const data = await getBanner(bannerId);
+
+      const startDate = DateFix(data.startAt);
+      const endDate = DateFix(data.endAt);
+
+      formik.setValues({
+        position: data.position,
+        status: data.status,
+        scope: data.scope,
+        title: data.title,
+        linkUrl: data.linkUrl,
+        startDate: startDate,
+        startHour: startDate.getHours().toString(),
+        startMinute: startDate.getMinutes().toString(),
+        endDate: endDate,
+        endHour: endDate.getHours().toString(),
+        endMinute: endDate.getMinutes().toString(),
+        displayOrder: data.displayOrder,
+        note: data.note ?? '',
+      });
+
+      if (data.imageUrl) {
+        setImagePreview(data.imageUrl);
+      }
+    } catch (error) {
+      console.error('Failed to fetch banner detail:', error);
+      errorDialog.showError('배너 정보를 불러오는데 실패했습니다');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -146,10 +152,6 @@ export default function MpAdminBannerEdit() {
       };
       reader.readAsDataURL(file);
     }
-  };
-
-  const handleCancel = () => {
-    navigate('/admin/banners');
   };
 
   return (
@@ -339,7 +341,8 @@ export default function MpAdminBannerEdit() {
                   <Button
                     variant='outlined'
                     size='medium'
-                    onClick={handleCancel}
+                    component={RouterLink}
+                    to={'/admin/banners'}
                     sx={{
                       minWidth: 100,
                       color: '#666',

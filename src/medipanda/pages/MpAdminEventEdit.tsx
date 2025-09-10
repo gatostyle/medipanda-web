@@ -5,7 +5,6 @@ import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
 import { AttachmentResponse, createEventBoard, getEventBoardDetails, updateEventBoard } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
-import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { useEffect, useState } from 'react';
@@ -15,16 +14,17 @@ import { useSession } from '../hooks/useSession';
 import { DateFix, formatYyyyMmDd } from '../utils/dateFormat';
 
 export default function MpAdminEventEdit() {
-  const { id } = useParams();
   const navigate = useNavigate();
+  const { eventId: paramEventId } = useParams();
+  const isNew = paramEventId === undefined;
+  const eventId = Number(paramEventId);
+
   const [loading, setLoading] = useState(false);
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string>('');
   const infoDialog = useMpInfoDialog();
   const errorDialog = useMpErrorDialog();
   const { session } = useSession();
-
-  const isNew = id === undefined;
 
   const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
@@ -77,7 +77,7 @@ export default function MpAdminEventEdit() {
           infoDialog.showInfo('이벤트가 등록되었습니다.');
           navigate('/admin/events');
         } else {
-          await updateEventBoard(parseInt(id), {
+          await updateEventBoard(eventId, {
             request: {
               title: values.title,
               content: editor.getHTML(),
@@ -100,7 +100,7 @@ export default function MpAdminEventEdit() {
             newFiles: values.newFiles,
           });
           infoDialog.showInfo('이벤트가 수정되었습니다.');
-          navigate(`/admin/events/${id}`);
+          navigate(`/admin/events/${eventId}`);
         }
       } catch (error) {
         console.error('Failed to save event:', error);
@@ -110,41 +110,46 @@ export default function MpAdminEventEdit() {
   });
 
   useEffect(() => {
-    const fetchEventDetail = async () => {
-      if (!isNew && id) {
-        setLoading(true);
-        try {
-          const event = await getEventBoardDetails(parseInt(id));
-          formik.setValues({
-            isExposed: event.boardPostDetail.isExposed,
-            exposureRange: event.boardPostDetail.exposureRange,
-            startDate: DateFix(event.eventStartDate),
-            endDate: DateFix(event.eventEndDate),
-            title: event.boardPostDetail.title,
-            description: event.description,
-            videoUrl: event.videoUrl ?? '',
-            note: event.note ?? '',
-            internalName: '',
-            attachedFiles: event.boardPostDetail.attachments.filter(a => a.type === 'ATTACHMENT'),
-            newFiles: [],
-          });
-          editor.commands.setContent(event.boardPostDetail.content);
-          setEditorAttachments(event.boardPostDetail.attachments.filter(a => a.type === 'EDITOR'));
-          if (event.thumbnailUrl) {
-            setThumbnailPreview(event.thumbnailUrl);
-          }
-        } catch (error) {
-          console.error('Failed to fetch event detail:', error);
-          errorDialog.showError('이벤트 정보를 불러오는데 실패했습니다.');
-          navigate('/admin/events');
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
+    if (!isNew) {
+      fetchEventDetail(eventId);
+    }
+  }, [isNew, eventId]);
 
-    fetchEventDetail();
-  }, [id, isNew, navigate]);
+  const fetchEventDetail = async (eventId: number) => {
+    if (Number.isNaN(eventId)) {
+      alert('잘못된 접근입니다.');
+      return navigate('/admin/events');
+    }
+
+    setLoading(true);
+    try {
+      const event = await getEventBoardDetails(eventId);
+      formik.setValues({
+        isExposed: event.boardPostDetail.isExposed,
+        exposureRange: event.boardPostDetail.exposureRange,
+        startDate: DateFix(event.eventStartDate),
+        endDate: DateFix(event.eventEndDate),
+        title: event.boardPostDetail.title,
+        description: event.description,
+        videoUrl: event.videoUrl ?? '',
+        note: event.note ?? '',
+        internalName: '',
+        attachedFiles: event.boardPostDetail.attachments.filter(a => a.type === 'ATTACHMENT'),
+        newFiles: [],
+      });
+      editor.commands.setContent(event.boardPostDetail.content);
+      setEditorAttachments(event.boardPostDetail.attachments.filter(a => a.type === 'EDITOR'));
+      if (event.thumbnailUrl) {
+        setThumbnailPreview(event.thumbnailUrl);
+      }
+    } catch (error) {
+      console.error('Failed to fetch event detail:', error);
+      errorDialog.showError('이벤트 정보를 불러오는데 실패했습니다.');
+      navigate('/admin/events');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleThumbnailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];

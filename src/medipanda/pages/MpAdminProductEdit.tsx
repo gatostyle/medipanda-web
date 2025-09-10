@@ -25,19 +25,20 @@ import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { Fragment, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import * as Yup from 'yup';
 
 export default function MpAdminProductEdit() {
-  const { id } = useParams();
   const navigate = useNavigate();
+  const { productId: paramProductId } = useParams();
+  const isNew = paramProductId === undefined;
+  const productId = Number(paramProductId);
+
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
   const errorDialog = useMpErrorDialog();
   const { session } = useSession();
   const [productDetail, setProductDetail] = useState<ProductDetailsResponse | null>(null);
-
-  const isNew = id === undefined;
 
   const formik = useFormik({
     initialValues: {
@@ -104,7 +105,7 @@ export default function MpAdminProductEdit() {
           });
           enqueueSnackbar('제품이 성공적으로 등록되었습니다.', { variant: 'success' });
         } else {
-          await updateProductExtraInfo(parseInt(id!, 10), {
+          await updateProductExtraInfo(productId, {
             boardPostUpdateRequest: {
               title: values.productName,
               content: editor.getHTML(),
@@ -161,12 +162,17 @@ export default function MpAdminProductEdit() {
   const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
   useEffect(() => {
-    if (!isNew && id) {
-      fetchData(parseInt(id, 10));
+    if (!isNew) {
+      fetchData(productId);
     }
-  }, [id, isNew]);
+  }, [isNew, productId]);
 
   const fetchData = async (productId: number) => {
+    if (Number.isNaN(productId)) {
+      alert('잘못된 접근입니다.');
+      return navigate('/admin/products');
+    }
+
     setLoading(true);
     try {
       const response = await getProductDetails(productId);
@@ -196,14 +202,6 @@ export default function MpAdminProductEdit() {
       errorDialog.showError('제품 정보를 불러오는 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleCancel = () => {
-    if (isNew) {
-      navigate('/admin/products');
-    } else {
-      navigate(`/admin/products/${id}`);
     }
   };
 
@@ -541,7 +539,14 @@ export default function MpAdminProductEdit() {
 
           <Grid item xs={12}>
             <Stack direction='row' spacing={2} justifyContent='center'>
-              <Button variant='outlined' size='large' onClick={handleCancel} sx={{ minWidth: 120 }} disabled={formik.isSubmitting}>
+              <Button
+                variant='outlined'
+                size='large'
+                component={RouterLink}
+                to={isNew ? '/admin/products' : `/admin/products/${productId}`}
+                sx={{ minWidth: 120 }}
+                disabled={formik.isSubmitting}
+              >
                 취소
               </Button>
               <Button

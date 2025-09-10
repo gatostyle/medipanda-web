@@ -18,18 +18,19 @@ import { AttachmentResponse, createBoardPost, getBoardDetails, updateBoardPost }
 import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useMedipandaEditor } from '../components/useMedipandaEditor';
 
 export default function MpAdminAtoZEdit() {
-  const { id } = useParams();
   const navigate = useNavigate();
+  const { boardId: paramBoardId } = useParams();
+  const isNew = paramBoardId === undefined;
+  const boardId = Number(paramBoardId);
+
   const { enqueueSnackbar } = useSnackbar();
   const { session } = useSession();
   const [loading, setLoading] = useState(false);
-
-  const isNew = id === undefined;
 
   const formik = useFormik({
     initialValues: {
@@ -67,7 +68,7 @@ export default function MpAdminAtoZEdit() {
           });
           enqueueSnackbar('CSO A to Z가 성공적으로 등록되었습니다.', { variant: 'success' });
         } else {
-          await updateBoardPost(parseInt(id), {
+          await updateBoardPost(boardId, {
             updateRequest: {
               title: values.title,
               content: editor.getHTML(),
@@ -96,10 +97,10 @@ export default function MpAdminAtoZEdit() {
   const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
   useEffect(() => {
-    if (!isNew && id) {
-      fetchData(parseInt(id, 10));
+    if (!isNew) {
+      fetchData(boardId);
     }
-  }, [id, isNew]);
+  }, [isNew, boardId]);
 
   const fetchData = async (itemId: number) => {
     setLoading(true);
@@ -130,14 +131,6 @@ export default function MpAdminAtoZEdit() {
       formik.setFieldValue('newFiles', [...formik.values.newFiles, ...(Array.from(input.files ?? []) as File[])]);
     };
     input.click();
-  };
-
-  const handleCancel = () => {
-    if (isNew) {
-      navigate('/admin/atoz');
-    } else {
-      navigate(`/admin/atoz/${id}`);
-    }
   };
 
   if (loading) {
@@ -221,7 +214,13 @@ export default function MpAdminAtoZEdit() {
             </Grid>
 
             <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
-              <Button variant='outlined' onClick={handleCancel} sx={{ minWidth: 120 }} disabled={formik.isSubmitting}>
+              <Button
+                variant='outlined'
+                component={RouterLink}
+                to={isNew ? '/admin/atoz/' : `/admin/atoz/${boardId}`}
+                sx={{ minWidth: 120 }}
+                disabled={formik.isSubmitting}
+              >
                 취소
               </Button>
               <Button

@@ -18,20 +18,19 @@ import { getProductDetails, ProductDetailsResponse } from '@/backend';
 import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { useSnackbar } from 'notistack';
 import { Fragment, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams, Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminProductDetail() {
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const { productId: paramProductId } = useParams();
+  const productId = Number(paramProductId);
+
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
   const [productDetail, setProductDetail] = useState<ProductDetailsResponse | null>(null);
 
   useEffect(() => {
-    if (id) {
-      fetchData(parseInt(id, 10));
-    }
-  }, [id]);
+    fetchData(productId);
+  }, [productId]);
 
   const fetchData = async (productId: number) => {
     setLoading(true);
@@ -44,14 +43,6 @@ export default function MpAdminProductDetail() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleCancel = () => {
-    navigate('/admin/products');
-  };
-
-  const handleEdit = () => {
-    navigate(`/admin/products/${id}/edit`);
   };
 
   if (loading) {
@@ -278,10 +269,17 @@ export default function MpAdminProductDetail() {
 
         <Grid item xs={12}>
           <Stack direction='row' spacing={2} justifyContent='center'>
-            <Button variant='outlined' size='large' onClick={handleCancel} sx={{ minWidth: 120 }}>
+            <Button variant='outlined' size='large' component={RouterLink} to={'/admin/products'} sx={{ minWidth: 120 }}>
               취소
             </Button>
-            <Button variant='contained' color='success' size='large' onClick={handleEdit} sx={{ minWidth: 120 }}>
+            <Button
+              variant='contained'
+              color='success'
+              size='large'
+              component={RouterLink}
+              to={`/admin/products/${productId}/edit`}
+              sx={{ minWidth: 120 }}
+            >
               수정
             </Button>
           </Stack>

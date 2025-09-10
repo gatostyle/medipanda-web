@@ -59,13 +59,15 @@ const createValidationSchema = (isNew: boolean) =>
   });
 
 export default function MpAdminAdminEdit() {
-  const { userId } = useParams();
   const navigate = useNavigate();
+  const { userId: paramUserId } = useParams();
+  const isNew = paramUserId === undefined;
+  const userId = paramUserId!;
+
   const { session } = useSession();
   const [, setLoading] = useState(false);
   const errorDialog = useMpErrorDialog();
   const infoDialog = useMpInfoDialog();
-  const isNew = userId === undefined;
 
   useEffect(() => {
     if (!isNew && session && !isSuperAdmin(session)) {
@@ -138,37 +140,37 @@ export default function MpAdminAdminEdit() {
   });
 
   useEffect(() => {
-    const fetchAdminData = async () => {
-      if (userId === undefined || isNew) return;
-
-      setLoading(true);
-      try {
-        const [memberData, permissionData] = await Promise.all([getMemberDetails(userId), getPermissions(userId)]);
-
-        const phoneParts = memberData.phoneNumber.includes('-')
-          ? memberData.phoneNumber.split('-')
-          : [memberData.phoneNumber.slice(0, 3), memberData.phoneNumber.slice(3, 7), memberData.phoneNumber.slice(7)];
-
-        formik.setValues({
-          ...formik.values,
-          userId: memberData.userId,
-          name: memberData.name,
-          email: memberData.email,
-          phoneNumber1: phoneParts[0] !== '' ? phoneParts[0] : '010',
-          phoneNumber2: phoneParts[1] ?? '',
-          phoneNumber3: phoneParts[2] ?? '',
-          status: true,
-          permissions: permissionData.permissions,
-        });
-      } catch (error) {
-        console.error('Failed to fetch admin data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAdminData();
+    if (!isNew) {
+      fetchAdminData(userId);
+    }
   }, [userId]);
+
+  const fetchAdminData = async (userId: string) => {
+    setLoading(true);
+    try {
+      const [memberData, permissionData] = await Promise.all([getMemberDetails(userId), getPermissions(userId)]);
+
+      const phoneParts = memberData.phoneNumber.includes('-')
+        ? memberData.phoneNumber.split('-')
+        : [memberData.phoneNumber.slice(0, 3), memberData.phoneNumber.slice(3, 7), memberData.phoneNumber.slice(7)];
+
+      formik.setValues({
+        ...formik.values,
+        userId: memberData.userId,
+        name: memberData.name,
+        email: memberData.email,
+        phoneNumber1: phoneParts[0] !== '' ? phoneParts[0] : '010',
+        phoneNumber2: phoneParts[1] ?? '',
+        phoneNumber3: phoneParts[2] ?? '',
+        status: true,
+        permissions: permissionData.permissions,
+      });
+    } catch (error) {
+      console.error('Failed to fetch admin data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handlePermissionChange = (
     permission:

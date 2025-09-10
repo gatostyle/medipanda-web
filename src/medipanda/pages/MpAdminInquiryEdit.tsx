@@ -13,8 +13,11 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export default function MpAdminInquiryEdit() {
-  const { id } = useParams();
   const navigate = useNavigate();
+  const { boardId: paramBoardId } = useParams();
+  const isNew = paramBoardId === undefined;
+  const boardId = Number(paramBoardId);
+
   const { enqueueSnackbar } = useSnackbar();
   const [inquiry, setInquiry] = useState<BoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
@@ -27,7 +30,7 @@ export default function MpAdminInquiryEdit() {
       newFiles: [] as File[],
     },
     onSubmit: async values => {
-      if (id === undefined) return;
+      if (isNew) return;
 
       if (responseEditor.getHTML() === '<p></p>') {
         infoDialog.showInfo('답변 내용을 입력해주세요.');
@@ -44,7 +47,7 @@ export default function MpAdminInquiryEdit() {
               userId: session!.userId,
               nickname: session!.name,
               hiddenNickname: false,
-              parentId: parseInt(id!),
+              parentId: boardId,
               isExposed: true,
               editorFileIds: responseEditorAttachments.map(image => image.s3fileId),
               exposureRange: 'ALL',
@@ -88,32 +91,37 @@ export default function MpAdminInquiryEdit() {
   } = useMedipandaEditor();
 
   useEffect(() => {
-    const fetchInquiryDetail = async () => {
-      if (id === undefined) return;
+    if (!isNew) {
+      fetchInquiryDetail(boardId);
+    }
+  }, [boardId]);
 
-      setLoading(true);
-      try {
-        const data = await getBoardDetails(parseInt(id));
+  const fetchInquiryDetail = async (boardId: number) => {
+    if (Number.isNaN(boardId)) {
+      alert('잘못된 접근입니다.');
+      return navigate('/admin/inquiries');
+    }
 
-        setInquiry(data);
-        editor.commands.setContent(data.content);
-        editor.setEditable(false);
-        setEditorAttachments(data.attachments.filter(a => a.type === 'EDITOR'));
+    setLoading(true);
+    try {
+      const data = await getBoardDetails(boardId);
 
-        if (data.children.length > 0) {
-          responseEditor.commands.setContent(data.children[0].content);
-          setResponseEditorAttachments(data.children[0].attachments.filter(a => a.type === 'EDITOR'));
-        }
-      } catch (error) {
-        console.error('Failed to fetch inquiry detail:', error);
-        enqueueSnackbar('문의 정보를 불러오는데 실패했습니다.', { variant: 'error' });
-      } finally {
-        setLoading(false);
+      setInquiry(data);
+      editor.commands.setContent(data.content);
+      editor.setEditable(false);
+      setEditorAttachments(data.attachments.filter(a => a.type === 'EDITOR'));
+
+      if (data.children.length > 0) {
+        responseEditor.commands.setContent(data.children[0].content);
+        setResponseEditorAttachments(data.children[0].attachments.filter(a => a.type === 'EDITOR'));
       }
-    };
-
-    fetchInquiryDetail();
-  }, [id]);
+    } catch (error) {
+      console.error('Failed to fetch inquiry detail:', error);
+      enqueueSnackbar('문의 정보를 불러오는데 실패했습니다.', { variant: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleCancel = () => {
     navigate('/admin/inquiries');

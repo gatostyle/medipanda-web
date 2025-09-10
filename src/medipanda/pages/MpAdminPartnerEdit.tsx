@@ -40,24 +40,31 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 export default function MpAdminPartnerEdit() {
   const navigate = useNavigate();
+  const { partnerId: paramPartnerId } = useParams();
+  const isNew = paramPartnerId === undefined;
+  const partnerId = Number(paramPartnerId);
+
   const { enqueueSnackbar } = useSnackbar();
-  const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [pharmaceuticalSearchOpen, setPharmaceuticalSearchOpen] = useState(false);
   const [memberSearchDialogOpen, setMemberSearchDialogOpen] = useState(false);
   const [drugCompanies, setDrugCompanies] = useState<DrugCompanyResponse[]>([]);
   const [memberSearchDialogResult, setMemberSearchDialogResult] = useState<MemberResponse[]>([]);
 
-  const isNew = id === undefined;
-
   useEffect(() => {
     getAllDrugCompanies().then(setDrugCompanies);
-    if (id) {
-      fetchPartnerData(parseInt(id));
+
+    if (!isNew) {
+      fetchPartnerData(partnerId);
     }
-  }, [id]);
+  }, [isNew, partnerId]);
 
   const fetchPartnerData = async (partnerId: number) => {
+    if (Number.isNaN(partnerId)) {
+      alert('잘못된 접근입니다.');
+      return navigate('/admin/partners');
+    }
+
     setLoading(true);
     try {
       const partnerDetails = await getPartnerDetails(partnerId);
@@ -132,7 +139,7 @@ export default function MpAdminPartnerEdit() {
             note: values.note,
           });
         } else {
-          await updatePartner(parseInt(id!), {
+          await updatePartner(partnerId, {
             drugCompanyId: null,
             drugCompanyName: null,
             companyName: values.companyName,

@@ -24,13 +24,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 
 export default function MpAdminFaqEdit() {
-  const { id } = useParams();
   const navigate = useNavigate();
+  const { boardId: paramBoardId } = useParams();
+  const isNew = paramBoardId === undefined;
+  const boardId = Number(paramBoardId);
+
   const { enqueueSnackbar } = useSnackbar();
   const { session } = useSession();
   const [loading, setLoading] = useState(false);
-
-  const isNew = id === undefined;
 
   const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
@@ -73,7 +74,7 @@ export default function MpAdminFaqEdit() {
           enqueueSnackbar('FAQ가 성공적으로 등록되었습니다.', { variant: 'success' });
           navigate('/admin/faqs');
         } else {
-          await updateBoardPost(parseInt(id), {
+          await updateBoardPost(boardId, {
             updateRequest: {
               title: values.title,
               content: editor.getHTML(),
@@ -88,7 +89,7 @@ export default function MpAdminFaqEdit() {
             newFiles: values.files ? values.files : undefined,
           });
           enqueueSnackbar('FAQ가 성공적으로 수정되었습니다.', { variant: 'success' });
-          navigate(`/admin/faqs/${id}`);
+          navigate(`/admin/faqs/${boardId}`);
         }
       } catch (error) {
         console.error('Failed to submit form:', error);
@@ -100,15 +101,20 @@ export default function MpAdminFaqEdit() {
   });
 
   useEffect(() => {
-    if (!isNew && id) {
-      fetchData(parseInt(id, 10));
+    if (!isNew) {
+      fetchData(boardId);
     }
-  }, [id, isNew]);
+  }, [isNew, boardId]);
 
-  const fetchData = async (itemId: number) => {
+  const fetchData = async (boardId: number) => {
+    if (Number.isNaN(boardId)) {
+      alert('잘못된 접근입니다.');
+      return navigate('/admin/faqs');
+    }
+
     setLoading(true);
     try {
-      const response = await getBoardDetails(itemId);
+      const response = await getBoardDetails(boardId);
       formik.setValues({
         title: response.title,
         isExposed: response.isExposed,
