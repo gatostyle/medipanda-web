@@ -1,3 +1,5 @@
+import { setUrlParams } from '@/lib/url';
+import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import {
   Box,
   Button,
@@ -6,6 +8,7 @@ import {
   InputLabel,
   MenuItem,
   Pagination,
+  PaginationItem,
   Select,
   Stack,
   Table,
@@ -26,53 +29,78 @@ import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipa
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminCommunityUserList() {
-  const [data, setData] = useState<Sequenced<BoardMemberStatsResponse>[]>([]);
+  const navigate = useNavigate();
+
+  const initialSearchParams = {
+    searchType: '' as 'userId' | '',
+    searchKeyword: '',
+    contractStatus: '' as 'CONTRACT' | 'NON_CONTRACT' | '',
+    page: '1',
+  };
+
+  const { searchType, searchKeyword, contractStatus, page: paramPage } = useSearchParamsOrDefault(initialSearchParams);
+  const page = Number(paramPage);
+  const pageSize = 20;
+
   const [loading, setLoading] = useState(false);
+  const [contents, setContents] = useState<Sequenced<BoardMemberStatsResponse>[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+
   const errorDialog = useMpErrorDialog();
 
   const formik = useFormik({
     initialValues: {
-      contractStatus: '' as 'CONTRACT' | 'NON_CONTRACT' | '',
-      searchType: 'userId' as 'userId',
-      searchKeyword: '',
-      pageIndex: 0,
-      pageSize: 20,
+      ...initialSearchParams,
+      page: null,
     },
-    onSubmit: async () => {
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchData();
-      }
+    onSubmit: values => {
+      const url = setUrlParams(
+        {
+          ...values,
+          page: 1,
+        },
+        initialSearchParams,
+      );
+
+      navigate(url);
+    },
+    onReset: () => {
+      navigate('');
     },
   });
 
-  const fetchData = async () => {
+  const fetchContents = async () => {
+    if (searchType === '' && searchKeyword !== '') {
+      alert('검색유형을 선택해주세요.');
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await getBoardMembers({
-        userId: formik.values.searchType === 'userId' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
+        userId: searchType === 'userId' && searchKeyword ? searchKeyword : undefined,
         name: undefined,
         phoneNumber: undefined,
-        contractStatus: formik.values.contractStatus !== '' ? formik.values.contractStatus : undefined,
+        contractStatus: contractStatus !== '' ? contractStatus : undefined,
         startAt: undefined,
         endAt: undefined,
         filterDeleted: undefined,
-        page: formik.values.pageIndex,
-        size: formik.values.pageSize,
+        page: page,
+        size: pageSize,
       });
 
-      setData(withSequence(response).content);
+      setContents(withSequence(response).content);
       setTotalElements(response.totalElements);
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch board members:', error);
       errorDialog.showError('이용자 목록을 불러오는 중 오류가 발생했습니다.');
-      setData([]);
+      setContents([]);
       setTotalElements(0);
       setTotalPages(0);
     } finally {
@@ -81,15 +109,17 @@ export default function MpAdminCommunityUserList() {
   };
 
   useEffect(() => {
-    fetchData();
-  }, [formik.values.pageIndex, formik.values.pageSize]);
-
-  const handleReset = () => {
-    formik.resetForm();
-  };
+    formik.setValues({
+      searchType,
+      searchKeyword,
+      contractStatus,
+      page: null,
+    });
+    fetchContents();
+  }, [searchType, searchKeyword, contractStatus, page]);
 
   const table = useReactTable({
-    data,
+    data: contents,
     columns: [
       {
         header: 'No',
@@ -144,14 +174,6 @@ export default function MpAdminCommunityUserList() {
     ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      pagination: {
-        pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize,
-      },
-    },
-    pageCount: totalPages,
-    manualPagination: true,
   });
 
   return (
@@ -198,7 +220,7 @@ export default function MpAdminCommunityUserList() {
                   <Button type='submit' variant='contained' size='small'>
                     검색
                   </Button>
-                  <Button variant='outlined' size='small' onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -265,8 +287,16 @@ export default function MpAdminCommunityUserList() {
             <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={formik.values.pageIndex + 1}
-                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
+                page={page}
+                renderItem={item => (
+                  <PaginationItem
+                    {...item}
+                    color='primary'
+                    variant='outlined'
+                    component={RouterLink}
+                    to={setUrlParams({ page: item.page }, initialSearchParams)}
+                  />
+                )}
                 color='primary'
                 variant='outlined'
                 showFirstButton

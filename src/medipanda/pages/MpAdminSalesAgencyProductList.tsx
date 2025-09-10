@@ -1,3 +1,5 @@
+import { setUrlParams } from '@/lib/url';
+import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import { DocumentDownload } from 'iconsax-react';
 import {
   Box,
@@ -10,6 +12,7 @@ import {
   Link,
   MenuItem,
   Pagination,
+  PaginationItem,
   Select,
   Stack,
   Table,
@@ -37,63 +40,126 @@ import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipa
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
-import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
+import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminSalesAgencyProductList() {
-  const [data, setData] = useState<Sequenced<SalesAgencyProductSummaryResponse>[]>([]);
+  const navigate = useNavigate();
+
+  const initialSearchParams = {
+    searchType: '' as 'productName' | 'clientName' | '',
+    searchKeyword: '',
+    date: '',
+    page: '1',
+  };
+
+  const { searchType, searchKeyword, date: paramDate, page: paramPage } = useSearchParamsOrDefault(initialSearchParams);
+  const date = useMemo(() => SafeDate(paramDate) ?? null, [paramDate]);
+  const page = Number(paramPage);
+  const pageSize = 20;
+
   const [loading, setLoading] = useState(false);
+  const [contents, setContents] = useState<Sequenced<SalesAgencyProductSummaryResponse>[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const deleteDialog = useMpDeleteDialog();
-  const errorDialog = useMpErrorDialog();
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
   const infoDialog = useMpInfoDialog();
+  const errorDialog = useMpErrorDialog();
+  const deleteDialog = useMpDeleteDialog();
 
   const formik = useFormik({
     initialValues: {
-      searchType: 'productName' as 'productName' | 'clientName',
-      searchKeyword: '',
+      ...initialSearchParams,
       date: null as Date | null,
-      pageIndex: 0,
-      pageSize: 20,
+      page: null,
     },
-    onSubmit: async () => {
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchData();
-      }
+    onSubmit: values => {
+      const url = setUrlParams(
+        {
+          ...values,
+          date: values.date !== null ? formatYyyyMmDd(values.date) : undefined,
+          page: 1,
+        },
+        initialSearchParams,
+      );
+
+      navigate(url);
+    },
+    onReset: () => {
+      navigate('');
     },
   });
 
+  const fetchContents = async () => {
+    if (searchType === '' && searchKeyword !== '') {
+      alert('검색유형을 선택해주세요.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await getSalesAgencyProducts({
+        productName: searchType === 'productName' && searchKeyword !== '' ? searchKeyword : undefined,
+        clientName: searchType === 'clientName' && searchKeyword !== '' ? searchKeyword : undefined,
+        startAt: date ? new DateString(date) : undefined,
+        endAt: date ? new DateString(date) : undefined,
+        page: page - 1,
+        size: pageSize,
+      });
+
+      setContents(withSequence(response).content);
+      setTotalElements(response.totalElements);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch sales agency product list:', error);
+      errorDialog.showError('영업대행상품 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+      setTotalElements(0);
+      setTotalPages(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    formik.setValues({
+      searchType,
+      searchKeyword,
+      date,
+      page: null,
+    });
+    fetchContents();
+  }, [searchType, searchKeyword, date, page]);
+
   const table = useReactTable({
-    data,
+    data: contents,
     columns: [
       {
         id: 'select',
         header: () => (
           <Checkbox
-            checked={selectedItems.length === data.length && data.length > 0}
+            checked={selectedIds.length === contents.length && contents.length > 0}
             onChange={e => {
               if (e.target.checked) {
-                setSelectedItems(data.map(item => item.id));
+                setSelectedIds(contents.map(item => item.id));
               } else {
-                setSelectedItems([]);
+                setSelectedIds([]);
               }
             }}
           />
         ),
         cell: ({ row }) => (
           <Checkbox
-            checked={selectedItems.includes(row.original.id)}
+            checked={selectedIds.includes(row.original.id)}
             onChange={e => {
               if (e.target.checked) {
-                setSelectedItems(prev => [...prev, row.original.id]);
+                setSelectedIds(prev => [...prev, row.original.id]);
               } else {
-                setSelectedItems(prev => prev.filter(id => id !== row.original.id));
+                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
               }
             }}
           />
@@ -174,67 +240,23 @@ export default function MpAdminSalesAgencyProductList() {
     ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      pagination: {
-        pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize,
-      },
-    },
-    pageCount: totalPages,
-    manualPagination: true,
   });
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await getSalesAgencyProducts({
-        productName:
-          formik.values.searchType === 'productName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        clientName:
-          formik.values.searchType === 'clientName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        startAt: formik.values.date ? new DateString(formik.values.date) : undefined,
-        endAt: formik.values.date ? new DateString(formik.values.date) : undefined,
-        page: formik.values.pageIndex,
-        size: formik.values.pageSize,
-      });
-
-      setData(withSequence(response).content);
-      setTotalElements(response.totalElements);
-      setTotalPages(response.totalPages);
-    } catch (error) {
-      console.error('Failed to fetch sales agency product list:', error);
-      errorDialog.showError('영업대행상품 목록을 불러오는 중 오류가 발생했습니다.');
-      setData([]);
-      setTotalElements(0);
-      setTotalPages(0);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [formik.values.pageIndex, formik.values.pageSize]);
-
-  const handleReset = () => {
-    formik.resetForm();
-  };
-
   const handleDelete = () => {
-    const count = selectedItems.length;
+    const count = selectedIds.length;
     const message =
       count === 1
-        ? `상품 ${data.find(item => item.id === selectedItems[0])?.productName}를 삭제하시겠습니까?`
+        ? `상품 ${contents.find(item => item.id === selectedIds[0])?.productName}를 삭제하시겠습니까?`
         : `${count}건이 선택되었습니다. 삭제하시겠습니까?`;
 
     deleteDialog.open({
       message,
       onConfirm: async () => {
         try {
-          await Promise.all(selectedItems.map(id => deleteSalesAgencyProduct(id)));
+          await Promise.all(selectedIds.map(id => deleteSalesAgencyProduct(id)));
           infoDialog.showInfo('삭제가 완료되었습니다.');
-          setSelectedItems([]);
-          fetchData();
+          setSelectedIds([]);
+          fetchContents();
         } catch (error) {
           console.error('Failed to delete sales agency products:', error);
           errorDialog.showError('상품 삭제 중 오류가 발생했습니다.');
@@ -282,7 +304,7 @@ export default function MpAdminSalesAgencyProductList() {
                   <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant='outlined' size='small' onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -305,16 +327,10 @@ export default function MpAdminSalesAgencyProductList() {
                   color='success'
                   size='small'
                   href={getDownloadSalesAgencyProductsExcel({
-                    productName:
-                      formik.values.searchType === 'productName' && formik.values.searchKeyword !== ''
-                        ? formik.values.searchKeyword
-                        : undefined,
-                    clientName:
-                      formik.values.searchType === 'clientName' && formik.values.searchKeyword !== ''
-                        ? formik.values.searchKeyword
-                        : undefined,
-                    startAt: formik.values.date ? new DateString(formik.values.date) : undefined,
-                    endAt: formik.values.date ? new DateString(formik.values.date) : undefined,
+                    productName: searchType === 'productName' && searchKeyword !== '' ? searchKeyword : undefined,
+                    clientName: searchType === 'clientName' && searchKeyword !== '' ? searchKeyword : undefined,
+                    startAt: date ? new DateString(date) : undefined,
+                    endAt: date ? new DateString(date) : undefined,
                     size: 2 ** 31 - 1,
                   })}
                   target='_blank'
@@ -322,7 +338,7 @@ export default function MpAdminSalesAgencyProductList() {
                 >
                   Excel
                 </Button>
-                <Button variant='contained' color='error' size='small' disabled={selectedItems.length === 0} onClick={handleDelete}>
+                <Button variant='contained' color='error' size='small' disabled={selectedIds.length === 0} onClick={handleDelete}>
                   삭제
                 </Button>
                 <Button variant='contained' color='success' size='small' component={RouterLink} to='/admin/sales-agency-products/new'>
@@ -379,8 +395,16 @@ export default function MpAdminSalesAgencyProductList() {
             <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={formik.values.pageIndex + 1}
-                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
+                page={page}
+                renderItem={item => (
+                  <PaginationItem
+                    {...item}
+                    color='primary'
+                    variant='outlined'
+                    component={RouterLink}
+                    to={setUrlParams({ page: item.page }, initialSearchParams)}
+                  />
+                )}
                 color='primary'
                 variant='outlined'
                 showFirstButton

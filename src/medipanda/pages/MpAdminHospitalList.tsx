@@ -1,3 +1,5 @@
+import { setUrlParams } from '@/lib/url';
+import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import {
   Box,
@@ -12,6 +14,7 @@ import {
   InputLabel,
   MenuItem,
   Pagination,
+  PaginationItem,
   Select,
   Stack,
   Table,
@@ -42,115 +45,161 @@ import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipa
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
-import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
+import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminHospitalList() {
-  const [sido, setSido] = useState<RegionCategoryResponse[]>([]);
-  const [sigungu, setSigungu] = useState<Record<number, RegionCategoryResponse[]>>({});
-  const [data, setData] = useState<Sequenced<HospitalResponse>[]>([]);
+  const navigate = useNavigate();
+
+  const initialSearchParams = {
+    searchKeyword: '',
+    sido: '-1',
+    sigungu: '-1',
+    startDate: '',
+    endDate: '',
+    page: '1',
+  };
+
+  const {
+    searchKeyword,
+    sido: paramSido,
+    sigungu: paramSigungu,
+    startDate: paramStartDate,
+    endDate: paramEndDate,
+    page: paramPage,
+  } = useSearchParamsOrDefault(initialSearchParams);
+  const sido = Number(paramSido);
+  const sigungu = Number(paramSigungu);
+  const startDate = useMemo(() => SafeDate(paramStartDate) ?? null, [paramStartDate]);
+  const endDate = useMemo(() => SafeDate(paramEndDate) ?? null, [paramEndDate]);
+  const page = Number(paramPage);
+  const pageSize = 20;
+
   const [loading, setLoading] = useState(false);
+  const [contents, setContents] = useState<Sequenced<HospitalResponse>[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
+  const [sidoList, setSidoList] = useState<RegionCategoryResponse[]>([]);
+  const [sigunguList, setSigunguList] = useState<Record<number, RegionCategoryResponse[]>>({});
+
   const [excelUploadDialogOpen, setExcelUploadDialogOpen] = useState(false);
   const [excelFile, setExcelFile] = useState<File | null>(null);
-  const errorDialog = useMpErrorDialog();
+
   const infoDialog = useMpInfoDialog();
+  const errorDialog = useMpErrorDialog();
   const deleteDialog = useMpDeleteDialog();
 
   const formik = useFormik({
     initialValues: {
+      ...initialSearchParams,
       sido: -1,
       sigungu: -1,
-      searchKeyword: '',
       startDate: null as Date | null,
       endDate: null as Date | null,
-      pageIndex: 0,
-      pageSize: 20,
+      page: null,
     },
-    onSubmit: async () => {
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchData();
-      }
+    onSubmit: values => {
+      const url = setUrlParams(
+        {
+          ...values,
+          startDate: values.startDate !== null ? formatYyyyMmDd(values.startDate) : undefined,
+          endDate: values.endDate !== null ? formatYyyyMmDd(values.endDate) : undefined,
+          page: 1,
+        },
+        initialSearchParams,
+      );
+
+      navigate(url);
+    },
+    onReset: () => {
+      navigate('');
     },
   });
 
-  const handleReset = () => {
-    formik.resetForm();
-  };
-
-  const handleExcelUpload = async () => {
-    if (!excelFile) {
-      infoDialog.showInfo('업로드할 파일을 선택해주세요.');
-      return;
-    }
-
+  const fetchContent = async () => {
+    setLoading(true);
     try {
-      await uploadHospitalExcel({ file: excelFile });
-      infoDialog.showInfo('엑셀 업로드가 완료되었습니다.');
-      setExcelUploadDialogOpen(false);
-      setExcelFile(null);
-      fetchData();
+      const response = await getHospitals({
+        regionCategoryId: sigungu !== -1 ? sigungu : sido !== -1 ? sido : undefined,
+        hospitalName: searchKeyword !== '' ? searchKeyword : undefined,
+        startDate: startDate ? new DateTimeString(startDate) : undefined,
+        endDate: endDate ? new DateTimeString(endDate) : undefined,
+        page: page - 1,
+        size: pageSize,
+      });
+      setContents(withSequence(response).content);
+      setTotalElements(response.totalElements);
+      setTotalPages(response.totalPages);
     } catch (error) {
-      console.error('Failed to upload excel:', error);
-      errorDialog.showError('엑셀 업로드 중 오류가 발생했습니다.');
+      console.error('Failed to fetch hospital list:', error);
+      errorDialog.showError('개원병원 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+      setTotalElements(0);
+      setTotalPages(0);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleDeleteSelected = () => {
-    if (selectedItems.length === 0) {
-      infoDialog.showInfo('삭제할 항목을 선택해주세요.');
-      return;
-    }
-
-    const count = selectedItems.length;
-    const message = count === 1 ? '선택한 개원병원을 삭제하시겠습니까?' : `${count}건이 선택되었습니다. 삭제하시겠습니까?`;
-
-    deleteDialog.open({
-      message,
-      onConfirm: async () => {
-        try {
-          await Promise.all(selectedItems.map(id => softDeleteHospital(id)));
-          infoDialog.showInfo('삭제가 완료되었습니다.');
-          setSelectedItems([]);
-          fetchData();
-        } catch (error) {
-          console.error('Failed to delete hospitals:', error);
-          errorDialog.showError('개원병원 삭제 중 오류가 발생했습니다.');
-        }
-      },
+  useEffect(() => {
+    formik.setValues({
+      searchKeyword,
+      sido,
+      sigungu,
+      startDate,
+      endDate,
+      page: null,
     });
+    fetchContent();
+  }, [searchKeyword, sido, sigungu, startDate, endDate, page]);
+
+  const fetchRegionData = async () => {
+    try {
+      const sidoResponse = await getAllSido();
+      setSidoList(sidoResponse);
+
+      const sigunguResponse = await Promise.all(sidoResponse.map(async sido => [sido.id, await getSigunguBySido(sido.id)]));
+      setSigunguList(Object.fromEntries(sigunguResponse));
+    } catch (e) {
+      console.error('Failed to fetch region data:', e);
+      errorDialog.showError('지역 데이터를 불러오는 중 오류가 발생했습니다.');
+    }
   };
+
+  useEffect(() => {
+    fetchRegionData();
+  }, []);
 
   const table = useReactTable({
-    data,
+    data: contents,
     columns: [
       {
         id: 'select',
         header: () => (
           <Checkbox
-            checked={selectedItems.length === data.length && data.length > 0}
+            checked={selectedIds.length === contents.length && contents.length > 0}
             onChange={e => {
               if (e.target.checked) {
-                setSelectedItems(data.map(item => item.id));
+                setSelectedIds(contents.map(item => item.id));
               } else {
-                setSelectedItems([]);
+                setSelectedIds([]);
               }
             }}
           />
         ),
         cell: ({ row }) => (
           <Checkbox
-            checked={selectedItems.includes(row.original.id)}
+            checked={selectedIds.includes(row.original.id)}
             onChange={e => {
               if (e.target.checked) {
-                setSelectedItems(prev => [...prev, row.original.id]);
+                setSelectedIds(prev => [...prev, row.original.id]);
               } else {
-                setSelectedItems(prev => prev.filter(id => id !== row.original.id));
+                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
               }
             }}
           />
@@ -194,50 +243,50 @@ export default function MpAdminHospitalList() {
     ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      pagination: {
-        pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize,
-      },
-    },
-    pageCount: totalPages,
-    manualPagination: true,
   });
 
-  const fetchData = async () => {
-    setLoading(true);
+  const handleExcelUpload = async () => {
+    if (!excelFile) {
+      infoDialog.showInfo('업로드할 파일을 선택해주세요.');
+      return;
+    }
+
     try {
-      const sidoResponse = await getAllSido();
-      setSido(sidoResponse);
-
-      const sigunguResponse = await Promise.all(sidoResponse.map(async sido => [sido.id, await getSigunguBySido(sido.id)]));
-      setSigungu(Object.fromEntries(sigunguResponse));
-
-      const response = await getHospitals({
-        page: formik.values.pageIndex,
-        size: formik.values.pageSize,
-        regionCategoryId: formik.values.sigungu !== -1 ? formik.values.sigungu : formik.values.sido !== -1 ? formik.values.sido : undefined,
-        hospitalName: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        startDate: formik.values.startDate ? new DateTimeString(formik.values.startDate) : undefined,
-        endDate: formik.values.endDate ? new DateTimeString(formik.values.endDate) : undefined,
-      });
-      setData(withSequence(response).content);
-      setTotalElements(response.totalElements);
-      setTotalPages(response.totalPages);
+      await uploadHospitalExcel({ file: excelFile });
+      infoDialog.showInfo('엑셀 업로드가 완료되었습니다.');
+      setExcelUploadDialogOpen(false);
+      setExcelFile(null);
+      fetchContent();
     } catch (error) {
-      console.error('Failed to fetch hospital list:', error);
-      errorDialog.showError('개원병원 목록을 불러오는 중 오류가 발생했습니다.');
-      setData([]);
-      setTotalElements(0);
-      setTotalPages(0);
-    } finally {
-      setLoading(false);
+      console.error('Failed to upload excel:', error);
+      errorDialog.showError('엑셀 업로드 중 오류가 발생했습니다.');
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [formik.values.pageIndex, formik.values.pageSize]);
+  const handleDeleteSelected = () => {
+    if (selectedIds.length === 0) {
+      infoDialog.showInfo('삭제할 항목을 선택해주세요.');
+      return;
+    }
+
+    const count = selectedIds.length;
+    const message = count === 1 ? '선택한 개원병원을 삭제하시겠습니까?' : `${count}건이 선택되었습니다. 삭제하시겠습니까?`;
+
+    deleteDialog.open({
+      message,
+      onConfirm: async () => {
+        try {
+          await Promise.all(selectedIds.map(id => softDeleteHospital(id)));
+          infoDialog.showInfo('삭제가 완료되었습니다.');
+          setSelectedIds([]);
+          fetchContent();
+        } catch (error) {
+          console.error('Failed to delete hospitals:', error);
+          errorDialog.showError('개원병원 삭제 중 오류가 발생했습니다.');
+        }
+      },
+    });
+  };
 
   return (
     <Grid container spacing={3}>
@@ -255,8 +304,15 @@ export default function MpAdminHospitalList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size='small'>
                     <InputLabel>시/도</InputLabel>
-                    <Select name='sido' value={formik.values.sido ?? ''} onChange={formik.handleChange}>
-                      {sido.map(region => (
+                    <Select
+                      name='sido'
+                      value={formik.values.sido ?? ''}
+                      onChange={event => {
+                        formik.handleChange(event);
+                        formik.setFieldValue('sigungu', -1);
+                      }}
+                    >
+                      {sidoList.map(region => (
                         <MenuItem key={region.id} value={region.id}>
                           {region.name}
                         </MenuItem>
@@ -268,7 +324,7 @@ export default function MpAdminHospitalList() {
                   <FormControl fullWidth size='small'>
                     <InputLabel>시/군/구</InputLabel>
                     <Select name='sigungu' value={formik.values.sigungu ?? ''} onChange={formik.handleChange}>
-                      {(sigungu[formik.values.sido] ?? []).map(region => (
+                      {(sigunguList[formik.values.sido] ?? []).map(region => (
                         <MenuItem key={region.id} value={region.id}>
                           {region.name}
                         </MenuItem>
@@ -296,7 +352,7 @@ export default function MpAdminHospitalList() {
                   <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant='outlined' size='small' onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -317,7 +373,7 @@ export default function MpAdminHospitalList() {
                 <Button variant='contained' color='success' size='small' onClick={() => setExcelUploadDialogOpen(true)}>
                   엑셀 업로드
                 </Button>
-                <Button variant='contained' color='error' size='small' onClick={handleDeleteSelected} disabled={selectedItems.length === 0}>
+                <Button variant='contained' color='error' size='small' onClick={handleDeleteSelected} disabled={selectedIds.length === 0}>
                   삭제
                 </Button>
               </Stack>
@@ -371,8 +427,16 @@ export default function MpAdminHospitalList() {
             <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={formik.values.pageIndex + 1}
-                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
+                page={page}
+                renderItem={item => (
+                  <PaginationItem
+                    {...item}
+                    color='primary'
+                    variant='outlined'
+                    component={RouterLink}
+                    to={setUrlParams({ page: item.page }, initialSearchParams)}
+                  />
+                )}
                 color='primary'
                 variant='outlined'
                 showFirstButton

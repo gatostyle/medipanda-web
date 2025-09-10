@@ -1,3 +1,5 @@
+import { setUrlParams } from '@/lib/url';
+import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import {
   Box,
   Button,
@@ -7,6 +9,7 @@ import {
   InputLabel,
   MenuItem,
   Pagination,
+  PaginationItem,
   Select,
   Stack,
   Table,
@@ -27,63 +30,139 @@ import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
+import { formatYyyyMmDd, formatYyyyMmDdHhMm, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminCommunityBlindList() {
-  const [data, setData] = useState<Sequenced<BlindPostResponse>[]>([]);
+  const navigate = useNavigate();
+
+  const initialSearchParams = {
+    searchType: '' as 'nickname' | 'userId' | 'memberName' | '',
+    searchKeyword: '',
+    startAt: '',
+    endAt: '',
+    postType: '' as 'BOARD' | 'COMMENT' | '',
+    page: '1',
+  };
+
+  const {
+    searchType,
+    searchKeyword,
+    startAt: paramStartAt,
+    endAt: paramEndAt,
+    postType,
+    page: paramPage,
+  } = useSearchParamsOrDefault(initialSearchParams);
+  const startAt = useMemo(() => SafeDate(paramStartAt) ?? null, [paramStartAt]);
+  const endAt = useMemo(() => SafeDate(paramEndAt) ?? null, [paramEndAt]);
+  const page = Number(paramPage);
+  const pageSize = 20;
+
+  const [contents, setContents] = useState<Sequenced<BlindPostResponse>[]>([]);
   const [loading, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
   const deleteDialog = useMpDeleteDialog();
   const errorDialog = useMpErrorDialog();
 
   const formik = useFormik({
     initialValues: {
-      postType: 'BOARD' as 'BOARD' | 'COMMENT',
-      searchType: 'nickname' as 'nickname' | 'userId' | 'memberName',
-      searchKeyword: '',
+      ...initialSearchParams,
       startAt: null as Date | null,
       endAt: null as Date | null,
-      pageIndex: 0,
-      pageSize: 20,
+      page: null,
     },
-    onSubmit: async () => {
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchData();
-      }
+    onSubmit: values => {
+      const url = setUrlParams(
+        {
+          ...values,
+          startAt: values.startAt !== null ? formatYyyyMmDd(values.startAt) : undefined,
+          endAt: values.endAt !== null ? formatYyyyMmDd(values.endAt) : undefined,
+          page: 1,
+        },
+        initialSearchParams,
+      );
+
+      navigate(url);
+    },
+    onReset: () => {
+      navigate('');
     },
   });
 
+  const fetchContents = async () => {
+    if (searchType === '' && searchKeyword !== '') {
+      alert('검색유형을 선택해주세요.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await getBlindPosts({
+        memberName: searchType === 'memberName' && searchKeyword !== '' ? searchKeyword : undefined,
+        startAt: startAt ? new DateString(startAt) : undefined,
+        endAt: endAt ? new DateString(endAt) : undefined,
+        postType: postType !== '' ? postType : undefined,
+        page: page - 1,
+        size: pageSize,
+      });
+
+      setContents(withSequence(response).content);
+      setTotalElements(response.totalElements);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch blind post list:', error);
+      errorDialog.showError('블라인드 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+      setTotalElements(0);
+      setTotalPages(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    formik.setValues({
+      searchType,
+      searchKeyword,
+      startAt,
+      endAt,
+      postType,
+      page: null,
+    });
+    fetchContents();
+  }, [searchType, searchKeyword, startAt, endAt, postType, page]);
+
   const table = useReactTable({
-    data,
+    data: contents,
     columns: [
       {
         id: 'select',
         header: () => (
           <Checkbox
-            checked={selectedItems.length === data.length && data.length > 0}
+            checked={selectedIds.length === contents.length && contents.length > 0}
             onChange={e => {
               if (e.target.checked) {
-                setSelectedItems(data.map(item => item.id));
+                setSelectedIds(contents.map(item => item.id));
               } else {
-                setSelectedItems([]);
+                setSelectedIds([]);
               }
             }}
           />
         ),
         cell: ({ row }) => (
           <Checkbox
-            checked={selectedItems.includes(row.original.id)}
+            checked={selectedIds.includes(row.original.id)}
             onChange={e => {
               if (e.target.checked) {
-                setSelectedItems(prev => [...prev, row.original.id]);
+                setSelectedIds(prev => [...prev, row.original.id]);
               } else {
-                setSelectedItems(prev => prev.filter(id => id !== row.original.id));
+                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
               }
             }}
           />
@@ -145,53 +224,10 @@ export default function MpAdminCommunityBlindList() {
     ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      pagination: {
-        pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize,
-      },
-    },
-    pageCount: totalPages,
-    manualPagination: true,
   });
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await getBlindPosts({
-        postType: formik.values.postType,
-        memberName:
-          formik.values.searchType === 'memberName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
-        endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
-        page: formik.values.pageIndex,
-        size: formik.values.pageSize,
-      });
-
-      setData(withSequence(response).content);
-      setTotalElements(response.totalElements);
-      setTotalPages(response.totalPages);
-    } catch (error) {
-      console.error('Failed to fetch blind post list:', error);
-      errorDialog.showError('블라인드 목록을 불러오는 중 오류가 발생했습니다.');
-      setData([]);
-      setTotalElements(0);
-      setTotalPages(0);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [formik.values.pageIndex, formik.values.pageSize]);
-
-  const handleReset = () => {
-    formik.resetForm();
-  };
-
   const handleUnblind = () => {
-    const count = selectedItems.length;
+    const count = selectedIds.length;
     const message =
       count === 1 ? `선택한 항목의 블라인드를 해제하시겠습니까?` : `${count}건이 선택되었습니다. 블라인드를 해제하시겠습니까?`;
 
@@ -199,8 +235,8 @@ export default function MpAdminCommunityBlindList() {
       message,
       onConfirm: async () => {
         try {
-          for (const id of selectedItems) {
-            const item = data.find(item => item.id === id);
+          for (const id of selectedIds) {
+            const item = contents.find(item => item.id === id);
             if (item) {
               if (item.postType === 'BOARD') {
                 await unblindPost({ postId: item.id, commentId: null });
@@ -209,8 +245,8 @@ export default function MpAdminCommunityBlindList() {
               }
             }
           }
-          await fetchData();
-          setSelectedItems([]);
+          await fetchContents();
+          setSelectedIds([]);
         } catch (error) {
           console.error('Failed to unblind posts:', error);
           errorDialog.showError('블라인드 해제 중 오류가 발생했습니다.');
@@ -271,7 +307,7 @@ export default function MpAdminCommunityBlindList() {
                   <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant='outlined' size='small' onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -289,7 +325,7 @@ export default function MpAdminCommunityBlindList() {
                 <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
               <Stack direction='row' spacing={1}>
-                <Button variant='contained' color='success' size='small' disabled={selectedItems.length === 0} onClick={handleUnblind}>
+                <Button variant='contained' color='success' size='small' disabled={selectedIds.length === 0} onClick={handleUnblind}>
                   블라인드 해제
                 </Button>
               </Stack>
@@ -343,8 +379,16 @@ export default function MpAdminCommunityBlindList() {
             <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={formik.values.pageIndex + 1}
-                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
+                page={page}
+                renderItem={item => (
+                  <PaginationItem
+                    {...item}
+                    color='primary'
+                    variant='outlined'
+                    component={RouterLink}
+                    to={setUrlParams({ page: item.page }, initialSearchParams)}
+                  />
+                )}
                 color='primary'
                 variant='outlined'
                 showFirstButton

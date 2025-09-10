@@ -29,8 +29,15 @@ export function DateFix(str: string): Date {
   return new Date(str.replace(/"/g, ''));
 }
 
-export function KoreanDateFix(date: Date): Date {
-  const fixedDate = new Date(date);
+export function SafeDate(dateString: string): Date | null {
+  const date = new Date(dateString);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+export function KoreanDateFix(date: Date): Date;
+export function KoreanDateFix(dateString: string): Date;
+export function KoreanDateFix(dateOrString: Date | string): Date {
+  const fixedDate = typeof dateOrString === 'string' ? new Date(dateOrString) : dateOrString;
   fixedDate.setHours(fixedDate.getHours() + 9);
   return fixedDate;
 }

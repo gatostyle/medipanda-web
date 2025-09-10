@@ -1,3 +1,5 @@
+import { setUrlParams } from '@/lib/url';
+import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import { AttachFile as AttachFileIcon, UploadFile } from '@mui/icons-material';
 import { DocumentDownload } from 'iconsax-react';
 import {
@@ -16,6 +18,7 @@ import {
   Link,
   MenuItem,
   Pagination,
+  PaginationItem,
   Select,
   Stack,
   Table,
@@ -40,52 +43,125 @@ import {
 } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminProductList() {
-  const [data, setData] = useState<Sequenced<ProductSummaryResponse>[]>([]);
+  const navigate = useNavigate();
+
+  const initialSearchParams = {
+    searchType: '' as 'productName' | 'productCode' | 'manufacturerName' | 'composition' | 'note' | '',
+    searchKeyword: '',
+    isAcquisition: 'false',
+    isPromotion: 'false',
+    isOutOfStock: 'false',
+    isStopSelling: 'false',
+    page: '1',
+  };
+
+  const {
+    searchType,
+    searchKeyword,
+    isAcquisition: paramIsAcquisition,
+    isPromotion: paramIsPromotion,
+    isOutOfStock: paramIsOutOfStock,
+    isStopSelling: paramIsStopSelling,
+    page: paramPage,
+  } = useSearchParamsOrDefault(initialSearchParams);
+  const isAcquisition = paramIsAcquisition === 'true';
+  const isPromotion = paramIsPromotion === 'true';
+  const isOutOfStock = paramIsOutOfStock === 'true';
+  const isStopSelling = paramIsStopSelling === 'true';
+  const page = Number(paramPage);
+  const pageSize = 20;
+
   const [loading, setLoading] = useState(false);
+  const [contents, setContents] = useState<Sequenced<ProductSummaryResponse>[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
   const [rateTableDialogOpen, setRateTableDialogOpen] = useState(false);
   const [rateTableFile, setRateTableFile] = useState<File | null>(null);
+
   const deleteDialog = useMpDeleteDialog();
-  const errorDialog = useMpErrorDialog();
-  const infoDialog = useMpInfoDialog();
-
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    if (acceptedFiles.length > 0) {
-      setRateTableFile(acceptedFiles[0]);
-    }
-  }, []);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: { 'application/vnd.ms-excel': ['.xls', '.xlsx'] } });
 
   const formik = useFormik({
     initialValues: {
-      searchType: 'productName' as 'productName' | 'productCode' | 'manufacturerName' | 'composition' | 'note',
-      searchKeyword: '',
+      ...initialSearchParams,
       isAcquisition: false,
       isPromotion: false,
       isOutOfStock: false,
       isStopSelling: false,
-      pageIndex: 0,
-      pageSize: 20,
+      page: null,
     },
-    onSubmit: async () => {
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchData();
-      }
+    onSubmit: values => {
+      const url = setUrlParams(
+        {
+          ...values,
+          page: 1,
+        },
+        initialSearchParams,
+      );
+
+      navigate(url);
+    },
+    onReset: () => {
+      navigate('');
     },
   });
+
+  const fetchContents = async () => {
+    if (searchType === '' && searchKeyword !== '') {
+      alert('검색유형을 선택해주세요.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await getProductSummaries({
+        productName: searchType === 'productName' && searchKeyword !== '' ? searchKeyword : undefined,
+        composition: searchType === 'composition' && searchKeyword !== '' ? searchKeyword : undefined,
+        productCode: searchType === 'productCode' && searchKeyword !== '' ? searchKeyword : undefined,
+        manufacturerName: searchType === 'manufacturerName' && searchKeyword !== '' ? searchKeyword : undefined,
+        note: searchType === 'note' && searchKeyword !== '' ? searchKeyword : undefined,
+        isAcquisition: isAcquisition || undefined,
+        isPromotion: isPromotion || undefined,
+        isOutOfStock: isOutOfStock || undefined,
+        isStopSelling: isStopSelling || undefined,
+        page: page - 1,
+        size: pageSize,
+      });
+
+      setContents(withSequence(response).content);
+      setTotalElements(response.totalElements);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch product list:', error);
+      alert('제품 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+      setTotalElements(0);
+      setTotalPages(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    formik.setValues({
+      searchType,
+      searchKeyword,
+      isAcquisition,
+      isPromotion,
+      isOutOfStock,
+      isStopSelling,
+      page: null,
+    });
+    fetchContents();
+  }, [searchType, searchKeyword, isAcquisition, isPromotion, isOutOfStock, isStopSelling, page]);
 
   const getStatusDisplay = (product: ProductSummaryResponse): string => {
     const statuses: string[] = [];
@@ -106,30 +182,30 @@ export default function MpAdminProductList() {
   };
 
   const table = useReactTable({
-    data,
+    data: contents,
     columns: [
       {
         id: 'select',
         header: () => (
           <Checkbox
-            checked={selectedItems.length === data.length && data.length > 0}
+            checked={selectedIds.length === contents.length && contents.length > 0}
             onChange={e => {
               if (e.target.checked) {
-                setSelectedItems(data.map(item => item.id));
+                setSelectedIds(contents.map(item => item.id));
               } else {
-                setSelectedItems([]);
+                setSelectedIds([]);
               }
             }}
           />
         ),
         cell: ({ row }) => (
           <Checkbox
-            checked={selectedItems.includes(row.original.id)}
+            checked={selectedIds.includes(row.original.id)}
             onChange={e => {
               if (e.target.checked) {
-                setSelectedItems(prev => [...prev, row.original.id]);
+                setSelectedIds(prev => [...prev, row.original.id]);
               } else {
-                setSelectedItems(prev => prev.filter(id => id !== row.original.id));
+                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
               }
             }}
           />
@@ -195,73 +271,31 @@ export default function MpAdminProductList() {
     ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      pagination: {
-        pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize,
-      },
-    },
-    pageCount: totalPages,
-    manualPagination: true,
   });
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await getProductSummaries({
-        productName:
-          formik.values.searchType === 'productName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        composition:
-          formik.values.searchType === 'composition' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        productCode:
-          formik.values.searchType === 'productCode' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        manufacturerName:
-          formik.values.searchType === 'manufacturerName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        note: formik.values.searchType === 'note' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        isAcquisition: formik.values.isAcquisition || undefined,
-        isPromotion: formik.values.isPromotion || undefined,
-        isOutOfStock: formik.values.isOutOfStock || undefined,
-        isStopSelling: formik.values.isStopSelling || undefined,
-        page: formik.values.pageIndex,
-        size: formik.values.pageSize,
-      });
-
-      setData(withSequence(response).content);
-      setTotalElements(response.totalElements);
-      setTotalPages(response.totalPages);
-    } catch (error) {
-      console.error('Failed to fetch product list:', error);
-      errorDialog.showError('제품 목록을 불러오는 중 오류가 발생했습니다.');
-      setData([]);
-      setTotalElements(0);
-      setTotalPages(0);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [formik.values.pageIndex, formik.values.pageSize]);
-
-  const handleReset = () => {
-    formik.resetForm();
-  };
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: useCallback((acceptedFiles: File[]) => {
+      if (acceptedFiles.length > 0) {
+        setRateTableFile(acceptedFiles[0]);
+      }
+    }, []),
+    accept: { 'application/vnd.ms-excel': ['.xls', '.xlsx'] },
+  });
 
   const handleDelete = () => {
-    const count = selectedItems.length;
+    const count = selectedIds.length;
     const message =
       count === 1
-        ? `제품 ${data.find(item => item.id === selectedItems[0])?.productName}을 삭제하시겠습니까?`
+        ? `제품 ${contents.find(item => item.id === selectedIds[0])?.productName}을 삭제하시겠습니까?`
         : `${count}건이 선택되었습니다. 삭제하시겠습니까?`;
 
     deleteDialog.open({
       message,
       onConfirm: async () => {
         try {
-          await Promise.all(selectedItems.map(id => updateProductExtraInfo_1(id)));
-          setSelectedItems([]);
-          fetchData();
+          await Promise.all(selectedIds.map(id => updateProductExtraInfo_1(id)));
+          setSelectedIds([]);
+          fetchContents();
         } catch (error) {
           console.error('Failed to delete products:', error);
         }
@@ -274,11 +308,11 @@ export default function MpAdminProductList() {
 
     try {
       await uploadProductExtraInfo({ file: rateTableFile });
-      infoDialog.showInfo('요율표를 성공적으로 업로드했습니다.');
-      await fetchData();
+      alert('요율표를 성공적으로 업로드했습니다.');
+      await fetchContents();
     } catch (error) {
       console.error('Failed to upload rate table:', error);
-      errorDialog.showError('요율표 업로드 중 오류가 발생했습니다.');
+      alert('요율표 업로드 중 오류가 발생했습니다.');
     }
   };
 
@@ -365,7 +399,7 @@ export default function MpAdminProductList() {
                   <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant='outlined' size='small' onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -388,28 +422,15 @@ export default function MpAdminProductList() {
                   color='success'
                   size='small'
                   href={getDownloadProductSummariesExcel({
-                    productName:
-                      formik.values.searchType === 'productName' && formik.values.searchKeyword !== ''
-                        ? formik.values.searchKeyword
-                        : undefined,
-                    composition:
-                      formik.values.searchType === 'composition' && formik.values.searchKeyword !== ''
-                        ? formik.values.searchKeyword
-                        : undefined,
-                    productCode:
-                      formik.values.searchType === 'productCode' && formik.values.searchKeyword !== ''
-                        ? formik.values.searchKeyword
-                        : undefined,
-                    manufacturerName:
-                      formik.values.searchType === 'manufacturerName' && formik.values.searchKeyword !== ''
-                        ? formik.values.searchKeyword
-                        : undefined,
-                    note:
-                      formik.values.searchType === 'note' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-                    isAcquisition: formik.values.isAcquisition || undefined,
-                    isPromotion: formik.values.isPromotion || undefined,
-                    isOutOfStock: formik.values.isOutOfStock || undefined,
-                    isStopSelling: formik.values.isStopSelling || undefined,
+                    productName: searchType === 'productName' && searchKeyword !== '' ? searchKeyword : undefined,
+                    composition: searchType === 'composition' && searchKeyword !== '' ? searchKeyword : undefined,
+                    productCode: searchType === 'productCode' && searchKeyword !== '' ? searchKeyword : undefined,
+                    manufacturerName: searchType === 'manufacturerName' && searchKeyword !== '' ? searchKeyword : undefined,
+                    note: searchType === 'note' && searchKeyword !== '' ? searchKeyword : undefined,
+                    isAcquisition: isAcquisition || undefined,
+                    isPromotion: isPromotion || undefined,
+                    isOutOfStock: isOutOfStock || undefined,
+                    isStopSelling: isStopSelling || undefined,
                     size: 2 ** 31 - 1,
                   })}
                   target='_blank'
@@ -420,7 +441,7 @@ export default function MpAdminProductList() {
                 <Button variant='contained' color='success' size='small' onClick={() => setRateTableDialogOpen(true)}>
                   요율표 업로드
                 </Button>
-                <Button variant='contained' color='error' size='small' disabled={selectedItems.length === 0} onClick={handleDelete}>
+                <Button variant='contained' color='error' size='small' disabled={selectedIds.length === 0} onClick={handleDelete}>
                   삭제
                 </Button>
                 <Button variant='contained' color='success' size='small' component={RouterLink} to='/admin/products/new'>
@@ -477,8 +498,16 @@ export default function MpAdminProductList() {
             <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={formik.values.pageIndex + 1}
-                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
+                page={page}
+                renderItem={item => (
+                  <PaginationItem
+                    {...item}
+                    color='primary'
+                    variant='outlined'
+                    component={RouterLink}
+                    to={setUrlParams({ page: item.page }, initialSearchParams)}
+                  />
+                )}
                 color='primary'
                 variant='outlined'
                 showFirstButton

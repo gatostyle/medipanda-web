@@ -1,3 +1,5 @@
+import { setUrlParams } from '@/lib/url';
+import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import {
   Box,
   Button,
@@ -7,6 +9,7 @@ import {
   InputLabel,
   MenuItem,
   Pagination,
+  PaginationItem,
   Select,
   Stack,
   Table,
@@ -28,51 +31,128 @@ import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipa
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { CONTRACT_STATUS_LABELS } from '@/medipanda/ui-labels';
-import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
+import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminCommunityCommentList() {
-  const [data, setData] = useState<Sequenced<CommentMemberResponse>[]>([]);
+  const navigate = useNavigate();
+
+  const initialSearchParams = {
+    searchType: '' as 'nickname' | 'userId' | '',
+    searchKeyword: '',
+    commentType: '' as 'COMMENT' | 'REPLY' | '',
+    startAt: '',
+    endAt: '',
+    page: '1',
+  };
+
+  const {
+    searchType,
+    searchKeyword,
+    commentType,
+    startAt: paramStartAt,
+    endAt: paramEndAt,
+    page: paramPage,
+  } = useSearchParamsOrDefault(initialSearchParams);
+  const startAt = useMemo(() => SafeDate(paramStartAt) ?? null, [paramStartAt]);
+  const endAt = useMemo(() => SafeDate(paramEndAt) ?? null, [paramEndAt]);
+  const page = Number(paramPage);
+  const pageSize = 20;
+
   const [loading, setLoading] = useState(false);
+  const [contents, setContents] = useState<Sequenced<CommentMemberResponse>[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const deleteDialog = useMpDeleteDialog();
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
   const errorDialog = useMpErrorDialog();
+  const deleteDialog = useMpDeleteDialog();
 
   const formik = useFormik({
     initialValues: {
-      commentType: '' as 'COMMENT' | 'REPLY' | '',
-      searchType: '' as 'nickname' | 'userId' | '',
-      searchKeyword: '',
+      ...initialSearchParams,
       startAt: null as Date | null,
       endAt: null as Date | null,
-      pageIndex: 0,
-      pageSize: 20,
+      page: null,
     },
-    onSubmit: async () => {
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchData();
-      }
+    onSubmit: values => {
+      const url = setUrlParams(
+        {
+          ...values,
+          startAt: values.startAt !== null ? formatYyyyMmDd(values.startAt) : undefined,
+          endAt: values.endAt !== null ? formatYyyyMmDd(values.endAt) : undefined,
+          page: 1,
+        },
+        initialSearchParams,
+      );
+
+      navigate(url);
+    },
+    onReset: () => {
+      navigate('');
     },
   });
 
+  const fetchContents = async () => {
+    if (searchType === '' && searchKeyword !== '') {
+      alert('검색유형을 선택해주세요.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await getCommentMembers({
+        userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
+        nickname: searchType === 'nickname' && searchKeyword !== '' ? searchKeyword : undefined,
+        startAt: startAt ? new DateString(startAt) : undefined,
+        endAt: endAt ? new DateString(endAt) : undefined,
+        commentType: commentType !== '' ? commentType : undefined,
+        page: page - 1,
+        size: pageSize,
+      });
+
+      setContents(withSequence(response).content);
+      setTotalElements(response.totalElements);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch comment list:', error);
+      errorDialog.showError('댓글 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+      setTotalElements(0);
+      setTotalPages(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    formik.setValues({
+      searchType,
+      searchKeyword,
+      commentType,
+      startAt,
+      endAt,
+      page: null,
+    });
+    fetchContents();
+  }, [searchType, searchKeyword, commentType, startAt, endAt, page]);
+
   const table = useReactTable({
-    data,
+    data: contents,
     columns: [
       {
         id: 'select',
         header: () => (
           <Checkbox
-            checked={selectedItems.length === data.length && data.length > 0}
+            checked={selectedIds.length === contents.length && contents.length > 0}
             onChange={e => {
               if (e.target.checked) {
-                setSelectedItems(data.map(item => item.id));
+                setSelectedIds(contents.map(item => item.id));
               } else {
-                setSelectedItems([]);
+                setSelectedIds([]);
               }
             }}
           />
@@ -80,12 +160,12 @@ export default function MpAdminCommunityCommentList() {
         cell: ({ row }) => {
           return (
             <Checkbox
-              checked={selectedItems.includes(row.original.id)}
+              checked={selectedIds.includes(row.original.id)}
               onChange={e => {
                 if (e.target.checked) {
-                  setSelectedItems(prev => [...prev, row.original.id]);
+                  setSelectedIds(prev => [...prev, row.original.id]);
                 } else {
-                  setSelectedItems(prev => prev.filter(id => id !== row.original.id));
+                  setSelectedIds(prev => prev.filter(id => id !== row.original.id));
                 }
               }}
             />
@@ -154,67 +234,24 @@ export default function MpAdminCommunityCommentList() {
     ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      pagination: {
-        pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize,
-      },
-    },
-    pageCount: totalPages,
-    manualPagination: true,
   });
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await getCommentMembers({
-        userId: formik.values.searchType === 'userId' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        nickname: formik.values.searchType === 'nickname' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
-        endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
-        commentType: formik.values.commentType !== '' ? formik.values.commentType : undefined,
-        page: formik.values.pageIndex,
-        size: formik.values.pageSize,
-      });
-
-      setData(withSequence(response).content);
-      setTotalElements(response.totalElements);
-      setTotalPages(response.totalPages);
-    } catch (error) {
-      console.error('Failed to fetch comment list:', error);
-      errorDialog.showError('댓글 목록을 불러오는 중 오류가 발생했습니다.');
-      setData([]);
-      setTotalElements(0);
-      setTotalPages(0);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [formik.values.pageIndex, formik.values.pageSize]);
-
-  const handleReset = () => {
-    formik.resetForm();
-  };
-
   const handleBlind = () => {
-    const count = selectedItems.length;
+    const count = selectedIds.length;
     const message = count === 1 ? `댓글을 블라인드 처리하시겠습니까?` : `${count}건이 선택되었습니다. 블라인드 처리하시겠습니까?`;
 
     deleteDialog.open({
       message,
       onConfirm: async () => {
         try {
-          for (const id of selectedItems) {
-            const comment = data.find(item => item.id === id);
+          for (const id of selectedIds) {
+            const comment = contents.find(item => item.id === id);
             if (comment) {
               await toggleBlindStatus(id);
             }
           }
-          await fetchData();
-          setSelectedItems([]);
+          await fetchContents();
+          setSelectedIds([]);
         } catch (error) {
           console.error('Failed to blind comments:', error);
           errorDialog.showError('댓글 블라인드 처리 중 오류가 발생했습니다.');
@@ -274,7 +311,7 @@ export default function MpAdminCommunityCommentList() {
                   <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant='outlined' size='small' onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -292,7 +329,7 @@ export default function MpAdminCommunityCommentList() {
                 <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
               <Stack direction='row' spacing={1}>
-                <Button variant='contained' color='success' size='small' disabled={selectedItems.length === 0} onClick={handleBlind}>
+                <Button variant='contained' color='success' size='small' disabled={selectedIds.length === 0} onClick={handleBlind}>
                   블라인드
                 </Button>
               </Stack>
@@ -346,8 +383,16 @@ export default function MpAdminCommunityCommentList() {
             <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={formik.values.pageIndex + 1}
-                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
+                page={page}
+                renderItem={item => (
+                  <PaginationItem
+                    {...item}
+                    color='primary'
+                    variant='outlined'
+                    component={RouterLink}
+                    to={setUrlParams({ page: item.page }, initialSearchParams)}
+                  />
+                )}
                 color='primary'
                 variant='outlined'
                 showFirstButton

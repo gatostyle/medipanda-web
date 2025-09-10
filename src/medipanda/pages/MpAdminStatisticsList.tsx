@@ -1,3 +1,5 @@
+import { setUrlParams } from '@/lib/url';
+import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import {
   Box,
   Button,
@@ -6,6 +8,7 @@ import {
   InputLabel,
   MenuItem,
   Pagination,
+  PaginationItem,
   Select,
   Stack,
   Table,
@@ -26,51 +29,82 @@ import { DateString, getDownloadPerformanceExcel, getPerformanceStats, Performan
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { formatYyyyMm } from '@/medipanda/utils/dateFormat';
+import { formatYyyyMm, formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminStatisticsList() {
-  const [data, setData] = useState<Sequenced<PerformanceStatsResponse>[]>([]);
+  const navigate = useNavigate();
+
+  const initialSearchParams = {
+    searchType: '' as 'drugCompany' | 'companyName' | 'dealerName' | 'institutionName' | '',
+    searchKeyword: '',
+    settlementDate: '',
+    status: '' as 'REQUEST' | 'OBJECTION' | '',
+    page: '1',
+  };
+
+  const {
+    searchType,
+    searchKeyword,
+    settlementDate: paramSettlementDate,
+    status,
+    page: paramPage,
+  } = useSearchParamsOrDefault(initialSearchParams);
+  const settlementDate = useMemo(() => SafeDate(paramSettlementDate) ?? null, [paramSettlementDate]);
+  const page = Number(paramPage);
+  const pageSize = 20;
+
   const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<Sequenced<PerformanceStatsResponse>[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalPrescriptionAmount, setTotalPrescriptionAmount] = useState(0);
+
   const errorDialog = useMpErrorDialog();
 
   const formik = useFormik({
     initialValues: {
-      searchType: 'companyName' as 'drugCompany' | 'companyName' | 'dealerName' | 'institutionName',
-      searchKeyword: '',
+      ...initialSearchParams,
       settlementDate: null as Date | null,
-      pageIndex: 0,
-      pageSize: 20,
+      page: null,
     },
-    onSubmit: async () => {
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchData();
-      }
+    onSubmit: values => {
+      const url = setUrlParams(
+        {
+          ...values,
+          settlementDate: values.settlementDate !== null ? formatYyyyMmDd(values.settlementDate) : undefined,
+          page: 1,
+        },
+        initialSearchParams,
+      );
+
+      navigate(url);
+    },
+    onReset: () => {
+      navigate('');
     },
   });
 
-  const fetchData = async () => {
+  const fetchContents = async () => {
+    if (searchType === '' && searchKeyword !== '') {
+      alert('검색유형을 선택해주세요.');
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await getPerformanceStats({
-        drugCompany:
-          formik.values.searchType === 'drugCompany' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        companyName:
-          formik.values.searchType === 'companyName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        dealerName:
-          formik.values.searchType === 'dealerName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        institutionName:
-          formik.values.searchType === 'institutionName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        startMonth: formik.values.settlementDate ? new DateString(formik.values.settlementDate) : undefined,
-        endMonth: formik.values.settlementDate ? new DateString(formik.values.settlementDate) : undefined,
-        page: formik.values.pageIndex,
-        size: formik.values.pageSize,
+        drugCompany: searchType === 'drugCompany' && searchKeyword !== '' ? searchKeyword : undefined,
+        companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
+        dealerName: searchType === 'dealerName' && searchKeyword !== '' ? searchKeyword : undefined,
+        institutionName: searchType === 'institutionName' && searchKeyword !== '' ? searchKeyword : undefined,
+        startMonth: settlementDate ? new DateString(settlementDate) : undefined,
+        endMonth: settlementDate ? new DateString(settlementDate) : undefined,
+        page: page - 1,
+        size: pageSize,
       });
 
       setData(withSequence(response).content);
@@ -90,12 +124,15 @@ export default function MpAdminStatisticsList() {
   };
 
   useEffect(() => {
-    fetchData();
-  }, [formik.values.pageIndex, formik.values.pageSize]);
-
-  const handleReset = () => {
-    formik.resetForm();
-  };
+    formik.setValues({
+      searchType,
+      searchKeyword,
+      settlementDate,
+      status,
+      page: null,
+    });
+    fetchContents();
+  }, [searchType, searchKeyword, settlementDate, status, page]);
 
   const table = useReactTable({
     data,
@@ -158,14 +195,6 @@ export default function MpAdminStatisticsList() {
     ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      pagination: {
-        pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize,
-      },
-    },
-    pageCount: totalPages,
-    manualPagination: true,
   });
 
   return (
@@ -215,7 +244,7 @@ export default function MpAdminStatisticsList() {
                   <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant='outlined' size='small' onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -239,24 +268,12 @@ export default function MpAdminStatisticsList() {
                   color='success'
                   size='small'
                   href={getDownloadPerformanceExcel({
-                    drugCompany:
-                      formik.values.searchType === 'drugCompany' && formik.values.searchKeyword !== ''
-                        ? formik.values.searchKeyword
-                        : undefined,
-                    companyName:
-                      formik.values.searchType === 'companyName' && formik.values.searchKeyword !== ''
-                        ? formik.values.searchKeyword
-                        : undefined,
-                    dealerName:
-                      formik.values.searchType === 'dealerName' && formik.values.searchKeyword !== ''
-                        ? formik.values.searchKeyword
-                        : undefined,
-                    institutionName:
-                      formik.values.searchType === 'institutionName' && formik.values.searchKeyword !== ''
-                        ? formik.values.searchKeyword
-                        : undefined,
-                    startMonth: formik.values.settlementDate ? new DateString(formik.values.settlementDate) : undefined,
-                    endMonth: formik.values.settlementDate ? new DateString(formik.values.settlementDate) : undefined,
+                    drugCompany: searchType === 'drugCompany' && searchKeyword !== '' ? searchKeyword : undefined,
+                    companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
+                    dealerName: searchType === 'dealerName' && searchKeyword !== '' ? searchKeyword : undefined,
+                    institutionName: searchType === 'institutionName' && searchKeyword !== '' ? searchKeyword : undefined,
+                    startMonth: settlementDate ? new DateString(settlementDate) : undefined,
+                    endMonth: settlementDate ? new DateString(settlementDate) : undefined,
                     size: 2 ** 31 - 1,
                   })}
                   target='_blank'
@@ -314,8 +331,16 @@ export default function MpAdminStatisticsList() {
             <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={formik.values.pageIndex + 1}
-                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
+                page={page}
+                renderItem={item => (
+                  <PaginationItem
+                    {...item}
+                    color='primary'
+                    variant='outlined'
+                    component={RouterLink}
+                    to={setUrlParams({ page: item.page }, initialSearchParams)}
+                  />
+                )}
                 color='primary'
                 variant='outlined'
                 showFirstButton

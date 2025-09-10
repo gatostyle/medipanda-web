@@ -1,3 +1,5 @@
+import { setUrlParams } from '@/lib/url';
+import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import {
   Box,
   Button,
@@ -6,6 +8,7 @@ import {
   InputLabel,
   MenuItem,
   Pagination,
+  PaginationItem,
   Select,
   Stack,
   Table,
@@ -27,59 +30,94 @@ import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { EXPENSE_REPORT_CLASSIFICATION_LABELS, EXPENSE_REPORT_STATUS_LABELS } from '@/medipanda/ui-labels';
-import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
+import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminExpenseReportList() {
-  const [data, setData] = useState<Sequenced<ExpenseReportResponse>[]>([]);
+  const navigate = useNavigate();
+
+  const initialSearchParams = {
+    searchType: '' as 'companyName' | 'userId' | 'productName' | '',
+    searchKeyword: '',
+    eventDateFrom: '',
+    eventDateTo: '',
+    status: '' as 'PENDING' | 'COMPLETED' | '',
+    page: '1',
+  };
+
+  const {
+    searchType,
+    searchKeyword,
+    eventDateFrom: paramEventDateFrom,
+    eventDateTo: paramEventDateTo,
+    status,
+    page: paramPage,
+  } = useSearchParamsOrDefault(initialSearchParams);
+  const eventDateFrom = useMemo(() => SafeDate(paramEventDateFrom) ?? null, [paramEventDateFrom]);
+  const eventDateTo = useMemo(() => SafeDate(paramEventDateTo) ?? null, [paramEventDateTo]);
+  const page = Number(paramPage);
+  const pageSize = 20;
+
   const [loading, setLoading] = useState(false);
+  const [contents, setContents] = useState<Sequenced<ExpenseReportResponse>[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const errorDialog = useMpErrorDialog();
 
   const formik = useFormik({
     initialValues: {
-      status: '' as 'PENDING' | 'COMPLETED' | '',
-      searchType: '' as 'companyName' | 'userId' | 'productName',
+      ...initialSearchParams,
       eventDateFrom: null as Date | null,
       eventDateTo: null as Date | null,
-      searchKeyword: '',
-      pageIndex: 0,
-      pageSize: 20,
+      page: null,
     },
-    onSubmit: async () => {
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchData();
-      }
+    onSubmit: values => {
+      const url = setUrlParams(
+        {
+          ...values,
+          eventDateFrom: values.eventDateFrom !== null ? formatYyyyMmDd(values.eventDateFrom) : undefined,
+          eventDateTo: values.eventDateTo !== null ? formatYyyyMmDd(values.eventDateTo) : undefined,
+          page: 1,
+        },
+        initialSearchParams,
+      );
+
+      navigate(url);
+    },
+    onReset: () => {
+      navigate('');
     },
   });
 
-  const fetchData = async () => {
+  const fetchContents = async () => {
+    if (searchType === '' && searchKeyword !== '') {
+      alert('검색유형을 선택해주세요.');
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await getExpenseReportList({
-        page: formik.values.pageIndex,
-        size: formik.values.pageSize,
+        companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
+        userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
+        productName: searchType === 'productName' && searchKeyword !== '' ? searchKeyword : undefined,
+        eventDateFrom: eventDateFrom ? new DateTimeString(eventDateFrom) : undefined,
+        eventDateTo: eventDateTo ? new DateTimeString(eventDateTo) : undefined,
         status: formik.values.status !== '' ? formik.values.status : undefined,
-        companyName:
-          formik.values.searchType === 'companyName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        userId: formik.values.searchType === 'userId' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        productName:
-          formik.values.searchType === 'productName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        eventDateFrom: formik.values.eventDateFrom ? new DateTimeString(formik.values.eventDateFrom) : undefined,
-        eventDateTo: formik.values.eventDateTo ? new DateTimeString(formik.values.eventDateTo) : undefined,
+        page: page - 1,
+        size: pageSize,
       });
 
-      setData(withSequence(response).content);
+      setContents(withSequence(response).content);
       setTotalElements(response.totalElements);
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch expense reports:', error);
       errorDialog.showError('지출보고 목록을 불러오는 중 오류가 발생했습니다.');
-      setData([]);
+      setContents([]);
       setTotalElements(0);
       setTotalPages(0);
     } finally {
@@ -88,15 +126,19 @@ export default function MpAdminExpenseReportList() {
   };
 
   useEffect(() => {
-    fetchData();
-  }, [formik.values.pageIndex, formik.values.pageSize]);
-
-  const handleReset = () => {
-    formik.resetForm();
-  };
+    formik.setValues({
+      searchType,
+      searchKeyword,
+      eventDateFrom,
+      eventDateTo,
+      status,
+      page: null,
+    });
+    fetchContents();
+  }, [searchType, searchKeyword, eventDateFrom, eventDateTo, status, page]);
 
   const table = useReactTable({
-    data,
+    data: contents,
     columns: [
       {
         header: 'No',
@@ -146,14 +188,6 @@ export default function MpAdminExpenseReportList() {
     ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      pagination: {
-        pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize,
-      },
-    },
-    pageCount: totalPages,
-    manualPagination: true,
   });
 
   return (
@@ -208,7 +242,7 @@ export default function MpAdminExpenseReportList() {
                   <Button type='submit' variant='contained' size='small'>
                     검색
                   </Button>
-                  <Button variant='outlined' size='small' onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -232,19 +266,12 @@ export default function MpAdminExpenseReportList() {
                   color='success'
                   startIcon={<DocumentDownload size={16} />}
                   href={getDownloadExpenseReportListExcel({
+                    companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
+                    userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
+                    productName: searchType === 'productName' && searchKeyword !== '' ? searchKeyword : undefined,
+                    eventDateFrom: eventDateFrom ? new DateTimeString(eventDateFrom) : undefined,
+                    eventDateTo: eventDateTo ? new DateTimeString(eventDateTo) : undefined,
                     status: formik.values.status !== '' ? formik.values.status : undefined,
-                    companyName:
-                      formik.values.searchType === 'companyName' && formik.values.searchKeyword !== ''
-                        ? formik.values.searchKeyword
-                        : undefined,
-                    userId:
-                      formik.values.searchType === 'userId' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-                    productName:
-                      formik.values.searchType === 'productName' && formik.values.searchKeyword !== ''
-                        ? formik.values.searchKeyword
-                        : undefined,
-                    eventDateFrom: formik.values.eventDateFrom ? new DateTimeString(formik.values.eventDateFrom) : undefined,
-                    eventDateTo: formik.values.eventDateTo ? new DateTimeString(formik.values.eventDateTo) : undefined,
                     size: 2 ** 31 - 1,
                   })}
                   target='_blank'
@@ -301,8 +328,16 @@ export default function MpAdminExpenseReportList() {
             <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={formik.values.pageIndex + 1}
-                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
+                page={page}
+                renderItem={item => (
+                  <PaginationItem
+                    {...item}
+                    color='primary'
+                    variant='outlined'
+                    component={RouterLink}
+                    to={setUrlParams({ page: item.page }, initialSearchParams)}
+                  />
+                )}
                 color='primary'
                 variant='outlined'
                 showFirstButton

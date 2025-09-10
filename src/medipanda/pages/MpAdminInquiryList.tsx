@@ -1,3 +1,5 @@
+import { setUrlParams } from '@/lib/url';
+import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import {
   Box,
   Button,
@@ -7,6 +9,7 @@ import {
   Link,
   MenuItem,
   Pagination,
+  PaginationItem,
   Select,
   Stack,
   Table,
@@ -29,36 +32,100 @@ import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminInquiryList() {
-  const [data, setData] = useState<Sequenced<BoardPostResponse>[]>([]);
+  const navigate = useNavigate();
+
+  const initialSearchParams = {
+    searchType: '' as 'name' | 'drugCompany' | 'userId' | '',
+    searchKeyword: '',
+    startAt: '',
+    endAt: '',
+    includeChild: '' as 'true' | 'false' | '',
+    page: '1',
+  };
+
+  const { searchType, searchKeyword, startAt, endAt, includeChild, page: paramPage } = useSearchParamsOrDefault(initialSearchParams);
+  const page = Number(paramPage);
+  const pageSize = 20;
+
   const [loading, setLoading] = useState(false);
+  const [contents, setContents] = useState<Sequenced<BoardPostResponse>[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+
   const errorDialog = useMpErrorDialog();
 
   const formik = useFormik({
     initialValues: {
-      includeChild: '' as 'true' | 'false' | '',
-      searchType: '' as 'name' | 'drugCompany' | 'userId',
-      searchKeyword: '',
-      startAt: null as Date | null,
-      endAt: null as Date | null,
-      pageIndex: 0,
-      pageSize: 20,
+      ...initialSearchParams,
+      page: null,
     },
-    onSubmit: async () => {
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchData();
-      }
+    onSubmit: values => {
+      const url = setUrlParams(
+        {
+          ...values,
+          page: 1,
+        },
+        initialSearchParams,
+      );
+
+      navigate(url);
+    },
+    onReset: () => {
+      navigate('');
     },
   });
 
+  const fetchContents = async () => {
+    if (searchType === '' && searchKeyword !== '') {
+      alert('검색유형을 선택해주세요.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await getBoards({
+        boardType: 'INQUIRY',
+        name: searchType === 'name' && searchKeyword !== '' ? searchKeyword : undefined,
+        drugCompany: searchType === 'drugCompany' && searchKeyword !== '' ? searchKeyword : undefined,
+        userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
+        startAt: startAt ? new DateString(startAt) : undefined,
+        endAt: endAt ? new DateString(endAt) : undefined,
+        includeChild: includeChild === '' ? undefined : includeChild === 'true',
+        page: page - 1,
+        size: pageSize,
+      });
+      setContents(withSequence(response).content);
+      setTotalElements(response.totalElements);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch inquiry list:', error);
+      errorDialog.showError('1:1 문의내역을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+      setTotalElements(0);
+      setTotalPages(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    formik.setValues({
+      searchType,
+      searchKeyword,
+      startAt,
+      endAt,
+      includeChild,
+      page: null,
+    });
+    fetchContents();
+  }, [searchType, searchKeyword, startAt, endAt, includeChild, page]);
+
   const table = useReactTable({
-    data,
+    data: contents,
     columns: [
       {
         header: 'No',
@@ -124,51 +191,7 @@ export default function MpAdminInquiryList() {
     ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      pagination: {
-        pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize,
-      },
-    },
-    pageCount: totalPages,
-    manualPagination: true,
   });
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await getBoards({
-        boardType: 'INQUIRY',
-        page: formik.values.pageIndex,
-        size: formik.values.pageSize,
-        includeChild: formik.values.includeChild === '' ? undefined : formik.values.includeChild === 'true',
-        name: formik.values.searchType === 'name' ? formik.values.searchKeyword : undefined,
-        drugCompany: formik.values.searchType === 'drugCompany' ? formik.values.searchKeyword : undefined,
-        userId: formik.values.searchType === 'userId' ? formik.values.searchKeyword : undefined,
-        startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
-        endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
-      });
-      setData(withSequence(response).content);
-      setTotalElements(response.totalElements);
-      setTotalPages(response.totalPages);
-    } catch (error) {
-      console.error('Failed to fetch inquiry list:', error);
-      errorDialog.showError('1:1 문의내역을 불러오는 중 오류가 발생했습니다.');
-      setData([]);
-      setTotalElements(0);
-      setTotalPages(0);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [formik.values.pageIndex, formik.values.pageSize]);
-
-  const handleReset = () => {
-    formik.resetForm();
-  };
 
   return (
     <Grid container spacing={3}>
@@ -223,7 +246,7 @@ export default function MpAdminInquiryList() {
                   <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant='outlined' size='small' onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -290,8 +313,16 @@ export default function MpAdminInquiryList() {
             <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={formik.values.pageIndex + 1}
-                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
+                page={page}
+                renderItem={item => (
+                  <PaginationItem
+                    {...item}
+                    color='primary'
+                    variant='outlined'
+                    component={RouterLink}
+                    to={setUrlParams({ page: item.page }, initialSearchParams)}
+                  />
+                )}
                 color='primary'
                 variant='outlined'
                 showFirstButton

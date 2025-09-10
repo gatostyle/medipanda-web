@@ -1,3 +1,5 @@
+import { setUrlParams } from '@/lib/url';
+import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import {
   Box,
   Button,
@@ -7,6 +9,7 @@ import {
   Link,
   MenuItem,
   Pagination,
+  PaginationItem,
   Select,
   Stack,
   Table,
@@ -28,39 +31,124 @@ import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { CONSENT_LABELS, MEMBER_ACCOUNT_STATUS_LABELS } from '@/medipanda/ui-labels';
-import { formatYyyyMmDd, formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
+import { formatYyyyMmDd, formatYyyyMmDdHhMm, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminMemberList() {
-  const [data, setData] = useState<Sequenced<MemberResponse>[]>([]);
+  const navigate = useNavigate();
+
+  const initialSearchParams = {
+    searchType: '' as 'name' | 'memberId' | 'userId' | 'phoneNumber' | 'email' | 'companyName' | '',
+    searchKeyword: '',
+    startAt: '',
+    endAt: '',
+    contractStatus: '' as 'CONTRACT' | 'NON_CONTRACT' | '',
+    page: '1',
+  };
+
+  const {
+    searchType,
+    searchKeyword,
+    startAt: paramStartAt,
+    endAt: paramEndAt,
+    contractStatus,
+    page: paramPage,
+  } = useSearchParamsOrDefault(initialSearchParams);
+  const startAt = useMemo(() => SafeDate(paramStartAt) ?? null, [paramStartAt]);
+  const endAt = useMemo(() => SafeDate(paramEndAt) ?? null, [paramEndAt]);
+  const page = Number(paramPage);
+  const pageSize = 20;
+
   const [loading, setLoading] = useState(false);
+  const [contents, setContents] = useState<Sequenced<MemberResponse>[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+
   const errorDialog = useMpErrorDialog();
 
   const formik = useFormik({
     initialValues: {
-      contractStatus: '' as 'CONTRACT' | 'NON_CONTRACT' | '',
-      searchType: 'name' as 'name' | 'memberId' | 'userId' | 'phoneNumber' | 'email' | 'companyName',
-      searchKeyword: '',
+      ...initialSearchParams,
       startAt: null as Date | null,
       endAt: null as Date | null,
-      pageIndex: 0,
-      pageSize: 20,
+      page: null,
     },
-    onSubmit: async () => {
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchData();
-      }
+    onSubmit: values => {
+      const url = setUrlParams(
+        {
+          ...values,
+          startAt: values.startAt !== null ? formatYyyyMmDd(values.startAt) : undefined,
+          endAt: values.endAt !== null ? formatYyyyMmDd(values.endAt) : undefined,
+          page: 1,
+        },
+        initialSearchParams,
+      );
+
+      navigate(url);
+    },
+    onReset: () => {
+      navigate('');
     },
   });
 
+  const fetchContents = async () => {
+    if (searchType === '' && searchKeyword !== '') {
+      alert('검색유형을 선택해주세요.');
+      return;
+    }
+
+    if (searchType === 'memberId' && searchKeyword !== '' && Number.isNaN(Number(searchKeyword))) {
+      alert('회원번호는 숫자만 입력할 수 있습니다.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await getUserMembers({
+        name: searchType === 'name' && searchKeyword ? searchKeyword : undefined,
+        memberId: searchType === 'memberId' && searchKeyword ? Number(searchKeyword) : undefined,
+        userId: searchType === 'userId' && searchKeyword ? searchKeyword : undefined,
+        phoneNumber: searchType === 'phoneNumber' && searchKeyword ? searchKeyword.replace(/-/g, '') : undefined,
+        email: searchType === 'email' && searchKeyword ? searchKeyword : undefined,
+        companyName: searchType === 'companyName' && searchKeyword ? searchKeyword : undefined,
+        startAt: startAt ? new DateString(startAt) : undefined,
+        endAt: endAt ? new DateString(endAt) : undefined,
+        contractStatus: contractStatus !== '' ? contractStatus : undefined,
+        page: page - 1,
+        size: pageSize,
+      });
+
+      setContents(withSequence(response).content);
+      setTotalElements(response.totalElements);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch member list:', error);
+      errorDialog.showError('회원 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+      setTotalElements(0);
+      setTotalPages(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    formik.setValues({
+      searchType,
+      searchKeyword,
+      startAt,
+      endAt,
+      contractStatus,
+      page: null,
+    });
+    fetchContents();
+  }, [searchType, searchKeyword, startAt, endAt, contractStatus, page]);
+
   const table = useReactTable({
-    data,
+    data: contents,
     columns: [
       {
         header: 'No',
@@ -138,57 +226,7 @@ export default function MpAdminMemberList() {
     ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      pagination: {
-        pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize,
-      },
-    },
-    pageCount: totalPages,
-    manualPagination: true,
   });
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await getUserMembers({
-        contractStatus: formik.values.contractStatus !== '' ? formik.values.contractStatus : undefined,
-        name: formik.values.searchType === 'name' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
-        memberId: formik.values.searchType === 'memberId' && formik.values.searchKeyword ? Number(formik.values.searchKeyword) : undefined,
-        userId: formik.values.searchType === 'userId' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
-        phoneNumber:
-          formik.values.searchType === 'phoneNumber' && formik.values.searchKeyword
-            ? formik.values.searchKeyword.replace(/-/g, '')
-            : undefined,
-        email: formik.values.searchType === 'email' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
-        companyName: formik.values.searchType === 'companyName' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
-        startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
-        endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
-        page: formik.values.pageIndex,
-        size: formik.values.pageSize,
-      });
-
-      setData(withSequence(response).content);
-      setTotalElements(response.totalElements);
-      setTotalPages(response.totalPages);
-    } catch (error) {
-      console.error('Failed to fetch member list:', error);
-      errorDialog.showError('회원 목록을 불러오는 중 오류가 발생했습니다.');
-      setData([]);
-      setTotalElements(0);
-      setTotalPages(0);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [formik.values.pageIndex, formik.values.pageSize]);
-
-  const handleReset = () => {
-    formik.resetForm();
-  };
 
   return (
     <Grid container spacing={3}>
@@ -245,7 +283,7 @@ export default function MpAdminMemberList() {
                   <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant='outlined' size='small' onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -269,22 +307,15 @@ export default function MpAdminMemberList() {
                   size='small'
                   target='_blank'
                   href={getDownloadUserMembersExcel({
-                    contractStatus: formik.values.contractStatus !== '' ? formik.values.contractStatus : undefined,
-                    name: formik.values.searchType === 'name' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
-                    memberId:
-                      formik.values.searchType === 'memberId' && formik.values.searchKeyword
-                        ? Number(formik.values.searchKeyword)
-                        : undefined,
-                    userId: formik.values.searchType === 'userId' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
-                    phoneNumber:
-                      formik.values.searchType === 'phoneNumber' && formik.values.searchKeyword
-                        ? formik.values.searchKeyword.replace(/-/g, '')
-                        : undefined,
-                    email: formik.values.searchType === 'email' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
-                    companyName:
-                      formik.values.searchType === 'companyName' && formik.values.searchKeyword ? formik.values.searchKeyword : undefined,
-                    startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
-                    endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
+                    name: searchType === 'name' && searchKeyword ? searchKeyword : undefined,
+                    memberId: searchType === 'memberId' && searchKeyword ? Number(searchKeyword) : undefined,
+                    userId: searchType === 'userId' && searchKeyword ? searchKeyword : undefined,
+                    phoneNumber: searchType === 'phoneNumber' && searchKeyword ? searchKeyword.replace(/-/g, '') : undefined,
+                    email: searchType === 'email' && searchKeyword ? searchKeyword : undefined,
+                    companyName: searchType === 'companyName' && searchKeyword ? searchKeyword : undefined,
+                    startAt: startAt ? new DateString(startAt) : undefined,
+                    endAt: endAt ? new DateString(endAt) : undefined,
+                    contractStatus: contractStatus !== '' ? contractStatus : undefined,
                     size: 2 ** 31 - 1,
                   })}
                   startIcon={<DocumentDownload size={16} />}
@@ -342,8 +373,16 @@ export default function MpAdminMemberList() {
             <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={formik.values.pageIndex + 1}
-                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
+                page={page}
+                renderItem={item => (
+                  <PaginationItem
+                    {...item}
+                    color='primary'
+                    variant='outlined'
+                    component={RouterLink}
+                    to={setUrlParams({ page: item.page }, initialSearchParams)}
+                  />
+                )}
                 color='primary'
                 variant='outlined'
                 showFirstButton

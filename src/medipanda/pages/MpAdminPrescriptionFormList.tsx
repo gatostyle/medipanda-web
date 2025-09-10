@@ -1,3 +1,5 @@
+import { setUrlParams } from '@/lib/url';
+import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import {
   Box,
   Button,
@@ -8,6 +10,7 @@ import {
   Link,
   MenuItem,
   Pagination,
+  PaginationItem,
   Select,
   Stack,
   Table,
@@ -38,76 +41,125 @@ import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { formatYyyyMm, formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminPrescriptionFormList() {
-  const [data, setData] = useState<Sequenced<PrescriptionPartnerResponse>[]>([]);
+  const navigate = useNavigate();
+
+  const initialSearchParams = {
+    searchType: '' as 'companyName' | 'dealerName' | 'drugCompany' | '',
+    searchKeyword: '',
+    prescriptionMonthStart: '',
+    prescriptionMonthEnd: '',
+    status: '' as 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | '',
+    page: '1',
+  };
+
+  const {
+    searchType,
+    searchKeyword,
+    prescriptionMonthStart,
+    prescriptionMonthEnd,
+    status,
+    page: paramPage,
+  } = useSearchParamsOrDefault(initialSearchParams);
+  const page = Number(paramPage);
+  const pageSize = 20;
+
   const [loading, setLoading] = useState(false);
+  const [contents, setContents] = useState<Sequenced<PrescriptionPartnerResponse>[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
   const infoDialog = useMpInfoDialog();
   const errorDialog = useMpErrorDialog();
   const deleteDialog = useMpDeleteDialog();
 
   const formik = useFormik({
     initialValues: {
-      searchType: '' as 'companyName' | 'dealerName' | 'drugCompany' | '',
-      searchKeyword: '',
-      status: '' as 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | '',
-      prescriptionMonthStart: null as Date | null,
-      prescriptionMonthEnd: null as Date | null,
-      pageIndex: 0,
-      pageSize: 20,
+      ...initialSearchParams,
+      page: null,
     },
-    onSubmit: async () => {
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchData();
-      }
+    onSubmit: values => {
+      const url = setUrlParams(
+        {
+          ...values,
+          page: 1,
+        },
+        initialSearchParams,
+      );
+
+      navigate(url);
+    },
+    onReset: () => {
+      navigate('');
     },
   });
 
-  const handleApprove = async () => {
+  const fetchContents = async () => {
+    if (searchType === '' && searchKeyword !== '') {
+      alert('검색유형을 선택해주세요.');
+      return;
+    }
+
+    setLoading(true);
     try {
-      await Promise.all(selectedItems.map(id => completePrescriptionPartner(id)));
-      const count = selectedItems.length;
-      const message = count === 1 ? '처방이 승인되었습니다.' : `${count}개 처방이 승인되었습니다.`;
-      infoDialog.showInfo(message);
-      setSelectedItems([]);
-      fetchData();
+      const response = await getPrescriptionPartnerList({
+        companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
+        drugCompany: searchType === 'drugCompany' && searchKeyword !== '' ? searchKeyword : undefined,
+        dealerName: searchType === 'dealerName' && searchKeyword !== '' ? searchKeyword : undefined,
+        prescriptionMonthStart: prescriptionMonthStart ? new DateTimeString(prescriptionMonthStart) : undefined,
+        prescriptionMonthEnd: prescriptionMonthEnd ? new DateTimeString(prescriptionMonthEnd) : undefined,
+        status: status !== '' ? status : undefined,
+        page: page - 1,
+        size: pageSize,
+      });
+
+      setContents(withSequence(response).content);
+      setTotalElements(response.totalElements);
+      setTotalPages(response.totalPages);
     } catch (error) {
-      console.error('Failed to approve prescriptions:', error);
-      errorDialog.showError('처방 승인 중 오류가 발생했습니다.');
+      console.error('Failed to fetch prescription form list:', error);
+      errorDialog.showError('처방입력 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+      setTotalElements(0);
+      setTotalPages(0);
+    } finally {
+      setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchContents();
+  }, [searchType, searchKeyword, prescriptionMonthStart, prescriptionMonthEnd, status, page]);
+
   const table = useReactTable({
-    data,
+    data: contents,
     columns: [
       {
         id: 'select',
         header: () => (
           <Checkbox
-            checked={selectedItems.length === data.length && data.length > 0}
+            checked={selectedIds.length === contents.length && contents.length > 0}
             onChange={e => {
               if (e.target.checked) {
-                setSelectedItems(data.map(item => item.id));
+                setSelectedIds(contents.map(item => item.id));
               } else {
-                setSelectedItems([]);
+                setSelectedIds([]);
               }
             }}
           />
         ),
         cell: ({ row }) => (
           <Checkbox
-            checked={selectedItems.includes(row.original.id)}
+            checked={selectedIds.includes(row.original.id)}
             onChange={e => {
               if (e.target.checked) {
-                setSelectedItems(prev => [...prev, row.original.id]);
+                setSelectedIds(prev => [...prev, row.original.id]);
               } else {
-                setSelectedItems(prev => prev.filter(id => id !== row.original.id));
+                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
               }
             }}
           />
@@ -190,70 +242,37 @@ export default function MpAdminPrescriptionFormList() {
     ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      pagination: {
-        pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize,
-      },
-    },
-    pageCount: totalPages,
-    manualPagination: true,
   });
 
-  const fetchData = async () => {
-    setLoading(true);
+  const handleApprove = async () => {
     try {
-      const response = await getPrescriptionPartnerList({
-        status: formik.values.status !== '' ? formik.values.status : undefined,
-        companyName:
-          formik.values.searchType === 'companyName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        drugCompany:
-          formik.values.searchType === 'drugCompany' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        dealerName:
-          formik.values.searchType === 'dealerName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        prescriptionMonthStart: formik.values.prescriptionMonthStart ? new DateTimeString(formik.values.prescriptionMonthStart) : undefined,
-        prescriptionMonthEnd: formik.values.prescriptionMonthEnd ? new DateTimeString(formik.values.prescriptionMonthEnd) : undefined,
-        page: formik.values.pageIndex,
-        size: formik.values.pageSize,
-      });
-
-      setData(withSequence(response).content);
-      setTotalElements(response.totalElements);
-      setTotalPages(response.totalPages);
+      await Promise.all(selectedIds.map(id => completePrescriptionPartner(id)));
+      const count = selectedIds.length;
+      const message = count === 1 ? '처방이 승인되었습니다.' : `${count}개 처방이 승인되었습니다.`;
+      infoDialog.showInfo(message);
+      setSelectedIds([]);
+      fetchContents();
     } catch (error) {
-      console.error('Failed to fetch prescription form list:', error);
-      errorDialog.showError('처방입력 목록을 불러오는 중 오류가 발생했습니다.');
-      setData([]);
-      setTotalElements(0);
-      setTotalPages(0);
-    } finally {
-      setLoading(false);
+      console.error('Failed to approve prescriptions:', error);
+      errorDialog.showError('처방 승인 중 오류가 발생했습니다.');
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [formik.values.pageIndex, formik.values.pageSize]);
-
-  const handleReset = () => {
-    formik.resetForm();
-  };
-
   const handleDelete = () => {
-    if (selectedItems.length === 0) {
+    if (selectedIds.length === 0) {
       infoDialog.showInfo('삭제할 처방을 선택해주세요.');
       return;
     }
 
     deleteDialog.open({
       title: '처방 삭제',
-      message: `선택한 ${selectedItems.length}개의 처방을 삭제하시겠습니까?`,
+      message: `선택한 ${selectedIds.length}개의 처방을 삭제하시겠습니까?`,
       onConfirm: async () => {
         try {
-          await Promise.all(selectedItems.map(id => deletePrescriptionPartner(id)));
+          await Promise.all(selectedIds.map(id => deletePrescriptionPartner(id)));
           infoDialog.showInfo('처방이 삭제되었습니다.');
-          setSelectedItems([]);
-          fetchData();
+          setSelectedIds([]);
+          fetchContents();
         } catch (error) {
           console.error('Failed to delete prescriptions:', error);
           errorDialog.showError('처방 삭제에 실패했습니다.');
@@ -314,7 +333,7 @@ export default function MpAdminPrescriptionFormList() {
                   <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant='outlined' size='small' onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -331,14 +350,14 @@ export default function MpAdminPrescriptionFormList() {
               <Stack direction='row' spacing={2}>
                 <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
                 <Typography variant='subtitle1' sx={{ ml: 2 }}>
-                  총 처방금액: {data.reduce((sum, item) => sum + item.amount, 0).toLocaleString()}원
+                  총 처방금액: {contents.reduce((sum, item) => sum + item.amount, 0).toLocaleString()}원
                 </Typography>
               </Stack>
               <Stack direction='row' spacing={1}>
-                <Button variant='contained' color='success' size='small' onClick={handleApprove} disabled={selectedItems.length === 0}>
+                <Button variant='contained' color='success' size='small' onClick={handleApprove} disabled={selectedIds.length === 0}>
                   승인완료
                 </Button>
-                <Button variant='contained' size='small' color='error' disabled={selectedItems.length === 0} onClick={handleDelete}>
+                <Button variant='contained' size='small' color='error' disabled={selectedIds.length === 0} onClick={handleDelete}>
                   삭제
                 </Button>
               </Stack>
@@ -392,8 +411,16 @@ export default function MpAdminPrescriptionFormList() {
             <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={formik.values.pageIndex + 1}
-                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
+                page={page}
+                renderItem={item => (
+                  <PaginationItem
+                    {...item}
+                    color='primary'
+                    variant='outlined'
+                    component={RouterLink}
+                    to={setUrlParams({ page: item.page }, initialSearchParams)}
+                  />
+                )}
                 color='primary'
                 variant='outlined'
                 showFirstButton

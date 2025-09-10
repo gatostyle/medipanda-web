@@ -1,3 +1,5 @@
+import { setUrlParams } from '@/lib/url';
+import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import {
   Box,
   Button,
@@ -8,6 +10,7 @@ import {
   Link,
   MenuItem,
   Pagination,
+  PaginationItem,
   Select,
   Stack,
   Table,
@@ -27,13 +30,36 @@ import { BannerResponse, DateTimeString, getBanners } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { formatYyyyMmDd, formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
+import { formatYyyyMmDd, formatYyyyMmDdHhMm, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminBannerList() {
-  const [data, setData] = useState<Sequenced<BannerResponse>[]>([]);
+  const navigate = useNavigate();
+
+  const initialSearchParams = {
+    searchKeyword: '',
+    startAt: '',
+    endAt: '',
+    bannerStatus: '' as 'VISIBLE' | 'HIDDEN' | '',
+    page: '1',
+  };
+
+  const {
+    searchKeyword,
+    startAt: paramStartAt,
+    endAt: paramEndAt,
+    bannerStatus,
+    page: paramPage,
+  } = useSearchParamsOrDefault(initialSearchParams);
+  const startAt = useMemo(() => SafeDate(paramStartAt) ?? null, [paramStartAt]);
+  const endAt = useMemo(() => SafeDate(paramEndAt) ?? null, [paramEndAt]);
+  const page = Number(paramPage);
+  const pageSize = 20;
+
+  const [content, setContent] = useState<Sequenced<BannerResponse>[]>([]);
   const [loading, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -41,28 +67,68 @@ export default function MpAdminBannerList() {
 
   const formik = useFormik({
     initialValues: {
-      bannerStatus: '' as 'VISIBLE' | 'HIDDEN' | '',
+      ...initialSearchParams,
       startAt: null as Date | null,
       endAt: null as Date | null,
-      bannerTitle: '',
-      pageIndex: 0,
-      pageSize: 20,
+      page: null,
     },
-    onSubmit: async () => {
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchData();
-      }
+    onSubmit: values => {
+      const url = setUrlParams(
+        {
+          ...values,
+          startAt: values.startAt !== null ? formatYyyyMmDd(values.startAt) : undefined,
+          endAt: values.endAt !== null ? formatYyyyMmDd(values.endAt) : undefined,
+          page: 1,
+        },
+        initialSearchParams,
+      );
+
+      navigate(url);
+    },
+    onReset: () => {
+      navigate('');
     },
   });
 
-  const handleReset = () => {
-    formik.resetForm();
+  const fetchContent = async () => {
+    setLoading(true);
+    try {
+      const response = await getBanners({
+        bannerTitle: searchKeyword !== '' ? searchKeyword : undefined,
+        startAt: startAt ? new DateTimeString(startAt) : undefined,
+        endAt: endAt ? new DateTimeString(endAt) : undefined,
+        bannerStatus: bannerStatus !== '' ? bannerStatus : undefined,
+        page: page - 1,
+        size: pageSize,
+      });
+
+      setContent(withSequence(response).content);
+      setTotalElements(response.totalElements);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch banner list:', error);
+      errorDialog.showError('배너 목록을 불러오는 중 오류가 발생했습니다.');
+      setContent([]);
+      setTotalElements(0);
+      setTotalPages(0);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  useEffect(() => {
+    formik.setValues({
+      searchKeyword,
+      startAt,
+      endAt,
+      bannerStatus,
+      page: null,
+    });
+    fetchContent();
+  }, [searchKeyword, startAt, endAt, bannerStatus, page]);
+
   const table = useReactTable({
-    data,
+    data: content,
     columns: [
       {
         header: 'No',
@@ -166,45 +232,7 @@ export default function MpAdminBannerList() {
     ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      pagination: {
-        pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize,
-      },
-    },
-    pageCount: totalPages,
-    manualPagination: true,
   });
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await getBanners({
-        page: formik.values.pageIndex,
-        size: formik.values.pageSize,
-        startAt: formik.values.startAt ? new DateTimeString(formik.values.startAt) : undefined,
-        endAt: formik.values.endAt ? new DateTimeString(formik.values.endAt) : undefined,
-        bannerTitle: formik.values.bannerTitle !== '' ? formik.values.bannerTitle : undefined,
-        bannerStatus: formik.values.bannerStatus !== '' ? formik.values.bannerStatus : undefined,
-      });
-
-      setData(withSequence(response).content);
-      setTotalElements(response.totalElements);
-      setTotalPages(response.totalPages);
-    } catch (error) {
-      console.error('Failed to fetch banner list:', error);
-      errorDialog.showError('배너 목록을 불러오는 중 오류가 발생했습니다.');
-      setData([]);
-      setTotalElements(0);
-      setTotalPages(0);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [formik.values.pageIndex, formik.values.pageSize]);
 
   return (
     <Grid container spacing={3}>
@@ -236,11 +264,11 @@ export default function MpAdminBannerList() {
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
-                    name='bannerTitle'
+                    name='searchKeyword'
                     size='small'
                     placeholder='검색어를 입력하세요'
                     fullWidth
-                    value={formik.values.bannerTitle}
+                    value={formik.values.searchKeyword}
                     onChange={formik.handleChange}
                   />
                 </SearchFilterItem>
@@ -248,7 +276,7 @@ export default function MpAdminBannerList() {
                   <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant='outlined' size='small' onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -320,8 +348,16 @@ export default function MpAdminBannerList() {
             <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={formik.values.pageIndex + 1}
-                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
+                page={page}
+                renderItem={item => (
+                  <PaginationItem
+                    {...item}
+                    color='primary'
+                    variant='outlined'
+                    component={RouterLink}
+                    to={setUrlParams({ page: item.page }, initialSearchParams)}
+                  />
+                )}
                 color='primary'
                 variant='outlined'
                 showFirstButton

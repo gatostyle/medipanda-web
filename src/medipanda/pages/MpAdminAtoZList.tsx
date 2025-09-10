@@ -1,3 +1,5 @@
+import { setUrlParams } from '@/lib/url';
+import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import {
   Box,
   Button,
@@ -9,6 +11,7 @@ import {
   Link,
   MenuItem,
   Pagination,
+  PaginationItem,
   Select,
   Stack,
   Table,
@@ -30,63 +33,144 @@ import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipa
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
-import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
+import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 
 export default function MpAdminAtoZList() {
-  const [data, setData] = useState<Sequenced<BoardPostResponse>[]>([]);
+  const navigate = useNavigate();
+
+  const initialSearchParams = {
+    searchType: '' as 'title' | 'userId' | 'name' | 'nickname' | '',
+    searchKeyword: '',
+    startAt: '',
+    endAt: '',
+    isExposed: '' as 'true' | 'false' | '',
+    page: '1',
+  };
+
+  const {
+    searchType,
+    searchKeyword,
+    startAt: paramStartAt,
+    endAt: paramEndAt,
+    isExposed,
+    page: paramPage,
+  } = useSearchParamsOrDefault(initialSearchParams);
+  const startAt = useMemo(() => SafeDate(paramStartAt) ?? null, [paramStartAt]);
+  const endAt = useMemo(() => SafeDate(paramEndAt) ?? null, [paramEndAt]);
+  const page = Number(paramPage);
+  const pageSize = 20;
+
   const [loading, setLoading] = useState(false);
+  const [contents, setContents] = useState<Sequenced<BoardPostResponse>[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
   const deleteDialog = useMpDeleteDialog();
   const errorDialog = useMpErrorDialog();
 
   const formik = useFormik({
     initialValues: {
-      isExposed: '' as boolean | '',
-      searchType: 'title' as 'title' | 'userId' | 'name' | 'nickname',
-      searchKeyword: '',
+      ...initialSearchParams,
       startAt: null as Date | null,
       endAt: null as Date | null,
-      pageIndex: 0,
-      pageSize: 20,
+      page: null,
     },
-    onSubmit: async () => {
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchData();
-      }
+    onSubmit: values => {
+      const url = setUrlParams(
+        {
+          ...values,
+          startAt: values.startAt !== null ? formatYyyyMmDd(values.startAt) : undefined,
+          endAt: values.endAt !== null ? formatYyyyMmDd(values.endAt) : undefined,
+          page: 1,
+        },
+        initialSearchParams,
+      );
+
+      navigate(url);
+    },
+    onReset: () => {
+      navigate('');
     },
   });
 
+  const fetchContents = async () => {
+    if (searchType === '' && searchKeyword !== '') {
+      alert('검색유형을 선택해주세요.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await getBoards({
+        boardType: 'CSO_A_TO_Z',
+        boardTitle: searchType === 'title' && searchKeyword !== '' ? searchKeyword : undefined,
+        userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
+        name: searchType === 'name' && searchKeyword !== '' ? searchKeyword : undefined,
+        nickname: searchType === 'nickname' && searchKeyword !== '' ? searchKeyword : undefined,
+        startAt: startAt ? new DateString(startAt) : undefined,
+        endAt: endAt ? new DateString(endAt) : undefined,
+        isExposed: isExposed !== '' ? isExposed === 'true' : undefined,
+        page: page - 1,
+        size: pageSize,
+        filterBlind: undefined,
+        filterDeleted: undefined,
+      });
+
+      setContents(withSequence(response).content);
+      setTotalElements(response.totalElements);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch CSO A to Z list:', error);
+      errorDialog.showError('CSO A TO Z 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+      setTotalElements(0);
+      setTotalPages(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    formik.setValues({
+      searchType,
+      searchKeyword,
+      startAt,
+      endAt,
+      isExposed,
+      page: null,
+    });
+    fetchContents();
+  }, [searchType, searchKeyword, startAt, endAt, isExposed, page]);
+
   const table = useReactTable({
-    data,
+    data: contents,
     columns: [
       {
         id: 'select',
         header: () => (
           <Checkbox
-            checked={selectedItems.length === data.length && data.length > 0}
+            checked={selectedIds.length === contents.length && contents.length > 0}
             onChange={e => {
               if (e.target.checked) {
-                setSelectedItems(data.map(item => item.id));
+                setSelectedIds(contents.map(item => item.id));
               } else {
-                setSelectedItems([]);
+                setSelectedIds([]);
               }
             }}
           />
         ),
         cell: ({ row }) => (
           <Checkbox
-            checked={selectedItems.includes(row.original.id)}
+            checked={selectedIds.includes(row.original.id)}
             onChange={e => {
               if (e.target.checked) {
-                setSelectedItems(prev => [...prev, row.original.id]);
+                setSelectedIds(prev => [...prev, row.original.id]);
               } else {
-                setSelectedItems(prev => prev.filter(id => id !== row.original.id));
+                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
               }
             }}
           />
@@ -127,70 +211,22 @@ export default function MpAdminAtoZList() {
     ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      pagination: {
-        pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize,
-      },
-    },
-    pageCount: totalPages,
-    manualPagination: true,
   });
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await getBoards({
-        boardType: 'CSO_A_TO_Z',
-        userId: formik.values.searchType === 'userId' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        name: formik.values.searchType === 'name' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        nickname: formik.values.searchType === 'nickname' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
-        endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
-        page: formik.values.pageIndex,
-        size: formik.values.pageSize,
-        filterBlind: undefined,
-        boardTitle: formik.values.searchType === 'title' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        filterDeleted: undefined,
-        isExposed: formik.values.isExposed !== '' ? formik.values.isExposed : undefined,
-      });
-
-      setData(withSequence(response).content);
-      setTotalElements(response.totalElements);
-      setTotalPages(response.totalPages);
-    } catch (error) {
-      console.error('Failed to fetch CSO A to Z list:', error);
-      errorDialog.showError('CSO A TO Z 목록을 불러오는 중 오류가 발생했습니다.');
-      setData([]);
-      setTotalElements(0);
-      setTotalPages(0);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [formik.values.pageIndex, formik.values.pageSize]);
-
-  const handleReset = () => {
-    formik.resetForm();
-  };
-
   const handleDelete = () => {
-    const count = selectedItems.length;
+    const count = selectedIds.length;
     const message =
       count === 1
-        ? `CSO A TO Z ${data.find(item => item.id === selectedItems[0])?.title}를 삭제하시겠습니까?`
+        ? `CSO A TO Z ${contents.find(item => item.id === selectedIds[0])?.title}를 삭제하시겠습니까?`
         : `${count}건이 선택되었습니다. 삭제하시겠습니까?`;
 
     deleteDialog.open({
       message,
       onConfirm: async () => {
         try {
-          await Promise.all(selectedItems.map(id => deleteBoardPost(id)));
-          setSelectedItems([]);
-          fetchData();
+          await Promise.all(selectedIds.map(id => deleteBoardPost(id)));
+          setSelectedIds([]);
+          fetchContents();
         } catch (error) {
           console.error('Failed to delete items:', error);
           errorDialog.showError('CSO A TO Z 삭제 중 오류가 발생했습니다.');
@@ -255,7 +291,7 @@ export default function MpAdminAtoZList() {
                   <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant='outlined' size='small' onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -273,7 +309,7 @@ export default function MpAdminAtoZList() {
                 <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
               <Stack direction='row' spacing={1}>
-                <Button variant='contained' color='error' size='small' disabled={selectedItems.length === 0} onClick={handleDelete}>
+                <Button variant='contained' color='error' size='small' disabled={selectedIds.length === 0} onClick={handleDelete}>
                   삭제
                 </Button>
                 <Button variant='contained' color='success' size='small' component={RouterLink} to='/admin/atoz/new'>
@@ -330,8 +366,16 @@ export default function MpAdminAtoZList() {
             <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={formik.values.pageIndex + 1}
-                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
+                page={page}
+                renderItem={item => (
+                  <PaginationItem
+                    {...item}
+                    color='primary'
+                    variant='outlined'
+                    component={RouterLink}
+                    to={setUrlParams({ page: item.page }, initialSearchParams)}
+                  />
+                )}
                 color='primary'
                 variant='outlined'
                 showFirstButton

@@ -1,3 +1,10 @@
+import { DateString, getDownloadSettlementListExcel, getSettlements, SettlementResponse, uploadSettlementExcel } from '@/backend';
+import { setUrlParams } from '@/lib/url';
+import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
+import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
+import { formatYyyyMm, formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
+import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import {
   Box,
   Button,
@@ -8,6 +15,7 @@ import {
   Link,
   MenuItem,
   Pagination,
+  PaginationItem,
   Select,
   Stack,
   Table,
@@ -24,70 +32,141 @@ import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-react';
-import { DateString, getDownloadSettlementListExcel, getSettlements, SettlementResponse, uploadSettlementExcel } from '@/backend';
-import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
-import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { formatYyyyMm } from '@/medipanda/utils/dateFormat';
-import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
-import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 
 export default function MpAdminSettlementList() {
-  const [data, setData] = useState<Sequenced<SettlementResponse>[]>([]);
+  const navigate = useNavigate();
+
+  const initialSearchParams = {
+    searchType: '' as 'dealerId' | 'companyName' | '',
+    searchKeyword: '',
+    startAt: '',
+    endAt: '',
+    status: '' as 'REQUEST' | 'OBJECTION' | '',
+    page: '1',
+  };
+
+  const {
+    searchType,
+    searchKeyword,
+    startAt: paramStartAt,
+    endAt: paramEndAt,
+    status,
+    page: paramPage,
+  } = useSearchParamsOrDefault(initialSearchParams);
+  const startAt = useMemo(() => SafeDate(paramStartAt) ?? null, [paramStartAt]);
+  const endAt = useMemo(() => SafeDate(paramEndAt) ?? null, [paramEndAt]);
+  const page = Number(paramPage);
+  const pageSize = 20;
+
   const [loading, setLoading] = useState(false);
+  const [contents, setContents] = useState<Sequenced<SettlementResponse>[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const infoDialog = useMpInfoDialog();
-  const errorDialog = useMpErrorDialog();
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   const formik = useFormik({
     initialValues: {
-      userConfirmation: '' as boolean | '',
-      status: '' as 'REQUEST' | 'OBJECTION' | '',
-      searchType: '' as 'dealerId' | 'companyName' | '',
+      ...initialSearchParams,
       startAt: null as Date | null,
       endAt: null as Date | null,
-      searchKeyword: '',
-      pageIndex: 0,
-      pageSize: 20,
+      page: null,
     },
-    onSubmit: async () => {
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchData();
-      }
+    onSubmit: values => {
+      const url = setUrlParams(
+        {
+          ...values,
+          startAt: values.startAt !== null ? formatYyyyMmDd(values.startAt) : undefined,
+          endAt: values.endAt !== null ? formatYyyyMmDd(values.endAt) : undefined,
+          page: 1,
+        },
+        initialSearchParams,
+      );
+
+      navigate(url);
+    },
+    onReset: () => {
+      navigate('');
     },
   });
 
+  const fetchContents = async () => {
+    if (searchType === '' && searchKeyword !== '') {
+      alert('검색유형을 선택해주세요.');
+      return;
+    }
+
+    if (searchType === 'dealerId' && searchKeyword !== '' && Number.isNaN(Number(searchKeyword))) {
+      alert('딜러번호는 숫자만 입력할 수 있습니다.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await getSettlements({
+        dealerName: undefined,
+        dealerId: searchType === 'dealerId' && searchKeyword !== '' ? Number(searchKeyword) : undefined,
+        companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
+        status: status !== '' ? status : undefined,
+        startMonth: startAt ? new DateString(startAt) : undefined,
+        endMonth: endAt ? new DateString(endAt) : undefined,
+        page: page - 1,
+        size: pageSize,
+      });
+
+      setContents(withSequence(response).content);
+      setTotalElements(response.totalElements);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch settlement list:', error);
+      alert('정산내역 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+      setTotalElements(0);
+      setTotalPages(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    formik.setValues({
+      status,
+      startAt,
+      endAt,
+      searchType,
+      searchKeyword,
+      page: null,
+    });
+    fetchContents();
+  }, [searchType, searchKeyword, startAt, endAt, status, page]);
+
   const table = useReactTable({
-    data,
+    data: contents,
     columns: [
       {
         id: 'select',
         header: () => (
           <Checkbox
-            checked={selectedItems.length === data.length && data.length > 0}
+            checked={selectedIds.length === contents.length && contents.length > 0}
             onChange={e => {
               if (e.target.checked) {
-                setSelectedItems(data.map(item => item.id));
+                setSelectedIds(contents.map(item => item.id));
               } else {
-                setSelectedItems([]);
+                setSelectedIds([]);
               }
             }}
           />
         ),
         cell: ({ row }) => (
           <Checkbox
-            checked={selectedItems.includes(row.original.id)}
+            checked={selectedIds.includes(row.original.id)}
             onChange={e => {
               if (e.target.checked) {
-                setSelectedItems(prev => [...prev, row.original.id]);
+                setSelectedIds(prev => [...prev, row.original.id]);
               } else {
-                setSelectedItems(prev => prev.filter(id => id !== row.original.id));
+                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
               }
             }}
           />
@@ -162,52 +241,7 @@ export default function MpAdminSettlementList() {
     ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      pagination: {
-        pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize,
-      },
-    },
-    pageCount: totalPages,
-    manualPagination: true,
   });
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await getSettlements({
-        dealerName: undefined,
-        dealerId: formik.values.searchType === 'dealerId' ? parseInt(formik.values.searchKeyword) : undefined,
-        companyName:
-          formik.values.searchType === 'companyName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        status: formik.values.status !== '' ? formik.values.status : undefined,
-        startMonth: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
-        endMonth: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
-        page: formik.values.pageIndex,
-        size: formik.values.pageSize,
-      });
-
-      setData(withSequence(response).content);
-      setTotalElements(response.totalElements);
-      setTotalPages(response.totalPages);
-    } catch (error) {
-      console.error('Failed to fetch settlement list:', error);
-      errorDialog.showError('정산내역 목록을 불러오는 중 오류가 발생했습니다.');
-      setData([]);
-      setTotalElements(0);
-      setTotalPages(0);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [formik.values.pageIndex, formik.values.pageSize]);
-
-  const handleReset = () => {
-    formik.resetForm();
-  };
 
   const handleFileUpload = async () => {
     const input = document.createElement('input');
@@ -216,11 +250,11 @@ export default function MpAdminSettlementList() {
     input.onchange = async e => {
       try {
         await uploadSettlementExcel({ file: (e.target as HTMLInputElement).files![0] });
-        infoDialog.showInfo('정산 파일을 업로드했습니다.');
-        await fetchData();
+        alert('정산 파일을 업로드했습니다.');
+        await fetchContents();
       } catch (error) {
         console.error('Failed to upload file:', error);
-        errorDialog.showError('파일 업로드 중 오류가 발생했습니다.');
+        alert('파일 업로드 중 오류가 발생했습니다.');
       }
     };
     input.click();
@@ -277,7 +311,7 @@ export default function MpAdminSettlementList() {
                   <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant='outlined' size='small' onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -301,14 +335,11 @@ export default function MpAdminSettlementList() {
                   size='small'
                   href={getDownloadSettlementListExcel({
                     dealerName: undefined,
-                    dealerId: formik.values.searchType === 'dealerId' ? parseInt(formik.values.searchKeyword) : undefined,
-                    companyName:
-                      formik.values.searchType === 'companyName' && formik.values.searchKeyword !== ''
-                        ? formik.values.searchKeyword
-                        : undefined,
-                    status: formik.values.status !== '' ? formik.values.status : undefined,
-                    startMonth: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
-                    endMonth: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
+                    dealerId: searchType === 'dealerId' && searchKeyword !== '' ? Number(searchKeyword) : undefined,
+                    companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
+                    status: status !== '' ? status : undefined,
+                    startMonth: startAt ? new DateString(startAt) : undefined,
+                    endMonth: endAt ? new DateString(endAt) : undefined,
                     size: 2 ** 31 - 1,
                   })}
                   target='_blank'
@@ -370,8 +401,16 @@ export default function MpAdminSettlementList() {
             <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={formik.values.pageIndex + 1}
-                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
+                page={page}
+                renderItem={item => (
+                  <PaginationItem
+                    {...item}
+                    color='primary'
+                    variant='outlined'
+                    component={RouterLink}
+                    to={setUrlParams({ page: item.page }, initialSearchParams)}
+                  />
+                )}
                 color='primary'
                 variant='outlined'
                 showFirstButton

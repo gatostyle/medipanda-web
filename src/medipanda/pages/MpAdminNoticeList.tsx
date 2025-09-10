@@ -1,3 +1,5 @@
+import { setUrlParams } from '@/lib/url';
+import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import {
   Box,
   Button,
@@ -8,6 +10,7 @@ import {
   Link,
   MenuItem,
   Pagination,
+  PaginationItem,
   Select,
   Stack,
   Table,
@@ -29,65 +32,156 @@ import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipa
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { BOARD_TYPE_LABELS, EXPOSURE_RANGE_LABELS, NOTICE_TYPE_LABELS } from '@/medipanda/ui-labels';
-import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
+import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminNoticeList() {
-  const [data, setData] = useState<Sequenced<BoardPostResponse>[]>([]);
+  const navigate = useNavigate();
+
+  const initialSearchParams = {
+    searchKeyword: '',
+    startAt: '',
+    endAt: '',
+    drugCompany: '',
+    isExposed: '' as 'true' | 'false' | '',
+    page: '1',
+  };
+
+  const {
+    searchKeyword,
+    startAt: paramStartAt,
+    endAt: paramEndAt,
+    drugCompany,
+    isExposed,
+    page: paramPage,
+  } = useSearchParamsOrDefault(initialSearchParams);
+  const startAt = useMemo(() => SafeDate(paramStartAt) ?? null, [paramStartAt]);
+  const endAt = useMemo(() => SafeDate(paramEndAt) ?? null, [paramEndAt]);
+  const page = Number(paramPage);
+  const pageSize = 20;
+
   const [loading, setLoading] = useState(false);
+  const [contents, setContents] = useState<Sequenced<BoardPostResponse>[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const [manufacturerOptions, setManufacturerOptions] = useState<DrugCompanyResponse[]>([]);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
   const deleteDialog = useMpDeleteDialog();
   const errorDialog = useMpErrorDialog();
 
+  const [manufacturerOptions, setManufacturerOptions] = useState<DrugCompanyResponse[]>([]);
+
   const formik = useFormik({
     initialValues: {
-      isExposed: '' as boolean | '',
-      drugCompany: '',
-      searchKeyword: '',
+      ...initialSearchParams,
       startAt: null as Date | null,
       endAt: null as Date | null,
-      pageIndex: 0,
-      pageSize: 20,
+      page: null,
     },
-    onSubmit: async () => {
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchData();
-      }
+    onSubmit: values => {
+      const url = setUrlParams(
+        {
+          ...values,
+          startAt: values.startAt !== null ? formatYyyyMmDd(values.startAt) : undefined,
+          endAt: values.endAt !== null ? formatYyyyMmDd(values.endAt) : undefined,
+          page: 1,
+        },
+        initialSearchParams,
+      );
+
+      navigate(url);
+    },
+    onReset: () => {
+      navigate('');
     },
   });
 
+  const fetchContents = async () => {
+    setLoading(true);
+    try {
+      const response = await getBoards({
+        boardType: 'NOTICE',
+        userId: undefined,
+        name: undefined,
+        nickname: undefined,
+        startAt: startAt ? new DateString(startAt) : undefined,
+        endAt: endAt ? new DateString(endAt) : undefined,
+        filterBlind: undefined,
+        boardTitle: searchKeyword !== '' ? searchKeyword : undefined,
+        filterDeleted: undefined,
+        isExposed: isExposed !== '' ? isExposed === 'true' : undefined,
+        drugCompany: drugCompany !== '' ? drugCompany : undefined,
+        page: page - 1,
+        size: pageSize,
+      });
+
+      setContents(withSequence(response).content);
+      setTotalElements(response.totalElements);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch notice list:', error);
+      errorDialog.showError('공지사항 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+      setTotalElements(0);
+      setTotalPages(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    formik.setValues({
+      searchKeyword,
+      startAt,
+      endAt,
+      drugCompany,
+      isExposed,
+      page: null,
+    });
+    fetchContents();
+  }, [searchKeyword, startAt, endAt, drugCompany, isExposed, page]);
+
+  useEffect(() => {
+    const fetchManufacturers = async () => {
+      try {
+        const manufacturers = await getAllDrugCompanies();
+        setManufacturerOptions(manufacturers);
+      } catch (error) {
+        console.error('Failed to fetch manufacturer list:', error);
+        errorDialog.showError('제약사 목록을 불러오는 중 오류가 발생했습니다.');
+      }
+    };
+    fetchManufacturers();
+  }, []);
+
   const table = useReactTable({
-    data,
+    data: contents,
     columns: [
       {
         id: 'select',
         header: () => (
           <Checkbox
-            checked={selectedItems.length === data.length && data.length > 0}
+            checked={selectedIds.length === contents.length && contents.length > 0}
             onChange={e => {
               if (e.target.checked) {
-                setSelectedItems(data.map(item => item.id));
+                setSelectedIds(contents.map(item => item.id));
               } else {
-                setSelectedItems([]);
+                setSelectedIds([]);
               }
             }}
           />
         ),
         cell: ({ row }) => (
           <Checkbox
-            checked={selectedItems.includes(row.original.id)}
+            checked={selectedIds.includes(row.original.id)}
             onChange={e => {
               if (e.target.checked) {
-                setSelectedItems(prev => [...prev, row.original.id]);
+                setSelectedIds(prev => [...prev, row.original.id]);
               } else {
-                setSelectedItems(prev => prev.filter(id => id !== row.original.id));
+                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
               }
             }}
           />
@@ -149,84 +243,22 @@ export default function MpAdminNoticeList() {
     ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      pagination: {
-        pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize,
-      },
-    },
-    pageCount: totalPages,
-    manualPagination: true,
   });
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await getBoards({
-        boardType: 'NOTICE',
-        userId: undefined,
-        name: undefined,
-        nickname: undefined,
-        startAt: formik.values.startAt ? new DateString(formik.values.startAt) : undefined,
-        endAt: formik.values.endAt ? new DateString(formik.values.endAt) : undefined,
-        page: formik.values.pageIndex,
-        size: formik.values.pageSize,
-        filterBlind: undefined,
-        boardTitle: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        filterDeleted: undefined,
-        isExposed: formik.values.isExposed !== '' ? formik.values.isExposed : undefined,
-        drugCompany: formik.values.drugCompany !== '' ? formik.values.drugCompany : undefined,
-      });
-
-      setData(withSequence(response).content);
-      setTotalElements(response.totalElements);
-      setTotalPages(response.totalPages);
-    } catch (error) {
-      console.error('Failed to fetch notice list:', error);
-      errorDialog.showError('공지사항 목록을 불러오는 중 오류가 발생했습니다.');
-      setData([]);
-      setTotalElements(0);
-      setTotalPages(0);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [formik.values.pageIndex, formik.values.pageSize]);
-
-  useEffect(() => {
-    const fetchManufacturers = async () => {
-      try {
-        const manufacturers = await getAllDrugCompanies();
-        setManufacturerOptions(manufacturers);
-      } catch (error) {
-        console.error('Failed to fetch manufacturer list:', error);
-        errorDialog.showError('제약사 목록을 불러오는 중 오류가 발생했습니다.');
-      }
-    };
-    fetchManufacturers();
-  }, []);
-
-  const handleReset = () => {
-    formik.resetForm();
-  };
-
   const handleDelete = () => {
-    const count = selectedItems.length;
+    const count = selectedIds.length;
     const message =
       count === 1
-        ? `공지사항 ${data.find(item => item.id === selectedItems[0])?.title}을 삭제하시겠습니까?`
+        ? `공지사항 ${contents.find(item => item.id === selectedIds[0])?.title}을 삭제하시겠습니까?`
         : `${count}건이 선택되었습니다. 삭제하시겠습니까?`;
 
     deleteDialog.open({
       message,
       onConfirm: async () => {
         try {
-          await Promise.all(selectedItems.map(id => deleteBoardPost(id)));
-          setSelectedItems([]);
-          fetchData();
+          await Promise.all(selectedIds.map(id => deleteBoardPost(id)));
+          setSelectedIds([]);
+          fetchContents();
         } catch (error) {
           console.error('Failed to delete items:', error);
           errorDialog.showError('삭제 중 오류가 발생했습니다.');
@@ -293,7 +325,7 @@ export default function MpAdminNoticeList() {
                   <Button variant='contained' size='small' type='submit'>
                     검색
                   </Button>
-                  <Button variant='outlined' size='small' onClick={handleReset}>
+                  <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
                     초기화
                   </Button>
                 </SearchFilterActions>
@@ -311,7 +343,7 @@ export default function MpAdminNoticeList() {
                 <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
               <Stack direction='row' spacing={1}>
-                <Button variant='contained' color='error' size='small' disabled={selectedItems.length === 0} onClick={handleDelete}>
+                <Button variant='contained' color='error' size='small' disabled={selectedIds.length === 0} onClick={handleDelete}>
                   삭제
                 </Button>
                 <Button variant='contained' color='success' size='small' component={RouterLink} to='/admin/notices/new'>
@@ -368,8 +400,16 @@ export default function MpAdminNoticeList() {
             <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
               <Pagination
                 count={totalPages}
-                page={formik.values.pageIndex + 1}
-                onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
+                page={page}
+                renderItem={item => (
+                  <PaginationItem
+                    {...item}
+                    color='primary'
+                    variant='outlined'
+                    component={RouterLink}
+                    to={setUrlParams({ page: item.page }, initialSearchParams)}
+                  />
+                )}
                 color='primary'
                 variant='outlined'
                 showFirstButton

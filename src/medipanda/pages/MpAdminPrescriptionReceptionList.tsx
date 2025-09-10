@@ -1,3 +1,5 @@
+import { setUrlParams } from '@/lib/url';
+import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import { UploadFile } from '@mui/icons-material';
 import {
   Box,
@@ -14,6 +16,7 @@ import {
   InputLabel,
   MenuItem,
   Pagination,
+  PaginationItem,
   Select,
   Stack,
   Table,
@@ -44,68 +47,121 @@ import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
-import { formatYyyyMm, formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
+import { formatYyyyMm, formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { SearchNormal1 } from 'iconsax-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useNavigate } from 'react-router';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminPrescriptionReceptionList() {
-  const [data, setData] = useState<Sequenced<PrescriptionResponse>[]>([]);
+  const navigate = useNavigate();
+
+  const initialSearchParams = {
+    searchType: '' as 'companyName' | 'userId' | 'dealerName' | 'dealerId' | '',
+    searchKeyword: '',
+    startAt: '',
+    endAt: '',
+    status: '' as 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | '',
+    page: '1',
+  };
+
+  const {
+    searchType,
+    searchKeyword,
+    startAt: paramStartAt,
+    endAt: paramEndAt,
+    status,
+    page: paramPage,
+  } = useSearchParamsOrDefault(initialSearchParams);
+  const startAt = useMemo(() => SafeDate(paramStartAt) ?? null, [paramStartAt]);
+  const endAt = useMemo(() => SafeDate(paramEndAt) ?? null, [paramEndAt]);
+  const page = Number(paramPage);
+  const pageSize = 20;
+
   const [loading, setLoading] = useState(false);
+  const [contents, setContents] = useState<Sequenced<PrescriptionResponse>[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
-  const errorDialog = useMpErrorDialog();
+
   const infoDialog = useMpInfoDialog();
+  const errorDialog = useMpErrorDialog();
+
+  const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
   const [memberSearchDialogOpen, setMemberSearchDialogOpen] = useState(false);
   const [memberSearchDialogResult, setMemberSearchDialogResult] = useState<MemberResponse[]>([]);
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    if (acceptedFiles.length > 0) {
-      if (!acceptedFiles[0].name.endsWith('.zip')) {
-        alert('.zip 파일만 업로드할 수 있습니다.');
-        return;
-      }
-
-      ediFormik.setFieldValue('file', acceptedFiles[0]);
-    }
-  }, []);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-
   const formik = useFormik({
     initialValues: {
-      searchType: 'companyName' as 'companyName' | 'userId' | 'dealerName' | 'dealerId',
-      searchKeyword: '',
-      status: '' as 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | '',
+      ...initialSearchParams,
       startAt: null as Date | null,
       endAt: null as Date | null,
-      pageIndex: 0,
-      pageSize: 20,
+      page: null,
     },
-    onSubmit: async () => {
-      if (formik.values.pageIndex !== 0) {
-        await formik.setFieldValue('pageIndex', 0);
-      } else {
-        await fetchData();
-      }
+    onSubmit: values => {
+      const url = setUrlParams(
+        {
+          ...values,
+          startAt: values.startAt !== null ? formatYyyyMmDd(values.startAt) : undefined,
+          endAt: values.endAt !== null ? formatYyyyMmDd(values.endAt) : undefined,
+          page: 1,
+        },
+        initialSearchParams,
+      );
+
+      navigate(url);
+    },
+    onReset: () => {
+      navigate('');
     },
   });
 
-  const handleConfirm = async (id: number) => {
+  const fetchContents = async () => {
+    if (searchType === '' && searchKeyword !== '') {
+      alert('검색유형을 선택해주세요.');
+      return;
+    }
+
+    if (searchType === 'dealerId' && searchKeyword !== '' && Number.isNaN(Number(searchKeyword))) {
+      alert('딜러번호는 숫자만 입력할 수 있습니다.');
+      return;
+    }
+
+    setLoading(true);
     try {
-      await confirmPrescription(id);
-      infoDialog.showInfo('접수 확인되었습니다.');
-      fetchData();
+      const response = await searchPrescriptions({
+        status: status !== '' ? status : undefined,
+        companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
+        userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
+        dealerName: searchType === 'dealerName' && searchKeyword !== '' ? searchKeyword : undefined,
+        dealerId: searchType === 'dealerId' && searchKeyword !== '' ? Number(searchKeyword) : undefined,
+        startAt: startAt ? new DateTimeString(startAt) : undefined,
+        endAt: endAt ? new DateTimeString(endAt) : undefined,
+        page: page - 1,
+        size: pageSize,
+      });
+
+      setContents(withSequence(response).content);
+      setTotalElements(response.totalElements);
+      setTotalPages(response.totalPages);
     } catch (error) {
-      console.error('Failed to confirm reception:', error);
-      errorDialog.showError('접수 확인 중 오류가 발생했습니다.');
+      console.error('Failed to fetch prescription reception list:', error);
+      errorDialog.showError('처방접수 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+      setTotalElements(0);
+      setTotalPages(0);
+    } finally {
+      setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchContents();
+  }, [searchType, searchKeyword, startAt, endAt, status, page]);
+
   const table = useReactTable({
-    data,
+    data: contents,
     columns: [
       {
         header: 'No',
@@ -192,59 +248,23 @@ export default function MpAdminPrescriptionReceptionList() {
     ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      pagination: {
-        pageIndex: formik.values.pageIndex,
-        pageSize: formik.values.pageSize,
-      },
-    },
-    pageCount: totalPages,
-    manualPagination: true,
   });
 
-  const handleReset = () => {
-    formik.resetForm();
+  const handleConfirm = async (id: number) => {
+    try {
+      await confirmPrescription(id);
+      infoDialog.showInfo('접수 확인되었습니다.');
+      fetchContents();
+    } catch (error) {
+      console.error('Failed to confirm reception:', error);
+      errorDialog.showError('접수 확인 중 오류가 발생했습니다.');
+    }
   };
 
   const handleEdiRegister = async () => {
     ediFormik.resetForm();
     setRegisterDialogOpen(true);
   };
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await searchPrescriptions({
-        status: formik.values.status !== '' ? formik.values.status : undefined,
-        companyName:
-          formik.values.searchType === 'companyName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        userId: formik.values.searchType === 'userId' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        dealerName:
-          formik.values.searchType === 'dealerName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        dealerId: formik.values.searchType === 'dealerId' ? parseInt(formik.values.searchKeyword) : undefined,
-        startAt: formik.values.startAt ? new DateTimeString(formik.values.startAt) : undefined,
-        endAt: formik.values.endAt ? new DateTimeString(formik.values.endAt) : undefined,
-        page: formik.values.pageIndex,
-        size: formik.values.pageSize,
-      });
-
-      setData(withSequence(response).content);
-      setTotalElements(response.totalElements);
-      setTotalPages(response.totalPages);
-    } catch (error) {
-      console.error('Failed to fetch prescription reception list:', error);
-      errorDialog.showError('처방접수 목록을 불러오는 중 오류가 발생했습니다.');
-      setData([]);
-      setTotalElements(0);
-      setTotalPages(0);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [formik.values.pageIndex, formik.values.pageSize]);
 
   const ediFormik = useFormik({
     initialValues: {
@@ -348,6 +368,19 @@ export default function MpAdminPrescriptionReceptionList() {
     setMemberSearchDialogOpen(false);
   };
 
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: useCallback((acceptedFiles: File[]) => {
+      if (acceptedFiles.length > 0) {
+        if (!acceptedFiles[0].name.endsWith('.zip')) {
+          alert('.zip 파일만 업로드할 수 있습니다.');
+          return;
+        }
+
+        ediFormik.setFieldValue('file', acceptedFiles[0]);
+      }
+    }, []),
+  });
+
   return (
     <>
       <Grid container spacing={3}>
@@ -403,7 +436,7 @@ export default function MpAdminPrescriptionReceptionList() {
                     <Button variant='contained' size='small' type='submit'>
                       검색
                     </Button>
-                    <Button variant='outlined' size='small' onClick={handleReset}>
+                    <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
                       초기화
                     </Button>
                   </SearchFilterActions>
@@ -475,8 +508,16 @@ export default function MpAdminPrescriptionReceptionList() {
               <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
                 <Pagination
                   count={totalPages}
-                  page={formik.values.pageIndex + 1}
-                  onChange={(_, value) => formik.setFieldValue('pageIndex', value - 1)}
+                  page={page}
+                  renderItem={item => (
+                    <PaginationItem
+                      {...item}
+                      color='primary'
+                      variant='outlined'
+                      component={RouterLink}
+                      to={setUrlParams({ page: item.page }, initialSearchParams)}
+                    />
+                  )}
                   color='primary'
                   variant='outlined'
                   showFirstButton
