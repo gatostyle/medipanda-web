@@ -1,3 +1,4 @@
+import { MpMemberSearchDialog } from '@/medipanda/components/MpMemberSearchDialog';
 import {
   Box,
   Button,
@@ -25,15 +26,7 @@ import {
 import { AxiosError } from 'axios';
 import { useFormik } from 'formik';
 import { SearchNormal1 } from 'iconsax-react';
-import {
-  createPartner,
-  DrugCompanyResponse,
-  getAllDrugCompanies,
-  getPartnerDetails,
-  getUserMembers,
-  MemberResponse,
-  updatePartner,
-} from '@/backend';
+import { createPartner, DrugCompanyResponse, getAllDrugCompanies, getPartnerDetails, MemberResponse, updatePartner } from '@/backend';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -49,7 +42,6 @@ export default function MpAdminPartnerEdit() {
   const [pharmaceuticalSearchOpen, setPharmaceuticalSearchOpen] = useState(false);
   const [memberSearchDialogOpen, setMemberSearchDialogOpen] = useState(false);
   const [drugCompanies, setDrugCompanies] = useState<DrugCompanyResponse[]>([]);
-  const [memberSearchDialogResult, setMemberSearchDialogResult] = useState<MemberResponse[]>([]);
 
   useEffect(() => {
     getAllDrugCompanies().then(setDrugCompanies);
@@ -169,20 +161,6 @@ export default function MpAdminPartnerEdit() {
     },
   });
 
-  const memberSearchFormik = useFormik({
-    initialValues: {
-      searchKeyword: '',
-      pageIndex: 0,
-    },
-    onSubmit: async values => {
-      const response = await getUserMembers({
-        name: values.searchKeyword !== '' ? values.searchKeyword : undefined,
-        page: values.pageIndex,
-      });
-      setMemberSearchDialogResult(response.content);
-    },
-  });
-
   const handlePharmaceuticalSearch = () => {
     setPharmaceuticalSearchOpen(true);
   };
@@ -190,12 +168,6 @@ export default function MpAdminPartnerEdit() {
   const handlePharmaceuticalSelect = (drugCompany: DrugCompanyResponse) => {
     formik.setFieldValue('drugCompany', drugCompany);
     setPharmaceuticalSearchOpen(false);
-  };
-
-  const handleMemberSearch = async () => {
-    await memberSearchFormik.setFieldValue('searchKeyword', '');
-    await memberSearchFormik.submitForm();
-    setMemberSearchDialogOpen(true);
   };
 
   const handleMemberSelect = (member: MemberResponse) => {
@@ -256,7 +228,7 @@ export default function MpAdminPartnerEdit() {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position='end'>
-                      <IconButton onClick={handleMemberSearch} edge='end'>
+                      <IconButton onClick={() => setMemberSearchDialogOpen(true)} edge='end'>
                         <SearchNormal1 size={20} />
                       </IconButton>
                     </InputAdornment>
@@ -461,56 +433,11 @@ export default function MpAdminPartnerEdit() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={memberSearchDialogOpen} onClose={() => setMemberSearchDialogOpen(false)} maxWidth='sm' fullWidth>
-        <DialogTitle>사용자명 조회</DialogTitle>
-        <DialogContent>
-          <Stack spacing={2}>
-            <Stack direction='row' spacing={1} component='form' noValidate onSubmit={memberSearchFormik.handleSubmit}>
-              <TextField
-                fullWidth
-                size='small'
-                placeholder='검색어를 입력하세요'
-                name='searchKeyword'
-                onChange={memberSearchFormik.handleChange}
-              />
-              <Button variant='contained' size='small' type='submit'>
-                검색
-              </Button>
-            </Stack>
-
-            <TableContainer>
-              <Table size='small'>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>사용자명</TableCell>
-                    <TableCell>회사명</TableCell>
-                    <TableCell align='center' width={100}>
-                      선택
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {memberSearchDialogResult.map(member => (
-                    <TableRow key={member.id}>
-                      <TableCell>{member.name}</TableCell>
-                      <TableCell>{member.companyName}</TableCell>
-                      <TableCell align='center'>
-                        <Button variant='contained' size='small' onClick={() => handleMemberSelect(member)}>
-                          선택
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-
-            <Stack direction='row' justifyContent='center'>
-              <Button onClick={() => setMemberSearchDialogOpen(false)}>취소</Button>
-            </Stack>
-          </Stack>
-        </DialogContent>
-      </Dialog>
+      <MpMemberSearchDialog
+        open={memberSearchDialogOpen}
+        onClose={() => setMemberSearchDialogOpen(false)}
+        onMemberSelect={handleMemberSelect}
+      />
     </Box>
   );
 }

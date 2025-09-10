@@ -1,5 +1,6 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
+import { MpMemberSearchDialog } from '@/medipanda/components/MpMemberSearchDialog';
 import { AttachFile as AttachFileIcon, UploadFile } from '@mui/icons-material';
 import {
   Box,
@@ -11,6 +12,8 @@ import {
   DialogTitle,
   FormControl,
   Grid,
+  IconButton,
+  InputAdornment,
   InputLabel,
   Link,
   MenuItem,
@@ -31,13 +34,13 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { deletePartner, getPartners, PartnerResponse, uploadPartnersExcel } from '@/backend';
+import { deletePartner, getPartners, MemberResponse, PartnerResponse, uploadPartnersExcel } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
-import { mockString } from '@/medipanda/mockup';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
+import { SearchNormal1 } from 'iconsax-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useNavigate } from 'react-router';
@@ -64,6 +67,7 @@ export default function MpAdminPartnerList() {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [uploadMember, setUploadMember] = useState<MemberResponse | null>(null);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
 
   const infoDialog = useMpInfoDialog();
@@ -252,13 +256,18 @@ export default function MpAdminPartnerList() {
   };
 
   const handleFileUpload = async () => {
-    if (!uploadFile) {
+    if (uploadMember === null) {
+      alert('사용자명을 선택해주세요.');
+      return;
+    }
+
+    if (uploadFile === null) {
       infoDialog.showInfo('업로드할 파일을 선택해주세요.');
       return;
     }
 
     try {
-      await uploadPartnersExcel(mockString(), { file: uploadFile });
+      await uploadPartnersExcel(uploadMember.userId, { file: uploadFile });
       infoDialog.showInfo('파일 업로드가 완료되었습니다.');
       setUploadDialogOpen(false);
       setUploadFile(null);
@@ -267,6 +276,13 @@ export default function MpAdminPartnerList() {
       console.error('Failed to upload file:', error);
       errorDialog.showError('파일 업로드 중 오류가 발생했습니다.');
     }
+  };
+
+  const [memberSearchDialogOpen, setMemberSearchDialogOpen] = useState(false);
+
+  const handleMemberSelect = (member: MemberResponse) => {
+    setUploadMember(member);
+    setMemberSearchDialogOpen(false);
   };
 
   return (
@@ -416,7 +432,25 @@ export default function MpAdminPartnerList() {
       <Dialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)} maxWidth='sm' fullWidth>
         <DialogTitle sx={{ fontSize: '1.25rem', fontWeight: 600 }}>거래선 업로드</DialogTitle>
         <DialogContent sx={{ pt: 3, pb: 3 }}>
-          <Box sx={{ textAlign: 'right', mb: 2 }}>
+          <Stack direction='row' alignItems='center' sx={{ mb: 3 }}>
+            <Box>
+              <TextField
+                placeholder='사용자명'
+                value={uploadMember?.name ?? ''}
+                required
+                disabled
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton onClick={() => setMemberSearchDialogOpen(true)} edge='end'>
+                        <SearchNormal1 size={20} />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Box>
+
             <Button
               href={import.meta.env.VITE_APP_URL_FILE_BUSINESS_PARTNER}
               target='_blank'
@@ -424,10 +458,13 @@ export default function MpAdminPartnerList() {
               color='success'
               size='small'
               startIcon={<AttachFileIcon />}
+              sx={{
+                marginLeft: 'auto',
+              }}
             >
               양식 다운로드
             </Button>
-          </Box>
+          </Stack>
           <Box
             {...getRootProps()}
             sx={{
@@ -470,6 +507,12 @@ export default function MpAdminPartnerList() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <MpMemberSearchDialog
+        open={memberSearchDialogOpen}
+        onClose={() => setMemberSearchDialogOpen(false)}
+        onMemberSelect={handleMemberSelect}
+      />
     </Grid>
   );
 }

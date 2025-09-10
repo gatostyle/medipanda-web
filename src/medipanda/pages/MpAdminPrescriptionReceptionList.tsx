@@ -1,5 +1,6 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
+import { MpMemberSearchDialog } from '@/medipanda/components/MpMemberSearchDialog';
 import { UploadFile } from '@mui/icons-material';
 import {
   Box,
@@ -36,7 +37,6 @@ import {
   confirmPrescription,
   DateString,
   DateTimeString,
-  getUserMembers,
   MemberResponse,
   PrescriptionResponse,
   searchPrescriptions,
@@ -90,7 +90,6 @@ export default function MpAdminPrescriptionReceptionList() {
 
   const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
   const [memberSearchDialogOpen, setMemberSearchDialogOpen] = useState(false);
-  const [memberSearchDialogResult, setMemberSearchDialogResult] = useState<MemberResponse[]>([]);
 
   const formik = useFormik({
     initialValues: {
@@ -341,27 +340,6 @@ export default function MpAdminPrescriptionReceptionList() {
     },
   });
 
-  const memberSearchFormik = useFormik({
-    initialValues: {
-      searchKeyword: '',
-      pageIndex: 0,
-    },
-    onSubmit: async values => {
-      const response = await getUserMembers({
-        name: values.searchKeyword !== '' ? values.searchKeyword : undefined,
-        page: values.pageIndex,
-        contractStatus: 'CONTRACT',
-      });
-      setMemberSearchDialogResult(response.content);
-    },
-  });
-
-  const handleMemberSearch = async () => {
-    await memberSearchFormik.setFieldValue('searchKeyword', '');
-    await memberSearchFormik.submitForm();
-    setMemberSearchDialogOpen(true);
-  };
-
   const handleMemberSelect = (member: MemberResponse) => {
     ediFormik.setFieldValue('partnerUser', member);
 
@@ -562,7 +540,7 @@ export default function MpAdminPrescriptionReceptionList() {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position='end'>
-                      <IconButton onClick={handleMemberSearch} edge='end'>
+                      <IconButton onClick={() => setMemberSearchDialogOpen(true)} edge='end'>
                         <SearchNormal1 size={20} />
                       </IconButton>
                     </InputAdornment>
@@ -625,56 +603,11 @@ export default function MpAdminPrescriptionReceptionList() {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={memberSearchDialogOpen} onClose={() => setMemberSearchDialogOpen(false)} maxWidth='sm' fullWidth>
-        <DialogTitle>사용자명 조회</DialogTitle>
-        <DialogContent>
-          <Stack spacing={2}>
-            <Stack direction='row' spacing={1} component='form' noValidate onSubmit={memberSearchFormik.handleSubmit}>
-              <TextField
-                fullWidth
-                size='small'
-                placeholder='검색어를 입력하세요'
-                name='searchKeyword'
-                onChange={memberSearchFormik.handleChange}
-              />
-              <Button variant='contained' size='small' type='submit'>
-                검색
-              </Button>
-            </Stack>
-
-            <TableContainer>
-              <Table size='small'>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>사용자명</TableCell>
-                    <TableCell>회사명</TableCell>
-                    <TableCell align='center' width={100}>
-                      선택
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {memberSearchDialogResult.map(member => (
-                    <TableRow key={member.id}>
-                      <TableCell>{member.name}</TableCell>
-                      <TableCell>{member.companyName}</TableCell>
-                      <TableCell align='center'>
-                        <Button variant='contained' size='small' onClick={() => handleMemberSelect(member)}>
-                          선택
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-
-            <Stack direction='row' justifyContent='center'>
-              <Button onClick={() => setMemberSearchDialogOpen(false)}>취소</Button>
-            </Stack>
-          </Stack>
-        </DialogContent>
-      </Dialog>
+      <MpMemberSearchDialog
+        open={memberSearchDialogOpen}
+        onClose={() => setMemberSearchDialogOpen(false)}
+        onMemberSelect={handleMemberSelect}
+      />
     </>
   );
 }
