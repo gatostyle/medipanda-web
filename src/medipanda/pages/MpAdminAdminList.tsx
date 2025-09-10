@@ -26,7 +26,7 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { getAdminMembers, MemberResponse } from '@/backend';
+import { getUserMembers, MemberResponse } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { MEMBER_ACCOUNT_STATUS_LABELS, MEMBER_ROLE_LABELS } from '@/medipanda/ui-labels';
@@ -85,7 +85,8 @@ export default function MpAdminAdminList() {
 
     setLoading(true);
     try {
-      const response = await getAdminMembers({
+      const response = await getUserMembers({
+        roles: ['ADMIN', 'SUPER_ADMIN'],
         name: searchType === 'name' && searchKeyword !== '' ? searchKeyword : undefined,
         userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
         email: searchType === 'email' && searchKeyword !== '' ? searchKeyword : undefined,

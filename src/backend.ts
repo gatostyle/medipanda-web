@@ -147,16 +147,16 @@ export interface BannerUpdateRequest {
 }
 
 export interface BlindPostResponse {
+  nickname: string;
   id: number;
   memberName: string;
   content: string;
   userId: string;
-  nickname: string;
+  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
   likesCount: number;
   postType: 'BOARD' | 'COMMENT';
   blindAt: string;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
 }
 
 export interface BlindUpdateRequest {
@@ -176,6 +176,7 @@ export interface BoardDetailsResponse {
   hiddenNickname: boolean;
   isBlind: boolean;
   likedByMe: boolean;
+  reportedByMe: boolean;
   likesCount: number;
   viewsCount: number;
   commentCount: number;
@@ -193,12 +194,12 @@ export interface BoardMemberStatsResponse {
   name: string;
   id: number;
   userId: string;
-  phoneNumber: string;
-  commentCount: number;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   postCount: number;
+  phoneNumber: string;
   totalLikes: number;
   blindPostCount: number;
+  commentCount: number;
 }
 
 export interface BoardPostCreateRequest {
@@ -279,15 +280,15 @@ export interface CommentCreateRequest {
 }
 
 export interface CommentMemberResponse {
+  nickname: string;
   name: string;
   id: number;
   content: string;
-  commentType: 'COMMENT' | 'REPLY';
   userId: string;
-  nickname: string;
-  createdAt: string;
-  likesCount: number;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  commentType: 'COMMENT' | 'REPLY';
+  likesCount: number;
+  createdAt: string;
   isBlind: boolean;
 }
 
@@ -304,6 +305,7 @@ export interface CommentResponse {
   createdAt: string;
   modifiedAt: string;
   likedByMe: boolean;
+  reportedByMe: boolean;
 }
 
 export interface CommentUpdateRequest {
@@ -476,6 +478,7 @@ export interface MemberDetailsResponse {
   gender: ('MALE' | 'FEMALE') | null;
   phoneNumber: string;
   birthDate: string;
+  accountStatus: 'ACTIVATED' | 'BLOCKED' | 'DELETED';
   email: string;
   partnerContractStatus: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
   marketingAgreements: MarketingAgreements;
@@ -525,6 +528,7 @@ export interface MemberUpdateRequest {
   password: string | null;
   name: string | null;
   birthDate: string | null;
+  accountStatus: ('ACTIVATED' | 'BLOCKED' | 'DELETED') | null;
   phoneNumber: string | null;
   email: string | null;
   nickname: string | null;
@@ -589,9 +593,9 @@ export interface PageBannerResponse {
   content: BannerResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -603,9 +607,9 @@ export interface PageBlindPostResponse {
   content: BlindPostResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -617,9 +621,9 @@ export interface PageBoardMemberStatsResponse {
   content: BoardMemberStatsResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -631,9 +635,9 @@ export interface PageBoardPostResponse {
   content: BoardPostResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -645,9 +649,9 @@ export interface PageCommentMemberResponse {
   content: CommentMemberResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -659,9 +663,9 @@ export interface PageEventBoardSummaryResponse {
   content: EventBoardSummaryResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -673,9 +677,9 @@ export interface PageExpenseReportResponse {
   content: ExpenseReportResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -687,9 +691,9 @@ export interface PageHospitalResponse {
   content: HospitalResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -701,9 +705,9 @@ export interface PageMemberResponse {
   content: MemberResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -715,9 +719,9 @@ export interface PagePartnerResponse {
   content: PartnerResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -729,9 +733,9 @@ export interface PagePerformanceStatsResponse {
   content: PerformanceStatsResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -743,9 +747,9 @@ export interface PagePrescriptionPartnerResponse {
   content: PrescriptionPartnerResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -757,9 +761,9 @@ export interface PagePrescriptionResponse {
   content: PrescriptionResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -771,9 +775,9 @@ export interface PageProductSummaryResponse {
   content: ProductSummaryResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -785,9 +789,9 @@ export interface PageSalesAgencyProductApplicantResponse {
   content: SalesAgencyProductApplicantResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -799,9 +803,9 @@ export interface PageSalesAgencyProductSummaryResponse {
   content: SalesAgencyProductSummaryResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -813,9 +817,9 @@ export interface PageSettlementPartnerResponse {
   content: SettlementPartnerResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -827,9 +831,9 @@ export interface PageSettlementResponse {
   content: SettlementResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -995,6 +999,7 @@ export interface PrescriptionPartnerResponse {
   dealerName: string;
   partnerName: string;
   businessNumber: string;
+  ediFiles: AttachmentResponse[];
 }
 
 export interface PrescriptionProductItem {
@@ -1022,6 +1027,15 @@ export interface PrescriptionResponse {
   status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
   checkedAt: string | null;
   type: string;
+}
+
+export interface PrescriptionUpdateRequest {
+  prescriptionPartnerId: number;
+  dealerId: number | null;
+  partnerId: number | null;
+  drugCompanyId: number | null;
+  prescriptionMonth: DateTimeString | null;
+  keepFileIds: number[] | null;
 }
 
 export interface PrescriptionZipUploadResult {
@@ -1598,6 +1612,7 @@ export async function notifyAdminForObjections(data: SettlementNotifyRequest): P
 export async function getSalesAgencyProducts(options?: {
   productName?: string;
   clientName?: string;
+  exposureRange?: 'ALL' | 'CONTRACTED' | 'UNCONTRACTED';
   startAt?: DateString;
   endAt?: DateString;
   isExposed?: boolean;
@@ -1772,6 +1787,25 @@ export async function uploadPartnerEdiFiles(data: { request: PrescriptionCreateR
 }
 
 /**
+ * 거래처별 EDI 파일 업데이트 (파라미터 부분 변경 + 파일 keep/new 반영)
+ * POST /v1/prescriptions/partner-files/update
+ */
+export async function updatePartnerEdiFiles(data: { request: PrescriptionUpdateRequest; files?: File[] }): Promise<void> {
+  const form = new FormData();
+  form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
+  if (data.files !== undefined) {
+    for (const v of data.files) {
+      form.append('files', v, v.name.normalize('NFC'));
+    }
+  }
+  await axios.request({
+    method: 'POST',
+    url: '/v1/prescriptions/partner-files/update',
+    data: form,
+  });
+}
+
+/**
  * 월 통계 캐시 삭제
  * POST /v1/prescriptions/cache/evict
  */
@@ -1918,6 +1952,7 @@ export async function updateContract(data: {
 export async function getUserMembers(options?: {
   memberId?: number;
   userId?: string;
+  roles?: ('USER' | 'ADMIN' | 'SUPER_ADMIN')[];
   name?: string;
   nickname?: string;
   phoneNumber?: string;
@@ -2001,19 +2036,6 @@ export async function isAvailableNickname(data: NicknameCheckRequest): Promise<N
     method: 'POST',
     url: '/v1/members/available-nickname',
     data,
-  });
-  return response.data;
-}
-
-/**
- * 관리자 목록 조회
- * GET /v1/members/admins
- */
-export async function getAdminMembers(options?: { page?: number; size?: number }): Promise<PageMemberResponse> {
-  const response = await axios.request<PageMemberResponse>({
-    method: 'GET',
-    url: '/v1/members/admins',
-    params: options,
   });
   return response.data;
 }
@@ -2145,6 +2167,8 @@ export async function createProductBriefingMultiReport(data: {
  */
 export async function getEventBoards(options?: {
   status?: 'IN_PROGRESS' | 'FINISHED';
+  isExposed?: boolean;
+  exposureRange?: 'ALL' | 'CONTRACTED' | 'UNCONTRACTED';
   title?: string;
   startAt?: DateString;
   endAt?: DateString;
@@ -2252,6 +2276,7 @@ export async function getBoards(options?: {
   boardTitle?: string;
   filterDeleted?: boolean;
   isExposed?: boolean;
+  drugCompanyIds?: number[];
   drugCompany?: string;
   myUserId?: string;
   includeChild?: boolean;
@@ -3268,6 +3293,7 @@ export function getDownloadProductApplicantsExcel(
 export function getDownloadSalesAgencyProductsExcel(options?: {
   productName?: string;
   clientName?: string;
+  exposureRange?: 'ALL' | 'CONTRACTED' | 'UNCONTRACTED';
   startAt?: DateString;
   endAt?: DateString;
   isExposed?: boolean;
@@ -3546,6 +3572,7 @@ export async function isUserIdAvailable(userId: string): Promise<boolean> {
 export function getDownloadUserMembersExcel(options?: {
   memberId?: number;
   userId?: string;
+  roles?: ('USER' | 'ADMIN' | 'SUPER_ADMIN')[];
   name?: string;
   nickname?: string;
   phoneNumber?: string;
@@ -3759,6 +3786,7 @@ export async function getFixedTopNotices(options?: {
   noticeType?: 'PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING';
   filterBlind?: boolean;
   filterDeleted?: boolean;
+  drugCompanyIds?: number[];
 }): Promise<BoardPostResponse[]> {
   const response = await axios.request<BoardPostResponse[]>({
     method: 'GET',
