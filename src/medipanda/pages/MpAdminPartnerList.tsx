@@ -184,7 +184,7 @@ export default function MpAdminPartnerList() {
       },
       {
         header: '계약유형',
-        cell: ({ row }) => (row.original.contractType === 'CONTRACT' ? '계약' : '미계약'),
+        cell: ({ row }) => (row.original.contractType === 'CONTRACT' ? '법인' : '개인'),
         size: 80,
       },
       {
