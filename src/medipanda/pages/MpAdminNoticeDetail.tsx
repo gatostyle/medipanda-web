@@ -6,7 +6,7 @@ import {
   CircularProgress,
   FormControlLabel,
   Grid,
-  Link as MuiLink,
+  Link,
   Switch,
   Table,
   TableBody,
@@ -164,7 +164,7 @@ export default function MpAdminNoticeDetail() {
                       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                         {data.attachments.map((file, index) => {
                           return (
-                            <MuiLink
+                            <Link
                               key={index}
                               href={file.fileUrl}
                               download
@@ -175,7 +175,7 @@ export default function MpAdminNoticeDetail() {
                             >
                               <AttachFileIcon fontSize='small' />
                               {file.originalFileName}
-                            </MuiLink>
+                            </Link>
                           );
                         })}
                       </Box>

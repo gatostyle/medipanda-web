@@ -5,7 +5,7 @@ import {
   Chip,
   CircularProgress,
   Grid,
-  Link as MuiLink,
+  Link,
   Table,
   TableBody,
   TableCell,
@@ -107,7 +107,7 @@ export default function MpAdminAtoZDetail() {
                     {data.attachments.map(file => {
                       return (
                         <Box key={file.s3fileId} sx={{ mb: 1 }}>
-                          <MuiLink
+                          <Link
                             href={file.fileUrl}
                             download
                             target='_blank'
@@ -117,7 +117,7 @@ export default function MpAdminAtoZDetail() {
                           >
                             <AttachFileIcon fontSize='small' />
                             {file.originalFileName}
-                          </MuiLink>
+                          </Link>
                         </Box>
                       );
                     })}

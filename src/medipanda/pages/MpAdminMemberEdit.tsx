@@ -1,3 +1,4 @@
+import { MedipandaUrlFileName } from '@/lib/url';
 import {
   Box,
   Button,
@@ -9,7 +10,7 @@ import {
   FormControlLabel,
   Grid,
   InputLabel,
-  Link as MuiLink,
+  Link,
   MenuItem,
   Select,
   Stack,
@@ -384,10 +385,9 @@ export default function MpAdminMemberEdit() {
                         </Typography>
                         {memberDetail.csoCertUrl !== null ? (
                           <>
-                            <MuiLink href={memberDetail.csoCertUrl} download target='_blank' rel='noopener noreferrer' underline='hover'>
-                              다운로드
-                            </MuiLink>
-                            <Button variant='text' color='primary' size='small'></Button>
+                            <Link href={memberDetail.csoCertUrl} download target='_blank' rel='noopener noreferrer' underline='hover'>
+                              {MedipandaUrlFileName(memberDetail.csoCertUrl)}
+                            </Link>
                             <Button variant='outlined' color='error' size='small' onClick={handleCsoReject}>
                               반려
                             </Button>
@@ -396,7 +396,7 @@ export default function MpAdminMemberEdit() {
                             </Button>
                           </>
                         ) : (
-                          <Button variant='text' color='primary' size='small' onClick={handleCsoUpload}>
+                          <Button variant='outlined' color='primary' size='small' onClick={handleCsoUpload}>
                             업로드
                           </Button>
                         )}
@@ -463,59 +463,44 @@ export default function MpAdminMemberEdit() {
                           />
                         </Grid>
 
-                        <Grid item xs={12}>
-                          <Stack direction='row' spacing={2} alignItems='center'>
-                            <Typography variant='subtitle2' color='text.secondary'>
-                              CSO 신고증
-                            </Typography>
-                            <Button
-                              variant='text'
-                              color='primary'
-                              size='small'
-                              component={RouterLink}
-                              to={contractDetail.fileUrls['CSO_CERTIFICATE']}
-                              target='_blank'
-                            >
-                              다운로드
-                            </Button>
-                          </Stack>
-                        </Grid>
+                        {contractDetail.fileUrls['CSO_CERTIFICATE'] !== null && (
+                          <Grid item xs={12}>
+                            <Stack direction='row' spacing={2} alignItems='center'>
+                              <Typography variant='subtitle2' color='text.secondary'>
+                                CSO 신고증
+                              </Typography>
+                              <Link component={RouterLink} to={contractDetail.fileUrls['CSO_CERTIFICATE']} target='_blank'>
+                                {MedipandaUrlFileName(contractDetail.fileUrls['CSO_CERTIFICATE'])}
+                              </Link>
+                            </Stack>
+                          </Grid>
+                        )}
 
-                        <Grid item xs={12}>
-                          <Stack direction='row' spacing={2} alignItems='center'>
-                            <Typography variant='subtitle2' color='text.secondary'>
-                              재위탁계약서
-                            </Typography>
-                            <Button
-                              variant='text'
-                              color='primary'
-                              size='small'
-                              component={RouterLink}
-                              to={contractDetail.fileUrls['SUBCONTRACT_AGREEMENT']}
-                              target='_blank'
-                            >
-                              다운로드
-                            </Button>
-                          </Stack>
-                        </Grid>
+                        {contractDetail.fileUrls['SUBCONTRACT_AGREEMENT'] !== null && (
+                          <Grid item xs={12}>
+                            <Stack direction='row' spacing={2} alignItems='center'>
+                              <Typography variant='subtitle2' color='text.secondary'>
+                                재위탁계약서
+                              </Typography>
+                              <Link component={RouterLink} to={contractDetail.fileUrls['SUBCONTRACT_AGREEMENT']} target='_blank'>
+                                {MedipandaUrlFileName(contractDetail.fileUrls['SUBCONTRACT_AGREEMENT'])}
+                              </Link>
+                            </Stack>
+                          </Grid>
+                        )}
 
-                        <Grid item xs={12}>
-                          <Stack direction='row' spacing={2} alignItems='center'>
-                            <Typography variant='subtitle2' color='text.secondary'>
-                              판매위수탁 교육이수증
-                            </Typography>
-                            <Button
-                              variant='text'
-                              color='primary'
-                              size='small'
-                              component={RouterLink}
-                              to={contractDetail.fileUrls['SALES_EDUCATION_CERT']}
-                              target='_blank'
-                            >
-                              다운로드
-                            </Button>
-                          </Stack>
-                        </Grid>
+                        {contractDetail.fileUrls['SALES_EDUCATION_CERT'] !== null && (
+                          <Grid item xs={12}>
+                            <Stack direction='row' spacing={2} alignItems='center'>
+                              <Typography variant='subtitle2' color='text.secondary'>
+                                판매위수탁 교육이수증
+                              </Typography>
+                              <Link component={RouterLink} to={contractDetail.fileUrls['SALES_EDUCATION_CERT']} target='_blank'>
+                                {MedipandaUrlFileName(contractDetail.fileUrls['SALES_EDUCATION_CERT'])}
+                              </Link>
+                            </Stack>
+                          </Grid>
+                        )}
 
                         <Grid item xs={6}>
                           <Typography variant='subtitle2' color='text.secondary' gutterBottom>

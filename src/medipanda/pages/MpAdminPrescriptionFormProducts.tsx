@@ -488,7 +488,7 @@ export default function MpAdminPrescriptionFormProducts() {
               <Button variant='contained' color='success' size='small' onClick={handleEdiFileView}>
                 EDI파일보기
               </Button>
-              <Button variant='text' size='small' onClick={handleChangeHistory} sx={{ textDecoration: 'underline' }}>
+              <Button variant='outlined' size='small' onClick={handleChangeHistory}>
                 변경내역보기
               </Button>
             </Stack>

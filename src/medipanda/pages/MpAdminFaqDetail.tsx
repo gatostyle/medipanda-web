@@ -1,5 +1,5 @@
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import { Box, Button, CircularProgress, Grid, Link as MuiLink, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Grid, Link, Typography } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { BoardDetailsResponse, getBoardDetails } from '@/backend';
 import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
@@ -86,7 +86,7 @@ export default function MpAdminCustomerCenterFaqDetail() {
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                   {data.attachments.map((file, index) => {
                     return (
-                      <MuiLink
+                      <Link
                         key={index}
                         href={file.fileUrl}
                         download
@@ -97,7 +97,7 @@ export default function MpAdminCustomerCenterFaqDetail() {
                       >
                         <AttachFileIcon fontSize='small' />
                         {file.fileUrl}
-                      </MuiLink>
+                      </Link>
                     );
                   })}
                 </Box>
