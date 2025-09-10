@@ -6,6 +6,7 @@ import {
   FormControl,
   Grid,
   InputLabel,
+  Link,
   MenuItem,
   Pagination,
   Select,
@@ -30,7 +31,7 @@ import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 
 export default function MpAdminAtoZList() {
@@ -100,7 +101,7 @@ export default function MpAdminAtoZList() {
       {
         header: '제목',
         cell: ({ row }) => (
-          <Link to={`/admin/atoz/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link component={RouterLink} to={`/admin/atoz/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
             {row.original.title}
           </Link>
         ),
@@ -275,7 +276,7 @@ export default function MpAdminAtoZList() {
                 <Button variant='contained' color='error' size='small' disabled={selectedItems.length === 0} onClick={handleDelete}>
                   삭제
                 </Button>
-                <Button variant='contained' color='success' size='small' component={Link} to='/admin/atoz/new'>
+                <Button variant='contained' color='success' size='small' component={RouterLink} to='/admin/atoz/new'>
                   등록
                 </Button>
               </Stack>

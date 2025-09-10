@@ -13,6 +13,7 @@ import {
   FormGroup,
   Grid,
   InputLabel,
+  Link,
   MenuItem,
   Pagination,
   Select,
@@ -44,7 +45,7 @@ import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminProductList() {
   const [data, setData] = useState<Sequenced<ProductSummaryResponse>[]>([]);
@@ -148,7 +149,7 @@ export default function MpAdminProductList() {
       {
         header: '제품명',
         cell: ({ row }) => (
-          <Link to={`/admin/products/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link component={RouterLink} to={`/admin/products/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
             {row.original.productName ?? '-'}
           </Link>
         ),
@@ -422,7 +423,7 @@ export default function MpAdminProductList() {
                 <Button variant='contained' color='error' size='small' disabled={selectedItems.length === 0} onClick={handleDelete}>
                   삭제
                 </Button>
-                <Button variant='contained' color='success' size='small' component={Link} to='/admin/products/new'>
+                <Button variant='contained' color='success' size='small' component={RouterLink} to='/admin/products/new'>
                   등록
                 </Button>
               </Stack>

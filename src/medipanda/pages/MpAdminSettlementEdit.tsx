@@ -5,6 +5,7 @@ import {
   FormControl,
   Grid,
   IconButton,
+  Link,
   MenuItem,
   Pagination,
   Select,
@@ -27,7 +28,7 @@ import { getDownloadSettlementPartnerSummaryExcel, getSettlementPartnerSummary, 
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 
 export default function MpAdminSettlementEdit() {
   const navigate = useNavigate();
@@ -121,6 +122,7 @@ export default function MpAdminSettlementEdit() {
         header: '거래처명',
         cell: ({ row }) => (
           <Link
+            component={RouterLink}
             to={`/admin/settlements/${settlementId}/business-partners/${row.original.institutionCode}`}
             style={{ textDecoration: 'none', color: '#1976d2' }}
           >

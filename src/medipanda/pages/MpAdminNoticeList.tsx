@@ -5,6 +5,7 @@ import {
   FormControl,
   Grid,
   InputLabel,
+  Link,
   MenuItem,
   Pagination,
   Select,
@@ -31,7 +32,7 @@ import { BOARD_TYPE_LABELS, EXPOSURE_RANGE_LABELS, NOTICE_TYPE_LABELS } from '@/
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminNoticeList() {
   const [data, setData] = useState<Sequenced<BoardPostResponse>[]>([]);
@@ -120,7 +121,7 @@ export default function MpAdminNoticeList() {
       {
         header: '제목',
         cell: ({ row }) => (
-          <Link to={`/admin/notices/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link component={RouterLink} to={`/admin/notices/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
             {row.original.title}
           </Link>
         ),
@@ -313,7 +314,7 @@ export default function MpAdminNoticeList() {
                 <Button variant='contained' color='error' size='small' disabled={selectedItems.length === 0} onClick={handleDelete}>
                   삭제
                 </Button>
-                <Button variant='contained' color='success' size='small' component={Link} to='/admin/notices/new'>
+                <Button variant='contained' color='success' size='small' component={RouterLink} to='/admin/notices/new'>
                   등록
                 </Button>
               </Stack>

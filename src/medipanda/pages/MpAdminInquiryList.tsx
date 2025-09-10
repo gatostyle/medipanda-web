@@ -4,6 +4,7 @@ import {
   FormControl,
   Grid,
   InputLabel,
+  Link,
   MenuItem,
   Pagination,
   Select,
@@ -28,7 +29,7 @@ import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminInquiryList() {
   const [data, setData] = useState<Sequenced<BoardPostResponse>[]>([]);
@@ -87,7 +88,7 @@ export default function MpAdminInquiryList() {
       {
         header: '제목',
         cell: ({ row }) => (
-          <Link to={`/admin/inquiries/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link component={RouterLink} to={`/admin/inquiries/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
             {row.original.title}
           </Link>
         ),

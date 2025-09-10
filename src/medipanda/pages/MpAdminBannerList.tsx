@@ -5,6 +5,7 @@ import {
   FormControl,
   Grid,
   InputLabel,
+  Link,
   MenuItem,
   Pagination,
   Select,
@@ -29,7 +30,7 @@ import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { formatYyyyMmDd, formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminBannerList() {
   const [data, setData] = useState<Sequenced<BannerResponse>[]>([]);
@@ -90,7 +91,7 @@ export default function MpAdminBannerList() {
       {
         header: '배너제목',
         cell: ({ row }) => (
-          <Link to={`/admin/banners/${row.original.id}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link component={RouterLink} to={`/admin/banners/${row.original.id}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
             {row.original.title}
           </Link>
         ),
@@ -265,7 +266,7 @@ export default function MpAdminBannerList() {
                 <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
               <Stack direction='row' spacing={1}>
-                <Button variant='contained' color='success' size='small' component={Link} to='/admin/banners/new'>
+                <Button variant='contained' color='success' size='small' component={RouterLink} to='/admin/banners/new'>
                   등록
                 </Button>
               </Stack>

@@ -5,7 +5,7 @@ import { BoardDetailsResponse, getBoardDetails } from '@/backend';
 import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import { formatYyyyMmDd } from '../utils/dateFormat';
 
 export default function MpAdminCustomerCenterFaqDetail() {
@@ -131,7 +131,7 @@ export default function MpAdminCustomerCenterFaqDetail() {
           <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
             <Button
               variant='outlined'
-              component={Link}
+              component={RouterLink}
               to='/admin/faqs'
               sx={{
                 minWidth: 120,
@@ -147,7 +147,7 @@ export default function MpAdminCustomerCenterFaqDetail() {
             </Button>
             <Button
               variant='contained'
-              component={Link}
+              component={RouterLink}
               to={`/admin/faqs/${boardId}/edit`}
               sx={{
                 minWidth: 120,

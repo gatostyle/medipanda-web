@@ -5,6 +5,7 @@ import {
   FormControl,
   Grid,
   InputLabel,
+  Link,
   MenuItem,
   Pagination,
   Select,
@@ -37,7 +38,7 @@ import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { formatYyyyMm, formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminPrescriptionFormList() {
   const [data, setData] = useState<Sequenced<PrescriptionPartnerResponse>[]>([]);
@@ -136,7 +137,11 @@ export default function MpAdminPrescriptionFormList() {
       {
         header: '거래처명',
         cell: ({ row }) => (
-          <Link to={`/admin/prescription-forms/${row.original.id}/products`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link
+            component={RouterLink}
+            to={`/admin/prescription-forms/${row.original.id}/products`}
+            style={{ textDecoration: 'none', color: '#1976d2' }}
+          >
             {row.original.dealerName}
           </Link>
         ),

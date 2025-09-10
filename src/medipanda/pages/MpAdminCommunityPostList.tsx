@@ -6,6 +6,7 @@ import {
   FormControl,
   Grid,
   InputLabel,
+  Link,
   MenuItem,
   Pagination,
   Select,
@@ -32,7 +33,7 @@ import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { BOARD_TYPE_LABELS } from '@/medipanda/ui-labels';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
 
 export default function MpAdminCommunityPostList() {
@@ -141,7 +142,11 @@ export default function MpAdminCommunityPostList() {
       {
         header: '제목',
         cell: ({ row }) => (
-          <Link to={`/admin/community-posts/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link
+            component={RouterLink}
+            to={`/admin/community-posts/${row.original.id}`}
+            style={{ textDecoration: 'none', color: '#1976d2' }}
+          >
             {row.original.title}
           </Link>
         ),

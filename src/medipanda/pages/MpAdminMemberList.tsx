@@ -4,6 +4,7 @@ import {
   FormControl,
   Grid,
   InputLabel,
+  Link,
   MenuItem,
   Pagination,
   Select,
@@ -30,7 +31,7 @@ import { CONSENT_LABELS, MEMBER_ACCOUNT_STATUS_LABELS } from '@/medipanda/ui-lab
 import { formatYyyyMmDd, formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminMemberList() {
   const [data, setData] = useState<Sequenced<MemberResponse>[]>([]);
@@ -79,7 +80,11 @@ export default function MpAdminMemberList() {
       {
         header: '회원명',
         cell: ({ row }) => (
-          <Link to={`/admin/members/${row.original.userId}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link
+            component={RouterLink}
+            to={`/admin/members/${row.original.userId}/edit`}
+            style={{ textDecoration: 'none', color: '#1976d2' }}
+          >
             {row.original.name}
           </Link>
         ),

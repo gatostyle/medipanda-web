@@ -5,6 +5,7 @@ import {
   FormControl,
   Grid,
   InputLabel,
+  Link,
   MenuItem,
   Pagination,
   Select,
@@ -29,7 +30,7 @@ import { MEMBER_ACCOUNT_STATUS_LABELS, MEMBER_ROLE_LABELS } from '@/medipanda/ui
 import { formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminAdminList() {
   const [data, setData] = useState<Sequenced<MemberResponse>[]>([]);
@@ -74,7 +75,11 @@ export default function MpAdminAdminList() {
       {
         header: '관리자',
         cell: ({ row }) => (
-          <Link to={`/admin/admins/${row.original.userId}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link
+            component={RouterLink}
+            to={`/admin/admins/${row.original.userId}/edit`}
+            style={{ textDecoration: 'none', color: '#1976d2' }}
+          >
             {row.original.name}
           </Link>
         ),
@@ -209,7 +214,7 @@ export default function MpAdminAdminList() {
                 <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
               <Stack direction='row' spacing={1}>
-                <Button variant='contained' size='small' color='success' component={Link} to='/admin/admins/new'>
+                <Button variant='contained' size='small' color='success' component={RouterLink} to='/admin/admins/new'>
                   등록
                 </Button>
               </Stack>

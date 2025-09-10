@@ -6,6 +6,7 @@ import {
   FormControl,
   Grid,
   InputLabel,
+  Link,
   MenuItem,
   Pagination,
   Select,
@@ -33,7 +34,7 @@ import { EVENT_STATUS_LABELS } from '@/medipanda/ui-labels';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminEventList() {
   const [data, setData] = useState<Sequenced<EventBoardSummaryResponse>[]>([]);
@@ -141,7 +142,7 @@ export default function MpAdminEventList() {
       {
         header: '제목',
         cell: ({ row }) => (
-          <Link to={`/admin/events/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link component={RouterLink} to={`/admin/events/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
             {row.original.title}
           </Link>
         ),
@@ -307,7 +308,7 @@ export default function MpAdminEventList() {
                 <Button variant='contained' size='small' color='error' disabled={selectedItems.length === 0} onClick={handleDelete}>
                   삭제
                 </Button>
-                <Button variant='contained' size='small' color='success' component={Link} to='/admin/events/new'>
+                <Button variant='contained' size='small' color='success' component={RouterLink} to='/admin/events/new'>
                   등록
                 </Button>
               </Stack>

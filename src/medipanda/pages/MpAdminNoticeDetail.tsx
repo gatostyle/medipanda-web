@@ -22,7 +22,7 @@ import { BoardDetailsResponse, getBoardDetails } from '@/backend';
 import { EXPOSURE_RANGE_LABELS, NOTICE_TYPE_LABELS } from '@/medipanda/ui-labels';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import { formatYyyyMmDd } from '../utils/dateFormat';
 
 export default function MpAdminNoticeDetail() {
@@ -204,10 +204,10 @@ export default function MpAdminNoticeDetail() {
           </Box>
 
           <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', gap: 2 }}>
-            <Button variant='outlined' component={Link} to='/admin/notices' sx={{ minWidth: 120 }}>
+            <Button variant='outlined' component={RouterLink} to='/admin/notices' sx={{ minWidth: 120 }}>
               취소
             </Button>
-            <Button variant='contained' color='success' component={Link} to={`/admin/notices/${boardId}/edit`} sx={{ minWidth: 120 }}>
+            <Button variant='contained' color='success' component={RouterLink} to={`/admin/notices/${boardId}/edit`} sx={{ minWidth: 120 }}>
               수정
             </Button>
           </Box>

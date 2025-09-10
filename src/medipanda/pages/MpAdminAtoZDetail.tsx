@@ -18,7 +18,7 @@ import MainCard from 'components/MainCard';
 import { BoardDetailsResponse, getBoardDetails } from '@/backend';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import { useMedipandaEditor } from '../components/useMedipandaEditor';
 import { formatYyyyMmDd } from '../utils/dateFormat';
 
@@ -153,10 +153,10 @@ export default function MpAdminAtoZDetail() {
           </TableContainer>
 
           <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', gap: 2 }}>
-            <Button variant='outlined' component={Link} to='/admin/atoz' sx={{ minWidth: 120 }}>
+            <Button variant='outlined' component={RouterLink} to='/admin/atoz' sx={{ minWidth: 120 }}>
               취소
             </Button>
-            <Button variant='contained' color='success' component={Link} to={`/admin/atoz/${boardId}/edit`} sx={{ minWidth: 120 }}>
+            <Button variant='contained' color='success' component={RouterLink} to={`/admin/atoz/${boardId}/edit`} sx={{ minWidth: 120 }}>
               수정
             </Button>
           </Box>

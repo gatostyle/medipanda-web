@@ -7,6 +7,7 @@ import {
   FormControl,
   Grid,
   InputLabel,
+  Link,
   MenuItem,
   Pagination,
   Select,
@@ -39,7 +40,7 @@ import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminSalesAgencyProductList() {
   const [data, setData] = useState<Sequenced<SalesAgencyProductSummaryResponse>[]>([]);
@@ -125,7 +126,11 @@ export default function MpAdminSalesAgencyProductList() {
       {
         header: '상품명',
         cell: ({ row }) => (
-          <Link to={`/admin/sales-agency-products/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link
+            component={RouterLink}
+            to={`/admin/sales-agency-products/${row.original.id}`}
+            style={{ textDecoration: 'none', color: '#1976d2' }}
+          >
             {row.original.productName}
           </Link>
         ),
@@ -320,7 +325,7 @@ export default function MpAdminSalesAgencyProductList() {
                 <Button variant='contained' color='error' size='small' disabled={selectedItems.length === 0} onClick={handleDelete}>
                   삭제
                 </Button>
-                <Button variant='contained' color='success' size='small' component={Link} to='/admin/sales-agency-products/new'>
+                <Button variant='contained' color='success' size='small' component={RouterLink} to='/admin/sales-agency-products/new'>
                   등록
                 </Button>
               </Stack>

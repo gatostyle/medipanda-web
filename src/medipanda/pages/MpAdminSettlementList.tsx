@@ -5,6 +5,7 @@ import {
   FormControl,
   Grid,
   InputLabel,
+  Link,
   MenuItem,
   Pagination,
   Select,
@@ -30,7 +31,7 @@ import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { formatYyyyMm } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 
 export default function MpAdminSettlementList() {
@@ -116,7 +117,7 @@ export default function MpAdminSettlementList() {
       {
         header: '딜러명',
         cell: ({ row }) => (
-          <Link to={`/admin/settlements/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link component={RouterLink} to={`/admin/settlements/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
             {row.original.dealerName}
           </Link>
         ),

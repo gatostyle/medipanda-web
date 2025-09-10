@@ -6,6 +6,7 @@ import {
   FormControl,
   Grid,
   InputLabel,
+  Link,
   MenuItem,
   Pagination,
   Select,
@@ -30,7 +31,7 @@ import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 
 export default function MpAdminFaqList() {
@@ -99,7 +100,7 @@ export default function MpAdminFaqList() {
       {
         header: '제목',
         cell: ({ row }) => (
-          <Link to={`/admin/faqs/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link component={RouterLink} to={`/admin/faqs/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
             {row.original.title}
           </Link>
         ),
@@ -266,7 +267,7 @@ export default function MpAdminFaqList() {
                 <Button variant='contained' size='small' color='error' disabled={selectedItems.length === 0} onClick={handleDelete}>
                   삭제
                 </Button>
-                <Button variant='contained' size='small' color='success' component={Link} to='/admin/faqs/new'>
+                <Button variant='contained' size='small' color='success' component={RouterLink} to='/admin/faqs/new'>
                   등록
                 </Button>
               </Stack>
