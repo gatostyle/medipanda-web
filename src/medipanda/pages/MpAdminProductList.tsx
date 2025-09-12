@@ -38,7 +38,7 @@ import {
   getDownloadProductSummariesExcel,
   getProductSummaries,
   ProductSummaryResponse,
-  updateProductExtraInfo_1,
+  softDelete,
   uploadProductExtraInfo,
 } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
@@ -293,7 +293,7 @@ export default function MpAdminProductList() {
       message,
       onConfirm: async () => {
         try {
-          await Promise.all(selectedIds.map(id => updateProductExtraInfo_1(id)));
+          await Promise.all(selectedIds.map(id => softDelete(id)));
           setSelectedIds([]);
           fetchContents();
         } catch (error) {

@@ -147,16 +147,16 @@ export interface BannerUpdateRequest {
 }
 
 export interface BlindPostResponse {
-  nickname: string;
   id: number;
   memberName: string;
   content: string;
-  userId: string;
   reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
+  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  userId: string;
+  nickname: string;
   likesCount: number;
   postType: 'BOARD' | 'COMMENT';
   blindAt: string;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
 }
 
 export interface BlindUpdateRequest {
@@ -193,13 +193,13 @@ export interface BoardDetailsResponse {
 export interface BoardMemberStatsResponse {
   name: string;
   id: number;
-  userId: string;
-  phoneNumber: string;
   commentCount: number;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
-  postCount: number;
+  userId: string;
+  phoneNumber: string;
   totalLikes: number;
   blindPostCount: number;
+  postCount: number;
 }
 
 export interface BoardPostCreateRequest {
@@ -280,15 +280,15 @@ export interface CommentCreateRequest {
 }
 
 export interface CommentMemberResponse {
-  nickname: string;
   name: string;
   id: number;
   content: string;
   commentType: 'COMMENT' | 'REPLY';
-  userId: string;
-  likesCount: number;
   createdAt: string;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  userId: string;
+  nickname: string;
+  likesCount: number;
   isBlind: boolean;
 }
 
@@ -490,6 +490,7 @@ export interface MemberDetailsResponse {
   role: 'USER' | 'ADMIN' | 'SUPER_ADMIN';
   nicknameHidden: boolean;
   contractStatus: ('PENDING' | 'APPROVED' | 'REJECTED') | null;
+  contractDate: string | null;
 }
 
 export interface MemberResponse {
@@ -593,9 +594,9 @@ export interface PageBannerResponse {
   content: BannerResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -607,9 +608,9 @@ export interface PageBlindPostResponse {
   content: BlindPostResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -621,9 +622,9 @@ export interface PageBoardMemberStatsResponse {
   content: BoardMemberStatsResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -635,9 +636,9 @@ export interface PageBoardPostResponse {
   content: BoardPostResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -649,9 +650,9 @@ export interface PageCommentMemberResponse {
   content: CommentMemberResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -663,9 +664,9 @@ export interface PageEventBoardSummaryResponse {
   content: EventBoardSummaryResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -677,9 +678,9 @@ export interface PageExpenseReportResponse {
   content: ExpenseReportResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -691,9 +692,9 @@ export interface PageHospitalResponse {
   content: HospitalResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -705,9 +706,9 @@ export interface PageMemberResponse {
   content: MemberResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -719,9 +720,9 @@ export interface PagePartnerResponse {
   content: PartnerResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -733,9 +734,9 @@ export interface PagePerformanceStatsResponse {
   content: PerformanceStatsResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -747,9 +748,9 @@ export interface PagePrescriptionPartnerResponse {
   content: PrescriptionPartnerResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -761,9 +762,9 @@ export interface PagePrescriptionResponse {
   content: PrescriptionResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -775,9 +776,9 @@ export interface PageProductSummaryResponse {
   content: ProductSummaryResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -789,9 +790,9 @@ export interface PageSalesAgencyProductApplicantResponse {
   content: SalesAgencyProductApplicantResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -803,9 +804,9 @@ export interface PageSalesAgencyProductSummaryResponse {
   content: SalesAgencyProductSummaryResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -817,9 +818,9 @@ export interface PageSettlementPartnerResponse {
   content: SettlementPartnerResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -831,9 +832,9 @@ export interface PageSettlementResponse {
   content: SettlementResponse[];
   number: number;
   sort: SortObject;
+  numberOfElements: number;
   first: boolean;
   last: boolean;
-  numberOfElements: number;
   empty: boolean;
 }
 
@@ -989,6 +990,7 @@ export interface PrescriptionPartnerResponse {
   companyName: string;
   drugCompany: string;
   drugCompanyCode: string;
+  drugCompanyId: number;
   institutionName: string;
   institutionCode: string;
   prescriptionMonth: string;
@@ -996,8 +998,10 @@ export interface PrescriptionPartnerResponse {
   inputDate: string;
   amount: number;
   status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+  dealerId: number;
   dealerName: string;
   partnerName: string;
+  partnerId: number;
   businessNumber: string;
   ediFiles: AttachmentResponse[];
 }
@@ -3876,6 +3880,17 @@ export async function logout(): Promise<void> {
   await axios.request({
     method: 'GET',
     url: '/v1/auth/logout',
+  });
+}
+
+/**
+ * 제품 삭제
+ * DELETE /v1/products/{id}
+ */
+export async function softDelete(id: number): Promise<void> {
+  await axios.request({
+    method: 'DELETE',
+    url: `/v1/products/${id}`,
   });
 }
 
