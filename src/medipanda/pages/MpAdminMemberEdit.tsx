@@ -398,10 +398,16 @@ export default function MpAdminMemberEdit() {
                           CSO 신고증
                         </Typography>
                         {memberDetail.csoCertUrl !== null ? (
+                          <Link href={memberDetail.csoCertUrl} download target='_blank' rel='noopener noreferrer' underline='hover'>
+                            {MedipandaUrlFileName(memberDetail.csoCertUrl)}
+                          </Link>
+                        ) : (
+                          <Button variant='outlined' color='primary' size='small' onClick={handleCsoUpload}>
+                            업로드
+                          </Button>
+                        )}
+                        {memberDetail.csoCertUrl !== null && memberDetail.partnerContractStatus === 'NONE' && (
                           <>
-                            <Link href={memberDetail.csoCertUrl} download target='_blank' rel='noopener noreferrer' underline='hover'>
-                              {MedipandaUrlFileName(memberDetail.csoCertUrl)}
-                            </Link>
                             <Button variant='outlined' color='error' size='small' onClick={handleCsoReject}>
                               반려
                             </Button>
@@ -409,10 +415,6 @@ export default function MpAdminMemberEdit() {
                               승인
                             </Button>
                           </>
-                        ) : (
-                          <Button variant='outlined' color='primary' size='small' onClick={handleCsoUpload}>
-                            업로드
-                          </Button>
                         )}
                       </Stack>
                     </Grid>
