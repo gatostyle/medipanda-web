@@ -142,24 +142,24 @@ export default function MpAdminAdminEdit() {
 
   useEffect(() => {
     if (!isNew) {
-      fetchAdminData(userId);
+      fetchDetail(userId);
     }
   }, [userId]);
 
-  const fetchAdminData = async (userId: string) => {
+  const fetchDetail = async (userId: string) => {
     setLoading(true);
     try {
-      const [memberData, permissionData] = await Promise.all([getMemberDetails(userId), getPermissions(userId)]);
+      const [detail, permissionData] = await Promise.all([getMemberDetails(userId), getPermissions(userId)]);
 
-      const phoneParts = memberData.phoneNumber.includes('-')
-        ? memberData.phoneNumber.split('-')
-        : [memberData.phoneNumber.slice(0, 3), memberData.phoneNumber.slice(3, 7), memberData.phoneNumber.slice(7)];
+      const phoneParts = detail.phoneNumber.includes('-')
+        ? detail.phoneNumber.split('-')
+        : [detail.phoneNumber.slice(0, 3), detail.phoneNumber.slice(3, 7), detail.phoneNumber.slice(7)];
 
       formik.setValues({
         ...formik.values,
-        userId: memberData.userId,
-        name: memberData.name,
-        email: memberData.email,
+        userId: detail.userId,
+        name: detail.name,
+        email: detail.email,
         phoneNumber1: phoneParts[0] !== '' ? phoneParts[0] : '010',
         phoneNumber2: phoneParts[1] ?? '',
         phoneNumber3: phoneParts[2] ?? '',
@@ -462,7 +462,7 @@ export default function MpAdminAdminEdit() {
                   <Button variant='outlined' size='large' onClick={handleCancel}>
                     취소
                   </Button>
-                  <Button variant='contained' size='large' color='success' type='submit'>
+                  <Button variant='contained' size='large' type='submit'>
                     저장
                   </Button>
                 </Stack>

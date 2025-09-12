@@ -28,19 +28,15 @@ export default function MpAdminAtoZDetail() {
   const boardId = Number(paramBoardId);
 
   const { enqueueSnackbar } = useSnackbar();
-  const [data, setData] = useState<BoardDetailsResponse | null>(null);
+  const [detail, setDetail] = useState<BoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const { editor, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
   useEffect(() => {
-    editor.setEditable(false);
-  }, [editor]);
-
-  useEffect(() => {
-    fetchData(boardId);
+    fetchDetail(boardId);
   }, [boardId]);
 
-  const fetchData = async (boardId: number) => {
+  const fetchDetail = async (boardId: number) => {
     if (Number.isNaN(boardId)) {
       alert('잘못된 접근입니다.');
       return navigate('/admin/atoz');
@@ -48,10 +44,12 @@ export default function MpAdminAtoZDetail() {
 
     setLoading(true);
     try {
-      const response = await getBoardDetails(boardId);
-      setData(response);
-      editor.commands.setContent(response.content);
-      setEditorAttachments(response.attachments.filter(a => a.type === 'EDITOR'));
+      const detail = await getBoardDetails(boardId);
+      setDetail(detail);
+
+      editor.setEditable(false);
+      editor.commands.setContent(detail.content);
+      setEditorAttachments(detail.attachments.filter(a => a.type === 'EDITOR'));
     } catch (error) {
       console.error('Failed to fetch CSO A to Z detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -60,16 +58,12 @@ export default function MpAdminAtoZDetail() {
     }
   };
 
-  if (loading) {
+  if (loading || !detail) {
     return (
       <Box display='flex' justifyContent='center' alignItems='center' minHeight='400px'>
         <CircularProgress />
       </Box>
     );
-  }
-
-  if (!data) {
-    return null;
   }
 
   return (
@@ -89,7 +83,7 @@ export default function MpAdminAtoZDetail() {
                   <TableCell component='th' scope='row' sx={{ width: 120, fontWeight: 'bold' }}>
                     제목
                   </TableCell>
-                  <TableCell>{data.title}</TableCell>
+                  <TableCell>{detail.title}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
@@ -104,7 +98,7 @@ export default function MpAdminAtoZDetail() {
                     첨부파일
                   </TableCell>
                   <TableCell>
-                    {data.attachments.map(file => {
+                    {detail.attachments.map(file => {
                       return (
                         <Box key={file.s3fileId} sx={{ mb: 1 }}>
                           <Link
@@ -129,8 +123,8 @@ export default function MpAdminAtoZDetail() {
                   </TableCell>
                   <TableCell>
                     <Chip
-                      label={data.isExposed ? '노출' : '미노출'}
-                      color={data.isExposed ? 'success' : 'default'}
+                      label={detail.isExposed ? '노출' : '미노출'}
+                      color={detail.isExposed ? 'success' : 'default'}
                       variant='light'
                       size='small'
                     />
@@ -140,13 +134,13 @@ export default function MpAdminAtoZDetail() {
                   <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     조회수
                   </TableCell>
-                  <TableCell>{data.viewsCount.toLocaleString()}</TableCell>
+                  <TableCell>{detail.viewsCount.toLocaleString()}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     작성일
                   </TableCell>
-                  <TableCell>{formatYyyyMmDd(data.createdAt)}</TableCell>
+                  <TableCell>{formatYyyyMmDd(detail.createdAt)}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -156,7 +150,7 @@ export default function MpAdminAtoZDetail() {
             <Button variant='outlined' component={RouterLink} to='/admin/atoz' sx={{ minWidth: 120 }}>
               취소
             </Button>
-            <Button variant='contained' color='success' component={RouterLink} to={`/admin/atoz/${boardId}/edit`} sx={{ minWidth: 120 }}>
+            <Button variant='contained' component={RouterLink} to={`/admin/atoz/${boardId}/edit`} sx={{ minWidth: 120 }}>
               수정
             </Button>
           </Box>

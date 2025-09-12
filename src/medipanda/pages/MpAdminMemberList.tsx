@@ -168,11 +168,7 @@ export default function MpAdminMemberList() {
       {
         header: '회원명',
         cell: ({ row }) => (
-          <Link
-            component={RouterLink}
-            to={`/admin/members/${row.original.userId}/edit`}
-            style={{ textDecoration: 'none', color: '#1976d2' }}
-          >
+          <Link component={RouterLink} to={`/admin/members/${row.original.userId}/edit`}>
             {row.original.name}
           </Link>
         ),

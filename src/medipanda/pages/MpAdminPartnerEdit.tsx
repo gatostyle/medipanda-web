@@ -42,11 +42,11 @@ export default function MpAdminPartnerEdit() {
 
   useEffect(() => {
     if (!isNew) {
-      fetchPartnerData(partnerId);
+      fetchDetail(partnerId);
     }
   }, [isNew, partnerId]);
 
-  const fetchPartnerData = async (partnerId: number) => {
+  const fetchDetail = async (partnerId: number) => {
     if (Number.isNaN(partnerId)) {
       alert('잘못된 접근입니다.');
       return navigate('/admin/partners');
@@ -54,25 +54,25 @@ export default function MpAdminPartnerEdit() {
 
     setLoading(true);
     try {
-      const partnerDetails = await getPartnerDetails(partnerId);
+      const detail = await getPartnerDetails(partnerId);
 
       // const [emptyRow] = await Promise.all([mpGetPartnerEmptyPharmacyRow()]);
 
       // setPharmacyRows([{ ...emptyRow, id: 1 }]);
 
       formik.setValues({
-        drugCompany: { id: -1, name: partnerDetails.drugCompanyName, code: '' },
+        drugCompany: { id: -1, name: detail.drugCompanyName, code: '' },
         member: null,
-        companyName: partnerDetails.companyName,
-        contractType: partnerDetails.contractType,
-        institutionCode: partnerDetails.institutionCode,
-        institutionName: partnerDetails.institutionName,
-        businessNumber: partnerDetails.businessNumber,
-        medicalDepartment: partnerDetails.medicalDepartment ?? '',
-        pharmacyName: partnerDetails.pharmacyName ?? '',
-        pharmacyAddress: partnerDetails.pharmacyAddress ?? '',
-        pharmacyStatus: partnerDetails.pharmacyStatus,
-        note: partnerDetails.note ?? '',
+        companyName: detail.companyName,
+        contractType: detail.contractType,
+        institutionCode: detail.institutionCode,
+        institutionName: detail.institutionName,
+        businessNumber: detail.businessNumber,
+        medicalDepartment: detail.medicalDepartment ?? '',
+        pharmacyName: detail.pharmacyName ?? '',
+        pharmacyAddress: detail.pharmacyAddress ?? '',
+        pharmacyStatus: detail.pharmacyStatus,
+        note: detail.note ?? '',
       });
     } catch (error) {
       console.error('Failed to fetch partner data:', error);
@@ -385,7 +385,7 @@ export default function MpAdminPartnerEdit() {
             <Button variant='outlined' size='large' onClick={handleCancel} sx={{ minWidth: 120 }}>
               취소
             </Button>
-            <Button variant='contained' color='success' size='large' type='submit' sx={{ minWidth: 120 }}>
+            <Button variant='contained' size='large' type='submit' sx={{ minWidth: 120 }}>
               저장
             </Button>
           </Stack>

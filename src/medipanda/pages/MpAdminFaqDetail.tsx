@@ -1,8 +1,9 @@
+import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Box, Button, CircularProgress, Grid, Link, Typography } from '@mui/material';
+import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
 import { BoardDetailsResponse, getBoardDetails } from '@/backend';
-import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
@@ -14,14 +15,16 @@ export default function MpAdminCustomerCenterFaqDetail() {
   const boardId = Number(paramBoardId);
 
   const { enqueueSnackbar } = useSnackbar();
-  const [data, setData] = useState<BoardDetailsResponse | null>(null);
+  const [detail, setDetail] = useState<BoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchData(boardId);
+    fetchDetail(boardId);
   }, [boardId]);
 
-  const fetchData = async (boardId: number) => {
+  const { editor, setAttachments: setEditorAttachments } = useMedipandaEditor();
+
+  const fetchDetail = async (boardId: number) => {
     if (Number.isNaN(boardId)) {
       alert('잘못된 접근입니다.');
       return navigate('/admin/faqs');
@@ -29,8 +32,12 @@ export default function MpAdminCustomerCenterFaqDetail() {
 
     setLoading(true);
     try {
-      const response = await getBoardDetails(boardId);
-      setData(response);
+      const detail = await getBoardDetails(boardId);
+      setDetail(detail);
+
+      editor.setEditable(false);
+      editor.commands.setContent(detail.content);
+      setEditorAttachments(detail.attachments.filter(a => a.type === 'EDITOR'));
     } catch (error) {
       console.error('Failed to fetch FAQ detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -47,7 +54,7 @@ export default function MpAdminCustomerCenterFaqDetail() {
     );
   }
 
-  if (!data) {
+  if (!detail) {
     return null;
   }
 
@@ -66,15 +73,15 @@ export default function MpAdminCustomerCenterFaqDetail() {
               <Typography variant='body2' color='text.secondary' gutterBottom>
                 제목
               </Typography>
-              <Typography variant='body1'>{data.title}</Typography>
+              <Typography variant='body1'>{detail.title}</Typography>
             </Grid>
 
             <Grid item xs={12}>
               <Typography variant='body2' color='text.secondary' gutterBottom>
                 내용
               </Typography>
-              <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, minHeight: 200 }}>
-                <TiptapEditor content={data.content} readOnly />
+              <Box sx={{ mt: 1 }}>
+                <EditorContent editor={editor} />
               </Box>
             </Grid>
 
@@ -82,9 +89,9 @@ export default function MpAdminCustomerCenterFaqDetail() {
               <Typography variant='body2' color='text.secondary' gutterBottom>
                 첨부파일
               </Typography>
-              {data.attachments && data.attachments.length > 0 ? (
+              {detail.attachments && detail.attachments.length > 0 ? (
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                  {data.attachments.map((file, index) => {
+                  {detail.attachments.map((file, index) => {
                     return (
                       <Link
                         key={index}
@@ -110,21 +117,21 @@ export default function MpAdminCustomerCenterFaqDetail() {
               <Typography variant='body2' color='text.secondary' gutterBottom>
                 노출상태
               </Typography>
-              <Typography variant='body1'>{data.isExposed ? '노출' : '미노출'}</Typography>
+              <Typography variant='body1'>{detail.isExposed ? '노출' : '미노출'}</Typography>
             </Grid>
 
             <Grid item xs={12} md={6}>
               <Typography variant='body2' color='text.secondary' gutterBottom>
                 조회수
               </Typography>
-              <Typography variant='body1'>{data.viewsCount.toLocaleString()}</Typography>
+              <Typography variant='body1'>{detail.viewsCount.toLocaleString()}</Typography>
             </Grid>
 
             <Grid item xs={12}>
               <Typography variant='body2' color='text.secondary' gutterBottom>
                 작성일
               </Typography>
-              <Typography variant='body1'>{formatYyyyMmDd(data.createdAt)}</Typography>
+              <Typography variant='body1'>{formatYyyyMmDd(detail.createdAt)}</Typography>
             </Grid>
           </Grid>
 
@@ -135,12 +142,6 @@ export default function MpAdminCustomerCenterFaqDetail() {
               to='/admin/faqs'
               sx={{
                 minWidth: 120,
-                color: '#666',
-                borderColor: '#ccc',
-                '&:hover': {
-                  borderColor: '#999',
-                  bgcolor: '#f5f5f5',
-                },
               }}
             >
               취소
@@ -151,8 +152,6 @@ export default function MpAdminCustomerCenterFaqDetail() {
               to={`/admin/faqs/${boardId}/edit`}
               sx={{
                 minWidth: 120,
-                bgcolor: '#4caf50',
-                '&:hover': { bgcolor: '#45a049' },
               }}
             >
               수정

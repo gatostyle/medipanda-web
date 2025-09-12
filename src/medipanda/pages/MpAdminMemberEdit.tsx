@@ -46,7 +46,7 @@ export default function MpAdminMemberEdit() {
   const errorDialog = useMpErrorDialog();
   const { enqueueSnackbar } = useSnackbar();
   const [isContractApproved, setIsContractApproved] = useState(false);
-  const [memberDetail, setMemberDetail] = useState<MemberDetailsResponse | null>(null);
+  const [detail, setDetail] = useState<MemberDetailsResponse | null>(null);
   const [contractDetail, setContractDetail] = useState<PartnerContractDetailsResponse | null>(null);
 
   const formik = useFormik({
@@ -75,7 +75,7 @@ export default function MpAdminMemberEdit() {
         return;
       }
 
-      if (values.phoneNumber !== memberDetail?.phoneNumber && values.phoneNumber === '') {
+      if (values.phoneNumber !== detail?.phoneNumber && values.phoneNumber === '') {
         alert('휴대폰번호를 입력하세요.');
         return;
       }
@@ -87,7 +87,7 @@ export default function MpAdminMemberEdit() {
             name: null,
             birthDate: null,
             accountStatus: values.accountStatus,
-            phoneNumber: values.phoneNumber !== memberDetail?.phoneNumber ? values.phoneNumber : null,
+            phoneNumber: values.phoneNumber !== detail?.phoneNumber ? values.phoneNumber : null,
             email: values.email,
             nickname: null,
             referralCode: null,
@@ -134,34 +134,34 @@ export default function MpAdminMemberEdit() {
 
   useEffect(() => {
     if (!isNew) {
-      fetchMemberData(userId);
+      fetchDetail(userId);
     }
   }, [isNew, userId]);
 
-  const fetchMemberData = async (userId: string) => {
+  const fetchDetail = async (userId: string) => {
     try {
-      const memberDetail = await getMemberDetails(userId);
-      setMemberDetail(memberDetail);
+      const detail = await getMemberDetails(userId);
+      setDetail(detail);
       const values: (typeof formik)['values'] = {
         password: '',
         confirmPassword: '',
-        phoneNumber: memberDetail.phoneNumber,
-        email: memberDetail.email,
-        accountStatus: memberDetail.accountStatus,
+        phoneNumber: detail.phoneNumber,
+        email: detail.email,
+        accountStatus: detail.accountStatus,
         contractType: 'INDIVIDUAL',
         bankName: '',
         commissionRate: 0,
-        note: memberDetail.note ?? '',
-        marketingAgreementsSms: memberDetail.marketingAgreements?.sms ?? false,
-        marketingAgreementsEmail: memberDetail.marketingAgreements?.email ?? false,
-        marketingAgreementsPush: memberDetail.marketingAgreements?.push ?? false,
+        note: detail.note ?? '',
+        marketingAgreementsSms: detail.marketingAgreements?.sms ?? false,
+        marketingAgreementsEmail: detail.marketingAgreements?.email ?? false,
+        marketingAgreementsPush: detail.marketingAgreements?.push ?? false,
       };
 
       formik.resetForm({
         values,
       });
 
-      await fetchPartnerContract(values);
+      await fetchContractDetail(values);
     } catch (error) {
       console.error('Failed to fetch member data:', error);
       enqueueSnackbar('회원 정보를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -169,7 +169,7 @@ export default function MpAdminMemberEdit() {
     }
   };
 
-  const fetchPartnerContract = async (values: (typeof formik)['values']) => {
+  const fetchContractDetail = async (values: (typeof formik)['values']) => {
     try {
       const contractDetail = await getContractDetails(userId);
       setContractDetail(contractDetail);
@@ -197,7 +197,7 @@ export default function MpAdminMemberEdit() {
     try {
       await approveOrRejectCso(userId, { isApproved: true });
       infoDialog.showInfo('CSO 신고증이 승인되었습니다.');
-      await fetchMemberData(userId);
+      await fetchDetail(userId);
     } catch (error) {
       console.error('Failed to approve CSO report:', error);
       errorDialog.showError('CSO 신고증 승인 중 오류가 발생했습니다.');
@@ -208,7 +208,7 @@ export default function MpAdminMemberEdit() {
     try {
       await approveOrRejectCso(userId, { isApproved: false });
       infoDialog.showInfo('CSO 신고증이 반려되었습니다.');
-      await fetchMemberData(userId);
+      await fetchDetail(userId);
     } catch (error) {
       console.error('Failed to reject CSO report:', error);
       errorDialog.showError('CSO 신고증 반려 중 오류가 발생했습니다.');
@@ -240,7 +240,7 @@ export default function MpAdminMemberEdit() {
         });
 
         alert('CSO 신고증이 업로드되었습니다.');
-        await fetchMemberData(userId);
+        await fetchDetail(userId);
       } catch (e) {
         console.error('Failed to upload CSO report:', e);
         alert('CSO 신고증 업로드 중 오류가 발생했습니다.');
@@ -253,14 +253,14 @@ export default function MpAdminMemberEdit() {
     try {
       await approveContract(contractDetail!.id);
       infoDialog.showInfo('파트너사 계약이 승인되었습니다.');
-      await fetchPartnerContract(formik.values);
+      await fetchContractDetail(formik.values);
     } catch (error) {
       console.error('Failed to approve partner contract:', error);
       errorDialog.showError('파트너사 계약 승인 중 오류가 발생했습니다.');
     }
   };
 
-  if (memberDetail === null) {
+  if (detail === null) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
         <CircularProgress />
@@ -289,14 +289,14 @@ export default function MpAdminMemberEdit() {
                       <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         회원번호
                       </Typography>
-                      <Typography variant='body1'>{memberDetail.id}</Typography>
+                      <Typography variant='body1'>{detail.id}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
                       <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         아이디
                       </Typography>
-                      <Typography variant='body1'>{memberDetail.userId}</Typography>
+                      <Typography variant='body1'>{detail.userId}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
@@ -327,7 +327,7 @@ export default function MpAdminMemberEdit() {
                       <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         회원명
                       </Typography>
-                      <Typography variant='body1'>{memberDetail.name}</Typography>
+                      <Typography variant='body1'>{detail.name}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
@@ -346,7 +346,7 @@ export default function MpAdminMemberEdit() {
                         생년월일
                       </Typography>
                       <Typography variant='body1'>
-                        {formatYyyyMmDd(memberDetail.birthDate)} {memberDetail.gender}
+                        {formatYyyyMmDd(detail.birthDate)} {detail.gender}
                       </Typography>
                     </Grid>
 
@@ -365,21 +365,21 @@ export default function MpAdminMemberEdit() {
                       <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         추천코드
                       </Typography>
-                      <Typography variant='body1'>{memberDetail.referralCode}</Typography>
+                      <Typography variant='body1'>{detail.referralCode}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
                       <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         가입일
                       </Typography>
-                      <Typography variant='body1'>{formatYyyyMmDd(memberDetail.registrationDate)}</Typography>
+                      <Typography variant='body1'>{formatYyyyMmDd(detail.registrationDate)}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
                       <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         최종접속일
                       </Typography>
-                      <Typography variant='body1'>{formatYyyyMmDd(memberDetail.lastLoginDate)}</Typography>
+                      <Typography variant='body1'>{formatYyyyMmDd(detail.lastLoginDate)}</Typography>
                     </Grid>
 
                     <Grid item xs={6}>
@@ -397,21 +397,21 @@ export default function MpAdminMemberEdit() {
                         <Typography variant='subtitle2' color='text.secondary'>
                           CSO 신고증
                         </Typography>
-                        {memberDetail.csoCertUrl !== null ? (
-                          <Link href={memberDetail.csoCertUrl} download target='_blank' rel='noopener noreferrer' underline='hover'>
-                            {MedipandaUrlFileName(memberDetail.csoCertUrl)}
+                        {detail.csoCertUrl !== null ? (
+                          <Link href={detail.csoCertUrl} download target='_blank' rel='noopener noreferrer' underline='hover'>
+                            {MedipandaUrlFileName(detail.csoCertUrl)}
                           </Link>
                         ) : (
                           <Button variant='outlined' color='primary' size='small' onClick={handleCsoUpload}>
                             업로드
                           </Button>
                         )}
-                        {memberDetail.csoCertUrl !== null && memberDetail.partnerContractStatus === 'NONE' && (
+                        {detail.csoCertUrl !== null && detail.partnerContractStatus === 'NONE' && (
                           <>
                             <Button variant='outlined' color='error' size='small' onClick={handleCsoReject}>
                               반려
                             </Button>
-                            <Button variant='contained' color='success' size='small' onClick={handleCsoApprove}>
+                            <Button variant='contained' size='small' onClick={handleCsoApprove}>
                               승인
                             </Button>
                           </>
@@ -429,11 +429,11 @@ export default function MpAdminMemberEdit() {
                       <Stack direction='row' justifyContent='space-between' alignItems='center' sx={{ mb: 3 }}>
                         <Typography variant='h6'>파트너사 계약</Typography>
                         {!isContractApproved && (
-                          <Button variant='contained' color='success' size='small' onClick={handleContractApprove}>
+                          <Button variant='contained' size='small' onClick={handleContractApprove}>
                             승인
                           </Button>
                         )}
-                        {isContractApproved && <Chip label='승인' color='success' size='small' />}
+                        {isContractApproved && <Chip label='승인완료' color='success' size='small' />}
                       </Stack>
 
                       <Grid container spacing={2}>
@@ -603,7 +603,7 @@ export default function MpAdminMemberEdit() {
               <Button variant='outlined' size='large' onClick={handleCancel} sx={{ minWidth: 120 }}>
                 취소
               </Button>
-              <Button variant='contained' size='large' color='success' type='submit' sx={{ minWidth: 120 }}>
+              <Button variant='contained' size='large' type='submit' sx={{ minWidth: 120 }}>
                 저장
               </Button>
             </Stack>

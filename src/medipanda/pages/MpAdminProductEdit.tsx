@@ -37,7 +37,7 @@ export default function MpAdminProductEdit() {
   const [loading, setLoading] = useState(false);
   const errorDialog = useMpErrorDialog();
   const { session } = useSession();
-  const [productDetail, setProductDetail] = useState<ProductDetailsResponse | null>(null);
+  const [detail, setDetail] = useState<ProductDetailsResponse | null>(null);
 
   const formik = useFormik({
     initialValues: {
@@ -181,11 +181,11 @@ export default function MpAdminProductEdit() {
 
   useEffect(() => {
     if (!isNew) {
-      fetchData(productId);
+      fetchDetail(productId);
     }
   }, [isNew, productId]);
 
-  const fetchData = async (productId: number) => {
+  const fetchDetail = async (productId: number) => {
     if (Number.isNaN(productId)) {
       alert('잘못된 접근입니다.');
       return navigate('/admin/products');
@@ -193,27 +193,28 @@ export default function MpAdminProductEdit() {
 
     setLoading(true);
     try {
-      const response = await getProductDetails(productId);
-      setProductDetail(response);
-      editor.commands.setContent(response.boardDetailsResponse.content);
-      setEditorAttachments(response.boardDetailsResponse.attachments.filter(a => a.type === 'EDITOR'));
+      const detail = await getProductDetails(productId);
+      setDetail(detail);
 
-      const changedMonth = Number(response.changedMonth?.slice(-2));
+      editor.commands.setContent(detail.boardDetailsResponse.content);
+      setEditorAttachments(detail.boardDetailsResponse.attachments.filter(a => a.type === 'EDITOR'));
+
+      const changedMonth = Number(detail.changedMonth?.slice(-2));
 
       formik.setValues({
-        manufacturer: response.manufacturer ?? '',
-        productName: response.productName ?? '',
-        composition: response.composition ?? '',
-        productCode: response.productCode ?? '',
-        price: response.price ?? 0,
-        feeRate: response.feeRate ?? 0,
-        changedFeeRate: response.changedFeeRate ?? undefined,
+        manufacturer: detail.manufacturer ?? '',
+        productName: detail.productName ?? '',
+        composition: detail.composition ?? '',
+        productCode: detail.productCode ?? '',
+        price: detail.price ?? 0,
+        feeRate: detail.feeRate ?? 0,
+        changedFeeRate: detail.changedFeeRate ?? undefined,
         changedMonth: Number.isNaN(changedMonth) ? '' : changedMonth.toString(),
-        isAcquisition: response.isAcquisition ?? false,
-        isPromotion: response.isPromotion ?? false,
-        isOutOfStock: response.isOutOfStock ?? false,
-        isStopSelling: response.isStopSelling ?? false,
-        note: response.note ?? '',
+        isAcquisition: detail.isAcquisition ?? false,
+        isPromotion: detail.isPromotion ?? false,
+        isOutOfStock: detail.isOutOfStock ?? false,
+        isStopSelling: detail.isStopSelling ?? false,
+        note: detail.note ?? '',
       });
     } catch (error) {
       console.error('Failed to fetch product detail:', error);
@@ -449,7 +450,7 @@ export default function MpAdminProductEdit() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {productDetail?.alternativeProducts.map(product => (
+                      {detail?.alternativeProducts.map(product => (
                         <Fragment key={product.kdCode}>
                           <TableRow>
                             <TableCell rowSpan={2}>
@@ -548,7 +549,6 @@ export default function MpAdminProductEdit() {
               </Button>
               <Button
                 variant='contained'
-                color='success'
                 size='large'
                 type='submit'
                 sx={{ minWidth: 120 }}

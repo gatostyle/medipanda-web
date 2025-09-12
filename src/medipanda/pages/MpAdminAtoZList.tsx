@@ -185,7 +185,7 @@ export default function MpAdminAtoZList() {
       {
         header: '제목',
         cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/atoz/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link component={RouterLink} to={`/admin/atoz/${row.original.id}`}>
             {row.original.title}
           </Link>
         ),

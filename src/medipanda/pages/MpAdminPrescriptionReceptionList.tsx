@@ -209,7 +209,7 @@ export default function MpAdminPrescriptionReceptionList() {
             COMPLETED: '입력완료',
           };
 
-          return <Chip label={labels[status]} size='small' sx={{ backgroundColor: '#4caf50', color: 'white' }} />;
+          return <Chip label={labels[status]} size='small' color='success' />;
         },
         size: 100,
       },

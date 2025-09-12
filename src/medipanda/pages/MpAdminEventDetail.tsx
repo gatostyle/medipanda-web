@@ -1,7 +1,8 @@
+import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { Box, Button, Chip, CircularProgress, Divider, Grid, Stack, Typography } from '@mui/material';
+import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
 import { EventBoardDetailsResponse, getEventBoardDetails } from '@/backend';
-import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
@@ -13,10 +14,12 @@ export default function MpAdminEventDetail() {
   const eventId = Number(paramEventId);
 
   const { enqueueSnackbar } = useSnackbar();
-  const [event, setEvent] = useState<EventBoardDetailsResponse | null>(null);
+  const [event, setDetail] = useState<EventBoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const fetchData = async (eventId: number) => {
+  const { editor, setAttachments: setEditorAttachments } = useMedipandaEditor();
+
+  const fetchDetail = async (eventId: number) => {
     if (Number.isNaN(eventId)) {
       alert('잘못된 접근입니다.');
       return navigate('/admin/events');
@@ -24,8 +27,12 @@ export default function MpAdminEventDetail() {
 
     setLoading(true);
     try {
-      const data = await getEventBoardDetails(eventId);
-      setEvent(data);
+      const detail = await getEventBoardDetails(eventId);
+      setDetail(detail);
+
+      editor.setEditable(false);
+      editor.commands.setContent(detail.boardPostDetail.content);
+      setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === 'EDITOR'));
     } catch (error) {
       console.error('Failed to fetch event detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -36,7 +43,7 @@ export default function MpAdminEventDetail() {
   };
 
   useEffect(() => {
-    fetchData(eventId);
+    fetchDetail(eventId);
   }, [eventId]);
 
   if (loading) {
@@ -92,7 +99,7 @@ export default function MpAdminEventDetail() {
                           ? '계약'
                           : '미계약'
                     }
-                    color='primary'
+                    color='success'
                     variant='light'
                     size='small'
                   />
@@ -161,7 +168,9 @@ export default function MpAdminEventDetail() {
                 <Typography variant='subtitle2' color='text.secondary'>
                   내용
                 </Typography>
-                <TiptapEditor content={event.boardPostDetail.content} readOnly />
+                <Box sx={{ mt: 1 }}>
+                  <EditorContent editor={editor} />
+                </Box>
               </Stack>
             </Grid>
 
@@ -214,7 +223,7 @@ export default function MpAdminEventDetail() {
                 <Button variant='outlined' size='large' component={RouterLink} to={'/admin/events'}>
                   취소
                 </Button>
-                <Button variant='contained' size='large' color='success' component={RouterLink} to={`/admin/events/${eventId}/edit`}>
+                <Button variant='contained' size='large' component={RouterLink} to={`/admin/events/${eventId}/edit`}>
                   수정
                 </Button>
               </Stack>

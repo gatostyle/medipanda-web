@@ -50,7 +50,7 @@ export default function MpAdminAdminList() {
   const pageSize = 20;
 
   const [loading, setLoading] = useState(false);
-  const [contents, setContents] = useState<Sequenced<MemberResponse>[]>([]);
+  const [contents, setcontents] = useState<Sequenced<MemberResponse>[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
@@ -95,13 +95,13 @@ export default function MpAdminAdminList() {
         size: pageSize,
       });
 
-      setContents(withSequence(response).content);
+      setcontents(withSequence(response).content);
       setTotalElements(response.totalElements);
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch admin list:', error);
       errorDialog.showError('관리자 목록을 불러오는 중 오류가 발생했습니다.');
-      setContents([]);
+      setcontents([]);
       setTotalElements(0);
       setTotalPages(0);
     } finally {
@@ -134,11 +134,7 @@ export default function MpAdminAdminList() {
       {
         header: '관리자',
         cell: ({ row }) => (
-          <Link
-            component={RouterLink}
-            to={`/admin/admins/${row.original.userId}/edit`}
-            style={{ textDecoration: 'none', color: '#1976d2' }}
-          >
+          <Link component={RouterLink} to={`/admin/admins/${row.original.userId}/edit`}>
             {row.original.name}
           </Link>
         ),

@@ -72,7 +72,7 @@ export default function MpAdminNoticeList() {
   const deleteDialog = useMpDeleteDialog();
   const errorDialog = useMpErrorDialog();
 
-  const [manufacturerOptions, setManufacturerOptions] = useState<DrugCompanyResponse[]>([]);
+  const [drugCompanies, setDrugCompanies] = useState<DrugCompanyResponse[]>([]);
 
   const formik = useFormik({
     initialValues: {
@@ -145,17 +145,18 @@ export default function MpAdminNoticeList() {
   }, [searchKeyword, startAt, endAt, drugCompany, isExposed, page]);
 
   useEffect(() => {
-    const fetchManufacturers = async () => {
-      try {
-        const manufacturers = await getAllDrugCompanies();
-        setManufacturerOptions(manufacturers);
-      } catch (error) {
-        console.error('Failed to fetch manufacturer list:', error);
-        errorDialog.showError('제약사 목록을 불러오는 중 오류가 발생했습니다.');
-      }
-    };
-    fetchManufacturers();
+    fetchDrugCompanies();
   }, []);
+
+  const fetchDrugCompanies = async () => {
+    try {
+      const contents = await getAllDrugCompanies();
+      setDrugCompanies(contents);
+    } catch (error) {
+      console.error('Failed to fetch drug company list:', error);
+      errorDialog.showError('제약사 목록을 불러오는 중 오류가 발생했습니다.');
+    }
+  };
 
   const table = useReactTable({
     data: contents,
@@ -215,7 +216,7 @@ export default function MpAdminNoticeList() {
       {
         header: '제목',
         cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/notices/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link component={RouterLink} to={`/admin/notices/${row.original.id}`}>
             {row.original.title}
           </Link>
         ),
@@ -297,9 +298,9 @@ export default function MpAdminNoticeList() {
                   <FormControl fullWidth size='small'>
                     <InputLabel>제약사명</InputLabel>
                     <Select name='drugCompany' value={formik.values.drugCompany} onChange={formik.handleChange}>
-                      {manufacturerOptions.map(manufacturer => (
-                        <MenuItem key={manufacturer.id} value={manufacturer.name}>
-                          {manufacturer.name}
+                      {drugCompanies.map(drugCompany => (
+                        <MenuItem key={drugCompany.id} value={drugCompany.name}>
+                          {drugCompany.name}
                         </MenuItem>
                       ))}
                     </Select>

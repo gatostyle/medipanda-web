@@ -98,11 +98,11 @@ export default function MpAdminBannerEdit() {
 
   useEffect(() => {
     if (!isNew) {
-      fetchBannerDetail(bannerId);
+      fetchDetail(bannerId);
     }
   }, [isNew, bannerId]);
 
-  const fetchBannerDetail = async (bannerId: number) => {
+  const fetchDetail = async (bannerId: number) => {
     if (Number.isNaN(bannerId)) {
       alert('잘못된 접근입니다.');
       return navigate('/admin/banners');
@@ -110,29 +110,29 @@ export default function MpAdminBannerEdit() {
 
     setLoading(true);
     try {
-      const data = await getBanner(bannerId);
+      const detail = await getBanner(bannerId);
 
-      const startDate = DateFix(data.startAt);
-      const endDate = DateFix(data.endAt);
+      const startDate = DateFix(detail.startAt);
+      const endDate = DateFix(detail.endAt);
 
       formik.setValues({
-        position: data.position,
-        status: data.status,
-        scope: data.scope,
-        title: data.title,
-        linkUrl: data.linkUrl,
+        position: detail.position,
+        status: detail.status,
+        scope: detail.scope,
+        title: detail.title,
+        linkUrl: detail.linkUrl,
         startDate: startDate,
         startHour: startDate.getHours().toString(),
         startMinute: startDate.getMinutes().toString(),
         endDate: endDate,
         endHour: endDate.getHours().toString(),
         endMinute: endDate.getMinutes().toString(),
-        displayOrder: data.displayOrder,
-        note: data.note ?? '',
+        displayOrder: detail.displayOrder,
+        note: detail.note ?? '',
       });
 
-      if (data.imageUrl) {
-        setImagePreview(data.imageUrl);
+      if (detail.imageUrl) {
+        setImagePreview(detail.imageUrl);
       }
     } catch (error) {
       console.error('Failed to fetch banner detail:', error);
@@ -237,12 +237,7 @@ export default function MpAdminBannerEdit() {
                     배너이미지 <span style={{ color: 'red' }}>*</span>
                   </Typography>
                   <Stack direction='row' spacing={2} alignItems='center'>
-                    <Button
-                      variant='contained'
-                      component='label'
-                      size='small'
-                      sx={{ backgroundColor: '#4caf50', '&:hover': { backgroundColor: '#45a049' } }}
-                    >
+                    <Button variant='contained' component='label' size='small'>
                       파일 선택
                       <input type='file' hidden accept='image/*' onChange={handleImageChange} />
                     </Button>
@@ -345,13 +340,6 @@ export default function MpAdminBannerEdit() {
                     to={'/admin/banners'}
                     sx={{
                       minWidth: 100,
-                      color: '#666',
-                      borderColor: '#ddd',
-                      backgroundColor: '#f5f5f5',
-                      '&:hover': {
-                        borderColor: '#999',
-                        backgroundColor: '#e0e0e0',
-                      },
                     }}
                   >
                     취소
@@ -362,10 +350,6 @@ export default function MpAdminBannerEdit() {
                     type='submit'
                     sx={{
                       minWidth: 100,
-                      backgroundColor: '#4caf50',
-                      '&:hover': {
-                        backgroundColor: '#45a049',
-                      },
                     }}
                   >
                     저장

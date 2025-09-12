@@ -1,3 +1,4 @@
+import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import {
   Box,
   Button,
@@ -18,6 +19,7 @@ import {
   Typography,
 } from '@mui/material';
 import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { EditorContent } from '@tiptap/react';
 import ScrollX from 'components/ScrollX';
 import {
   getProductApplicants,
@@ -25,7 +27,6 @@ import {
   SalesAgencyProductApplicantResponse,
   SalesAgencyProductDetailsResponse,
 } from '@/backend';
-import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
@@ -41,7 +42,7 @@ export default function MpAdminSalesAgencyProductDetail() {
   const [tabValue, setTabValue] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  const [productDetail, setProductDetail] = useState<SalesAgencyProductDetailsResponse | null>(null);
+  const [detail, setDetail] = useState<SalesAgencyProductDetailsResponse | null>(null);
 
   const [applicants, setApplicants] = useState<Sequenced<SalesAgencyProductApplicantResponse>[]>([]);
 
@@ -80,13 +81,7 @@ export default function MpAdminSalesAgencyProductDetail() {
       },
       {
         header: '파트너사 계약여부',
-        cell: ({ row }) => (
-          <Chip
-            label={row.original.contractStatus === 'CONTRACT' ? 'Y' : 'N'}
-            size='small'
-            color={row.original.contractStatus === 'CONTRACT' ? 'success' : 'default'}
-          />
-        ),
+        cell: ({ row }) => (row.original.contractStatus === 'CONTRACT' ? 'Y' : 'N'),
         size: 140,
       },
       {
@@ -108,7 +103,9 @@ export default function MpAdminSalesAgencyProductDetail() {
     setTabValue(newValue);
   };
 
-  const fetchData = async (salesAgencyProductId: number) => {
+  const { editor, setAttachments: setEditorAttachments } = useMedipandaEditor();
+
+  const fetchDetail = async (salesAgencyProductId: number) => {
     if (Number.isNaN(salesAgencyProductId)) {
       alert('잘못된 접근입니다.');
       return navigate('/admin/sales-agency-products');
@@ -121,8 +118,12 @@ export default function MpAdminSalesAgencyProductDetail() {
         getProductApplicants(salesAgencyProductId),
       ]);
 
-      setProductDetail(detail);
+      setDetail(detail);
       setApplicants(withSequence(applicantsResponse).content);
+
+      editor.setEditable(false);
+      editor.commands.setContent(detail.boardPostDetail.content);
+      setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === 'EDITOR'));
     } catch (error) {
       console.error('Failed to fetch product detail:', error);
       enqueueSnackbar('상품 정보를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -133,7 +134,7 @@ export default function MpAdminSalesAgencyProductDetail() {
   };
 
   useEffect(() => {
-    fetchData(salesAgencyProductId);
+    fetchDetail(salesAgencyProductId);
   }, [salesAgencyProductId]);
 
   if (loading) {
@@ -165,63 +166,65 @@ export default function MpAdminSalesAgencyProductDetail() {
                     <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                       위탁사명
                     </Typography>
-                    <Typography variant='body1'>{productDetail?.clientName}</Typography>
+                    <Typography variant='body1'>{detail?.clientName}</Typography>
                   </Box>
 
                   <Box>
                     <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                       상품명
                     </Typography>
-                    <Typography variant='body1'>{productDetail?.productName}</Typography>
+                    <Typography variant='body1'>{detail?.productName}</Typography>
                   </Box>
 
                   <Box>
                     <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                       노출상태
                     </Typography>
-                    <Typography variant='body1'>{productDetail?.boardPostDetail?.isExposed ? '노출' : '미노출'}</Typography>
+                    <Typography variant='body1'>{detail?.boardPostDetail?.isExposed ? '노출' : '미노출'}</Typography>
                   </Box>
 
                   <Box>
                     <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                       노출범위
                     </Typography>
-                    <Typography variant='body1'>{productDetail?.boardPostDetail?.exposureRange}</Typography>
+                    <Typography variant='body1'>{detail?.boardPostDetail?.exposureRange}</Typography>
                   </Box>
 
                   <Box>
                     <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                       진행상태
                     </Typography>
-                    <Chip label={productDetail?.boardPostDetail?.isExposed ? '진행중' : '미노출'} color='success' size='small' />
+                    <Chip label={detail?.boardPostDetail?.isExposed ? '진행중' : '미노출'} color='success' size='small' />
                   </Box>
 
                   <Box>
                     <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                       내용
                     </Typography>
-                    <TiptapEditor content={productDetail?.boardPostDetail?.content ?? ''} readOnly />
+                    <Box sx={{ mt: 1 }}>
+                      <EditorContent editor={editor} />
+                    </Box>
                   </Box>
 
                   <Box>
                     <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                       영상url
                     </Typography>
-                    <Typography variant='body1'>{productDetail?.videoUrl}</Typography>
+                    <Typography variant='body1'>{detail?.videoUrl}</Typography>
                   </Box>
 
                   <Box>
                     <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                       계약일
                     </Typography>
-                    <Typography variant='body1'>{productDetail ? formatYyyyMmDd(productDetail.contractDate) : '-'}</Typography>
+                    <Typography variant='body1'>{detail ? formatYyyyMmDd(detail.contractDate) : '-'}</Typography>
                   </Box>
 
                   <Box>
                     <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                       비고
                     </Typography>
-                    <Typography variant='body1'>{productDetail?.note}</Typography>
+                    <Typography variant='body1'>{detail?.note}</Typography>
                   </Box>
 
                   <Stack direction='row' spacing={4}>
@@ -230,14 +233,14 @@ export default function MpAdminSalesAgencyProductDetail() {
                         게시기간
                       </Typography>
                       <Typography variant='body1'>
-                        {productDetail ? `${formatYyyyMmDd(productDetail.startDate)} ~ ${formatYyyyMmDd(productDetail.endDate)}` : '-'}
+                        {detail ? `${formatYyyyMmDd(detail.startDate)} ~ ${formatYyyyMmDd(detail.endDate)}` : '-'}
                       </Typography>
                     </Box>
                     <Box>
                       <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                         조회수
                       </Typography>
-                      <Typography variant='body1'>{productDetail?.boardPostDetail?.viewsCount?.toLocaleString()}</Typography>
+                      <Typography variant='body1'>{detail?.boardPostDetail?.viewsCount?.toLocaleString()}</Typography>
                     </Box>
                   </Stack>
                 </Stack>
@@ -246,7 +249,7 @@ export default function MpAdminSalesAgencyProductDetail() {
               <Grid item xs={12} md={4}>
                 <Box
                   component='img'
-                  src={productDetail?.thumbnailUrl}
+                  src={detail?.thumbnailUrl}
                   alt='Product'
                   sx={{
                     width: '100%',
@@ -287,10 +290,10 @@ export default function MpAdminSalesAgencyProductDetail() {
             <Stack spacing={2}>
               <Stack direction='row' alignItems='center' spacing={2} sx={{ mb: 2 }}>
                 <Typography variant='body2' color='text.secondary'>
-                  위탁사명: {productDetail?.clientName}
+                  위탁사명: {detail?.clientName}
                 </Typography>
                 <Typography variant='body2' color='text.secondary'>
-                  상품명: {productDetail?.productName}
+                  상품명: {detail?.productName}
                 </Typography>
               </Stack>
 

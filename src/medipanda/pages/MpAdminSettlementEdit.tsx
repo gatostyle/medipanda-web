@@ -121,11 +121,7 @@ export default function MpAdminSettlementEdit() {
       {
         header: '거래처명',
         cell: ({ row }) => (
-          <Link
-            component={RouterLink}
-            to={`/admin/settlements/${settlementId}/business-partners/${row.original.institutionCode}`}
-            style={{ textDecoration: 'none', color: '#1976d2' }}
-          >
+          <Link component={RouterLink} to={`/admin/settlements/${settlementId}/business-partners/${row.original.institutionCode}`}>
             {row.original.institutionName}
           </Link>
         ),
@@ -220,6 +216,7 @@ export default function MpAdminSettlementEdit() {
             <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
             <Button
               variant='contained'
+              size='small'
               color='success'
               href={getDownloadSettlementPartnerSummaryExcel({
                 settlementId: parseInt(paramSettlementId!),

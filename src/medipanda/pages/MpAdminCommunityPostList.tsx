@@ -197,7 +197,7 @@ export default function MpAdminCommunityPostList() {
         header: '게시판유형',
         cell: ({ row }) => {
           const boardType = row.original.boardType;
-          return <Chip label={BOARD_TYPE_LABELS[boardType]} color='primary' variant='light' size='small' />;
+          return <Chip label={BOARD_TYPE_LABELS[boardType]} color='success' variant='light' size='small' />;
         },
         size: 120,
       },
@@ -224,11 +224,7 @@ export default function MpAdminCommunityPostList() {
       {
         header: '제목',
         cell: ({ row }) => (
-          <Link
-            component={RouterLink}
-            to={`/admin/community-posts/${row.original.id}`}
-            style={{ textDecoration: 'none', color: '#1976d2' }}
-          >
+          <Link component={RouterLink} to={`/admin/community-posts/${row.original.id}`}>
             {row.original.title}
           </Link>
         ),

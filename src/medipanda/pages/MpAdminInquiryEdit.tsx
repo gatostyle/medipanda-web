@@ -19,7 +19,7 @@ export default function MpAdminInquiryEdit() {
   const boardId = Number(paramBoardId);
 
   const { enqueueSnackbar } = useSnackbar();
-  const [inquiry, setInquiry] = useState<BoardDetailsResponse | null>(null);
+  const [detail, setDetail] = useState<BoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const errorDialog = useMpErrorDialog();
   const infoDialog = useMpInfoDialog();
@@ -38,7 +38,7 @@ export default function MpAdminInquiryEdit() {
       }
 
       try {
-        if (inquiry!.children.length === 0) {
+        if (detail!.children.length === 0) {
           await createBoardPost({
             request: {
               boardType: 'INQUIRY',
@@ -56,7 +56,7 @@ export default function MpAdminInquiryEdit() {
             files: values.newFiles,
           });
         } else {
-          await updateBoardPost(inquiry!.children[0].id, {
+          await updateBoardPost(detail!.children[0].id, {
             updateRequest: {
               title: '',
               content: responseEditor.getHTML(),
@@ -65,7 +65,7 @@ export default function MpAdminInquiryEdit() {
               isExposed: null,
               exposureRange: 'ALL',
               keepFileIds: [
-                ...(inquiry!.children[0].attachments.filter(a => a.type === 'ATTACHMENT') ?? []),
+                ...(detail!.children[0].attachments.filter(a => a.type === 'ATTACHMENT') ?? []),
                 ...responseEditorAttachments,
               ].map(file => file.s3fileId),
               editorFileIds: responseEditorAttachments.map(image => image.s3fileId),
@@ -92,11 +92,11 @@ export default function MpAdminInquiryEdit() {
 
   useEffect(() => {
     if (!isNew) {
-      fetchInquiryDetail(boardId);
+      fetchDetail(boardId);
     }
   }, [boardId]);
 
-  const fetchInquiryDetail = async (boardId: number) => {
+  const fetchDetail = async (boardId: number) => {
     if (Number.isNaN(boardId)) {
       alert('잘못된 접근입니다.');
       return navigate('/admin/inquiries');
@@ -104,16 +104,16 @@ export default function MpAdminInquiryEdit() {
 
     setLoading(true);
     try {
-      const data = await getBoardDetails(boardId);
+      const detail = await getBoardDetails(boardId);
+      setDetail(detail);
 
-      setInquiry(data);
-      editor.commands.setContent(data.content);
+      editor.commands.setContent(detail.content);
       editor.setEditable(false);
-      setEditorAttachments(data.attachments.filter(a => a.type === 'EDITOR'));
+      setEditorAttachments(detail.attachments.filter(a => a.type === 'EDITOR'));
 
-      if (data.children.length > 0) {
-        responseEditor.commands.setContent(data.children[0].content);
-        setResponseEditorAttachments(data.children[0].attachments.filter(a => a.type === 'EDITOR'));
+      if (detail.children.length > 0) {
+        responseEditor.commands.setContent(detail.children[0].content);
+        setResponseEditorAttachments(detail.children[0].attachments.filter(a => a.type === 'EDITOR'));
       }
     } catch (error) {
       console.error('Failed to fetch inquiry detail:', error);
@@ -135,7 +135,7 @@ export default function MpAdminInquiryEdit() {
     );
   }
 
-  if (!inquiry) {
+  if (!detail) {
     return null;
   }
 
@@ -160,7 +160,7 @@ export default function MpAdminInquiryEdit() {
                     <TextField
                       fullWidth
                       size='small'
-                      value={`${inquiry.nickname}(${inquiry.userId})`}
+                      value={`${detail.nickname}(${detail.userId})`}
                       InputProps={{ readOnly: true }}
                       sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
                     />
@@ -205,7 +205,7 @@ export default function MpAdminInquiryEdit() {
                 <TextField
                   fullWidth
                   size='small'
-                  value={inquiry.title}
+                  value={detail.title}
                   InputProps={{ readOnly: true }}
                   sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
                 />
@@ -233,7 +233,7 @@ export default function MpAdminInquiryEdit() {
                 <TextField
                   fullWidth
                   size='small'
-                  value={formatYyyyMmDdHhMm(inquiry.createdAt)}
+                  value={formatYyyyMmDdHhMm(detail.createdAt)}
                   InputProps={{ readOnly: true }}
                   sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
                 />
@@ -258,7 +258,7 @@ export default function MpAdminInquiryEdit() {
               </Box>
             </Grid>
 
-            {inquiry.children.length > 0 && (
+            {detail.children.length > 0 && (
               <Grid item xs={12}>
                 <Box>
                   <Typography variant='subtitle2' color='text.secondary' gutterBottom>
@@ -267,7 +267,7 @@ export default function MpAdminInquiryEdit() {
                   <TextField
                     fullWidth
                     size='small'
-                    value={formatYyyyMmDdHhMm(inquiry.children[0].createdAt)}
+                    value={formatYyyyMmDdHhMm(detail.children[0].createdAt)}
                     InputProps={{ readOnly: true }}
                     sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
                   />
@@ -280,7 +280,7 @@ export default function MpAdminInquiryEdit() {
                 <Button variant='outlined' size='large' onClick={handleCancel}>
                   취소
                 </Button>
-                <Button variant='contained' size='large' color='success' onClick={() => formik.handleSubmit()}>
+                <Button variant='contained' size='large' onClick={() => formik.handleSubmit()}>
                   답변하기
                 </Button>
               </Stack>

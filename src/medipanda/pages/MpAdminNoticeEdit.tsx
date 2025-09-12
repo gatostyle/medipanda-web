@@ -1,9 +1,9 @@
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
+import { Close } from '@mui/icons-material';
 import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
   Button,
-  Chip,
   CircularProgress,
   FormControl,
   FormControlLabel,
@@ -11,6 +11,7 @@ import {
   IconButton,
   InputAdornment,
   InputLabel,
+  Link,
   MenuItem,
   Radio,
   RadioGroup,
@@ -27,7 +28,7 @@ import { AttachmentResponse, BoardDetailsResponse, createBoardPost, getBoardDeta
 import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 
 export default function MpAdminNoticeEdit() {
   const navigate = useNavigate();
@@ -65,7 +66,6 @@ export default function MpAdminNoticeEdit() {
       exposureRange: 'ALL' as 'ALL' | 'CONTRACTED' | 'UNCONTRACTED',
       isTopFixed: false,
       title: '',
-      files: [] as File[],
       attachedFiles: [] as AttachmentResponse[],
       newFiles: [] as File[],
     },
@@ -100,7 +100,7 @@ export default function MpAdminNoticeEdit() {
                 fixedTop: values.isTopFixed,
               },
             },
-            files: values.files,
+            files: values.newFiles,
           });
           enqueueSnackbar('공지사항이 성공적으로 등록되었습니다.', { variant: 'success' });
           navigate('/admin/notices');
@@ -121,7 +121,7 @@ export default function MpAdminNoticeEdit() {
                 fixedTop: values.isTopFixed,
               },
             },
-            newFiles: values.files,
+            newFiles: values.newFiles,
           });
           enqueueSnackbar('공지사항이 성공적으로 수정되었습니다.', { variant: 'success' });
           navigate(`/admin/notices/${paramBoardId}`);
@@ -139,11 +139,11 @@ export default function MpAdminNoticeEdit() {
 
   useEffect(() => {
     if (!isNew) {
-      fetchData(boardId);
+      fetchDetail(boardId);
     }
   }, [isNew, boardId]);
 
-  const fetchData = async (boardId: number) => {
+  const fetchDetail = async (boardId: number) => {
     if (Number.isNaN(boardId)) {
       alert('잘못된 접근입니다.');
       return navigate('/admin/notices');
@@ -151,10 +151,14 @@ export default function MpAdminNoticeEdit() {
 
     setLoading(true);
     try {
-      const response = await getBoardDetails(boardId);
-      setDetail(response);
+      const detail = await getBoardDetails(boardId);
+      setDetail(detail);
+
+      editor.commands.setContent(detail.content);
+      setEditorAttachments(detail.attachments.filter(a => a.type === 'EDITOR'));
+
       formik.setValues({
-        displayBoard: response.boardType as
+        displayBoard: detail.boardType as
           | 'ANONYMOUS'
           | 'MR_CSO_MATCHING'
           | 'NOTICE'
@@ -164,18 +168,15 @@ export default function MpAdminNoticeEdit() {
           | 'EVENT'
           | 'SALES_AGENCY'
           | 'PRODUCT',
-        noticeCategory: response.noticeProperties?.noticeType || 'GENERAL',
-        manufacturerName: response.noticeProperties?.drugCompany ?? '',
-        isExposed: response.isExposed,
-        exposureRange: response.exposureRange || 'ALL',
-        isTopFixed: response.noticeProperties?.fixedTop || false,
-        title: response.title,
-        files: [],
-        attachedFiles: response.attachments,
+        noticeCategory: detail.noticeProperties?.noticeType || 'GENERAL',
+        manufacturerName: detail.noticeProperties?.drugCompany ?? '',
+        isExposed: detail.isExposed,
+        exposureRange: detail.exposureRange || 'ALL',
+        isTopFixed: detail.noticeProperties?.fixedTop || false,
+        title: detail.title,
+        attachedFiles: detail.attachments,
         newFiles: [],
       });
-      editor.commands.setContent(response.content);
-      setEditorAttachments(response.attachments.filter(a => a.type === 'EDITOR'));
     } catch (error) {
       console.error('Failed to fetch notice detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -208,7 +209,7 @@ export default function MpAdminNoticeEdit() {
     }
 
     if (validFiles.length > 0) {
-      formik.setFieldValue('files', [...formik.values.files, ...validFiles]);
+      formik.setFieldValue('newFiles', [...formik.values.newFiles, ...validFiles]);
     }
   };
 
@@ -351,51 +352,54 @@ export default function MpAdminNoticeEdit() {
                 <Typography variant='body2' sx={{ mb: 1 }}>
                   첨부파일
                 </Typography>
-                <Button variant='contained' color='success' component='label'>
+                <Button variant='contained' component='label'>
                   파일첨부
                   <input type='file' hidden multiple onChange={handleFileChange} accept='*' />
                 </Button>
 
-                {formik.values.attachedFiles && formik.values.attachedFiles.length > 0 && (
-                  <Box sx={{ mb: 2 }}>
-                    <Typography variant='body2' sx={{ mb: 1 }}>
-                      기존 파일:
-                    </Typography>
-                    {formik.values.attachedFiles.map((file, index) => (
-                      <Chip
-                        key={index}
-                        label={file.originalFileName}
-                        onDelete={() => {
-                          formik.setFieldValue(
-                            'attachedFiles',
-                            formik.values.attachedFiles.filter((_, i) => i !== index),
-                          );
-                        }}
-                        sx={{ mr: 1, mb: 1 }}
-                      />
+                {(formik.values.attachedFiles.length > 0 || formik.values.newFiles.length > 0) && (
+                  <Stack sx={{ mt: 2 }}>
+                    {formik.values.attachedFiles.map(file => (
+                      <Stack key={file.s3fileId} direction='row' alignItems='center'>
+                        <Link component={RouterLink} to={file.fileUrl} target='_blank'>
+                          {file.originalFileName}
+                        </Link>
+                        <IconButton
+                          size='small'
+                          onClick={() => {
+                            formik.setFieldValue(
+                              'attachedFiles',
+                              formik.values.attachedFiles.filter(a => a.s3fileId !== file.s3fileId),
+                            );
+                          }}
+                          sx={{
+                            marginLeft: '10px',
+                          }}
+                        >
+                          <Close />
+                        </IconButton>
+                      </Stack>
                     ))}
-                  </Box>
-                )}
-
-                {formik.values.files && formik.values.files.length > 0 && (
-                  <Box>
-                    <Typography variant='body2' sx={{ mb: 1 }}>
-                      새 파일:
-                    </Typography>
-                    {formik.values.files.map((file, index) => (
-                      <Chip
-                        key={index}
-                        label={file.name}
-                        onDelete={() => {
-                          formik.setFieldValue(
-                            'files',
-                            formik.values.files.filter((_, i) => i !== index),
-                          );
-                        }}
-                        sx={{ mr: 1, mb: 1 }}
-                      />
+                    {formik.values.newFiles.map((file, index) => (
+                      <Stack key={`${index}:${file.name}`} direction='row' alignItems='center'>
+                        <Link underline='none'>{file.name}</Link>
+                        <IconButton
+                          size='small'
+                          onClick={() => {
+                            formik.setFieldValue(
+                              'newFiles',
+                              formik.values.newFiles.filter((_, i) => i !== index),
+                            );
+                          }}
+                          sx={{
+                            marginLeft: '10px',
+                          }}
+                        >
+                          <Close />
+                        </IconButton>
+                      </Stack>
                     ))}
-                  </Box>
+                  </Stack>
                 )}
               </Grid>
             </Grid>
@@ -406,7 +410,6 @@ export default function MpAdminNoticeEdit() {
               </Button>
               <Button
                 variant='contained'
-                color='success'
                 type='submit'
                 sx={{ minWidth: 120 }}
                 disabled={formik.isSubmitting}

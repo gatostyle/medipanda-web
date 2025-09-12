@@ -120,11 +120,11 @@ export default function MpAdminEventEdit() {
 
   useEffect(() => {
     if (!isNew) {
-      fetchEventDetail(eventId);
+      fetchDetail(eventId);
     }
   }, [isNew, eventId]);
 
-  const fetchEventDetail = async (eventId: number) => {
+  const fetchDetail = async (eventId: number) => {
     if (Number.isNaN(eventId)) {
       alert('잘못된 접근입니다.');
       return navigate('/admin/events');
@@ -132,24 +132,27 @@ export default function MpAdminEventEdit() {
 
     setLoading(true);
     try {
-      const event = await getEventBoardDetails(eventId);
+      const detail = await getEventBoardDetails(eventId);
+
+      editor.commands.setContent(detail.boardPostDetail.content);
+      setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === 'EDITOR'));
+
       formik.setValues({
-        isExposed: event.boardPostDetail.isExposed,
-        exposureRange: event.boardPostDetail.exposureRange,
-        startDate: DateFix(event.eventStartDate),
-        endDate: DateFix(event.eventEndDate),
-        title: event.boardPostDetail.title,
-        description: event.description,
-        videoUrl: event.videoUrl ?? '',
-        note: event.note ?? '',
+        isExposed: detail.boardPostDetail.isExposed,
+        exposureRange: detail.boardPostDetail.exposureRange,
+        startDate: DateFix(detail.eventStartDate),
+        endDate: DateFix(detail.eventEndDate),
+        title: detail.boardPostDetail.title,
+        description: detail.description,
+        videoUrl: detail.videoUrl ?? '',
+        note: detail.note ?? '',
         internalName: '',
-        attachedFiles: event.boardPostDetail.attachments.filter(a => a.type === 'ATTACHMENT'),
+        attachedFiles: detail.boardPostDetail.attachments.filter(a => a.type === 'ATTACHMENT'),
         newFiles: [],
       });
-      editor.commands.setContent(event.boardPostDetail.content);
-      setEditorAttachments(event.boardPostDetail.attachments.filter(a => a.type === 'EDITOR'));
-      if (event.thumbnailUrl) {
-        setThumbnailPreview(event.thumbnailUrl);
+
+      if (detail.thumbnailUrl) {
+        setThumbnailPreview(detail.thumbnailUrl);
       }
     } catch (error) {
       console.error('Failed to fetch event detail:', error);
@@ -260,7 +263,7 @@ export default function MpAdminEventEdit() {
                   썸네일 *
                 </Typography>
                 <Stack direction='row' spacing={2} alignItems='center'>
-                  <Button variant='contained' component='label' color='success'>
+                  <Button variant='contained' component='label'>
                     첨부파일
                     <input type='file' hidden accept='image/*' onChange={handleThumbnailChange} />
                   </Button>
@@ -277,7 +280,6 @@ export default function MpAdminEventEdit() {
                         maxWidth: '300px',
                         maxHeight: '200px',
                         objectFit: 'contain',
-                        border: '1px solid #e0e0e0',
                         borderRadius: '4px',
                       }}
                     />
@@ -334,7 +336,7 @@ export default function MpAdminEventEdit() {
                   <Button variant='outlined' size='large' onClick={handleCancel}>
                     취소
                   </Button>
-                  <Button variant='contained' size='large' color='success' type='submit' disabled={formik.isSubmitting}>
+                  <Button variant='contained' size='large' type='submit' disabled={formik.isSubmitting}>
                     저장
                   </Button>
                 </Stack>

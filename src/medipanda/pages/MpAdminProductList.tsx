@@ -213,7 +213,7 @@ export default function MpAdminProductList() {
       {
         header: '제품명',
         cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/products/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link component={RouterLink} to={`/admin/products/${row.original.id}`}>
             {row.original.productName ?? '-'}
           </Link>
         ),

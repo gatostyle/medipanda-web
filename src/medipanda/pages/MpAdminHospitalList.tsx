@@ -115,7 +115,7 @@ export default function MpAdminHospitalList() {
     },
   });
 
-  const fetchContent = async () => {
+  const fetchContents = async () => {
     setLoading(true);
     try {
       const response = await getHospitals({
@@ -149,16 +149,16 @@ export default function MpAdminHospitalList() {
       endDate,
       page: null,
     });
-    fetchContent();
+    fetchContents();
   }, [searchKeyword, sido, sigungu, startDate, endDate, page]);
 
   const fetchRegionData = async () => {
     try {
-      const sidoResponse = await getAllSido();
-      setSidoList(sidoResponse);
+      const sidoContents = await getAllSido();
+      setSidoList(sidoContents);
 
-      const sigunguResponse = await Promise.all(sidoResponse.map(async sido => [sido.id, await getSigunguBySido(sido.id)]));
-      setSigunguList(Object.fromEntries(sigunguResponse));
+      const sigunguContents = await Promise.all(sidoContents.map(async sido => [sido.id, await getSigunguBySido(sido.id)]));
+      setSigunguList(Object.fromEntries(sigunguContents));
     } catch (e) {
       console.error('Failed to fetch region data:', e);
       errorDialog.showError('지역 데이터를 불러오는 중 오류가 발생했습니다.');
@@ -255,7 +255,7 @@ export default function MpAdminHospitalList() {
           await Promise.all(selectedIds.map(id => softDeleteHospital(id)));
           infoDialog.showInfo('삭제가 완료되었습니다.');
           setSelectedIds([]);
-          fetchContent();
+          fetchContents();
         } catch (error) {
           console.error('Failed to delete hospitals:', error);
           errorDialog.showError('개원병원 삭제 중 오류가 발생했습니다.');
@@ -265,7 +265,7 @@ export default function MpAdminHospitalList() {
   };
 
   const handleHospitalUploadModalSuccess = async () => {
-    await fetchContent();
+    await fetchContents();
     setHospitalUploadModalOpen(false);
   };
 

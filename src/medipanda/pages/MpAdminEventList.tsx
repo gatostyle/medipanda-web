@@ -213,7 +213,7 @@ export default function MpAdminEventList() {
       {
         header: '제목',
         cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/events/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link component={RouterLink} to={`/admin/events/${row.original.id}`}>
             {row.original.title}
           </Link>
         ),
@@ -235,7 +235,7 @@ export default function MpAdminEventList() {
         header: '노출상태',
         cell: ({ row }) => {
           const isExposed = row.original.isExposed;
-          return <Chip label={isExposed ? '노출' : '미노출'} color={isExposed ? 'primary' : 'default'} variant='light' size='small' />;
+          return <Chip label={isExposed ? '노출' : '미노출'} color={isExposed ? 'success' : 'default'} variant='light' size='small' />;
         },
         size: 100,
       },

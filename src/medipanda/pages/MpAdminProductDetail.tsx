@@ -1,3 +1,4 @@
+import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import {
   TableCell,
   Box,
@@ -15,7 +16,7 @@ import {
   Typography,
 } from '@mui/material';
 import { getProductDetails, ProductDetailsResponse } from '@/backend';
-import { TiptapEditor } from '@/medipanda/components/TiptapEditor';
+import { EditorContent } from '@tiptap/react';
 import { useSnackbar } from 'notistack';
 import { Fragment, useEffect, useState } from 'react';
 import { useParams, Link as RouterLink } from 'react-router-dom';
@@ -26,17 +27,23 @@ export default function MpAdminProductDetail() {
 
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
-  const [productDetail, setProductDetail] = useState<ProductDetailsResponse | null>(null);
+  const [detail, setDetail] = useState<ProductDetailsResponse | null>(null);
 
   useEffect(() => {
-    fetchData(productId);
+    fetchDetail(productId);
   }, [productId]);
 
-  const fetchData = async (productId: number) => {
+  const { editor, setAttachments: setEditorAttachments } = useMedipandaEditor();
+
+  const fetchDetail = async (productId: number) => {
     setLoading(true);
     try {
-      const response = await getProductDetails(productId);
-      setProductDetail(response);
+      const detail = await getProductDetails(productId);
+      setDetail(detail);
+
+      editor.setEditable(false);
+      editor.commands.setContent(detail.boardDetailsResponse.content);
+      setEditorAttachments(detail.boardDetailsResponse.attachments.filter(a => a.type === 'EDITOR'));
     } catch (error) {
       console.error('Failed to fetch product detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -53,15 +60,15 @@ export default function MpAdminProductDetail() {
     );
   }
 
-  if (!productDetail) {
+  if (!detail) {
     return null;
   }
 
   const getChangedRateDisplay = () => {
-    if (productDetail.changedFeeRate && productDetail.changedMonth) {
-      return `${productDetail.changedFeeRate}% / ${productDetail.changedMonth}`;
-    } else if (productDetail.changedFeeRate) {
-      return `${productDetail.changedFeeRate}%`;
+    if (detail.changedFeeRate && detail.changedMonth) {
+      return `${detail.changedFeeRate}% / ${detail.changedMonth}`;
+    } else if (detail.changedFeeRate) {
+      return `${detail.changedFeeRate}%`;
     }
     return '-';
   };
@@ -86,7 +93,7 @@ export default function MpAdminProductDetail() {
                 </Typography>
               </Grid>
               <Grid item xs={10}>
-                <Typography variant='body1'>{productDetail.manufacturer}</Typography>
+                <Typography variant='body1'>{detail.manufacturer}</Typography>
               </Grid>
 
               <Grid item xs={2}>
@@ -95,7 +102,7 @@ export default function MpAdminProductDetail() {
                 </Typography>
               </Grid>
               <Grid item xs={10}>
-                <Typography variant='body1'>{productDetail.productName}</Typography>
+                <Typography variant='body1'>{detail.productName}</Typography>
               </Grid>
 
               <Grid item xs={2}>
@@ -104,7 +111,7 @@ export default function MpAdminProductDetail() {
                 </Typography>
               </Grid>
               <Grid item xs={10}>
-                <Typography variant='body1'>{productDetail.composition}</Typography>
+                <Typography variant='body1'>{detail.composition}</Typography>
               </Grid>
 
               <Grid item xs={2}>
@@ -113,7 +120,7 @@ export default function MpAdminProductDetail() {
                 </Typography>
               </Grid>
               <Grid item xs={10}>
-                <Typography variant='body1'>{productDetail.productCode}</Typography>
+                <Typography variant='body1'>{detail.productCode}</Typography>
               </Grid>
 
               <Grid item xs={2}>
@@ -123,8 +130,8 @@ export default function MpAdminProductDetail() {
               </Grid>
               <Grid item xs={10}>
                 <Typography variant='body1'>
-                  {productDetail.price !== null && productDetail.price !== undefined
-                    ? `${productDetail.price.toLocaleString()}원${productDetail.productCode !== '비급여' ? ' (급여)' : ''}`
+                  {detail.price !== null && detail.price !== undefined
+                    ? `${detail.price.toLocaleString()}원${detail.productCode !== '비급여' ? ' (급여)' : ''}`
                     : '-'}
                 </Typography>
               </Grid>
@@ -136,7 +143,7 @@ export default function MpAdminProductDetail() {
               </Grid>
               <Grid item xs={10}>
                 <Typography variant='body1'>
-                  {productDetail.feeRate !== null && productDetail.feeRate !== undefined ? `${productDetail.feeRate}%` : '-'}
+                  {detail.feeRate !== null && detail.feeRate !== undefined ? `${detail.feeRate}%` : '-'}
                 </Typography>
               </Grid>
 
@@ -156,10 +163,10 @@ export default function MpAdminProductDetail() {
               </Grid>
               <Grid item xs={10}>
                 <Box>
-                  <FormControlLabel control={<Checkbox checked={productDetail.isAcquisition ?? undefined} disabled />} label='취급품목' />
-                  <FormControlLabel control={<Checkbox checked={productDetail.isPromotion ?? undefined} disabled />} label='프로모션' />
-                  <FormControlLabel control={<Checkbox checked={productDetail.isOutOfStock ?? undefined} disabled />} label='품절' />
-                  <FormControlLabel control={<Checkbox checked={productDetail.isStopSelling ?? undefined} disabled />} label='판매중단' />
+                  <FormControlLabel control={<Checkbox checked={detail.isAcquisition ?? undefined} disabled />} label='취급품목' />
+                  <FormControlLabel control={<Checkbox checked={detail.isPromotion ?? undefined} disabled />} label='프로모션' />
+                  <FormControlLabel control={<Checkbox checked={detail.isOutOfStock ?? undefined} disabled />} label='품절' />
+                  <FormControlLabel control={<Checkbox checked={detail.isStopSelling ?? undefined} disabled />} label='판매중단' />
                 </Box>
               </Grid>
 
@@ -170,7 +177,7 @@ export default function MpAdminProductDetail() {
               </Grid>
               <Grid item xs={10}>
                 <Typography variant='body1' style={{ whiteSpace: 'pre-wrap' }}>
-                  {productDetail.note}
+                  {detail.note}
                 </Typography>
               </Grid>
 
@@ -193,7 +200,7 @@ export default function MpAdminProductDetail() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {productDetail?.alternativeProducts.map(product => (
+                    {detail?.alternativeProducts.map(product => (
                       <Fragment key={product.kdCode}>
                         <TableRow>
                           <TableCell rowSpan={2}>
@@ -263,7 +270,9 @@ export default function MpAdminProductDetail() {
               상세 정보
             </Typography>
 
-            <TiptapEditor content={productDetail.boardDetailsResponse.content} readOnly={true} />
+            <Box sx={{ mt: 1 }}>
+              <EditorContent editor={editor} />
+            </Box>
           </Card>
         </Grid>
 
@@ -272,14 +281,7 @@ export default function MpAdminProductDetail() {
             <Button variant='outlined' size='large' component={RouterLink} to={'/admin/products'} sx={{ minWidth: 120 }}>
               취소
             </Button>
-            <Button
-              variant='contained'
-              color='success'
-              size='large'
-              component={RouterLink}
-              to={`/admin/products/${productId}/edit`}
-              sx={{ minWidth: 120 }}
-            >
+            <Button variant='contained' size='large' component={RouterLink} to={`/admin/products/${productId}/edit`} sx={{ minWidth: 120 }}>
               수정
             </Button>
           </Stack>

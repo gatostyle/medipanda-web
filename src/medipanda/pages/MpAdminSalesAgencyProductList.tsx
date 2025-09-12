@@ -192,11 +192,7 @@ export default function MpAdminSalesAgencyProductList() {
       {
         header: '상품명',
         cell: ({ row }) => (
-          <Link
-            component={RouterLink}
-            to={`/admin/sales-agency-products/${row.original.id}`}
-            style={{ textDecoration: 'none', color: '#1976d2' }}
-          >
+          <Link component={RouterLink} to={`/admin/sales-agency-products/${row.original.id}`}>
             {row.original.productName}
           </Link>
         ),

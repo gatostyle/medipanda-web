@@ -184,7 +184,7 @@ export default function MpAdminPartnerList() {
       {
         header: '거래처명',
         cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/partners/${row.original.id}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link component={RouterLink} to={`/admin/partners/${row.original.id}/edit`}>
             {row.original.institutionName}
           </Link>
         ),
@@ -303,7 +303,7 @@ export default function MpAdminPartnerList() {
                 <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
               <Stack direction='row' spacing={1}>
-                <Button variant='contained' color='primary' size='small' onClick={() => setPartnerUploadModalOpen(true)}>
+                <Button variant='contained' color='success' size='small' onClick={() => setPartnerUploadModalOpen(true)}>
                   파일 업로드
                 </Button>
                 <Button variant='contained' color='error' size='small' disabled={selectedIds.length === 0} onClick={handleDelete}>

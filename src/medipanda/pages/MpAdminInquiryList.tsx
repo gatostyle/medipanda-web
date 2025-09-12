@@ -155,7 +155,7 @@ export default function MpAdminInquiryList() {
       {
         header: '제목',
         cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/inquiries/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link component={RouterLink} to={`/admin/inquiries/${row.original.id}`}>
             {row.original.title}
           </Link>
         ),

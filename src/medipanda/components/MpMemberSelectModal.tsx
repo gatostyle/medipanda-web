@@ -31,11 +31,11 @@ function MpMemberSelectModalInternal({ open, onClose, onSelect }: MpMemberSelect
       pageIndex: 0,
     },
     onSubmit: () => {
-      fetchPage();
+      fetchContents();
     },
   });
 
-  const fetchPage = async () => {
+  const fetchContents = async () => {
     const response = await getUserMembers({
       name: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
       page: formik.values.pageIndex,
@@ -45,7 +45,7 @@ function MpMemberSelectModalInternal({ open, onClose, onSelect }: MpMemberSelect
 
   useEffect(() => {
     if (open) {
-      fetchPage();
+      fetchContents();
     }
   }, [open]);
 

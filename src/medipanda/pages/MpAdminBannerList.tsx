@@ -157,7 +157,7 @@ export default function MpAdminBannerList() {
       {
         header: '배너제목',
         cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/banners/${row.original.id}/edit`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link component={RouterLink} to={`/admin/banners/${row.original.id}/edit`}>
             {row.original.title}
           </Link>
         ),

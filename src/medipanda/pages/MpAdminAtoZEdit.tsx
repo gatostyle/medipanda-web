@@ -1,3 +1,4 @@
+import { Close } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -6,8 +7,11 @@ import {
   FormControlLabel,
   FormLabel,
   Grid,
+  IconButton,
+  Link,
   Radio,
   RadioGroup,
+  Stack,
   TextField,
   Typography,
 } from '@mui/material';
@@ -94,23 +98,24 @@ export default function MpAdminAtoZEdit() {
 
   useEffect(() => {
     if (!isNew) {
-      fetchData(boardId);
+      fetchDetail(boardId);
     }
   }, [isNew, boardId]);
 
-  const fetchData = async (itemId: number) => {
+  const fetchDetail = async (itemId: number) => {
     setLoading(true);
     try {
-      const response = await getBoardDetails(itemId);
+      const detail = await getBoardDetails(itemId);
+
+      editor.commands.setContent(detail.content);
+      setEditorAttachments(detail.attachments.filter(a => a.type === 'EDITOR'));
+
       formik.setValues({
-        title: response.title,
-        isExposed: response.isExposed,
-        attachedFiles: response.attachments.filter(a => a.type === 'ATTACHMENT'),
+        title: detail.title,
+        isExposed: detail.isExposed,
+        attachedFiles: detail.attachments.filter(a => a.type === 'ATTACHMENT'),
         newFiles: [],
       });
-      editor.commands.setContent(response.content);
-      setEditorAttachments(response.attachments.filter(a => a.type === 'EDITOR'));
-      console.log('Fetched CSO A to Z detail:', response);
     } catch (error) {
       console.error('Failed to fetch CSO A to Z detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -172,23 +177,54 @@ export default function MpAdminAtoZEdit() {
                 <Typography variant='body2' sx={{ mb: 1 }}>
                   첨부파일
                 </Typography>
-                <Button onClick={handleFileUpload} variant='contained' color='success' component='label' size='small'>
+                <Button onClick={handleFileUpload} variant='contained' component='label' size='small'>
                   파일첨부
                 </Button>
-                {formik.values.attachedFiles.map(attachedFile => {
-                  return (
-                    <Typography variant='body2' sx={{ mt: 1 }}>
-                      {attachedFile.originalFileName}
-                    </Typography>
-                  );
-                })}
-                {formik.values.newFiles.map(newFile => {
-                  return (
-                    <Typography variant='body2' sx={{ mt: 1 }}>
-                      {newFile.name}
-                    </Typography>
-                  );
-                })}
+
+                {(formik.values.attachedFiles.length > 0 || formik.values.newFiles.length > 0) && (
+                  <Stack sx={{ mt: 2 }}>
+                    {formik.values.attachedFiles.map(file => (
+                      <Stack key={file.s3fileId} direction='row' alignItems='center'>
+                        <Link component={RouterLink} to={file.fileUrl} target='_blank'>
+                          {file.originalFileName}
+                        </Link>
+                        <IconButton
+                          size='small'
+                          onClick={() => {
+                            formik.setFieldValue(
+                              'attachedFiles',
+                              formik.values.attachedFiles.filter(a => a.s3fileId !== file.s3fileId),
+                            );
+                          }}
+                          sx={{
+                            marginLeft: '10px',
+                          }}
+                        >
+                          <Close />
+                        </IconButton>
+                      </Stack>
+                    ))}
+                    {formik.values.newFiles.map((file, index) => (
+                      <Stack key={`${index}:${file.name}`} direction='row' alignItems='center'>
+                        <Link underline='none'>{file.name}</Link>
+                        <IconButton
+                          size='small'
+                          onClick={() => {
+                            formik.setFieldValue(
+                              'newFiles',
+                              formik.values.newFiles.filter((_, i) => i !== index),
+                            );
+                          }}
+                          sx={{
+                            marginLeft: '10px',
+                          }}
+                        >
+                          <Close />
+                        </IconButton>
+                      </Stack>
+                    ))}
+                  </Stack>
+                )}
               </Grid>
 
               <Grid item xs={12}>
@@ -218,7 +254,6 @@ export default function MpAdminAtoZEdit() {
               </Button>
               <Button
                 variant='contained'
-                color='success'
                 type='submit'
                 sx={{ minWidth: 120 }}
                 disabled={formik.isSubmitting}

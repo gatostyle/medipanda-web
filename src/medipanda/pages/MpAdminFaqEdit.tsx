@@ -1,12 +1,14 @@
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
+import { Close } from '@mui/icons-material';
 import {
   Box,
   Button,
-  Chip,
   CircularProgress,
   FormControl,
   FormControlLabel,
   Grid,
+  IconButton,
+  Link,
   Radio,
   RadioGroup,
   Stack,
@@ -20,7 +22,7 @@ import { AttachmentResponse, createBoardPost, getBoardDetails, updateBoardPost }
 import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminFaqEdit() {
   const navigate = useNavigate();
@@ -38,7 +40,6 @@ export default function MpAdminFaqEdit() {
     initialValues: {
       title: '',
       isExposed: true,
-      files: [] as File[],
       attachedFiles: [] as AttachmentResponse[],
       newFiles: [] as File[],
     },
@@ -64,7 +65,7 @@ export default function MpAdminFaqEdit() {
               exposureRange: 'ALL',
               noticeProperties: null,
             },
-            files: values.files && values.files.length > 0 ? values.files : undefined,
+            files: values.newFiles && values.newFiles.length > 0 ? values.newFiles : undefined,
           });
           enqueueSnackbar('FAQ가 성공적으로 등록되었습니다.', { variant: 'success' });
           navigate('/admin/faqs');
@@ -81,7 +82,7 @@ export default function MpAdminFaqEdit() {
               editorFileIds: editorAttachments.map(attachment => attachment.s3fileId),
               noticeProperties: null,
             },
-            newFiles: values.files ? values.files : undefined,
+            newFiles: values.newFiles ? values.newFiles : undefined,
           });
           enqueueSnackbar('FAQ가 성공적으로 수정되었습니다.', { variant: 'success' });
           navigate(`/admin/faqs/${boardId}`);
@@ -97,11 +98,11 @@ export default function MpAdminFaqEdit() {
 
   useEffect(() => {
     if (!isNew) {
-      fetchData(boardId);
+      fetchDetail(boardId);
     }
   }, [isNew, boardId]);
 
-  const fetchData = async (boardId: number) => {
+  const fetchDetail = async (boardId: number) => {
     if (Number.isNaN(boardId)) {
       alert('잘못된 접근입니다.');
       return navigate('/admin/faqs');
@@ -109,16 +110,17 @@ export default function MpAdminFaqEdit() {
 
     setLoading(true);
     try {
-      const response = await getBoardDetails(boardId);
+      const detail = await getBoardDetails(boardId);
+
+      editor.commands.setContent(detail.content);
+      setEditorAttachments(detail.attachments.filter(a => a.type === 'EDITOR'));
+
       formik.setValues({
-        title: response.title,
-        isExposed: response.isExposed,
-        files: [],
-        attachedFiles: response.attachments.filter(a => a.type === 'ATTACHMENT'),
+        title: detail.title,
+        isExposed: detail.isExposed,
+        attachedFiles: detail.attachments.filter(a => a.type === 'ATTACHMENT'),
         newFiles: [],
       });
-      editor.commands.setContent(response.content);
-      setEditorAttachments(response.attachments.filter(a => a.type === 'EDITOR'));
     } catch (error) {
       console.error('Failed to fetch FAQ detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -134,7 +136,7 @@ export default function MpAdminFaqEdit() {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
     if (files.length > 0) {
-      formik.setFieldValue('files', [...formik.values.files, ...files]);
+      formik.setFieldValue('newFiles', [...formik.values.newFiles, ...files]);
     }
   };
 
@@ -185,58 +187,54 @@ export default function MpAdminFaqEdit() {
                 <Typography variant='body2' color='text.secondary' gutterBottom>
                   첨부파일
                 </Typography>
-                <Button
-                  variant='contained'
-                  component='label'
-                  sx={{
-                    bgcolor: '#4caf50',
-                    '&:hover': { bgcolor: '#45a049' },
-                  }}
-                >
+                <Button variant='contained' component='label'>
                   파일첨부
                   <input type='file' hidden multiple onChange={handleFileChange} accept='*' />
                 </Button>
 
-                {formik.values.attachedFiles && formik.values.attachedFiles.length > 0 && (
-                  <Box sx={{ mt: 2 }}>
-                    <Typography variant='body2' sx={{ mb: 1 }}>
-                      기존 파일:
-                    </Typography>
-                    {formik.values.attachedFiles.map((fileId, index) => (
-                      <Chip
-                        key={index}
-                        label={`파일 ${index + 1}`}
-                        onDelete={() => {
-                          formik.setFieldValue(
-                            'attachedFiles',
-                            formik.values.attachedFiles.filter((_, i) => i !== index),
-                          );
-                        }}
-                        sx={{ mr: 1, mb: 1 }}
-                      />
+                {(formik.values.attachedFiles.length > 0 || formik.values.newFiles.length > 0) && (
+                  <Stack sx={{ mt: 2 }}>
+                    {formik.values.attachedFiles.map(file => (
+                      <Stack key={file.s3fileId} direction='row' alignItems='center'>
+                        <Link component={RouterLink} to={file.fileUrl} target='_blank'>
+                          {file.originalFileName}
+                        </Link>
+                        <IconButton
+                          size='small'
+                          onClick={() => {
+                            formik.setFieldValue(
+                              'attachedFiles',
+                              formik.values.attachedFiles.filter(a => a.s3fileId !== file.s3fileId),
+                            );
+                          }}
+                          sx={{
+                            marginLeft: '10px',
+                          }}
+                        >
+                          <Close />
+                        </IconButton>
+                      </Stack>
                     ))}
-                  </Box>
-                )}
-
-                {formik.values.files && formik.values.files.length > 0 && (
-                  <Box sx={{ mt: 2 }}>
-                    <Typography variant='body2' sx={{ mb: 1 }}>
-                      새 파일:
-                    </Typography>
-                    {formik.values.files.map((file, index) => (
-                      <Chip
-                        key={index}
-                        label={file.name}
-                        onDelete={() => {
-                          formik.setFieldValue(
-                            'files',
-                            formik.values.files.filter((_, i) => i !== index),
-                          );
-                        }}
-                        sx={{ mr: 1, mb: 1 }}
-                      />
+                    {formik.values.newFiles.map((file, index) => (
+                      <Stack key={`${index}:${file.name}`} direction='row' alignItems='center'>
+                        <Link underline='none'>{file.name}</Link>
+                        <IconButton
+                          size='small'
+                          onClick={() => {
+                            formik.setFieldValue(
+                              'newFiles',
+                              formik.values.newFiles.filter((_, i) => i !== index),
+                            );
+                          }}
+                          sx={{
+                            marginLeft: '10px',
+                          }}
+                        >
+                          <Close />
+                        </IconButton>
+                      </Stack>
                     ))}
-                  </Box>
+                  </Stack>
                 )}
               </Grid>
 
@@ -263,12 +261,6 @@ export default function MpAdminFaqEdit() {
                 onClick={handleCancel}
                 sx={{
                   minWidth: 120,
-                  color: '#666',
-                  borderColor: '#ccc',
-                  '&:hover': {
-                    borderColor: '#999',
-                    bgcolor: '#f5f5f5',
-                  },
                 }}
                 disabled={formik.isSubmitting}
               >
@@ -279,8 +271,6 @@ export default function MpAdminFaqEdit() {
                 type='submit'
                 sx={{
                   minWidth: 120,
-                  bgcolor: '#4caf50',
-                  '&:hover': { bgcolor: '#45a049' },
                 }}
                 disabled={formik.isSubmitting}
                 startIcon={formik.isSubmitting ? <CircularProgress size={20} /> : null}

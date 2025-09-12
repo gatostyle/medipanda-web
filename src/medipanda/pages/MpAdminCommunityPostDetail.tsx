@@ -1,3 +1,4 @@
+import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import {
   Box,
   Button,
@@ -16,9 +17,9 @@ import {
   Typography,
 } from '@mui/material';
 import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { EditorContent } from '@tiptap/react';
 import ScrollX from 'components/ScrollX';
-import { BoardReportResponse, CommentResponse, getBoardDetails } from '@/backend';
-import { BOARD_TYPE_LABELS } from '@/medipanda/ui-labels';
+import { BoardDetailsResponse, BoardReportResponse, CommentResponse, getBoardDetails } from '@/backend';
 import { formatYyyyMmDd, formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
@@ -34,14 +35,11 @@ export default function MpAdminCommunityPostDetail() {
   const [tabValue, setTabValue] = useState(0);
   const [loading, setLoading] = useState(true);
   const { enqueueSnackbar } = useSnackbar();
+  const [detail, setDetail] = useState<BoardDetailsResponse | null>(null);
 
-  // const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments, ...props } = useMedipandaEditor();
-  //
-  // useEffect(() => {
-  //   editor.setEditable(false);
-  // }, [editor]);
+  const { editor, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
-  const fetchData = async (boardId: number) => {
+  const fetchDetail = async (boardId: number) => {
     if (Number.isNaN(boardId)) {
       alert('잘못된 접근입니다.');
       return navigate('/admin/community-posts');
@@ -49,25 +47,15 @@ export default function MpAdminCommunityPostDetail() {
 
     try {
       setLoading(true);
-      const boardDetail = await getBoardDetails(boardId);
+      const detail = await getBoardDetails(boardId);
+      setDetail(detail);
 
-      setPostDetail({
-        boardType: BOARD_TYPE_LABELS[boardDetail.boardType],
-        name: boardDetail.name,
-        userId: boardDetail.userId,
-        nickname: boardDetail.nickname,
-        title: boardDetail.title,
-        likesCount: boardDetail.likesCount,
-        commentsCount: boardDetail.commentCount,
-        viewsCount: boardDetail.viewsCount,
-        isBlind: boardDetail.isBlind,
-        registrationDate: boardDetail.createdAt,
-      });
+      editor.setEditable(false);
+      editor.commands.setContent(detail.content);
+      setEditorAttachments(detail.attachments.filter(a => a.type === 'EDITOR'));
 
-      // editor.commands.setContent(boardDetail.content);
-
-      setComments(withSequence(boardDetail.comments));
-      setReports(withSequence(boardDetail.reports));
+      setComments(withSequence(detail.comments));
+      setReports(withSequence(detail.reports));
     } catch (error) {
       console.error('Failed to fetch post data:', error);
       enqueueSnackbar('포스트 정보를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -89,21 +77,8 @@ export default function MpAdminCommunityPostDetail() {
   }, [searchParams]);
 
   useEffect(() => {
-    fetchData(boardId);
+    fetchDetail(boardId);
   }, [boardId]);
-
-  const [postDetail, setPostDetail] = useState({
-    boardType: '',
-    name: '',
-    userId: '',
-    nickname: '',
-    title: '',
-    likesCount: 0,
-    commentsCount: 0,
-    viewsCount: 0,
-    isBlind: false,
-    registrationDate: '',
-  });
 
   const [comments, setComments] = useState<Sequenced<CommentResponse>[]>([]);
   const [reports, setReports] = useState<Sequenced<BoardReportResponse>[]>([]);
@@ -204,7 +179,7 @@ export default function MpAdminCommunityPostDetail() {
     navigate('/admin/community-posts');
   };
 
-  if (loading) {
+  if (loading || !detail) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
         <CircularProgress />
@@ -233,21 +208,21 @@ export default function MpAdminCommunityPostDetail() {
                   <Typography variant='body2' color='text.secondary'>
                     게시판유형
                   </Typography>
-                  <Typography variant='body1'>{postDetail.boardType}</Typography>
+                  <Typography variant='body1'>{detail.boardType}</Typography>
                 </Box>
                 <Box>
                   <Typography variant='body2' color='text.secondary'>
                     회원명
                   </Typography>
                   <Typography variant='body1'>
-                    {postDetail.name}({postDetail.userId})
+                    {detail.name}({detail.userId})
                   </Typography>
                 </Box>
                 <Box>
                   <Typography variant='body2' color='text.secondary'>
                     닉네임
                   </Typography>
-                  <Typography variant='body1'>{postDetail.nickname}</Typography>
+                  <Typography variant='body1'>{detail.nickname}</Typography>
                 </Box>
               </Stack>
 
@@ -255,14 +230,16 @@ export default function MpAdminCommunityPostDetail() {
                 <Typography variant='body2' color='text.secondary'>
                   제목
                 </Typography>
-                <Typography variant='body1'>{postDetail.title}</Typography>
+                <Typography variant='body1'>{detail.title}</Typography>
               </Box>
 
               <Box>
                 <Typography variant='body2' color='text.secondary'>
                   내용
                 </Typography>
-                <Box sx={{ mt: 1 }}>{/*<TiptapEditor {...props} editor={editor} />*/}</Box>
+                <Box sx={{ mt: 1 }}>
+                  <EditorContent editor={editor} />
+                </Box>
               </Box>
 
               <Stack direction='row' spacing={4}>
@@ -270,31 +247,31 @@ export default function MpAdminCommunityPostDetail() {
                   <Typography variant='body2' color='text.secondary'>
                     좋아요 수
                   </Typography>
-                  <Typography variant='body1'>{postDetail.likesCount}</Typography>
+                  <Typography variant='body1'>{detail.likesCount}</Typography>
                 </Box>
                 <Box>
                   <Typography variant='body2' color='text.secondary'>
                     댓글 수
                   </Typography>
-                  <Typography variant='body1'>{postDetail.commentsCount}</Typography>
+                  <Typography variant='body1'>{detail.commentCount}</Typography>
                 </Box>
                 <Box>
                   <Typography variant='body2' color='text.secondary'>
                     조회 수
                   </Typography>
-                  <Typography variant='body1'>{postDetail.viewsCount}</Typography>
+                  <Typography variant='body1'>{detail.viewsCount}</Typography>
                 </Box>
                 <Box>
                   <Typography variant='body2' color='text.secondary'>
                     블라인드 여부
                   </Typography>
-                  <Typography variant='body1'>{postDetail.isBlind ? 'Y' : 'N'}</Typography>
+                  <Typography variant='body1'>{detail.isBlind ? 'Y' : 'N'}</Typography>
                 </Box>
                 <Box>
                   <Typography variant='body2' color='text.secondary'>
                     등록일
                   </Typography>
-                  <Typography variant='body1'>{formatYyyyMmDd(postDetail.registrationDate)}</Typography>
+                  <Typography variant='body1'>{formatYyyyMmDd(detail.createdAt)}</Typography>
                 </Box>
               </Stack>
 

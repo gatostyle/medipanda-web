@@ -393,7 +393,7 @@ export default function MpAdminSalesAgencyProductEdit() {
                 <Typography variant='subtitle2' gutterBottom>
                   썸네일 <span style={{ color: 'red' }}>*</span>
                 </Typography>
-                <Button variant='contained' color='success' onClick={handleFileUpload}>
+                <Button variant='contained' onClick={handleFileUpload}>
                   첨부파일
                 </Button>
                 {formik.values.thumbnailUrl && (
@@ -460,7 +460,7 @@ export default function MpAdminSalesAgencyProductEdit() {
               <Button variant='outlined' size='large' component={RouterLink} to={'/admin/sales-agency-products'} sx={{ minWidth: 120 }}>
                 취소
               </Button>
-              <Button variant='contained' color='success' size='large' sx={{ minWidth: 120 }} onClick={formik.submitForm}>
+              <Button variant='contained' size='large' sx={{ minWidth: 120 }} onClick={formik.submitForm}>
                 저장
               </Button>
             </Stack>

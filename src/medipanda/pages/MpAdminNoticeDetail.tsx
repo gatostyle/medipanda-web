@@ -31,16 +31,16 @@ export default function MpAdminNoticeDetail() {
   const boardId = Number(paramBoardId);
 
   const { enqueueSnackbar } = useSnackbar();
-  const [data, setData] = useState<BoardDetailsResponse | null>(null);
+  const [detail, setDetail] = useState<BoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
   const { editor, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
   useEffect(() => {
-    fetchData(boardId);
+    fetchDetail(boardId);
   }, [boardId]);
 
-  const fetchData = async (boardId: number) => {
+  const fetchDetail = async (boardId: number) => {
     if (Number.isNaN(boardId)) {
       alert('잘못된 접근입니다.');
       return navigate('/admin/notices');
@@ -48,11 +48,12 @@ export default function MpAdminNoticeDetail() {
 
     setLoading(true);
     try {
-      const response = await getBoardDetails(boardId);
-      setData(response);
-      editor.commands.setContent(response.content);
+      const detail = await getBoardDetails(boardId);
+      setDetail(detail);
+
+      editor.commands.setContent(detail.content);
       editor.setEditable(false);
-      setEditorAttachments(response.attachments.filter(a => a.type === 'EDITOR'));
+      setEditorAttachments(detail.attachments.filter(a => a.type === 'EDITOR'));
     } catch (error) {
       console.error('Failed to fetch notice detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -69,7 +70,7 @@ export default function MpAdminNoticeDetail() {
     );
   }
 
-  if (!data) {
+  if (!detail) {
     return null;
   }
 
@@ -97,8 +98,8 @@ export default function MpAdminNoticeDetail() {
                     공지분류 <span style={{ color: 'red' }}>*</span>
                   </TableCell>
                   <TableCell colSpan={5}>
-                    {data.noticeProperties?.noticeType
-                      ? NOTICE_TYPE_LABELS[data.noticeProperties.noticeType] || data.noticeProperties.noticeType
+                    {detail.noticeProperties?.noticeType
+                      ? NOTICE_TYPE_LABELS[detail.noticeProperties.noticeType] || detail.noticeProperties.noticeType
                       : '일반'}
                   </TableCell>
                 </TableRow>
@@ -106,20 +107,20 @@ export default function MpAdminNoticeDetail() {
                   <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     제약사명
                   </TableCell>
-                  <TableCell colSpan={5}>{data.noticeProperties?.drugCompany}</TableCell>
+                  <TableCell colSpan={5}>{detail.noticeProperties?.drugCompany}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     노출상태 <span style={{ color: 'red' }}>*</span>
                   </TableCell>
-                  <TableCell colSpan={5}>{data.isExposed ? '노출' : '미노출'}</TableCell>
+                  <TableCell colSpan={5}>{detail.isExposed ? '노출' : '미노출'}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     노출범위 <span style={{ color: 'red' }}>*</span>
                   </TableCell>
                   <TableCell colSpan={5}>
-                    {data.exposureRange ? EXPOSURE_RANGE_LABELS[data.exposureRange] || data.exposureRange : '전체'}
+                    {detail.exposureRange ? EXPOSURE_RANGE_LABELS[detail.exposureRange] || detail.exposureRange : '전체'}
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -128,8 +129,8 @@ export default function MpAdminNoticeDetail() {
                   </TableCell>
                   <TableCell colSpan={5}>
                     <FormControlLabel
-                      control={<Switch checked={data.noticeProperties?.fixedTop || false} disabled />}
-                      label={data.noticeProperties?.fixedTop ? 'ON' : 'OFF'}
+                      control={<Switch checked={detail.noticeProperties?.fixedTop || false} disabled />}
+                      label={detail.noticeProperties?.fixedTop ? 'ON' : 'OFF'}
                     />
                   </TableCell>
                 </TableRow>
@@ -137,7 +138,7 @@ export default function MpAdminNoticeDetail() {
                   <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     제목 <span style={{ color: 'red' }}>*</span>
                   </TableCell>
-                  <TableCell colSpan={5}>{data.title}</TableCell>
+                  <TableCell colSpan={5}>{detail.title}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
@@ -160,9 +161,9 @@ export default function MpAdminNoticeDetail() {
                     첨부파일
                   </TableCell>
                   <TableCell colSpan={5}>
-                    {data.attachments && data.attachments.length > 0 ? (
+                    {detail.attachments && detail.attachments.length > 0 ? (
                       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                        {data.attachments.map((file, index) => {
+                        {detail.attachments.map((file, index) => {
                           return (
                             <Link
                               key={index}
@@ -192,12 +193,12 @@ export default function MpAdminNoticeDetail() {
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <Typography variant='body2' color='text.secondary'>
-                  조회수: {data.viewsCount.toLocaleString()}
+                  조회수: {detail.viewsCount.toLocaleString()}
                 </Typography>
               </Grid>
               <Grid item xs={6} textAlign='right'>
                 <Typography variant='body2' color='text.secondary'>
-                  작성일: {formatYyyyMmDd(data.createdAt)}
+                  작성일: {formatYyyyMmDd(detail.createdAt)}
                 </Typography>
               </Grid>
             </Grid>
@@ -207,7 +208,7 @@ export default function MpAdminNoticeDetail() {
             <Button variant='outlined' component={RouterLink} to='/admin/notices' sx={{ minWidth: 120 }}>
               취소
             </Button>
-            <Button variant='contained' color='success' component={RouterLink} to={`/admin/notices/${boardId}/edit`} sx={{ minWidth: 120 }}>
+            <Button variant='contained' component={RouterLink} to={`/admin/notices/${boardId}/edit`} sx={{ minWidth: 120 }}>
               수정
             </Button>
           </Box>

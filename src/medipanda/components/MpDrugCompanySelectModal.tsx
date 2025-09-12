@@ -23,14 +23,14 @@ export interface MpDrugCompanySelectModalProps {
 function MpDrugCompanySelectModalInternal({ open, onClose, onSelect }: MpDrugCompanySelectModalProps) {
   const [contents, setContents] = useState<DrugCompanyResponse[]>([]);
 
-  const fetchPage = async () => {
+  const fetchContents = async () => {
     const response = await getAllDrugCompanies();
     setContents(response);
   };
 
   useEffect(() => {
     if (open) {
-      fetchPage();
+      fetchContents();
     }
   }, [open]);
 

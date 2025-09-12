@@ -37,11 +37,11 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
 
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(true);
-  const [settlementDetail, setSettlementDetail] = useState<SettlementResponse | null>(null);
-  const [settlementPartnerDetail, setSettlementPartnerDetail] = useState<SettlementPartnerResponse | null>(null);
-  const [products, setProducts] = useState<SettlementPartnerProductResponse[]>([]);
+  const [detail, setDetail] = useState<SettlementResponse | null>(null);
+  const [partnerDetail, setPartnerDetail] = useState<SettlementPartnerResponse | null>(null);
+  const [partnerProducts, setPartnerProducts] = useState<SettlementPartnerProductResponse[]>([]);
 
-  const fetchData = async (settlementId: number, settlementPartnerId: number) => {
+  const fetchDetail = async (settlementId: number, settlementPartnerId: number) => {
     if (Number.isNaN(settlementId)) {
       alert('잘못된 접근입니다.');
       return navigate('/admin/settlements');
@@ -54,7 +54,7 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
 
     try {
       setLoading(true);
-      const [settlementResponse, partnerResponse, products] = await Promise.all([
+      const [detail, partnerDetail, partnerProducts] = await Promise.all([
         getSettlement(settlementId),
         getSettlementPartnerSummary({
           settlementId: settlementId,
@@ -63,9 +63,9 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
         getSettlementPartnerProducts(settlementPartnerId),
       ]);
 
-      setSettlementDetail(settlementResponse);
-      setSettlementPartnerDetail(partnerResponse.content[0]);
-      setProducts(products);
+      setDetail(detail);
+      setPartnerDetail(partnerDetail.content[0]);
+      setPartnerProducts(partnerProducts);
     } catch (error) {
       console.error('Failed to load data:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -75,11 +75,11 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
   };
 
   useEffect(() => {
-    fetchData(settlementId, settlementPartnerId);
+    fetchDetail(settlementId, settlementPartnerId);
   }, [settlementId, settlementPartnerId]);
 
   const table = useReactTable({
-    data: products,
+    data: partnerProducts,
     columns: [
       {
         header: 'No',
@@ -152,11 +152,11 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
     );
   }
 
-  if (!settlementDetail) {
+  if (!detail) {
     return null;
   }
 
-  if (!settlementPartnerDetail) {
+  if (!partnerDetail) {
     return null;
   }
 
@@ -172,42 +172,24 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
       <MainCard sx={{ mb: 3 }}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
-            <TextField label='딜러명' value={settlementPartnerDetail.dealerName} fullWidth size='small' InputProps={{ readOnly: true }} />
+            <TextField label='딜러명' value={partnerDetail.dealerName} fullWidth size='small' InputProps={{ readOnly: true }} />
           </Grid>
           <Grid item xs={12} md={4}>
-            <TextField
-              label='거래처코드'
-              value={settlementPartnerDetail.institutionCode}
-              fullWidth
-              size='small'
-              InputProps={{ readOnly: true }}
-            />
+            <TextField label='거래처코드' value={partnerDetail.institutionCode} fullWidth size='small' InputProps={{ readOnly: true }} />
           </Grid>
           <Grid item xs={12} md={4}>
-            <TextField
-              label='거래처명'
-              value={settlementPartnerDetail.institutionName}
-              fullWidth
-              size='small'
-              InputProps={{ readOnly: true }}
-            />
+            <TextField label='거래처명' value={partnerDetail.institutionName} fullWidth size='small' InputProps={{ readOnly: true }} />
           </Grid>
           <Grid item xs={12} md={4}>
-            <TextField
-              label='사업자등록번호'
-              value={settlementPartnerDetail.businessNumber}
-              fullWidth
-              size='small'
-              InputProps={{ readOnly: true }}
-            />
+            <TextField label='사업자등록번호' value={partnerDetail.businessNumber} fullWidth size='small' InputProps={{ readOnly: true }} />
           </Grid>
           <Grid item xs={12} md={4}>
-            <TextField label='정산월' value={settlementDetail.settlementMonth} fullWidth size='small' InputProps={{ readOnly: true }} />
+            <TextField label='정산월' value={detail.settlementMonth} fullWidth size='small' InputProps={{ readOnly: true }} />
           </Grid>
           <Grid item xs={12} md={4}>
             <TextField
               label='처방금액'
-              value={settlementDetail.prescriptionAmount.toLocaleString()}
+              value={detail.prescriptionAmount.toLocaleString()}
               fullWidth
               size='small'
               InputProps={{ readOnly: true }}

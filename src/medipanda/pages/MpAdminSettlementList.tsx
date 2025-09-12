@@ -196,7 +196,7 @@ export default function MpAdminSettlementList() {
       {
         header: '딜러명',
         cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/settlements/${row.original.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link component={RouterLink} to={`/admin/settlements/${row.original.id}`}>
             {row.original.dealerName}
           </Link>
         ),
