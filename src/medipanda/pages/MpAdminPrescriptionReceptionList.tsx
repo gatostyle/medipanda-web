@@ -349,7 +349,7 @@ export default function MpAdminPrescriptionReceptionList() {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: useCallback((acceptedFiles: File[]) => {
       if (acceptedFiles.length > 0) {
-        if (!acceptedFiles[0].name.endsWith('.zip')) {
+        if (!acceptedFiles[0].name.toLowerCase().endsWith('.zip')) {
           alert('.zip 파일만 업로드할 수 있습니다.');
           return;
         }
