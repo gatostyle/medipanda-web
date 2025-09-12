@@ -28,13 +28,13 @@ interface ChangeHistory {
   afterQuantity: number;
 }
 
-interface ChangeHistoryDialogProps {
+export interface MpChangeHistoryModalProps {
   open: boolean;
   onClose: () => void;
   prescriptionFormId?: number;
 }
 
-export function MpChangeHistoryDialog({ open, onClose, prescriptionFormId }: ChangeHistoryDialogProps) {
+function MpChangeHistoryModalInternal({ open, onClose, prescriptionFormId }: MpChangeHistoryModalProps) {
   const [data, setData] = useState<ChangeHistory[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -109,4 +109,12 @@ export function MpChangeHistoryDialog({ open, onClose, prescriptionFormId }: Cha
       </DialogActions>
     </Dialog>
   );
+}
+
+export function MpChangeHistoryModal(props: MpChangeHistoryModalProps) {
+  if (!props.open) {
+    return null;
+  }
+
+  return <MpChangeHistoryModalInternal {...props} />;
 }

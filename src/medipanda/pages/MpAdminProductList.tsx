@@ -1,15 +1,11 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
-import { AttachFile as AttachFileIcon, UploadFile } from '@mui/icons-material';
+import { MpProductUploadModal } from '@/medipanda/components/MpProductUploadModal';
 import { DocumentDownload } from 'iconsax-react';
 import {
   Box,
   Button,
   Checkbox,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -34,18 +30,11 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import {
-  getDownloadProductSummariesExcel,
-  getProductSummaries,
-  ProductSummaryResponse,
-  softDelete,
-  uploadProductExtraInfo,
-} from '@/backend';
+import { getDownloadProductSummariesExcel, getProductSummaries, ProductSummaryResponse, softDelete } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { useCallback, useEffect, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -84,8 +73,7 @@ export default function MpAdminProductList() {
   const [totalPages, setTotalPages] = useState(0);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
-  const [rateTableDialogOpen, setRateTableDialogOpen] = useState(false);
-  const [rateTableFile, setRateTableFile] = useState<File | null>(null);
+  const [productUploadModalOpen, setProductUploadModalOpen] = useState(false);
 
   const deleteDialog = useMpDeleteDialog();
 
@@ -273,15 +261,6 @@ export default function MpAdminProductList() {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: useCallback((acceptedFiles: File[]) => {
-      if (acceptedFiles.length > 0) {
-        setRateTableFile(acceptedFiles[0]);
-      }
-    }, []),
-    accept: { 'application/vnd.ms-excel': ['.xls', '.xlsx'] },
-  });
-
   const handleDelete = () => {
     const count = selectedIds.length;
     const message =
@@ -303,17 +282,9 @@ export default function MpAdminProductList() {
     });
   };
 
-  const handleRateTableUpload = async () => {
-    if (!rateTableFile) return;
-
-    try {
-      await uploadProductExtraInfo({ file: rateTableFile });
-      alert('요율표를 성공적으로 업로드했습니다.');
-      await fetchContents();
-    } catch (error) {
-      console.error('Failed to upload rate table:', error);
-      alert('요율표 업로드 중 오류가 발생했습니다.');
-    }
+  const handleProductUploadSuccess = async () => {
+    await fetchContents();
+    setProductUploadModalOpen(false);
   };
 
   return (
@@ -438,7 +409,7 @@ export default function MpAdminProductList() {
                 >
                   Excel
                 </Button>
-                <Button variant='contained' color='success' size='small' onClick={() => setRateTableDialogOpen(true)}>
+                <Button variant='contained' color='success' size='small' onClick={() => setProductUploadModalOpen(true)}>
                   요율표 업로드
                 </Button>
                 <Button variant='contained' color='error' size='small' disabled={selectedIds.length === 0} onClick={handleDelete}>
@@ -518,63 +489,11 @@ export default function MpAdminProductList() {
         </MainCard>
       </Grid>
 
-      <Dialog open={rateTableDialogOpen} onClose={() => setRateTableDialogOpen(false)} maxWidth='sm' fullWidth>
-        <DialogTitle sx={{ fontSize: '1.25rem', fontWeight: 600 }}>요율표 업로드</DialogTitle>
-        <DialogContent sx={{ pt: 3, pb: 3 }}>
-          <Box sx={{ textAlign: 'right', mb: 2 }}>
-            <Button
-              href={import.meta.env.VITE_APP_URL_FILE_PRODUCT_RATE_TABLE}
-              target='_blank'
-              variant='contained'
-              color='success'
-              size='small'
-              startIcon={<AttachFileIcon />}
-            >
-              양식 다운로드
-            </Button>
-          </Box>
-          <Box
-            {...getRootProps()}
-            sx={{
-              border: '2px dashed #e0e0e0',
-              borderRadius: 1,
-              p: 4,
-              textAlign: 'center',
-              cursor: 'pointer',
-              bgcolor: isDragActive ? 'action.hover' : 'transparent',
-              '&:hover': {
-                borderColor: 'primary.main',
-              },
-            }}
-          >
-            <input {...getInputProps()} />
-            <UploadFile sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
-            <Typography variant='h6' color='text.secondary'>
-              여기에 파일을 드래그하거나 클릭하여 업로드하세요.
-            </Typography>
-            {rateTableFile && (
-              <Typography variant='body2' sx={{ mt: 1 }}>
-                선택된 파일: {rateTableFile.name}
-              </Typography>
-            )}
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ justifyContent: 'center', pb: 3 }}>
-          <Button
-            variant='outlined'
-            onClick={() => {
-              setRateTableDialogOpen(false);
-              setRateTableFile(null);
-            }}
-            sx={{ minWidth: 100 }}
-          >
-            취소
-          </Button>
-          <Button variant='contained' color='success' onClick={handleRateTableUpload} disabled={!rateTableFile} sx={{ minWidth: 100 }}>
-            업데이트
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <MpProductUploadModal
+        open={productUploadModalOpen}
+        onClose={() => setProductUploadModalOpen(false)}
+        onSuccess={handleProductUploadSuccess}
+      />
     </Grid>
   );
 }

@@ -26,7 +26,7 @@ interface MpErrorDialogProps {
   onClose: () => void;
 }
 
-const MpErrorDialog = ({ open, title, message, onClose }: MpErrorDialogProps) => {
+function MpErrorDialogInternal({ open, title, message, onClose }: MpErrorDialogProps) {
   return (
     <Dialog
       open={open}
@@ -65,7 +65,15 @@ const MpErrorDialog = ({ open, title, message, onClose }: MpErrorDialogProps) =>
       </DialogActions>
     </Dialog>
   );
-};
+}
+
+function MpErrorDialog(props: MpErrorDialogProps) {
+  if (!props.open) {
+    return null;
+  }
+
+  return <MpErrorDialogInternal {...props} />;
+}
 
 type MpErrorDialogProviderProps = {
   children: ReactNode;

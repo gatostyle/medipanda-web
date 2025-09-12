@@ -24,13 +24,13 @@ import { getPartners, PartnerResponse } from '@/backend';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import React, { useCallback, useState } from 'react';
 
-interface MpPartnerSearchModalProps {
+export interface MpPartnerSelectModalProps {
   open: boolean;
   onClose: () => void;
   onSelect: (partner: PartnerResponse) => void;
 }
 
-export function MpPartnerSearchModal({ open, onClose, onSelect }: MpPartnerSearchModalProps) {
+function MpPartnerSelectModalInternal({ open, onClose, onSelect }: MpPartnerSelectModalProps) {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [partners, setPartners] = useState<PartnerResponse[]>([]);
   const [loading, setLoading] = useState(false);
@@ -180,4 +180,12 @@ export function MpPartnerSearchModal({ open, onClose, onSelect }: MpPartnerSearc
       </DialogActions>
     </Dialog>
   );
+}
+
+export function MpPartnerSelectModal(props: MpPartnerSelectModalProps) {
+  if (!props.open) {
+    return null;
+  }
+
+  return <MpPartnerSelectModalInternal {...props} />;
 }

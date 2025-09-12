@@ -24,13 +24,13 @@ import { getProductSummaries, ProductSummaryResponse } from '@/backend';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import React, { useEffect, useState } from 'react';
 
-interface MpProductSearchModalProps {
+export interface MpPartnerProductSelectModalProps {
   open: boolean;
   onClose?: () => void;
   onSelect?: (product: ProductSummaryResponse) => void;
 }
 
-export function MpPartnerProductSelectModal({ open, onClose, onSelect }: MpProductSearchModalProps) {
+function MpPartnerProductSelectModalInternal({ open, onClose, onSelect }: MpPartnerProductSelectModalProps) {
   const [products, setProducts] = useState<ProductSummaryResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const errorDialog = useMpErrorDialog();
@@ -155,4 +155,12 @@ export function MpPartnerProductSelectModal({ open, onClose, onSelect }: MpProdu
       </DialogActions>
     </Dialog>
   );
+}
+
+export function MpPartnerProductSelectModal(props: MpPartnerProductSelectModalProps) {
+  if (!props.open) {
+    return null;
+  }
+
+  return <MpPartnerProductSelectModalInternal {...props} />;
 }

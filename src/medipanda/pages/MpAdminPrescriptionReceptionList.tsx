@@ -1,19 +1,12 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
-import { MpMemberSearchDialog } from '@/medipanda/components/MpMemberSearchDialog';
-import { UploadFile } from '@mui/icons-material';
+import { MpEdiUploadModal } from '@/medipanda/components/MpEdiUploadModal';
 import {
   Box,
   Button,
   Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   FormControl,
   Grid,
-  IconButton,
-  InputAdornment,
   InputLabel,
   MenuItem,
   Pagination,
@@ -33,25 +26,14 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import {
-  confirmPrescription,
-  DateString,
-  DateTimeString,
-  MemberResponse,
-  PrescriptionResponse,
-  searchPrescriptions,
-  uploadEdiZip,
-} from '@/backend';
-import MpDatePicker from '@/medipanda/components/MpDatePicker';
+import { confirmPrescription, DateTimeString, PrescriptionResponse, searchPrescriptions } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { formatYyyyMm, formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { SearchNormal1 } from 'iconsax-react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -88,8 +70,7 @@ export default function MpAdminPrescriptionReceptionList() {
   const infoDialog = useMpInfoDialog();
   const errorDialog = useMpErrorDialog();
 
-  const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
-  const [memberSearchDialogOpen, setMemberSearchDialogOpen] = useState(false);
+  const [ediUploadModalOpen, setEdiUploadModalOpen] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -260,104 +241,10 @@ export default function MpAdminPrescriptionReceptionList() {
     }
   };
 
-  const handleEdiRegister = async () => {
-    ediFormik.resetForm();
-    setRegisterDialogOpen(true);
+  const handleEdiUploadSuccess = async () => {
+    setEdiUploadModalOpen(false);
+    await fetchContents();
   };
-
-  const ediFormik = useFormik({
-    initialValues: {
-      prescriptionMonth: null as Date | null,
-      settlementMonth: null as Date | null,
-      partnerUser: null as MemberResponse | null,
-      file: null as File | null,
-    },
-    onSubmit: async values => {
-      if (values.prescriptionMonth === null) {
-        alert('처방월을 선택해주세요.');
-        return;
-      }
-
-      if (values.settlementMonth === null) {
-        alert('정산월을 선택해주세요.');
-        return;
-      }
-
-      if (values.partnerUser === null) {
-        alert('사용자를 선택해주세요.');
-        return;
-      }
-
-      if (values.file === null) {
-        alert('파일을 선택해주세요.');
-        return;
-      }
-
-      try {
-        const response = await uploadEdiZip({
-          prescriptionMonth: new DateString(values.prescriptionMonth).toString(),
-          settlementMonth: new DateString(values.settlementMonth).toString(),
-          partnerUserId: values.partnerUser.userId,
-          file: values.file,
-        });
-
-        if (response.errors && response.errors.length > 0) {
-          const error = response.errors[0];
-
-          switch (error.error) {
-            case 'INVALID_EXTENSION':
-              alert('첨부하신 파일중에 jpg, jpeg, png, pdf파일이 아닌 형식이 있어요. 확인해주세요.');
-              break;
-            case 'INVALID_FILENAME_FORMAT':
-              alert('첨부하신 파일중에 딜러명_거래처명_처방월 (홍길동_메디판다_202504)으로 입력하지 않은 파일명이 있어요. 확인해주세요.');
-              break;
-            case 'DEALER_NOT_FOUND':
-            case 'PARTNER_NOT_FOUND':
-            case 'DRUG_COMPANY_NOT_FOUND':
-              alert(`파일중 거래선으로 등록되지 않은 거래처이오니 운영자에 필터링 문의해주세요.`);
-              break;
-            case 'INVALID_MONTH_FORMAT':
-              alert(`EDI 등록 중 오류가 발생했습니다.\n${error.error}(${error.fileName}): ${error.message}\n`);
-              break;
-            case 'DUPLICATE_DEALER_PARTNER_DRUG_COMPANY':
-              alert(`EDI 등록 중 오류가 발생했습니다.\n${error.error}(${error.fileName}): ${error.message}\n`);
-              break;
-            case 'DRUG_COMPANY_MISMATCH':
-              alert(`EDI 등록 중 오류가 발생했습니다.\n${error.error}(${error.fileName}): ${error.message}\n`);
-              break;
-          }
-
-          return;
-        }
-
-        infoDialog.showInfo('EDI를 업로드했습니다.');
-        setRegisterDialogOpen(false);
-        await formik.submitForm();
-      } catch (error) {
-        console.error('Failed to upload rate table:', error);
-        errorDialog.showError('EDI 업로드 중 오류가 발생했습니다.');
-      }
-    },
-  });
-
-  const handleMemberSelect = (member: MemberResponse) => {
-    ediFormik.setFieldValue('partnerUser', member);
-
-    setMemberSearchDialogOpen(false);
-  };
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: useCallback((acceptedFiles: File[]) => {
-      if (acceptedFiles.length > 0) {
-        if (!acceptedFiles[0].name.toLowerCase().endsWith('.zip')) {
-          alert('.zip 파일만 업로드할 수 있습니다.');
-          return;
-        }
-
-        ediFormik.setFieldValue('file', acceptedFiles[0]);
-      }
-    }, []),
-  });
 
   return (
     <>
@@ -432,7 +319,7 @@ export default function MpAdminPrescriptionReceptionList() {
                   <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
                 </Stack>
                 <Stack direction='row' spacing={1}>
-                  <Button variant='contained' color='success' size='small' onClick={handleEdiRegister}>
+                  <Button variant='contained' color='success' size='small' onClick={() => setEdiUploadModalOpen(true)}>
                     EDI 등록
                   </Button>
                 </Stack>
@@ -507,107 +394,7 @@ export default function MpAdminPrescriptionReceptionList() {
         </Grid>
       </Grid>
 
-      <Dialog open={registerDialogOpen} onClose={() => setRegisterDialogOpen(false)} maxWidth='md' fullWidth>
-        <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}>EDI 등록</DialogTitle>
-        <DialogContent sx={{ pt: 3, pb: 3 }}>
-          <Stack direction='row' spacing={2} justifyContent='center' alignItems='center' sx={{ mb: 3 }}>
-            <Typography variant='body1'>처방월 선택</Typography>
-            <Box>
-              <MpDatePicker
-                value={ediFormik.values.prescriptionMonth}
-                onChange={value => ediFormik.setFieldValue('prescriptionMonth', value)}
-                placeholder='월 선택'
-                format='yyyy-MM'
-                views={['year', 'month']}
-              />
-            </Box>
-            <Typography variant='body1'>정산월 선택</Typography>
-            <Box>
-              <MpDatePicker
-                value={ediFormik.values.settlementMonth}
-                onChange={value => ediFormik.setFieldValue('settlementMonth', value)}
-                placeholder='월 선택'
-                format='yyyy-MM'
-                views={['year', 'month']}
-              />
-            </Box>
-            <Box>
-              <TextField
-                placeholder='사용자명'
-                value={ediFormik.values.partnerUser?.name ?? ''}
-                required
-                disabled
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end'>
-                      <IconButton onClick={() => setMemberSearchDialogOpen(true)} edge='end'>
-                        <SearchNormal1 size={20} />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Box>
-          </Stack>
-          <Box
-            {...getRootProps()}
-            sx={{
-              border: '2px dashed #e0e0e0',
-              borderRadius: 1,
-              p: 4,
-              textAlign: 'center',
-              cursor: 'pointer',
-              bgcolor: isDragActive ? 'action.hover' : 'transparent',
-              '&:hover': {
-                borderColor: 'primary.main',
-              },
-            }}
-          >
-            <input {...getInputProps()} />
-            <UploadFile sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
-            <Typography variant='h6' color='text.secondary'>
-              여기에 파일을 드래그하거나 클릭하여 업로드하세요.
-            </Typography>
-            {ediFormik.values.file && (
-              <Typography variant='body2' sx={{ mt: 1 }}>
-                선택된 파일: {ediFormik.values.file.name}
-              </Typography>
-            )}
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ justifyContent: 'center', pb: 3 }}>
-          <Button
-            variant='outlined'
-            onClick={() => {
-              setRegisterDialogOpen(false);
-              ediFormik.setFieldValue('file', null);
-            }}
-            sx={{ minWidth: 100 }}
-          >
-            취소
-          </Button>
-          <Button
-            variant='contained'
-            color='success'
-            onClick={ediFormik.submitForm}
-            disabled={
-              ediFormik.values.prescriptionMonth === null ||
-              ediFormik.values.settlementMonth === null ||
-              ediFormik.values.file === null ||
-              ediFormik.isSubmitting
-            }
-            sx={{ minWidth: 100 }}
-          >
-            업로드
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <MpMemberSearchDialog
-        open={memberSearchDialogOpen}
-        onClose={() => setMemberSearchDialogOpen(false)}
-        onMemberSelect={handleMemberSelect}
-      />
+      <MpEdiUploadModal open={ediUploadModalOpen} onClose={() => setEdiUploadModalOpen(false)} onSuccess={handleEdiUploadSuccess} />
     </>
   );
 }

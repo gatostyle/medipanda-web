@@ -1,12 +1,10 @@
-import { MpMemberSearchDialog } from '@/medipanda/components/MpMemberSearchDialog';
+import { MpDrugCompanySelectModal } from '@/medipanda/components/MpDrugCompanySelectModal';
+import { MpMemberSelectModal } from '@/medipanda/components/MpMemberSelectModal';
 import {
   Box,
   Button,
   Card,
   CircularProgress,
-  Dialog,
-  DialogContent,
-  DialogTitle,
   FormControl,
   Grid,
   IconButton,
@@ -26,7 +24,7 @@ import {
 import { AxiosError } from 'axios';
 import { useFormik } from 'formik';
 import { SearchNormal1 } from 'iconsax-react';
-import { createPartner, DrugCompanyResponse, getAllDrugCompanies, getPartnerDetails, MemberResponse, updatePartner } from '@/backend';
+import { createPartner, DrugCompanyResponse, getPartnerDetails, MemberResponse, updatePartner } from '@/backend';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -39,13 +37,10 @@ export default function MpAdminPartnerEdit() {
 
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
-  const [pharmaceuticalSearchOpen, setPharmaceuticalSearchOpen] = useState(false);
-  const [memberSearchDialogOpen, setMemberSearchDialogOpen] = useState(false);
-  const [drugCompanies, setDrugCompanies] = useState<DrugCompanyResponse[]>([]);
+  const [drugCompanySelectModalOpen, setDrugCompanySelectModalOpen] = useState(false);
+  const [memberSelectModalOpen, setMemberSelectModalOpen] = useState(false);
 
   useEffect(() => {
-    getAllDrugCompanies().then(setDrugCompanies);
-
     if (!isNew) {
       fetchPartnerData(partnerId);
     }
@@ -162,19 +157,19 @@ export default function MpAdminPartnerEdit() {
   });
 
   const handlePharmaceuticalSearch = () => {
-    setPharmaceuticalSearchOpen(true);
+    setDrugCompanySelectModalOpen(true);
   };
 
-  const handlePharmaceuticalSelect = (drugCompany: DrugCompanyResponse) => {
+  const handleDrugCompanySelect = (drugCompany: DrugCompanyResponse) => {
     formik.setFieldValue('drugCompany', drugCompany);
-    setPharmaceuticalSearchOpen(false);
+    setDrugCompanySelectModalOpen(false);
   };
 
   const handleMemberSelect = (member: MemberResponse) => {
     formik.setFieldValue('member', member);
     formik.setFieldValue('companyName', member.companyName);
 
-    setMemberSearchDialogOpen(false);
+    setMemberSelectModalOpen(false);
   };
 
   const handleCancel = () => {
@@ -228,7 +223,7 @@ export default function MpAdminPartnerEdit() {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position='end'>
-                      <IconButton onClick={() => setMemberSearchDialogOpen(true)} edge='end'>
+                      <IconButton onClick={() => setMemberSelectModalOpen(true)} edge='end'>
                         <SearchNormal1 size={20} />
                       </IconButton>
                     </InputAdornment>
@@ -397,47 +392,13 @@ export default function MpAdminPartnerEdit() {
         </Card>
       </form>
 
-      <Dialog open={pharmaceuticalSearchOpen} onClose={() => setPharmaceuticalSearchOpen(false)} maxWidth='sm' fullWidth>
-        <DialogTitle>제약사 조회</DialogTitle>
-        <DialogContent>
-          <Stack spacing={2}>
-            <TableContainer>
-              <Table size='small'>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>제약사명</TableCell>
-                    <TableCell align='center' width={100}>
-                      선택
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {drugCompanies.map(drugCompany => (
-                    <TableRow key={drugCompany.id}>
-                      <TableCell>{drugCompany.name}</TableCell>
-                      <TableCell align='center'>
-                        <Button variant='contained' size='small' onClick={() => handlePharmaceuticalSelect(drugCompany)}>
-                          선택
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-
-            <Stack direction='row' justifyContent='center'>
-              <Button onClick={() => setPharmaceuticalSearchOpen(false)}>취소</Button>
-            </Stack>
-          </Stack>
-        </DialogContent>
-      </Dialog>
-
-      <MpMemberSearchDialog
-        open={memberSearchDialogOpen}
-        onClose={() => setMemberSearchDialogOpen(false)}
-        onMemberSelect={handleMemberSelect}
+      <MpDrugCompanySelectModal
+        open={drugCompanySelectModalOpen}
+        onClose={() => setDrugCompanySelectModalOpen(false)}
+        onSelect={handleDrugCompanySelect}
       />
+
+      <MpMemberSelectModal open={memberSelectModalOpen} onClose={() => setMemberSelectModalOpen(false)} onSelect={handleMemberSelect} />
     </Box>
   );
 }

@@ -10,7 +10,7 @@ interface Point {
   y: number;
 }
 
-interface OcrRequestModalProps {
+export interface MpOcrRequestModalProps {
   drugCompanyCode: string;
   open: boolean;
   onClose: () => void;
@@ -18,7 +18,7 @@ interface OcrRequestModalProps {
   imageUrls: string[];
 }
 
-export function MpOcrRequestModal({ drugCompanyCode, open, onClose, onSubmit, imageUrls }: OcrRequestModalProps) {
+function MpOcrRequestModalInternal({ drugCompanyCode, open, onClose, onSubmit, imageUrls }: MpOcrRequestModalProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const transformedCanvasRef = useRef<HTMLCanvasElement>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -633,4 +633,12 @@ export function MpOcrRequestModal({ drugCompanyCode, open, onClose, onSubmit, im
       </DialogActions>
     </Dialog>
   );
+}
+
+export function MpOcrRequestModal(props: MpOcrRequestModalProps) {
+  if (!props.open) {
+    return null;
+  }
+
+  return <MpOcrRequestModalInternal {...props} />;
 }

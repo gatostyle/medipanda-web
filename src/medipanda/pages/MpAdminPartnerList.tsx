@@ -1,19 +1,12 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
-import { MpMemberSearchDialog } from '@/medipanda/components/MpMemberSearchDialog';
-import { AttachFile as AttachFileIcon, UploadFile } from '@mui/icons-material';
+import { MpPartnerUploadModal } from '@/medipanda/components/MpPartnerUploadModal';
 import {
   Box,
   Button,
   Checkbox,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   FormControl,
   Grid,
-  IconButton,
-  InputAdornment,
   InputLabel,
   Link,
   MenuItem,
@@ -34,15 +27,13 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { deletePartner, getPartners, MemberResponse, PartnerResponse, uploadPartnersExcel } from '@/backend';
+import { deletePartner, getPartners, PartnerResponse } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { SearchNormal1 } from 'iconsax-react';
-import { useCallback, useEffect, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -66,9 +57,7 @@ export default function MpAdminPartnerList() {
   const [totalPages, setTotalPages] = useState(0);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
-  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
-  const [uploadMember, setUploadMember] = useState<MemberResponse | null>(null);
-  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [partnerUploadModalOpen, setPartnerUploadModalOpen] = useState(false);
 
   const infoDialog = useMpInfoDialog();
   const errorDialog = useMpErrorDialog();
@@ -221,15 +210,6 @@ export default function MpAdminPartnerList() {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: useCallback((acceptedFiles: File[]) => {
-      if (acceptedFiles.length > 0) {
-        setUploadFile(acceptedFiles[0]);
-      }
-    }, []),
-    accept: { 'application/vnd.ms-excel': ['.xls', '.xlsx'] },
-  });
-
   const handleDelete = () => {
     if (selectedIds.length === 0) {
       infoDialog.showInfo('삭제할 거래선을 선택해주세요.');
@@ -255,34 +235,8 @@ export default function MpAdminPartnerList() {
     });
   };
 
-  const handleFileUpload = async () => {
-    if (uploadMember === null) {
-      alert('사용자명을 선택해주세요.');
-      return;
-    }
-
-    if (uploadFile === null) {
-      infoDialog.showInfo('업로드할 파일을 선택해주세요.');
-      return;
-    }
-
-    try {
-      await uploadPartnersExcel(uploadMember.userId, { file: uploadFile });
-      infoDialog.showInfo('파일 업로드가 완료되었습니다.');
-      setUploadDialogOpen(false);
-      setUploadFile(null);
-      fetchContents();
-    } catch (error) {
-      console.error('Failed to upload file:', error);
-      errorDialog.showError('파일 업로드 중 오류가 발생했습니다.');
-    }
-  };
-
-  const [memberSearchDialogOpen, setMemberSearchDialogOpen] = useState(false);
-
-  const handleMemberSelect = (member: MemberResponse) => {
-    setUploadMember(member);
-    setMemberSearchDialogOpen(false);
+  const handlePartnerUploadSuccess = () => {
+    fetchContents();
   };
 
   return (
@@ -349,7 +303,7 @@ export default function MpAdminPartnerList() {
                 <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
               <Stack direction='row' spacing={1}>
-                <Button variant='contained' color='primary' size='small' onClick={() => setUploadDialogOpen(true)}>
+                <Button variant='contained' color='primary' size='small' onClick={() => setPartnerUploadModalOpen(true)}>
                   파일 업로드
                 </Button>
                 <Button variant='contained' color='error' size='small' disabled={selectedIds.length === 0} onClick={handleDelete}>
@@ -429,89 +383,10 @@ export default function MpAdminPartnerList() {
         </MainCard>
       </Grid>
 
-      <Dialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)} maxWidth='sm' fullWidth>
-        <DialogTitle sx={{ fontSize: '1.25rem', fontWeight: 600 }}>거래선 업로드</DialogTitle>
-        <DialogContent sx={{ pt: 3, pb: 3 }}>
-          <Stack direction='row' alignItems='center' sx={{ mb: 3 }}>
-            <Box>
-              <TextField
-                placeholder='사용자명'
-                value={uploadMember?.name ?? ''}
-                required
-                disabled
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end'>
-                      <IconButton onClick={() => setMemberSearchDialogOpen(true)} edge='end'>
-                        <SearchNormal1 size={20} />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Box>
-
-            <Button
-              href={import.meta.env.VITE_APP_URL_FILE_BUSINESS_PARTNER}
-              target='_blank'
-              variant='contained'
-              color='success'
-              size='small'
-              startIcon={<AttachFileIcon />}
-              sx={{
-                marginLeft: 'auto',
-              }}
-            >
-              양식 다운로드
-            </Button>
-          </Stack>
-          <Box
-            {...getRootProps()}
-            sx={{
-              border: '2px dashed #e0e0e0',
-              borderRadius: 1,
-              p: 4,
-              textAlign: 'center',
-              cursor: 'pointer',
-              bgcolor: isDragActive ? 'action.hover' : 'transparent',
-              '&:hover': {
-                borderColor: 'primary.main',
-              },
-            }}
-          >
-            <input {...getInputProps()} />
-            <UploadFile sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
-            <Typography variant='h6' color='text.secondary'>
-              여기에 파일을 드래그하거나 클릭하여 업로드하세요.
-            </Typography>
-            {uploadFile && (
-              <Typography variant='body2' sx={{ mt: 1 }}>
-                선택된 파일: {uploadFile.name}
-              </Typography>
-            )}
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ justifyContent: 'center', pb: 3 }}>
-          <Button
-            variant='outlined'
-            onClick={() => {
-              setUploadDialogOpen(false);
-              setUploadFile(null);
-            }}
-            sx={{ minWidth: 100 }}
-          >
-            취소
-          </Button>
-          <Button variant='contained' color='success' onClick={handleFileUpload} disabled={!uploadFile} sx={{ minWidth: 100 }}>
-            업데이트
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <MpMemberSearchDialog
-        open={memberSearchDialogOpen}
-        onClose={() => setMemberSearchDialogOpen(false)}
-        onMemberSelect={handleMemberSelect}
+      <MpPartnerUploadModal
+        open={partnerUploadModalOpen}
+        onClose={() => setPartnerUploadModalOpen(false)}
+        onSuccess={handlePartnerUploadSuccess}
       />
     </Grid>
   );

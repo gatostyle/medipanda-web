@@ -26,7 +26,7 @@ interface MpInfoDialogProps {
   onClose: () => void;
 }
 
-const MpInfoDialog = ({ open, title, message, onClose }: MpInfoDialogProps) => {
+const MpInfoDialogInternal = ({ open, title, message, onClose }: MpInfoDialogProps) => {
   return (
     <Dialog
       open={open}
@@ -66,6 +66,14 @@ const MpInfoDialog = ({ open, title, message, onClose }: MpInfoDialogProps) => {
     </Dialog>
   );
 };
+
+function MpInfoDialog(props: MpInfoDialogProps) {
+  if (!props.open) {
+    return null;
+  }
+
+  return <MpInfoDialogInternal {...props} />;
+}
 
 type MpInfoDialogProviderProps = {
   children: ReactNode;

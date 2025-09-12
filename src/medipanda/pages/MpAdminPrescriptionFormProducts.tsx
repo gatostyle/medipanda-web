@@ -32,10 +32,10 @@ import {
   PrescriptionProductItem,
   ProductSummaryResponse,
 } from '@/backend';
-import { MpChangeHistoryDialog } from '@/medipanda/components/MpChangeHistoryDialog';
+import { MpChangeHistoryModal } from '@/medipanda/components/MpChangeHistoryModal';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { MpOcrRequestModal } from '@/medipanda/components/MpOcrRequestModal';
-import { MpPartnerSearchModal } from '@/medipanda/components/MpPartnerSearchModal';
+import { MpPartnerSelectModal } from '@/medipanda/components/MpPartnerSelectModal';
 import { Sequenced } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useCallback, useEffect, useState } from 'react';
@@ -50,10 +50,10 @@ export default function MpAdminPrescriptionFormProducts() {
   const prescriptionPartnerId = Number(paramPrescriptionPartnerId);
 
   const { enqueueSnackbar } = useSnackbar();
-  const [changeHistoryOpen, setChangeHistoryOpen] = useState(false);
+  const [changeHistoryModalOpen, setChangeHistoryModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [ocrModalOpen, setOcrModalOpen] = useState(false);
-  const [partnerSearchModalOpen, setPartnerSearchModalOpen] = useState(false);
+  const [ocrRequestModalOpen, setOcrRequestModalOpen] = useState(false);
+  const [partnerSelectModalOpen, setPartnerSelectModalOpen] = useState(false);
   const [partnerProductSelectModalOpen, setPartnerProductSelectModalOpen] = useState(false);
   const [currentProductItemIndex, setCurrentProductItemIndex] = useState<number>(0);
 
@@ -248,7 +248,7 @@ export default function MpAdminPrescriptionFormProducts() {
   };
 
   const handlePartnerSearch = () => {
-    setPartnerSearchModalOpen(true);
+    setPartnerSelectModalOpen(true);
   };
 
   const handlePartnerSelect = (partner: PartnerResponse) => {
@@ -275,11 +275,11 @@ export default function MpAdminPrescriptionFormProducts() {
   };
 
   const handleEdiFileView = async () => {
-    setOcrModalOpen(true);
+    setOcrRequestModalOpen(true);
   };
 
   const handleChangeHistory = () => {
-    setChangeHistoryOpen(true);
+    setChangeHistoryModalOpen(true);
   };
 
   const handleOcrSubmit = (response: OcrResponse[]) => {
@@ -566,19 +566,19 @@ export default function MpAdminPrescriptionFormProducts() {
         </Card>
       </form>
 
-      <MpChangeHistoryDialog
-        open={changeHistoryOpen}
-        onClose={() => setChangeHistoryOpen(false)}
+      <MpChangeHistoryModal
+        open={changeHistoryModalOpen}
+        onClose={() => setChangeHistoryModalOpen(false)}
         prescriptionFormId={paramPrescriptionPartnerId ? prescriptionPartnerId : undefined}
       />
       <MpOcrRequestModal
         drugCompanyCode={formik.values.drugCompanyCode}
-        open={ocrModalOpen}
-        onClose={() => setOcrModalOpen(false)}
+        open={ocrRequestModalOpen}
+        onClose={() => setOcrRequestModalOpen(false)}
         onSubmit={handleOcrSubmit}
         imageUrls={attachedFiles.map(it => it.fileUrl)}
       />
-      <MpPartnerSearchModal open={partnerSearchModalOpen} onClose={() => setPartnerSearchModalOpen(false)} onSelect={handlePartnerSelect} />
+      <MpPartnerSelectModal open={partnerSelectModalOpen} onClose={() => setPartnerSelectModalOpen(false)} onSelect={handlePartnerSelect} />
       <MpPartnerProductSelectModal
         open={partnerProductSelectModalOpen}
         onClose={() => setPartnerProductSelectModalOpen(false)}

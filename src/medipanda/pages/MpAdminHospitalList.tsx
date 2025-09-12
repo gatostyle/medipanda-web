@@ -1,14 +1,10 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
+import { MpHospitalUploadModal } from '@/medipanda/components/MpHospitalUploadModal';
 import {
   Box,
   Button,
   Checkbox,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   FormControl,
   Grid,
   InputLabel,
@@ -38,7 +34,6 @@ import {
   HospitalResponse,
   RegionCategoryResponse,
   softDeleteHospital,
-  uploadHospitalExcel,
 } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
@@ -87,8 +82,7 @@ export default function MpAdminHospitalList() {
   const [sidoList, setSidoList] = useState<RegionCategoryResponse[]>([]);
   const [sigunguList, setSigunguList] = useState<Record<number, RegionCategoryResponse[]>>({});
 
-  const [excelUploadDialogOpen, setExcelUploadDialogOpen] = useState(false);
-  const [excelFile, setExcelFile] = useState<File | null>(null);
+  const [hospitalUploadModalOpen, setHospitalUploadModalOpen] = useState(false);
 
   const infoDialog = useMpInfoDialog();
   const errorDialog = useMpErrorDialog();
@@ -245,24 +239,6 @@ export default function MpAdminHospitalList() {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  const handleExcelUpload = async () => {
-    if (!excelFile) {
-      infoDialog.showInfo('업로드할 파일을 선택해주세요.');
-      return;
-    }
-
-    try {
-      await uploadHospitalExcel({ file: excelFile });
-      infoDialog.showInfo('엑셀 업로드가 완료되었습니다.');
-      setExcelUploadDialogOpen(false);
-      setExcelFile(null);
-      fetchContent();
-    } catch (error) {
-      console.error('Failed to upload excel:', error);
-      errorDialog.showError('엑셀 업로드 중 오류가 발생했습니다.');
-    }
-  };
-
   const handleDeleteSelected = () => {
     if (selectedIds.length === 0) {
       infoDialog.showInfo('삭제할 항목을 선택해주세요.');
@@ -286,6 +262,11 @@ export default function MpAdminHospitalList() {
         }
       },
     });
+  };
+
+  const handleHospitalUploadModalSuccess = async () => {
+    await fetchContent();
+    setHospitalUploadModalOpen(false);
   };
 
   return (
@@ -370,7 +351,7 @@ export default function MpAdminHospitalList() {
                 <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
               </Stack>
               <Stack direction='row' spacing={1}>
-                <Button variant='contained' color='success' size='small' onClick={() => setExcelUploadDialogOpen(true)}>
+                <Button variant='contained' color='success' size='small' onClick={() => setHospitalUploadModalOpen(true)}>
                   엑셀 업로드
                 </Button>
                 <Button variant='contained' color='error' size='small' onClick={handleDeleteSelected} disabled={selectedIds.length === 0}>
@@ -447,59 +428,11 @@ export default function MpAdminHospitalList() {
         </MainCard>
       </Grid>
 
-      <Dialog open={excelUploadDialogOpen} onClose={() => setExcelUploadDialogOpen(false)} maxWidth='sm' fullWidth>
-        <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}>개원병원정보 업로드</DialogTitle>
-        <Box sx={{ position: 'absolute', top: 16, right: 16 }}>
-          <Button
-            href={import.meta.env.VITE_APP_URL_FILE_HOSPITAL}
-            target='_blank'
-            variant='contained'
-            color='success'
-            size='small'
-            startIcon={<AttachFileIcon />}
-            sx={{ position: 'relative' }}
-          >
-            양식 다운로드
-          </Button>
-        </Box>
-        <DialogContent sx={{ textAlign: 'center', py: 4 }}>
-          <Button variant='contained' color='success' component='label' startIcon={<AttachFileIcon />} sx={{ px: 4, py: 2 }}>
-            파일
-            <input
-              type='file'
-              hidden
-              accept='.xlsx,.xls'
-              onChange={e => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  setExcelFile(file);
-                }
-              }}
-            />
-          </Button>
-          {excelFile && (
-            <Typography variant='body2' sx={{ mt: 2 }}>
-              선택된 파일: {excelFile.name}
-            </Typography>
-          )}
-        </DialogContent>
-        <DialogActions sx={{ justifyContent: 'center', pb: 3 }}>
-          <Button
-            variant='contained'
-            color='inherit'
-            onClick={() => {
-              setExcelUploadDialogOpen(false);
-              setExcelFile(null);
-            }}
-            sx={{ px: 4 }}
-          >
-            취소
-          </Button>
-          <Button variant='contained' color='success' onClick={handleExcelUpload} disabled={!excelFile} sx={{ px: 4 }}>
-            업데이트
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <MpHospitalUploadModal
+        open={hospitalUploadModalOpen}
+        onClose={() => setHospitalUploadModalOpen(false)}
+        onSuccess={handleHospitalUploadModalSuccess}
+      />
     </Grid>
   );
 }
