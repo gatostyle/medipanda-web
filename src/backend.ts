@@ -150,11 +150,11 @@ export interface BlindPostResponse {
   id: number;
   memberName: string;
   content: string;
+  userId: string;
+  likesCount: number;
   reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
-  userId: string;
   nickname: string;
-  likesCount: number;
   postType: 'BOARD' | 'COMMENT';
   blindAt: string;
 }
@@ -193,10 +193,10 @@ export interface BoardDetailsResponse {
 export interface BoardMemberStatsResponse {
   name: string;
   id: number;
-  commentCount: number;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
-  userId: string;
   phoneNumber: string;
+  userId: string;
+  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  commentCount: number;
   totalLikes: number;
   blindPostCount: number;
   postCount: number;
@@ -237,6 +237,7 @@ export interface BoardPostResponse {
     | ('PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING')
     | null;
   hasChildren: boolean;
+  viewedByMe: boolean;
 }
 
 export interface BoardPostUpdateRequest {
@@ -285,10 +286,10 @@ export interface CommentMemberResponse {
   content: string;
   commentType: 'COMMENT' | 'REPLY';
   createdAt: string;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   userId: string;
-  nickname: string;
   likesCount: number;
+  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  nickname: string;
   isBlind: boolean;
 }
 
@@ -386,6 +387,8 @@ export interface ExpenseReportResponse {
   reportId: number;
   userId: string | null;
   companyName: string | null;
+  productId: number | null;
+  productCode: string | null;
   productName: string | null;
   institutionType: string;
   reportType: 'SAMPLE_PROVIDE' | 'PRODUCT_BRIEFING_MULTI' | 'PRODUCT_BRIEFING_SINGLE';
@@ -518,6 +521,7 @@ export interface MemberSignupRequest {
   password: string;
   name: string;
   birthDate: string;
+  gender: 'MALE' | 'FEMALE';
   phoneNumber: string;
   email: string;
   nickname: string | null;
@@ -3895,6 +3899,17 @@ export async function logout(): Promise<void> {
   await axios.request({
     method: 'GET',
     url: '/v1/auth/logout',
+  });
+}
+
+/**
+ * 영업대행 상품 신청자 삭제
+ * DELETE /v1/sales-agency-products/{applicantId}/applicant
+ */
+export async function deleteSalesAgencyProductApplicant(applicantId: number): Promise<void> {
+  await axios.request({
+    method: 'DELETE',
+    url: `/v1/sales-agency-products/${applicantId}/applicant`,
   });
 }
 

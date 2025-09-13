@@ -1,4 +1,5 @@
 import {
+  deleteSalesAgencyProductApplicant,
   getDownloadProductApplicantsExcel,
   getProductApplicants,
   SalesAgencyProductApplicantResponse,
@@ -8,6 +9,7 @@ import ScrollX from '@/components/ScrollX';
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
+import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
@@ -52,6 +54,7 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   const errorDialog = useMpErrorDialog();
+  const deleteDialog = useMpDeleteDialog();
 
   const formik = useFormik({
     initialValues: {
@@ -180,6 +183,28 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
     getPaginationRowModel: getPaginationRowModel(),
   });
 
+  const handleDelete = () => {
+    const count = selectedIds.length;
+    const message =
+      count === 1
+        ? `신청자 ${contents.find(item => item.id === selectedIds[0])?.memberName}를 삭제하시겠습니까?`
+        : `${count}건이 선택되었습니다. 삭제하시겠습니까?`;
+
+    deleteDialog.open({
+      message,
+      onConfirm: async () => {
+        try {
+          await Promise.all(selectedIds.map(id => deleteSalesAgencyProductApplicant(id)));
+          setSelectedIds([]);
+          fetchContents();
+        } catch (error) {
+          console.error('Failed to delete applicants:', error);
+          errorDialog.showError('신청자 삭제 중 오류가 발생했습니다.');
+        }
+      },
+    });
+  };
+
   return (
     <Box sx={{ p: 3 }}>
       <Stack spacing={2}>
@@ -216,20 +241,27 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
         </Box>
 
         <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
-          <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
-          <Button
-            variant='contained'
-            color='success'
-            size='small'
-            href={getDownloadProductApplicantsExcel(detail.productId, {
-              userId: searchKeyword,
-              size: 2 ** 31 - 1,
-            })}
-            target='_blank'
-            startIcon={<DocumentDownload size={16} />}
-          >
-            Excel
-          </Button>
+          <Stack direction='row' spacing={2}>
+            <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
+          </Stack>
+          <Stack direction='row' spacing={1}>
+            <Button
+              variant='contained'
+              color='success'
+              size='small'
+              href={getDownloadProductApplicantsExcel(detail.productId, {
+                userId: searchKeyword,
+                size: 2 ** 31 - 1,
+              })}
+              target='_blank'
+              startIcon={<DocumentDownload size={16} />}
+            >
+              Excel
+            </Button>
+            <Button variant='contained' color='error' size='small' disabled={selectedIds.length === 0} onClick={handleDelete}>
+              삭제
+            </Button>
+          </Stack>
         </Stack>
 
         <ScrollX>
