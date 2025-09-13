@@ -69,7 +69,6 @@ export default function MpAdminSalesAgencyProductEdit() {
       note: '',
       startDate: null as Date | null,
       endDate: null as Date | null,
-      viewCount: 0,
       attachedFiles: [] as AttachmentResponse[],
       newFiles: [] as File[],
     },
@@ -201,7 +200,6 @@ export default function MpAdminSalesAgencyProductEdit() {
         note: detail.note ?? '',
         startDate: DateFix(detail.startDate),
         endDate: DateFix(detail.endDate),
-        viewCount: detail.boardPostDetail.viewsCount,
         attachedFiles: detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT),
         newFiles: [],
       });
@@ -271,7 +269,6 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
       note: '',
       startDate: null as Date | null,
       endDate: null as Date | null,
-      viewCount: 0,
       attachedFiles: [] as AttachmentResponse[],
       newFiles: [] as File[],
     },
@@ -390,7 +387,6 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
         note: detail.note ?? '',
         startDate: DateFix(detail.startDate),
         endDate: DateFix(detail.endDate),
-        viewCount: detail.boardPostDetail.viewsCount,
         attachedFiles: detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT),
         newFiles: [],
       });
@@ -552,7 +548,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
           <Typography variant='subtitle2' gutterBottom>
             조회수
           </Typography>
-          <Typography variant='body1'>{formik.values.viewCount.toLocaleString()}</Typography>
+          <Typography variant='body1'>{detail.boardPostDetail.viewsCount.toLocaleString()}</Typography>
         </Grid>
       </Grid>
 

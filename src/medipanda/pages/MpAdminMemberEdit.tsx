@@ -34,6 +34,7 @@ import {
   PartnerContractStatus,
   PartnerContractType,
   PartnerContractTypeLabel,
+  rejectContract,
   updateContract,
   updateMember,
 } from '@/backend';
@@ -66,7 +67,7 @@ export default function MpAdminMemberEdit() {
       accountStatus: AccountStatus.ACTIVATED,
       contractType: PartnerContractType.INDIVIDUAL,
       bankName: '',
-      commissionRate: 0,
+      accountNumber: '',
       note: '',
       marketingAgreementsSms: false,
       marketingAgreementsEmail: false,
@@ -115,7 +116,7 @@ export default function MpAdminMemberEdit() {
               companyName: null,
               businessNumber: null,
               bankName: values.bankName,
-              accountNumber: null,
+              accountNumber: values.accountNumber,
             },
             business_registration: undefined,
             subcontract_agreement: undefined,
@@ -151,14 +152,12 @@ export default function MpAdminMemberEdit() {
       const detail = await getMemberDetails(userId);
       setDetail(detail);
       const values: (typeof formik)['values'] = {
+        ...formik.values,
         password: '',
         confirmPassword: '',
         phoneNumber: detail.phoneNumber,
         email: detail.email,
         accountStatus: detail.accountStatus as AccountStatus,
-        contractType: detail.partnerContractStatus as PartnerContractType,
-        bankName: '',
-        commissionRate: 0,
         note: detail.note ?? '',
         marketingAgreementsSms: detail.marketingAgreements?.sms ?? false,
         marketingAgreementsEmail: detail.marketingAgreements?.email ?? false,
@@ -187,8 +186,8 @@ export default function MpAdminMemberEdit() {
         values: {
           ...values,
           contractType: contractDetail.contractType as PartnerContractType,
-          bankName: `${contractDetail.bankName ?? ''} ${contractDetail.accountNumber ?? ''}`.trim(),
-          commissionRate: 0,
+          bankName: contractDetail.bankName,
+          accountNumber: contractDetail.accountNumber,
         },
       });
     } catch (e) {
@@ -261,6 +260,17 @@ export default function MpAdminMemberEdit() {
     } catch (error) {
       console.error('Failed to approve partner contract:', error);
       errorDialog.showError('파트너사 계약 승인 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleContractReject = async () => {
+    try {
+      await rejectContract(contractDetail!.id);
+      infoDialog.showInfo('파트너사 계약이 종료되었습니다.');
+      await fetchContractDetail(formik.values);
+    } catch (error) {
+      console.error('Failed to reject partner contract:', error);
+      errorDialog.showError('파트너사 계약 종료 중 오류가 발생했습니다.');
     }
   };
 
@@ -435,12 +445,15 @@ export default function MpAdminMemberEdit() {
                     <Card sx={{ p: 3 }}>
                       <Stack direction='row' justifyContent='space-between' alignItems='center' sx={{ mb: 3 }}>
                         <Typography variant='h6'>파트너사 계약</Typography>
-                        {!isContractApproved && (
+                        {contractDetail.status !== PartnerContractStatus.APPROVED ? (
                           <Button variant='contained' size='small' onClick={handleContractApprove}>
-                            승인
+                            계약 승인
+                          </Button>
+                        ) : (
+                          <Button variant='contained' size='small' color='error' onClick={handleContractReject}>
+                            계약 종료
                           </Button>
                         )}
-                        {isContractApproved && <Chip label='승인완료' color='success' size='small' />}
                       </Stack>
 
                       <Grid container spacing={2}>
@@ -484,6 +497,17 @@ export default function MpAdminMemberEdit() {
                             label='정산은행'
                             name='bankName'
                             value={formik.values.bankName}
+                            onChange={formik.handleChange}
+                            size='small'
+                          />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                          <TextField
+                            fullWidth
+                            label='계좌번호'
+                            name='accountNumber'
+                            value={formik.values.accountNumber}
                             onChange={formik.handleChange}
                             size='small'
                           />
@@ -545,20 +569,6 @@ export default function MpAdminMemberEdit() {
                             계약일
                           </Typography>
                           <Typography variant='body1'>{formatYyyyMmDd(contractDetail.contractDate)}</Typography>
-                        </Grid>
-
-                        <Grid item xs={6}>
-                          <TextField
-                            fullWidth
-                            label='구간수수료'
-                            name='commissionRate'
-                            value={formik.values.commissionRate}
-                            onChange={formik.handleChange}
-                            size='small'
-                            InputProps={{
-                              endAdornment: <Typography>%</Typography>,
-                            }}
-                          />
                         </Grid>
                       </Grid>
                     </Card>

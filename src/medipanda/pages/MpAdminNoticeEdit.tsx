@@ -26,7 +26,6 @@ import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
 import {
   AttachmentResponse,
-  BoardDetailsResponse,
   BoardExposureRange,
   BoardExposureRangeLabel,
   BoardType,
@@ -52,7 +51,6 @@ export default function MpAdminNoticeEdit() {
   const { enqueueSnackbar } = useSnackbar();
   const { session } = useSession();
   const [loading, setLoading] = useState(false);
-  const [detail, setDetail] = useState<BoardDetailsResponse | null>(null);
 
   const formik = useFormik({
     initialValues: {
@@ -149,7 +147,6 @@ export default function MpAdminNoticeEdit() {
     setLoading(true);
     try {
       const detail = await getBoardDetails(boardId);
-      setDetail(detail);
 
       editor.commands.setContent(detail.content);
       setEditorAttachments(detail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
