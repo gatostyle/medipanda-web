@@ -54,8 +54,8 @@ export default function MpAdminProductEdit() {
       productName: '',
       composition: '',
       productCode: '',
-      price: 0,
-      feeRate: 0,
+      price: '0',
+      feeRate: '0',
       changedFeeRate: undefined as number | undefined,
       changedMonth: '',
       isAcquisition: false,
@@ -85,13 +85,18 @@ export default function MpAdminProductEdit() {
         return;
       }
 
-      if (values.price <= 0) {
+      if (Number(values.price) <= 0) {
         alert('약가는 0보다 커야 합니다.');
         return;
       }
 
-      if (values.feeRate < 0 || values.feeRate > 100) {
+      if (Number(values.feeRate) < 0 || Number(values.feeRate) > 100) {
         alert('기본수수료율은 0 이상 100 이하이어야 합니다.');
+        return;
+      }
+
+      if (Number(values.changedFeeRate) < 0 || Number(values.changedFeeRate) > 100) {
+        alert('변경요율은 0 이상 100 이하이어야 합니다.');
         return;
       }
 
@@ -116,11 +121,11 @@ export default function MpAdminProductEdit() {
               productName: values.productName,
               composition: values.composition,
               productCode: values.productCode,
-              changedFeeRate: values.changedFeeRate?.toString() ?? null,
-              changedMonth: values.changedMonth,
+              changedFeeRate: values.changedFeeRate ?? null,
+              changedMonth: Number(values.changedMonth),
               priceUnit: PriceUnit.KRW,
-              feeRate: values.feeRate.toString(),
-              price: values.price,
+              feeRate: values.feeRate,
+              price: Number(values.price),
               note: values.note,
               detailInfo: editor.getHTML(),
               isPromotion: values.isPromotion,
@@ -149,11 +154,11 @@ export default function MpAdminProductEdit() {
               productName: values.productName,
               composition: values.composition,
               productCode: values.productCode,
-              changedFeeRate: values.changedFeeRate?.toString() ?? null,
+              changedFeeRate: values.changedFeeRate ?? null,
               changedMonth: values.changedMonth,
               priceUnit: PriceUnit.KRW,
-              feeRate: values.feeRate.toString(),
-              price: values.price,
+              feeRate: values.feeRate,
+              price: Number(values.price),
               note: values.note,
               detailInfo: editor.getHTML(),
               isPromotion: values.isPromotion,
@@ -215,8 +220,8 @@ export default function MpAdminProductEdit() {
         productName: detail.productName ?? '',
         composition: detail.composition ?? '',
         productCode: detail.productCode ?? '',
-        price: detail.price ?? 0,
-        feeRate: detail.feeRate ?? 0,
+        price: (detail.price ?? 0).toLocaleString(),
+        feeRate: (detail.feeRate ?? 0).toString(),
         changedFeeRate: detail.changedFeeRate ?? undefined,
         changedMonth: Number.isNaN(changedMonth) ? '' : changedMonth.toString(),
         isAcquisition: detail.isAcquisition ?? false,
@@ -336,9 +341,18 @@ export default function MpAdminProductEdit() {
                     name='price'
                     placeholder='약가를 입력하세요'
                     required
-                    type='number'
                     value={formik.values.price}
-                    onChange={formik.handleChange}
+                    onChange={event => {
+                      const numberValue = Number(event.target.value.replace(/,/g, ''));
+
+                      if (!Number.isNaN(numberValue)) {
+                        if (numberValue > Number.MAX_SAFE_INTEGER) {
+                          formik.setFieldValue('price', Number.MAX_SAFE_INTEGER.toLocaleString());
+                        } else {
+                          formik.setFieldValue('price', numberValue.toLocaleString());
+                        }
+                      }
+                    }}
                     InputProps={{
                       endAdornment: <Typography variant='body2'>원</Typography>,
                     }}
@@ -359,7 +373,13 @@ export default function MpAdminProductEdit() {
                     required
                     type='number'
                     value={formik.values.feeRate}
-                    onChange={formik.handleChange}
+                    onChange={event => {
+                      const numberValue = Number(event.target.value.replace(/,/g, ''));
+
+                      if (!Number.isNaN(numberValue)) {
+                        formik.setFieldValue('feeRate', String(numberValue));
+                      }
+                    }}
                     InputProps={{
                       endAdornment: <Typography variant='body2'>%</Typography>,
                     }}
@@ -379,7 +399,13 @@ export default function MpAdminProductEdit() {
                       placeholder='변경요율'
                       type='number'
                       value={formik.values.changedFeeRate ?? ''}
-                      onChange={formik.handleChange}
+                      onChange={event => {
+                        const numberValue = Number(event.target.value.replace(/,/g, ''));
+
+                        if (!Number.isNaN(numberValue)) {
+                          formik.setFieldValue('changedFeeRate', String(numberValue));
+                        }
+                      }}
                       InputProps={{
                         endAdornment: <Typography variant='body2'>%</Typography>,
                       }}
