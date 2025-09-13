@@ -1,6 +1,6 @@
 import { uploadHospitalExcel } from '@/backend';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { AttachFile as AttachFileIcon, UploadFile } from '@mui/icons-material';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { useFormik } from 'formik';
@@ -14,8 +14,8 @@ export interface MpHospitalUploadModalProps {
 }
 
 function MpHospitalUploadModalInternal({ open, onClose, onSuccess }: MpHospitalUploadModalProps) {
-  const infoDialog = useMpInfoDialog();
   const errorDialog = useMpErrorDialog();
+  const { alert } = useMpModal();
 
   const formik = useFormik({
     initialValues: {
@@ -23,13 +23,13 @@ function MpHospitalUploadModalInternal({ open, onClose, onSuccess }: MpHospitalU
     },
     onSubmit: async values => {
       if (values.file === null) {
-        alert('파일을 선택해주세요.');
+        await alert('파일을 선택해주세요.');
         return;
       }
 
       try {
         await uploadHospitalExcel({ file: values.file });
-        infoDialog.showInfo('업로드가 완료되었습니다.');
+        await alert('업로드가 완료되었습니다.');
         onSuccess?.();
       } catch (error) {
         console.error('Failed to upload rate table:', error);

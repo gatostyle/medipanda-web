@@ -1,4 +1,5 @@
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import {
   Box,
@@ -33,6 +34,8 @@ export default function MpAdminNoticeDetail() {
   const [detail, setDetail] = useState<BoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const { alertError } = useMpModal();
+
   const { editor, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
   useEffect(() => {
@@ -41,7 +44,7 @@ export default function MpAdminNoticeDetail() {
 
   const fetchDetail = async (boardId: number) => {
     if (Number.isNaN(boardId)) {
-      alert('잘못된 접근입니다.');
+      await alertError('잘못된 접근입니다.');
       return navigate('/admin/notices');
     }
 

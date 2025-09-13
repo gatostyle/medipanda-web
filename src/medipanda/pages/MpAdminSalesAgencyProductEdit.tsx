@@ -2,6 +2,7 @@ import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import { MpSalesAgencyProductApplicantsTab } from '@/medipanda/components/MpSalesAgencyProductApplicantsTab';
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   Button,
@@ -32,7 +33,6 @@ import {
   updateSalesAgencyProductBoard,
 } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { SyntheticEvent, useEffect, useState } from 'react';
@@ -50,6 +50,8 @@ export default function MpAdminSalesAgencyProductEdit() {
 
   const [loading, setLoading] = useState(false);
   const [detail, setDetail] = useState<SalesAgencyProductDetailsResponse | null>(null);
+
+  const { alert, alertError } = useMpModal();
 
   const { enqueueSnackbar } = useSnackbar();
   const { session } = useSession();
@@ -74,35 +76,35 @@ export default function MpAdminSalesAgencyProductEdit() {
     },
     onSubmit: async values => {
       if (values.clientName === '') {
-        alert('위탁사명은 필수입니다');
+        await alert('위탁사명은 필수입니다');
         return;
       }
       if (values.productName === '') {
-        alert('상품명은 필수입니다');
+        await alert('상품명은 필수입니다');
         return;
       }
       if (values.exposureRange === '') {
-        alert('노출범위는 필수입니다');
+        await alert('노출범위는 필수입니다');
         return;
       }
       if (values.thumbnailUrl === '') {
-        alert('썸네일은 필수입니다');
+        await alert('썸네일은 필수입니다');
         return;
       }
       if (values.contractDate === null) {
-        alert('계약일은 필수입니다');
+        await alert('계약일은 필수입니다');
         return;
       }
       if (values.startDate === null) {
-        alert('게시 시작일은 필수입니다');
+        await alert('게시 시작일은 필수입니다');
         return;
       }
       if (values.endDate === null) {
-        alert('게시 종료일은 필수입니다');
+        await alert('게시 종료일은 필수입니다');
         return;
       }
       if (values.endDate < values.startDate) {
-        alert('종료일은 시작일 이후여야 합니다');
+        await alert('종료일은 시작일 이후여야 합니다');
         return;
       }
 
@@ -135,7 +137,7 @@ export default function MpAdminSalesAgencyProductEdit() {
             thumbnail: values.thumbnail!,
             files: [],
           });
-          alert('영업대행상품이 등록되었습니다.');
+          await alert('영업대행상품이 등록되었습니다.');
           navigate('/admin/sales-agency-products');
         } else {
           await updateSalesAgencyProductBoard(salesAgencyProductId, {
@@ -162,7 +164,7 @@ export default function MpAdminSalesAgencyProductEdit() {
             },
             thumbnail: values.thumbnail ?? undefined,
           });
-          alert('영업대행상품이 수정되었습니다.');
+          await alert('영업대행상품이 수정되었습니다.');
           navigate(`/admin/sales-agency-products/${salesAgencyProductId}`);
         }
       } catch (error) {
@@ -179,7 +181,7 @@ export default function MpAdminSalesAgencyProductEdit() {
 
   const loadProductDetail = async (salesAgencyProductId: number) => {
     if (Number.isNaN(salesAgencyProductId)) {
-      alert('잘못된 접근입니다.');
+      await alertError('잘못된 접근입니다.');
       return navigate('/admin/sales-agency-products');
     }
 
@@ -254,7 +256,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
 
   const navigate = useNavigate();
 
-  const errorDialog = useMpErrorDialog();
+  const { alert, alertError } = useMpModal();
 
   const formik = useFormik({
     initialValues: {
@@ -274,35 +276,35 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
     },
     onSubmit: async values => {
       if (values.clientName === '') {
-        alert('위탁사명은 필수입니다');
+        await alert('위탁사명은 필수입니다');
         return;
       }
       if (values.productName === '') {
-        alert('상품명은 필수입니다');
+        await alert('상품명은 필수입니다');
         return;
       }
       if (values.exposureRange === '') {
-        alert('노출범위는 필수입니다');
+        await alert('노출범위는 필수입니다');
         return;
       }
       if (values.thumbnailUrl === '') {
-        alert('썸네일은 필수입니다');
+        await alert('썸네일은 필수입니다');
         return;
       }
       if (values.contractDate === null) {
-        alert('계약일은 필수입니다');
+        await alert('계약일은 필수입니다');
         return;
       }
       if (values.startDate === null) {
-        alert('게시 시작일은 필수입니다');
+        await alert('게시 시작일은 필수입니다');
         return;
       }
       if (values.endDate === null) {
-        alert('게시 종료일은 필수입니다');
+        await alert('게시 종료일은 필수입니다');
         return;
       }
       if (values.endDate < values.startDate) {
-        alert('종료일은 시작일 이후여야 합니다');
+        await alert('종료일은 시작일 이후여야 합니다');
         return;
       }
 
@@ -335,7 +337,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
             thumbnail: values.thumbnail!,
             files: [],
           });
-          alert('영업대행상품이 등록되었습니다.');
+          await alert('영업대행상품이 등록되었습니다.');
           navigate('/admin/sales-agency-products');
         } else {
           await updateSalesAgencyProductBoard(detail!.productId, {
@@ -362,7 +364,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
             },
             thumbnail: values.thumbnail ?? undefined,
           });
-          alert('영업대행상품이 수정되었습니다.');
+          await alert('영업대행상품이 수정되었습니다.');
           navigate(`/admin/sales-agency-products/${detail!.productId}`);
         }
       } catch (error) {
@@ -405,9 +407,9 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
         const file = (e.target as HTMLInputElement).files?.[0];
         if (file) {
           const fileReader = new FileReader();
-          fileReader.onload = () => {
+          fileReader.onload = async () => {
             if (!fileReader.result) {
-              errorDialog.showError('파일을 읽는 데 실패했습니다.');
+              await alertError('파일을 읽는 데 실패했습니다.');
               return;
             }
 
@@ -421,7 +423,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
       input.click();
     } catch (error) {
       console.error('Failed to upload file:', error);
-      errorDialog.showError('파일 업로드 중 오류가 발생했습니다.');
+      await alertError('파일 업로드 중 오류가 발생했습니다.');
     }
   };
 

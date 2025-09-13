@@ -1,4 +1,5 @@
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Box, Button, CircularProgress, Grid, Link, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
@@ -14,6 +15,7 @@ export default function MpAdminCustomerCenterFaqDetail() {
   const { boardId: paramBoardId } = useParams();
   const boardId = Number(paramBoardId);
 
+  const { alertError } = useMpModal();
   const { enqueueSnackbar } = useSnackbar();
   const [detail, setDetail] = useState<BoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
@@ -26,7 +28,7 @@ export default function MpAdminCustomerCenterFaqDetail() {
 
   const fetchDetail = async (boardId: number) => {
     if (Number.isNaN(boardId)) {
-      alert('잘못된 접근입니다.');
+      await alertError('잘못된 접근입니다.');
       return navigate('/admin/faqs');
     }
 

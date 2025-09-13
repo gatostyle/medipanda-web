@@ -1,5 +1,6 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   Button,
@@ -29,7 +30,6 @@ import { BlindPostResponse, DateString, getBlindPosts, PostType, PostTypeLabel, 
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { formatYyyyMmDd, formatYyyyMmDdHhMm, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
@@ -68,7 +68,7 @@ export default function MpAdminCommunityBlindList() {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   const deleteDialog = useMpDeleteDialog();
-  const errorDialog = useMpErrorDialog();
+  const { alert, alertError } = useMpModal();
 
   const formik = useFormik({
     initialValues: {
@@ -77,7 +77,12 @@ export default function MpAdminCommunityBlindList() {
       endAt: null as Date | null,
       page: null,
     },
-    onSubmit: values => {
+    onSubmit: async values => {
+      if (values.searchType === '' && values.searchKeyword !== '') {
+        await alert('검색유형을 선택해주세요.');
+        return;
+      }
+
       const url = setUrlParams(
         {
           ...values,
@@ -96,11 +101,6 @@ export default function MpAdminCommunityBlindList() {
   });
 
   const fetchContents = async () => {
-    if (searchType === '' && searchKeyword !== '') {
-      alert('검색유형을 선택해주세요.');
-      return;
-    }
-
     setLoading(true);
     try {
       const response = await getBlindPosts({
@@ -117,7 +117,7 @@ export default function MpAdminCommunityBlindList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch blind post list:', error);
-      errorDialog.showError('블라인드 목록을 불러오는 중 오류가 발생했습니다.');
+      await alertError('블라인드 목록을 불러오는 중 오류가 발생했습니다.');
       setContents([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -245,7 +245,7 @@ export default function MpAdminCommunityBlindList() {
           setSelectedIds([]);
         } catch (error) {
           console.error('Failed to unblind posts:', error);
-          errorDialog.showError('블라인드 해제 중 오류가 발생했습니다.');
+          await alertError('블라인드 해제 중 오류가 발생했습니다.');
         }
       },
     });

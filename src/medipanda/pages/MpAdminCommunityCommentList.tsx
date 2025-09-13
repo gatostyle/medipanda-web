@@ -1,5 +1,6 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   Button,
@@ -37,7 +38,6 @@ import {
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
@@ -75,8 +75,8 @@ export default function MpAdminCommunityCommentList() {
   const [totalPages, setTotalPages] = useState(0);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
-  const errorDialog = useMpErrorDialog();
   const deleteDialog = useMpDeleteDialog();
+  const { alert, alertError } = useMpModal();
 
   const formik = useFormik({
     initialValues: {
@@ -85,7 +85,12 @@ export default function MpAdminCommunityCommentList() {
       endAt: null as Date | null,
       page: null,
     },
-    onSubmit: values => {
+    onSubmit: async values => {
+      if (values.searchType === '' && values.searchKeyword !== '') {
+        await alert('검색유형을 선택해주세요.');
+        return;
+      }
+
       const url = setUrlParams(
         {
           ...values,
@@ -104,11 +109,6 @@ export default function MpAdminCommunityCommentList() {
   });
 
   const fetchContents = async () => {
-    if (searchType === '' && searchKeyword !== '') {
-      alert('검색유형을 선택해주세요.');
-      return;
-    }
-
     setLoading(true);
     try {
       const response = await getCommentMembers({
@@ -126,7 +126,7 @@ export default function MpAdminCommunityCommentList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch comment list:', error);
-      errorDialog.showError('댓글 목록을 불러오는 중 오류가 발생했습니다.');
+      await alertError('댓글 목록을 불러오는 중 오류가 발생했습니다.');
       setContents([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -261,7 +261,7 @@ export default function MpAdminCommunityCommentList() {
           setSelectedIds([]);
         } catch (error) {
           console.error('Failed to blind comments:', error);
-          errorDialog.showError('댓글 블라인드 처리 중 오류가 발생했습니다.');
+          await alertError('댓글 블라인드 처리 중 오류가 발생했습니다.');
         }
       },
     });

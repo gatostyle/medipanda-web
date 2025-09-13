@@ -1,3 +1,4 @@
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CloseIcon from '@mui/icons-material/Close';
@@ -32,6 +33,8 @@ function MpOcrRequestModalInternal({ drugCompanyCode, open, onClose, onSubmit, i
   const currentPoints = allPoints[currentImageIndex] || [];
   const hasImages = imageUrls.length > 0;
   const currentImageUrl = hasImages ? imageUrls[currentImageIndex] : undefined;
+
+  const { alertError } = useMpModal();
 
   useEffect(() => {
     if (open) {
@@ -483,7 +486,7 @@ function MpOcrRequestModalInternal({ drugCompanyCode, open, onClose, onSubmit, i
       onClose();
     } catch (error) {
       console.error('OCR processing error:', error);
-      alert('OCR 처리 중 오류가 발생했습니다.');
+      await alertError('OCR 처리 중 오류가 발생했습니다.');
     } finally {
       setIsProcessing(false);
     }

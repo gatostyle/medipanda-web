@@ -1,7 +1,7 @@
 import { MemberResponse, uploadPartnersExcel } from '@/backend';
 import { MpMemberSelectModal } from '@/medipanda/components/MpMemberSelectModal';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { AttachFile as AttachFileIcon, UploadFile } from '@mui/icons-material';
 import {
   Box,
@@ -28,15 +28,15 @@ export interface MpPartnerUploadModalProps {
 }
 
 function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUploadModalProps) {
-  const infoDialog = useMpInfoDialog();
   const errorDialog = useMpErrorDialog();
+  const { alert } = useMpModal();
 
   const formik = useFormik({
     initialValues: {
       member: null as MemberResponse | null,
       file: null as File | null,
     },
-    onSubmit: async values => {},
+    onSubmit: () => {},
   });
 
   const [memberSelectModalOpen, setMemberSelectModalOpen] = useState(false);
@@ -57,18 +57,18 @@ function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUpl
 
   const handleFileUpload = async () => {
     if (formik.values.member === null) {
-      alert('사용자명을 선택해주세요.');
+      await alert('사용자명을 선택해주세요.');
       return;
     }
 
     if (formik.values.file === null) {
-      infoDialog.showInfo('업로드할 파일을 선택해주세요.');
+      await alert('업로드할 파일을 선택해주세요.');
       return;
     }
 
     try {
       await uploadPartnersExcel(formik.values.member.userId, { file: formik.values.file });
-      infoDialog.showInfo('업로드가 완료되었습니다.');
+      await alert('업로드가 완료되었습니다.');
       onSuccess?.();
     } catch (error) {
       console.error('Failed to upload file:', error);

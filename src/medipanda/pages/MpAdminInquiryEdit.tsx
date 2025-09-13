@@ -1,4 +1,5 @@
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { useSession } from '@/medipanda/hooks/useSession';
 import { Box, Button, CircularProgress, Grid, Stack, TextField, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
@@ -13,8 +14,6 @@ import {
   PostAttachmentType,
   updateBoardPost,
 } from '@/backend';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
@@ -29,9 +28,9 @@ export default function MpAdminInquiryEdit() {
   const { enqueueSnackbar } = useSnackbar();
   const [detail, setDetail] = useState<BoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
-  const errorDialog = useMpErrorDialog();
-  const infoDialog = useMpInfoDialog();
   const { session } = useSession();
+
+  const { alert, alertError } = useMpModal();
 
   const formik = useFormik({
     initialValues: {
@@ -41,7 +40,7 @@ export default function MpAdminInquiryEdit() {
       if (isNew) return;
 
       if (responseEditor.getHTML() === '<p></p>') {
-        infoDialog.showInfo('답변 내용을 입력해주세요.');
+        await alert('답변 내용을 입력해주세요.');
         return;
       }
 
@@ -82,11 +81,11 @@ export default function MpAdminInquiryEdit() {
             newFiles: values.newFiles,
           });
         }
-        infoDialog.showInfo('답변이 저장되었습니다.');
+        await alert('답변이 저장되었습니다.');
         navigate('/admin/inquiries');
       } catch (error) {
         console.error('Failed to save response:', error);
-        errorDialog.showError('답변 저장 중 오류가 발생했습니다.');
+        await alertError('답변 저장 중 오류가 발생했습니다.');
       }
     },
   });
@@ -106,7 +105,7 @@ export default function MpAdminInquiryEdit() {
 
   const fetchDetail = async (boardId: number) => {
     if (Number.isNaN(boardId)) {
-      alert('잘못된 접근입니다.');
+      await alertError('잘못된 접근입니다.');
       return navigate('/admin/inquiries');
     }
 

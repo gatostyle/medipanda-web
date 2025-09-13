@@ -1,6 +1,7 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import { MpHospitalUploadModal } from '@/medipanda/components/MpHospitalUploadModal';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   Button,
@@ -38,8 +39,6 @@ import {
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
@@ -84,8 +83,7 @@ export default function MpAdminHospitalList() {
 
   const [hospitalUploadModalOpen, setHospitalUploadModalOpen] = useState(false);
 
-  const infoDialog = useMpInfoDialog();
-  const errorDialog = useMpErrorDialog();
+  const { alertError } = useMpModal();
   const deleteDialog = useMpDeleteDialog();
 
   const formik = useFormik({
@@ -97,7 +95,7 @@ export default function MpAdminHospitalList() {
       endDate: null as Date | null,
       page: null,
     },
-    onSubmit: values => {
+    onSubmit: async values => {
       const url = setUrlParams(
         {
           ...values,
@@ -131,7 +129,7 @@ export default function MpAdminHospitalList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch hospital list:', error);
-      errorDialog.showError('개원병원 목록을 불러오는 중 오류가 발생했습니다.');
+      await alertError('개원병원 목록을 불러오는 중 오류가 발생했습니다.');
       setContents([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -161,7 +159,7 @@ export default function MpAdminHospitalList() {
       setSigunguList(Object.fromEntries(sigunguContents));
     } catch (e) {
       console.error('Failed to fetch region data:', e);
-      errorDialog.showError('지역 데이터를 불러오는 중 오류가 발생했습니다.');
+      await alertError('지역 데이터를 불러오는 중 오류가 발생했습니다.');
     }
   };
 
@@ -239,9 +237,9 @@ export default function MpAdminHospitalList() {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  const handleDeleteSelected = () => {
+  const handleDeleteSelected = async () => {
     if (selectedIds.length === 0) {
-      infoDialog.showInfo('삭제할 항목을 선택해주세요.');
+      await alert('삭제할 항목을 선택해주세요.');
       return;
     }
 
@@ -253,12 +251,12 @@ export default function MpAdminHospitalList() {
       onConfirm: async () => {
         try {
           await Promise.all(selectedIds.map(id => softDeleteHospital(id)));
-          infoDialog.showInfo('삭제가 완료되었습니다.');
+          await alert('삭제가 완료되었습니다.');
           setSelectedIds([]);
           fetchContents();
         } catch (error) {
           console.error('Failed to delete hospitals:', error);
-          errorDialog.showError('개원병원 삭제 중 오류가 발생했습니다.');
+          await alertError('개원병원 삭제 중 오류가 발생했습니다.');
         }
       },
     });

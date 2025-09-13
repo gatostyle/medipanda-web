@@ -1,6 +1,7 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import { MpEdiUploadModal } from '@/medipanda/components/MpEdiUploadModal';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   Button,
@@ -36,8 +37,6 @@ import {
 } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { formatYyyyMm, formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
@@ -74,8 +73,7 @@ export default function MpAdminPrescriptionReceptionList() {
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  const infoDialog = useMpInfoDialog();
-  const errorDialog = useMpErrorDialog();
+  const { alert, alertError } = useMpModal();
 
   const [ediUploadModalOpen, setEdiUploadModalOpen] = useState(false);
 
@@ -86,7 +84,17 @@ export default function MpAdminPrescriptionReceptionList() {
       endAt: null as Date | null,
       page: null,
     },
-    onSubmit: values => {
+    onSubmit: async values => {
+      if (values.searchType === '' && values.searchKeyword !== '') {
+        await alert('검색유형을 선택해주세요.');
+        return;
+      }
+
+      if (values.searchType === 'dealerId' && values.searchKeyword !== '' && Number.isNaN(Number(values.searchKeyword))) {
+        await alert('딜러번호는 숫자만 입력할 수 있습니다.');
+        return;
+      }
+
       const url = setUrlParams(
         {
           ...values,
@@ -105,16 +113,6 @@ export default function MpAdminPrescriptionReceptionList() {
   });
 
   const fetchContents = async () => {
-    if (searchType === '' && searchKeyword !== '') {
-      alert('검색유형을 선택해주세요.');
-      return;
-    }
-
-    if (searchType === 'dealerId' && searchKeyword !== '' && Number.isNaN(Number(searchKeyword))) {
-      alert('딜러번호는 숫자만 입력할 수 있습니다.');
-      return;
-    }
-
     setLoading(true);
     try {
       const response = await searchPrescriptions({
@@ -134,7 +132,7 @@ export default function MpAdminPrescriptionReceptionList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch prescription reception list:', error);
-      errorDialog.showError('처방접수 목록을 불러오는 중 오류가 발생했습니다.');
+      await alertError('처방접수 목록을 불러오는 중 오류가 발생했습니다.');
       setContents([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -230,11 +228,11 @@ export default function MpAdminPrescriptionReceptionList() {
   const handleConfirm = async (id: number) => {
     try {
       await confirmPrescription(id);
-      infoDialog.showInfo('접수 확인되었습니다.');
+      await alert('접수 확인되었습니다.');
       fetchContents();
     } catch (error) {
       console.error('Failed to confirm reception:', error);
-      errorDialog.showError('접수 확인 중 오류가 발생했습니다.');
+      await alertError('접수 확인 중 오류가 발생했습니다.');
     }
   };
 

@@ -1,3 +1,4 @@
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   Button,
@@ -25,8 +26,6 @@ import {
   updateBanner,
 } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { DateFix, formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -40,8 +39,7 @@ export default function MpAdminBannerEdit() {
   const [, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
-  const infoDialog = useMpInfoDialog();
-  const errorDialog = useMpErrorDialog();
+  const { alert, alertError } = useMpModal();
 
   const formik = useFormik({
     initialValues: {
@@ -80,7 +78,7 @@ export default function MpAdminBannerEdit() {
             },
             imageFile: imageFile ?? undefined,
           });
-          infoDialog.showInfo('배너가 수정되었습니다');
+          await alert('배너가 수정되었습니다');
         } else {
           await createBanner({
             request: {
@@ -95,12 +93,12 @@ export default function MpAdminBannerEdit() {
             },
             imageFile: imageFile!,
           });
-          infoDialog.showInfo('배너가 등록되었습니다');
+          await alert('배너가 등록되었습니다');
         }
         navigate('/admin/banners');
       } catch (error) {
         console.error('Failed to save banner:', error);
-        errorDialog.showError('배너 저장 중 오류가 발생했습니다');
+        await alertError('배너 저장 중 오류가 발생했습니다');
       }
     },
   });
@@ -113,7 +111,7 @@ export default function MpAdminBannerEdit() {
 
   const fetchDetail = async (bannerId: number) => {
     if (Number.isNaN(bannerId)) {
-      alert('잘못된 접근입니다.');
+      await alertError('잘못된 접근입니다.');
       return navigate('/admin/banners');
     }
 
@@ -145,7 +143,7 @@ export default function MpAdminBannerEdit() {
       }
     } catch (error) {
       console.error('Failed to fetch banner detail:', error);
-      errorDialog.showError('배너 정보를 불러오는데 실패했습니다');
+      await alertError('배너 정보를 불러오는데 실패했습니다');
     } finally {
       setLoading(false);
     }

@@ -1,3 +1,4 @@
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { OcrResponse } from '@/ocr';
 import {
   Box,
@@ -57,6 +58,8 @@ export default function MpAdminPrescriptionFormProducts() {
   const [partnerProductSelectModalOpen, setPartnerProductSelectModalOpen] = useState(false);
   const [currentProductItemIndex, setCurrentProductItemIndex] = useState<number>(0);
 
+  const { alert, alertError } = useMpModal();
+
   const [partnerProducts, setPartnerProducts] = useState<
     Sequenced<PrescriptionPartnerProductResponse & Pick<PrescriptionProductItem, 'ocrItem'>>[]
   >([]);
@@ -78,14 +81,14 @@ export default function MpAdminPrescriptionFormProducts() {
       settlementMonth: null as Date | null,
       prescriptionAmount: '',
     },
-    onSubmit: async values => {
+    onSubmit: async () => {
       try {
         await createPartnerProducts({
           prescriptionPartnerId: prescriptionPartnerId,
           items: partnerProducts,
         });
 
-        alert('거래처별 제품 목록이 저장되었습니다.');
+        await alert('거래처별 제품 목록이 저장되었습니다.');
 
         navigate('/admin/prescription-forms');
       } catch (e) {
@@ -324,7 +327,7 @@ export default function MpAdminPrescriptionFormProducts() {
 
   const fetchPrescriptionFormData = async (prescriptionPartnerId: number) => {
     if (Number.isNaN(prescriptionPartnerId)) {
-      alert('잘못된 접근입니다.');
+      await alertError('잘못된 접근입니다.');
       return navigate('/admin/prescription-forms');
     }
 

@@ -1,5 +1,6 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   Button,
@@ -41,7 +42,6 @@ import {
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
@@ -80,7 +80,7 @@ export default function MpAdminNoticeList() {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   const deleteDialog = useMpDeleteDialog();
-  const errorDialog = useMpErrorDialog();
+  const { alertError } = useMpModal();
 
   const [drugCompanies, setDrugCompanies] = useState<DrugCompanyResponse[]>([]);
 
@@ -91,7 +91,7 @@ export default function MpAdminNoticeList() {
       endAt: null as Date | null,
       page: null,
     },
-    onSubmit: values => {
+    onSubmit: async values => {
       const url = setUrlParams(
         {
           ...values,
@@ -133,7 +133,7 @@ export default function MpAdminNoticeList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch notice list:', error);
-      errorDialog.showError('공지사항 목록을 불러오는 중 오류가 발생했습니다.');
+      await alertError('공지사항 목록을 불러오는 중 오류가 발생했습니다.');
       setContents([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -164,7 +164,7 @@ export default function MpAdminNoticeList() {
       setDrugCompanies(contents);
     } catch (error) {
       console.error('Failed to fetch drug company list:', error);
-      errorDialog.showError('제약사 목록을 불러오는 중 오류가 발생했습니다.');
+      await alertError('제약사 목록을 불러오는 중 오류가 발생했습니다.');
     }
   };
 
@@ -272,7 +272,7 @@ export default function MpAdminNoticeList() {
           fetchContents();
         } catch (error) {
           console.error('Failed to delete items:', error);
-          errorDialog.showError('삭제 중 오류가 발생했습니다.');
+          await alertError('삭제 중 오류가 발생했습니다.');
         }
       },
     });

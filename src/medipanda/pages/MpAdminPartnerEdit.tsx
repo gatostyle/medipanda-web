@@ -1,5 +1,6 @@
 import { MpDrugCompanySelectModal } from '@/medipanda/components/MpDrugCompanySelectModal';
 import { MpMemberSelectModal } from '@/medipanda/components/MpMemberSelectModal';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   Button,
@@ -49,6 +50,8 @@ export default function MpAdminPartnerEdit() {
   const [drugCompanySelectModalOpen, setDrugCompanySelectModalOpen] = useState(false);
   const [memberSelectModalOpen, setMemberSelectModalOpen] = useState(false);
 
+  const { alert, alertError } = useMpModal();
+
   useEffect(() => {
     if (!isNew) {
       fetchDetail(partnerId);
@@ -57,7 +60,7 @@ export default function MpAdminPartnerEdit() {
 
   const fetchDetail = async (partnerId: number) => {
     if (Number.isNaN(partnerId)) {
-      alert('잘못된 접근입니다.');
+      await alertError('잘못된 접근입니다.');
       return navigate('/admin/partners');
     }
 
@@ -108,12 +111,12 @@ export default function MpAdminPartnerEdit() {
     },
     onSubmit: async values => {
       if (values.drugCompany === null) {
-        alert('제약사를 선택해주세요.');
+        await alert('제약사를 선택해주세요.');
         return;
       }
 
       if (values.member === null) {
-        alert('사용자를 선택해주세요.');
+        await alert('사용자를 선택해주세요.');
         return;
       }
 
@@ -151,16 +154,16 @@ export default function MpAdminPartnerEdit() {
           });
         }
 
-        alert('거래선 정보가 저장되었습니다.');
+        await alert('거래선 정보가 저장되었습니다.');
         navigate('/admin/partners');
       } catch (e) {
         if (e instanceof AxiosError && e.response?.status === 409) {
-          alert('해당 제약사-거래처 조합이 이미 등록되어 있습니다. 다시 확인해주세요.');
+          await alert('해당 제약사-거래처 조합이 이미 등록되어 있습니다. 다시 확인해주세요.');
           return;
         }
 
         console.error(e);
-        alert('거래선 정보 저장에 실패했습니다. 다시 시도해주세요.');
+        await alert('거래선 정보 저장에 실패했습니다. 다시 시도해주세요.');
       }
     },
   });

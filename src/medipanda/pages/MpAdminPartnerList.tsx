@@ -1,6 +1,7 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import { MpPartnerUploadModal } from '@/medipanda/components/MpPartnerUploadModal';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   Button,
@@ -30,8 +31,6 @@ import { useFormik } from 'formik';
 import { ContractStatus, ContractStatusLabel, deletePartner, getPartners, PartnerResponse } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -59,16 +58,20 @@ export default function MpAdminPartnerList() {
 
   const [partnerUploadModalOpen, setPartnerUploadModalOpen] = useState(false);
 
-  const infoDialog = useMpInfoDialog();
-  const errorDialog = useMpErrorDialog();
   const deleteDialog = useMpDeleteDialog();
+  const { alert, alertError } = useMpModal();
 
   const formik = useFormik({
     initialValues: {
       ...initialSearchParams,
       page: null,
     },
-    onSubmit: values => {
+    onSubmit: async values => {
+      if (values.searchType === '' && values.searchKeyword !== '') {
+        await alert('검색유형을 선택해주세요.');
+        return;
+      }
+
       const url = setUrlParams(
         {
           ...values,
@@ -86,10 +89,6 @@ export default function MpAdminPartnerList() {
 
   const fetchContents = async () => {
     setLoading(true);
-    if (searchType === '' && searchKeyword !== '') {
-      alert('검색유형을 선택해주세요.');
-      return;
-    }
 
     try {
       const response = await getPartners({
@@ -106,7 +105,7 @@ export default function MpAdminPartnerList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch business partner list:', error);
-      errorDialog.showError('거래선 목록을 불러오는 중 오류가 발생했습니다.');
+      await alertError('거래선 목록을 불러오는 중 오류가 발생했습니다.');
       setContents([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -210,9 +209,9 @@ export default function MpAdminPartnerList() {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (selectedIds.length === 0) {
-      infoDialog.showInfo('삭제할 거래선을 선택해주세요.');
+      await alert('삭제할 거래선을 선택해주세요.');
       return;
     }
 
@@ -224,12 +223,12 @@ export default function MpAdminPartnerList() {
       onConfirm: async () => {
         try {
           await Promise.all(selectedIds.map(id => deletePartner(id)));
-          infoDialog.showInfo('삭제가 완료되었습니다.');
+          await alert('삭제가 완료되었습니다.');
           setSelectedIds([]);
           fetchContents();
         } catch (error) {
           console.error('Failed to delete business partners:', error);
-          errorDialog.showError('거래선 삭제 중 오류가 발생했습니다.');
+          await alertError('거래선 삭제 중 오류가 발생했습니다.');
         }
       },
     });

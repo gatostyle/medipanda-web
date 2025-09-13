@@ -14,8 +14,7 @@ import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { formatYyyyMmDd, formatYyyyMmDdHhMm, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import {
@@ -81,8 +80,7 @@ export default function MpAdminCommunityPostList() {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   const deleteDialog = useMpDeleteDialog();
-  const errorDialog = useMpErrorDialog();
-  const infoDialog = useMpInfoDialog();
+  const { alert, alertError } = useMpModal();
 
   const formik = useFormik({
     initialValues: {
@@ -91,7 +89,12 @@ export default function MpAdminCommunityPostList() {
       endAt: null as Date | null,
       page: null,
     },
-    onSubmit: values => {
+    onSubmit: async values => {
+      if (values.searchType === '' && values.searchKeyword !== '') {
+        await alert('검색유형을 선택해주세요.');
+        return;
+      }
+
       const url = setUrlParams(
         {
           ...values,
@@ -110,11 +113,6 @@ export default function MpAdminCommunityPostList() {
   });
 
   const fetchContents = async () => {
-    if (searchType === '' && searchKeyword !== '') {
-      alert('검색유형을 선택해주세요.');
-      return;
-    }
-
     setLoading(true);
     try {
       const response = await getBoards({
@@ -135,7 +133,7 @@ export default function MpAdminCommunityPostList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch community post list:', error);
-      errorDialog.showError('포스트 목록을 불러오는 중 오류가 발생했습니다.');
+      await alertError('포스트 목록을 불러오는 중 오류가 발생했습니다.');
       setContents([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -258,9 +256,9 @@ export default function MpAdminCommunityPostList() {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  const handleBlind = () => {
+  const handleBlind = async () => {
     if (selectedIds.length === 0) {
-      infoDialog.showInfo('블라인드할 포스트를 선택해주세요.');
+      await alert('블라인드할 포스트를 선택해주세요.');
       return;
     }
 
@@ -277,12 +275,12 @@ export default function MpAdminCommunityPostList() {
           for (const postId of selectedIds) {
             await toggleBlindStatus_1(postId);
           }
-          infoDialog.showInfo('블라인드 처리가 완료되었습니다.');
+          await alert('블라인드 처리가 완료되었습니다.');
           setSelectedIds([]);
           fetchContents();
         } catch (error) {
           console.error('Failed to blind posts:', error);
-          errorDialog.showError('블라인드 처리 중 오류가 발생했습니다.');
+          await alertError('블라인드 처리 중 오류가 발생했습니다.');
         }
       },
     });

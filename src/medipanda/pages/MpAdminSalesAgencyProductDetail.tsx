@@ -2,6 +2,7 @@ import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import { MpSalesAgencyProductApplicantsTab } from '@/medipanda/components/MpSalesAgencyProductApplicantsTab';
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { Box, Button, Card, Chip, CircularProgress, Grid, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import { getSalesAgencyProductDetails, PostAttachmentType, SalesAgencyProductDetailsResponse } from '@/backend';
@@ -20,12 +21,13 @@ export default function MpAdminSalesAgencyProductDetail() {
 
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(true);
+  const { alertError } = useMpModal();
 
   const [detail, setDetail] = useState<SalesAgencyProductDetailsResponse | null>(null);
 
   const fetchDetail = async (salesAgencyProductId: number) => {
     if (Number.isNaN(salesAgencyProductId)) {
-      alert('잘못된 접근입니다.');
+      await alertError('잘못된 접근입니다.');
       return navigate('/admin/sales-agency-products');
     }
 

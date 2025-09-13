@@ -1,4 +1,5 @@
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { Close } from '@mui/icons-material';
 import SearchIcon from '@mui/icons-material/Search';
 import {
@@ -52,6 +53,8 @@ export default function MpAdminNoticeEdit() {
   const { session } = useSession();
   const [loading, setLoading] = useState(false);
 
+  const { alert, alertError } = useMpModal();
+
   const formik = useFormik({
     initialValues: {
       displayBoard: BoardType.NOTICE,
@@ -66,12 +69,12 @@ export default function MpAdminNoticeEdit() {
     },
     onSubmit: async (values, { setSubmitting }) => {
       if (values.title === '') {
-        alert('제목을 입력해주세요.');
+        await alert('제목을 입력해주세요.');
         return;
       }
 
       if (values.noticeCategory === NoticeType.GENERAL && values.manufacturerName === '') {
-        alert('제약사명을 선택해주세요.');
+        await alert('제약사명을 선택해주세요.');
         return;
       }
 
@@ -140,7 +143,7 @@ export default function MpAdminNoticeEdit() {
 
   const fetchDetail = async (boardId: number) => {
     if (Number.isNaN(boardId)) {
-      alert('잘못된 접근입니다.');
+      await alertError('잘못된 접근입니다.');
       return navigate('/admin/notices');
     }
 

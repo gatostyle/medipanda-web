@@ -1,4 +1,5 @@
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { Box, Button, CircularProgress, FormControlLabel, Grid, Radio, RadioGroup, Stack, TextField, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
@@ -14,8 +15,6 @@ import {
   updateEventBoard,
 } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSession } from '../hooks/useSession';
@@ -30,9 +29,8 @@ export default function MpAdminEventEdit() {
   const [loading, setLoading] = useState(false);
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string>('');
-  const infoDialog = useMpInfoDialog();
-  const errorDialog = useMpErrorDialog();
   const { session } = useSession();
+  const { alert, alertError } = useMpModal();
 
   const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
@@ -52,17 +50,17 @@ export default function MpAdminEventEdit() {
     },
     onSubmit: async values => {
       if (values.title) {
-        alert('제목을 입력해주세요');
+        await alert('제목을 입력해주세요');
         return;
       }
 
       if (values.startDate) {
-        alert('시작일을 선택해주세요');
+        await alert('시작일을 선택해주세요');
         return;
       }
 
       if (values.endDate) {
-        alert('종료일을 선택해주세요');
+        await alert('종료일을 선택해주세요');
         return;
       }
 
@@ -92,7 +90,7 @@ export default function MpAdminEventEdit() {
             thumbnail: thumbnailFile!,
             files: values.newFiles,
           });
-          infoDialog.showInfo('이벤트가 등록되었습니다.');
+          await alert('이벤트가 등록되었습니다.');
           navigate('/admin/events');
         } else {
           await updateEventBoard(eventId, {
@@ -117,12 +115,12 @@ export default function MpAdminEventEdit() {
             thumbnail: thumbnailFile ?? undefined,
             newFiles: values.newFiles,
           });
-          infoDialog.showInfo('이벤트가 수정되었습니다.');
+          await alert('이벤트가 수정되었습니다.');
           navigate(`/admin/events/${eventId}`);
         }
       } catch (error) {
         console.error('Failed to save event:', error);
-        errorDialog.showError('이벤트 저장에 실패했습니다.');
+        await alertError('이벤트 저장에 실패했습니다.');
       }
     },
   });
@@ -135,7 +133,7 @@ export default function MpAdminEventEdit() {
 
   const fetchDetail = async (eventId: number) => {
     if (Number.isNaN(eventId)) {
-      alert('잘못된 접근입니다.');
+      await alertError('잘못된 접근입니다.');
       return navigate('/admin/events');
     }
 
@@ -165,7 +163,7 @@ export default function MpAdminEventEdit() {
       }
     } catch (error) {
       console.error('Failed to fetch event detail:', error);
-      errorDialog.showError('이벤트 정보를 불러오는데 실패했습니다.');
+      await alertError('이벤트 정보를 불러오는데 실패했습니다.');
       navigate('/admin/events');
     } finally {
       setLoading(false);

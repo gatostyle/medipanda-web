@@ -1,5 +1,6 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   Button,
@@ -28,7 +29,6 @@ import { useFormik } from 'formik';
 import { BoardPostResponse, BoardType, DateString, getBoards } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
@@ -56,14 +56,19 @@ export default function MpAdminInquiryList() {
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  const errorDialog = useMpErrorDialog();
+  const { alert, alertError } = useMpModal();
 
   const formik = useFormik({
     initialValues: {
       ...initialSearchParams,
       page: null,
     },
-    onSubmit: values => {
+    onSubmit: async values => {
+      if (values.searchType === '' && values.searchKeyword !== '') {
+        await alert('검색유형을 선택해주세요.');
+        return;
+      }
+
       const url = setUrlParams(
         {
           ...values,
@@ -80,11 +85,6 @@ export default function MpAdminInquiryList() {
   });
 
   const fetchContents = async () => {
-    if (searchType === '' && searchKeyword !== '') {
-      alert('검색유형을 선택해주세요.');
-      return;
-    }
-
     setLoading(true);
     try {
       const response = await getBoards({
@@ -103,7 +103,7 @@ export default function MpAdminInquiryList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch inquiry list:', error);
-      errorDialog.showError('1:1 문의내역을 불러오는 중 오류가 발생했습니다.');
+      await alertError('1:1 문의내역을 불러오는 중 오류가 발생했습니다.');
       setContents([]);
       setTotalElements(0);
       setTotalPages(0);

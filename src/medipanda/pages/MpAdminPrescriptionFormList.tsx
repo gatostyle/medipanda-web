@@ -1,5 +1,6 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   Button,
@@ -38,8 +39,6 @@ import {
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { formatYyyyMm, formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
@@ -77,9 +76,8 @@ export default function MpAdminPrescriptionFormList() {
   const [totalPages, setTotalPages] = useState(0);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
-  const infoDialog = useMpInfoDialog();
-  const errorDialog = useMpErrorDialog();
   const deleteDialog = useMpDeleteDialog();
+  const { alert, alertError } = useMpModal();
 
   const formik = useFormik({
     initialValues: {
@@ -88,7 +86,12 @@ export default function MpAdminPrescriptionFormList() {
       prescriptionMonthEnd: null as Date | null,
       page: null,
     },
-    onSubmit: values => {
+    onSubmit: async values => {
+      if (values.searchType === '' && values.searchKeyword !== '') {
+        await alert('검색유형을 선택해주세요.');
+        return;
+      }
+
       const url = setUrlParams(
         {
           ...values,
@@ -107,11 +110,6 @@ export default function MpAdminPrescriptionFormList() {
   });
 
   const fetchContents = async () => {
-    if (searchType === '' && searchKeyword !== '') {
-      alert('검색유형을 선택해주세요.');
-      return;
-    }
-
     setLoading(true);
     try {
       const response = await getPrescriptionPartnerList({
@@ -131,7 +129,7 @@ export default function MpAdminPrescriptionFormList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch prescription form list:', error);
-      errorDialog.showError('처방입력 목록을 불러오는 중 오류가 발생했습니다.');
+      await alertError('처방입력 목록을 불러오는 중 오류가 발생했습니다.');
       setContents([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -248,18 +246,18 @@ export default function MpAdminPrescriptionFormList() {
       await Promise.all(selectedIds.map(id => completePrescriptionPartner(id)));
       const count = selectedIds.length;
       const message = count === 1 ? '처방이 승인되었습니다.' : `${count}개 처방이 승인되었습니다.`;
-      infoDialog.showInfo(message);
+      await alert(message);
       setSelectedIds([]);
       fetchContents();
     } catch (error) {
       console.error('Failed to approve prescriptions:', error);
-      errorDialog.showError('처방 승인 중 오류가 발생했습니다.');
+      await alertError('처방 승인 중 오류가 발생했습니다.');
     }
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (selectedIds.length === 0) {
-      infoDialog.showInfo('삭제할 처방을 선택해주세요.');
+      await alert('삭제할 처방을 선택해주세요.');
       return;
     }
 
@@ -269,12 +267,12 @@ export default function MpAdminPrescriptionFormList() {
       onConfirm: async () => {
         try {
           await Promise.all(selectedIds.map(id => deletePrescriptionPartner(id)));
-          infoDialog.showInfo('처방이 삭제되었습니다.');
+          await alert('처방이 삭제되었습니다.');
           setSelectedIds([]);
           fetchContents();
         } catch (error) {
           console.error('Failed to delete prescriptions:', error);
-          errorDialog.showError('처방 삭제에 실패했습니다.');
+          await alertError('처방 삭제에 실패했습니다.');
         }
       },
     });

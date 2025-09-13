@@ -1,5 +1,6 @@
 import { TiptapMenuBar } from '@/medipanda/components/Tiptap';
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   Button,
@@ -30,7 +31,6 @@ import {
   ProductDetailsResponse,
   updateProductExtraInfo,
 } from '@/backend';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { Fragment, useEffect, useState } from 'react';
@@ -44,9 +44,10 @@ export default function MpAdminProductEdit() {
 
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
-  const errorDialog = useMpErrorDialog();
   const { session } = useSession();
   const [detail, setDetail] = useState<ProductDetailsResponse | null>(null);
+
+  const { alert, alertError } = useMpModal();
 
   const formik = useFormik({
     initialValues: {
@@ -66,37 +67,37 @@ export default function MpAdminProductEdit() {
     },
     onSubmit: async (values, { setSubmitting }) => {
       if (values.manufacturer === '') {
-        alert('제약사를 입력해주세요.');
+        await alert('제약사를 입력해주세요.');
         return;
       }
 
       if (values.productName === '') {
-        alert('제품명을 입력해주세요.');
+        await alert('제품명을 입력해주세요.');
         return;
       }
 
       if (values.productCode === '') {
-        alert('제품코드를 입력해주세요.');
+        await alert('제품코드를 입력해주세요.');
         return;
       }
 
       if (values.composition === '') {
-        alert('성분명을 입력해주세요.');
+        await alert('성분명을 입력해주세요.');
         return;
       }
 
       if (Number(values.price) <= 0) {
-        alert('약가는 0보다 커야 합니다.');
+        await alert('약가는 0보다 커야 합니다.');
         return;
       }
 
       if (Number(values.feeRate) < 0 || Number(values.feeRate) > 100) {
-        alert('기본수수료율은 0 이상 100 이하이어야 합니다.');
+        await alert('기본수수료율은 0 이상 100 이하이어야 합니다.');
         return;
       }
 
       if (Number(values.changedFeeRate) < 0 || Number(values.changedFeeRate) > 100) {
-        alert('변경요율은 0 이상 100 이하이어야 합니다.');
+        await alert('변경요율은 0 이상 100 이하이어야 합니다.');
         return;
       }
 
@@ -178,13 +179,13 @@ export default function MpAdminProductEdit() {
             typeof error.response.data === 'string' &&
             error.response.data.startsWith('Bad request: Invalid product code format:')
           ) {
-            alert(`"${values.productCode}"는 잘못된 코드 형식입니다.`);
+            await alert(`"${values.productCode}"는 잘못된 코드 형식입니다.`);
             return;
           }
         }
 
         console.error('Failed to submit form:', error);
-        errorDialog.showError(isNew ? '제품 등록 중 오류가 발생했습니다.' : '제품 수정 중 오류가 발생했습니다.');
+        await alertError(isNew ? '제품 등록 중 오류가 발생했습니다.' : '제품 수정 중 오류가 발생했습니다.');
       } finally {
         setSubmitting(false);
       }
@@ -201,7 +202,7 @@ export default function MpAdminProductEdit() {
 
   const fetchDetail = async (productId: number) => {
     if (Number.isNaN(productId)) {
-      alert('잘못된 접근입니다.');
+      await alertError('잘못된 접근입니다.');
       return navigate('/admin/products');
     }
 
@@ -232,7 +233,7 @@ export default function MpAdminProductEdit() {
       });
     } catch (error) {
       console.error('Failed to fetch product detail:', error);
-      errorDialog.showError('제품 정보를 불러오는 중 오류가 발생했습니다.');
+      await alertError('제품 정보를 불러오는 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,5 @@
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { Box, Button, Chip, CircularProgress, Divider, Grid, Stack, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
@@ -16,12 +17,13 @@ export default function MpAdminEventDetail() {
   const { enqueueSnackbar } = useSnackbar();
   const [event, setDetail] = useState<EventBoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
+  const { alertError } = useMpModal();
 
   const { editor, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
   const fetchDetail = async (eventId: number) => {
     if (Number.isNaN(eventId)) {
-      alert('잘못된 접근입니다.');
+      await alertError('잘못된 접근입니다.');
       return navigate('/admin/events');
     }
 

@@ -1,3 +1,4 @@
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Button,
   Checkbox,
@@ -14,8 +15,6 @@ import {
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
 import { AdminPermission, getMemberDetails, getPermissions, signupByAdmin, updateByAdmin } from '@/backend';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { isSuperAdmin, useSession } from '@/medipanda/hooks/useSession';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -28,15 +27,16 @@ export default function MpAdminAdminEdit() {
 
   const { session } = useSession();
   const [, setLoading] = useState(false);
-  const errorDialog = useMpErrorDialog();
-  const infoDialog = useMpInfoDialog();
+  const { alert, alertError } = useMpModal();
 
   useEffect(() => {
-    if (!isNew && session && !isSuperAdmin(session)) {
-      infoDialog.showInfo('최고관리자만 관리자 편집이 가능합니다.');
-      navigate('/admin/admins');
-    }
-  }, [session, isNew, navigate, infoDialog]);
+    (async () => {
+      if (!isNew && session && !isSuperAdmin(session)) {
+        await alert('최고관리자만 관리자 편집이 가능합니다.');
+        navigate('/admin/admins');
+      }
+    })();
+  }, [session, isNew, navigate]);
 
   const formik = useFormik({
     initialValues: {
@@ -53,42 +53,42 @@ export default function MpAdminAdminEdit() {
     },
     onSubmit: async values => {
       if (values.name === '') {
-        alert('관리자 명은 필수입니다');
+        await alert('관리자 명은 필수입니다');
         return;
       }
 
       if (values.userId === '') {
-        alert('아이디는 필수입니다');
+        await alert('아이디는 필수입니다');
         return;
       }
 
       if (isNew && values.password === '') {
-        alert('패스워드는 필수입니다');
+        await alert('패스워드는 필수입니다');
         return;
       }
 
       if (isNew && values.password.length < 8) {
-        alert('패스워드는 최소 8자 이상이어야 합니다');
+        await alert('패스워드는 최소 8자 이상이어야 합니다');
         return;
       }
 
       if (isNew && values.password !== values.passwordConfirm) {
-        alert('패스워드가 일치하지 않습니다');
+        await alert('패스워드가 일치하지 않습니다');
         return;
       }
 
       if (values.email === '') {
-        alert('이메일은 필수입니다');
+        await alert('이메일은 필수입니다');
         return;
       }
 
       if (values.phoneNumber1 === '' || values.phoneNumber2 === '' || values.phoneNumber3 === '') {
-        alert('연락처를 입력해주세요');
+        await alert('연락처를 입력해주세요');
         return;
       }
 
       if (values.permissions.length === 0) {
-        alert('최소 하나 이상의 권한을 선택해주세요');
+        await alert('최소 하나 이상의 권한을 선택해주세요');
         return;
       }
 
@@ -105,7 +105,7 @@ export default function MpAdminAdminEdit() {
             phoneNumber,
             permissions: values.permissions,
           });
-          infoDialog.showInfo('관리자가 등록되었습니다.');
+          await alert('관리자가 등록되었습니다.');
           navigate('/admin/admins');
         } else {
           await updateByAdmin(userId, {
@@ -116,12 +116,12 @@ export default function MpAdminAdminEdit() {
             phoneNumber,
             permissions: values.permissions,
           });
-          infoDialog.showInfo('관리자 권한이 수정되었습니다.');
+          await alert('관리자 권한이 수정되었습니다.');
           navigate('/admin/admins');
         }
       } catch (error) {
         console.error('Failed to save admin:', error);
-        errorDialog.showError('저장 중 오류가 발생했습니다.');
+        await alertError('저장 중 오류가 발생했습니다.');
       }
     },
   });

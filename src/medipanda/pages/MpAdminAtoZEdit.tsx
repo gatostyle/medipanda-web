@@ -1,3 +1,4 @@
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { Close } from '@mui/icons-material';
 import {
   Box,
@@ -43,6 +44,8 @@ export default function MpAdminAtoZEdit() {
   const { session } = useSession();
   const [loading, setLoading] = useState(false);
 
+  const { alert } = useMpModal();
+
   const formik = useFormik({
     initialValues: {
       title: '',
@@ -52,7 +55,7 @@ export default function MpAdminAtoZEdit() {
     },
     onSubmit: async (values, { setSubmitting }) => {
       if (values.title === '') {
-        alert('제목을 입력해주세요.');
+        await alert('제목을 입력해주세요.');
         return;
       }
 

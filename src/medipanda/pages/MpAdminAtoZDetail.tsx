@@ -1,3 +1,4 @@
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import {
   Box,
@@ -32,13 +33,15 @@ export default function MpAdminAtoZDetail() {
   const [loading, setLoading] = useState(false);
   const { editor, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
+  const { alertError } = useMpModal();
+
   useEffect(() => {
     fetchDetail(boardId);
   }, [boardId]);
 
   const fetchDetail = async (boardId: number) => {
     if (Number.isNaN(boardId)) {
-      alert('잘못된 접근입니다.');
+      await alertError('잘못된 접근입니다.');
       return navigate('/admin/atoz');
     }
 

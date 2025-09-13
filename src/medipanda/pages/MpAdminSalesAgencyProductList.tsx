@@ -1,5 +1,6 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { DocumentDownload } from 'iconsax-react';
 import {
   Box,
@@ -38,8 +39,6 @@ import {
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
@@ -67,9 +66,8 @@ export default function MpAdminSalesAgencyProductList() {
   const [totalPages, setTotalPages] = useState(0);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
-  const infoDialog = useMpInfoDialog();
-  const errorDialog = useMpErrorDialog();
   const deleteDialog = useMpDeleteDialog();
+  const { alert, alertError } = useMpModal();
 
   const formik = useFormik({
     initialValues: {
@@ -77,7 +75,12 @@ export default function MpAdminSalesAgencyProductList() {
       date: null as Date | null,
       page: null,
     },
-    onSubmit: values => {
+    onSubmit: async values => {
+      if (values.searchType === '' && values.searchKeyword !== '') {
+        await alert('검색유형을 선택해주세요.');
+        return;
+      }
+
       const url = setUrlParams(
         {
           ...values,
@@ -95,11 +98,6 @@ export default function MpAdminSalesAgencyProductList() {
   });
 
   const fetchContents = async () => {
-    if (searchType === '' && searchKeyword !== '') {
-      alert('검색유형을 선택해주세요.');
-      return;
-    }
-
     setLoading(true);
     try {
       const response = await getSalesAgencyProducts({
@@ -116,7 +114,7 @@ export default function MpAdminSalesAgencyProductList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch sales agency product list:', error);
-      errorDialog.showError('영업대행상품 목록을 불러오는 중 오류가 발생했습니다.');
+      await alertError('영업대행상품 목록을 불러오는 중 오류가 발생했습니다.');
       setContents([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -250,12 +248,12 @@ export default function MpAdminSalesAgencyProductList() {
       onConfirm: async () => {
         try {
           await Promise.all(selectedIds.map(id => deleteSalesAgencyProduct(id)));
-          infoDialog.showInfo('삭제가 완료되었습니다.');
+          await alert('삭제가 완료되었습니다.');
           setSelectedIds([]);
           fetchContents();
         } catch (error) {
           console.error('Failed to delete sales agency products:', error);
-          errorDialog.showError('상품 삭제 중 오류가 발생했습니다.');
+          await alertError('상품 삭제 중 오류가 발생했습니다.');
         }
       },
     });

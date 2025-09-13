@@ -1,4 +1,5 @@
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { Close } from '@mui/icons-material';
 import {
   Box,
@@ -38,6 +39,7 @@ export default function MpAdminFaqEdit() {
   const isNew = paramBoardId === undefined;
   const boardId = Number(paramBoardId);
 
+  const { alert, alertError } = useMpModal();
   const { enqueueSnackbar } = useSnackbar();
   const { session } = useSession();
   const [loading, setLoading] = useState(false);
@@ -53,7 +55,7 @@ export default function MpAdminFaqEdit() {
     },
     onSubmit: async (values, { setSubmitting }) => {
       if (values.title === '') {
-        alert('제목을 입력해주세요.');
+        await alert('제목을 입력해주세요.');
         return;
       }
 
@@ -112,7 +114,7 @@ export default function MpAdminFaqEdit() {
 
   const fetchDetail = async (boardId: number) => {
     if (Number.isNaN(boardId)) {
-      alert('잘못된 접근입니다.');
+      await alertError('잘못된 접근입니다.');
       return navigate('/admin/faqs');
     }
 

@@ -1,3 +1,4 @@
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   Button,
@@ -41,6 +42,8 @@ export default function MpAdminSettlementEdit() {
   const [totalElements] = useState(2);
   const [totalPages] = useState(1);
 
+  const { alertError } = useMpModal();
+
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 20,
@@ -51,7 +54,7 @@ export default function MpAdminSettlementEdit() {
       searchType: 'institutionName' as 'institutionName' | 'businessNumber' | 'institutionCode',
       searchKeyword: '',
     },
-    onSubmit: values => {
+    onSubmit: () => {
       if (!isNew) {
         fetchSettlementData(settlementId);
       }
@@ -68,7 +71,7 @@ export default function MpAdminSettlementEdit() {
 
   const fetchSettlementData = async (settlementId: number) => {
     if (Number.isNaN(settlementId)) {
-      alert('잘못된 접근입니다.');
+      await alertError('잘못된 접근입니다.');
       return navigate('/admin/settlements');
     }
 

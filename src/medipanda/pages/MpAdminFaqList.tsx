@@ -1,5 +1,6 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   Button,
@@ -31,7 +32,6 @@ import { BoardPostResponse, BoardType, DateString, deleteBoardPost, getBoards } 
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -68,7 +68,7 @@ export default function MpAdminFaqList() {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   const deleteDialog = useMpDeleteDialog();
-  const errorDialog = useMpErrorDialog();
+  const { alertError } = useMpModal();
 
   const formik = useFormik({
     initialValues: {
@@ -77,7 +77,7 @@ export default function MpAdminFaqList() {
       endAt: null as Date | null,
       page: null,
     },
-    onSubmit: values => {
+    onSubmit: async values => {
       const url = setUrlParams(
         {
           ...values,
@@ -118,7 +118,7 @@ export default function MpAdminFaqList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch FAQ list:', error);
-      errorDialog.showError('FAQ 목록을 불러오는 중 오류가 발생했습니다.');
+      await alertError('FAQ 목록을 불러오는 중 오류가 발생했습니다.');
       setContents([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -223,7 +223,7 @@ export default function MpAdminFaqList() {
           fetchContents();
         } catch (error) {
           console.error('Failed to delete items:', error);
-          errorDialog.showError('FAQ 삭제 중 오류가 발생했습니다.');
+          await alertError('FAQ 삭제 중 오류가 발생했습니다.');
         }
       },
     });

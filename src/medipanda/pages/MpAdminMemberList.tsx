@@ -1,5 +1,6 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   Button,
@@ -39,7 +40,6 @@ import {
 } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { formatYyyyMmDd, formatYyyyMmDdHhMm, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
@@ -76,7 +76,7 @@ export default function MpAdminMemberList() {
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  const errorDialog = useMpErrorDialog();
+  const { alert, alertError } = useMpModal();
 
   const formik = useFormik({
     initialValues: {
@@ -85,7 +85,17 @@ export default function MpAdminMemberList() {
       endAt: null as Date | null,
       page: null,
     },
-    onSubmit: values => {
+    onSubmit: async values => {
+      if (values.searchType === '' && values.searchKeyword !== '') {
+        await alert('검색유형을 선택해주세요.');
+        return;
+      }
+
+      if (values.searchType === 'memberId' && values.searchKeyword !== '' && Number.isNaN(Number(values.searchKeyword))) {
+        await alert('회원번호는 숫자만 입력할 수 있습니다.');
+        return;
+      }
+
       const url = setUrlParams(
         {
           ...values,
@@ -104,16 +114,6 @@ export default function MpAdminMemberList() {
   });
 
   const fetchContents = async () => {
-    if (searchType === '' && searchKeyword !== '') {
-      alert('검색유형을 선택해주세요.');
-      return;
-    }
-
-    if (searchType === 'memberId' && searchKeyword !== '' && Number.isNaN(Number(searchKeyword))) {
-      alert('회원번호는 숫자만 입력할 수 있습니다.');
-      return;
-    }
-
     setLoading(true);
     try {
       const response = await getUserMembers({
@@ -135,7 +135,7 @@ export default function MpAdminMemberList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch member list:', error);
-      errorDialog.showError('회원 목록을 불러오는 중 오류가 발생했습니다.');
+      await alertError('회원 목록을 불러오는 중 오류가 발생했습니다.');
       setContents([]);
       setTotalElements(0);
       setTotalPages(0);

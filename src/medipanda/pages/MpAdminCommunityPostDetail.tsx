@@ -1,6 +1,7 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   Button,
@@ -40,12 +41,13 @@ export default function MpAdminCommunityPostDetail() {
   const [detail, setDetail] = useState<BoardDetailsResponse | null>(null);
   const [comments, setComments] = useState<Sequenced<CommentResponse>[]>([]);
   const [reports, setReports] = useState<Sequenced<BoardReportResponse>[]>([]);
+  const { alertError } = useMpModal();
 
   const { enqueueSnackbar } = useSnackbar();
 
   const fetchDetail = async (boardId: number) => {
     if (Number.isNaN(boardId)) {
-      alert('잘못된 접근입니다.');
+      await alertError('잘못된 접근입니다.');
       return navigate('/admin/community-posts');
     }
 

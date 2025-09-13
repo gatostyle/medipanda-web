@@ -1,3 +1,4 @@
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   CircularProgress,
@@ -41,14 +42,16 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
   const [partnerDetail, setPartnerDetail] = useState<SettlementPartnerResponse | null>(null);
   const [partnerProducts, setPartnerProducts] = useState<SettlementPartnerProductResponse[]>([]);
 
+  const { alertError } = useMpModal();
+
   const fetchDetail = async (settlementId: number, settlementPartnerId: number) => {
     if (Number.isNaN(settlementId)) {
-      alert('잘못된 접근입니다.');
+      await alertError('잘못된 접근입니다.');
       return navigate('/admin/settlements');
     }
 
     if (Number.isNaN(settlementPartnerId)) {
-      alert('잘못된 접근입니다.');
+      await alertError('잘못된 접근입니다.');
       return navigate('/admin/settlements');
     }
 

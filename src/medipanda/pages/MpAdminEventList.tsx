@@ -1,5 +1,6 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   Button,
@@ -31,8 +32,6 @@ import { DateString, EventBoardSummaryResponse, EventStatus, EventStatusLabel, g
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
@@ -68,8 +67,7 @@ export default function MpAdminEventList() {
   const [totalPages, setTotalPages] = useState(0);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
-  const infoDialog = useMpInfoDialog();
-  const errorDialog = useMpErrorDialog();
+  const { alertError } = useMpModal();
   const deleteDialog = useMpDeleteDialog();
 
   const formik = useFormik({
@@ -79,7 +77,7 @@ export default function MpAdminEventList() {
       endAt: null as Date | null,
       page: null,
     },
-    onSubmit: values => {
+    onSubmit: async values => {
       const url = setUrlParams(
         {
           ...values,
@@ -114,7 +112,7 @@ export default function MpAdminEventList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch event list:', error);
-      errorDialog.showError('이벤트 목록을 불러오는 중 오류가 발생했습니다.');
+      await alertError('이벤트 목록을 불러오는 중 오류가 발생했습니다.');
       setContents([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -250,9 +248,9 @@ export default function MpAdminEventList() {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (selectedIds.length === 0) {
-      infoDialog.showInfo('삭제할 이벤트를 선택해주세요.');
+      await alert('삭제할 이벤트를 선택해주세요.');
       return;
     }
 
@@ -262,12 +260,12 @@ export default function MpAdminEventList() {
       onConfirm: async () => {
         try {
           await Promise.all(selectedIds.map(id => softDeleteEventBoard(id)));
-          infoDialog.showInfo('이벤트가 삭제되었습니다.');
+          await alert('이벤트가 삭제되었습니다.');
           setSelectedIds([]);
           fetchContents();
         } catch (error) {
           console.error('Failed to delete events:', error);
-          errorDialog.showError('이벤트 삭제에 실패했습니다.');
+          await alertError('이벤트 삭제에 실패했습니다.');
         }
       },
     });

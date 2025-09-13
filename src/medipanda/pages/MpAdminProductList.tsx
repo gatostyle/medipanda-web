@@ -1,6 +1,7 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import { MpProductUploadModal } from '@/medipanda/components/MpProductUploadModal';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { DocumentDownload } from 'iconsax-react';
 import {
   Box,
@@ -74,6 +75,7 @@ export default function MpAdminProductList() {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   const [productUploadModalOpen, setProductUploadModalOpen] = useState(false);
+  const { alert, alertError } = useMpModal();
 
   const deleteDialog = useMpDeleteDialog();
 
@@ -86,7 +88,12 @@ export default function MpAdminProductList() {
       isStopSelling: false,
       page: null,
     },
-    onSubmit: values => {
+    onSubmit: async values => {
+      if (values.searchType === '' && values.searchKeyword !== '') {
+        await alert('검색유형을 선택해주세요.');
+        return;
+      }
+
       const url = setUrlParams(
         {
           ...values,
@@ -103,11 +110,6 @@ export default function MpAdminProductList() {
   });
 
   const fetchContents = async () => {
-    if (searchType === '' && searchKeyword !== '') {
-      alert('검색유형을 선택해주세요.');
-      return;
-    }
-
     setLoading(true);
     try {
       const response = await getProductSummaries({
@@ -129,7 +131,7 @@ export default function MpAdminProductList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch product list:', error);
-      alert('제품 목록을 불러오는 중 오류가 발생했습니다.');
+      await alertError('제품 목록을 불러오는 중 오류가 발생했습니다.');
       setContents([]);
       setTotalElements(0);
       setTotalPages(0);

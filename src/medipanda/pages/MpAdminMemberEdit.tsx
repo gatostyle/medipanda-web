@@ -1,4 +1,5 @@
 import { MedipandaUrlFileName } from '@/lib/url';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   Button,
@@ -38,8 +39,6 @@ import {
   updateContract,
   updateMember,
 } from '@/backend';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
@@ -51,8 +50,7 @@ export default function MpAdminMemberEdit() {
   const isNew = paramUserId === undefined;
   const userId = paramUserId!;
 
-  const infoDialog = useMpInfoDialog();
-  const errorDialog = useMpErrorDialog();
+  const { alert, alertError } = useMpModal();
   const { enqueueSnackbar } = useSnackbar();
   const [detail, setDetail] = useState<MemberDetailsResponse | null>(null);
   const [contractDetail, setContractDetail] = useState<PartnerContractDetailsResponse | null>(null);
@@ -74,28 +72,28 @@ export default function MpAdminMemberEdit() {
     },
     onSubmit: async values => {
       if (values.password !== '' && values.password !== values.confirmPassword) {
-        alert('입력한 비밀번호가 불일치합니다.');
+        await alert('입력한 비밀번호가 불일치합니다.');
         return;
       }
 
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
-        alert('올바른 이메일 형식이 아닙니다.');
+        await alert('올바른 이메일 형식이 아닙니다.');
         return;
       }
 
       if (values.phoneNumber !== detail?.phoneNumber && values.phoneNumber === '') {
-        alert('휴대폰번호를 입력하세요.');
+        await alert('휴대폰번호를 입력하세요.');
         return;
       }
 
       if (contractDetail !== null) {
         if (values.bankName === '') {
-          alert('정산은행을 입력하세요.');
+          await alert('정산은행을 입력하세요.');
           return;
         }
 
         if (values.accountNumber === '') {
-          alert('계좌번호를 입력하세요.');
+          await alert('계좌번호를 입력하세요.');
           return;
         }
       }
@@ -136,16 +134,16 @@ export default function MpAdminMemberEdit() {
           });
         }
 
-        alert('회원정보가 수정되었습니다.');
+        await alert('회원정보가 수정되었습니다.');
         navigate('/admin/members');
       } catch (e) {
         switch (true) {
           case isAxiosError(e) && e.response?.data === `Bad request: phone number ${values.phoneNumber} already exists.`:
-            alert('이미 사용중인 휴대폰번호입니다.');
+            await alert('이미 사용중인 휴대폰번호입니다.');
             break;
           default:
             console.error(e);
-            alert('회원정보 수정 중 오류가 발생했습니다.');
+            await alertError('회원정보 수정 중 오류가 발생했습니다.');
             break;
         }
       }
@@ -209,22 +207,22 @@ export default function MpAdminMemberEdit() {
   const handleCsoApprove = async () => {
     try {
       await approveOrRejectCso(userId, { isApproved: true });
-      infoDialog.showInfo('CSO 신고증이 승인되었습니다.');
+      await alert('CSO 신고증이 승인되었습니다.');
       await fetchDetail(userId);
     } catch (error) {
       console.error('Failed to approve CSO report:', error);
-      errorDialog.showError('CSO 신고증 승인 중 오류가 발생했습니다.');
+      await alertError('CSO 신고증 승인 중 오류가 발생했습니다.');
     }
   };
 
   const handleCsoReject = async () => {
     try {
       await approveOrRejectCso(userId, { isApproved: false });
-      infoDialog.showInfo('CSO 신고증이 반려되었습니다.');
+      await alert('CSO 신고증이 반려되었습니다.');
       await fetchDetail(userId);
     } catch (error) {
       console.error('Failed to reject CSO report:', error);
-      errorDialog.showError('CSO 신고증 반려 중 오류가 발생했습니다.');
+      await alertError('CSO 신고증 반려 중 오류가 발생했습니다.');
     }
   };
 
@@ -252,11 +250,11 @@ export default function MpAdminMemberEdit() {
           file: file,
         });
 
-        alert('CSO 신고증이 업로드되었습니다.');
+        await alert('CSO 신고증이 업로드되었습니다.');
         await fetchDetail(userId);
       } catch (e) {
         console.error('Failed to upload CSO report:', e);
-        alert('CSO 신고증 업로드 중 오류가 발생했습니다.');
+        await alertError('CSO 신고증 업로드 중 오류가 발생했습니다.');
       }
     };
     input.click();
@@ -265,22 +263,22 @@ export default function MpAdminMemberEdit() {
   const handleContractApprove = async () => {
     try {
       await approveContract(contractDetail!.id);
-      infoDialog.showInfo('파트너사 계약이 승인되었습니다.');
+      await alert('파트너사 계약이 승인되었습니다.');
       await fetchContractDetail(formik.values);
     } catch (error) {
       console.error('Failed to approve partner contract:', error);
-      errorDialog.showError('파트너사 계약 승인 중 오류가 발생했습니다.');
+      await alertError('파트너사 계약 승인 중 오류가 발생했습니다.');
     }
   };
 
   const handleContractReject = async () => {
     try {
       await rejectContract(contractDetail!.id);
-      infoDialog.showInfo('파트너사 계약이 종료되었습니다.');
+      await alert('파트너사 계약이 종료되었습니다.');
       await fetchContractDetail(formik.values);
     } catch (error) {
       console.error('Failed to reject partner contract:', error);
-      errorDialog.showError('파트너사 계약 종료 중 오류가 발생했습니다.');
+      await alertError('파트너사 계약 종료 중 오류가 발생했습니다.');
     }
   };
 

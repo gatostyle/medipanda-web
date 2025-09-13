@@ -1,5 +1,6 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   Button,
@@ -29,7 +30,6 @@ import { useFormik } from 'formik';
 import { BannerResponse, BannerScopeLabel, BannerStatus, BannerStatusLabel, DateTimeString, getBanners } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { formatYyyyMmDd, formatYyyyMmDdHhMm, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
@@ -63,7 +63,8 @@ export default function MpAdminBannerList() {
   const [loading, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const errorDialog = useMpErrorDialog();
+
+  const { alertError } = useMpModal();
 
   const formik = useFormik({
     initialValues: {
@@ -72,7 +73,7 @@ export default function MpAdminBannerList() {
       endAt: null as Date | null,
       page: null,
     },
-    onSubmit: values => {
+    onSubmit: async values => {
       const url = setUrlParams(
         {
           ...values,
@@ -107,7 +108,7 @@ export default function MpAdminBannerList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch banner list:', error);
-      errorDialog.showError('배너 목록을 불러오는 중 오류가 발생했습니다.');
+      await alertError('배너 목록을 불러오는 중 오류가 발생했습니다.');
       setContent([]);
       setTotalElements(0);
       setTotalPages(0);

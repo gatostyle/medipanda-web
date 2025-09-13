@@ -2,7 +2,7 @@ import { DateString, MemberResponse, uploadEdiZip } from '@/backend';
 import MpDatePicker from '@/medipanda/components/MpDatePicker';
 import { MpMemberSelectModal } from '@/medipanda/components/MpMemberSelectModal';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { UploadFile } from '@mui/icons-material';
 import {
   Box,
@@ -29,8 +29,8 @@ export interface MpEdiUploadModalProps {
 }
 
 function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModalProps) {
-  const infoDialog = useMpInfoDialog();
   const errorDialog = useMpErrorDialog();
+  const { alert, alertError } = useMpModal();
 
   const formik = useFormik({
     initialValues: {
@@ -41,22 +41,22 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
     },
     onSubmit: async values => {
       if (values.prescriptionMonth === null) {
-        alert('처방월을 선택해주세요.');
+        await alert('처방월을 선택해주세요.');
         return;
       }
 
       if (values.settlementMonth === null) {
-        alert('정산월을 선택해주세요.');
+        await alert('정산월을 선택해주세요.');
         return;
       }
 
       if (values.partnerUser === null) {
-        alert('사용자를 선택해주세요.');
+        await alert('사용자를 선택해주세요.');
         return;
       }
 
       if (values.file === null) {
-        alert('파일을 선택해주세요.');
+        await alert('파일을 선택해주세요.');
         return;
       }
 
@@ -73,31 +73,33 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
 
           switch (error.error) {
             case 'INVALID_EXTENSION':
-              alert('첨부하신 파일중에 jpg, jpeg, png, pdf파일이 아닌 형식이 있어요. 확인해주세요.');
+              await alert('첨부하신 파일중에 jpg, jpeg, png, pdf파일이 아닌 형식이 있어요. 확인해주세요.');
               break;
             case 'INVALID_FILENAME_FORMAT':
-              alert('첨부하신 파일중에 딜러명_거래처명_처방월 (홍길동_메디판다_202504)으로 입력하지 않은 파일명이 있어요. 확인해주세요.');
+              await alert(
+                '첨부하신 파일중에 딜러명_거래처명_처방월 (홍길동_메디판다_202504)으로 입력하지 않은 파일명이 있어요. 확인해주세요.',
+              );
               break;
             case 'DEALER_NOT_FOUND':
             case 'PARTNER_NOT_FOUND':
             case 'DRUG_COMPANY_NOT_FOUND':
-              alert(`파일중 거래선으로 등록되지 않은 거래처이오니 운영자에 필터링 문의해주세요.`);
+              await alert(`파일중 거래선으로 등록되지 않은 거래처이오니 운영자에 필터링 문의해주세요.`);
               break;
             case 'INVALID_MONTH_FORMAT':
-              alert(`EDI 등록 중 오류가 발생했습니다.\n${error.error}(${error.fileName}): ${error.message}\n`);
+              await alertError(`EDI 등록 중 오류가 발생했습니다.\n${error.error}(${error.fileName}): ${error.message}\n`);
               break;
             case 'DUPLICATE_DEALER_PARTNER_DRUG_COMPANY':
-              alert(`EDI 등록 중 오류가 발생했습니다.\n${error.error}(${error.fileName}): ${error.message}\n`);
+              await alertError(`EDI 등록 중 오류가 발생했습니다.\n${error.error}(${error.fileName}): ${error.message}\n`);
               break;
             case 'DRUG_COMPANY_MISMATCH':
-              alert(`EDI 등록 중 오류가 발생했습니다.\n${error.error}(${error.fileName}): ${error.message}\n`);
+              await alertError(`EDI 등록 중 오류가 발생했습니다.\n${error.error}(${error.fileName}): ${error.message}\n`);
               break;
           }
 
           return;
         }
 
-        infoDialog.showInfo('업로드가 완료되었습니다.');
+        await alert('업로드가 완료되었습니다.');
         onSuccess?.();
       } catch (error) {
         console.error('Failed to upload rate table:', error);
@@ -109,14 +111,14 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
   const [memberSearchDialogOpen, setMemberSearchDialogOpen] = useState(false);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: useCallback((acceptedFiles: File[]) => {
+    onDrop: useCallback(async (acceptedFiles: File[]) => {
       if (acceptedFiles.length > 0) {
         if (!acceptedFiles[0].name.toLowerCase().endsWith('.zip')) {
-          alert('.zip 파일만 업로드할 수 있습니다.');
+          await alert('.zip 파일만 업로드할 수 있습니다.');
           return;
         }
 
-        formik.setFieldValue('file', acceptedFiles[0]);
+        await formik.setFieldValue('file', acceptedFiles[0]);
       }
     }, []),
   });

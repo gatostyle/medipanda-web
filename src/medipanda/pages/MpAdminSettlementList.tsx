@@ -11,6 +11,7 @@ import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { formatYyyyMm, formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import {
@@ -75,6 +76,8 @@ export default function MpAdminSettlementList() {
   const [totalPages, setTotalPages] = useState(0);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
+  const { alert, alertError } = useMpModal();
+
   const formik = useFormik({
     initialValues: {
       ...initialSearchParams,
@@ -82,7 +85,17 @@ export default function MpAdminSettlementList() {
       endAt: null as Date | null,
       page: null,
     },
-    onSubmit: values => {
+    onSubmit: async values => {
+      if (values.searchType === '' && values.searchKeyword !== '') {
+        await alert('검색유형을 선택해주세요.');
+        return;
+      }
+
+      if (values.searchType === 'dealerId' && values.searchKeyword !== '' && Number.isNaN(Number(values.searchKeyword))) {
+        await alert('딜러번호는 숫자만 입력할 수 있습니다.');
+        return;
+      }
+
       const url = setUrlParams(
         {
           ...values,
@@ -101,16 +114,6 @@ export default function MpAdminSettlementList() {
   });
 
   const fetchContents = async () => {
-    if (searchType === '' && searchKeyword !== '') {
-      alert('검색유형을 선택해주세요.');
-      return;
-    }
-
-    if (searchType === 'dealerId' && searchKeyword !== '' && Number.isNaN(Number(searchKeyword))) {
-      alert('딜러번호는 숫자만 입력할 수 있습니다.');
-      return;
-    }
-
     setLoading(true);
     try {
       const response = await getSettlements({
@@ -129,7 +132,7 @@ export default function MpAdminSettlementList() {
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch settlement list:', error);
-      alert('정산내역 목록을 불러오는 중 오류가 발생했습니다.');
+      await alertError('정산내역 목록을 불러오는 중 오류가 발생했습니다.');
       setContents([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -247,11 +250,11 @@ export default function MpAdminSettlementList() {
     input.onchange = async e => {
       try {
         await uploadSettlementExcel({ file: (e.target as HTMLInputElement).files![0] });
-        alert('정산 파일을 업로드했습니다.');
+        await alert('정산 파일을 업로드했습니다.');
         await fetchContents();
       } catch (error) {
         console.error('Failed to upload file:', error);
-        alert('파일 업로드 중 오류가 발생했습니다.');
+        await alertError('파일 업로드 중 오류가 발생했습니다.');
       }
     };
     input.click();
