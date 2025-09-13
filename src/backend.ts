@@ -1974,7 +1974,10 @@ export async function getUserMembers(options?: {
   const response = await axios.request<PageMemberResponse>({
     method: 'GET',
     url: '/v1/members',
-    params: options,
+    params: {
+      ...options,
+      roles: options?.roles?.join(','),
+    },
   });
   return response.data;
 }
