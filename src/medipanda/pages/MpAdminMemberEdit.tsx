@@ -384,6 +384,7 @@ export default function MpAdminMemberEdit() {
                         <Select name='accountStatus' value={formik.values.accountStatus} onChange={formik.handleChange}>
                           <MenuItem value={'ACTIVATED'}>활성</MenuItem>
                           <MenuItem value={'BLOCKED'}>비활성</MenuItem>
+                          <MenuItem value={'DELETED'}>탈퇴</MenuItem>
                         </Select>
                       </FormControl>
                     </Grid>
