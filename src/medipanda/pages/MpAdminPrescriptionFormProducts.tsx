@@ -316,10 +316,6 @@ export default function MpAdminPrescriptionFormProducts() {
     ]);
   };
 
-  const handleCancel = () => {
-    navigate('/admin/prescription-forms');
-  };
-
   useEffect(() => {
     if (!isNew) {
       fetchPrescriptionFormData(prescriptionPartnerId);
@@ -556,7 +552,7 @@ export default function MpAdminPrescriptionFormProducts() {
           </Box>
 
           <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 4 }}>
-            <Button variant='outlined' size='large' onClick={handleCancel} sx={{ minWidth: 120 }}>
+            <Button variant='outlined' size='large' onClick={() => window.history.back()} sx={{ minWidth: 120 }}>
               취소
             </Button>
             <Button variant='contained' color='success' size='large' type='submit' sx={{ minWidth: 120 }}>

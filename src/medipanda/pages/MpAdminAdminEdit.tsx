@@ -201,10 +201,6 @@ export default function MpAdminAdminEdit() {
     formik.setFieldValue('permissions', currentPermissions);
   };
 
-  const handleCancel = () => {
-    navigate('/admin/admins');
-  };
-
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -459,7 +455,7 @@ export default function MpAdminAdminEdit() {
 
               <Grid item xs={12}>
                 <Stack direction='row' spacing={2} justifyContent='center'>
-                  <Button variant='outlined' size='large' onClick={handleCancel}>
+                  <Button variant='outlined' size='large' onClick={() => window.history.back()}>
                     취소
                   </Button>
                   <Button variant='contained' size='large' type='submit'>

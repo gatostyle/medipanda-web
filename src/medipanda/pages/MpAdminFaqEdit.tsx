@@ -129,10 +129,6 @@ export default function MpAdminFaqEdit() {
     }
   };
 
-  const handleCancel = () => {
-    navigate('/admin/faqs');
-  };
-
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
     if (files.length > 0) {
@@ -258,7 +254,7 @@ export default function MpAdminFaqEdit() {
             <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
               <Button
                 variant='outlined'
-                onClick={handleCancel}
+                onClick={() => window.history.back()}
                 sx={{
                   minWidth: 120,
                 }}

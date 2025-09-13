@@ -158,10 +158,6 @@ export default function MpAdminSettlementEdit() {
     manualPagination: true,
   });
 
-  const handleBack = () => {
-    navigate('/admin/settlements');
-  };
-
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
@@ -173,7 +169,7 @@ export default function MpAdminSettlementEdit() {
   return (
     <Box sx={{ p: 3 }}>
       <Stack direction='row' alignItems='center' spacing={2} sx={{ mb: 3 }}>
-        <IconButton onClick={handleBack} sx={{ p: 0 }}>
+        <IconButton onClick={() => window.history.back()} sx={{ p: 0 }}>
           <ArrowLeft size={24} />
         </IconButton>
         <Typography variant='h4'>정산상세내역</Typography>

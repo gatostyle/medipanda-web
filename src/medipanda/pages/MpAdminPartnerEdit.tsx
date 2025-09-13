@@ -172,10 +172,6 @@ export default function MpAdminPartnerEdit() {
     setMemberSelectModalOpen(false);
   };
 
-  const handleCancel = () => {
-    navigate('/admin/partners');
-  };
-
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
@@ -382,7 +378,7 @@ export default function MpAdminPartnerEdit() {
           </Grid>
 
           <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 4 }}>
-            <Button variant='outlined' size='large' onClick={handleCancel} sx={{ minWidth: 120 }}>
+            <Button variant='outlined' size='large' onClick={() => window.history.back()} sx={{ minWidth: 120 }}>
               취소
             </Button>
             <Button variant='contained' size='large' type='submit' sx={{ minWidth: 120 }}>

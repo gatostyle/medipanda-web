@@ -189,10 +189,6 @@ export default function MpAdminMemberEdit() {
     }
   };
 
-  const handleCancel = () => {
-    navigate('/admin/members');
-  };
-
   const handleCsoApprove = async () => {
     try {
       await approveOrRejectCso(userId, { isApproved: true });
@@ -600,7 +596,7 @@ export default function MpAdminMemberEdit() {
 
           <Grid item xs={12}>
             <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 3 }}>
-              <Button variant='outlined' size='large' onClick={handleCancel} sx={{ minWidth: 120 }}>
+              <Button variant='outlined' size='large' onClick={() => window.history.back()} sx={{ minWidth: 120 }}>
                 취소
               </Button>
               <Button variant='contained' size='large' type='submit' sx={{ minWidth: 120 }}>

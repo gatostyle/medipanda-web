@@ -123,10 +123,6 @@ export default function MpAdminInquiryEdit() {
     }
   };
 
-  const handleCancel = () => {
-    navigate('/admin/inquiries');
-  };
-
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
@@ -277,7 +273,7 @@ export default function MpAdminInquiryEdit() {
 
             <Grid item xs={12}>
               <Stack direction='row' spacing={2} justifyContent='center'>
-                <Button variant='outlined' size='large' onClick={handleCancel}>
+                <Button variant='outlined' size='large' onClick={() => window.history.back()}>
                   취소
                 </Button>
                 <Button variant='contained' size='large' onClick={() => formik.handleSubmit()}>

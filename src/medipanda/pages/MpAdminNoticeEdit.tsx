@@ -185,10 +185,6 @@ export default function MpAdminNoticeEdit() {
     }
   };
 
-  const handleCancel = () => {
-    navigate('/admin/notices');
-  };
-
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
     const MAX_FILE_SIZE = 1 * 1024 * 1024;
@@ -405,7 +401,7 @@ export default function MpAdminNoticeEdit() {
             </Grid>
 
             <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
-              <Button variant='outlined' onClick={handleCancel} sx={{ minWidth: 120 }} disabled={formik.isSubmitting}>
+              <Button variant='outlined' onClick={() => window.history.back()} sx={{ minWidth: 120 }} disabled={formik.isSubmitting}>
                 취소
               </Button>
               <Button

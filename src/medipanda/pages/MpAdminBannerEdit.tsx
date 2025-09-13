@@ -20,7 +20,7 @@ import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { DateFix, formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function MpAdminBannerEdit() {
   const navigate = useNavigate();
@@ -336,8 +336,7 @@ export default function MpAdminBannerEdit() {
                   <Button
                     variant='outlined'
                     size='medium'
-                    component={RouterLink}
-                    to={'/admin/banners'}
+                    onClick={() => window.history.back()}
                     sx={{
                       minWidth: 100,
                     }}

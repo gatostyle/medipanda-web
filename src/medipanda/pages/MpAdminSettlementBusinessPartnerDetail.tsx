@@ -140,10 +140,6 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const handleBack = () => {
-    navigate('/admin/settlements');
-  };
-
   if (loading) {
     return (
       <Box display='flex' justifyContent='center' alignItems='center' minHeight='400px'>
@@ -163,7 +159,7 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
   return (
     <Box sx={{ p: 3 }}>
       <Stack direction='row' alignItems='center' spacing={2} sx={{ mb: 3 }}>
-        <IconButton onClick={handleBack} sx={{ p: 0 }}>
+        <IconButton onClick={() => window.history.back()} sx={{ p: 0 }}>
           <ArrowLeft size={24} />
         </IconButton>
         <Typography variant='h4'>거래처별 제품상세</Typography>

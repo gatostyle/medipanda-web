@@ -175,10 +175,6 @@ export default function MpAdminEventEdit() {
     }
   };
 
-  const handleCancel = () => {
-    navigate('/admin/events');
-  };
-
   if (loading) {
     return (
       <Box display='flex' justifyContent='center' alignItems='center' minHeight='400px'>
@@ -333,7 +329,7 @@ export default function MpAdminEventEdit() {
 
               <Grid item xs={12}>
                 <Stack direction='row' spacing={2} justifyContent='center'>
-                  <Button variant='outlined' size='large' onClick={handleCancel}>
+                  <Button variant='outlined' size='large' onClick={() => window.history.back()}>
                     취소
                   </Button>
                   <Button variant='contained' size='large' type='submit' disabled={formik.isSubmitting}>

@@ -25,7 +25,7 @@ import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { Fragment, useEffect, useState } from 'react';
-import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function MpAdminProductEdit() {
   const navigate = useNavigate();
@@ -540,8 +540,7 @@ export default function MpAdminProductEdit() {
               <Button
                 variant='outlined'
                 size='large'
-                component={RouterLink}
-                to={isNew ? '/admin/products' : `/admin/products/${productId}`}
+                onClick={() => window.history.back()}
                 sx={{ minWidth: 120 }}
                 disabled={formik.isSubmitting}
               >

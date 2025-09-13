@@ -138,8 +138,7 @@ export default function MpAdminCustomerCenterFaqDetail() {
           <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
             <Button
               variant='outlined'
-              component={RouterLink}
-              to='/admin/faqs'
+              onClick={() => window.history.back()}
               sx={{
                 minWidth: 120,
               }}
