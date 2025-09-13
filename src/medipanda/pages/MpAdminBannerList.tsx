@@ -59,7 +59,7 @@ export default function MpAdminBannerList() {
   const page = Number(paramPage);
   const pageSize = 20;
 
-  const [content, setContent] = useState<Sequenced<BannerResponse>[]>([]);
+  const [contents, setContents] = useState<Sequenced<BannerResponse>[]>([]);
   const [loading, setLoading] = useState(false);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -103,13 +103,13 @@ export default function MpAdminBannerList() {
         size: pageSize,
       });
 
-      setContent(withSequence(response).content);
+      setContents(withSequence(response).content);
       setTotalElements(response.totalElements);
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch banner list:', error);
       await alertError('배너 목록을 불러오는 중 오류가 발생했습니다.');
-      setContent([]);
+      setContents([]);
       setTotalElements(0);
       setTotalPages(0);
     } finally {
@@ -129,7 +129,7 @@ export default function MpAdminBannerList() {
   }, [searchKeyword, startAt, endAt, bannerStatus, page]);
 
   const table = useReactTable({
-    data: content,
+    data: contents,
     columns: [
       {
         header: 'No',

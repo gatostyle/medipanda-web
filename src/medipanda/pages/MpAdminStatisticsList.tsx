@@ -58,7 +58,7 @@ export default function MpAdminStatisticsList() {
   const pageSize = 20;
 
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<Sequenced<PerformanceStatsResponse>[]>([]);
+  const [contents, setContents] = useState<Sequenced<PerformanceStatsResponse>[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalPrescriptionAmount, setTotalPrescriptionAmount] = useState(0);
@@ -107,14 +107,14 @@ export default function MpAdminStatisticsList() {
         size: pageSize,
       });
 
-      setData(withSequence(response).content);
+      setContents(withSequence(response).content);
       setTotalElements(response.totalElements);
       setTotalPages(response.totalPages);
       setTotalPrescriptionAmount(response.content.reduce((sum, item) => sum + item.prescriptionAmount, 0));
     } catch (error) {
       console.error('Failed to fetch performance statistics:', error);
       await alertError('실적통계 목록을 불러오는 중 오류가 발생했습니다.');
-      setData([]);
+      setContents([]);
       setTotalElements(0);
       setTotalPages(0);
       setTotalPrescriptionAmount(0);
@@ -135,7 +135,7 @@ export default function MpAdminStatisticsList() {
   }, [searchType, searchKeyword, settlementDate, status, page]);
 
   const table = useReactTable({
-    data,
+    data: contents,
     columns: [
       {
         header: 'No',

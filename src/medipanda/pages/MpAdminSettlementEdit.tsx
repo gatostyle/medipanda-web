@@ -61,7 +61,7 @@ export default function MpAdminSettlementEdit() {
     },
   });
 
-  const [data, setData] = useState<Sequenced<SettlementPartnerResponse>[]>([]);
+  const [settlementSummaries, setSettlementSummaries] = useState<Sequenced<SettlementPartnerResponse>[]>([]);
 
   useEffect(() => {
     if (!isNew) {
@@ -89,7 +89,7 @@ export default function MpAdminSettlementEdit() {
         size: pagination.pageSize,
       });
 
-      setData(withSequence(response).content);
+      setSettlementSummaries(withSequence(response).content);
     } catch (error) {
       console.error('Failed to fetch settlement data:', error);
       enqueueSnackbar('정산 데이터를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -99,7 +99,7 @@ export default function MpAdminSettlementEdit() {
   };
 
   const table = useReactTable({
-    data,
+    data: settlementSummaries,
     columns: [
       {
         header: 'No',
