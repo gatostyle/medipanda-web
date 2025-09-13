@@ -287,7 +287,7 @@ export default function MpAdminHospitalList() {
                     <InputLabel>시/도</InputLabel>
                     <Select
                       name='sido'
-                      value={formik.values.sido ?? ''}
+                      value={formik.values.sido === -1 ? '' : formik.values.sido}
                       onChange={event => {
                         formik.handleChange(event);
                         formik.setFieldValue('sigungu', -1);
@@ -304,7 +304,7 @@ export default function MpAdminHospitalList() {
                 <SearchFilterItem minWidth={140}>
                   <FormControl fullWidth size='small'>
                     <InputLabel>시/군/구</InputLabel>
-                    <Select name='sigungu' value={formik.values.sigungu ?? ''} onChange={formik.handleChange}>
+                    <Select name='sigungu' value={formik.values.sigungu === -1 ? '' : formik.values.sigungu} onChange={formik.handleChange}>
                       {(sigunguList[formik.values.sido] ?? []).map(region => (
                         <MenuItem key={region.id} value={region.id}>
                           {region.name}
