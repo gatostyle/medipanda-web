@@ -1,3 +1,4 @@
+import { handleNumberChange } from '@/lib/form';
 import { TiptapMenuBar } from '@/medipanda/components/Tiptap';
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
@@ -86,17 +87,21 @@ export default function MpAdminProductEdit() {
         return;
       }
 
-      if (Number(values.price) <= 0) {
+      const price = Number(values.price.replace(/,/g, ''));
+      const feeRate = Number(values.feeRate);
+      const changedFeeRate = Number(values.changedFeeRate);
+
+      if (price <= 0) {
         await alert('약가는 0보다 커야 합니다.');
         return;
       }
 
-      if (Number(values.feeRate) < 0 || Number(values.feeRate) > 100) {
+      if (feeRate < 0 || feeRate > 100) {
         await alert('기본수수료율은 0 이상 100 이하이어야 합니다.');
         return;
       }
 
-      if (Number(values.changedFeeRate) < 0 || Number(values.changedFeeRate) > 100) {
+      if (changedFeeRate < 0 || changedFeeRate > 100) {
         await alert('변경요율은 0 이상 100 이하이어야 합니다.');
         return;
       }
@@ -122,11 +127,11 @@ export default function MpAdminProductEdit() {
               productName: values.productName,
               composition: values.composition,
               productCode: values.productCode,
-              changedFeeRate: values.changedFeeRate,
+              changedFeeRate: String(changedFeeRate),
               changedMonth: Number(values.changedMonth),
               priceUnit: PriceUnit.KRW,
-              feeRate: values.feeRate,
-              price: Number(values.price),
+              feeRate: String(feeRate),
+              price: price,
               note: values.note,
               detailInfo: editor.getHTML(),
               isPromotion: values.isPromotion,
@@ -155,11 +160,11 @@ export default function MpAdminProductEdit() {
               productName: values.productName,
               composition: values.composition,
               productCode: values.productCode,
-              changedFeeRate: values.changedFeeRate,
+              changedFeeRate: String(changedFeeRate),
               changedMonth: values.changedMonth,
               priceUnit: PriceUnit.KRW,
-              feeRate: values.feeRate,
-              price: Number(values.price),
+              feeRate: String(feeRate),
+              price: price,
               note: values.note,
               detailInfo: editor.getHTML(),
               isPromotion: values.isPromotion,
@@ -343,17 +348,7 @@ export default function MpAdminProductEdit() {
                     placeholder='약가를 입력하세요'
                     required
                     value={formik.values.price}
-                    onChange={event => {
-                      const numberValue = Number(event.target.value.replace(/,/g, ''));
-
-                      if (!Number.isNaN(numberValue)) {
-                        if (numberValue > Number.MAX_SAFE_INTEGER) {
-                          formik.setFieldValue('price', Number.MAX_SAFE_INTEGER.toLocaleString());
-                        } else {
-                          formik.setFieldValue('price', numberValue.toLocaleString());
-                        }
-                      }
-                    }}
+                    onChange={handleNumberChange(formik)}
                     InputProps={{
                       endAdornment: <Typography variant='body2'>원</Typography>,
                     }}
@@ -372,15 +367,8 @@ export default function MpAdminProductEdit() {
                     name='feeRate'
                     placeholder='수수료율을 입력하세요'
                     required
-                    type='number'
                     value={formik.values.feeRate}
-                    onChange={event => {
-                      const numberValue = Number(event.target.value.replace(/,/g, ''));
-
-                      if (!Number.isNaN(numberValue)) {
-                        formik.setFieldValue('feeRate', String(numberValue));
-                      }
-                    }}
+                    onChange={handleNumberChange(formik, { min: 0, max: 100 })}
                     InputProps={{
                       endAdornment: <Typography variant='body2'>%</Typography>,
                     }}
@@ -398,15 +386,8 @@ export default function MpAdminProductEdit() {
                       size='small'
                       name='changedFeeRate'
                       label='변경요율'
-                      type='number'
                       value={formik.values.changedFeeRate}
-                      onChange={event => {
-                        const numberValue = Number(event.target.value.replace(/,/g, ''));
-
-                        if (!Number.isNaN(numberValue)) {
-                          formik.setFieldValue('changedFeeRate', String(numberValue));
-                        }
-                      }}
+                      onChange={handleNumberChange(formik, { min: 0, max: 100 })}
                       InputProps={{
                         endAdornment: <Typography variant='body2'>%</Typography>,
                       }}
