@@ -162,12 +162,14 @@ function tsType(schema, ctxName) {
   if (schema.type === 'object' || schema.properties || schema.additionalProperties) {
     const props = schema.properties || {};
     const required = new Set(schema.required || []);
-    const lines = Object.keys(props).map(key => {
-      const prop = props[key];
-      const optional = required.has(key) ? '' : '?';
-      const keyIdent = /^[A-Za-z_][A-Za-z0-9_]*$/.test(key) ? key : JSON.stringify(key);
-      return `  ${keyIdent}${optional}: ${tsType(prop, key)};`;
-    });
+    const lines = Object.keys(props)
+      .sort()
+      .map(key => {
+        const prop = props[key];
+        const optional = required.has(key) ? '' : '?';
+        const keyIdent = /^[A-Za-z_][A-Za-z0-9_]*$/.test(key) ? key : JSON.stringify(key);
+        return `  ${keyIdent}${optional}: ${tsType(prop, key)};`;
+      });
 
     if (schema.additionalProperties) {
       const valType = schema.additionalProperties === true ? 'any' : tsType(schema.additionalProperties);
@@ -230,15 +232,17 @@ function emitSchema(name, schema) {
 
       // Otherwise: object literal (possibly intersected with Record)
       const linesArr = [];
-      Object.keys(props).forEach(key => {
-        const prop = props[key];
-        const isOptional = !forceAllRequired && !required.has(key);
-        const keyIdent = /^[A-Za-z_][A-Za-z0-9_]*$/.test(key) ? key : JSON.stringify(key);
-        const baseType = tsType(prop, key);
-        const finalType = isOptional ? withNull(baseType) : baseType;
-        // In interfaces, never emit "?" — use `Type | null` for optional props.
-        linesArr.push(`  ${keyIdent}: ${finalType};`);
-      });
+      Object.keys(props)
+        .sort()
+        .forEach(key => {
+          const prop = props[key];
+          const isOptional = !forceAllRequired && !required.has(key);
+          const keyIdent = /^[A-Za-z_][A-Za-z0-9_]*$/.test(key) ? key : JSON.stringify(key);
+          const baseType = tsType(prop, key);
+          const finalType = isOptional ? withNull(baseType) : baseType;
+          // In interfaces, never emit "?" — use `Type | null` for optional props.
+          linesArr.push(`  ${keyIdent}: ${finalType};`);
+        });
 
       const objectLiteral = `{\n${linesArr.join('\n')}\n}`;
       if (hasAddl) {

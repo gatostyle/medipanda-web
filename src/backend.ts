@@ -21,12 +21,9 @@ export class DateString extends String {
 }
 
 export interface AdminCreateRequest {
-  status: boolean;
-  name: string;
-  userId: string;
-  password: string;
   email: string;
-  phoneNumber: string;
+  name: string;
+  password: string;
   permissions: (
     | 'MEMBER_MANAGEMENT'
     | 'PRODUCT_MANAGEMENT'
@@ -42,6 +39,9 @@ export interface AdminCreateRequest {
     | 'PERMISSION_MANAGEMENT'
     | 'ALL'
   )[];
+  phoneNumber: string;
+  status: boolean;
+  userId: string;
 }
 
 export interface AdminPermissionResponse {
@@ -63,11 +63,9 @@ export interface AdminPermissionResponse {
 }
 
 export interface AdminUpdateRequest {
-  name: string | null;
-  userId: string | null;
-  password: string | null;
   email: string | null;
-  phoneNumber: string | null;
+  name: string | null;
+  password: string | null;
   permissions:
     | (
         | 'MEMBER_MANAGEMENT'
@@ -85,327 +83,328 @@ export interface AdminUpdateRequest {
         | 'ALL'
       )[]
     | null;
+  phoneNumber: string | null;
+  userId: string | null;
 }
 
 export interface AlternativeProductDto {
-  substituent: string | null;
-  manufacturer: string | null;
-  kdCode: string;
-  productName: string;
   composition: string | null;
+  feeRate: number | null;
+  kdCode: string;
+  manufacturer: string | null;
   nhiPrice: number | null;
   nhiUnit: string | null;
-  price: number | null;
-  feeRate: number | null;
   note: string | null;
+  price: number | null;
+  productName: string;
+  substituent: string | null;
 }
 
 export interface AttachmentResponse {
-  s3fileId: number;
   fileUrl: string;
-  type: 'ATTACHMENT' | 'EDITOR';
   originalFileName: string;
+  s3fileId: number;
+  type: 'ATTACHMENT' | 'EDITOR';
 }
 
 export interface BannerCreateRequest {
-  title: string;
-  linkUrl: string;
-  status: 'VISIBLE' | 'HIDDEN';
-  scope: 'ENTIRE' | 'CONTRACT' | 'NON_CONTRACT';
-  position: string;
   displayOrder: number;
-  startAt: DateTimeString;
   endAt: DateTimeString;
+  linkUrl: string;
+  position: string;
+  scope: 'ENTIRE' | 'CONTRACT' | 'NON_CONTRACT';
+  startAt: DateTimeString;
+  status: 'VISIBLE' | 'HIDDEN';
+  title: string;
 }
 
 export interface BannerResponse {
-  id: number;
-  title: string;
-  linkUrl: string;
-  status: 'VISIBLE' | 'HIDDEN';
-  scope: 'ENTIRE' | 'CONTRACT' | 'NON_CONTRACT';
-  position: string;
-  displayOrder: number;
-  viewCount: number;
   clickCount: number;
   ctr: number;
-  note: string | null;
-  startAt: string;
+  displayOrder: number;
   endAt: string;
+  id: number;
   imageUrl: string;
+  linkUrl: string;
+  note: string | null;
+  position: string;
+  scope: 'ENTIRE' | 'CONTRACT' | 'NON_CONTRACT';
+  startAt: string;
+  status: 'VISIBLE' | 'HIDDEN';
+  title: string;
+  viewCount: number;
 }
 
 export interface BannerUpdateRequest {
-  title: string | null;
-  linkUrl: string | null;
-  status: ('VISIBLE' | 'HIDDEN') | null;
-  scope: ('ENTIRE' | 'CONTRACT' | 'NON_CONTRACT') | null;
-  position: string | null;
   displayOrder: number | null;
-  startAt: DateTimeString | null;
   endAt: DateTimeString | null;
+  linkUrl: string | null;
+  position: string | null;
+  scope: ('ENTIRE' | 'CONTRACT' | 'NON_CONTRACT') | null;
+  startAt: DateTimeString | null;
+  status: ('VISIBLE' | 'HIDDEN') | null;
+  title: string | null;
 }
 
 export interface BlindPostResponse {
-  id: number;
-  memberName: string;
+  blindAt: string;
   content: string;
-  userId: string;
-  likesCount: number;
-  reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  id: number;
+  likesCount: number;
+  memberName: string;
   nickname: string;
   postType: 'BOARD' | 'COMMENT';
-  blindAt: string;
+  reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
+  userId: string;
 }
 
 export interface BlindUpdateRequest {
-  postId: number | null;
   commentId: number | null;
+  postId: number | null;
 }
 
 export interface BoardDetailsResponse {
-  id: number;
-  userId: string;
-  name: string;
-  memberType: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
-  boardType: string;
-  title: string;
-  content: string;
-  nickname: string;
-  hiddenNickname: boolean;
-  isBlind: boolean;
-  likedByMe: boolean;
-  reportedByMe: boolean;
-  likesCount: number;
-  viewsCount: number;
-  commentCount: number;
-  isExposed: boolean;
-  exposureRange: 'ALL' | 'CONTRACTED' | 'UNCONTRACTED';
-  createdAt: string;
-  children: BoardDetailsResponse[];
-  reports: BoardReportResponse[];
-  comments: CommentResponse[];
   attachments: AttachmentResponse[];
+  boardType: string;
+  children: BoardDetailsResponse[];
+  commentCount: number;
+  comments: CommentResponse[];
+  content: string;
+  createdAt: string;
+  exposureRange: 'ALL' | 'CONTRACTED' | 'UNCONTRACTED';
+  hiddenNickname: boolean;
+  id: number;
+  isBlind: boolean;
+  isExposed: boolean;
+  likedByMe: boolean;
+  likesCount: number;
+  memberType: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
+  name: string;
+  nickname: string;
   noticeProperties: NoticeProperties | null;
+  reportedByMe: boolean;
+  reports: BoardReportResponse[];
+  title: string;
+  userId: string;
+  viewsCount: number;
 }
 
 export interface BoardMemberStatsResponse {
-  name: string;
-  id: number;
-  phoneNumber: string;
-  userId: string;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
-  commentCount: number;
-  totalLikes: number;
   blindPostCount: number;
+  commentCount: number;
+  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  id: number;
+  name: string;
+  phoneNumber: string;
   postCount: number;
+  totalLikes: number;
+  userId: string;
 }
 
 export interface BoardPostCreateRequest {
   boardType: 'ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z' | 'EVENT' | 'SALES_AGENCY' | 'PRODUCT';
-  userId: string;
-  nickname: string;
-  hiddenNickname: boolean;
-  title: string;
   content: string;
-  parentId: number | null;
-  isExposed: boolean;
   editorFileIds: number[] | null;
   exposureRange: 'ALL' | 'CONTRACTED' | 'UNCONTRACTED';
+  hiddenNickname: boolean;
+  isExposed: boolean;
+  nickname: string;
   noticeProperties: NoticeProperties | null;
+  parentId: number | null;
+  title: string;
+  userId: string;
 }
 
 export interface BoardPostResponse {
-  id: number;
-  userId: string;
-  name: string;
-  memberType: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
   boardType: 'ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z' | 'EVENT' | 'SALES_AGENCY' | 'PRODUCT';
-  title: string;
-  nickname: string;
-  hiddenNickname: boolean;
-  isBlind: boolean;
-  likesCount: number;
-  viewsCount: number;
   commentCount: number;
   createdAt: string;
-  isExposed: boolean;
   exposureRange: 'ALL' | 'CONTRACTED' | 'UNCONTRACTED';
+  hasChildren: boolean;
+  hiddenNickname: boolean;
+  id: number;
+  isBlind: boolean;
+  isExposed: boolean;
+  likesCount: number;
+  memberType: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
+  name: string;
+  nickname: string;
   noticeProperties: NoticeProperties | null;
   noticeType:
     | ('PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING')
     | null;
-  hasChildren: boolean;
+  title: string;
+  userId: string;
   viewedByMe: boolean;
+  viewsCount: number;
 }
 
 export interface BoardPostUpdateRequest {
-  title: string | null;
   content: string | null;
+  editorFileIds: number[] | null;
+  exposureRange: ('ALL' | 'CONTRACTED' | 'UNCONTRACTED') | null;
   hiddenNickname: boolean | null;
   isBlind: boolean | null;
   isExposed: boolean | null;
-  exposureRange: ('ALL' | 'CONTRACTED' | 'UNCONTRACTED') | null;
   keepFileIds: number[];
-  editorFileIds: number[] | null;
   noticeProperties: UpdateNoticeProperties | null;
+  title: string | null;
 }
 
 export interface BoardReportResponse {
+  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   id: number;
-  userId: string;
   memberName: string;
   nickname: string;
-  contractStatus: 'CONTRACT' | 'NON_CONTRACT';
-  reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
   reportContent: string;
   reportDateTime: string;
+  reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
+  userId: string;
 }
 
 export interface ChangePasswordForFindAccountRequest {
-  userId: string;
   newPassword: string;
+  userId: string;
 }
 
 export interface ChangePasswordRequest {
-  userId: string;
   currentPassword: string;
   newPassword: string;
+  userId: string;
 }
 
 export interface CommentCreateRequest {
   boardPostId: number;
-  parentId: number | null;
   content: string;
+  parentId: number | null;
 }
 
 export interface CommentMemberResponse {
-  name: string;
-  id: number;
-  content: string;
   commentType: 'COMMENT' | 'REPLY';
-  createdAt: string;
-  userId: string;
-  likesCount: number;
+  content: string;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
-  nickname: string;
+  createdAt: string;
+  id: number;
   isBlind: boolean;
+  likesCount: number;
+  name: string;
+  nickname: string;
+  userId: string;
 }
 
 export interface CommentResponse {
-  id: number;
-  userId: string;
-  name: string;
   content: string;
-  nickname: string;
-  likesCount: number;
-  isBlind: boolean;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
-  parentId: number | null;
   createdAt: string;
-  modifiedAt: string;
+  id: number;
+  isBlind: boolean;
   likedByMe: boolean;
+  likesCount: number;
+  modifiedAt: string;
+  name: string;
+  nickname: string;
+  parentId: number | null;
   reportedByMe: boolean;
+  userId: string;
 }
 
 export interface CommentUpdateRequest {
-  id: number;
   content: string;
+  id: number;
 }
 
 export interface DealerCreateRequest {
-  dealerName: string;
-  bankName: string | null;
   accountNumber: string | null;
+  bankName: string | null;
+  dealerName: string;
   drugCompanyIds: number[];
 }
 
 export interface DealerResponse {
-  id: number;
-  dealerName: string;
   createdAt: string;
+  dealerName: string;
+  displayName: string;
   drugCompanyId: number | null;
   drugCompanyName: string | null;
-  displayName: string;
+  id: number;
 }
 
 export interface DeviceRequest {
-  deviceUuid: string | null;
-  platform: 'android' | 'ios' | 'other';
   appVersion: string | null;
+  deviceUuid: string | null;
   fcmToken: string | null;
+  platform: 'android' | 'ios' | 'other';
 }
 
 export interface DrugCompanyResponse {
+  code: string;
   id: number;
   name: string;
-  code: string;
 }
 
 export interface EventBoardCreateRequest {
-  startAt: string;
-  endAt: string;
   description: string;
-  videoUrl: string | null;
+  endAt: string;
   note: string | null;
+  startAt: string;
+  videoUrl: string | null;
 }
 
 export interface EventBoardDetailsResponse {
+  boardPostDetail: BoardDetailsResponse;
+  description: string;
+  eventEndDate: string;
   eventId: number;
   eventStartDate: string;
-  eventEndDate: string;
-  description: string;
+  note: string | null;
   thumbnailUrl: string;
   videoUrl: string | null;
-  note: string | null;
-  boardPostDetail: BoardDetailsResponse;
 }
 
 export interface EventBoardSummaryResponse {
-  id: number;
-  title: string;
-  description: string;
-  thumbnailUrl: string;
-  eventStartAt: string;
-  eventEndAt: string;
-  isExposed: boolean;
-  viewCount: number;
   createdDate: string;
+  description: string;
+  eventEndAt: string;
+  eventStartAt: string;
   eventStatus: 'IN_PROGRESS' | 'FINISHED';
+  id: number;
+  isExposed: boolean;
+  thumbnailUrl: string;
+  title: string;
+  viewCount: number;
 }
 
 export interface EventBoardUpdateRequest {
-  startAt: string | null;
-  endAt: string | null;
   description: string | null;
-  videoUrl: string | null;
+  endAt: string | null;
   note: string | null;
+  startAt: string | null;
+  videoUrl: string | null;
 }
 
 export interface ExpenseReportResponse {
-  reportId: number;
-  userId: string | null;
   companyName: string | null;
-  productId: number | null;
-  productCode: string | null;
-  productName: string | null;
+  eventEndAt: string | null;
+  eventStartAt: string | null;
   institutionType: string;
+  productCode: string | null;
+  productId: number | null;
+  productName: string | null;
+  reportId: number;
   reportType: 'SAMPLE_PROVIDE' | 'PRODUCT_BRIEFING_MULTI' | 'PRODUCT_BRIEFING_SINGLE';
   status: 'PENDING' | 'COMPLETED';
-  eventStartAt: string | null;
-  eventEndAt: string | null;
   supportAmount: number;
+  userId: string | null;
 }
 
 export interface FcmTokenRequest {
-  platform: 'android' | 'ios' | 'other';
-  fcmToken: string;
   deviceUuid: string | null;
+  fcmToken: string;
+  platform: 'android' | 'ios' | 'other';
 }
 
 export interface FileValidationErrorDto {
-  fileName: string;
   error:
     | 'INVALID_EXTENSION'
     | 'INVALID_FILENAME_FORMAT'
@@ -415,53 +414,54 @@ export interface FileValidationErrorDto {
     | 'INVALID_MONTH_FORMAT'
     | 'DUPLICATE_DEALER_PARTNER_DRUG_COMPANY'
     | 'DRUG_COMPANY_MISMATCH';
+  fileName: string;
   message: string;
 }
 
 export interface HospitalResponse {
+  address: string;
   id: number;
   name: string;
+  scheduledOpenDate: string | null;
   sido: string;
   sigungu: string;
-  address: string;
-  scheduledOpenDate: string | null;
   source: string | null;
 }
 
 export interface InstitutionInfo {
-  name: string;
   code: string;
+  name: string;
 }
 
 export interface KmcAuthRequest {
-  cpId: string;
-  urlCode: string;
   certMet: string;
+  cpId: string;
   plusInfo: string;
+  urlCode: string;
 }
 
 export interface KmcAuthResponse {
-  trCert: string;
   certNum: string;
   requestedAt: string;
+  trCert: string;
 }
 
 export interface LoginRequest {
-  userId: string;
-  password: string;
   device: DeviceRequest | null;
+  password: string;
+  userId: string;
 }
 
 export interface LoginResponse {
   accessToken: string;
-  refreshToken: string;
   deviceUuid: string | null;
+  refreshToken: string;
 }
 
 export interface MarketingAgreements {
-  sms: boolean;
   email: boolean;
   push: boolean;
+  sms: boolean;
 }
 
 export interface MedicalPersonInfo {
@@ -474,82 +474,82 @@ export interface MedicalPersonWithSignature {
 }
 
 export interface MemberDetailsResponse {
+  accountStatus: 'ACTIVATED' | 'BLOCKED' | 'DELETED';
+  birthDate: string;
+  contractDate: string | null;
+  contractStatus: ('PENDING' | 'APPROVED' | 'REJECTED') | null;
+  csoCertUrl: string | null;
+  email: string;
+  gender: ('MALE' | 'FEMALE') | null;
   id: number;
-  userId: string;
+  lastLoginDate: string;
+  marketingAgreements: MarketingAgreements;
   name: string;
   nickname: string;
-  gender: ('MALE' | 'FEMALE') | null;
-  phoneNumber: string;
-  birthDate: string;
-  accountStatus: 'ACTIVATED' | 'BLOCKED' | 'DELETED';
-  email: string;
-  partnerContractStatus: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
-  marketingAgreements: MarketingAgreements;
-  referralCode: string | null;
-  csoCertUrl: string | null;
-  registrationDate: string;
-  lastLoginDate: string;
-  note: string | null;
-  role: 'USER' | 'ADMIN' | 'SUPER_ADMIN';
   nicknameHidden: boolean;
-  contractStatus: ('PENDING' | 'APPROVED' | 'REJECTED') | null;
-  contractDate: string | null;
+  note: string | null;
+  partnerContractStatus: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
+  phoneNumber: string;
+  referralCode: string | null;
+  registrationDate: string;
+  role: 'USER' | 'ADMIN' | 'SUPER_ADMIN';
+  userId: string;
 }
 
 export interface MemberResponse {
+  accountStatus: 'ACTIVATED' | 'BLOCKED' | 'DELETED';
+  birthDate: string;
+  companyName: string | null;
+  createdAt: string;
+  email: string;
+  hasCsoCert: boolean;
   id: number;
-  userId: string;
+  lastLoginDate: string;
+  marketingConsent: boolean;
   name: string;
   nickname: string;
-  phoneNumber: string;
-  birthDate: string;
-  email: string;
-  partnerContractStatus: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
-  marketingConsent: boolean;
-  registrationDate: string;
-  lastLoginDate: string;
-  hasCsoCert: boolean;
-  accountStatus: 'ACTIVATED' | 'BLOCKED' | 'DELETED';
-  role: 'USER' | 'ADMIN' | 'SUPER_ADMIN';
-  companyName: string | null;
   nicknameHidden: boolean;
-  createdAt: string;
+  partnerContractStatus: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
+  phoneNumber: string;
+  registrationDate: string;
+  role: 'USER' | 'ADMIN' | 'SUPER_ADMIN';
+  userId: string;
 }
 
 export interface MemberSignupRequest {
-  userId: string;
-  password: string;
-  name: string;
   birthDate: string;
-  gender: 'MALE' | 'FEMALE';
-  phoneNumber: string;
   email: string;
-  nickname: string | null;
-  referralCode: string | null;
+  gender: 'MALE' | 'FEMALE';
   marketingAgreement: MarketingAgreements;
+  name: string;
+  nickname: string | null;
+  password: string;
+  phoneNumber: string;
+  referralCode: string | null;
+  userId: string;
 }
 
 export interface MemberUpdateRequest {
-  password: string | null;
-  name: string | null;
-  birthDate: string | null;
   accountStatus: ('ACTIVATED' | 'BLOCKED' | 'DELETED') | null;
-  phoneNumber: string | null;
+  birthDate: string | null;
   email: string | null;
-  nickname: string | null;
-  referralCode: string | null;
-  note: string | null;
   marketingAgreement: MarketingAgreements | null;
+  name: string | null;
+  nickname: string | null;
+  note: string | null;
+  password: string | null;
+  phoneNumber: string | null;
+  referralCode: string | null;
 }
 
 export interface MonthlyFeeAmountResponse {
-  month: number;
   feeAmount: number;
+  month: number;
 }
 
 export interface MonthlyPrescriptionCountResponse {
-  month: number;
   count: number;
+  month: number;
 }
 
 export interface NicknameCheckRequest {
@@ -558,9 +558,9 @@ export interface NicknameCheckRequest {
 
 export interface NicknameCheckResponse {
   available: boolean;
+  changedAt: string | null;
   duplicated: boolean;
   recentlyChanged: boolean;
-  changedAt: string | null;
 }
 
 export interface NicknameUpdateRequest {
@@ -568,648 +568,648 @@ export interface NicknameUpdateRequest {
 }
 
 export interface NoteUpdateItem {
-  userId: string;
   note: string | null;
+  userId: string;
 }
 
 export interface NoticeProperties {
-  noticeType: 'PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING';
   drugCompany: string | null;
   fixedTop: boolean;
+  noticeType: 'PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING';
 }
 
 export interface OcrOriginalItem {
-  productCode: string;
-  productName: string;
-  unit: string;
-  quantity: number;
-  unitPrice: number;
-  totalPrice: number;
   baseFeeRate: number;
   feeAmount: number;
   note: string | null;
+  productCode: string;
+  productName: string;
+  quantity: number;
+  totalPrice: number;
+  unit: string;
+  unitPrice: number;
 }
 
 export interface PageBannerResponse {
-  totalPages: number;
-  totalElements: number;
-  pageable: PageableObject;
-  size: number;
   content: BannerResponse[];
-  number: number;
-  sort: SortObject;
-  numberOfElements: number;
+  empty: boolean;
   first: boolean;
   last: boolean;
-  empty: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: PageableObject;
+  size: number;
+  sort: SortObject;
+  totalElements: number;
+  totalPages: number;
 }
 
 export interface PageBlindPostResponse {
-  totalPages: number;
-  totalElements: number;
-  pageable: PageableObject;
-  size: number;
   content: BlindPostResponse[];
-  number: number;
-  sort: SortObject;
-  numberOfElements: number;
+  empty: boolean;
   first: boolean;
   last: boolean;
-  empty: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: PageableObject;
+  size: number;
+  sort: SortObject;
+  totalElements: number;
+  totalPages: number;
 }
 
 export interface PageBoardMemberStatsResponse {
-  totalPages: number;
-  totalElements: number;
-  pageable: PageableObject;
-  size: number;
   content: BoardMemberStatsResponse[];
-  number: number;
-  sort: SortObject;
-  numberOfElements: number;
+  empty: boolean;
   first: boolean;
   last: boolean;
-  empty: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: PageableObject;
+  size: number;
+  sort: SortObject;
+  totalElements: number;
+  totalPages: number;
 }
 
 export interface PageBoardPostResponse {
-  totalPages: number;
-  totalElements: number;
-  pageable: PageableObject;
-  size: number;
   content: BoardPostResponse[];
-  number: number;
-  sort: SortObject;
-  numberOfElements: number;
+  empty: boolean;
   first: boolean;
   last: boolean;
-  empty: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: PageableObject;
+  size: number;
+  sort: SortObject;
+  totalElements: number;
+  totalPages: number;
 }
 
 export interface PageCommentMemberResponse {
-  totalPages: number;
-  totalElements: number;
-  pageable: PageableObject;
-  size: number;
   content: CommentMemberResponse[];
-  number: number;
-  sort: SortObject;
-  numberOfElements: number;
+  empty: boolean;
   first: boolean;
   last: boolean;
-  empty: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: PageableObject;
+  size: number;
+  sort: SortObject;
+  totalElements: number;
+  totalPages: number;
 }
 
 export interface PageEventBoardSummaryResponse {
-  totalPages: number;
-  totalElements: number;
-  pageable: PageableObject;
-  size: number;
   content: EventBoardSummaryResponse[];
-  number: number;
-  sort: SortObject;
-  numberOfElements: number;
+  empty: boolean;
   first: boolean;
   last: boolean;
-  empty: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: PageableObject;
+  size: number;
+  sort: SortObject;
+  totalElements: number;
+  totalPages: number;
 }
 
 export interface PageExpenseReportResponse {
-  totalPages: number;
-  totalElements: number;
-  pageable: PageableObject;
-  size: number;
   content: ExpenseReportResponse[];
-  number: number;
-  sort: SortObject;
-  numberOfElements: number;
+  empty: boolean;
   first: boolean;
   last: boolean;
-  empty: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: PageableObject;
+  size: number;
+  sort: SortObject;
+  totalElements: number;
+  totalPages: number;
 }
 
 export interface PageHospitalResponse {
-  totalPages: number;
-  totalElements: number;
-  pageable: PageableObject;
-  size: number;
   content: HospitalResponse[];
-  number: number;
-  sort: SortObject;
-  numberOfElements: number;
+  empty: boolean;
   first: boolean;
   last: boolean;
-  empty: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: PageableObject;
+  size: number;
+  sort: SortObject;
+  totalElements: number;
+  totalPages: number;
 }
 
 export interface PageMemberResponse {
-  totalPages: number;
-  totalElements: number;
-  pageable: PageableObject;
-  size: number;
   content: MemberResponse[];
-  number: number;
-  sort: SortObject;
-  numberOfElements: number;
+  empty: boolean;
   first: boolean;
   last: boolean;
-  empty: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: PageableObject;
+  size: number;
+  sort: SortObject;
+  totalElements: number;
+  totalPages: number;
 }
 
 export interface PagePartnerResponse {
-  totalPages: number;
-  totalElements: number;
-  pageable: PageableObject;
-  size: number;
   content: PartnerResponse[];
-  number: number;
-  sort: SortObject;
-  numberOfElements: number;
+  empty: boolean;
   first: boolean;
   last: boolean;
-  empty: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: PageableObject;
+  size: number;
+  sort: SortObject;
+  totalElements: number;
+  totalPages: number;
 }
 
 export interface PagePerformanceStatsResponse {
-  totalPages: number;
-  totalElements: number;
-  pageable: PageableObject;
-  size: number;
   content: PerformanceStatsResponse[];
-  number: number;
-  sort: SortObject;
-  numberOfElements: number;
+  empty: boolean;
   first: boolean;
   last: boolean;
-  empty: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: PageableObject;
+  size: number;
+  sort: SortObject;
+  totalElements: number;
+  totalPages: number;
 }
 
 export interface PagePrescriptionPartnerResponse {
-  totalPages: number;
-  totalElements: number;
-  pageable: PageableObject;
-  size: number;
   content: PrescriptionPartnerResponse[];
-  number: number;
-  sort: SortObject;
-  numberOfElements: number;
+  empty: boolean;
   first: boolean;
   last: boolean;
-  empty: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: PageableObject;
+  size: number;
+  sort: SortObject;
+  totalElements: number;
+  totalPages: number;
 }
 
 export interface PagePrescriptionResponse {
-  totalPages: number;
-  totalElements: number;
-  pageable: PageableObject;
-  size: number;
   content: PrescriptionResponse[];
-  number: number;
-  sort: SortObject;
-  numberOfElements: number;
+  empty: boolean;
   first: boolean;
   last: boolean;
-  empty: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: PageableObject;
+  size: number;
+  sort: SortObject;
+  totalElements: number;
+  totalPages: number;
 }
 
 export interface PageProductSummaryResponse {
-  totalPages: number;
-  totalElements: number;
-  pageable: PageableObject;
-  size: number;
   content: ProductSummaryResponse[];
-  number: number;
-  sort: SortObject;
-  numberOfElements: number;
+  empty: boolean;
   first: boolean;
   last: boolean;
-  empty: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: PageableObject;
+  size: number;
+  sort: SortObject;
+  totalElements: number;
+  totalPages: number;
 }
 
 export interface PageSalesAgencyProductApplicantResponse {
-  totalPages: number;
-  totalElements: number;
-  pageable: PageableObject;
-  size: number;
   content: SalesAgencyProductApplicantResponse[];
-  number: number;
-  sort: SortObject;
-  numberOfElements: number;
+  empty: boolean;
   first: boolean;
   last: boolean;
-  empty: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: PageableObject;
+  size: number;
+  sort: SortObject;
+  totalElements: number;
+  totalPages: number;
 }
 
 export interface PageSalesAgencyProductSummaryResponse {
-  totalPages: number;
-  totalElements: number;
-  pageable: PageableObject;
-  size: number;
   content: SalesAgencyProductSummaryResponse[];
-  number: number;
-  sort: SortObject;
-  numberOfElements: number;
+  empty: boolean;
   first: boolean;
   last: boolean;
-  empty: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: PageableObject;
+  size: number;
+  sort: SortObject;
+  totalElements: number;
+  totalPages: number;
 }
 
 export interface PageSettlementPartnerResponse {
-  totalPages: number;
-  totalElements: number;
-  pageable: PageableObject;
-  size: number;
   content: SettlementPartnerResponse[];
-  number: number;
-  sort: SortObject;
-  numberOfElements: number;
+  empty: boolean;
   first: boolean;
   last: boolean;
-  empty: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: PageableObject;
+  size: number;
+  sort: SortObject;
+  totalElements: number;
+  totalPages: number;
 }
 
 export interface PageSettlementResponse {
-  totalPages: number;
-  totalElements: number;
-  pageable: PageableObject;
-  size: number;
   content: SettlementResponse[];
-  number: number;
-  sort: SortObject;
-  numberOfElements: number;
+  empty: boolean;
   first: boolean;
   last: boolean;
-  empty: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: PageableObject;
+  size: number;
+  sort: SortObject;
+  totalElements: number;
+  totalPages: number;
 }
 
 export interface PageableObject {
+  offset: number;
   pageNumber: number;
   pageSize: number;
-  offset: number;
-  sort: SortObject;
   paged: boolean;
+  sort: SortObject;
   unpaged: boolean;
 }
 
 export interface PartnerContractDetailsResponse {
-  id: number;
-  contractType: 'INDIVIDUAL' | 'ORGANIZATION';
-  companyName: string;
-  businessNumber: string;
-  bankName: string;
   accountNumber: string;
+  bankName: string;
+  businessNumber: string;
+  companyName: string;
   contractDate: string;
-  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  contractType: 'INDIVIDUAL' | 'ORGANIZATION';
   fileUrls: Record<string, string>;
+  id: number;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
 }
 
 export interface PartnerContractRequest {
-  contractType: 'INDIVIDUAL' | 'ORGANIZATION';
-  companyName: string;
-  businessNumber: string;
-  bankName: string;
   accountNumber: string;
+  bankName: string;
+  businessNumber: string;
+  companyName: string;
+  contractType: 'INDIVIDUAL' | 'ORGANIZATION';
 }
 
 export interface PartnerContractUpdateRequest {
-  contractType: ('INDIVIDUAL' | 'ORGANIZATION') | null;
-  companyName: string | null;
-  businessNumber: string | null;
-  bankName: string | null;
   accountNumber: string | null;
+  bankName: string | null;
+  businessNumber: string | null;
+  companyName: string | null;
+  contractType: ('INDIVIDUAL' | 'ORGANIZATION') | null;
 }
 
 export interface PartnerCreateRequest {
-  drugCompanyId: number;
-  userId: string;
-  drugCompany: string;
+  businessNumber: string;
   companyName: string;
   contractType: 'CONTRACT' | 'NON_CONTRACT';
+  drugCompany: string;
+  drugCompanyId: number;
   institutionCode: string;
   institutionName: string;
-  businessNumber: string;
   medicalDepartment: string | null;
-  pharmacyName: string | null;
-  pharmacyAddress: string | null;
-  pharmacyStatus: 'NORMAL' | 'CLOSED' | 'DELETED' | 'NONE';
   note: string | null;
+  pharmacyAddress: string | null;
+  pharmacyName: string | null;
+  pharmacyStatus: 'NORMAL' | 'CLOSED' | 'DELETED' | 'NONE';
+  userId: string;
 }
 
 export interface PartnerResponse {
-  id: number;
-  memberName: string;
-  drugCompanyName: string;
+  businessNumber: string;
   companyName: string;
   contractType: 'CONTRACT' | 'NON_CONTRACT';
+  drugCompanyName: string;
+  hasPharmacy: boolean;
+  id: number;
   institutionCode: string;
   institutionName: string;
-  businessNumber: string;
   medicalDepartment: string | null;
-  hasPharmacy: boolean;
-  pharmacyName: string | null;
-  pharmacyAddress: string | null;
-  pharmacyStatus: ('NORMAL' | 'CLOSED' | 'DELETED' | 'NONE') | null;
+  memberName: string;
   note: string | null;
+  pharmacyAddress: string | null;
+  pharmacyName: string | null;
+  pharmacyStatus: ('NORMAL' | 'CLOSED' | 'DELETED' | 'NONE') | null;
 }
 
 export interface PartnerUpdateRequest {
-  drugCompanyId: number | null;
-  drugCompanyName: string | null;
+  businessNumber: string | null;
   companyName: string | null;
   contractType: ('CONTRACT' | 'NON_CONTRACT') | null;
+  drugCompanyId: number | null;
+  drugCompanyName: string | null;
   institutionCode: string | null;
   institutionName: string | null;
-  businessNumber: string | null;
   medicalDepartment: string | null;
-  pharmacyName: string | null;
-  pharmacyAddress: string | null;
-  pharmacyStatus: ('NORMAL' | 'CLOSED' | 'DELETED' | 'NONE') | null;
   note: string | null;
+  pharmacyAddress: string | null;
+  pharmacyName: string | null;
+  pharmacyStatus: ('NORMAL' | 'CLOSED' | 'DELETED' | 'NONE') | null;
 }
 
 export interface PerformanceStatsByDrugCompany {
   drugCompany: string | null;
+  feeAmount: number;
   prescriptionAmount: number;
   totalAmount: number;
-  feeAmount: number;
 }
 
 export interface PerformanceStatsByDrugCompanyMonthly {
-  settlementMonth: string;
   drugCompany: string;
-  prescriptionAmount: number;
-  totalAmount: number;
   feeAmount: number;
+  prescriptionAmount: number;
+  settlementMonth: string;
+  totalAmount: number;
 }
 
 export interface PerformanceStatsByInstitution {
+  feeAmount: number;
   institutionCode: string | null;
   institutionName: string | null;
   prescriptionAmount: number;
   totalAmount: number;
-  feeAmount: number;
 }
 
 export interface PerformanceStatsResponse {
-  drugCompany: string;
   companyName: string | null;
   dealerName: string | null;
-  partnerId: number;
+  drugCompany: string;
+  feeAmount: number;
   institutionCode: string | null;
   institutionName: string | null;
-  settlementMonth: string;
+  partnerId: number;
   prescriptionAmount: number;
+  settlementMonth: string;
   totalAmount: number;
-  feeAmount: number;
 }
 
 export interface PrescriptionCreateRequest {
   dealerId: number;
-  partnerId: number;
   drugCompanyId: number;
+  partnerId: number;
   prescriptionMonth: DateTimeString;
   settlementMonth: DateTimeString;
 }
 
 export interface PrescriptionPartnerProductCreateRequest {
-  prescriptionPartnerId: number;
   items: PrescriptionProductItem[];
+  prescriptionPartnerId: number;
 }
 
 export interface PrescriptionPartnerProductResponse {
-  id: number;
-  productCode: string;
-  productName: string;
-  unit: string;
-  quantity: number;
-  unitPrice: number;
-  totalPrice: number;
   baseFeeRate: number;
   feeAmount: number;
+  id: number;
   note: string | null;
+  productCode: string;
+  productName: string;
+  quantity: number;
+  totalPrice: number;
+  unit: string;
+  unitPrice: number;
 }
 
 export interface PrescriptionPartnerResponse {
-  id: number;
+  amount: number;
+  businessNumber: string;
   companyName: string;
+  dealerId: number;
+  dealerName: string;
   drugCompany: string;
   drugCompanyCode: string;
   drugCompanyId: number;
-  institutionName: string;
+  ediFiles: AttachmentResponse[];
+  id: number;
+  inputDate: string;
   institutionCode: string;
+  institutionName: string;
+  partnerId: number;
+  partnerName: string;
   prescriptionMonth: string;
   settlementMonth: string;
-  inputDate: string;
-  amount: number;
   status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
-  dealerId: number;
-  dealerName: string;
-  partnerName: string;
-  partnerId: number;
-  businessNumber: string;
-  ediFiles: AttachmentResponse[];
 }
 
 export interface PrescriptionProductItem {
-  productCode: string;
-  unit: string;
-  quantity: number;
-  unitPrice: number;
-  totalPrice: number;
   baseFeeRate: number;
   feeAmount: number;
   note: string | null;
   ocrItem: OcrOriginalItem | null;
+  productCode: string;
+  quantity: number;
+  totalPrice: number;
+  unit: string;
+  unitPrice: number;
 }
 
 export interface PrescriptionResponse {
-  id: number;
-  dealerId: number;
-  userId: string;
-  drugCompanyName: string;
+  checkedAt: string | null;
   companyName: string;
+  dealerId: number;
   dealerName: string;
+  drugCompanyName: string;
+  id: number;
   prescriptionMonth: string;
   settlementMonth: string;
-  submittedAt: string;
   status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
-  checkedAt: string | null;
+  submittedAt: string;
   type: string;
+  userId: string;
 }
 
 export interface PrescriptionUpdateRequest {
-  prescriptionPartnerId: number;
   dealerId: number | null;
-  partnerId: number | null;
   drugCompanyId: number | null;
-  prescriptionMonth: DateTimeString | null;
   keepFileIds: number[] | null;
+  partnerId: number | null;
+  prescriptionMonth: DateTimeString | null;
+  prescriptionPartnerId: number;
 }
 
 export interface PrescriptionZipUploadResult {
-  success: boolean;
-  errors: FileValidationErrorDto[];
-  createdPrescriptionPartnerCount: number;
   createdEdiFileCount: number;
+  createdPrescriptionPartnerCount: number;
+  errors: FileValidationErrorDto[];
+  success: boolean;
 }
 
 export interface ProductBriefingMultiCreateRequest {
-  productId: number;
-  institutions: InstitutionInfo[];
-  transportationFee: number;
-  giftFee: number;
   accommodationFee: number;
-  mealFee: number;
-  location: string;
-  startedAt: DateTimeString;
   endedAt: DateTimeString;
+  giftFee: number;
+  institutions: InstitutionInfo[];
   isJoint: boolean;
+  location: string;
+  mealFee: number;
+  productId: number;
+  startedAt: DateTimeString;
+  transportationFee: number;
 }
 
 export interface ProductBriefingMultiDetailResponse {
+  accommodationFee: number;
+  attachedFiles: AttachmentResponse[];
+  endedAt: string;
+  giftFee: number;
+  institutions: InstitutionInfo[];
+  isJoint: boolean;
+  location: string;
+  mealFee: number;
+  productCode: string;
+  productId: number;
+  productName: string;
   reportId: number;
   reportType: 'SAMPLE_PROVIDE' | 'PRODUCT_BRIEFING_MULTI' | 'PRODUCT_BRIEFING_SINGLE';
-  productId: number;
-  productCode: string;
-  productName: string;
-  institutions: InstitutionInfo[];
-  transportationFee: number;
-  giftFee: number;
-  accommodationFee: number;
-  mealFee: number;
-  location: string;
   startedAt: string;
-  endedAt: string;
-  isJoint: boolean;
-  attachedFiles: AttachmentResponse[];
   status: 'PENDING' | 'COMPLETED';
+  transportationFee: number;
 }
 
 export interface ProductBriefingMultiUpdateRequest {
-  location: string | null;
-  startedAt: DateTimeString | null;
-  endedAt: DateTimeString | null;
-  isJoint: boolean | null;
-  transportationFee: number | null;
-  giftFee: number | null;
   accommodationFee: number | null;
-  mealFee: number | null;
-  institutions: InstitutionInfo[] | null;
+  endedAt: DateTimeString | null;
   existFileIds: number[];
+  giftFee: number | null;
+  institutions: InstitutionInfo[] | null;
+  isJoint: boolean | null;
+  location: string | null;
+  mealFee: number | null;
+  startedAt: DateTimeString | null;
+  transportationFee: number | null;
 }
 
 export interface ProductBriefingSingleCreateRequest {
-  productId: number;
-  institutionName: string;
-  institutionCode: string;
-  supportAmount: number;
-  location: string;
   eventAt: DateTimeString;
+  institutionCode: string;
+  institutionName: string;
   isJoint: boolean;
+  location: string;
   medicalPersons: MedicalPersonInfo[];
+  productId: number;
+  supportAmount: number;
 }
 
 export interface ProductBriefingSingleDetailResponse {
-  reportId: number;
-  productId: number;
-  productCode: string;
-  productName: string;
-  institutionName: string;
-  institutionCode: string;
-  supportAmount: number;
-  location: string;
-  eventAt: string;
-  isJoint: boolean;
-  medicalPersons: MedicalPersonWithSignature[];
   attachedFiles: AttachmentResponse[];
+  eventAt: string;
+  institutionCode: string;
+  institutionName: string;
+  isJoint: boolean;
+  location: string;
+  medicalPersons: MedicalPersonWithSignature[];
+  productCode: string;
+  productId: number;
+  productName: string;
+  reportId: number;
   status: 'PENDING' | 'COMPLETED';
+  supportAmount: number;
 }
 
 export interface ProductBriefingSingleUpdateRequest {
-  institutionName: string | null;
-  institutionCode: string | null;
-  supportAmount: number | null;
-  location: string | null;
   eventAt: DateTimeString | null;
-  isJoint: boolean | null;
-  medicalPersons: MedicalPersonInfo[] | null;
   existFileIds: number[];
+  institutionCode: string | null;
+  institutionName: string | null;
+  isJoint: boolean | null;
+  location: string | null;
+  medicalPersons: MedicalPersonInfo[] | null;
+  supportAmount: number | null;
 }
 
 export interface ProductDetailsResponse {
-  manufacturer: string | null;
-  insurance: string | null;
-  productName: string | null;
-  composition: string | null;
-  price: number | null;
-  priceUnit: 'KRW' | 'USD' | 'EUR';
-  feeRate: number | null;
-  changedFeeRate: number | null;
-  changedMonth: string | null;
-  productCode: string | null;
-  isPromotion: boolean | null;
-  isOutOfStock: boolean | null;
-  isStopSelling: boolean | null;
-  isAcquisition: boolean | null;
-  note: string | null;
   alternativeProducts: AlternativeProductDto[];
   boardDetailsResponse: BoardDetailsResponse;
+  changedFeeRate: number | null;
+  changedMonth: string | null;
+  composition: string | null;
+  feeRate: number | null;
+  insurance: string | null;
+  isAcquisition: boolean | null;
+  isOutOfStock: boolean | null;
+  isPromotion: boolean | null;
+  isStopSelling: boolean | null;
+  manufacturer: string | null;
+  note: string | null;
+  price: number | null;
+  priceUnit: 'KRW' | 'USD' | 'EUR';
+  productCode: string | null;
+  productName: string | null;
 }
 
 export interface ProductExtraInfoRequest {
-  manufacturer: string | null;
-  productName: string | null;
-  composition: string | null;
-  productCode: string;
   changedFeeRate: string | null;
   changedMonth: number | null;
-  priceUnit: 'KRW' | 'USD' | 'EUR';
-  feeRate: string | null;
-  price: number | null;
-  note: string | null;
+  composition: string | null;
   detailInfo: string | null;
-  isPromotion: boolean | null;
-  isOutOfStock: boolean | null;
-  isStopSelling: boolean | null;
+  feeRate: string | null;
   isAcquisition: boolean | null;
+  isOutOfStock: boolean | null;
+  isPromotion: boolean | null;
+  isStopSelling: boolean | null;
+  manufacturer: string | null;
+  note: string | null;
+  price: number | null;
+  priceUnit: 'KRW' | 'USD' | 'EUR';
+  productCode: string;
+  productName: string | null;
 }
 
 export interface ProductSummaryResponse {
-  id: number;
-  productName: string | null;
+  changedFeeRate: number | null;
+  changedMonth: string | null;
   composition: string | null;
-  productCode: string;
+  feeRate: number | null;
+  id: number;
+  isAcquisition: boolean | null;
+  isOutOfStock: boolean | null;
+  isPromotion: boolean | null;
+  isStopSelling: boolean | null;
   manufacturerName: string | null;
   note: string | null;
   price: number | null;
-  feeRate: number | null;
-  changedFeeRate: number | null;
-  changedMonth: string | null;
-  isAcquisition: boolean | null;
-  isPromotion: boolean | null;
-  isOutOfStock: boolean | null;
-  isStopSelling: boolean | null;
+  productCode: string;
+  productName: string | null;
 }
 
 export interface PushPreferenceResponse {
-  allowNotice: boolean;
-  allowSalesAgency: boolean;
-  allowPrescription: boolean;
-  allowSettlement: boolean;
   allowCommunity: boolean;
+  allowNotice: boolean;
+  allowPrescription: boolean;
+  allowSalesAgency: boolean;
+  allowSettlement: boolean;
 }
 
 export interface PushPreferenceUpdateRequest {
-  allowNotice: boolean | null;
-  allowSalesAgency: boolean | null;
-  allowPrescription: boolean | null;
-  allowSettlement: boolean | null;
   allowCommunity: boolean | null;
+  allowNotice: boolean | null;
+  allowPrescription: boolean | null;
+  allowSalesAgency: boolean | null;
+  allowSettlement: boolean | null;
 }
 
 export interface RefreshTokenRequest {
-  userId: string;
   refreshToken: string;
+  userId: string;
 }
 
 export interface RegionCategoryResponse {
@@ -1218,47 +1218,47 @@ export interface RegionCategoryResponse {
 }
 
 export interface ReportCreateRequest {
-  postId: number | null;
   commentId: number | null;
-  reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
+  postId: number | null;
   reportContent: string;
+  reportType: 'SPAM' | 'ABUSE' | 'ILLEGAL_CONTENT' | 'PERSONAL_INFORMATION' | 'OTHER';
 }
 
 export interface SalesAgencyProductApplicantResponse {
-  id: number;
-  userId: string;
-  memberName: string;
-  phoneNumber: string;
   appliedDate: string;
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
+  id: number;
+  memberName: string;
   note: string | null;
+  phoneNumber: string;
+  userId: string;
 }
 
 export interface SalesAgencyProductCreateRequest {
-  startAt: string;
-  endAt: string;
-  productName: string;
   clientName: string;
   contractDate: string;
-  quantity: number;
-  videoUrl: string | null;
+  endAt: string;
   note: string | null;
+  productName: string;
+  quantity: number;
+  startAt: string;
+  videoUrl: string | null;
 }
 
 export interface SalesAgencyProductDetailsResponse {
-  productId: number;
+  applied: boolean;
+  boardPostDetail: BoardDetailsResponse;
   clientName: string;
-  productName: string;
-  startDate: string;
-  endDate: string;
   contractDate: string;
+  endDate: string;
+  note: string | null;
+  price: number;
+  productId: number;
+  productName: string;
+  quantity: number;
+  startDate: string;
   thumbnailUrl: string;
   videoUrl: string | null;
-  note: string | null;
-  quantity: number;
-  price: number;
-  boardPostDetail: BoardDetailsResponse;
-  applied: boolean;
 }
 
 export interface SalesAgencyProductNoteUpdateRequest {
@@ -1267,61 +1267,61 @@ export interface SalesAgencyProductNoteUpdateRequest {
 }
 
 export interface SalesAgencyProductSummaryResponse {
-  id: number;
-  clientName: string;
-  productName: string;
-  price: number;
-  contractDate: string;
-  isExposed: boolean;
-  startAt: string;
-  endAt: string;
   appliedCount: number;
+  clientName: string;
+  contractDate: string;
+  endAt: string;
+  id: number;
+  isExposed: boolean;
+  price: number;
+  productName: string;
   quantity: number;
+  startAt: string;
   thumbnailUrl: string | null;
 }
 
 export interface SalesAgencyProductUpdateRequest {
-  startAt: string | null;
-  endAt: string | null;
-  productName: string | null;
   clientName: string | null;
   contractDate: string | null;
-  videoUrl: string | null;
-  quantity: number | null;
+  endAt: string | null;
   note: string | null;
+  productName: string | null;
+  quantity: number | null;
+  startAt: string | null;
+  videoUrl: string | null;
 }
 
 export interface SampleProvideReportCreateRequest {
-  productId: number;
+  institutionCode: string;
+  institutionName: string;
   packCount: number;
+  productId: number;
   provideCount: number;
   providedAt: DateTimeString;
-  institutionName: string;
-  institutionCode: string;
 }
 
 export interface SampleProvideReportDetailResponse {
+  attachedFiles: AttachmentResponse[];
+  institutionCode: string;
+  institutionName: string;
+  packCount: number;
+  productCode: string;
+  productId: number;
+  productName: string;
+  provideCount: number;
+  providedAt: string;
   reportId: number;
   reportType: 'SAMPLE_PROVIDE' | 'PRODUCT_BRIEFING_MULTI' | 'PRODUCT_BRIEFING_SINGLE';
-  productId: number;
-  productCode: string;
-  productName: string;
-  packCount: number;
-  provideCount: number;
-  institutionName: string;
-  institutionCode: string;
-  providedAt: string;
-  attachedFiles: AttachmentResponse[];
   status: 'PENDING' | 'COMPLETED';
 }
 
 export interface SampleProvideReportUpdateRequest {
+  existFileIds: number[];
+  institutionCode: string | null;
+  institutionName: string | null;
   packCount: number | null;
   provideCount: number | null;
-  institutionName: string | null;
-  institutionCode: string | null;
   providedAt: DateTimeString | null;
-  existFileIds: number[];
 }
 
 export interface SettlementNotifyRequest {
@@ -1329,58 +1329,58 @@ export interface SettlementNotifyRequest {
 }
 
 export interface SettlementPartnerProductResponse {
-  id: number;
-  productCode: string | null;
-  productName: string | null;
-  seq: number | null;
-  quantity: number | null;
-  unitPrice: number | null;
-  prescriptionAmount: number | null;
-  feeRate: number | null;
+  extraFeeAmount: number | null;
   extraFeeRate: number | null;
   feeAmount: number | null;
-  extraFeeAmount: number | null;
+  feeRate: number | null;
+  id: number;
   note: string | null;
+  prescriptionAmount: number | null;
+  productCode: string | null;
+  productName: string | null;
+  quantity: number | null;
+  seq: number | null;
+  unitPrice: number | null;
 }
 
 export interface SettlementPartnerResponse {
-  settlementPartnerId: number;
+  businessNumber: string;
   companyName: string;
   dealerName: string;
   institutionCode: string;
   institutionName: string;
-  businessNumber: string;
+  settlementPartnerId: number;
   supplyAmount: number;
   taxAmount: number;
   totalAmount: number;
 }
 
 export interface SettlementResponse {
-  id: number;
-  settlementMonth: string;
-  drugCompanyName: string;
+  companyName: string | null;
   dealerId: number;
   dealerName: string;
-  companyName: string | null;
+  drugCompanyName: string;
+  id: number;
+  prescriptionAmount: number;
+  settlementMonth: string;
   status: ('REQUEST' | 'OBJECTION') | null;
-  totalAmount: number;
   supplyAmount: number;
   taxAmount: number;
-  prescriptionAmount: number;
+  totalAmount: number;
 }
 
 export interface SortObject {
-  sorted: boolean;
   empty: boolean;
+  sorted: boolean;
   unsorted: boolean;
 }
 
 export interface UpdateNoticeProperties {
+  drugCompany: string | null;
+  fixedTop: boolean | null;
   noticeType:
     | ('PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING')
     | null;
-  drugCompany: string | null;
-  fixedTop: boolean | null;
 }
 
 /**
@@ -1526,8 +1526,8 @@ export async function getBoardDetails(
 export async function updateBoardPost(
   id: number,
   data: {
-    updateRequest: BoardPostUpdateRequest;
     newFiles?: File[];
+    updateRequest: BoardPostUpdateRequest;
   },
 ): Promise<string> {
   const form = new FormData();
@@ -1644,9 +1644,9 @@ export async function getSalesAgencyProducts(options?: {
  */
 export async function createSalesAgencyProductBoard(data: {
   boardPostCreateRequest: BoardPostCreateRequest;
+  files?: File[];
   salesAgencyProductCreateRequest: SalesAgencyProductCreateRequest;
   thumbnail: File;
-  files?: File[];
 }): Promise<string> {
   const form = new FormData();
   form.append('boardPostCreateRequest', new Blob([JSON.stringify(data.boardPostCreateRequest)], { type: 'application/json' }));
@@ -1724,8 +1724,8 @@ export async function uploadProductExtraInfo(data: { file: File }): Promise<void
  */
 export async function createProductExtraInfo(data: {
   boardPostCreateRequest: BoardPostCreateRequest;
-  productExtraInfoCreateRequest: ProductExtraInfoRequest;
   files?: File[];
+  productExtraInfoCreateRequest: ProductExtraInfoRequest;
 }): Promise<void> {
   const form = new FormData();
   form.append('boardPostCreateRequest', new Blob([JSON.stringify(data.boardPostCreateRequest)], { type: 'application/json' }));
@@ -1750,10 +1750,10 @@ export async function createProductExtraInfo(data: {
  * POST /v1/prescriptions/zip
  */
 export async function uploadEdiZip(data: {
+  file: File;
+  partnerUserId: string;
   prescriptionMonth: string;
   settlementMonth: string;
-  partnerUserId: string;
-  file: File;
 }): Promise<PrescriptionZipUploadResult> {
   const form = new FormData();
   form.append('prescriptionMonth', data.prescriptionMonth);
@@ -1784,7 +1784,7 @@ export async function createPartnerProducts(data: PrescriptionPartnerProductCrea
  * 거래처별 EDI 파일 업로드
  * POST /v1/prescriptions/partner-files
  */
-export async function uploadPartnerEdiFiles(data: { request: PrescriptionCreateRequest; files: File[] }): Promise<void> {
+export async function uploadPartnerEdiFiles(data: { files: File[]; request: PrescriptionCreateRequest }): Promise<void> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   for (const v of data.files) {
@@ -1801,7 +1801,7 @@ export async function uploadPartnerEdiFiles(data: { request: PrescriptionCreateR
  * 거래처별 EDI 파일 업데이트 (파라미터 부분 변경 + 파일 keep/new 반영)
  * POST /v1/prescriptions/partner-files/update
  */
-export async function updatePartnerEdiFiles(data: { request: PrescriptionUpdateRequest; files?: File[] }): Promise<void> {
+export async function updatePartnerEdiFiles(data: { files?: File[]; request: PrescriptionUpdateRequest }): Promise<void> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   if (data.files !== undefined) {
@@ -1883,11 +1883,11 @@ export async function uploadPartnersExcel(
  * POST /v1/partner-contracts
  */
 export async function applyContract(data: {
-  request: PartnerContractRequest;
   business_registration: File;
-  subcontract_agreement: File;
   cso_certificate: File;
   education_certificate: File;
+  request: PartnerContractRequest;
+  subcontract_agreement: File;
 }): Promise<void> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
@@ -1909,11 +1909,11 @@ export async function applyContract(data: {
 export async function updateContract(
   contractId: number,
   data: {
-    request: PartnerContractUpdateRequest;
     business_registration?: File;
-    subcontract_agreement?: File;
     cso_certificate?: File;
     education_certificate?: File;
+    request: PartnerContractUpdateRequest;
+    subcontract_agreement?: File;
   },
 ): Promise<void> {
   const form = new FormData();
@@ -1993,7 +1993,7 @@ export async function getUserMembers(options?: {
  * 회원가입
  * POST /v1/members
  */
-export async function signup(data: { request: MemberSignupRequest; file?: File }): Promise<void> {
+export async function signup(data: { file?: File; request: MemberSignupRequest }): Promise<void> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   if (data.file !== undefined) {
@@ -2113,8 +2113,8 @@ export async function uploadHospitalExcel(data: { file: File }): Promise<string>
  * POST /v1/expense-reports/sample-provide
  */
 export async function createSampleProvideReport(data: {
-  request: SampleProvideReportCreateRequest;
   attachmentFiles?: File[];
+  request: SampleProvideReportCreateRequest;
 }): Promise<void> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
@@ -2135,9 +2135,9 @@ export async function createSampleProvideReport(data: {
  * POST /v1/expense-reports/product-briefing/single
  */
 export async function createProductBriefingSingleReport(data: {
+  attachmentFiles?: File[];
   request: ProductBriefingSingleCreateRequest;
   signatureFiles: File[];
-  attachmentFiles?: File[];
 }): Promise<void> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
@@ -2161,8 +2161,8 @@ export async function createProductBriefingSingleReport(data: {
  * POST /v1/expense-reports/product-briefing/multi
  */
 export async function createProductBriefingMultiReport(data: {
-  request: ProductBriefingMultiCreateRequest;
   attachmentFiles?: File[];
+  request: ProductBriefingMultiCreateRequest;
 }): Promise<void> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
@@ -2205,10 +2205,10 @@ export async function getEventBoards(options?: {
  * POST /v1/events
  */
 export async function createEventBoard(data: {
-  request: BoardPostCreateRequest;
   eventRequest: EventBoardCreateRequest;
-  thumbnail: File;
   files?: File[];
+  request: BoardPostCreateRequest;
+  thumbnail: File;
 }): Promise<string> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
@@ -2314,7 +2314,7 @@ export async function getBoards(options?: {
  * 게시글 작성
  * POST /v1/boards
  */
-export async function createBoardPost(data: { request: BoardPostCreateRequest; files?: File[] }): Promise<string> {
+export async function createBoardPost(data: { files?: File[]; request: BoardPostCreateRequest }): Promise<string> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   if (data.files !== undefined) {
@@ -2380,7 +2380,7 @@ export async function getBanners(options?: {
  * 배너 생성
  * POST /v1/banners
  */
-export async function createBanner(data: { request: BannerCreateRequest; imageFile: File }): Promise<string> {
+export async function createBanner(data: { imageFile: File; request: BannerCreateRequest }): Promise<string> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   form.append('imageFile', data.imageFile, data.imageFile.name.normalize('NFC'));
@@ -2528,9 +2528,9 @@ export async function updateSalesAgencyProductBoard(
   id: number,
   data: {
     boardPostUpdateRequest?: BoardPostUpdateRequest;
+    newFiles?: File[];
     salesAgencyProductUpdateRequest?: SalesAgencyProductUpdateRequest;
     thumbnail?: File;
-    newFiles?: File[];
   },
 ): Promise<void> {
   const form = new FormData();
@@ -2589,8 +2589,8 @@ export async function updateProductExtraInfo(
   id: number,
   data: {
     boardPostUpdateRequest: BoardPostUpdateRequest;
-    productExtraInfoCreateRequest: ProductExtraInfoRequest;
     newFiles?: File[];
+    productExtraInfoCreateRequest: ProductExtraInfoRequest;
   },
 ): Promise<void> {
   const form = new FormData();
@@ -2651,8 +2651,8 @@ export async function completePrescriptionPartner(prescriptionPartnerId: number)
 export async function updateMember(
   userId: string,
   data: {
-    request: MemberUpdateRequest;
     file?: File;
+    request: MemberUpdateRequest;
   },
 ): Promise<void> {
   const form = new FormData();
@@ -2775,8 +2775,8 @@ export async function getSampleProvideReport(id: number): Promise<SampleProvideR
 export async function updateSampleProvideReport(
   id: number,
   data: {
-    request: SampleProvideReportUpdateRequest;
     newFiles?: File[];
+    request: SampleProvideReportUpdateRequest;
   },
 ): Promise<void> {
   const form = new FormData();
@@ -2812,9 +2812,9 @@ export async function getProductBriefingSingleReport(id: number): Promise<Produc
 export async function updateProductBriefingSingleReport(
   id: number,
   data: {
+    newFiles?: File[];
     request: ProductBriefingSingleUpdateRequest;
     signatureFiles?: File[];
-    newFiles?: File[];
   },
 ): Promise<void> {
   const form = new FormData();
@@ -2855,8 +2855,8 @@ export async function getProductBriefingMultiReport(id: number): Promise<Product
 export async function updateProductBriefingMultiReport(
   id: number,
   data: {
-    request: ProductBriefingMultiUpdateRequest;
     newFiles?: File[];
+    request: ProductBriefingMultiUpdateRequest;
   },
 ): Promise<void> {
   const form = new FormData();
@@ -2892,10 +2892,10 @@ export async function getEventBoardDetails(id: number): Promise<EventBoardDetail
 export async function updateEventBoard(
   id: number,
   data: {
-    request?: BoardPostUpdateRequest;
     eventRequest?: EventBoardUpdateRequest;
-    thumbnail?: File;
     newFiles?: File[];
+    request?: BoardPostUpdateRequest;
+    thumbnail?: File;
   },
 ): Promise<void> {
   const form = new FormData();
@@ -2950,8 +2950,8 @@ export async function getBanner(id: number): Promise<BannerResponse> {
 export async function updateBanner(
   id: number,
   data: {
-    request: BannerUpdateRequest;
     imageFile?: File;
+    request: BannerUpdateRequest;
   },
 ): Promise<void> {
   const form = new FormData();
