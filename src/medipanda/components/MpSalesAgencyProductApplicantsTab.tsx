@@ -4,6 +4,7 @@ import {
   getProductApplicants,
   SalesAgencyProductApplicantResponse,
   SalesAgencyProductDetailsResponse,
+  updateApplicantNotes,
 } from '@/backend';
 import ScrollX from '@/components/ScrollX';
 import { setUrlParams } from '@/lib/url';
@@ -32,7 +33,7 @@ import {
 import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAgencyProductDetailsResponse }) {
@@ -52,6 +53,11 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
+  const noteInputRefs = Array.from({ length: pageSize }, () => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    return useRef<HTMLInputElement>(null);
+  });
 
   const errorDialog = useMpErrorDialog();
   const deleteDialog = useMpDeleteDialog();
@@ -175,7 +181,25 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
       },
       {
         header: '비고',
-        cell: ({ row }) => row.original.note,
+        cell: ({ row }) => {
+          setTimeout(() => {
+            const input = noteInputRefs[row.index].current?.querySelector('input') ?? null;
+
+            if (input !== null) {
+              input.value = row.original.note ?? '';
+            }
+          });
+
+          return (
+            <TextField
+              ref={noteInputRefs[row.index]}
+              fullWidth
+              size='small'
+              placeholder='비고를 입력하세요'
+              onBlur={event => handleNoteUpdate(row.original.userId, event.target.value)}
+            />
+          );
+        },
         size: 100,
       },
     ],
@@ -203,6 +227,24 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
         }
       },
     });
+  };
+
+  const handleNoteUpdate = async (userId: string, note: string) => {
+    try {
+      await updateApplicantNotes({
+        productId: detail.productId,
+        updates: [
+          {
+            userId,
+            note,
+          },
+        ],
+      });
+      fetchContents();
+    } catch (error) {
+      console.error('Failed to update notes:', error);
+      errorDialog.showError('비고 수정 중 오류가 발생했습니다.');
+    }
   };
 
   return (

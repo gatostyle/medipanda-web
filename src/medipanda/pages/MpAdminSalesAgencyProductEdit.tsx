@@ -523,7 +523,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
           <TextField
             fullWidth
             label='비고'
-            name='notes'
+            name='note'
             value={formik.values.note}
             onChange={formik.handleChange}
             multiline
