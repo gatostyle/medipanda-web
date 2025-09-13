@@ -57,7 +57,7 @@ export default function MpAdminProductEdit() {
       productCode: '',
       price: '0',
       feeRate: '0',
-      changedFeeRate: undefined as number | undefined,
+      changedFeeRate: '0',
       changedMonth: '',
       isAcquisition: false,
       isPromotion: false,
@@ -122,7 +122,7 @@ export default function MpAdminProductEdit() {
               productName: values.productName,
               composition: values.composition,
               productCode: values.productCode,
-              changedFeeRate: values.changedFeeRate ?? null,
+              changedFeeRate: values.changedFeeRate,
               changedMonth: Number(values.changedMonth),
               priceUnit: PriceUnit.KRW,
               feeRate: values.feeRate,
@@ -155,7 +155,7 @@ export default function MpAdminProductEdit() {
               productName: values.productName,
               composition: values.composition,
               productCode: values.productCode,
-              changedFeeRate: values.changedFeeRate ?? null,
+              changedFeeRate: values.changedFeeRate,
               changedMonth: values.changedMonth,
               priceUnit: PriceUnit.KRW,
               feeRate: values.feeRate,
@@ -223,7 +223,7 @@ export default function MpAdminProductEdit() {
         productCode: detail.productCode ?? '',
         price: (detail.price ?? 0).toLocaleString(),
         feeRate: (detail.feeRate ?? 0).toString(),
-        changedFeeRate: detail.changedFeeRate ?? undefined,
+        changedFeeRate: (detail.changedFeeRate ?? 0).toString(),
         changedMonth: Number.isNaN(changedMonth) ? '' : changedMonth.toString(),
         isAcquisition: detail.isAcquisition ?? false,
         isPromotion: detail.isPromotion ?? false,
@@ -399,7 +399,7 @@ export default function MpAdminProductEdit() {
                       name='changedFeeRate'
                       label='변경요율'
                       type='number'
-                      value={formik.values.changedFeeRate ?? ''}
+                      value={formik.values.changedFeeRate}
                       onChange={event => {
                         const numberValue = Number(event.target.value.replace(/,/g, ''));
 
