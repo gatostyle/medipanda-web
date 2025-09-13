@@ -54,7 +54,6 @@ export default function MpAdminMemberEdit() {
   const infoDialog = useMpInfoDialog();
   const errorDialog = useMpErrorDialog();
   const { enqueueSnackbar } = useSnackbar();
-  const [isContractApproved, setIsContractApproved] = useState(false);
   const [detail, setDetail] = useState<MemberDetailsResponse | null>(null);
   const [contractDetail, setContractDetail] = useState<PartnerContractDetailsResponse | null>(null);
 
@@ -87,6 +86,18 @@ export default function MpAdminMemberEdit() {
       if (values.phoneNumber !== detail?.phoneNumber && values.phoneNumber === '') {
         alert('휴대폰번호를 입력하세요.');
         return;
+      }
+
+      if (contractDetail !== null) {
+        if (values.bankName === '') {
+          alert('정산은행을 입력하세요.');
+          return;
+        }
+
+        if (values.accountNumber === '') {
+          alert('계좌번호를 입력하세요.');
+          return;
+        }
       }
 
       try {
@@ -180,7 +191,6 @@ export default function MpAdminMemberEdit() {
     try {
       const contractDetail = await getContractDetails(userId);
       setContractDetail(contractDetail);
-      setIsContractApproved(contractDetail.status === PartnerContractStatus.APPROVED);
 
       formik.resetForm({
         values: {
