@@ -53,7 +53,7 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
   const [contents, setContents] = useState<Sequenced<SalesAgencyProductApplicantResponse>[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const noteInputRefs = Array.from({ length: pageSize }, () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -124,7 +124,7 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
             checked={selectedIds.length === contents.length && contents.length > 0}
             onChange={e => {
               if (e.target.checked) {
-                setSelectedIds(contents.map(item => item.id));
+                setSelectedIds(contents.map(item => item.userId));
               } else {
                 setSelectedIds([]);
               }
@@ -133,12 +133,12 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
         ),
         cell: ({ row }) => (
           <Checkbox
-            checked={selectedIds.includes(row.original.id)}
+            checked={selectedIds.includes(row.original.userId)}
             onChange={e => {
               if (e.target.checked) {
-                setSelectedIds(prev => [...prev, row.original.id]);
+                setSelectedIds(prev => [...prev, row.original.userId]);
               } else {
-                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
+                setSelectedIds(prev => prev.filter(id => id !== row.original.userId));
               }
             }}
           />
@@ -212,14 +212,20 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
     const count = selectedIds.length;
     const message =
       count === 1
-        ? `신청자 ${contents.find(item => item.id === selectedIds[0])?.memberName}를 삭제하시겠습니까?`
+        ? `신청자 ${contents.find(item => item.userId === selectedIds[0])?.memberName}를 삭제하시겠습니까?`
         : `${count}건이 선택되었습니다. 삭제하시겠습니까?`;
 
     deleteDialog.open({
       message,
       onConfirm: async () => {
         try {
-          await Promise.all(selectedIds.map(id => deleteSalesAgencyProductApplicant(id)));
+          await Promise.all(
+            selectedIds.map(id =>
+              deleteSalesAgencyProductApplicant(id, {
+                productBoardId: detail.productId,
+              }),
+            ),
+          );
           setSelectedIds([]);
           fetchContents();
         } catch (error) {

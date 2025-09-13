@@ -3654,6 +3654,7 @@ export async function launch(options?: { certNum?: string }): Promise<string> {
  */
 export async function getHospitals(options?: {
   regionCategoryId?: number;
+  hospitalName?: string;
   startDate?: DateTimeString;
   endDate?: DateTimeString;
   page?: number;
@@ -3904,12 +3905,18 @@ export async function logout(): Promise<void> {
 
 /**
  * 영업대행 상품 신청자 삭제
- * DELETE /v1/sales-agency-products/{applicantId}/applicant
+ * DELETE /v1/sales-agency-products/{applicantUserId}/applicant
  */
-export async function deleteSalesAgencyProductApplicant(applicantId: number): Promise<void> {
+export async function deleteSalesAgencyProductApplicant(
+  applicantUserId: string,
+  options?: {
+    productBoardId?: number;
+  },
+): Promise<void> {
   await axios.request({
     method: 'DELETE',
-    url: `/v1/sales-agency-products/${applicantId}/applicant`,
+    url: `/v1/sales-agency-products/${applicantUserId}/applicant`,
+    params: options,
   });
 }
 
