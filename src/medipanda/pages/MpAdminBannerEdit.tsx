@@ -14,7 +14,16 @@ import {
 } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
-import { createBanner, DateTimeString, getBanner, updateBanner } from '@/backend';
+import {
+  BannerScope,
+  BannerScopeLabel,
+  BannerStatus,
+  BannerStatusLabel,
+  createBanner,
+  DateTimeString,
+  getBanner,
+  updateBanner,
+} from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
@@ -37,8 +46,8 @@ export default function MpAdminBannerEdit() {
   const formik = useFormik({
     initialValues: {
       position: 'POPUP',
-      status: 'VISIBLE' as 'VISIBLE' | 'HIDDEN',
-      scope: 'ENTIRE' as 'ENTIRE' | 'CONTRACT' | 'NON_CONTRACT',
+      status: BannerStatus.VISIBLE,
+      scope: BannerScope.ENTIRE,
       title: '',
       linkUrl: '',
       startDate: null as Date | null,
@@ -117,8 +126,8 @@ export default function MpAdminBannerEdit() {
 
       formik.setValues({
         position: detail.position,
-        status: detail.status,
-        scope: detail.scope,
+        status: detail.status as BannerStatus,
+        scope: detail.scope as BannerScope,
         title: detail.title,
         linkUrl: detail.linkUrl,
         startDate: startDate,
@@ -203,8 +212,14 @@ export default function MpAdminBannerEdit() {
                     노출상태 <span style={{ color: 'red' }}>*</span>
                   </Typography>
                   <RadioGroup row name='status' value={formik.values.status} onChange={formik.handleChange}>
-                    <FormControlLabel value={'VISIBLE'} control={<Radio size='small' />} label='노출' />
-                    <FormControlLabel value={'HIDDEN'} control={<Radio size='small' />} label='미노출' />
+                    {Object.keys(BannerStatus).map(BannerStatus => (
+                      <FormControlLabel
+                        key={BannerStatus}
+                        value={BannerStatus}
+                        control={<Radio size='small' />}
+                        label={BannerStatusLabel[BannerStatus]}
+                      />
+                    ))}
                   </RadioGroup>
                 </Stack>
               </Grid>
@@ -215,9 +230,9 @@ export default function MpAdminBannerEdit() {
                     노출범위 <span style={{ color: 'red' }}>*</span>
                   </Typography>
                   <RadioGroup row name='scope' value={formik.values.scope} onChange={formik.handleChange}>
-                    <FormControlLabel value={'ENTIRE'} control={<Radio size='small' />} label='전체' />
-                    <FormControlLabel value={'CONTRACT'} control={<Radio size='small' />} label='계약' />
-                    <FormControlLabel value={'NON_CONTRACT'} control={<Radio size='small' />} label='미계약' />
+                    {Object.keys(BannerScope).map(scope => (
+                      <FormControlLabel key={scope} value={scope} control={<Radio size='small' />} label={BannerScopeLabel[scope]} />
+                    ))}
                   </RadioGroup>
                 </Stack>
               </Grid>

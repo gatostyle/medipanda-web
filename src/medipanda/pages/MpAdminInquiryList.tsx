@@ -25,7 +25,7 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { BoardPostResponse, DateString, getBoards } from '@/backend';
+import { BoardPostResponse, BoardType, DateString, getBoards } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
@@ -88,7 +88,7 @@ export default function MpAdminInquiryList() {
     setLoading(true);
     try {
       const response = await getBoards({
-        boardType: 'INQUIRY',
+        boardType: BoardType.INQUIRY,
         name: searchType === 'name' && searchKeyword !== '' ? searchKeyword : undefined,
         drugCompany: searchType === 'drugCompany' && searchKeyword !== '' ? searchKeyword : undefined,
         userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,

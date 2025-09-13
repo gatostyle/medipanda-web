@@ -26,10 +26,9 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { getUserMembers, MemberResponse } from '@/backend';
+import { AccountStatusLabel, getUserMembers, MemberResponse, Role, RoleLabel } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { MEMBER_ACCOUNT_STATUS_LABELS, MEMBER_ROLE_LABELS } from '@/medipanda/ui-labels';
 import { formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
@@ -86,7 +85,7 @@ export default function MpAdminAdminList() {
     setLoading(true);
     try {
       const response = await getUserMembers({
-        roles: ['ADMIN', 'SUPER_ADMIN'],
+        roles: [Role.ADMIN, Role.SUPER_ADMIN],
         name: searchType === 'name' && searchKeyword !== '' ? searchKeyword : undefined,
         userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
         email: searchType === 'email' && searchKeyword !== '' ? searchKeyword : undefined,
@@ -152,15 +151,13 @@ export default function MpAdminAdminList() {
       },
       {
         header: '권한',
-        cell: ({ row }) => {
-          return MEMBER_ROLE_LABELS[row.original.role];
-        },
+        cell: ({ row }) => RoleLabel[row.original.role],
         size: 100,
       },
       {
         header: '상태',
         cell: ({ row }) => {
-          return <Chip label={MEMBER_ACCOUNT_STATUS_LABELS[row.original.accountStatus]} color='success' variant='light' size='small' />;
+          return <Chip label={AccountStatusLabel[row.original.accountStatus]} color='success' variant='light' size='small' />;
         },
         size: 80,
       },

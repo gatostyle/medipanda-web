@@ -22,15 +22,18 @@ import { EditorContent } from '@tiptap/react';
 import { useFormik } from 'formik';
 import {
   AttachmentResponse,
+  BoardExposureRange,
+  BoardExposureRangeLabel,
+  BoardType,
   createSalesAgencyProductBoard,
   getSalesAgencyProductDetails,
+  PostAttachmentType,
   SalesAgencyProductDetailsResponse,
   updateSalesAgencyProductBoard,
 } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useSession } from '@/medipanda/hooks/useSession';
-import { EXPOSURE_RANGE_LABELS } from '@/medipanda/ui-labels';
 import { useSnackbar } from 'notistack';
 import { SyntheticEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -58,7 +61,7 @@ export default function MpAdminSalesAgencyProductEdit() {
       clientName: '',
       productName: '',
       isExposed: true,
-      exposureRange: '' as 'ALL' | 'CONTRACTED' | 'UNCONTRACTED' | '',
+      exposureRange: '' as BoardExposureRange | '',
       thumbnail: null as File | null,
       thumbnailUrl: '',
       videoUrl: '',
@@ -108,7 +111,7 @@ export default function MpAdminSalesAgencyProductEdit() {
         if (isNew) {
           await createSalesAgencyProductBoard({
             boardPostCreateRequest: {
-              boardType: 'SALES_AGENCY',
+              boardType: BoardType.SALES_AGENCY,
               userId: session!.userId,
               nickname: session!.name,
               hiddenNickname: false,
@@ -190,7 +193,7 @@ export default function MpAdminSalesAgencyProductEdit() {
         clientName: detail.clientName,
         productName: detail.productName,
         isExposed: detail.boardPostDetail.isExposed,
-        exposureRange: detail.boardPostDetail.exposureRange,
+        exposureRange: detail.boardPostDetail.exposureRange as BoardExposureRange,
         thumbnail: null,
         thumbnailUrl: detail.thumbnailUrl,
         videoUrl: detail.videoUrl ?? '',
@@ -199,11 +202,11 @@ export default function MpAdminSalesAgencyProductEdit() {
         startDate: DateFix(detail.startDate),
         endDate: DateFix(detail.endDate),
         viewCount: detail.boardPostDetail.viewsCount,
-        attachedFiles: detail.boardPostDetail.attachments.filter(a => a.type === 'ATTACHMENT'),
+        attachedFiles: detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT),
         newFiles: [],
       });
       editor.commands.setContent(detail.boardPostDetail.content);
-      setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === 'EDITOR'));
+      setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
     } catch (error) {
       console.error('Failed to load product detail:', error);
       enqueueSnackbar('영업대행상품 정보를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -260,7 +263,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
       clientName: '',
       productName: '',
       isExposed: true,
-      exposureRange: '' as 'ALL' | 'CONTRACTED' | 'UNCONTRACTED' | '',
+      exposureRange: '' as BoardExposureRange | '',
       thumbnail: null as File | null,
       thumbnailUrl: '',
       videoUrl: '',
@@ -310,7 +313,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
         if (isNew) {
           await createSalesAgencyProductBoard({
             boardPostCreateRequest: {
-              boardType: 'SALES_AGENCY',
+              boardType: BoardType.SALES_AGENCY,
               userId: session!.userId,
               nickname: session!.name,
               hiddenNickname: false,
@@ -379,7 +382,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
         clientName: detail.clientName,
         productName: detail.productName,
         isExposed: detail.boardPostDetail.isExposed,
-        exposureRange: detail.boardPostDetail.exposureRange,
+        exposureRange: detail.boardPostDetail.exposureRange as BoardExposureRange,
         thumbnail: null,
         thumbnailUrl: detail.thumbnailUrl,
         videoUrl: detail.videoUrl ?? '',
@@ -388,12 +391,12 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
         startDate: DateFix(detail.startDate),
         endDate: DateFix(detail.endDate),
         viewCount: detail.boardPostDetail.viewsCount,
-        attachedFiles: detail.boardPostDetail.attachments.filter(a => a.type === 'ATTACHMENT'),
+        attachedFiles: detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT),
         newFiles: [],
       });
 
       editor.commands.setContent(detail.boardPostDetail.content);
-      setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === 'EDITOR'));
+      setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
     }
   }, [detail]);
 
@@ -474,9 +477,14 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
           </Typography>
           <FormControl>
             <RadioGroup row name='exposureRange' value={formik.values.exposureRange} onChange={formik.handleChange}>
-              <FormControlLabel value={'ALL'} control={<Radio />} label={EXPOSURE_RANGE_LABELS['ALL']} />
-              <FormControlLabel value={'CONTRACTED'} control={<Radio />} label={EXPOSURE_RANGE_LABELS['CONTRACTED']} />
-              <FormControlLabel value={'UNCONTRACTED'} control={<Radio />} label={EXPOSURE_RANGE_LABELS['UNCONTRACTED']} />
+              {Object.keys(BoardExposureRange).map(exposureRange => (
+                <FormControlLabel
+                  key={exposureRange}
+                  value={exposureRange}
+                  control={<Radio />}
+                  label={BoardExposureRangeLabel[exposureRange]}
+                />
+              ))}
             </RadioGroup>
           </FormControl>
         </Grid>

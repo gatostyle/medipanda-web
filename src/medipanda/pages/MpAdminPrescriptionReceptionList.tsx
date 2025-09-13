@@ -26,7 +26,14 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { confirmPrescription, DateTimeString, PrescriptionResponse, searchPrescriptions } from '@/backend';
+import {
+  confirmPrescription,
+  DateTimeString,
+  PrescriptionResponse,
+  PrescriptionStatus,
+  PrescriptionStatusLabel,
+  searchPrescriptions,
+} from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
@@ -45,7 +52,7 @@ export default function MpAdminPrescriptionReceptionList() {
     searchKeyword: '',
     startAt: '',
     endAt: '',
-    status: '' as 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | '',
+    status: '' as PrescriptionStatus | '',
     page: '1',
   };
 
@@ -200,23 +207,13 @@ export default function MpAdminPrescriptionReceptionList() {
       },
       {
         header: '접수상태',
-        cell: ({ row }) => {
-          const status = row.original.status;
-
-          const labels = {
-            PENDING: '접수대기',
-            IN_PROGRESS: '처리중',
-            COMPLETED: '입력완료',
-          };
-
-          return <Chip label={labels[status]} size='small' color='success' />;
-        },
+        cell: ({ row }) => <Chip label={PrescriptionStatusLabel[row.original.status]} size='small' color='success' />,
         size: 100,
       },
       {
         header: '관리자확인',
         cell: ({ row }) =>
-          row.original.status === 'PENDING' ? (
+          row.original.status === PrescriptionStatus.PENDING ? (
             <Button variant='contained' color='success' size='small' onClick={() => handleConfirm(row.original.id)}>
               접수확인
             </Button>
@@ -264,9 +261,11 @@ export default function MpAdminPrescriptionReceptionList() {
                     <FormControl fullWidth size='small'>
                       <InputLabel>접수상태</InputLabel>
                       <Select name='status' value={formik.values.status} onChange={formik.handleChange}>
-                        <MenuItem value={'PENDING'}>접수대기</MenuItem>
-                        <MenuItem value={'IN_PROGRESS'}>처리중</MenuItem>
-                        <MenuItem value={'COMPLETED'}>입력완료</MenuItem>
+                        {Object.keys(PrescriptionStatus).map(prescriptionStatus => (
+                          <MenuItem key={prescriptionStatus} value={prescriptionStatus}>
+                            {PrescriptionStatusLabel[prescriptionStatus]}
+                          </MenuItem>
+                        ))}
                       </Select>
                     </FormControl>
                   </SearchFilterItem>

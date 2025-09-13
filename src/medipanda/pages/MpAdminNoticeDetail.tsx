@@ -18,8 +18,7 @@ import {
 import Stack from '@mui/material/Stack';
 import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
-import { BoardDetailsResponse, getBoardDetails } from '@/backend';
-import { EXPOSURE_RANGE_LABELS, NOTICE_TYPE_LABELS } from '@/medipanda/ui-labels';
+import { BoardDetailsResponse, BoardExposureRangeLabel, getBoardDetails, NoticeTypeLabel, PostAttachmentType } from '@/backend';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
@@ -53,7 +52,7 @@ export default function MpAdminNoticeDetail() {
 
       editor.commands.setContent(detail.content);
       editor.setEditable(false);
-      setEditorAttachments(detail.attachments.filter(a => a.type === 'EDITOR'));
+      setEditorAttachments(detail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
     } catch (error) {
       console.error('Failed to fetch notice detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -97,11 +96,7 @@ export default function MpAdminNoticeDetail() {
                   <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     공지분류 <span style={{ color: 'red' }}>*</span>
                   </TableCell>
-                  <TableCell colSpan={5}>
-                    {detail.noticeProperties?.noticeType
-                      ? NOTICE_TYPE_LABELS[detail.noticeProperties.noticeType] || detail.noticeProperties.noticeType
-                      : '일반'}
-                  </TableCell>
+                  <TableCell colSpan={5}>{NoticeTypeLabel[detail.noticeProperties!.noticeType]}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
@@ -119,9 +114,7 @@ export default function MpAdminNoticeDetail() {
                   <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     노출범위 <span style={{ color: 'red' }}>*</span>
                   </TableCell>
-                  <TableCell colSpan={5}>
-                    {detail.exposureRange ? EXPOSURE_RANGE_LABELS[detail.exposureRange] || detail.exposureRange : '전체'}
-                  </TableCell>
+                  <TableCell colSpan={5}>{BoardExposureRangeLabel[detail.exposureRange]}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>

@@ -32,6 +32,8 @@ import {
   deletePrescriptionPartner,
   getPrescriptionPartnerList,
   PrescriptionPartnerResponse,
+  PrescriptionPartnerStatus,
+  PrescriptionPartnerStatusLabel,
 } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
@@ -52,7 +54,7 @@ export default function MpAdminPrescriptionFormList() {
     searchKeyword: '',
     prescriptionMonthStart: '',
     prescriptionMonthEnd: '',
-    status: '' as 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | '',
+    status: '' as PrescriptionPartnerStatus | '',
     page: '1',
   };
 
@@ -233,17 +235,7 @@ export default function MpAdminPrescriptionFormList() {
       },
       {
         header: '승인상태',
-        cell: ({ row }) => {
-          const status = row.original.status;
-
-          const labels = {
-            PENDING: '승인대기',
-            IN_PROGRESS: '승인진행중',
-            COMPLETED: '승인완료',
-          };
-
-          return labels[status];
-        },
+        cell: ({ row }) => PrescriptionPartnerStatusLabel[row.original.status],
         size: 80,
       },
     ],
@@ -305,9 +297,11 @@ export default function MpAdminPrescriptionFormList() {
                   <FormControl fullWidth size='small'>
                     <InputLabel>상태</InputLabel>
                     <Select name='status' value={formik.values.status} onChange={formik.handleChange}>
-                      <MenuItem value={'PENDING'}>승인대기</MenuItem>
-                      <MenuItem value={'IN_PROGRESS'}>승인진행중</MenuItem>
-                      <MenuItem value={'COMPLETED'}>승인완료</MenuItem>
+                      {Object.keys(PrescriptionPartnerStatus).map(prescriptionStatus => (
+                        <MenuItem key={prescriptionStatus} value={prescriptionStatus}>
+                          {PrescriptionPartnerStatusLabel[prescriptionStatus]}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
@@ -364,7 +358,7 @@ export default function MpAdminPrescriptionFormList() {
               </Stack>
               <Stack direction='row' spacing={1}>
                 <Button variant='contained' color='success' size='small' onClick={handleApprove} disabled={selectedIds.length === 0}>
-                  승인완료
+                  승인
                 </Button>
                 <Button variant='contained' size='small' color='error' disabled={selectedIds.length === 0} onClick={handleDelete}>
                   삭제

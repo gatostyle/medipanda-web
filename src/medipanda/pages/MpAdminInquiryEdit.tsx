@@ -4,7 +4,15 @@ import { Box, Button, CircularProgress, Grid, Stack, TextField, Typography } fro
 import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
-import { BoardDetailsResponse, createBoardPost, getBoardDetails, updateBoardPost } from '@/backend';
+import {
+  BoardDetailsResponse,
+  BoardExposureRange,
+  BoardType,
+  createBoardPost,
+  getBoardDetails,
+  PostAttachmentType,
+  updateBoardPost,
+} from '@/backend';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
@@ -41,7 +49,7 @@ export default function MpAdminInquiryEdit() {
         if (detail!.children.length === 0) {
           await createBoardPost({
             request: {
-              boardType: 'INQUIRY',
+              boardType: BoardType.INQUIRY,
               title: '',
               content: responseEditor.getHTML(),
               userId: session!.userId,
@@ -50,7 +58,7 @@ export default function MpAdminInquiryEdit() {
               parentId: boardId,
               isExposed: true,
               editorFileIds: responseEditorAttachments.map(image => image.s3fileId),
-              exposureRange: 'ALL',
+              exposureRange: BoardExposureRange.ALL,
               noticeProperties: null,
             },
             files: values.newFiles,
@@ -63,9 +71,9 @@ export default function MpAdminInquiryEdit() {
               hiddenNickname: null,
               isBlind: null,
               isExposed: null,
-              exposureRange: 'ALL',
+              exposureRange: BoardExposureRange.ALL,
               keepFileIds: [
-                ...(detail!.children[0].attachments.filter(a => a.type === 'ATTACHMENT') ?? []),
+                ...(detail!.children[0].attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT) ?? []),
                 ...responseEditorAttachments,
               ].map(file => file.s3fileId),
               editorFileIds: responseEditorAttachments.map(image => image.s3fileId),
@@ -109,11 +117,11 @@ export default function MpAdminInquiryEdit() {
 
       editor.commands.setContent(detail.content);
       editor.setEditable(false);
-      setEditorAttachments(detail.attachments.filter(a => a.type === 'EDITOR'));
+      setEditorAttachments(detail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
 
       if (detail.children.length > 0) {
         responseEditor.commands.setContent(detail.children[0].content);
-        setResponseEditorAttachments(detail.children[0].attachments.filter(a => a.type === 'EDITOR'));
+        setResponseEditorAttachments(detail.children[0].attachments.filter(a => a.type === PostAttachmentType.EDITOR));
       }
     } catch (error) {
       console.error('Failed to fetch inquiry detail:', error);

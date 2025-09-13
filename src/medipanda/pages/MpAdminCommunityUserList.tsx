@@ -24,7 +24,7 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { BoardMemberStatsResponse, getBoardMembers } from '@/backend';
+import { BoardMemberStatsResponse, ContractStatus, ContractStatusLabel, getBoardMembers } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
@@ -38,7 +38,7 @@ export default function MpAdminCommunityUserList() {
   const initialSearchParams = {
     searchType: '' as 'userId' | 'name' | 'nickname' | 'phoneNumber' | 'email' | '',
     searchKeyword: '',
-    contractStatus: '' as 'CONTRACT' | 'NON_CONTRACT' | '',
+    contractStatus: '' as ContractStatus | '',
     page: '1',
   };
 
@@ -150,7 +150,7 @@ export default function MpAdminCommunityUserList() {
       },
       {
         header: '파트너사 계약여부',
-        cell: ({ row }) => (row.original.contractStatus === 'CONTRACT' ? '계약' : '미계약'),
+        cell: ({ row }) => ContractStatusLabel[row.original.contractStatus],
         size: 130,
       },
       {
@@ -195,8 +195,11 @@ export default function MpAdminCommunityUserList() {
                   <FormControl fullWidth size='small'>
                     <InputLabel>파트너사 계약여부</InputLabel>
                     <Select name='contractStatus' value={formik.values.contractStatus} onChange={formik.handleChange} size='small'>
-                      <MenuItem value={'CONTRACT'}>계약</MenuItem>
-                      <MenuItem value={'NON_CONTRACT'}>미계약</MenuItem>
+                      {Object.keys(ContractStatus).map(contractStatus => (
+                        <MenuItem key={contractStatus} value={contractStatus}>
+                          {ContractStatusLabel[contractStatus]}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </SearchFilterItem>

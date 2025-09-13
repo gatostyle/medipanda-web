@@ -27,13 +27,12 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { DateString, EventBoardSummaryResponse, getEventBoards, softDeleteEventBoard } from '@/backend';
+import { DateString, EventBoardSummaryResponse, EventStatus, EventStatusLabel, getEventBoards, softDeleteEventBoard } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
-import { EVENT_STATUS_LABELS } from '@/medipanda/ui-labels';
 import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
@@ -47,7 +46,7 @@ export default function MpAdminEventList() {
     searchKeyword: '',
     startAt: '',
     endAt: '',
-    status: '' as 'IN_PROGRESS' | 'FINISHED' | '',
+    status: '' as EventStatus | '',
     page: '1',
   };
 
@@ -177,8 +176,8 @@ export default function MpAdminEventList() {
           const status = row.original.eventStatus;
           return (
             <Chip
-              label={EVENT_STATUS_LABELS[status]}
-              color={status === 'IN_PROGRESS' ? 'success' : 'default'}
+              label={EventStatusLabel[status]}
+              color={status === EventStatus.IN_PROGRESS ? 'success' : 'default'}
               variant='light'
               size='small'
             />
@@ -291,8 +290,11 @@ export default function MpAdminEventList() {
                   <FormControl fullWidth size='small'>
                     <InputLabel>상태</InputLabel>
                     <Select name='status' value={formik.values.status} onChange={formik.handleChange}>
-                      <MenuItem value={'IN_PROGRESS'}>진행중</MenuItem>
-                      <MenuItem value={'FINISHED'}>종료</MenuItem>
+                      {Object.keys(EventStatus).map(eventStatus => (
+                        <MenuItem key={eventStatus} value={eventStatus}>
+                          {EventStatusLabel[eventStatus]}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </SearchFilterItem>

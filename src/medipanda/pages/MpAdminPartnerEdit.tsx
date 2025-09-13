@@ -24,7 +24,16 @@ import {
 import { AxiosError } from 'axios';
 import { useFormik } from 'formik';
 import { SearchNormal1 } from 'iconsax-react';
-import { createPartner, DrugCompanyResponse, getPartnerDetails, MemberResponse, updatePartner } from '@/backend';
+import {
+  ContractStatus,
+  createPartner,
+  DrugCompanyResponse,
+  getPartnerDetails,
+  MemberResponse,
+  PharmacyStatus,
+  PharmacyStatusLabel,
+  updatePartner,
+} from '@/backend';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -64,14 +73,14 @@ export default function MpAdminPartnerEdit() {
         drugCompany: { id: -1, name: detail.drugCompanyName, code: '' },
         member: null,
         companyName: detail.companyName,
-        contractType: detail.contractType,
+        contractType: detail.contractType as ContractStatus,
         institutionCode: detail.institutionCode,
         institutionName: detail.institutionName,
         businessNumber: detail.businessNumber,
         medicalDepartment: detail.medicalDepartment ?? '',
         pharmacyName: detail.pharmacyName ?? '',
         pharmacyAddress: detail.pharmacyAddress ?? '',
-        pharmacyStatus: detail.pharmacyStatus,
+        pharmacyStatus: detail.pharmacyStatus as PharmacyStatus | null,
         note: detail.note ?? '',
       });
     } catch (error) {
@@ -87,14 +96,14 @@ export default function MpAdminPartnerEdit() {
       drugCompany: null as DrugCompanyResponse | null,
       member: null as MemberResponse | null,
       companyName: '',
-      contractType: 'CONTRACT' as 'CONTRACT' | 'NON_CONTRACT',
+      contractType: ContractStatus.CONTRACT,
       institutionCode: '',
       institutionName: '',
       businessNumber: '',
       medicalDepartment: '',
       pharmacyName: '',
       pharmacyAddress: '',
-      pharmacyStatus: 'NONE' as ('NORMAL' | 'CLOSED' | 'DELETED' | 'NONE') | null,
+      pharmacyStatus: PharmacyStatus.NORMAL as PharmacyStatus | null,
       note: '',
     },
     onSubmit: async values => {
@@ -336,8 +345,11 @@ export default function MpAdminPartnerEdit() {
                       <TableCell>
                         <FormControl fullWidth size='small'>
                           <Select name='pharmacyStatus' value={formik.values.pharmacyStatus} onChange={formik.handleChange}>
-                            <MenuItem value={'NORMAL'}>정상</MenuItem>
-                            <MenuItem value={'CLOSED'}>폐업</MenuItem>
+                            {[PharmacyStatus.NORMAL, PharmacyStatus.CLOSED].map(pharmacyStatus => (
+                              <MenuItem key={pharmacyStatus} value={pharmacyStatus}>
+                                {PharmacyStatusLabel[pharmacyStatus]}
+                              </MenuItem>
+                            ))}
                           </Select>
                         </FormControl>
                       </TableCell>

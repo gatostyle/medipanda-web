@@ -3,7 +3,16 @@ import { Box, Button, CircularProgress, FormControlLabel, Grid, Radio, RadioGrou
 import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
-import { AttachmentResponse, createEventBoard, getEventBoardDetails, updateEventBoard } from '@/backend';
+import {
+  AttachmentResponse,
+  BoardExposureRange,
+  BoardExposureRangeLabel,
+  BoardType,
+  createEventBoard,
+  getEventBoardDetails,
+  PostAttachmentType,
+  updateEventBoard,
+} from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
@@ -30,7 +39,7 @@ export default function MpAdminEventEdit() {
   const formik = useFormik({
     initialValues: {
       isExposed: true,
-      exposureRange: 'ALL' as 'ALL' | 'CONTRACTED' | 'UNCONTRACTED',
+      exposureRange: BoardExposureRange.ALL,
       startDate: new Date(),
       endDate: new Date(),
       title: '',
@@ -61,7 +70,7 @@ export default function MpAdminEventEdit() {
         if (isNew) {
           await createEventBoard({
             request: {
-              boardType: 'EVENT',
+              boardType: BoardType.EVENT,
               userId: session!.userId,
               nickname: session!.name,
               hiddenNickname: false,
@@ -135,11 +144,11 @@ export default function MpAdminEventEdit() {
       const detail = await getEventBoardDetails(eventId);
 
       editor.commands.setContent(detail.boardPostDetail.content);
-      setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === 'EDITOR'));
+      setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
 
       formik.setValues({
         isExposed: detail.boardPostDetail.isExposed,
-        exposureRange: detail.boardPostDetail.exposureRange,
+        exposureRange: detail.boardPostDetail.exposureRange as BoardExposureRange,
         startDate: DateFix(detail.eventStartDate),
         endDate: DateFix(detail.eventEndDate),
         title: detail.boardPostDetail.title,
@@ -147,7 +156,7 @@ export default function MpAdminEventEdit() {
         videoUrl: detail.videoUrl ?? '',
         note: detail.note ?? '',
         internalName: '',
-        attachedFiles: detail.boardPostDetail.attachments.filter(a => a.type === 'ATTACHMENT'),
+        attachedFiles: detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT),
         newFiles: [],
       });
 
@@ -215,9 +224,14 @@ export default function MpAdminEventEdit() {
                   노출범위 *
                 </Typography>
                 <RadioGroup row name='exposureRange' value={formik.values.exposureRange} onChange={formik.handleChange}>
-                  <FormControlLabel value={'ALL'} control={<Radio />} label='전체' />
-                  <FormControlLabel value={'CONTRACTED'} control={<Radio />} label='계약' />
-                  <FormControlLabel value={'UNCONTRACTED'} control={<Radio />} label='미계약' />
+                  {Object.keys(BoardExposureRange).map(exposureRange => (
+                    <FormControlLabel
+                      key={exposureRange}
+                      value={exposureRange}
+                      control={<Radio />}
+                      label={BoardExposureRangeLabel[exposureRange]}
+                    />
+                  ))}
                 </RadioGroup>
               </Grid>
 

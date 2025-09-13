@@ -25,12 +25,19 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { CommentMemberResponse, DateString, getCommentMembers, toggleBlindStatus } from '@/backend';
+import {
+  CommentMemberResponse,
+  CommentType,
+  CommentTypeLabel,
+  ContractStatusLabel,
+  DateString,
+  getCommentMembers,
+  toggleBlindStatus,
+} from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { CONTRACT_STATUS_LABELS } from '@/medipanda/ui-labels';
 import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
@@ -43,7 +50,7 @@ export default function MpAdminCommunityCommentList() {
   const initialSearchParams = {
     searchType: '' as 'nickname' | 'userId' | '',
     searchKeyword: '',
-    commentType: '' as 'COMMENT' | 'REPLY' | '',
+    commentType: '' as CommentType | '',
     startAt: '',
     endAt: '',
     page: '1',
@@ -195,12 +202,12 @@ export default function MpAdminCommunityCommentList() {
       },
       {
         header: '계약유무',
-        cell: ({ row }) => CONTRACT_STATUS_LABELS[row.original.contractStatus],
+        cell: ({ row }) => ContractStatusLabel[row.original.contractStatus],
         size: 100,
       },
       {
         header: '유형',
-        cell: ({ row }) => (row.original.commentType === 'COMMENT' ? '댓글' : '대댓글'),
+        cell: ({ row }) => CommentTypeLabel[row.original.commentType],
         size: 80,
       },
       {
@@ -277,8 +284,11 @@ export default function MpAdminCommunityCommentList() {
                   <FormControl fullWidth size='small'>
                     <InputLabel>글 유형</InputLabel>
                     <Select name='commentType' value={formik.values.commentType} onChange={formik.handleChange}>
-                      <MenuItem value={'COMMENT'}>댓글</MenuItem>
-                      <MenuItem value={'REPLY'}>대댓글</MenuItem>
+                      {Object.keys(CommentType).map(commentType => (
+                        <MenuItem key={commentType} value={commentType}>
+                          {CommentTypeLabel[commentType]}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </SearchFilterItem>

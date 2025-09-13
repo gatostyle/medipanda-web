@@ -21,7 +21,7 @@ import {
 import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import { EditorContent } from '@tiptap/react';
 import ScrollX from 'components/ScrollX';
-import { BoardDetailsResponse, BoardReportResponse, CommentResponse, getBoardDetails } from '@/backend';
+import { BoardDetailsResponse, BoardReportResponse, CommentResponse, getBoardDetails, PostAttachmentType } from '@/backend';
 import { formatYyyyMmDd, formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
@@ -112,7 +112,7 @@ function PostTab({ detail }: { detail: BoardDetailsResponse }) {
   useEffect(() => {
     editor.setEditable(false);
     editor.commands.setContent(detail.content);
-    setEditorAttachments(detail.attachments.filter(a => a.type === 'EDITOR'));
+    setEditorAttachments(detail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
   }, [detail]);
 
   return (

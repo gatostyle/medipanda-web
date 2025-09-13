@@ -6,11 +6,11 @@ export function setUrlParams<T extends Record<string, string | number | boolean 
   Object.entries(params).forEach(([key, value]) => {
     const stringValue = String(value);
     if (value === null || value === undefined || stringValue === defaultValues[key]) {
-      url = url.replace(new RegExp(`(\\?)?&?${key}=[^&]*`), '$1');
+      url = url.replace(new RegExp(`(\\?)?&?${key as string}=[^&]*`), '$1');
     } else {
-      url = url.includes(`${key}=`)
-        ? url.replace(new RegExp(`([?&]${key}=)[^&]*`), `$1${encodeURIComponent(stringValue)}`)
-        : (url.includes('?') ? `${url}&` : `${url}?`) + `${key}=${encodeURIComponent(stringValue)}`;
+      url = url.includes(`${key as string}=`)
+        ? url.replace(new RegExp(`([?&]${key as string}=)[^&]*`), `$1${encodeURIComponent(stringValue)}`)
+        : (url.includes('?') ? `${url}&` : `${url}?`) + `${key as string}=${encodeURIComponent(stringValue)}`;
     }
   });
 

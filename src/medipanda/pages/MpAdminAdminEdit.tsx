@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
-import { getMemberDetails, getPermissions, signupByAdmin, updateByAdmin } from '@/backend';
+import { AdminPermission, getMemberDetails, getPermissions, signupByAdmin, updateByAdmin } from '@/backend';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
 import { isSuperAdmin, useSession } from '@/medipanda/hooks/useSession';
@@ -49,21 +49,7 @@ export default function MpAdminAdminEdit() {
       phoneNumber1: '010',
       phoneNumber2: '',
       phoneNumber3: '',
-      permissions: [] as (
-        | 'MEMBER_MANAGEMENT'
-        | 'PRODUCT_MANAGEMENT'
-        | 'TRANSACTION_MANAGEMENT'
-        | 'CONTRACT_MANAGEMENT'
-        | 'PRESCRIPTION_MANAGEMENT'
-        | 'SETTLEMENT_MANAGEMENT'
-        | 'EXPENSE_REPORT_MANAGEMENT'
-        | 'COMMUNITY_MANAGEMENT'
-        | 'CONTENT_MANAGEMENT'
-        | 'CUSTOMER_SERVICE'
-        | 'BANNER_MANAGEMENT'
-        | 'PERMISSION_MANAGEMENT'
-        | 'ALL'
-      )[],
+      permissions: [] as AdminPermission[],
     },
     onSubmit: async values => {
       if (values.name === '') {
@@ -164,7 +150,7 @@ export default function MpAdminAdminEdit() {
         phoneNumber2: phoneParts[1] ?? '',
         phoneNumber3: phoneParts[2] ?? '',
         status: true,
-        permissions: permissionData.permissions,
+        permissions: permissionData.permissions as AdminPermission[],
       });
     } catch (error) {
       console.error('Failed to fetch admin data:', error);
@@ -173,22 +159,7 @@ export default function MpAdminAdminEdit() {
     }
   };
 
-  const handlePermissionChange = (
-    permission:
-      | 'MEMBER_MANAGEMENT'
-      | 'PRODUCT_MANAGEMENT'
-      | 'TRANSACTION_MANAGEMENT'
-      | 'CONTRACT_MANAGEMENT'
-      | 'PRESCRIPTION_MANAGEMENT'
-      | 'SETTLEMENT_MANAGEMENT'
-      | 'EXPENSE_REPORT_MANAGEMENT'
-      | 'COMMUNITY_MANAGEMENT'
-      | 'CONTENT_MANAGEMENT'
-      | 'CUSTOMER_SERVICE'
-      | 'BANNER_MANAGEMENT'
-      | 'PERMISSION_MANAGEMENT'
-      | 'ALL',
-  ) => {
+  const handlePermissionChange = (permission: AdminPermission) => {
     const currentPermissions = [...formik.values.permissions];
     const index = currentPermissions.indexOf(permission);
 
@@ -322,8 +293,8 @@ export default function MpAdminAdminEdit() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={formik.values.permissions.includes('MEMBER_MANAGEMENT')}
-                          onChange={() => handlePermissionChange('MEMBER_MANAGEMENT')}
+                          checked={formik.values.permissions.includes(AdminPermission.MEMBER_MANAGEMENT)}
+                          onChange={() => handlePermissionChange(AdminPermission.MEMBER_MANAGEMENT)}
                         />
                       }
                       label='회원관리'
@@ -333,8 +304,8 @@ export default function MpAdminAdminEdit() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={formik.values.permissions.includes('PRODUCT_MANAGEMENT')}
-                          onChange={() => handlePermissionChange('PRODUCT_MANAGEMENT')}
+                          checked={formik.values.permissions.includes(AdminPermission.PRODUCT_MANAGEMENT)}
+                          onChange={() => handlePermissionChange(AdminPermission.PRODUCT_MANAGEMENT)}
                         />
                       }
                       label='제품관리'
@@ -344,8 +315,8 @@ export default function MpAdminAdminEdit() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={formik.values.permissions.includes('TRANSACTION_MANAGEMENT')}
-                          onChange={() => handlePermissionChange('TRANSACTION_MANAGEMENT')}
+                          checked={formik.values.permissions.includes(AdminPermission.TRANSACTION_MANAGEMENT)}
+                          onChange={() => handlePermissionChange(AdminPermission.TRANSACTION_MANAGEMENT)}
                         />
                       }
                       label='거래선관리'
@@ -355,8 +326,8 @@ export default function MpAdminAdminEdit() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={formik.values.permissions.includes('CONTRACT_MANAGEMENT')}
-                          onChange={() => handlePermissionChange('CONTRACT_MANAGEMENT')}
+                          checked={formik.values.permissions.includes(AdminPermission.CONTRACT_MANAGEMENT)}
+                          onChange={() => handlePermissionChange(AdminPermission.CONTRACT_MANAGEMENT)}
                         />
                       }
                       label='계약관리'
@@ -366,8 +337,8 @@ export default function MpAdminAdminEdit() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={formik.values.permissions.includes('PRESCRIPTION_MANAGEMENT')}
-                          onChange={() => handlePermissionChange('PRESCRIPTION_MANAGEMENT')}
+                          checked={formik.values.permissions.includes(AdminPermission.PRESCRIPTION_MANAGEMENT)}
+                          onChange={() => handlePermissionChange(AdminPermission.PRESCRIPTION_MANAGEMENT)}
                         />
                       }
                       label='처방관리'
@@ -377,8 +348,8 @@ export default function MpAdminAdminEdit() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={formik.values.permissions.includes('SETTLEMENT_MANAGEMENT')}
-                          onChange={() => handlePermissionChange('SETTLEMENT_MANAGEMENT')}
+                          checked={formik.values.permissions.includes(AdminPermission.SETTLEMENT_MANAGEMENT)}
+                          onChange={() => handlePermissionChange(AdminPermission.SETTLEMENT_MANAGEMENT)}
                         />
                       }
                       label='정산관리'
@@ -388,8 +359,8 @@ export default function MpAdminAdminEdit() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={formik.values.permissions.includes('EXPENSE_REPORT_MANAGEMENT')}
-                          onChange={() => handlePermissionChange('EXPENSE_REPORT_MANAGEMENT')}
+                          checked={formik.values.permissions.includes(AdminPermission.EXPENSE_REPORT_MANAGEMENT)}
+                          onChange={() => handlePermissionChange(AdminPermission.EXPENSE_REPORT_MANAGEMENT)}
                         />
                       }
                       label='지출보고관리'
@@ -399,8 +370,8 @@ export default function MpAdminAdminEdit() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={formik.values.permissions.includes('COMMUNITY_MANAGEMENT')}
-                          onChange={() => handlePermissionChange('COMMUNITY_MANAGEMENT')}
+                          checked={formik.values.permissions.includes(AdminPermission.COMMUNITY_MANAGEMENT)}
+                          onChange={() => handlePermissionChange(AdminPermission.COMMUNITY_MANAGEMENT)}
                         />
                       }
                       label='커뮤니티'
@@ -410,8 +381,8 @@ export default function MpAdminAdminEdit() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={formik.values.permissions.includes('CONTENT_MANAGEMENT')}
-                          onChange={() => handlePermissionChange('CONTENT_MANAGEMENT')}
+                          checked={formik.values.permissions.includes(AdminPermission.CONTENT_MANAGEMENT)}
+                          onChange={() => handlePermissionChange(AdminPermission.CONTENT_MANAGEMENT)}
                         />
                       }
                       label='콘텐츠관리'
@@ -421,8 +392,8 @@ export default function MpAdminAdminEdit() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={formik.values.permissions.includes('CUSTOMER_SERVICE')}
-                          onChange={() => handlePermissionChange('CUSTOMER_SERVICE')}
+                          checked={formik.values.permissions.includes(AdminPermission.CUSTOMER_SERVICE)}
+                          onChange={() => handlePermissionChange(AdminPermission.CUSTOMER_SERVICE)}
                         />
                       }
                       label='고객센터'
@@ -432,8 +403,8 @@ export default function MpAdminAdminEdit() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={formik.values.permissions.includes('BANNER_MANAGEMENT')}
-                          onChange={() => handlePermissionChange('BANNER_MANAGEMENT')}
+                          checked={formik.values.permissions.includes(AdminPermission.BANNER_MANAGEMENT)}
+                          onChange={() => handlePermissionChange(AdminPermission.BANNER_MANAGEMENT)}
                         />
                       }
                       label='배너관리'
@@ -443,8 +414,8 @@ export default function MpAdminAdminEdit() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={formik.values.permissions.includes('PERMISSION_MANAGEMENT')}
-                          onChange={() => handlePermissionChange('PERMISSION_MANAGEMENT')}
+                          checked={formik.values.permissions.includes(AdminPermission.PERMISSION_MANAGEMENT)}
+                          onChange={() => handlePermissionChange(AdminPermission.PERMISSION_MANAGEMENT)}
                         />
                       }
                       label='권한관리'

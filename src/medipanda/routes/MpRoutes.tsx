@@ -1,3 +1,4 @@
+import { AdminPermission } from '@/backend';
 import { Base64ErrorBoundary } from '@/lib/react/Base64ErrorBoundary';
 import Loadable from 'components/Loadable';
 import AuthLayout from 'layout/Auth';
@@ -86,7 +87,7 @@ const adminRoute: RouteObject = {
     {
       path: 'members',
       element: (
-        <MpAdminGuard requiredPermission={'MEMBER_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.MEMBER_MANAGEMENT}>
           <MpAdminMemberList />
         </MpAdminGuard>
       ),
@@ -94,7 +95,7 @@ const adminRoute: RouteObject = {
     {
       path: 'members/new',
       element: (
-        <MpAdminGuard requiredPermission={'MEMBER_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.MEMBER_MANAGEMENT}>
           <MpAdminMemberEdit />
         </MpAdminGuard>
       ),
@@ -102,7 +103,7 @@ const adminRoute: RouteObject = {
     {
       path: 'members/:userId/edit',
       element: (
-        <MpAdminGuard requiredPermission={'MEMBER_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.MEMBER_MANAGEMENT}>
           <MpAdminMemberEdit />
         </MpAdminGuard>
       ),
@@ -110,7 +111,7 @@ const adminRoute: RouteObject = {
     {
       path: 'sales-agency-products',
       element: (
-        <MpAdminGuard requiredPermission={'CONTRACT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CONTRACT_MANAGEMENT}>
           <MpAdminSalesAgencyProductList />
         </MpAdminGuard>
       ),
@@ -118,7 +119,7 @@ const adminRoute: RouteObject = {
     {
       path: 'sales-agency-products/new',
       element: (
-        <MpAdminGuard requiredPermission={'CONTRACT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CONTRACT_MANAGEMENT}>
           <MpAdminSalesAgencyProductEdit />
         </MpAdminGuard>
       ),
@@ -126,7 +127,7 @@ const adminRoute: RouteObject = {
     {
       path: 'sales-agency-products/:salesAgencyProductId',
       element: (
-        <MpAdminGuard requiredPermission={'CONTRACT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CONTRACT_MANAGEMENT}>
           <MpAdminSalesAgencyProductDetail />
         </MpAdminGuard>
       ),
@@ -134,7 +135,7 @@ const adminRoute: RouteObject = {
     {
       path: 'sales-agency-products/:salesAgencyProductId/edit',
       element: (
-        <MpAdminGuard requiredPermission={'CONTRACT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CONTRACT_MANAGEMENT}>
           <MpAdminSalesAgencyProductEdit />
         </MpAdminGuard>
       ),
@@ -142,7 +143,7 @@ const adminRoute: RouteObject = {
     {
       path: 'partners',
       element: (
-        <MpAdminGuard requiredPermission={'TRANSACTION_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.TRANSACTION_MANAGEMENT}>
           <MpAdminPartnerList />
         </MpAdminGuard>
       ),
@@ -150,7 +151,7 @@ const adminRoute: RouteObject = {
     {
       path: 'partners/new',
       element: (
-        <MpAdminGuard requiredPermission={'TRANSACTION_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.TRANSACTION_MANAGEMENT}>
           <MpAdminPartnerEdit />
         </MpAdminGuard>
       ),
@@ -158,7 +159,7 @@ const adminRoute: RouteObject = {
     {
       path: 'partners/:partnerId/edit',
       element: (
-        <MpAdminGuard requiredPermission={'TRANSACTION_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.TRANSACTION_MANAGEMENT}>
           <MpAdminPartnerEdit />
         </MpAdminGuard>
       ),
@@ -166,7 +167,7 @@ const adminRoute: RouteObject = {
     {
       path: 'products',
       element: (
-        <MpAdminGuard requiredPermission={'PRODUCT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.PRODUCT_MANAGEMENT}>
           <MpAdminProductList />
         </MpAdminGuard>
       ),
@@ -174,7 +175,7 @@ const adminRoute: RouteObject = {
     {
       path: 'products/new',
       element: (
-        <MpAdminGuard requiredPermission={'PRODUCT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.PRODUCT_MANAGEMENT}>
           <MpAdminProductEdit />
         </MpAdminGuard>
       ),
@@ -182,7 +183,7 @@ const adminRoute: RouteObject = {
     {
       path: 'products/:productId',
       element: (
-        <MpAdminGuard requiredPermission={'PRODUCT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.PRODUCT_MANAGEMENT}>
           <MpAdminProductDetail />
         </MpAdminGuard>
       ),
@@ -190,7 +191,7 @@ const adminRoute: RouteObject = {
     {
       path: 'products/:productId/edit',
       element: (
-        <MpAdminGuard requiredPermission={'PRODUCT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.PRODUCT_MANAGEMENT}>
           <MpAdminProductEdit />
         </MpAdminGuard>
       ),
@@ -198,7 +199,7 @@ const adminRoute: RouteObject = {
     {
       path: 'prescription-receptions',
       element: (
-        <MpAdminGuard requiredPermission={'PRESCRIPTION_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.PRESCRIPTION_MANAGEMENT}>
           <MpAdminPrescriptionReceptionList />
         </MpAdminGuard>
       ),
@@ -206,7 +207,7 @@ const adminRoute: RouteObject = {
     {
       path: 'prescription-forms',
       element: (
-        <MpAdminGuard requiredPermission={'PRESCRIPTION_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.PRESCRIPTION_MANAGEMENT}>
           <MpAdminPrescriptionFormList />
         </MpAdminGuard>
       ),
@@ -214,7 +215,7 @@ const adminRoute: RouteObject = {
     {
       path: 'prescription-forms/new',
       element: (
-        <MpAdminGuard requiredPermission={'PRESCRIPTION_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.PRESCRIPTION_MANAGEMENT}>
           <MpAdminPrescriptionFormProducts />
         </MpAdminGuard>
       ),
@@ -222,7 +223,7 @@ const adminRoute: RouteObject = {
     {
       path: 'prescription-forms/:prescriptionPartnerId/products',
       element: (
-        <MpAdminGuard requiredPermission={'PRESCRIPTION_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.PRESCRIPTION_MANAGEMENT}>
           <MpAdminPrescriptionFormProducts />
         </MpAdminGuard>
       ),
@@ -230,7 +231,7 @@ const adminRoute: RouteObject = {
     {
       path: 'settlements',
       element: (
-        <MpAdminGuard requiredPermission={'SETTLEMENT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.SETTLEMENT_MANAGEMENT}>
           <MpAdminSettlementList />
         </MpAdminGuard>
       ),
@@ -238,7 +239,7 @@ const adminRoute: RouteObject = {
     {
       path: 'settlements/new',
       element: (
-        <MpAdminGuard requiredPermission={'SETTLEMENT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.SETTLEMENT_MANAGEMENT}>
           <MpAdminSettlementEdit />
         </MpAdminGuard>
       ),
@@ -246,7 +247,7 @@ const adminRoute: RouteObject = {
     {
       path: 'settlements/:settlementId',
       element: (
-        <MpAdminGuard requiredPermission={'SETTLEMENT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.SETTLEMENT_MANAGEMENT}>
           <MpAdminSettlementEdit />
         </MpAdminGuard>
       ),
@@ -254,7 +255,7 @@ const adminRoute: RouteObject = {
     {
       path: 'settlements/:settlementId/business-partners/:settlementPartnerId',
       element: (
-        <MpAdminGuard requiredPermission={'SETTLEMENT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.SETTLEMENT_MANAGEMENT}>
           <MpAdminSettlementBusinessPartnerDetail />
         </MpAdminGuard>
       ),
@@ -262,7 +263,7 @@ const adminRoute: RouteObject = {
     {
       path: 'settlement-statistics',
       element: (
-        <MpAdminGuard requiredPermission={'SETTLEMENT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.SETTLEMENT_MANAGEMENT}>
           <MpAdminStatisticsList />
         </MpAdminGuard>
       ),
@@ -270,7 +271,7 @@ const adminRoute: RouteObject = {
     {
       path: 'expense-reports',
       element: (
-        <MpAdminGuard requiredPermission={'EXPENSE_REPORT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.EXPENSE_REPORT_MANAGEMENT}>
           <MpAdminExpenseReportList />
         </MpAdminGuard>
       ),
@@ -278,7 +279,7 @@ const adminRoute: RouteObject = {
     {
       path: 'community-users',
       element: (
-        <MpAdminGuard requiredPermission={'COMMUNITY_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.COMMUNITY_MANAGEMENT}>
           <MpAdminCommunityUserList />
         </MpAdminGuard>
       ),
@@ -286,7 +287,7 @@ const adminRoute: RouteObject = {
     {
       path: 'community-posts',
       element: (
-        <MpAdminGuard requiredPermission={'COMMUNITY_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.COMMUNITY_MANAGEMENT}>
           <MpAdminCommunityPostList />
         </MpAdminGuard>
       ),
@@ -294,7 +295,7 @@ const adminRoute: RouteObject = {
     {
       path: 'community-posts/:boardId',
       element: (
-        <MpAdminGuard requiredPermission={'COMMUNITY_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.COMMUNITY_MANAGEMENT}>
           <MpAdminCommunityPostDetail />
         </MpAdminGuard>
       ),
@@ -302,7 +303,7 @@ const adminRoute: RouteObject = {
     {
       path: 'community-comments',
       element: (
-        <MpAdminGuard requiredPermission={'COMMUNITY_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.COMMUNITY_MANAGEMENT}>
           <MpAdminCommunityCommentList />
         </MpAdminGuard>
       ),
@@ -310,7 +311,7 @@ const adminRoute: RouteObject = {
     {
       path: 'community-blinds',
       element: (
-        <MpAdminGuard requiredPermission={'COMMUNITY_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.COMMUNITY_MANAGEMENT}>
           <MpAdminCommunityBlindList />
         </MpAdminGuard>
       ),
@@ -318,7 +319,7 @@ const adminRoute: RouteObject = {
     {
       path: 'hospitals',
       element: (
-        <MpAdminGuard requiredPermission={'CONTENT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CONTENT_MANAGEMENT}>
           <MpAdminHospitalList />
         </MpAdminGuard>
       ),
@@ -326,7 +327,7 @@ const adminRoute: RouteObject = {
     {
       path: 'atoz',
       element: (
-        <MpAdminGuard requiredPermission={'CONTENT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CONTENT_MANAGEMENT}>
           <MpAdminAtoZList />
         </MpAdminGuard>
       ),
@@ -334,7 +335,7 @@ const adminRoute: RouteObject = {
     {
       path: 'atoz/new',
       element: (
-        <MpAdminGuard requiredPermission={'CONTENT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CONTENT_MANAGEMENT}>
           <MpAdminAtoZEdit />
         </MpAdminGuard>
       ),
@@ -342,7 +343,7 @@ const adminRoute: RouteObject = {
     {
       path: 'atoz/:boardId',
       element: (
-        <MpAdminGuard requiredPermission={'CONTENT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CONTENT_MANAGEMENT}>
           <MpAdminAtoZDetail />
         </MpAdminGuard>
       ),
@@ -350,7 +351,7 @@ const adminRoute: RouteObject = {
     {
       path: 'atoz/:boardId/edit',
       element: (
-        <MpAdminGuard requiredPermission={'CONTENT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CONTENT_MANAGEMENT}>
           <MpAdminAtoZEdit />
         </MpAdminGuard>
       ),
@@ -358,7 +359,7 @@ const adminRoute: RouteObject = {
     {
       path: 'notices',
       element: (
-        <MpAdminGuard requiredPermission={'CUSTOMER_SERVICE'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CUSTOMER_SERVICE}>
           <MpAdminNoticeList />
         </MpAdminGuard>
       ),
@@ -366,7 +367,7 @@ const adminRoute: RouteObject = {
     {
       path: 'notices/new',
       element: (
-        <MpAdminGuard requiredPermission={'CUSTOMER_SERVICE'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CUSTOMER_SERVICE}>
           <MpAdminNoticeEdit />
         </MpAdminGuard>
       ),
@@ -374,7 +375,7 @@ const adminRoute: RouteObject = {
     {
       path: 'notices/:boardId',
       element: (
-        <MpAdminGuard requiredPermission={'CUSTOMER_SERVICE'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CUSTOMER_SERVICE}>
           <MpAdminNoticeDetail />
         </MpAdminGuard>
       ),
@@ -382,7 +383,7 @@ const adminRoute: RouteObject = {
     {
       path: 'notices/:boardId/edit',
       element: (
-        <MpAdminGuard requiredPermission={'CUSTOMER_SERVICE'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CUSTOMER_SERVICE}>
           <MpAdminNoticeEdit />
         </MpAdminGuard>
       ),
@@ -390,7 +391,7 @@ const adminRoute: RouteObject = {
     {
       path: 'faqs',
       element: (
-        <MpAdminGuard requiredPermission={'CUSTOMER_SERVICE'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CUSTOMER_SERVICE}>
           <MpAdminFaqList />
         </MpAdminGuard>
       ),
@@ -398,7 +399,7 @@ const adminRoute: RouteObject = {
     {
       path: 'faqs/new',
       element: (
-        <MpAdminGuard requiredPermission={'CUSTOMER_SERVICE'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CUSTOMER_SERVICE}>
           <MpAdminFaqEdit />
         </MpAdminGuard>
       ),
@@ -406,7 +407,7 @@ const adminRoute: RouteObject = {
     {
       path: 'faqs/:boardId',
       element: (
-        <MpAdminGuard requiredPermission={'CUSTOMER_SERVICE'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CUSTOMER_SERVICE}>
           <MpAdminFaqDetail />
         </MpAdminGuard>
       ),
@@ -414,7 +415,7 @@ const adminRoute: RouteObject = {
     {
       path: 'faqs/:boardId/edit',
       element: (
-        <MpAdminGuard requiredPermission={'CUSTOMER_SERVICE'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CUSTOMER_SERVICE}>
           <MpAdminFaqEdit />
         </MpAdminGuard>
       ),
@@ -422,7 +423,7 @@ const adminRoute: RouteObject = {
     {
       path: 'inquiries',
       element: (
-        <MpAdminGuard requiredPermission={'CUSTOMER_SERVICE'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CUSTOMER_SERVICE}>
           <MpAdminInquiryList />
         </MpAdminGuard>
       ),
@@ -430,7 +431,7 @@ const adminRoute: RouteObject = {
     {
       path: 'inquiries/:boardId',
       element: (
-        <MpAdminGuard requiredPermission={'CUSTOMER_SERVICE'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CUSTOMER_SERVICE}>
           <MpAdminInquiryEdit />
         </MpAdminGuard>
       ),
@@ -438,7 +439,7 @@ const adminRoute: RouteObject = {
     {
       path: 'events',
       element: (
-        <MpAdminGuard requiredPermission={'CONTENT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CONTENT_MANAGEMENT}>
           <MpAdminEventList />
         </MpAdminGuard>
       ),
@@ -446,7 +447,7 @@ const adminRoute: RouteObject = {
     {
       path: 'events/new',
       element: (
-        <MpAdminGuard requiredPermission={'CONTENT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CONTENT_MANAGEMENT}>
           <MpAdminEventEdit />
         </MpAdminGuard>
       ),
@@ -454,7 +455,7 @@ const adminRoute: RouteObject = {
     {
       path: 'events/:eventId',
       element: (
-        <MpAdminGuard requiredPermission={'CONTENT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CONTENT_MANAGEMENT}>
           <MpAdminEventDetail />
         </MpAdminGuard>
       ),
@@ -462,7 +463,7 @@ const adminRoute: RouteObject = {
     {
       path: 'events/:eventId/edit',
       element: (
-        <MpAdminGuard requiredPermission={'CONTENT_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.CONTENT_MANAGEMENT}>
           <MpAdminEventEdit />
         </MpAdminGuard>
       ),
@@ -470,7 +471,7 @@ const adminRoute: RouteObject = {
     {
       path: 'banners',
       element: (
-        <MpAdminGuard requiredPermission={'BANNER_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.BANNER_MANAGEMENT}>
           <MpAdminBannerList />
         </MpAdminGuard>
       ),
@@ -478,7 +479,7 @@ const adminRoute: RouteObject = {
     {
       path: 'banners/new',
       element: (
-        <MpAdminGuard requiredPermission={'BANNER_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.BANNER_MANAGEMENT}>
           <MpAdminBannerEdit />
         </MpAdminGuard>
       ),
@@ -486,7 +487,7 @@ const adminRoute: RouteObject = {
     {
       path: 'banners/:bannerId/edit',
       element: (
-        <MpAdminGuard requiredPermission={'BANNER_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.BANNER_MANAGEMENT}>
           <MpAdminBannerEdit />
         </MpAdminGuard>
       ),
@@ -494,7 +495,7 @@ const adminRoute: RouteObject = {
     {
       path: 'admins',
       element: (
-        <MpAdminGuard requiredPermission={'PERMISSION_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.PERMISSION_MANAGEMENT}>
           <MpAdminAdminList />
         </MpAdminGuard>
       ),
@@ -502,7 +503,7 @@ const adminRoute: RouteObject = {
     {
       path: 'admins/new',
       element: (
-        <MpAdminGuard requiredPermission={'PERMISSION_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.PERMISSION_MANAGEMENT}>
           <MpAdminAdminEdit />
         </MpAdminGuard>
       ),
@@ -510,7 +511,7 @@ const adminRoute: RouteObject = {
     {
       path: 'admins/:userId/edit',
       element: (
-        <MpAdminGuard requiredPermission={'PERMISSION_MANAGEMENT'}>
+        <MpAdminGuard requiredPermission={AdminPermission.PERMISSION_MANAGEMENT}>
           <MpAdminAdminEdit />
         </MpAdminGuard>
       ),

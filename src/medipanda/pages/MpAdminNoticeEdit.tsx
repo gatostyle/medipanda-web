@@ -24,7 +24,20 @@ import Stack from '@mui/material/Stack';
 import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
-import { AttachmentResponse, BoardDetailsResponse, createBoardPost, getBoardDetails, updateBoardPost } from '@/backend';
+import {
+  AttachmentResponse,
+  BoardDetailsResponse,
+  BoardExposureRange,
+  BoardExposureRangeLabel,
+  BoardType,
+  BoardTypeLabel,
+  createBoardPost,
+  getBoardDetails,
+  NoticeType,
+  NoticeTypeLabel,
+  PostAttachmentType,
+  updateBoardPost,
+} from '@/backend';
 import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
@@ -43,27 +56,11 @@ export default function MpAdminNoticeEdit() {
 
   const formik = useFormik({
     initialValues: {
-      displayBoard: 'NOTICE' as
-        | 'ANONYMOUS'
-        | 'MR_CSO_MATCHING'
-        | 'NOTICE'
-        | 'INQUIRY'
-        | 'FAQ'
-        | 'CSO_A_TO_Z'
-        | 'EVENT'
-        | 'SALES_AGENCY'
-        | 'PRODUCT',
-      noticeCategory: 'GENERAL' as
-        | 'PRODUCT_STATUS'
-        | 'MANUFACTURING_SUSPENSION'
-        | 'NEW_PRODUCT'
-        | 'POLICY'
-        | 'GENERAL'
-        | 'ANONYMOUS_BOARD'
-        | 'MR_CSO_MATCHING',
+      displayBoard: BoardType.NOTICE,
+      noticeCategory: NoticeType.GENERAL,
       manufacturerName: '',
       isExposed: true,
-      exposureRange: 'ALL' as 'ALL' | 'CONTRACTED' | 'UNCONTRACTED',
+      exposureRange: BoardExposureRange.ALL,
       isTopFixed: false,
       title: '',
       attachedFiles: [] as AttachmentResponse[],
@@ -75,7 +72,7 @@ export default function MpAdminNoticeEdit() {
         return;
       }
 
-      if (values.noticeCategory === 'GENERAL' && values.manufacturerName === '') {
+      if (values.noticeCategory === NoticeType.GENERAL && values.manufacturerName === '') {
         alert('제약사명을 선택해주세요.');
         return;
       }
@@ -155,23 +152,14 @@ export default function MpAdminNoticeEdit() {
       setDetail(detail);
 
       editor.commands.setContent(detail.content);
-      setEditorAttachments(detail.attachments.filter(a => a.type === 'EDITOR'));
+      setEditorAttachments(detail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
 
       formik.setValues({
-        displayBoard: detail.boardType as
-          | 'ANONYMOUS'
-          | 'MR_CSO_MATCHING'
-          | 'NOTICE'
-          | 'INQUIRY'
-          | 'FAQ'
-          | 'CSO_A_TO_Z'
-          | 'EVENT'
-          | 'SALES_AGENCY'
-          | 'PRODUCT',
-        noticeCategory: detail.noticeProperties?.noticeType || 'GENERAL',
+        displayBoard: detail.boardType as BoardType,
+        noticeCategory: (detail.noticeProperties?.noticeType as NoticeType) ?? NoticeType.GENERAL,
         manufacturerName: detail.noticeProperties?.drugCompany ?? '',
         isExposed: detail.isExposed,
-        exposureRange: detail.exposureRange || 'ALL',
+        exposureRange: detail.exposureRange as BoardExposureRange,
         isTopFixed: detail.noticeProperties?.fixedTop || false,
         title: detail.title,
         attachedFiles: detail.attachments,
@@ -234,9 +222,9 @@ export default function MpAdminNoticeEdit() {
                   노출게시판 <span style={{ color: 'red' }}>*</span>
                 </Typography>
                 <RadioGroup row name='displayBoard' value={formik.values.displayBoard} onChange={formik.handleChange}>
-                  <FormControlLabel value={'NOTICE'} control={<Radio />} label='공지사항' />
-                  <FormControlLabel value={'ANONYMOUS'} control={<Radio />} label='익명게시판' />
-                  <FormControlLabel value={'MR_CSO_MATCHING'} control={<Radio />} label='MR-CSO매칭' />
+                  {[BoardType.NOTICE, BoardType.ANONYMOUS, BoardType.MR_CSO_MATCHING].map(boardType => (
+                    <FormControlLabel key={boardType} value={boardType} control={<Radio />} label={BoardTypeLabel[boardType]} />
+                  ))}
                 </RadioGroup>
               </Grid>
 
@@ -244,13 +232,11 @@ export default function MpAdminNoticeEdit() {
                 <FormControl fullWidth>
                   <InputLabel>공지분류 *</InputLabel>
                   <Select name='noticeCategory' value={formik.values.noticeCategory} onChange={formik.handleChange}>
-                    <MenuItem value={'PRODUCT_STATUS'}>제약사 - 제품현향</MenuItem>
-                    <MenuItem value={'MANUFACTURING_SUSPENSION'}>제약사 - 정산 및 생산중단</MenuItem>
-                    <MenuItem value={'NEW_PRODUCT'}>제약사 - 신제품 정보</MenuItem>
-                    <MenuItem value={'POLICY'}>제약사 정책</MenuItem>
-                    <MenuItem value={'GENERAL'}>일반공지</MenuItem>
-                    <MenuItem value={'ANONYMOUS_BOARD'}>익명게시판</MenuItem>
-                    <MenuItem value={'MR_CSO_MATCHING'}>MR-CSO 매칭</MenuItem>
+                    {Object.keys(NoticeType).map(noticeCategory => (
+                      <MenuItem key={noticeCategory} value={noticeCategory}>
+                        {NoticeTypeLabel[noticeCategory]}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </Grid>
@@ -260,12 +246,12 @@ export default function MpAdminNoticeEdit() {
                   fullWidth
                   name='manufacturerName'
                   label='제약사명'
-                  placeholder={formik.values.noticeCategory === 'GENERAL' ? '' : '일반공지 제외한 모든분류에 노출'}
-                  disabled={formik.values.noticeCategory === 'GENERAL'}
+                  placeholder={formik.values.noticeCategory === NoticeType.GENERAL ? '' : '일반공지 제외한 모든분류에 노출'}
+                  disabled={formik.values.noticeCategory === NoticeType.GENERAL}
                   value={formik.values.manufacturerName}
                   onChange={formik.handleChange}
                   InputProps={{
-                    endAdornment: formik.values.noticeCategory !== 'GENERAL' && (
+                    endAdornment: formik.values.noticeCategory !== NoticeType.GENERAL && (
                       <InputAdornment position='end'>
                         <IconButton edge='end'>
                           <SearchIcon />
@@ -296,9 +282,14 @@ export default function MpAdminNoticeEdit() {
                   노출범위 <span style={{ color: 'red' }}>*</span>
                 </Typography>
                 <RadioGroup row name='exposureRange' value={formik.values.exposureRange} onChange={formik.handleChange}>
-                  <FormControlLabel value={'ALL'} control={<Radio />} label='전체' />
-                  <FormControlLabel value={'CONTRACTED'} control={<Radio />} label='계약' />
-                  <FormControlLabel value={'UNCONTRACTED'} control={<Radio />} label='미계약' />
+                  {Object.keys(BoardExposureRange).map(exposureRange => (
+                    <FormControlLabel
+                      key={exposureRange}
+                      value={exposureRange}
+                      control={<Radio />}
+                      label={BoardExposureRangeLabel[exposureRange]}
+                    />
+                  ))}
                 </RadioGroup>
               </Grid>
 

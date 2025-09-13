@@ -25,7 +25,7 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { BlindPostResponse, DateString, getBlindPosts, unblindPost } from '@/backend';
+import { BlindPostResponse, DateString, getBlindPosts, PostType, PostTypeLabel, unblindPost } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
@@ -44,7 +44,7 @@ export default function MpAdminCommunityBlindList() {
     searchKeyword: '',
     startAt: '',
     endAt: '',
-    postType: '' as 'BOARD' | 'COMMENT' | '',
+    postType: '' as PostType | '',
     page: '1',
   };
 
@@ -191,17 +191,13 @@ export default function MpAdminCommunityBlindList() {
       },
       {
         header: '글 유형',
-        cell: ({ row }) => {
-          const postType = row.original.postType;
-          const label = postType === 'BOARD' ? '포스트' : '댓글';
-          return label;
-        },
+        cell: ({ row }) => PostTypeLabel[row.original.postType],
         size: 80,
       },
       {
         header: '글 내용',
         cell: ({ row }) => {
-          const content = row.original.postType === 'BOARD' ? row.original.content : '';
+          const content = row.original.postType === PostType.BOARD ? row.original.content : '';
           return (
             <Typography
               sx={{
@@ -238,7 +234,7 @@ export default function MpAdminCommunityBlindList() {
           for (const id of selectedIds) {
             const item = contents.find(item => item.id === id);
             if (item) {
-              if (item.postType === 'BOARD') {
+              if (item.postType === PostType.BOARD) {
                 await unblindPost({ postId: item.id, commentId: null });
               } else {
                 await unblindPost({ postId: null, commentId: item.id });
@@ -272,8 +268,11 @@ export default function MpAdminCommunityBlindList() {
                   <FormControl fullWidth size='small'>
                     <InputLabel>글 유형</InputLabel>
                     <Select name='postType' value={formik.values.postType} onChange={formik.handleChange}>
-                      <MenuItem value={'BOARD'}>포스트</MenuItem>
-                      <MenuItem value={'COMMENT'}>댓글</MenuItem>
+                      {Object.keys(PostType).map(postType => (
+                        <MenuItem key={postType} value={postType}>
+                          {PostTypeLabel[postType]}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </SearchFilterItem>

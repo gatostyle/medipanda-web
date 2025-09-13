@@ -1,4 +1,5 @@
 import {
+  ContractStatus,
   deleteSalesAgencyProductApplicant,
   getDownloadProductApplicantsExcel,
   getProductApplicants,
@@ -176,7 +177,7 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
       },
       {
         header: '파트너사 계약여부',
-        cell: ({ row }) => (row.original.contractStatus === 'CONTRACT' ? 'Y' : 'N'),
+        cell: ({ row }) => (row.original.contractStatus === ContractStatus.CONTRACT ? 'Y' : 'N'),
         size: 140,
       },
       {

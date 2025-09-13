@@ -1,5 +1,5 @@
 import Loader from 'components/Loader';
-import { getPermissions } from '@/backend';
+import { AdminPermission, getPermissions } from '@/backend';
 import { isAdmin, isSuperAdmin, useSession } from '@/medipanda/hooks/useSession';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -7,20 +7,7 @@ import { GuardProps } from 'types/auth';
 import { saveRedirectTo } from '../redirectTo';
 
 interface MpAdminGuardProps extends GuardProps {
-  requiredPermission?:
-    | 'MEMBER_MANAGEMENT'
-    | 'PRODUCT_MANAGEMENT'
-    | 'TRANSACTION_MANAGEMENT'
-    | 'CONTRACT_MANAGEMENT'
-    | 'PRESCRIPTION_MANAGEMENT'
-    | 'SETTLEMENT_MANAGEMENT'
-    | 'EXPENSE_REPORT_MANAGEMENT'
-    | 'COMMUNITY_MANAGEMENT'
-    | 'CONTENT_MANAGEMENT'
-    | 'CUSTOMER_SERVICE'
-    | 'BANNER_MANAGEMENT'
-    | 'PERMISSION_MANAGEMENT'
-    | 'ALL';
+  requiredPermission?: AdminPermission;
 }
 
 export function MpAdminGuard({ children, requiredPermission }: MpAdminGuardProps) {

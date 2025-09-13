@@ -6,6 +6,7 @@ import {
   type MemberDetailsResponse,
   refreshToken as apiRefreshToken,
   whoAmI,
+  Role,
 } from '@/backend';
 import { MenuOrientation } from '@/config';
 import { encryptRSA } from '@/lib/rsa';
@@ -133,11 +134,11 @@ export function useSession() {
 }
 
 export function isAdmin(member: MemberDetailsResponse) {
-  return member.role === 'SUPER_ADMIN' || member.role === 'ADMIN';
+  return member.role === Role.SUPER_ADMIN || member.role === Role.ADMIN;
 }
 
 export function isSuperAdmin(member: MemberDetailsResponse) {
-  return member.role === 'SUPER_ADMIN';
+  return member.role === Role.SUPER_ADMIN;
 }
 
 export class NotAdminError extends Error {

@@ -26,12 +26,22 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { BoardPostResponse, DateString, deleteBoardPost, DrugCompanyResponse, getAllDrugCompanies, getBoards } from '@/backend';
+import {
+  BoardExposureRangeLabel,
+  BoardPostResponse,
+  BoardType,
+  BoardTypeLabel,
+  DateString,
+  deleteBoardPost,
+  DrugCompanyResponse,
+  getAllDrugCompanies,
+  getBoards,
+  NoticeTypeLabel,
+} from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { BOARD_TYPE_LABELS, EXPOSURE_RANGE_LABELS, NOTICE_TYPE_LABELS } from '@/medipanda/ui-labels';
 import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
@@ -103,7 +113,7 @@ export default function MpAdminNoticeList() {
     setLoading(true);
     try {
       const response = await getBoards({
-        boardType: 'NOTICE',
+        boardType: BoardType.NOTICE,
         userId: undefined,
         name: undefined,
         nickname: undefined,
@@ -196,7 +206,7 @@ export default function MpAdminNoticeList() {
       },
       {
         header: '게시판',
-        cell: ({ row }) => BOARD_TYPE_LABELS[row.original.boardType],
+        cell: ({ row }) => BoardTypeLabel[row.original.boardType],
         size: 100,
       },
       {
@@ -204,7 +214,7 @@ export default function MpAdminNoticeList() {
         cell: ({ row }) => {
           const noticeType = row.original.noticeProperties!.noticeType;
           if (!noticeType) return '-';
-          return NOTICE_TYPE_LABELS[noticeType];
+          return NoticeTypeLabel[noticeType];
         },
         size: 100,
       },
@@ -228,7 +238,7 @@ export default function MpAdminNoticeList() {
       },
       {
         header: '노출범위',
-        cell: ({ row }) => EXPOSURE_RANGE_LABELS[row.original.exposureRange],
+        cell: ({ row }) => BoardExposureRangeLabel[row.original.exposureRange],
         size: 80,
       },
       {

@@ -26,11 +26,20 @@ import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-react';
-import { DateString, getDownloadUserMembersExcel, getUserMembers, MemberResponse } from '@/backend';
+import {
+  ContractStatus,
+  memberTypeToContractStatus,
+  ContractStatusLabel,
+  DateString,
+  getDownloadUserMembersExcel,
+  getUserMembers,
+  MemberResponse,
+  AccountStatusLabel,
+  MemberType,
+} from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { CONSENT_LABELS, MEMBER_ACCOUNT_STATUS_LABELS } from '@/medipanda/ui-labels';
 import { formatYyyyMmDd, formatYyyyMmDdHhMm, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
@@ -45,7 +54,7 @@ export default function MpAdminMemberList() {
     searchKeyword: '',
     startAt: '',
     endAt: '',
-    contractStatus: '' as 'CONTRACT' | 'NON_CONTRACT' | '',
+    contractStatus: '' as ContractStatus | '',
     page: '1',
   };
 
@@ -191,7 +200,7 @@ export default function MpAdminMemberList() {
       },
       {
         header: '파트너사 계약여부',
-        cell: ({ row }) => (row.original.partnerContractStatus !== 'NONE' ? '계약' : '미계약'),
+        cell: ({ row }) => ContractStatusLabel[memberTypeToContractStatus(row.original.partnerContractStatus as MemberType)],
         size: 130,
       },
       {
@@ -201,12 +210,12 @@ export default function MpAdminMemberList() {
       },
       {
         header: '계정상태',
-        cell: ({ row }) => MEMBER_ACCOUNT_STATUS_LABELS[row.original.accountStatus],
+        cell: ({ row }) => AccountStatusLabel[row.original.accountStatus],
         size: 90,
       },
       {
         header: '마케팅수신동의',
-        cell: ({ row }) => CONSENT_LABELS[String(row.original.marketingConsent)],
+        cell: ({ row }) => (row.original.marketingConsent ? '동의' : '미동의'),
         size: 120,
       },
       {
@@ -241,8 +250,11 @@ export default function MpAdminMemberList() {
                   <FormControl fullWidth size='small'>
                     <InputLabel>계약상태</InputLabel>
                     <Select name='contractStatus' value={formik.values.contractStatus} onChange={formik.handleChange}>
-                      <MenuItem value={'CONTRACT'}>계약</MenuItem>
-                      <MenuItem value={'NON_CONTRACT'}>미계약</MenuItem>
+                      {Object.keys(ContractStatus).map(contractStatus => (
+                        <MenuItem key={contractStatus} value={contractStatus}>
+                          {ContractStatusLabel[contractStatus]}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </SearchFilterItem>

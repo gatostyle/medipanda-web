@@ -2,7 +2,7 @@ import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { Box, Button, Chip, CircularProgress, Divider, Grid, Stack, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
-import { EventBoardDetailsResponse, getEventBoardDetails } from '@/backend';
+import { BoardExposureRangeLabel, EventBoardDetailsResponse, getEventBoardDetails, PostAttachmentType } from '@/backend';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
@@ -32,7 +32,7 @@ export default function MpAdminEventDetail() {
 
       editor.setEditable(false);
       editor.commands.setContent(detail.boardPostDetail.content);
-      setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === 'EDITOR'));
+      setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
     } catch (error) {
       console.error('Failed to fetch event detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -91,18 +91,7 @@ export default function MpAdminEventDetail() {
                   노출범위
                 </Typography>
                 <Box>
-                  <Chip
-                    label={
-                      event.boardPostDetail.exposureRange === 'ALL'
-                        ? '전체'
-                        : event.boardPostDetail.exposureRange === 'CONTRACTED'
-                          ? '계약'
-                          : '미계약'
-                    }
-                    color='success'
-                    variant='light'
-                    size='small'
-                  />
+                  <Chip label={BoardExposureRangeLabel[event.boardPostDetail.exposureRange]} color='success' variant='light' size='small' />
                 </Box>
               </Stack>
             </Grid>

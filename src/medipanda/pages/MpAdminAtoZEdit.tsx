@@ -18,7 +18,15 @@ import {
 import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
-import { AttachmentResponse, createBoardPost, getBoardDetails, updateBoardPost } from '@/backend';
+import {
+  AttachmentResponse,
+  BoardExposureRange,
+  BoardType,
+  createBoardPost,
+  getBoardDetails,
+  PostAttachmentType,
+  updateBoardPost,
+} from '@/backend';
 import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
@@ -52,7 +60,7 @@ export default function MpAdminAtoZEdit() {
         if (isNew) {
           await createBoardPost({
             request: {
-              boardType: 'CSO_A_TO_Z',
+              boardType: BoardType.CSO_A_TO_Z,
               title: values.title,
               content: editor.getHTML(),
               userId: session!.userId,
@@ -61,7 +69,7 @@ export default function MpAdminAtoZEdit() {
               parentId: null,
               isExposed: values.isExposed,
               editorFileIds: editorAttachments.map(image => image.s3fileId),
-              exposureRange: 'ALL',
+              exposureRange: BoardExposureRange.ALL,
               noticeProperties: null,
             },
             files: values.newFiles,
@@ -75,7 +83,7 @@ export default function MpAdminAtoZEdit() {
               hiddenNickname: null,
               isBlind: null,
               isExposed: values.isExposed,
-              exposureRange: 'ALL',
+              exposureRange: BoardExposureRange.ALL,
               keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
               editorFileIds: editorAttachments.map(image => image.s3fileId),
               noticeProperties: null,
@@ -108,12 +116,12 @@ export default function MpAdminAtoZEdit() {
       const detail = await getBoardDetails(itemId);
 
       editor.commands.setContent(detail.content);
-      setEditorAttachments(detail.attachments.filter(a => a.type === 'EDITOR'));
+      setEditorAttachments(detail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
 
       formik.setValues({
         title: detail.title,
         isExposed: detail.isExposed,
-        attachedFiles: detail.attachments.filter(a => a.type === 'ATTACHMENT'),
+        attachedFiles: detail.attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT),
         newFiles: [],
       });
     } catch (error) {

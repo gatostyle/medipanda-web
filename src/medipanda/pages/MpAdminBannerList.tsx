@@ -26,7 +26,7 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { BannerResponse, DateTimeString, getBanners } from '@/backend';
+import { BannerResponse, BannerScopeLabel, BannerStatus, BannerStatusLabel, DateTimeString, getBanners } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
@@ -43,7 +43,7 @@ export default function MpAdminBannerList() {
     searchKeyword: '',
     startAt: '',
     endAt: '',
-    bannerStatus: '' as 'VISIBLE' | 'HIDDEN' | '',
+    bannerStatus: '' as BannerStatus | '',
     page: '1',
   };
 
@@ -169,8 +169,8 @@ export default function MpAdminBannerList() {
           const status = row.original.status;
           return (
             <Chip
-              label={status === 'VISIBLE' ? '노출' : '미노출'}
-              color={status === 'VISIBLE' ? 'success' : 'default'}
+              label={BannerStatusLabel[status]}
+              color={status === BannerStatus.VISIBLE ? 'success' : 'default'}
               variant='light'
               size='small'
             />
@@ -180,19 +180,7 @@ export default function MpAdminBannerList() {
       },
       {
         header: '노출범위',
-        cell: ({ row }) => {
-          const scope = row.original.scope;
-          switch (scope) {
-            case 'ENTIRE':
-              return '전체';
-            case 'CONTRACT':
-              return '계약';
-            case 'NON_CONTRACT':
-              return '미계약';
-            default:
-              return scope;
-          }
-        },
+        cell: ({ row }) => BannerScopeLabel[row.original.scope],
         size: 100,
       },
       {
@@ -251,8 +239,11 @@ export default function MpAdminBannerList() {
                   <FormControl fullWidth size='small'>
                     <InputLabel>상태</InputLabel>
                     <Select name='bannerStatus' value={formik.values.bannerStatus} onChange={formik.handleChange}>
-                      <MenuItem value={'VISIBLE'}>노출</MenuItem>
-                      <MenuItem value={'HIDDEN'}>미노출</MenuItem>
+                      {Object.keys(BannerStatus).map(bannerStatus => (
+                        <MenuItem key={bannerStatus} value={bannerStatus}>
+                          {BannerStatusLabel[bannerStatus]}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </SearchFilterItem>

@@ -25,11 +25,19 @@ import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-react';
-import { DateTimeString, ExpenseReportResponse, getDownloadExpenseReportListExcel, getExpenseReportList } from '@/backend';
+import {
+  DateTimeString,
+  ExpenseReportResponse,
+  ExpenseReportStatus,
+  ExpenseReportStatusLabel,
+  ExpenseReportType,
+  ExpenseReportTypeLabel,
+  getDownloadExpenseReportListExcel,
+  getExpenseReportList,
+} from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { EXPENSE_REPORT_CLASSIFICATION_LABELS, EXPENSE_REPORT_STATUS_LABELS } from '@/medipanda/ui-labels';
 import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
@@ -44,8 +52,8 @@ export default function MpAdminExpenseReportList() {
     searchKeyword: '',
     eventDateFrom: '',
     eventDateTo: '',
-    status: '' as 'PENDING' | 'COMPLETED' | '',
-    reportType: '' as 'SAMPLE_PROVIDE' | 'PRODUCT_BRIEFING_MULTI' | 'PRODUCT_BRIEFING_SINGLE' | '',
+    status: '' as ExpenseReportStatus | '',
+    reportType: '' as ExpenseReportType.SAMPLE_PROVIDE | '',
     page: '1',
   };
 
@@ -166,10 +174,7 @@ export default function MpAdminExpenseReportList() {
       },
       {
         header: '유형',
-        cell: ({ row }) => {
-          const value = row.original.reportType;
-          return EXPENSE_REPORT_CLASSIFICATION_LABELS[value];
-        },
+        cell: ({ row }) => ExpenseReportTypeLabel[row.original.reportType],
         size: 150,
       },
       {
@@ -186,7 +191,7 @@ export default function MpAdminExpenseReportList() {
       },
       {
         header: '신고상태',
-        cell: ({ row }) => EXPENSE_REPORT_STATUS_LABELS[row.original.status],
+        cell: ({ row }) => ExpenseReportStatusLabel[row.original.status],
         size: 100,
       },
     ],
@@ -211,8 +216,11 @@ export default function MpAdminExpenseReportList() {
                   <FormControl fullWidth size='small'>
                     <InputLabel>신고상태</InputLabel>
                     <Select name='status' value={formik.values.status} onChange={formik.handleChange}>
-                      <MenuItem value={'PENDING'}>{EXPENSE_REPORT_STATUS_LABELS['PENDING']}</MenuItem>
-                      <MenuItem value={'COMPLETED'}>{EXPENSE_REPORT_STATUS_LABELS['COMPLETED']}</MenuItem>
+                      {Object.keys(ExpenseReportStatus).map(expenseReportStatus => (
+                        <MenuItem key={expenseReportStatus} value={expenseReportStatus}>
+                          {ExpenseReportStatusLabel[expenseReportStatus]}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </SearchFilterItem>
@@ -230,11 +238,11 @@ export default function MpAdminExpenseReportList() {
                   <FormControl fullWidth size='small'>
                     <InputLabel>유형</InputLabel>
                     <Select name='reportType' value={formik.values.reportType} onChange={formik.handleChange}>
-                      <MenuItem value={'SAMPLE_PROVIDE'}>{EXPENSE_REPORT_CLASSIFICATION_LABELS['SAMPLE_PROVIDE']}</MenuItem>
-                      <MenuItem value={'PRODUCT_BRIEFING_MULTI'}>{EXPENSE_REPORT_CLASSIFICATION_LABELS['PRODUCT_BRIEFING_MULTI']}</MenuItem>
-                      <MenuItem value={'PRODUCT_BRIEFING_SINGLE'}>
-                        {EXPENSE_REPORT_CLASSIFICATION_LABELS['PRODUCT_BRIEFING_SINGLE']}
-                      </MenuItem>
+                      {Object.keys(ExpenseReportType).map(expenseReportType => (
+                        <MenuItem key={expenseReportType} value={expenseReportType}>
+                          {ExpenseReportTypeLabel[expenseReportType]}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </SearchFilterItem>

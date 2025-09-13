@@ -3,7 +3,7 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Box, Button, CircularProgress, Grid, Link, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
-import { BoardDetailsResponse, getBoardDetails } from '@/backend';
+import { BoardDetailsResponse, getBoardDetails, PostAttachmentType } from '@/backend';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
@@ -37,7 +37,7 @@ export default function MpAdminCustomerCenterFaqDetail() {
 
       editor.setEditable(false);
       editor.commands.setContent(detail.content);
-      setEditorAttachments(detail.attachments.filter(a => a.type === 'EDITOR'));
+      setEditorAttachments(detail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
     } catch (error) {
       console.error('Failed to fetch FAQ detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });

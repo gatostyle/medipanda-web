@@ -20,7 +20,16 @@ import {
 import { EditorContent } from '@tiptap/react';
 import { isAxiosError } from 'axios';
 import { useFormik } from 'formik';
-import { createProductExtraInfo, getProductDetails, ProductDetailsResponse, updateProductExtraInfo } from '@/backend';
+import {
+  BoardExposureRange,
+  BoardType,
+  createProductExtraInfo,
+  getProductDetails,
+  PostAttachmentType,
+  PriceUnit,
+  ProductDetailsResponse,
+  updateProductExtraInfo,
+} from '@/backend';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
@@ -90,7 +99,7 @@ export default function MpAdminProductEdit() {
         if (isNew) {
           await createProductExtraInfo({
             boardPostCreateRequest: {
-              boardType: 'PRODUCT',
+              boardType: BoardType.PRODUCT,
               userId: session!.userId,
               nickname: session!.userId,
               hiddenNickname: false,
@@ -99,7 +108,7 @@ export default function MpAdminProductEdit() {
               parentId: null,
               isExposed: true,
               editorFileIds: editorAttachments.map(image => image.s3fileId),
-              exposureRange: 'ALL',
+              exposureRange: BoardExposureRange.ALL,
               noticeProperties: null,
             },
             productExtraInfoCreateRequest: {
@@ -109,7 +118,7 @@ export default function MpAdminProductEdit() {
               productCode: values.productCode,
               changedFeeRate: values.changedFeeRate?.toString() ?? null,
               changedMonth: values.changedMonth,
-              priceUnit: 'KRW',
+              priceUnit: PriceUnit.KRW,
               feeRate: values.feeRate.toString(),
               price: values.price,
               note: values.note,
@@ -142,7 +151,7 @@ export default function MpAdminProductEdit() {
               productCode: values.productCode,
               changedFeeRate: values.changedFeeRate?.toString() ?? null,
               changedMonth: values.changedMonth,
-              priceUnit: 'KRW',
+              priceUnit: PriceUnit.KRW,
               feeRate: values.feeRate.toString(),
               price: values.price,
               note: values.note,
@@ -197,7 +206,7 @@ export default function MpAdminProductEdit() {
       setDetail(detail);
 
       editor.commands.setContent(detail.boardDetailsResponse.content);
-      setEditorAttachments(detail.boardDetailsResponse.attachments.filter(a => a.type === 'EDITOR'));
+      setEditorAttachments(detail.boardDetailsResponse.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
 
       const changedMonth = Number(detail.changedMonth?.slice(-2));
 

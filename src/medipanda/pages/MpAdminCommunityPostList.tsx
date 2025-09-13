@@ -1,5 +1,23 @@
+import {
+  BoardPostResponse,
+  BoardType,
+  BoardTypeLabel,
+  ContractStatus,
+  DateString,
+  getBoards,
+  MemberType,
+  memberTypeToContractStatus,
+  toggleBlindStatus_1,
+} from '@/backend';
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
+import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
+import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
+import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
+import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
+import { formatYyyyMmDd, formatYyyyMmDdHhMm, SafeDate } from '@/medipanda/utils/dateFormat';
+import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import {
   Box,
   Button,
@@ -27,34 +45,15 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { BoardPostResponse, DateString, getBoards, toggleBlindStatus_1 } from '@/backend';
-import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
-import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
-import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
-import { useMpInfoDialog } from '@/medipanda/hooks/useMpInfoDialog';
-import { BOARD_TYPE_LABELS } from '@/medipanda/ui-labels';
-import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
-import { formatYyyyMmDd, formatYyyyMmDdHhMm, SafeDate } from '@/medipanda/utils/dateFormat';
 
 export default function MpAdminCommunityPostList() {
   const navigate = useNavigate();
 
   const initialSearchParams = {
-    boardType: '' as
-      | 'ANONYMOUS'
-      | 'MR_CSO_MATCHING'
-      | 'NOTICE'
-      | 'INQUIRY'
-      | 'FAQ'
-      | 'CSO_A_TO_Z'
-      | 'EVENT'
-      | 'SALES_AGENCY'
-      | 'PRODUCT'
-      | '',
+    boardType: '' as BoardType | '',
     searchType: '' as 'title' | 'userId' | 'name' | 'nickname' | '',
     searchKeyword: '',
     startAt: '',
@@ -197,7 +196,7 @@ export default function MpAdminCommunityPostList() {
         header: '게시판유형',
         cell: ({ row }) => {
           const boardType = row.original.boardType;
-          return <Chip label={BOARD_TYPE_LABELS[boardType]} color='success' variant='light' size='small' />;
+          return <Chip label={BoardTypeLabel[boardType]} color='success' variant='light' size='small' />;
         },
         size: 120,
       },
@@ -218,7 +217,7 @@ export default function MpAdminCommunityPostList() {
       },
       {
         header: '파트너사 계약여부',
-        cell: ({ row }) => (row.original.memberType !== 'NONE' ? 'Y' : 'N'),
+        cell: ({ row }) => (memberTypeToContractStatus(row.original.memberType as MemberType) === ContractStatus.CONTRACT ? 'Y' : 'N'),
         size: 120,
       },
       {
@@ -306,8 +305,9 @@ export default function MpAdminCommunityPostList() {
                   <FormControl fullWidth size='small'>
                     <InputLabel>게시판유형</InputLabel>
                     <Select name='boardType' value={formik.values.boardType} onChange={formik.handleChange}>
-                      <MenuItem value={'ANONYMOUS'}>익명게시판</MenuItem>
-                      <MenuItem value={'MR_CSO_MATCHING'}>MR-CSO 매칭</MenuItem>
+                      {[BoardType.ANONYMOUS, BoardType.MR_CSO_MATCHING].map(boardType => (
+                        <MenuItem value={boardType}>{BoardTypeLabel[boardType]}</MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </SearchFilterItem>

@@ -27,7 +27,7 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { BoardPostResponse, DateString, deleteBoardPost, getBoards } from '@/backend';
+import { BoardPostResponse, BoardType, DateString, deleteBoardPost, getBoards } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
@@ -106,7 +106,7 @@ export default function MpAdminAtoZList() {
     setLoading(true);
     try {
       const response = await getBoards({
-        boardType: 'CSO_A_TO_Z',
+        boardType: BoardType.CSO_A_TO_Z,
         boardTitle: searchType === 'title' && searchKeyword !== '' ? searchKeyword : undefined,
         userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
         name: searchType === 'name' && searchKeyword !== '' ? searchKeyword : undefined,

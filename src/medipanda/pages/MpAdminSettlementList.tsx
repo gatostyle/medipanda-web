@@ -1,4 +1,12 @@
-import { DateString, getDownloadSettlementListExcel, getSettlements, SettlementResponse, uploadSettlementExcel } from '@/backend';
+import {
+  DateString,
+  getDownloadSettlementListExcel,
+  getSettlements,
+  SettlementResponse,
+  SettlementStatus,
+  SettlementStatusLabel,
+  uploadSettlementExcel,
+} from '@/backend';
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
@@ -44,7 +52,7 @@ export default function MpAdminSettlementList() {
     searchKeyword: '',
     startAt: '',
     endAt: '',
-    status: '' as 'REQUEST' | 'OBJECTION' | '',
+    status: '' as SettlementStatus | '',
     page: '1',
   };
 
@@ -224,18 +232,7 @@ export default function MpAdminSettlementList() {
       },
       {
         header: '사용자확인',
-        cell: ({ row }) => {
-          const value = row.original.status;
-
-          switch (value) {
-            case 'REQUEST':
-              return '정산요청';
-            case 'OBJECTION':
-              return '이의신청';
-            default:
-              return '-';
-          }
-        },
+        cell: ({ row }) => (row.original.status !== null ? SettlementStatusLabel[row.original.status] : '-'),
         size: 100,
       },
     ],
@@ -277,8 +274,11 @@ export default function MpAdminSettlementList() {
                   <FormControl fullWidth size='small'>
                     <InputLabel>사용자확인</InputLabel>
                     <Select name='status' value={formik.values.status} onChange={formik.handleChange}>
-                      <MenuItem value={'REQUEST'}>정산요청</MenuItem>
-                      <MenuItem value={'OBJECTION'}>이의신청</MenuItem>
+                      {Object.keys(SettlementStatus).map(settlementStatus => (
+                        <MenuItem key={settlementStatus} value={settlementStatus}>
+                          {SettlementStatusLabel[settlementStatus]}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </SearchFilterItem>

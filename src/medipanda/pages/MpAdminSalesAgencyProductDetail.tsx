@@ -4,7 +4,7 @@ import { MpSalesAgencyProductApplicantsTab } from '@/medipanda/components/MpSale
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { Box, Button, Card, Chip, CircularProgress, Grid, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
-import { getSalesAgencyProductDetails, SalesAgencyProductDetailsResponse } from '@/backend';
+import { getSalesAgencyProductDetails, PostAttachmentType, SalesAgencyProductDetailsResponse } from '@/backend';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { useSnackbar } from 'notistack';
 import { SyntheticEvent, useEffect, useState } from 'react';
@@ -87,7 +87,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse }) {
   useEffect(() => {
     editor.setEditable(false);
     editor.commands.setContent(detail.boardPostDetail.content);
-    setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === 'EDITOR'));
+    setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
   }, [detail]);
 
   return (

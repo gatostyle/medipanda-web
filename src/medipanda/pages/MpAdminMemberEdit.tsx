@@ -20,12 +20,20 @@ import {
 import { isAxiosError } from 'axios';
 import { useFormik } from 'formik';
 import {
+  AccountStatus,
+  AccountStatusLabel,
   approveContract,
   approveOrRejectCso,
   getContractDetails,
   getMemberDetails,
   MemberDetailsResponse,
+  MemberType,
   PartnerContractDetailsResponse,
+  PartnerContractFileType,
+  PartnerContractFileTypeLabel,
+  PartnerContractStatus,
+  PartnerContractType,
+  PartnerContractTypeLabel,
   updateContract,
   updateMember,
 } from '@/backend';
@@ -55,8 +63,8 @@ export default function MpAdminMemberEdit() {
       confirmPassword: '',
       phoneNumber: '',
       email: '',
-      accountStatus: 'ACTIVATED' as 'ACTIVATED' | 'BLOCKED' | 'DELETED',
-      contractType: 'INDIVIDUAL' as 'INDIVIDUAL' | 'ORGANIZATION',
+      accountStatus: AccountStatus.ACTIVATED,
+      contractType: PartnerContractType.INDIVIDUAL,
       bankName: '',
       commissionRate: 0,
       note: '',
@@ -147,8 +155,8 @@ export default function MpAdminMemberEdit() {
         confirmPassword: '',
         phoneNumber: detail.phoneNumber,
         email: detail.email,
-        accountStatus: detail.accountStatus,
-        contractType: 'INDIVIDUAL',
+        accountStatus: detail.accountStatus as AccountStatus,
+        contractType: detail.partnerContractStatus as PartnerContractType,
         bankName: '',
         commissionRate: 0,
         note: detail.note ?? '',
@@ -173,12 +181,12 @@ export default function MpAdminMemberEdit() {
     try {
       const contractDetail = await getContractDetails(userId);
       setContractDetail(contractDetail);
-      setIsContractApproved(contractDetail.status === 'APPROVED');
+      setIsContractApproved(contractDetail.status === PartnerContractStatus.APPROVED);
 
       formik.resetForm({
         values: {
           ...values,
-          contractType: contractDetail.contractType,
+          contractType: contractDetail.contractType as PartnerContractType,
           bankName: `${contractDetail.bankName ?? ''} ${contractDetail.accountNumber ?? ''}`.trim(),
           commissionRate: 0,
         },
@@ -382,9 +390,11 @@ export default function MpAdminMemberEdit() {
                       <FormControl fullWidth size='small'>
                         <InputLabel>계정상태</InputLabel>
                         <Select name='accountStatus' value={formik.values.accountStatus} onChange={formik.handleChange}>
-                          <MenuItem value={'ACTIVATED'}>활성</MenuItem>
-                          <MenuItem value={'BLOCKED'}>비활성</MenuItem>
-                          <MenuItem value={'DELETED'}>탈퇴</MenuItem>
+                          {Object.keys(AccountStatus).map(accountStatus => (
+                            <MenuItem key={accountStatus} value={accountStatus}>
+                              {AccountStatusLabel[accountStatus]}
+                            </MenuItem>
+                          ))}
                         </Select>
                       </FormControl>
                     </Grid>
@@ -403,7 +413,7 @@ export default function MpAdminMemberEdit() {
                             업로드
                           </Button>
                         )}
-                        {detail.csoCertUrl !== null && detail.partnerContractStatus === 'NONE' && (
+                        {detail.csoCertUrl !== null && detail.partnerContractStatus === MemberType.NONE && (
                           <>
                             <Button variant='outlined' color='error' size='small' onClick={handleCsoReject}>
                               반려
@@ -438,8 +448,11 @@ export default function MpAdminMemberEdit() {
                           <FormControl fullWidth size='small'>
                             <InputLabel>유형</InputLabel>
                             <Select name='contractType' value={formik.values.contractType} onChange={formik.handleChange}>
-                              <MenuItem value={'ORGANIZATION'}>법인계약</MenuItem>
-                              <MenuItem value={'INDIVIDUAL'}>개인계약</MenuItem>
+                              {Object.keys(PartnerContractType).map(contractType => (
+                                <MenuItem key={contractType} value={contractType}>
+                                  {PartnerContractTypeLabel[contractType]}
+                                </MenuItem>
+                              ))}
                             </Select>
                           </FormControl>
                         </Grid>
@@ -476,40 +489,52 @@ export default function MpAdminMemberEdit() {
                           />
                         </Grid>
 
-                        {contractDetail.fileUrls['CSO_CERTIFICATE'] !== null && (
+                        {contractDetail.fileUrls[PartnerContractFileType.CSO_CERTIFICATE] !== null && (
                           <Grid item xs={12}>
                             <Stack direction='row' spacing={2} alignItems='center'>
                               <Typography variant='subtitle2' color='text.secondary'>
-                                CSO 신고증
+                                {PartnerContractFileTypeLabel[PartnerContractFileType.CSO_CERTIFICATE]}
                               </Typography>
-                              <Link component={RouterLink} to={contractDetail.fileUrls['CSO_CERTIFICATE']} target='_blank'>
-                                {MedipandaUrlFileName(contractDetail.fileUrls['CSO_CERTIFICATE'])}
+                              <Link
+                                component={RouterLink}
+                                to={contractDetail.fileUrls[PartnerContractFileType.CSO_CERTIFICATE]}
+                                target='_blank'
+                              >
+                                {MedipandaUrlFileName(contractDetail.fileUrls[PartnerContractFileType.CSO_CERTIFICATE])}
                               </Link>
                             </Stack>
                           </Grid>
                         )}
 
-                        {contractDetail.fileUrls['SUBCONTRACT_AGREEMENT'] !== null && (
+                        {contractDetail.fileUrls[PartnerContractFileType.SUBCONTRACT_AGREEMENT] !== null && (
                           <Grid item xs={12}>
                             <Stack direction='row' spacing={2} alignItems='center'>
                               <Typography variant='subtitle2' color='text.secondary'>
-                                재위탁계약서
+                                {PartnerContractFileTypeLabel[PartnerContractFileType.SUBCONTRACT_AGREEMENT]}
                               </Typography>
-                              <Link component={RouterLink} to={contractDetail.fileUrls['SUBCONTRACT_AGREEMENT']} target='_blank'>
-                                {MedipandaUrlFileName(contractDetail.fileUrls['SUBCONTRACT_AGREEMENT'])}
+                              <Link
+                                component={RouterLink}
+                                to={contractDetail.fileUrls[PartnerContractFileType.SUBCONTRACT_AGREEMENT]}
+                                target='_blank'
+                              >
+                                {MedipandaUrlFileName(contractDetail.fileUrls[PartnerContractFileType.SUBCONTRACT_AGREEMENT])}
                               </Link>
                             </Stack>
                           </Grid>
                         )}
 
-                        {contractDetail.fileUrls['SALES_EDUCATION_CERT'] !== null && (
+                        {contractDetail.fileUrls[PartnerContractFileType.SALES_EDUCATION_CERT] !== null && (
                           <Grid item xs={12}>
                             <Stack direction='row' spacing={2} alignItems='center'>
                               <Typography variant='subtitle2' color='text.secondary'>
-                                판매위수탁 교육이수증
+                                {PartnerContractFileTypeLabel[PartnerContractFileType.SALES_EDUCATION_CERT]}
                               </Typography>
-                              <Link component={RouterLink} to={contractDetail.fileUrls['SALES_EDUCATION_CERT']} target='_blank'>
-                                {MedipandaUrlFileName(contractDetail.fileUrls['SALES_EDUCATION_CERT'])}
+                              <Link
+                                component={RouterLink}
+                                to={contractDetail.fileUrls[PartnerContractFileType.SALES_EDUCATION_CERT]}
+                                target='_blank'
+                              >
+                                {MedipandaUrlFileName(contractDetail.fileUrls[PartnerContractFileType.SALES_EDUCATION_CERT])}
                               </Link>
                             </Stack>
                           </Grid>

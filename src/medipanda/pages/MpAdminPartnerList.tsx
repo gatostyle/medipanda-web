@@ -27,7 +27,7 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } fro
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
-import { deletePartner, getPartners, PartnerResponse } from '@/backend';
+import { ContractStatus, ContractStatusLabel, deletePartner, getPartners, PartnerResponse } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
@@ -43,7 +43,7 @@ export default function MpAdminPartnerList() {
   const initialSearchParams = {
     searchType: '' as 'companyName' | 'institutionName' | 'institutionCode' | '',
     searchKeyword: '',
-    contractType: '' as 'CONTRACT' | 'NON_CONTRACT' | '',
+    contractType: '' as ContractStatus | '',
     page: '1',
   };
 
@@ -173,7 +173,7 @@ export default function MpAdminPartnerList() {
       },
       {
         header: '계약유형',
-        cell: ({ row }) => (row.original.contractType === 'CONTRACT' ? '법인' : '개인'),
+        cell: ({ row }) => ContractStatusLabel[row.original.contractType],
         size: 80,
       },
       {
@@ -256,8 +256,11 @@ export default function MpAdminPartnerList() {
                   <FormControl fullWidth size='small'>
                     <InputLabel>계약유형</InputLabel>
                     <Select name='contractType' value={formik.values.contractType} onChange={formik.handleChange}>
-                      <MenuItem value={'CONTRACT'}>법인</MenuItem>
-                      <MenuItem value={'NON_CONTRACT'}>개인</MenuItem>
+                      {Object.keys(ContractStatus).map(contractStatus => (
+                        <MenuItem key={contractStatus} value={contractStatus}>
+                          {ContractStatusLabel[contractStatus]}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </SearchFilterItem>

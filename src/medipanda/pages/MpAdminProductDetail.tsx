@@ -15,7 +15,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import { getProductDetails, ProductDetailsResponse } from '@/backend';
+import { getProductDetails, PostAttachmentType, ProductDetailsResponse } from '@/backend';
 import { EditorContent } from '@tiptap/react';
 import { useSnackbar } from 'notistack';
 import { Fragment, useEffect, useState } from 'react';
@@ -43,7 +43,7 @@ export default function MpAdminProductDetail() {
 
       editor.setEditable(false);
       editor.commands.setContent(detail.boardDetailsResponse.content);
-      setEditorAttachments(detail.boardDetailsResponse.attachments.filter(a => a.type === 'EDITOR'));
+      setEditorAttachments(detail.boardDetailsResponse.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
     } catch (error) {
       console.error('Failed to fetch product detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
