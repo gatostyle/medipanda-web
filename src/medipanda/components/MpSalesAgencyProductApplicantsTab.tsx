@@ -1,0 +1,302 @@
+import {
+  getDownloadProductApplicantsExcel,
+  getProductApplicants,
+  SalesAgencyProductApplicantResponse,
+  SalesAgencyProductDetailsResponse,
+} from '@/backend';
+import ScrollX from '@/components/ScrollX';
+import { setUrlParams } from '@/lib/url';
+import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
+import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
+import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
+import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
+import {
+  Box,
+  Button,
+  Checkbox,
+  Pagination,
+  PaginationItem,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { useFormik } from 'formik';
+import { DocumentDownload } from 'iconsax-react';
+import { useEffect, useState } from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+
+export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAgencyProductDetailsResponse }) {
+  const navigate = useNavigate();
+
+  const initialSearchParams = {
+    searchKeyword: '',
+    page: '1',
+  };
+
+  const { searchKeyword, page: paramPage, ...searchParams } = useSearchParamsOrDefault(initialSearchParams);
+  const page = Number(paramPage);
+  const pageSize = 20;
+
+  const [loading, setLoading] = useState(false);
+  const [contents, setContents] = useState<Sequenced<SalesAgencyProductApplicantResponse>[]>([]);
+  const [totalElements, setTotalElements] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
+  const errorDialog = useMpErrorDialog();
+
+  const formik = useFormik({
+    initialValues: {
+      ...initialSearchParams,
+      page: null,
+    },
+    onSubmit: async values => {
+      const url = setUrlParams(
+        {
+          ...searchParams,
+          ...values,
+          page: 1,
+        },
+        initialSearchParams,
+      );
+
+      navigate(url);
+    },
+  });
+
+  const fetchContents = async () => {
+    setLoading(true);
+
+    try {
+      const response = await getProductApplicants(detail.productId, {
+        userId: searchKeyword,
+        page: page - 1,
+        size: pageSize,
+      });
+
+      setContents(withSequence(response).content);
+      setTotalElements(response.totalElements);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch applicants:', error);
+      errorDialog.showError('신청자 목록을 불러오는데 실패했습니다.');
+      setContents([]);
+      setTotalElements(0);
+      setTotalPages(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    formik.setValues({
+      searchKeyword,
+      page: null,
+    });
+    fetchContents();
+  }, [searchKeyword, page]);
+
+  const table = useReactTable({
+    data: contents,
+    columns: [
+      {
+        id: 'select',
+        header: () => (
+          <Checkbox
+            checked={selectedIds.length === contents.length && contents.length > 0}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedIds(contents.map(item => item.id));
+              } else {
+                setSelectedIds([]);
+              }
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={selectedIds.includes(row.original.id)}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedIds(prev => [...prev, row.original.id]);
+              } else {
+                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
+              }
+            }}
+          />
+        ),
+        size: 50,
+      },
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 60,
+      },
+      {
+        header: '회원번호',
+        cell: ({ row }) => row.original.id,
+        size: 100,
+      },
+      {
+        header: '아이디',
+        cell: ({ row }) => row.original.userId,
+        size: 120,
+      },
+      {
+        header: '회원명',
+        cell: ({ row }) => row.original.memberName,
+        size: 100,
+      },
+      {
+        header: '핸드폰번호',
+        cell: ({ row }) => row.original.phoneNumber,
+        size: 140,
+      },
+      {
+        header: '신청일',
+        cell: ({ row }) => formatYyyyMmDd(row.original.appliedDate),
+        size: 120,
+      },
+      {
+        header: '파트너사 계약여부',
+        cell: ({ row }) => (row.original.contractStatus === 'CONTRACT' ? 'Y' : 'N'),
+        size: 140,
+      },
+      {
+        header: '비고',
+        cell: ({ row }) => row.original.note,
+        size: 100,
+      },
+    ],
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
+
+  return (
+    <Box sx={{ p: 3 }}>
+      <Stack spacing={2}>
+        <Stack direction='row' alignItems='center' spacing={2} sx={{ mb: 2 }}>
+          <Typography variant='body2' color='text.secondary'>
+            위탁사명: {detail.clientName}
+          </Typography>
+          <Typography variant='body2' color='text.secondary'>
+            상품명: {detail.productName}
+          </Typography>
+        </Stack>
+
+        <Box component='form' onSubmit={formik.handleSubmit}>
+          <SearchFilterBar>
+            <SearchFilterItem flexGrow={1} minWidth={200}>
+              <TextField
+                name='searchKeyword'
+                size='small'
+                placeholder='검색어를 입력하세요'
+                fullWidth
+                value={formik.values.searchKeyword}
+                onChange={formik.handleChange}
+              />
+            </SearchFilterItem>
+            <SearchFilterActions>
+              <Button variant='contained' size='small' type='submit'>
+                검색
+              </Button>
+              <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
+                초기화
+              </Button>
+            </SearchFilterActions>
+          </SearchFilterBar>
+        </Box>
+
+        <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+          <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
+          <Button
+            variant='contained'
+            color='success'
+            size='small'
+            href={getDownloadProductApplicantsExcel(detail.productId, {
+              userId: searchKeyword,
+              size: 2 ** 31 - 1,
+            })}
+            target='_blank'
+            startIcon={<DocumentDownload size={16} />}
+          >
+            Excel
+          </Button>
+        </Stack>
+
+        <ScrollX>
+          <TableContainer>
+            <Table size='small'>
+              <TableHead>
+                {table.getHeaderGroups().map(headerGroup => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map(header => (
+                      <TableCell key={header.id} style={{ width: header.getSize() }}>
+                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableHead>
+              <TableBody>
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                      <Typography variant='body2' color='text.secondary'>
+                        데이터를 로드하는 중입니다.
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ) : table.getRowModel().rows.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                      <Typography variant='body2' color='text.secondary'>
+                        검색 결과가 없습니다.
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  table.getRowModel().rows.map(row => (
+                    <TableRow key={row.id}>
+                      {row.getVisibleCells().map(cell => (
+                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </ScrollX>
+
+        <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
+          <Pagination
+            count={totalPages}
+            page={page}
+            renderItem={item => (
+              <PaginationItem
+                {...item}
+                color='primary'
+                variant='outlined'
+                component={RouterLink}
+                to={setUrlParams({ page: item.page }, initialSearchParams)}
+              />
+            )}
+            color='primary'
+            variant='outlined'
+            showFirstButton
+            showLastButton
+          />
+        </Stack>
+      </Stack>
+    </Box>
+  );
+}
