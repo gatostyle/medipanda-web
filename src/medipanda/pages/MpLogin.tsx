@@ -84,7 +84,7 @@ export default function MpLogin() {
               name='userId'
               onBlur={handleBlur}
               onChange={handleChange}
-              placeholder='이메일'
+              label='이메일'
               fullWidth
               error={Boolean(touched.userId && errors.userId)}
             />
@@ -114,7 +114,7 @@ export default function MpLogin() {
                   </IconButton>
                 </InputAdornment>
               }
-              placeholder='비밀번호'
+              label='비밀번호'
             />
           </Stack>
           {touched.password && errors.password && <FormHelperText error>{errors.password}</FormHelperText>}

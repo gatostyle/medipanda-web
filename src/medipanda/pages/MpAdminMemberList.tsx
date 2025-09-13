@@ -281,7 +281,7 @@ export default function MpAdminMemberList() {
                   <TextField
                     name='searchKeyword'
                     size='small'
-                    placeholder='검색어를 입력하세요'
+                    label='검색어를 입력하세요'
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}

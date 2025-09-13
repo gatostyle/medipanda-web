@@ -524,16 +524,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
         </Grid>
 
         <Grid item xs={12}>
-          <TextField
-            fullWidth
-            label='비고'
-            name='note'
-            value={formik.values.note}
-            onChange={formik.handleChange}
-            multiline
-            rows={3}
-            placeholder='비고'
-          />
+          <TextField fullWidth label='비고' name='note' value={formik.values.note} onChange={formik.handleChange} multiline rows={3} />
         </Grid>
 
         <Grid item xs={12} md={6}>

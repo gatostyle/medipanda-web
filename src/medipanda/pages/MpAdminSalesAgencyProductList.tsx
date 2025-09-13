@@ -294,7 +294,7 @@ export default function MpAdminSalesAgencyProductList() {
                   />
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name='date' placeholder='등록일' formik={formik} />
+                  <MpFormikDatePicker name='date' label='등록일' formik={formik} />
                 </SearchFilterItem>
                 <SearchFilterActions>
                   <Button variant='contained' size='small' type='submit'>

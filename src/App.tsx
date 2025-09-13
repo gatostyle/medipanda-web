@@ -9,6 +9,7 @@ import RTLLayout from 'components/RTLLayout';
 import ScrollTop from 'components/ScrollTop';
 import Snackbar from 'components/@extended/Snackbar';
 import Notistack from 'components/third-party/Notistack';
+import './style.scss';
 
 // auth-provider
 // import { JWTProvider as AuthProvider } from 'contexts/JWTContext';

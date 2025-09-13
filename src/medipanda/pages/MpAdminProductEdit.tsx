@@ -396,7 +396,7 @@ export default function MpAdminProductEdit() {
                     <TextField
                       size='small'
                       name='changedFeeRate'
-                      placeholder='변경요율'
+                      label='변경요율'
                       type='number'
                       value={formik.values.changedFeeRate ?? ''}
                       onChange={event => {
