@@ -80,7 +80,7 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
 
     try {
       const response = await getProductApplicants(detail.productId, {
-        userId: searchKeyword,
+        name: searchKeyword,
         page: page - 1,
         size: pageSize,
       });
