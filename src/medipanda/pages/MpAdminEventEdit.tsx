@@ -216,7 +216,7 @@ export default function MpAdminEventEdit() {
                 </Typography>
                 <RadioGroup row name='exposureRange' value={formik.values.exposureRange} onChange={formik.handleChange}>
                   <FormControlLabel value={'ALL'} control={<Radio />} label='전체' />
-                  <FormControlLabel value={'CONTRACT  ED'} control={<Radio />} label='계약' />
+                  <FormControlLabel value={'CONTRACTED'} control={<Radio />} label='계약' />
                   <FormControlLabel value={'UNCONTRACTED'} control={<Radio />} label='미계약' />
                 </RadioGroup>
               </Grid>
