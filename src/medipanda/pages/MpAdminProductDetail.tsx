@@ -60,7 +60,7 @@ export default function MpAdminProductDetail() {
     );
   }
 
-  if (!detail) {
+  if (detail === null) {
     return null;
   }
 

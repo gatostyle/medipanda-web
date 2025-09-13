@@ -58,7 +58,7 @@ export default function MpAdminAtoZDetail() {
     }
   };
 
-  if (loading || !detail) {
+  if (loading || detail === null) {
     return (
       <Box display='flex' justifyContent='center' alignItems='center' minHeight='400px'>
         <CircularProgress />

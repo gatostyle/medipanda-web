@@ -54,7 +54,7 @@ export default function MpAdminCustomerCenterFaqDetail() {
     );
   }
 
-  if (!detail) {
+  if (detail === null) {
     return null;
   }
 

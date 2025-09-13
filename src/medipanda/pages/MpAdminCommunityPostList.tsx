@@ -306,7 +306,9 @@ export default function MpAdminCommunityPostList() {
                     <InputLabel>게시판유형</InputLabel>
                     <Select name='boardType' value={formik.values.boardType} onChange={formik.handleChange}>
                       {[BoardType.ANONYMOUS, BoardType.MR_CSO_MATCHING].map(boardType => (
-                        <MenuItem value={boardType}>{BoardTypeLabel[boardType]}</MenuItem>
+                        <MenuItem key={boardType} value={boardType}>
+                          {BoardTypeLabel[boardType]}
+                        </MenuItem>
                       ))}
                     </Select>
                   </FormControl>

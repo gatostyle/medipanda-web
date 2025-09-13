@@ -139,7 +139,7 @@ export default function MpAdminInquiryEdit() {
     );
   }
 
-  if (!detail) {
+  if (detail === null) {
     return null;
   }
 

@@ -4,7 +4,6 @@ import {
   Button,
   Card,
   Checkbox,
-  Chip,
   CircularProgress,
   FormControl,
   FormControlLabel,
@@ -32,6 +31,7 @@ import {
   PartnerContractFileType,
   PartnerContractFileTypeLabel,
   PartnerContractStatus,
+  PartnerContractStatusLabel,
   PartnerContractType,
   PartnerContractTypeLabel,
   rejectContract,
@@ -484,7 +484,7 @@ export default function MpAdminMemberEdit() {
                           <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                             계약상태
                           </Typography>
-                          <Typography variant='body1'>{contractDetail.status}</Typography>
+                          <Typography variant='body1'>{PartnerContractStatusLabel[contractDetail.status]}</Typography>
                         </Grid>
 
                         <Grid item xs={6}>

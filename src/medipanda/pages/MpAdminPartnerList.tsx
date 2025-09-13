@@ -236,6 +236,7 @@ export default function MpAdminPartnerList() {
   };
 
   const handlePartnerUploadSuccess = () => {
+    setPartnerUploadModalOpen(false);
     fetchContents();
   };
 

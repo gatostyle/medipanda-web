@@ -148,7 +148,7 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
     );
   }
 
-  if (!detail) {
+  if (detail === null) {
     return null;
   }
 

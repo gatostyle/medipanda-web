@@ -219,7 +219,7 @@ export default function MpAdminSalesAgencyProductEdit() {
     navigate(url);
   };
 
-  if (loading || detail === null) {
+  if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
         <CircularProgress />
@@ -535,12 +535,14 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
           <MpFormikDatePicker name='endDate' label='게시기간 - 종료일 *' formik={formik} />
         </Grid>
 
-        <Grid item xs={12}>
-          <Typography variant='subtitle2' gutterBottom>
-            조회수
-          </Typography>
-          <Typography variant='body1'>{detail.boardPostDetail.viewsCount.toLocaleString()}</Typography>
-        </Grid>
+        {detail !== null && (
+          <Grid item xs={12}>
+            <Typography variant='subtitle2' gutterBottom>
+              조회수
+            </Typography>
+            <Typography variant='body1'>{detail.boardPostDetail.viewsCount.toLocaleString()}</Typography>
+          </Grid>
+        )}
       </Grid>
 
       <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 4 }}>

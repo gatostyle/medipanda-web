@@ -169,6 +169,12 @@ export enum PartnerContractStatus {
   REJECTED = 'REJECTED',
 }
 
+export const PartnerContractStatusLabel: Record<PartnerContractStatus, string> = {
+  [PartnerContractStatus.PENDING]: '미계약',
+  [PartnerContractStatus.APPROVED]: '계약중',
+  [PartnerContractStatus.REJECTED]: '계약종료',
+};
+
 export enum SettlementStatus {
   REQUEST = 'REQUEST',
   OBJECTION = 'OBJECTION',

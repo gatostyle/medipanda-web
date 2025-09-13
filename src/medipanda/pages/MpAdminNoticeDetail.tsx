@@ -69,7 +69,7 @@ export default function MpAdminNoticeDetail() {
     );
   }
 
-  if (!detail) {
+  if (detail === null) {
     return null;
   }
 

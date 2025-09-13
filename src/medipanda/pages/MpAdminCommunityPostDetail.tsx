@@ -75,7 +75,7 @@ export default function MpAdminCommunityPostDetail() {
     navigate(url);
   };
 
-  if (loading || !detail) {
+  if (loading || detail === null) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
         <CircularProgress />
