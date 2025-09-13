@@ -92,7 +92,7 @@ export default function MpAdminCommunityUserList() {
         startAt: undefined,
         endAt: undefined,
         filterDeleted: undefined,
-        page: page,
+        page: page - 1,
         size: pageSize,
       });
 
