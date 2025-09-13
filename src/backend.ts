@@ -1065,8 +1065,9 @@ export interface ProductBriefingMultiCreateRequest {
 export interface ProductBriefingMultiDetailResponse {
   reportId: number;
   reportType: 'SAMPLE_PROVIDE' | 'PRODUCT_BRIEFING_MULTI' | 'PRODUCT_BRIEFING_SINGLE';
-  productName: string;
+  productId: number;
   productCode: string;
+  productName: string;
   institutions: InstitutionInfo[];
   transportationFee: number;
   giftFee: number;
@@ -1106,8 +1107,9 @@ export interface ProductBriefingSingleCreateRequest {
 
 export interface ProductBriefingSingleDetailResponse {
   reportId: number;
-  productName: string;
+  productId: number;
   productCode: string;
+  productName: string;
   institutionName: string;
   institutionCode: string;
   supportAmount: number;
@@ -1297,8 +1299,9 @@ export interface SampleProvideReportCreateRequest {
 export interface SampleProvideReportDetailResponse {
   reportId: number;
   reportType: 'SAMPLE_PROVIDE' | 'PRODUCT_BRIEFING_MULTI' | 'PRODUCT_BRIEFING_SINGLE';
-  productName: string;
+  productId: number;
   productCode: string;
+  productName: string;
   packCount: number;
   provideCount: number;
   institutionName: string;
@@ -2295,7 +2298,10 @@ export async function getBoards(options?: {
   const response = await axios.request<PageBoardPostResponse>({
     method: 'GET',
     url: '/v1/boards',
-    params: options,
+    params: {
+      ...options,
+      drugCompanyIds: options?.drugCompanyIds?.join(','),
+    },
   });
   return response.data;
 }
@@ -3725,7 +3731,10 @@ export async function downloadExpenseReportFiles(options?: { ids?: number[] }): 
   await axios.request({
     method: 'GET',
     url: '/v1/expense-reports/files/download',
-    params: options,
+    params: {
+      ...options,
+      ids: options?.ids?.join(','),
+    },
   });
 }
 
@@ -3801,7 +3810,10 @@ export async function getFixedTopNotices(options?: {
   const response = await axios.request<BoardPostResponse[]>({
     method: 'GET',
     url: '/v1/boards/notices/fixed-top',
-    params: options,
+    params: {
+      ...options,
+      drugCompanyIds: options?.drugCompanyIds?.join(','),
+    },
   });
   return response.data;
 }
