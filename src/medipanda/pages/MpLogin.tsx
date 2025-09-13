@@ -1,4 +1,5 @@
-import { Button, FormHelperText, Grid, InputAdornment, OutlinedInput, Stack } from '@mui/material';
+import { Button, FormHelperText, Grid, InputAdornment, Stack } from '@mui/material';
+import TextField from '@mui/material/TextField';
 import { isAxiosError } from 'axios';
 import IconButton from 'components/@extended/IconButton';
 import { useFormik } from 'formik';
@@ -78,7 +79,7 @@ export default function MpLogin() {
         </Grid>
         <Grid item xs={12}>
           <Stack spacing={1}>
-            <OutlinedInput
+            <TextField
               type='userId'
               value={values.userId}
               name='userId'
@@ -93,7 +94,7 @@ export default function MpLogin() {
         </Grid>
         <Grid item xs={12}>
           <Stack spacing={1}>
-            <OutlinedInput
+            <TextField
               fullWidth
               error={Boolean(touched.password && errors.password)}
               type={showPassword ? 'text' : 'password'}
@@ -101,19 +102,21 @@ export default function MpLogin() {
               name='password'
               onBlur={handleBlur}
               onChange={handleChange}
-              endAdornment={
-                <InputAdornment position='end'>
-                  <IconButton
-                    aria-label='toggle password visibility'
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge='end'
-                    color='secondary'
-                  >
-                    {showPassword ? <Eye /> : <EyeSlash />}
-                  </IconButton>
-                </InputAdornment>
-              }
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <IconButton
+                      aria-label='toggle password visibility'
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge='end'
+                      color='secondary'
+                    >
+                      {showPassword ? <Eye /> : <EyeSlash />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
               label='비밀번호'
             />
           </Stack>
