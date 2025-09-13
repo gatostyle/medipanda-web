@@ -23,7 +23,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -44,6 +44,7 @@ import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
+import { ArrayElement } from 'type-fest/source/internal';
 
 export default function MpAdminHospitalList() {
   const navigate = useNavigate();
@@ -169,70 +170,73 @@ export default function MpAdminHospitalList() {
 
   const table = useReactTable({
     data: contents,
-    columns: [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedIds.length === contents.length && contents.length > 0}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(contents.map(item => item.id));
-              } else {
-                setSelectedIds([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedIds.includes(row.original.id)}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(prev => [...prev, row.original.id]);
-              } else {
-                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 60,
-      },
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '지역',
-        cell: ({ row }) => row.original.sido,
-        size: 80,
-      },
-      {
-        header: '병의원명',
-        cell: ({ row }) => row.original.name,
-        size: 200,
-      },
-      {
-        header: '주소',
-        cell: ({ row }) => row.original.address,
-        size: 400,
-      },
-      {
-        header: '허가예정일',
-        cell: ({ row }) => {
-          const value = row.original.scheduledOpenDate;
-
-          return value !== null ? formatYyyyMmDd(value) : '-';
+    columns: useMemo<ColumnDef<ArrayElement<typeof contents>>[]>(
+      () => [
+        {
+          id: 'select',
+          header: () => (
+            <Checkbox
+              checked={selectedIds.length === contents.length && contents.length > 0}
+              onChange={e => {
+                if (e.target.checked) {
+                  setSelectedIds(contents.map(item => item.id));
+                } else {
+                  setSelectedIds([]);
+                }
+              }}
+            />
+          ),
+          cell: ({ row }) => (
+            <Checkbox
+              checked={selectedIds.includes(row.original.id)}
+              onChange={e => {
+                if (e.target.checked) {
+                  setSelectedIds(prev => [...prev, row.original.id]);
+                } else {
+                  setSelectedIds(prev => prev.filter(id => id !== row.original.id));
+                }
+              }}
+            />
+          ),
+          size: 60,
         },
-        size: 120,
-      },
-      {
-        header: '분류',
-        cell: ({ row }) => row.original.source,
-        size: 120,
-      },
-    ],
+        {
+          header: 'No',
+          cell: ({ row }) => row.original.sequence,
+          size: 60,
+        },
+        {
+          header: '지역',
+          cell: ({ row }) => row.original.sido,
+          size: 80,
+        },
+        {
+          header: '병의원명',
+          cell: ({ row }) => row.original.name,
+          size: 200,
+        },
+        {
+          header: '주소',
+          cell: ({ row }) => row.original.address,
+          size: 400,
+        },
+        {
+          header: '허가예정일',
+          cell: ({ row }) => {
+            const value = row.original.scheduledOpenDate;
+
+            return value !== null ? formatYyyyMmDd(value) : '-';
+          },
+          size: 120,
+        },
+        {
+          header: '분류',
+          cell: ({ row }) => row.original.source,
+          size: 120,
+        },
+      ],
+      [],
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });

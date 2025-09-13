@@ -21,7 +21,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -43,6 +43,7 @@ import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
+import { ArrayElement } from 'type-fest/source/internal';
 
 export default function MpAdminExpenseReportList() {
   const navigate = useNavigate();
@@ -151,50 +152,53 @@ export default function MpAdminExpenseReportList() {
 
   const table = useReactTable({
     data: contents,
-    columns: [
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '아이디',
-        cell: ({ row }) => row.original.userId,
-        size: 100,
-      },
-      {
-        header: '회사명',
-        cell: ({ row }) => row.original.companyName,
-        size: 120,
-      },
-      {
-        header: '제품명',
-        cell: ({ row }) => row.original.productName,
-        size: 150,
-      },
-      {
-        header: '유형',
-        cell: ({ row }) => ExpenseReportTypeLabel[row.original.reportType],
-        size: 150,
-      },
-      {
-        header: '시행일시',
-        cell: ({ row }) => {
-          return `${row.original.eventStartAt !== null ? formatYyyyMmDd(row.original.eventStartAt) : '-'} ~ ${row.original.eventEndAt !== null ? formatYyyyMmDd(row.original.eventEndAt) : '-'}`;
+    columns: useMemo<ColumnDef<ArrayElement<typeof contents>>[]>(
+      () => [
+        {
+          header: 'No',
+          cell: ({ row }) => row.original.sequence,
+          size: 60,
         },
-        size: 100,
-      },
-      {
-        header: '지원금액',
-        cell: ({ row }) => `${row.original.supportAmount.toLocaleString()}원`,
-        size: 120,
-      },
-      {
-        header: '신고상태',
-        cell: ({ row }) => ExpenseReportStatusLabel[row.original.status],
-        size: 100,
-      },
-    ],
+        {
+          header: '아이디',
+          cell: ({ row }) => row.original.userId,
+          size: 100,
+        },
+        {
+          header: '회사명',
+          cell: ({ row }) => row.original.companyName,
+          size: 120,
+        },
+        {
+          header: '제품명',
+          cell: ({ row }) => row.original.productName,
+          size: 150,
+        },
+        {
+          header: '유형',
+          cell: ({ row }) => ExpenseReportTypeLabel[row.original.reportType],
+          size: 150,
+        },
+        {
+          header: '시행일시',
+          cell: ({ row }) => {
+            return `${row.original.eventStartAt !== null ? formatYyyyMmDd(row.original.eventStartAt) : '-'} ~ ${row.original.eventEndAt !== null ? formatYyyyMmDd(row.original.eventEndAt) : '-'}`;
+          },
+          size: 100,
+        },
+        {
+          header: '지원금액',
+          cell: ({ row }) => `${row.original.supportAmount.toLocaleString()}원`,
+          size: 120,
+        },
+        {
+          header: '신고상태',
+          cell: ({ row }) => ExpenseReportStatusLabel[row.original.status],
+          size: 100,
+        },
+      ],
+      [],
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });

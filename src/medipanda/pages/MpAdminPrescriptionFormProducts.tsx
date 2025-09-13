@@ -19,7 +19,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { Add, Minus, SearchNormal1 } from 'iconsax-react';
 import {
@@ -39,8 +39,9 @@ import { MpOcrRequestModal } from '@/medipanda/components/MpOcrRequestModal';
 import { MpPartnerSelectModal } from '@/medipanda/components/MpPartnerSelectModal';
 import { Sequenced } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { ArrayElement } from 'type-fest/source/internal';
 import { MpPartnerProductSelectModal } from '../components/MpPartnerProductSelectModal';
 import { DateFix } from '../utils/dateFormat';
 
@@ -111,114 +112,117 @@ export default function MpAdminPrescriptionFormProducts() {
 
   const table = useReactTable({
     data: partnerProducts,
-    columns: [
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '보험코드',
-        cell: ({ row }) => row.original.productCode,
-        size: 120,
-      },
-      {
-        header: '제품명',
-        cell: ({ row }) => (
-          <Stack direction='row' spacing={1} alignItems='center'>
-            <TextField size='small' fullWidth value={row.original.productName} placeholder='제품명 검색' disabled />
-            <IconButton
+    columns: useMemo<ColumnDef<ArrayElement<typeof partnerProducts>>[]>(
+      () => [
+        {
+          header: 'No',
+          cell: ({ row }) => row.original.sequence,
+          size: 60,
+        },
+        {
+          header: '보험코드',
+          cell: ({ row }) => row.original.productCode,
+          size: 120,
+        },
+        {
+          header: '제품명',
+          cell: ({ row }) => (
+            <Stack direction='row' spacing={1} alignItems='center'>
+              <TextField size='small' fullWidth value={row.original.productName} placeholder='제품명 검색' disabled />
+              <IconButton
+                size='small'
+                onClick={() => {
+                  setCurrentProductItemIndex(row.index);
+                  setPartnerProductSelectModalOpen(true);
+                }}
+              >
+                <SearchNormal1 size={16} />
+              </IconButton>
+            </Stack>
+          ),
+          size: 200,
+        },
+        {
+          header: '단위',
+          cell: ({ row }) => row.original.unit,
+          size: 80,
+        },
+        {
+          header: '수량',
+          cell: ({ row }) => (
+            <TextField
               size='small'
-              onClick={() => {
-                setCurrentProductItemIndex(row.index);
-                setPartnerProductSelectModalOpen(true);
-              }}
-            >
-              <SearchNormal1 size={16} />
-            </IconButton>
-          </Stack>
-        ),
-        size: 200,
-      },
-      {
-        header: '단위',
-        cell: ({ row }) => row.original.unit,
-        size: 80,
-      },
-      {
-        header: '수량',
-        cell: ({ row }) => (
-          <TextField
-            size='small'
-            type='number'
-            fullWidth
-            value={row.original.quantity}
-            onChange={e => handleProductChange(row.index, 'quantity', e.target.value)}
-          />
-        ),
-        size: 100,
-      },
-      {
-        header: '약가',
-        cell: ({ row }) => row.original.unitPrice.toLocaleString(),
-        size: 100,
-      },
-      {
-        header: '총 금액',
-        cell: ({ row }) => (
-          <TextField
-            size='small'
-            type='number'
-            fullWidth
-            name='totalPrice'
-            value={row.original.totalPrice}
-            onChange={e => handleProductChange(row.index, 'totalPrice', e.target.value)}
-          />
-        ),
-        size: 120,
-      },
-      {
-        header: '기본수수료율',
-        cell: ({ row }) => (
-          <TextField
-            size='small'
-            type='number'
-            fullWidth
-            name='baseFeeRate'
-            value={row.original.baseFeeRate}
-            onChange={e => handleProductChange(row.index, 'baseFeeRate', e.target.value)}
-          />
-        ),
-        size: 120,
-      },
-      {
-        header: '수수료 금액',
-        cell: ({ row }) => (
-          <TextField
-            size='small'
-            type='number'
-            fullWidth
-            name='feeAmount'
-            value={row.original.feeAmount}
-            onChange={e => handleProductChange(row.index, 'feeAmount', e.target.value)}
-          />
-        ),
-        size: 120,
-      },
-      {
-        header: '비고',
-        cell: ({ row }) => (
-          <TextField
-            size='small'
-            fullWidth
-            name='note'
-            value={row.original.note}
-            onChange={e => handleProductChange(row.index, 'note', e.target.value)}
-          />
-        ),
-        size: 150,
-      },
-    ],
+              type='number'
+              fullWidth
+              value={row.original.quantity}
+              onChange={e => handleProductChange(row.index, 'quantity', e.target.value)}
+            />
+          ),
+          size: 100,
+        },
+        {
+          header: '약가',
+          cell: ({ row }) => row.original.unitPrice.toLocaleString(),
+          size: 100,
+        },
+        {
+          header: '총 금액',
+          cell: ({ row }) => (
+            <TextField
+              size='small'
+              type='number'
+              fullWidth
+              name='totalPrice'
+              value={row.original.totalPrice}
+              onChange={e => handleProductChange(row.index, 'totalPrice', e.target.value)}
+            />
+          ),
+          size: 120,
+        },
+        {
+          header: '기본수수료율',
+          cell: ({ row }) => (
+            <TextField
+              size='small'
+              type='number'
+              fullWidth
+              name='baseFeeRate'
+              value={row.original.baseFeeRate}
+              onChange={e => handleProductChange(row.index, 'baseFeeRate', e.target.value)}
+            />
+          ),
+          size: 120,
+        },
+        {
+          header: '수수료 금액',
+          cell: ({ row }) => (
+            <TextField
+              size='small'
+              type='number'
+              fullWidth
+              name='feeAmount'
+              value={row.original.feeAmount}
+              onChange={e => handleProductChange(row.index, 'feeAmount', e.target.value)}
+            />
+          ),
+          size: 120,
+        },
+        {
+          header: '비고',
+          cell: ({ row }) => (
+            <TextField
+              size='small'
+              fullWidth
+              name='note'
+              value={row.original.note}
+              onChange={e => handleProductChange(row.index, 'note', e.target.value)}
+            />
+          ),
+          size: 150,
+        },
+      ],
+      [],
+    ),
     getCoreRowModel: getCoreRowModel(),
   });
 

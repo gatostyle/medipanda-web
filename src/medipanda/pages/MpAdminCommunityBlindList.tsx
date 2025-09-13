@@ -22,7 +22,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -35,6 +35,7 @@ import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
+import { ArrayElement } from 'type-fest/source/internal';
 
 export default function MpAdminCommunityBlindList() {
   const navigate = useNavigate();
@@ -140,84 +141,87 @@ export default function MpAdminCommunityBlindList() {
 
   const table = useReactTable({
     data: contents,
-    columns: [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedIds.length === contents.length && contents.length > 0}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(contents.map(item => item.id));
-              } else {
-                setSelectedIds([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedIds.includes(row.original.id)}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(prev => [...prev, row.original.id]);
-              } else {
-                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50,
-      },
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '아이디',
-        cell: ({ row }) => row.original.userId,
-        size: 120,
-      },
-      {
-        header: '회원명',
-        cell: ({ row }) => row.original.memberName,
-        size: 100,
-      },
-      {
-        header: '닉네임',
-        cell: ({ row }) => row.original.nickname,
-        size: 100,
-      },
-      {
-        header: '글 유형',
-        cell: ({ row }) => PostTypeLabel[row.original.postType],
-        size: 80,
-      },
-      {
-        header: '글 내용',
-        cell: ({ row }) => {
-          const content = row.original.postType === PostType.BOARD ? row.original.content : '';
-          return (
-            <Typography
-              sx={{
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                maxWidth: 300,
+    columns: useMemo<ColumnDef<ArrayElement<typeof contents>>[]>(
+      () => [
+        {
+          id: 'select',
+          header: () => (
+            <Checkbox
+              checked={selectedIds.length === contents.length && contents.length > 0}
+              onChange={e => {
+                if (e.target.checked) {
+                  setSelectedIds(contents.map(item => item.id));
+                } else {
+                  setSelectedIds([]);
+                }
               }}
-            >
-              {content}
-            </Typography>
-          );
+            />
+          ),
+          cell: ({ row }) => (
+            <Checkbox
+              checked={selectedIds.includes(row.original.id)}
+              onChange={e => {
+                if (e.target.checked) {
+                  setSelectedIds(prev => [...prev, row.original.id]);
+                } else {
+                  setSelectedIds(prev => prev.filter(id => id !== row.original.id));
+                }
+              }}
+            />
+          ),
+          size: 50,
         },
-      },
-      {
-        header: '블라인드 처리일',
-        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.blindAt),
-        size: 150,
-      },
-    ],
+        {
+          header: 'No',
+          cell: ({ row }) => row.original.sequence,
+          size: 60,
+        },
+        {
+          header: '아이디',
+          cell: ({ row }) => row.original.userId,
+          size: 120,
+        },
+        {
+          header: '회원명',
+          cell: ({ row }) => row.original.memberName,
+          size: 100,
+        },
+        {
+          header: '닉네임',
+          cell: ({ row }) => row.original.nickname,
+          size: 100,
+        },
+        {
+          header: '글 유형',
+          cell: ({ row }) => PostTypeLabel[row.original.postType],
+          size: 80,
+        },
+        {
+          header: '글 내용',
+          cell: ({ row }) => {
+            const content = row.original.postType === PostType.BOARD ? row.original.content : '';
+            return (
+              <Typography
+                sx={{
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  maxWidth: 300,
+                }}
+              >
+                {content}
+              </Typography>
+            );
+          },
+        },
+        {
+          header: '블라인드 처리일',
+          cell: ({ row }) => formatYyyyMmDdHhMm(row.original.blindAt),
+          size: 150,
+        },
+      ],
+      [],
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });

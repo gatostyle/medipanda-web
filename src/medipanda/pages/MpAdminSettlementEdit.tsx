@@ -20,7 +20,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -28,8 +28,9 @@ import { ArrowLeft, DocumentDownload } from 'iconsax-react';
 import { getDownloadSettlementPartnerSummaryExcel, getSettlementPartnerSummary, SettlementPartnerResponse } from '@/backend';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
+import { ArrayElement } from 'type-fest/source/internal';
 
 export default function MpAdminSettlementEdit() {
   const navigate = useNavigate();
@@ -100,57 +101,60 @@ export default function MpAdminSettlementEdit() {
 
   const table = useReactTable({
     data: settlementSummaries,
-    columns: [
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '회사명',
-        cell: ({ row }) => row.original.companyName,
-        size: 120,
-      },
-      {
-        header: '딜러명',
-        cell: ({ row }) => row.original.dealerName,
-        size: 100,
-      },
-      {
-        header: '거래처코드',
-        cell: ({ row }) => row.original.institutionCode,
-        size: 120,
-      },
-      {
-        header: '거래처명',
-        cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/settlements/${settlementId}/business-partners/${row.original.institutionCode}`}>
-            {row.original.institutionName}
-          </Link>
-        ),
-        size: 120,
-      },
-      {
-        header: '사업자등록번호',
-        cell: ({ row }) => row.original.businessNumber,
-        size: 140,
-      },
-      {
-        header: '공급가액',
-        cell: ({ row }) => row.original.supplyAmount.toLocaleString(),
-        size: 120,
-      },
-      {
-        header: '세액',
-        cell: ({ row }) => row.original.taxAmount.toLocaleString(),
-        size: 100,
-      },
-      {
-        header: '합계금액(수수료금액)',
-        cell: ({ row }) => row.original.totalAmount.toLocaleString(),
-        size: 130,
-      },
-    ],
+    columns: useMemo<ColumnDef<ArrayElement<typeof settlementSummaries>>[]>(
+      () => [
+        {
+          header: 'No',
+          cell: ({ row }) => row.original.sequence,
+          size: 60,
+        },
+        {
+          header: '회사명',
+          cell: ({ row }) => row.original.companyName,
+          size: 120,
+        },
+        {
+          header: '딜러명',
+          cell: ({ row }) => row.original.dealerName,
+          size: 100,
+        },
+        {
+          header: '거래처코드',
+          cell: ({ row }) => row.original.institutionCode,
+          size: 120,
+        },
+        {
+          header: '거래처명',
+          cell: ({ row }) => (
+            <Link component={RouterLink} to={`/admin/settlements/${settlementId}/business-partners/${row.original.institutionCode}`}>
+              {row.original.institutionName}
+            </Link>
+          ),
+          size: 120,
+        },
+        {
+          header: '사업자등록번호',
+          cell: ({ row }) => row.original.businessNumber,
+          size: 140,
+        },
+        {
+          header: '공급가액',
+          cell: ({ row }) => row.original.supplyAmount.toLocaleString(),
+          size: 120,
+        },
+        {
+          header: '세액',
+          cell: ({ row }) => row.original.taxAmount.toLocaleString(),
+          size: 100,
+        },
+        {
+          header: '합계금액(수수료금액)',
+          cell: ({ row }) => row.original.totalAmount.toLocaleString(),
+          size: 130,
+        },
+      ],
+      [],
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {

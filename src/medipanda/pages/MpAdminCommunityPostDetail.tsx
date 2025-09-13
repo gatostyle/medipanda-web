@@ -19,15 +19,16 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import { EditorContent } from '@tiptap/react';
 import ScrollX from 'components/ScrollX';
 import { BoardDetailsResponse, BoardReportResponse, CommentResponse, getBoardDetails, PostAttachmentType } from '@/backend';
 import { formatYyyyMmDd, formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { SyntheticEvent, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
+import { ArrayElement } from 'type-fest/source/internal';
 
 export default function MpAdminCommunityPostDetail() {
   const navigate = useNavigate();
@@ -205,38 +206,41 @@ function PostTab({ detail }: { detail: BoardDetailsResponse }) {
 function CommentsTab({ comments }: { comments: Sequenced<CommentResponse>[] }) {
   const table = useReactTable({
     data: comments,
-    columns: [
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '아이디',
-        cell: ({ row }) => row.original.userId,
-        size: 120,
-      },
-      {
-        header: '회원명',
-        cell: ({ row }) => row.original.name,
-        size: 100,
-      },
-      {
-        header: '닉네임',
-        cell: ({ row }) => row.original.nickname,
-        size: 120,
-      },
-      {
-        header: '댓글내용',
-        cell: ({ row }) => row.original.content,
-        size: 300,
-      },
-      {
-        header: '작성일시',
-        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.createdAt),
-        size: 160,
-      },
-    ],
+    columns: useMemo<ColumnDef<ArrayElement<typeof comments>>[]>(
+      () => [
+        {
+          header: 'No',
+          cell: ({ row }) => row.original.sequence,
+          size: 60,
+        },
+        {
+          header: '아이디',
+          cell: ({ row }) => row.original.userId,
+          size: 120,
+        },
+        {
+          header: '회원명',
+          cell: ({ row }) => row.original.name,
+          size: 100,
+        },
+        {
+          header: '닉네임',
+          cell: ({ row }) => row.original.nickname,
+          size: 120,
+        },
+        {
+          header: '댓글내용',
+          cell: ({ row }) => row.original.content,
+          size: 300,
+        },
+        {
+          header: '작성일시',
+          cell: ({ row }) => formatYyyyMmDdHhMm(row.original.createdAt),
+          size: 160,
+        },
+      ],
+      [],
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
@@ -285,38 +289,41 @@ function CommentsTab({ comments }: { comments: Sequenced<CommentResponse>[] }) {
 function ReportsTab({ reports }: { reports: Sequenced<BoardReportResponse>[] }) {
   const table = useReactTable({
     data: reports,
-    columns: [
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '아이디',
-        cell: ({ row }) => row.original.userId,
-        size: 120,
-      },
-      {
-        header: '회원명',
-        cell: ({ row }) => row.original.memberName,
-        size: 100,
-      },
-      {
-        header: '닉네임',
-        cell: ({ row }) => row.original.nickname,
-        size: 120,
-      },
-      {
-        header: '신고유형',
-        cell: ({ row }) => row.original.reportType,
-        size: 150,
-      },
-      {
-        header: '신고일시',
-        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.reportDateTime),
-        size: 160,
-      },
-    ],
+    columns: useMemo<ColumnDef<ArrayElement<typeof reports>>[]>(
+      () => [
+        {
+          header: 'No',
+          cell: ({ row }) => row.original.sequence,
+          size: 60,
+        },
+        {
+          header: '아이디',
+          cell: ({ row }) => row.original.userId,
+          size: 120,
+        },
+        {
+          header: '회원명',
+          cell: ({ row }) => row.original.memberName,
+          size: 100,
+        },
+        {
+          header: '닉네임',
+          cell: ({ row }) => row.original.nickname,
+          size: 120,
+        },
+        {
+          header: '신고유형',
+          cell: ({ row }) => row.original.reportType,
+          size: 150,
+        },
+        {
+          header: '신고일시',
+          cell: ({ row }) => formatYyyyMmDdHhMm(row.original.reportDateTime),
+          size: 160,
+        },
+      ],
+      [],
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {

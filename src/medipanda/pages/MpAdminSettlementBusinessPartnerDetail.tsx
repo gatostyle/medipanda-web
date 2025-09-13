@@ -14,7 +14,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { ArrowLeft } from 'iconsax-react';
@@ -27,8 +27,9 @@ import {
   SettlementResponse,
 } from '@/backend';
 import { useSnackbar } from 'notistack';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { ArrayElement } from 'type-fest/source/internal';
 
 export default function MpAdminSettlementBusinessPartnerDetail() {
   const navigate = useNavigate();
@@ -83,63 +84,66 @@ export default function MpAdminSettlementBusinessPartnerDetail() {
 
   const table = useReactTable({
     data: partnerProducts,
-    columns: [
-      {
-        header: 'No',
-        accessorFn: (_, index) => index + 1,
-        size: 60,
-      },
-      {
-        header: '보험코드',
-        cell: ({ row }) => row.original.productCode,
-        size: 120,
-      },
-      {
-        header: '제품명',
-        cell: ({ row }) => row.original.productName,
-        size: 150,
-      },
-      {
-        header: '표준코드',
-        cell: ({ row }) => row.original.productCode,
-        size: 140,
-      },
-      {
-        header: '수량',
-        cell: ({ row }) => row.original.quantity,
-        size: 80,
-      },
-      {
-        header: '약가',
-        cell: ({ row }) => row.original.unitPrice?.toLocaleString() ?? '-',
-        size: 100,
-      },
-      {
-        header: '처방금액',
-        cell: ({ row }) => row.original.prescriptionAmount?.toLocaleString() ?? '-',
-        size: 120,
-      },
-      {
-        header: '기본수수료율',
-        cell: ({ row }) => (row.original.feeRate !== null ? `${row.original.feeRate}%` : '-'),
-        size: 120,
-      },
-      {
-        header: '거래수수료율',
-        cell: ({ row }) => (row.original.extraFeeRate !== null ? `${row.original.extraFeeRate}%` : '-'),
-        size: 120,
-      },
-      {
-        header: '수수료 금액',
-        cell: ({ row }) => row.original.feeAmount?.toLocaleString() ?? '-',
-        size: 120,
-      },
-      {
-        header: '비고',
-        cell: ({ row }) => row.original.note ?? '-',
-        size: 200,
-      },
-    ],
+    columns: useMemo<ColumnDef<ArrayElement<typeof partnerProducts>>[]>(
+      () => [
+        {
+          header: 'No',
+          accessorFn: (_, index) => index + 1,
+          size: 60,
+        },
+        {
+          header: '보험코드',
+          cell: ({ row }) => row.original.productCode,
+          size: 120,
+        },
+        {
+          header: '제품명',
+          cell: ({ row }) => row.original.productName,
+          size: 150,
+        },
+        {
+          header: '표준코드',
+          cell: ({ row }) => row.original.productCode,
+          size: 140,
+        },
+        {
+          header: '수량',
+          cell: ({ row }) => row.original.quantity,
+          size: 80,
+        },
+        {
+          header: '약가',
+          cell: ({ row }) => row.original.unitPrice?.toLocaleString() ?? '-',
+          size: 100,
+        },
+        {
+          header: '처방금액',
+          cell: ({ row }) => row.original.prescriptionAmount?.toLocaleString() ?? '-',
+          size: 120,
+        },
+        {
+          header: '기본수수료율',
+          cell: ({ row }) => (row.original.feeRate !== null ? `${row.original.feeRate}%` : '-'),
+          size: 120,
+        },
+        {
+          header: '거래수수료율',
+          cell: ({ row }) => (row.original.extraFeeRate !== null ? `${row.original.extraFeeRate}%` : '-'),
+          size: 120,
+        },
+        {
+          header: '수수료 금액',
+          cell: ({ row }) => row.original.feeAmount?.toLocaleString() ?? '-',
+          size: 120,
+        },
+        {
+          header: '비고',
+          cell: ({ row }) => row.original.note ?? '-',
+          size: 200,
+        },
+      ],
+      [],
+    ),
     getCoreRowModel: getCoreRowModel(),
   });
 

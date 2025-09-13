@@ -23,7 +23,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -31,9 +31,10 @@ import { AccountStatusLabel, getUserMembers, MemberResponse, Role, RoleLabel } f
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
+import { ArrayElement } from 'type-fest/source/internal';
 
 export default function MpAdminAdminList() {
   const navigate = useNavigate();
@@ -119,54 +120,57 @@ export default function MpAdminAdminList() {
 
   const table = useReactTable({
     data: contents,
-    columns: [
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '아이디',
-        cell: ({ row }) => row.original.userId,
-        size: 120,
-      },
-      {
-        header: '관리자',
-        cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/admins/${row.original.userId}/edit`}>
-            {row.original.name}
-          </Link>
-        ),
-        size: 120,
-      },
-      {
-        header: '이메일',
-        cell: ({ row }) => row.original.email,
-        size: 200,
-      },
-      {
-        header: '연락처',
-        cell: ({ row }) => row.original.phoneNumber,
-        size: 150,
-      },
-      {
-        header: '권한',
-        cell: ({ row }) => RoleLabel[row.original.role],
-        size: 100,
-      },
-      {
-        header: '상태',
-        cell: ({ row }) => {
-          return <Chip label={AccountStatusLabel[row.original.accountStatus]} color='success' variant='light' size='small' />;
+    columns: useMemo<ColumnDef<ArrayElement<typeof contents>>[]>(
+      () => [
+        {
+          header: 'No',
+          cell: ({ row }) => row.original.sequence,
+          size: 60,
         },
-        size: 80,
-      },
-      {
-        header: '등록일',
-        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.registrationDate),
-        size: 150,
-      },
-    ],
+        {
+          header: '아이디',
+          cell: ({ row }) => row.original.userId,
+          size: 120,
+        },
+        {
+          header: '관리자',
+          cell: ({ row }) => (
+            <Link component={RouterLink} to={`/admin/admins/${row.original.userId}/edit`}>
+              {row.original.name}
+            </Link>
+          ),
+          size: 120,
+        },
+        {
+          header: '이메일',
+          cell: ({ row }) => row.original.email,
+          size: 200,
+        },
+        {
+          header: '연락처',
+          cell: ({ row }) => row.original.phoneNumber,
+          size: 150,
+        },
+        {
+          header: '권한',
+          cell: ({ row }) => RoleLabel[row.original.role],
+          size: 100,
+        },
+        {
+          header: '상태',
+          cell: ({ row }) => {
+            return <Chip label={AccountStatusLabel[row.original.accountStatus]} color='success' variant='light' size='small' />;
+          },
+          size: 80,
+        },
+        {
+          header: '등록일',
+          cell: ({ row }) => formatYyyyMmDdHhMm(row.original.registrationDate),
+          size: 150,
+        },
+      ],
+      [],
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });

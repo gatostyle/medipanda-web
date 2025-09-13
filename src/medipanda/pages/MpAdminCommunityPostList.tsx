@@ -40,13 +40,14 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
+import { ArrayElement } from 'type-fest/source/internal';
 
 export default function MpAdminCommunityPostList() {
   const navigate = useNavigate();
@@ -156,102 +157,105 @@ export default function MpAdminCommunityPostList() {
 
   const table = useReactTable({
     data: contents,
-    columns: [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedIds.length === contents.length && contents.length > 0}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(contents.map(item => item.id));
-              } else {
-                setSelectedIds([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedIds.includes(row.original.id)}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(prev => [...prev, row.original.id]);
-              } else {
-                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50,
-      },
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '게시판유형',
-        cell: ({ row }) => {
-          const boardType = row.original.boardType;
-          return <Chip label={BoardTypeLabel[boardType]} color='success' variant='light' size='small' />;
+    columns: useMemo<ColumnDef<ArrayElement<typeof contents>>[]>(
+      () => [
+        {
+          id: 'select',
+          header: () => (
+            <Checkbox
+              checked={selectedIds.length === contents.length && contents.length > 0}
+              onChange={e => {
+                if (e.target.checked) {
+                  setSelectedIds(contents.map(item => item.id));
+                } else {
+                  setSelectedIds([]);
+                }
+              }}
+            />
+          ),
+          cell: ({ row }) => (
+            <Checkbox
+              checked={selectedIds.includes(row.original.id)}
+              onChange={e => {
+                if (e.target.checked) {
+                  setSelectedIds(prev => [...prev, row.original.id]);
+                } else {
+                  setSelectedIds(prev => prev.filter(id => id !== row.original.id));
+                }
+              }}
+            />
+          ),
+          size: 50,
         },
-        size: 120,
-      },
-      {
-        header: '아이디',
-        cell: ({ row }) => row.original.userId,
-        size: 100,
-      },
-      {
-        header: '회원명',
-        cell: ({ row }) => row.original.name,
-        size: 100,
-      },
-      {
-        header: '닉네임',
-        cell: ({ row }) => row.original.nickname,
-        size: 100,
-      },
-      {
-        header: '파트너사 계약여부',
-        cell: ({ row }) => (memberTypeToContractStatus(row.original.memberType as MemberType) === ContractStatus.CONTRACT ? 'Y' : 'N'),
-        size: 120,
-      },
-      {
-        header: '제목',
-        cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/community-posts/${row.original.id}`}>
-            {row.original.title}
-          </Link>
-        ),
-      },
-      {
-        header: '좋아요 수',
-        cell: ({ row }) => row.original.likesCount,
-        size: 100,
-      },
-      {
-        header: '댓글 수',
-        cell: ({ row }) => row.original.commentCount,
-        size: 100,
-      },
-      {
-        header: '조회수',
-        cell: ({ row }) => row.original.viewsCount,
-        size: 100,
-      },
-      {
-        header: '블라인드 여부',
-        cell: ({ row }) => (row.original.isBlind ? 'Y' : 'N'),
-        size: 120,
-      },
-      {
-        header: '등록일',
-        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.createdAt),
-        size: 150,
-      },
-    ],
+        {
+          header: 'No',
+          cell: ({ row }) => row.original.sequence,
+          size: 60,
+        },
+        {
+          header: '게시판유형',
+          cell: ({ row }) => {
+            const boardType = row.original.boardType;
+            return <Chip label={BoardTypeLabel[boardType]} color='success' variant='light' size='small' />;
+          },
+          size: 120,
+        },
+        {
+          header: '아이디',
+          cell: ({ row }) => row.original.userId,
+          size: 100,
+        },
+        {
+          header: '회원명',
+          cell: ({ row }) => row.original.name,
+          size: 100,
+        },
+        {
+          header: '닉네임',
+          cell: ({ row }) => row.original.nickname,
+          size: 100,
+        },
+        {
+          header: '파트너사 계약여부',
+          cell: ({ row }) => (memberTypeToContractStatus(row.original.memberType as MemberType) === ContractStatus.CONTRACT ? 'Y' : 'N'),
+          size: 120,
+        },
+        {
+          header: '제목',
+          cell: ({ row }) => (
+            <Link component={RouterLink} to={`/admin/community-posts/${row.original.id}`}>
+              {row.original.title}
+            </Link>
+          ),
+        },
+        {
+          header: '좋아요 수',
+          cell: ({ row }) => row.original.likesCount,
+          size: 100,
+        },
+        {
+          header: '댓글 수',
+          cell: ({ row }) => row.original.commentCount,
+          size: 100,
+        },
+        {
+          header: '조회수',
+          cell: ({ row }) => row.original.viewsCount,
+          size: 100,
+        },
+        {
+          header: '블라인드 여부',
+          cell: ({ row }) => (row.original.isBlind ? 'Y' : 'N'),
+          size: 120,
+        },
+        {
+          header: '등록일',
+          cell: ({ row }) => formatYyyyMmDdHhMm(row.original.createdAt),
+          size: 150,
+        },
+      ],
+      [],
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });

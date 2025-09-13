@@ -22,7 +22,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -31,9 +31,10 @@ import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
+import { ArrayElement } from 'type-fest/source/internal';
 
 export default function MpAdminInquiryList() {
   const navigate = useNavigate();
@@ -126,69 +127,72 @@ export default function MpAdminInquiryList() {
 
   const table = useReactTable({
     data: contents,
-    columns: [
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '회원번호',
-        cell: ({ row }) => row.original.id,
-        size: 100,
-      },
-      {
-        header: '아이디',
-        cell: ({ row }) => row.original.userId,
-        size: 120,
-      },
-      {
-        header: '회원명',
-        cell: ({ row }) => row.original.name,
-        size: 100,
-      },
-      {
-        header: '회사명',
-        cell: ({ row }) => '-',
-        size: 150,
-      },
-      {
-        header: '제목',
-        cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/inquiries/${row.original.id}`}>
-            {row.original.title}
-          </Link>
-        ),
-        size: 250,
-      },
-      {
-        header: '문의일',
-        cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
-        size: 100,
-      },
-      {
-        header: '답변일',
-        cell: ({ row }) => {
-          if (row.original.hasChildren) {
-            return formatYyyyMmDd(row.original.createdAt);
-          } else {
-            return '-';
-          }
+    columns: useMemo<ColumnDef<ArrayElement<typeof contents>>[]>(
+      () => [
+        {
+          header: 'No',
+          cell: ({ row }) => row.original.sequence,
+          size: 60,
         },
-        size: 100,
-      },
-      {
-        header: '처리상태',
-        cell: ({ row }) => {
-          if (row.original.hasChildren) {
-            return '처리완료';
-          } else {
-            return '처리중';
-          }
+        {
+          header: '회원번호',
+          cell: ({ row }) => row.original.id,
+          size: 100,
         },
-        size: 100,
-      },
-    ],
+        {
+          header: '아이디',
+          cell: ({ row }) => row.original.userId,
+          size: 120,
+        },
+        {
+          header: '회원명',
+          cell: ({ row }) => row.original.name,
+          size: 100,
+        },
+        {
+          header: '회사명',
+          cell: ({ row }) => '-',
+          size: 150,
+        },
+        {
+          header: '제목',
+          cell: ({ row }) => (
+            <Link component={RouterLink} to={`/admin/inquiries/${row.original.id}`}>
+              {row.original.title}
+            </Link>
+          ),
+          size: 250,
+        },
+        {
+          header: '문의일',
+          cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
+          size: 100,
+        },
+        {
+          header: '답변일',
+          cell: ({ row }) => {
+            if (row.original.hasChildren) {
+              return formatYyyyMmDd(row.original.createdAt);
+            } else {
+              return '-';
+            }
+          },
+          size: 100,
+        },
+        {
+          header: '처리상태',
+          cell: ({ row }) => {
+            if (row.original.hasChildren) {
+              return '처리완료';
+            } else {
+              return '처리중';
+            }
+          },
+          size: 100,
+        },
+      ],
+      [],
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });

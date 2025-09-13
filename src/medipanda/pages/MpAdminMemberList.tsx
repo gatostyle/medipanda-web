@@ -22,7 +22,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -45,6 +45,7 @@ import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
+import { ArrayElement } from 'type-fest/source/internal';
 
 export default function MpAdminMemberList() {
   const navigate = useNavigate();
@@ -158,77 +159,80 @@ export default function MpAdminMemberList() {
 
   const table = useReactTable({
     data: contents,
-    columns: [
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '회원번호',
-        cell: ({ row }) => row.original.id,
-        size: 80,
-      },
-      {
-        header: '아이디',
-        cell: ({ row }) => row.original.userId,
-        size: 120,
-      },
-      {
-        header: '회원명',
-        cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/members/${row.original.userId}/edit`}>
-            {row.original.name}
-          </Link>
-        ),
-        size: 100,
-      },
-      {
-        header: '회사명',
-        cell: ({ row }) => row.original.companyName,
-        size: 150,
-      },
-      {
-        header: '휴대폰번호',
-        cell: ({ row }) => row.original.phoneNumber,
-        size: 130,
-      },
-      {
-        header: '이메일',
-        cell: ({ row }) => row.original.email,
-        size: 200,
-      },
-      {
-        header: '파트너사 계약여부',
-        cell: ({ row }) => ContractStatusLabel[memberTypeToContractStatus(row.original.partnerContractStatus as MemberType)],
-        size: 130,
-      },
-      {
-        header: 'CSO신고증 유무',
-        cell: ({ row }) => (row.original.hasCsoCert ? 'Y' : 'N'),
-        size: 120,
-      },
-      {
-        header: '계정상태',
-        cell: ({ row }) => AccountStatusLabel[row.original.accountStatus],
-        size: 90,
-      },
-      {
-        header: '마케팅수신동의',
-        cell: ({ row }) => (row.original.marketingConsent ? '동의' : '미동의'),
-        size: 120,
-      },
-      {
-        header: '가입일',
-        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.registrationDate),
-        size: 150,
-      },
-      {
-        header: '최종접속일',
-        cell: ({ row }) => formatYyyyMmDd(row.original.lastLoginDate),
-        size: 110,
-      },
-    ],
+    columns: useMemo<ColumnDef<ArrayElement<typeof contents>>[]>(
+      () => [
+        {
+          header: 'No',
+          cell: ({ row }) => row.original.sequence,
+          size: 60,
+        },
+        {
+          header: '회원번호',
+          cell: ({ row }) => row.original.id,
+          size: 80,
+        },
+        {
+          header: '아이디',
+          cell: ({ row }) => row.original.userId,
+          size: 120,
+        },
+        {
+          header: '회원명',
+          cell: ({ row }) => (
+            <Link component={RouterLink} to={`/admin/members/${row.original.userId}/edit`}>
+              {row.original.name}
+            </Link>
+          ),
+          size: 100,
+        },
+        {
+          header: '회사명',
+          cell: ({ row }) => row.original.companyName,
+          size: 150,
+        },
+        {
+          header: '휴대폰번호',
+          cell: ({ row }) => row.original.phoneNumber,
+          size: 130,
+        },
+        {
+          header: '이메일',
+          cell: ({ row }) => row.original.email,
+          size: 200,
+        },
+        {
+          header: '파트너사 계약여부',
+          cell: ({ row }) => ContractStatusLabel[memberTypeToContractStatus(row.original.partnerContractStatus as MemberType)],
+          size: 130,
+        },
+        {
+          header: 'CSO신고증 유무',
+          cell: ({ row }) => (row.original.hasCsoCert ? 'Y' : 'N'),
+          size: 120,
+        },
+        {
+          header: '계정상태',
+          cell: ({ row }) => AccountStatusLabel[row.original.accountStatus],
+          size: 90,
+        },
+        {
+          header: '마케팅수신동의',
+          cell: ({ row }) => (row.original.marketingConsent ? '동의' : '미동의'),
+          size: 120,
+        },
+        {
+          header: '가입일',
+          cell: ({ row }) => formatYyyyMmDdHhMm(row.original.registrationDate),
+          size: 150,
+        },
+        {
+          header: '최종접속일',
+          cell: ({ row }) => formatYyyyMmDd(row.original.lastLoginDate),
+          size: 110,
+        },
+      ],
+      [],
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });

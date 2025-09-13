@@ -22,7 +22,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -43,6 +43,7 @@ import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
+import { ArrayElement } from 'type-fest/source/internal';
 
 export default function MpAdminCommunityCommentList() {
   const navigate = useNavigate();
@@ -149,96 +150,99 @@ export default function MpAdminCommunityCommentList() {
 
   const table = useReactTable({
     data: contents,
-    columns: [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedIds.length === contents.length && contents.length > 0}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(contents.map(item => item.id));
-              } else {
-                setSelectedIds([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => {
-          return (
+    columns: useMemo<ColumnDef<ArrayElement<typeof contents>>[]>(
+      () => [
+        {
+          id: 'select',
+          header: () => (
             <Checkbox
-              checked={selectedIds.includes(row.original.id)}
+              checked={selectedIds.length === contents.length && contents.length > 0}
               onChange={e => {
                 if (e.target.checked) {
-                  setSelectedIds(prev => [...prev, row.original.id]);
+                  setSelectedIds(contents.map(item => item.id));
                 } else {
-                  setSelectedIds(prev => prev.filter(id => id !== row.original.id));
+                  setSelectedIds([]);
                 }
               }}
             />
-          );
+          ),
+          cell: ({ row }) => {
+            return (
+              <Checkbox
+                checked={selectedIds.includes(row.original.id)}
+                onChange={e => {
+                  if (e.target.checked) {
+                    setSelectedIds(prev => [...prev, row.original.id]);
+                  } else {
+                    setSelectedIds(prev => prev.filter(id => id !== row.original.id));
+                  }
+                }}
+              />
+            );
+          },
+          size: 50,
         },
-        size: 50,
-      },
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '아이디',
-        cell: ({ row }) => row.original.userId,
-        size: 150,
-      },
-      {
-        header: '회원명',
-        cell: ({ row }) => row.original.name,
-        size: 100,
-      },
-      {
-        header: '닉네임',
-        cell: ({ row }) => row.original.nickname,
-        size: 150,
-      },
-      {
-        header: '계약유무',
-        cell: ({ row }) => ContractStatusLabel[row.original.contractStatus],
-        size: 100,
-      },
-      {
-        header: '유형',
-        cell: ({ row }) => CommentTypeLabel[row.original.commentType],
-        size: 80,
-      },
-      {
-        header: '댓글내용',
-        cell: ({ row }) => {
-          const content = row.original.content;
-          return (
-            <Typography
-              sx={{
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                maxWidth: 300,
-              }}
-            >
-              {content}
-            </Typography>
-          );
+        {
+          header: 'No',
+          cell: ({ row }) => row.original.sequence,
+          size: 60,
         },
-      },
-      {
-        header: '좋아요 수',
-        cell: ({ row }) => row.original.likesCount,
-        size: 100,
-      },
-      {
-        header: '등록일',
-        cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
-        size: 150,
-      },
-    ],
+        {
+          header: '아이디',
+          cell: ({ row }) => row.original.userId,
+          size: 150,
+        },
+        {
+          header: '회원명',
+          cell: ({ row }) => row.original.name,
+          size: 100,
+        },
+        {
+          header: '닉네임',
+          cell: ({ row }) => row.original.nickname,
+          size: 150,
+        },
+        {
+          header: '계약유무',
+          cell: ({ row }) => ContractStatusLabel[row.original.contractStatus],
+          size: 100,
+        },
+        {
+          header: '유형',
+          cell: ({ row }) => CommentTypeLabel[row.original.commentType],
+          size: 80,
+        },
+        {
+          header: '댓글내용',
+          cell: ({ row }) => {
+            const content = row.original.content;
+            return (
+              <Typography
+                sx={{
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  maxWidth: 300,
+                }}
+              >
+                {content}
+              </Typography>
+            );
+          },
+        },
+        {
+          header: '좋아요 수',
+          cell: ({ row }) => row.original.likesCount,
+          size: 100,
+        },
+        {
+          header: '등록일',
+          cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
+          size: 150,
+        },
+      ],
+      [],
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });

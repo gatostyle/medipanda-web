@@ -24,7 +24,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -32,9 +32,10 @@ import { ContractStatus, ContractStatusLabel, deletePartner, getPartners, Partne
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
+import { ArrayElement } from 'type-fest/source/internal';
 
 export default function MpAdminPartnerList() {
   const navigate = useNavigate();
@@ -126,85 +127,88 @@ export default function MpAdminPartnerList() {
 
   const table = useReactTable({
     data: contents,
-    columns: [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedIds.length === contents.length && contents.length > 0}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(contents.map(item => item.id));
-              } else {
-                setSelectedIds([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedIds.includes(row.original.id)}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(prev => [...prev, row.original.id]);
-              } else {
-                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50,
-      },
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '제약사명',
-        cell: ({ row }) => row.original.drugCompanyName,
-        size: 150,
-      },
-      {
-        header: '회사명',
-        cell: ({ row }) => row.original.companyName,
-        size: 120,
-      },
-      {
-        header: '계약유형',
-        cell: ({ row }) => ContractStatusLabel[row.original.contractType],
-        size: 80,
-      },
-      {
-        header: '거래처코드',
-        cell: ({ row }) => row.original.institutionCode,
-        size: 100,
-      },
-      {
-        header: '거래처명',
-        cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/partners/${row.original.id}/edit`}>
-            {row.original.institutionName}
-          </Link>
-        ),
-        size: 150,
-      },
-      {
-        header: '사업자등록번호',
-        cell: ({ row }) => row.original.businessNumber,
-        size: 130,
-      },
-      {
-        header: '진료과',
-        cell: ({ row }) => row.original.medicalDepartment ?? '-',
-        size: 100,
-      },
-      {
-        header: '문전약국',
-        cell: ({ row }) => (row.original.hasPharmacy ? 'Y' : 'N'),
-        size: 80,
-      },
-    ],
+    columns: useMemo<ColumnDef<ArrayElement<typeof contents>>[]>(
+      () => [
+        {
+          id: 'select',
+          header: () => (
+            <Checkbox
+              checked={selectedIds.length === contents.length && contents.length > 0}
+              onChange={e => {
+                if (e.target.checked) {
+                  setSelectedIds(contents.map(item => item.id));
+                } else {
+                  setSelectedIds([]);
+                }
+              }}
+            />
+          ),
+          cell: ({ row }) => (
+            <Checkbox
+              checked={selectedIds.includes(row.original.id)}
+              onChange={e => {
+                if (e.target.checked) {
+                  setSelectedIds(prev => [...prev, row.original.id]);
+                } else {
+                  setSelectedIds(prev => prev.filter(id => id !== row.original.id));
+                }
+              }}
+            />
+          ),
+          size: 50,
+        },
+        {
+          header: 'No',
+          cell: ({ row }) => row.original.sequence,
+          size: 60,
+        },
+        {
+          header: '제약사명',
+          cell: ({ row }) => row.original.drugCompanyName,
+          size: 150,
+        },
+        {
+          header: '회사명',
+          cell: ({ row }) => row.original.companyName,
+          size: 120,
+        },
+        {
+          header: '계약유형',
+          cell: ({ row }) => ContractStatusLabel[row.original.contractType],
+          size: 80,
+        },
+        {
+          header: '거래처코드',
+          cell: ({ row }) => row.original.institutionCode,
+          size: 100,
+        },
+        {
+          header: '거래처명',
+          cell: ({ row }) => (
+            <Link component={RouterLink} to={`/admin/partners/${row.original.id}/edit`}>
+              {row.original.institutionName}
+            </Link>
+          ),
+          size: 150,
+        },
+        {
+          header: '사업자등록번호',
+          cell: ({ row }) => row.original.businessNumber,
+          size: 130,
+        },
+        {
+          header: '진료과',
+          cell: ({ row }) => row.original.medicalDepartment ?? '-',
+          size: 100,
+        },
+        {
+          header: '문전약국',
+          cell: ({ row }) => (row.original.hasPharmacy ? 'Y' : 'N'),
+          size: 80,
+        },
+      ],
+      [],
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });

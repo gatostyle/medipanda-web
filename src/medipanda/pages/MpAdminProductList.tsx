@@ -27,7 +27,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -35,9 +35,10 @@ import { getDownloadProductSummariesExcel, getProductSummaries, ProductSummaryRe
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
+import { ArrayElement } from 'type-fest/source/internal';
 
 export default function MpAdminProductList() {
   const navigate = useNavigate();
@@ -173,92 +174,95 @@ export default function MpAdminProductList() {
 
   const table = useReactTable({
     data: contents,
-    columns: [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedIds.length === contents.length && contents.length > 0}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(contents.map(item => item.id));
-              } else {
-                setSelectedIds([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedIds.includes(row.original.id)}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(prev => [...prev, row.original.id]);
-              } else {
-                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50,
-      },
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '제약사',
-        cell: ({ row }) => row.original.manufacturerName ?? '-',
-        size: 150,
-      },
-      {
-        header: '제품명',
-        cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/products/${row.original.id}`}>
-            {row.original.productName ?? '-'}
-          </Link>
-        ),
-        size: 300,
-      },
-      {
-        header: '성분명',
-        cell: ({ row }) => row.original.composition ?? '-',
-        size: 250,
-      },
-      {
-        header: '제품코드',
-        cell: ({ row }) => row.original.productCode,
-        size: 120,
-      },
-      {
-        header: '약가',
-        cell: ({ row }) => {
-          return row.original.price !== null ? `${row.original.price.toLocaleString()}` : '-';
+    columns: useMemo<ColumnDef<ArrayElement<typeof contents>>[]>(
+      () => [
+        {
+          id: 'select',
+          header: () => (
+            <Checkbox
+              checked={selectedIds.length === contents.length && contents.length > 0}
+              onChange={e => {
+                if (e.target.checked) {
+                  setSelectedIds(contents.map(item => item.id));
+                } else {
+                  setSelectedIds([]);
+                }
+              }}
+            />
+          ),
+          cell: ({ row }) => (
+            <Checkbox
+              checked={selectedIds.includes(row.original.id)}
+              onChange={e => {
+                if (e.target.checked) {
+                  setSelectedIds(prev => [...prev, row.original.id]);
+                } else {
+                  setSelectedIds(prev => prev.filter(id => id !== row.original.id));
+                }
+              }}
+            />
+          ),
+          size: 50,
         },
-        size: 100,
-      },
-      {
-        header: '기본수수료율',
-        cell: ({ row }) => (row.original.feeRate !== null ? `${row.original.feeRate}%` : '-'),
-        size: 120,
-      },
-      {
-        header: '변경요율',
-        cell: ({ row }) => getChangedRateDisplay(row.original),
-        size: 120,
-      },
-      {
-        header: '상태',
-        cell: ({ row }) => getStatusDisplay(row.original),
-        size: 200,
-      },
-      {
-        header: '비고',
-        cell: ({ row }) => row.original.note ?? '-',
-        size: 200,
-      },
-    ],
+        {
+          header: 'No',
+          cell: ({ row }) => row.original.sequence,
+          size: 60,
+        },
+        {
+          header: '제약사',
+          cell: ({ row }) => row.original.manufacturerName ?? '-',
+          size: 150,
+        },
+        {
+          header: '제품명',
+          cell: ({ row }) => (
+            <Link component={RouterLink} to={`/admin/products/${row.original.id}`}>
+              {row.original.productName ?? '-'}
+            </Link>
+          ),
+          size: 300,
+        },
+        {
+          header: '성분명',
+          cell: ({ row }) => row.original.composition ?? '-',
+          size: 250,
+        },
+        {
+          header: '제품코드',
+          cell: ({ row }) => row.original.productCode,
+          size: 120,
+        },
+        {
+          header: '약가',
+          cell: ({ row }) => {
+            return row.original.price !== null ? `${row.original.price.toLocaleString()}` : '-';
+          },
+          size: 100,
+        },
+        {
+          header: '기본수수료율',
+          cell: ({ row }) => (row.original.feeRate !== null ? `${row.original.feeRate}%` : '-'),
+          size: 120,
+        },
+        {
+          header: '변경요율',
+          cell: ({ row }) => getChangedRateDisplay(row.original),
+          size: 120,
+        },
+        {
+          header: '상태',
+          cell: ({ row }) => getStatusDisplay(row.original),
+          size: 200,
+        },
+        {
+          header: '비고',
+          cell: ({ row }) => row.original.note ?? '-',
+          size: 200,
+        },
+      ],
+      [],
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
