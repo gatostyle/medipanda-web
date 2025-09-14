@@ -80,7 +80,7 @@ function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUpl
     <>
       <Dialog open={open} onClose={onClose} maxWidth='sm' fullWidth>
         <DialogTitle sx={{ fontSize: '1.25rem', fontWeight: 600 }}>거래선 업로드</DialogTitle>
-        <DialogContent sx={{ pt: 3, pb: 3 }}>
+        <DialogContent sx={{ pb: 3 }}>
           <Stack direction='row' alignItems='center' sx={{ mt: 1, mb: 3 }}>
             <Box>
               <TextField

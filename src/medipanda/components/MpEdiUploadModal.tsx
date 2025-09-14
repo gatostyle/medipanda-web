@@ -133,13 +133,13 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
     <>
       <Dialog open={open} onClose={onClose} maxWidth='md' fullWidth>
         <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}>EDI 등록</DialogTitle>
-        <DialogContent sx={{ pt: 3, pb: 3 }}>
-          <Stack direction='row' spacing={2} justifyContent='center' alignItems='center' sx={{ mb: 3 }}>
+        <DialogContent sx={{ pb: 3 }}>
+          <Stack direction='row' spacing={2} justifyContent='center' alignItems='center' sx={{ mt: 1, mb: 3 }}>
             <Typography variant='body1'>처방월 선택</Typography>
             <Box>
               <DatePicker
                 value={formik.values.prescriptionMonth}
-                onChange={value => formik.setFieldValue('prescriptionMonth', value)}
+                onChange={value => formik.setFieldValue('prescriptionMonth', value.setDate(1))}
                 format='yyyy-MM'
                 views={['year', 'month']}
                 label='처방월'
@@ -154,7 +154,7 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
             <Box>
               <DatePicker
                 value={formik.values.settlementMonth}
-                onChange={value => formik.setFieldValue('settlementMonth', value)}
+                onChange={value => formik.setFieldValue('settlementMonth', value.setDate(1))}
                 format='yyyy-MM'
                 views={['year', 'month']}
                 label='정산월'

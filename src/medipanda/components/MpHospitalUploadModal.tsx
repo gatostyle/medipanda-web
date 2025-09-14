@@ -49,8 +49,8 @@ function MpHospitalUploadModalInternal({ open, onClose, onSuccess }: MpHospitalU
   return (
     <Dialog open={open} onClose={onClose} maxWidth='sm' fullWidth>
       <DialogTitle sx={{ fontSize: '1.25rem', fontWeight: 600 }}>개원병원정보 업로드</DialogTitle>
-      <DialogContent sx={{ pt: 3, pb: 3 }}>
-        <Box sx={{ textAlign: 'right', mb: 2 }}>
+      <DialogContent sx={{ pb: 3 }}>
+        <Box sx={{ mt: 1, textAlign: 'right', mb: 2 }}>
           <Button
             href={import.meta.env.VITE_APP_URL_FILE_PRODUCT_RATE_TABLE}
             target='_blank'
