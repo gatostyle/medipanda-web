@@ -1676,7 +1676,6 @@ export async function getBoards(options?: {
   filterDeleted?: boolean;
   exposureRanges?: ('ALL' | 'CONTRACTED' | 'UNCONTRACTED')[];
   isExposed?: boolean;
-  drugCompanyIds?: number[];
   drugCompany?: string;
   myUserId?: string;
   includeChild?: boolean;
@@ -1696,7 +1695,6 @@ export async function getBoards(options?: {
     params: {
       ...options,
       exposureRanges: options?.exposureRanges?.join(','),
-      drugCompanyIds: options?.drugCompanyIds?.join(','),
       noticeTypes: options?.noticeTypes?.join(','),
     },
   });
@@ -1756,7 +1754,6 @@ export async function getFixedTopNotices(options?: {
   boardType?: 'ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z' | 'EVENT' | 'SALES_AGENCY' | 'PRODUCT';
   filterBlind?: boolean;
   filterDeleted?: boolean;
-  drugCompanyIds?: number[];
   noticeTypes?: (
     | 'PRODUCT_STATUS'
     | 'MANUFACTURING_SUSPENSION'
@@ -1773,7 +1770,6 @@ export async function getFixedTopNotices(options?: {
     url: '/v1/boards/notices/fixed-top',
     params: {
       ...options,
-      drugCompanyIds: options?.drugCompanyIds?.join(','),
       noticeTypes: options?.noticeTypes?.join(','),
       exposureRanges: options?.exposureRanges?.join(','),
     },
