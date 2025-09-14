@@ -64,12 +64,12 @@ fi
 
 if [ -z "$LOCAL_DIRECTORY" ]; then
   LOCAL_DIRECTORY="$DEFAULT_LOCAL_DIRECTORY"
-  log.e "Using default LOCAL_DIRECTORY: $LOCAL_DIRECTORY"
+  log.i "Using default LOCAL_DIRECTORY: $LOCAL_DIRECTORY"
 fi
 
 if [ -z "$KEYFILE" ]; then
   KEYFILE="$DEFAULT_KEYFILE"
-  log.e "Using default KEYFILE: $KEYFILE"
+  log.i "Using default KEYFILE: $KEYFILE"
 fi
 
 if [ ! -d "$LOCAL_DIRECTORY" ]; then
