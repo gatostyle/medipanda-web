@@ -81,7 +81,7 @@ export default function MpAdminInquiryDetail() {
             newFiles: values.newFiles,
           });
         }
-        await alert('답변이 저장되었습니다.');
+        enqueueSnackbar('답변이 저장되었습니다.', { variant: 'success' });
         navigate('/admin/inquiries');
       } catch (error) {
         console.error('Failed to save response:', error);
@@ -125,6 +125,7 @@ export default function MpAdminInquiryDetail() {
     } catch (error) {
       console.error('Failed to fetch inquiry detail:', error);
       enqueueSnackbar('문의 정보를 불러오는데 실패했습니다.', { variant: 'error' });
+      return window.history.back();
     } finally {
       setLoading(false);
     }

@@ -137,7 +137,7 @@ export default function MpAdminSalesAgencyProductEdit() {
             thumbnail: values.thumbnail!,
             files: [],
           });
-          await alert('영업대행상품이 등록되었습니다.');
+          enqueueSnackbar('영업대행상품이 등록되었습니다.', { variant: 'success' });
           navigate('/admin/sales-agency-products');
         } else {
           await updateSalesAgencyProductBoard(salesAgencyProductId, {
@@ -164,7 +164,7 @@ export default function MpAdminSalesAgencyProductEdit() {
             },
             thumbnail: values.thumbnail ?? undefined,
           });
-          await alert('영업대행상품이 수정되었습니다.');
+          enqueueSnackbar('영업대행상품이 수정되었습니다.', { variant: 'success' });
           navigate(`/admin/sales-agency-products/${salesAgencyProductId}`);
         }
       } catch (error) {
@@ -210,6 +210,7 @@ export default function MpAdminSalesAgencyProductEdit() {
     } catch (error) {
       console.error('Failed to load product detail:', error);
       enqueueSnackbar('영업대행상품 정보를 불러오는데 실패했습니다.', { variant: 'error' });
+      return window.history.back();
     } finally {
       setLoading(false);
     }
@@ -257,6 +258,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
   const navigate = useNavigate();
 
   const { alert, alertError } = useMpModal();
+  const { enqueueSnackbar } = useSnackbar();
 
   const formik = useFormik({
     initialValues: {
@@ -337,7 +339,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
             thumbnail: values.thumbnail!,
             files: [],
           });
-          await alert('영업대행상품이 등록되었습니다.');
+          enqueueSnackbar('영업대행상품이 등록되었습니다.', { variant: 'success' });
           navigate('/admin/sales-agency-products');
         } else {
           await updateSalesAgencyProductBoard(detail!.productId, {
@@ -364,7 +366,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
             },
             thumbnail: values.thumbnail ?? undefined,
           });
-          await alert('영업대행상품이 수정되었습니다.');
+          enqueueSnackbar('영업대행상품이 수정되었습니다.', { variant: 'success' });
           navigate(`/admin/sales-agency-products/${detail!.productId}`);
         }
       } catch (error) {

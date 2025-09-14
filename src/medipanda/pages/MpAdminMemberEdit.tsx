@@ -134,7 +134,7 @@ export default function MpAdminMemberEdit() {
           });
         }
 
-        await alert('회원정보가 수정되었습니다.');
+        enqueueSnackbar('회원정보가 수정되었습니다.', { variant: 'success' });
         navigate('/admin/members');
       } catch (e) {
         switch (true) {
@@ -181,7 +181,7 @@ export default function MpAdminMemberEdit() {
     } catch (error) {
       console.error('Failed to fetch member data:', error);
       enqueueSnackbar('회원 정보를 불러오는데 실패했습니다.', { variant: 'error' });
-      navigate('/admin/members');
+      return window.history.back();
     }
   };
 
@@ -207,7 +207,7 @@ export default function MpAdminMemberEdit() {
   const handleCsoApprove = async () => {
     try {
       await approveOrRejectCso(userId, { isApproved: true });
-      await alert('CSO 신고증이 승인되었습니다.');
+      enqueueSnackbar('CSO 신고증이 승인되었습니다.', { variant: 'success' });
       await fetchDetail(userId);
     } catch (error) {
       console.error('Failed to approve CSO report:', error);
@@ -218,7 +218,7 @@ export default function MpAdminMemberEdit() {
   const handleCsoReject = async () => {
     try {
       await approveOrRejectCso(userId, { isApproved: false });
-      await alert('CSO 신고증이 반려되었습니다.');
+      enqueueSnackbar('CSO 신고증이 반려되었습니다.', { variant: 'success' });
       await fetchDetail(userId);
     } catch (error) {
       console.error('Failed to reject CSO report:', error);
@@ -250,7 +250,7 @@ export default function MpAdminMemberEdit() {
           file: file,
         });
 
-        await alert('CSO 신고증이 업로드되었습니다.');
+        enqueueSnackbar('CSO 신고증이 업로드되었습니다.', { variant: 'success' });
         await fetchDetail(userId);
       } catch (e) {
         console.error('Failed to upload CSO report:', e);
@@ -263,7 +263,7 @@ export default function MpAdminMemberEdit() {
   const handleContractApprove = async () => {
     try {
       await approveContract(contractDetail!.id);
-      await alert('파트너사 계약이 승인되었습니다.');
+      enqueueSnackbar('파트너사 계약이 승인되었습니다.', { variant: 'success' });
       await fetchContractDetail(formik.values);
     } catch (error) {
       console.error('Failed to approve partner contract:', error);
@@ -274,7 +274,7 @@ export default function MpAdminMemberEdit() {
   const handleContractReject = async () => {
     try {
       await rejectContract(contractDetail!.id);
-      await alert('파트너사 계약이 종료되었습니다.');
+      enqueueSnackbar('파트너사 계약이 종료되었습니다.', { variant: 'success' });
       await fetchContractDetail(formik.values);
     } catch (error) {
       console.error('Failed to reject partner contract:', error);

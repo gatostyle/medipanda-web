@@ -99,7 +99,7 @@ export default function MpAdminFaqEdit() {
         }
       } catch (error) {
         console.error('Failed to submit form:', error);
-        enqueueSnackbar(isNew ? 'FAQ 등록에 실패했습니다.' : 'FAQ 수정에 실패했습니다.', { variant: 'error' });
+        await alertError(isNew ? 'FAQ 등록에 실패했습니다.' : 'FAQ 수정에 실패했습니다.');
       } finally {
         setSubmitting(false);
       }
@@ -134,6 +134,7 @@ export default function MpAdminFaqEdit() {
     } catch (error) {
       console.error('Failed to fetch FAQ detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
+      return window.history.back();
     } finally {
       setLoading(false);
     }

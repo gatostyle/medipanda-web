@@ -47,6 +47,7 @@ export default function MpAdminProductDetail() {
     } catch (error) {
       console.error('Failed to fetch product detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
+      return window.history.back();
     } finally {
       setLoading(false);
     }

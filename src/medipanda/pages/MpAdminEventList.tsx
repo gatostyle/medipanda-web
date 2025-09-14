@@ -34,6 +34,7 @@ import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipa
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
+import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
@@ -68,7 +69,8 @@ export default function MpAdminEventList() {
   const [totalPages, setTotalPages] = useState(0);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
-  const { alertError } = useMpModal();
+  const { alert, alertError } = useMpModal();
+  const { enqueueSnackbar } = useSnackbar();
   const deleteDialog = useMpDeleteDialog();
 
   const formik = useFormik({
@@ -264,7 +266,7 @@ export default function MpAdminEventList() {
       onConfirm: async () => {
         try {
           await Promise.all(selectedIds.map(id => softDeleteEventBoard(id)));
-          await alert('이벤트가 삭제되었습니다.');
+          enqueueSnackbar('이벤트가 삭제되었습니다.', { variant: 'success' });
           setSelectedIds([]);
           fetchContents();
         } catch (error) {

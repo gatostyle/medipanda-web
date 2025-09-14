@@ -44,6 +44,7 @@ import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReact
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
+import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
@@ -82,6 +83,7 @@ export default function MpAdminCommunityPostList() {
 
   const deleteDialog = useMpDeleteDialog();
   const { alert, alertError } = useMpModal();
+  const { enqueueSnackbar } = useSnackbar();
 
   const formik = useFormik({
     initialValues: {
@@ -279,7 +281,7 @@ export default function MpAdminCommunityPostList() {
           for (const postId of selectedIds) {
             await toggleBlindStatus_1(postId);
           }
-          await alert('블라인드 처리가 완료되었습니다.');
+          enqueueSnackbar('블라인드 처리가 완료되었습니다.', { variant: 'success' });
           setSelectedIds([]);
           fetchContents();
         } catch (error) {

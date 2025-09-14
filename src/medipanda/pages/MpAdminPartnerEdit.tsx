@@ -89,6 +89,7 @@ export default function MpAdminPartnerEdit() {
     } catch (error) {
       console.error('Failed to fetch partner data:', error);
       enqueueSnackbar('거래선 정보를 불러오는데 실패했습니다.', { variant: 'error' });
+      return window.history.back();
     } finally {
       setLoading(false);
     }
@@ -154,7 +155,7 @@ export default function MpAdminPartnerEdit() {
           });
         }
 
-        await alert('거래선 정보가 저장되었습니다.');
+        enqueueSnackbar('거래선 정보가 저장되었습니다.', { variant: 'success' });
         navigate('/admin/partners');
       } catch (e) {
         if (e instanceof AxiosError && e.response?.status === 409) {

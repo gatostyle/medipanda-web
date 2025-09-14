@@ -1,7 +1,6 @@
 import { DateString, MemberResponse, uploadEdiZip } from '@/backend';
 import MpDatePicker from '@/medipanda/components/MpDatePicker';
 import { MpMemberSelectModal } from '@/medipanda/components/MpMemberSelectModal';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { UploadFile } from '@mui/icons-material';
 import {
@@ -19,6 +18,7 @@ import {
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { SearchNormal1 } from 'iconsax-react';
+import { useSnackbar } from 'notistack';
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
@@ -29,8 +29,8 @@ export interface MpEdiUploadModalProps {
 }
 
 function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModalProps) {
-  const errorDialog = useMpErrorDialog();
   const { alert, alertError } = useMpModal();
+  const { enqueueSnackbar } = useSnackbar();
 
   const formik = useFormik({
     initialValues: {
@@ -99,11 +99,11 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
           return;
         }
 
-        await alert('업로드가 완료되었습니다.');
+        enqueueSnackbar('업로드가 완료되었습니다.', { variant: 'success' });
         onSuccess?.();
       } catch (error) {
         console.error('Failed to upload rate table:', error);
-        errorDialog.showError('업로드 중 오류가 발생했습니다.');
+        await alertError('업로드 중 오류가 발생했습니다.');
       }
     },
   });

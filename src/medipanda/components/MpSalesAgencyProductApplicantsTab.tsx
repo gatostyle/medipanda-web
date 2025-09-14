@@ -12,7 +12,7 @@ import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import {
@@ -60,8 +60,8 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
     return useRef<HTMLInputElement>(null);
   });
 
-  const errorDialog = useMpErrorDialog();
   const deleteDialog = useMpDeleteDialog();
+  const { alertError } = useMpModal();
 
   const formik = useFormik({
     initialValues: {
@@ -97,7 +97,7 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch applicants:', error);
-      errorDialog.showError('신청자 목록을 불러오는데 실패했습니다.');
+      await alertError('신청자 목록을 불러오는데 실패했습니다.');
       setContents([]);
       setTotalElements(0);
       setTotalPages(0);
@@ -230,7 +230,7 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
           fetchContents();
         } catch (error) {
           console.error('Failed to delete applicants:', error);
-          errorDialog.showError('신청자 삭제 중 오류가 발생했습니다.');
+          await alertError('신청자 삭제 중 오류가 발생했습니다.');
         }
       },
     });
@@ -250,7 +250,7 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
       fetchContents();
     } catch (error) {
       console.error('Failed to update notes:', error);
-      errorDialog.showError('비고 수정 중 오류가 발생했습니다.');
+      await alertError('비고 수정 중 오류가 발생했습니다.');
     }
   };
 

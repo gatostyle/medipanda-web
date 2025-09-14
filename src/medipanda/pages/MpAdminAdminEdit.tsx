@@ -16,6 +16,7 @@ import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
 import { AdminPermission, getMemberDetails, getPermissions, signupByAdmin, updateByAdmin } from '@/backend';
 import { isSuperAdmin, useSession } from '@/medipanda/hooks/useSession';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -28,12 +29,13 @@ export default function MpAdminAdminEdit() {
   const { session } = useSession();
   const [, setLoading] = useState(false);
   const { alert, alertError } = useMpModal();
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     (async () => {
       if (!isNew && session && !isSuperAdmin(session)) {
         await alert('최고관리자만 관리자 편집이 가능합니다.');
-        navigate('/admin/admins');
+        return window.history.back();
       }
     })();
   }, [session, isNew, navigate]);
@@ -105,7 +107,7 @@ export default function MpAdminAdminEdit() {
             phoneNumber,
             permissions: values.permissions,
           });
-          await alert('관리자가 등록되었습니다.');
+          enqueueSnackbar('관리자가 등록되었습니다.', { variant: 'success' });
           navigate('/admin/admins');
         } else {
           await updateByAdmin(userId, {
@@ -116,7 +118,7 @@ export default function MpAdminAdminEdit() {
             phoneNumber,
             permissions: values.permissions,
           });
-          await alert('관리자 권한이 수정되었습니다.');
+          enqueueSnackbar('관리자 권한이 수정되었습니다.', { variant: 'success' });
           navigate('/admin/admins');
         }
       } catch (error) {

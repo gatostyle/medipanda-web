@@ -59,7 +59,7 @@ export default function MpAdminPrescriptionFormProducts() {
   const [partnerProductSelectModalOpen, setPartnerProductSelectModalOpen] = useState(false);
   const [currentProductItemIndex, setCurrentProductItemIndex] = useState<number>(0);
 
-  const { alert, alertError } = useMpModal();
+  const { alertError } = useMpModal();
 
   const [partnerProducts, setPartnerProducts] = useState<
     Sequenced<PrescriptionPartnerProductResponse & Pick<PrescriptionProductItem, 'ocrItem'>>[]
@@ -89,12 +89,11 @@ export default function MpAdminPrescriptionFormProducts() {
           items: partnerProducts,
         });
 
-        await alert('거래처별 제품 목록이 저장되었습니다.');
-
+        enqueueSnackbar('거래처별 제품 목록이 저장되었습니다.', { variant: 'success' });
         navigate('/admin/prescription-forms');
       } catch (e) {
         console.error('Failed to submit form:', e);
-        enqueueSnackbar('거래처별 제품상세 저장에 실패했습니다.', { variant: 'error' });
+        await alertError('거래처별 제품상세 저장에 실패했습니다.');
       }
     },
   });
@@ -368,7 +367,7 @@ export default function MpAdminPrescriptionFormProducts() {
     } catch (error) {
       console.error('Failed to fetch prescription form data:', error);
       enqueueSnackbar('처방입력 정보를 불러오는데 실패했습니다.', { variant: 'error' });
-      navigate('/admin/prescription-forms');
+      return window.history.back();
     } finally {
       setLoading(false);
     }

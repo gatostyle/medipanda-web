@@ -126,7 +126,7 @@ export default function MpAdminNoticeEdit() {
         }
       } catch (error) {
         console.error('Failed to submit form:', error);
-        enqueueSnackbar(isNew ? '공지사항 등록에 실패했습니다.' : '공지사항 수정에 실패했습니다.', { variant: 'error' });
+        await alertError(isNew ? '공지사항 등록에 실패했습니다.' : '공지사항 수정에 실패했습니다.');
       } finally {
         setSubmitting(false);
       }
@@ -168,12 +168,13 @@ export default function MpAdminNoticeEdit() {
     } catch (error) {
       console.error('Failed to fetch notice detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
+      return window.history.back();
     } finally {
       setLoading(false);
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
     const MAX_FILE_SIZE = 1 * 1024 * 1024;
 
@@ -189,7 +190,8 @@ export default function MpAdminNoticeEdit() {
     });
 
     if (oversizedFiles.length > 0) {
-      enqueueSnackbar(`다음 파일이 1MB를 초과합니다: ${oversizedFiles.join(', ')}`, { variant: 'error' });
+      await alert(`다음 파일이 1MB를 초과합니다: ${oversizedFiles.join(', ')}`);
+      return;
     }
 
     if (validFiles.length > 0) {

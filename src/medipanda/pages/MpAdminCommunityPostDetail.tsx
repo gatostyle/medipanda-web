@@ -62,7 +62,7 @@ export default function MpAdminCommunityPostDetail() {
     } catch (error) {
       console.error('Failed to fetch post data:', error);
       enqueueSnackbar('포스트 정보를 불러오는데 실패했습니다.', { variant: 'error' });
-      navigate('/admin/community-posts');
+      return window.history.back();
     } finally {
       setLoading(false);
     }

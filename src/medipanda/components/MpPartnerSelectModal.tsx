@@ -1,3 +1,4 @@
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
@@ -21,7 +22,6 @@ import {
 } from '@mui/material';
 import { SearchNormal1 } from 'iconsax-react';
 import { getPartners, PartnerResponse } from '@/backend';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import React, { useCallback, useState } from 'react';
 
 export interface MpPartnerSelectModalProps {
@@ -35,7 +35,8 @@ function MpPartnerSelectModalInternal({ open, onClose, onSelect }: MpPartnerSele
   const [partners, setPartners] = useState<PartnerResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
-  const errorDialog = useMpErrorDialog();
+
+  const { alertError } = useMpModal();
 
   const handleSearch = useCallback(async () => {
     if (!searchKeyword.trim() && hasSearched) {
@@ -52,11 +53,11 @@ function MpPartnerSelectModalInternal({ open, onClose, onSelect }: MpPartnerSele
       setHasSearched(true);
     } catch (error) {
       console.error('Failed to search partners:', error);
-      errorDialog.showError('거래처 검색 중 오류가 발생했습니다.');
+      await alertError('거래처 검색 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
     }
-  }, [searchKeyword, hasSearched, errorDialog]);
+  }, [searchKeyword, hasSearched]);
 
   const handleSelectPartner = useCallback(
     (partner: PartnerResponse) => {

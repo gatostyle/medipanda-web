@@ -15,6 +15,7 @@ import {
   updateEventBoard,
 } from '@/backend';
 import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSession } from '../hooks/useSession';
@@ -31,6 +32,7 @@ export default function MpAdminEventEdit() {
   const [thumbnailPreview, setThumbnailPreview] = useState<string>('');
   const { session } = useSession();
   const { alert, alertError } = useMpModal();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
@@ -90,7 +92,7 @@ export default function MpAdminEventEdit() {
             thumbnail: thumbnailFile!,
             files: values.newFiles,
           });
-          await alert('이벤트가 등록되었습니다.');
+          enqueueSnackbar('이벤트가 등록되었습니다.', { variant: 'success' });
           navigate('/admin/events');
         } else {
           await updateEventBoard(eventId, {
@@ -115,7 +117,7 @@ export default function MpAdminEventEdit() {
             thumbnail: thumbnailFile ?? undefined,
             newFiles: values.newFiles,
           });
-          await alert('이벤트가 수정되었습니다.');
+          enqueueSnackbar('이벤트가 수정되었습니다.', { variant: 'success' });
           navigate(`/admin/events/${eventId}`);
         }
       } catch (error) {
@@ -164,7 +166,7 @@ export default function MpAdminEventEdit() {
     } catch (error) {
       console.error('Failed to fetch event detail:', error);
       await alertError('이벤트 정보를 불러오는데 실패했습니다.');
-      navigate('/admin/events');
+      return window.history.back();
     } finally {
       setLoading(false);
     }

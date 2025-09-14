@@ -41,6 +41,7 @@ import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipa
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
+import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
@@ -84,7 +85,8 @@ export default function MpAdminHospitalList() {
 
   const [hospitalUploadModalOpen, setHospitalUploadModalOpen] = useState(false);
 
-  const { alertError } = useMpModal();
+  const { alert, alertError } = useMpModal();
+  const { enqueueSnackbar } = useSnackbar();
   const deleteDialog = useMpDeleteDialog();
 
   const formik = useFormik({
@@ -255,7 +257,7 @@ export default function MpAdminHospitalList() {
       onConfirm: async () => {
         try {
           await Promise.all(selectedIds.map(id => softDeleteHospital(id)));
-          await alert('삭제가 완료되었습니다.');
+          enqueueSnackbar('삭제가 완료되었습니다.', { variant: 'success' });
           setSelectedIds([]);
           fetchContents();
         } catch (error) {

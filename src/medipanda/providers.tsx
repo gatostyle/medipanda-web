@@ -1,7 +1,6 @@
 import { MpModalProvider } from '@/medipanda/hooks/useMpModal';
 import { ReactNode } from 'react';
 import { MpDeleteDialogProvider } from './hooks/useMpDeleteDialog';
-import { MpErrorDialogProvider } from './hooks/useMpErrorDialog';
 import { MpMenuProvider } from './hooks/useMpMenu';
 import { SessionProvider } from './hooks/useSession';
 
@@ -10,9 +9,7 @@ export function MpProviders({ children }: { children: ReactNode }) {
     <MpMenuProvider>
       <SessionProvider>
         <MpModalProvider>
-          <MpErrorDialogProvider>
-            <MpDeleteDialogProvider>{children}</MpDeleteDialogProvider>
-          </MpErrorDialogProvider>
+          <MpDeleteDialogProvider>{children}</MpDeleteDialogProvider>
         </MpModalProvider>
       </SessionProvider>
     </MpMenuProvider>

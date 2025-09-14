@@ -32,6 +32,7 @@ import { ContractStatus, ContractStatusLabel, deletePartner, getPartners, Partne
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
+import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
@@ -61,6 +62,7 @@ export default function MpAdminPartnerList() {
 
   const deleteDialog = useMpDeleteDialog();
   const { alert, alertError } = useMpModal();
+  const { enqueueSnackbar } = useSnackbar();
 
   const formik = useFormik({
     initialValues: {
@@ -227,7 +229,7 @@ export default function MpAdminPartnerList() {
       onConfirm: async () => {
         try {
           await Promise.all(selectedIds.map(id => deletePartner(id)));
-          await alert('삭제가 완료되었습니다.');
+          enqueueSnackbar('삭제가 완료되었습니다.', { variant: 'success' });
           setSelectedIds([]);
           fetchContents();
         } catch (error) {

@@ -1,3 +1,4 @@
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
@@ -21,7 +22,6 @@ import {
 import { useFormik } from 'formik';
 import { SearchNormal1 } from 'iconsax-react';
 import { getProductSummaries, ProductSummaryResponse } from '@/backend';
-import { useMpErrorDialog } from '@/medipanda/hooks/useMpErrorDialog';
 import React, { useEffect, useState } from 'react';
 
 export interface MpPartnerProductSelectModalProps {
@@ -33,7 +33,8 @@ export interface MpPartnerProductSelectModalProps {
 function MpPartnerProductSelectModalInternal({ open, onClose, onSelect }: MpPartnerProductSelectModalProps) {
   const [products, setProducts] = useState<ProductSummaryResponse[]>([]);
   const [loading, setLoading] = useState(false);
-  const errorDialog = useMpErrorDialog();
+
+  const { alertError } = useMpModal();
 
   const formik = useFormik({
     initialValues: {
@@ -49,7 +50,7 @@ function MpPartnerProductSelectModalInternal({ open, onClose, onSelect }: MpPart
         setProducts(response.content);
       } catch (error) {
         console.error('Failed to search partners:', error);
-        errorDialog.showError('제품 검색 중 오류가 발생했습니다.');
+        await alertError('제품 검색 중 오류가 발생했습니다.');
       } finally {
         setLoading(false);
       }

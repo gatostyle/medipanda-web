@@ -39,7 +39,7 @@ export default function MpAdminSalesAgencyProductDetail() {
     } catch (error) {
       console.error('Failed to fetch product detail:', error);
       enqueueSnackbar('상품 정보를 불러오는데 실패했습니다.', { variant: 'error' });
-      navigate('/admin/sales-agency-products');
+      return window.history.back();
     } finally {
       setLoading(false);
     }

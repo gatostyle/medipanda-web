@@ -39,6 +39,7 @@ import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { formatYyyyMm, formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
+import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
@@ -75,6 +76,7 @@ export default function MpAdminPrescriptionReceptionList() {
   const [totalPages, setTotalPages] = useState(0);
 
   const { alert, alertError } = useMpModal();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [ediUploadModalOpen, setEdiUploadModalOpen] = useState(false);
 
@@ -232,7 +234,7 @@ export default function MpAdminPrescriptionReceptionList() {
   const handleConfirm = async (id: number) => {
     try {
       await confirmPrescription(id);
-      await alert('접수 확인되었습니다.');
+      enqueueSnackbar('접수 확인되었습니다.', { variant: 'success' });
       fetchContents();
     } catch (error) {
       console.error('Failed to confirm reception:', error);

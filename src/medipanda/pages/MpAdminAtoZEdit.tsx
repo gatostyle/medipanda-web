@@ -44,7 +44,7 @@ export default function MpAdminAtoZEdit() {
   const { session } = useSession();
   const [loading, setLoading] = useState(false);
 
-  const { alert } = useMpModal();
+  const { alert, alertError } = useMpModal();
 
   const formik = useFormik({
     initialValues: {
@@ -98,7 +98,7 @@ export default function MpAdminAtoZEdit() {
         navigate('/admin/atoz');
       } catch (error) {
         console.error('Failed to submit form:', error);
-        enqueueSnackbar(isNew ? 'CSO A to Z 등록에 실패했습니다.' : 'CSO A to Z 수정에 실패했습니다.', { variant: 'error' });
+        await alertError(isNew ? 'CSO A to Z 등록에 실패했습니다.' : 'CSO A to Z 수정에 실패했습니다.');
       } finally {
         setSubmitting(false);
       }
@@ -130,6 +130,7 @@ export default function MpAdminAtoZEdit() {
     } catch (error) {
       console.error('Failed to fetch CSO A to Z detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
+      return window.history.back();
     } finally {
       setLoading(false);
     }
