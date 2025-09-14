@@ -53,14 +53,21 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
     setMenuOrientation(MenuOrientation.VERTICAL);
 
+    clearInterval(window.refreshTokenRotateInterval);
     window.refreshTokenRotateInterval = setInterval(
       async () => {
         const savedRefreshToken = localStorage.getItem('refreshToken');
 
+        if (savedRefreshToken === null) {
+          clearInterval(window.refreshTokenRotateInterval);
+          await logout();
+          return;
+        }
+
         try {
           const { refreshToken } = await apiRefreshToken({
             userId: member.userId,
-            refreshToken: savedRefreshToken ?? '',
+            refreshToken: savedRefreshToken,
           });
           localStorage.setItem('refreshToken', refreshToken);
         } catch (e) {
@@ -69,7 +76,6 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           localStorage.removeItem('refreshToken');
 
           await logout();
-          setSession(null);
         }
       },
       import.meta.env.VITE_APP_TOKEN_ROTATE_INTERVAL,
