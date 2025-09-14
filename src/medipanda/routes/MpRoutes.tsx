@@ -26,7 +26,7 @@ const MpAdminPrescriptionFormList = Loadable(lazy(() => import('medipanda/pages/
 const MpAdminPrescriptionFormProducts = Loadable(lazy(() => import('medipanda/pages/MpAdminPrescriptionFormProducts')));
 const MpAdminSettlementBusinessPartnerDetail = Loadable(lazy(() => import('medipanda/pages/MpAdminSettlementBusinessPartnerDetail')));
 const MpAdminSettlementList = Loadable(lazy(() => import('medipanda/pages/MpAdminSettlementList')));
-const MpAdminSettlementEdit = Loadable(lazy(() => import('medipanda/pages/MpAdminSettlementEdit')));
+const MpAdminSettlementDetail = Loadable(lazy(() => import('@/medipanda/pages/MpAdminSettlementDetail')));
 const MpAdminStatisticsList = Loadable(lazy(() => import('medipanda/pages/MpAdminStatisticsList')));
 const MpAdminExpenseReportList = Loadable(lazy(() => import('medipanda/pages/MpAdminExpenseReportList')));
 const MpAdminCommunityPostList = Loadable(lazy(() => import('medipanda/pages/MpAdminCommunityPostList')));
@@ -43,7 +43,7 @@ const MpAdminFaqList = Loadable(lazy(() => import('medipanda/pages/MpAdminFaqLis
 const MpAdminFaqDetail = Loadable(lazy(() => import('medipanda/pages/MpAdminFaqDetail')));
 const MpAdminFaqEdit = Loadable(lazy(() => import('medipanda/pages/MpAdminFaqEdit')));
 const MpAdminInquiryList = Loadable(lazy(() => import('medipanda/pages/MpAdminInquiryList')));
-const MpAdminInquiryEdit = Loadable(lazy(() => import('medipanda/pages/MpAdminInquiryEdit')));
+const MpAdminInquiryDetail = Loadable(lazy(() => import('@/medipanda/pages/MpAdminInquiryDetail')));
 const MpAdminBannerList = Loadable(lazy(() => import('medipanda/pages/MpAdminBannerList')));
 const MpAdminBannerEdit = Loadable(lazy(() => import('medipanda/pages/MpAdminBannerEdit')));
 const MpAdminAdminList = Loadable(lazy(() => import('medipanda/pages/MpAdminAdminList')));
@@ -237,18 +237,10 @@ const adminRoute: RouteObject = {
       ),
     },
     {
-      path: 'settlements/new',
-      element: (
-        <MpAdminGuard requiredPermission={AdminPermission.SETTLEMENT_MANAGEMENT}>
-          <MpAdminSettlementEdit />
-        </MpAdminGuard>
-      ),
-    },
-    {
       path: 'settlements/:settlementId',
       element: (
         <MpAdminGuard requiredPermission={AdminPermission.SETTLEMENT_MANAGEMENT}>
-          <MpAdminSettlementEdit />
+          <MpAdminSettlementDetail />
         </MpAdminGuard>
       ),
     },
@@ -432,7 +424,7 @@ const adminRoute: RouteObject = {
       path: 'inquiries/:boardId',
       element: (
         <MpAdminGuard requiredPermission={AdminPermission.CUSTOMER_SERVICE}>
-          <MpAdminInquiryEdit />
+          <MpAdminInquiryDetail />
         </MpAdminGuard>
       ),
     },

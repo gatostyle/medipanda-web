@@ -19,7 +19,7 @@ import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-export default function MpAdminInquiryEdit() {
+export default function MpAdminInquiryDetail() {
   const navigate = useNavigate();
   const { boardId: paramBoardId } = useParams();
   const isNew = paramBoardId === undefined;

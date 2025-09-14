@@ -32,7 +32,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import { ArrayElement } from 'type-fest/source/internal';
 
-export default function MpAdminSettlementEdit() {
+export default function MpAdminSettlementDetail() {
   const navigate = useNavigate();
   const { settlementId: paramSettlementId } = useParams();
   const isNew = paramSettlementId === undefined;
