@@ -189,11 +189,6 @@ export default function MpAdminStatisticsList() {
           cell: ({ row }) => row.original.feeAmount.toLocaleString(),
           size: 120,
         },
-        {
-          header: '기본수수료율',
-          cell: ({ row }) => row.original.feeAmount.toLocaleString(),
-          size: 100,
-        },
       ],
       [],
     ),
