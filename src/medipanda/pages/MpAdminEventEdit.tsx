@@ -51,17 +51,17 @@ export default function MpAdminEventEdit() {
       newFiles: [] as File[],
     },
     onSubmit: async values => {
-      if (values.title) {
+      if (values.title === '') {
         await alert('제목을 입력해주세요');
         return;
       }
 
-      if (values.startDate) {
+      if (values.startDate === null) {
         await alert('시작일을 선택해주세요');
         return;
       }
 
-      if (values.endDate) {
+      if (values.endDate === null) {
         await alert('종료일을 선택해주세요');
         return;
       }
