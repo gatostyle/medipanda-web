@@ -21,15 +21,15 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-react';
 import { DateString, getDownloadPerformanceExcel, getPerformanceStats, PerformanceStatsResponse, SettlementStatus } from '@/backend';
-import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
-import { formatYyyyMm, formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
+import { formatYyyyMm, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -42,7 +42,7 @@ export default function MpAdminStatisticsList() {
   const initialSearchParams = {
     searchType: '' as 'drugCompany' | 'companyName' | 'dealerName' | 'institutionName' | '',
     searchKeyword: '',
-    settlementDate: '',
+    settlementMonth: '',
     status: '' as SettlementStatus | '',
     page: '1',
   };
@@ -50,11 +50,11 @@ export default function MpAdminStatisticsList() {
   const {
     searchType,
     searchKeyword,
-    settlementDate: paramSettlementDate,
+    settlementMonth: paramSettlementMonth,
     status,
     page: paramPage,
   } = useSearchParamsOrDefault(initialSearchParams);
-  const settlementDate = useMemo(() => SafeDate(paramSettlementDate) ?? null, [paramSettlementDate]);
+  const settlementMonth = useMemo(() => SafeDate(paramSettlementMonth) ?? null, [paramSettlementMonth]);
   const page = Number(paramPage);
   const pageSize = 20;
 
@@ -69,7 +69,7 @@ export default function MpAdminStatisticsList() {
   const formik = useFormik({
     initialValues: {
       ...initialSearchParams,
-      settlementDate: null as Date | null,
+      settlementMonth: null as Date | null,
       page: null,
     },
     onSubmit: async values => {
@@ -81,7 +81,7 @@ export default function MpAdminStatisticsList() {
       const url = setUrlParams(
         {
           ...values,
-          settlementDate: values.settlementDate !== null ? formatYyyyMmDd(values.settlementDate) : undefined,
+          settlementMonth: values.settlementMonth !== null ? formatYyyyMm(values.settlementMonth) : undefined,
           page: 1,
         },
         initialSearchParams,
@@ -102,8 +102,8 @@ export default function MpAdminStatisticsList() {
         companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
         dealerName: searchType === 'dealerName' && searchKeyword !== '' ? searchKeyword : undefined,
         institutionName: searchType === 'institutionName' && searchKeyword !== '' ? searchKeyword : undefined,
-        startMonth: settlementDate ? new DateString(settlementDate) : undefined,
-        endMonth: settlementDate ? new DateString(settlementDate) : undefined,
+        startMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
+        endMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
         page: page - 1,
         size: pageSize,
       });
@@ -128,12 +128,12 @@ export default function MpAdminStatisticsList() {
     formik.setValues({
       searchType,
       searchKeyword,
-      settlementDate,
+      settlementMonth,
       status,
       page: null,
     });
     fetchContents();
-  }, [searchType, searchKeyword, settlementDate, status, page]);
+  }, [searchType, searchKeyword, settlementMonth, status, page]);
 
   const table = useReactTable({
     data: contents,
@@ -221,12 +221,17 @@ export default function MpAdminStatisticsList() {
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker
-                    name='settlementDate'
-                    placeholder='월 선택'
+                  <DatePicker
+                    value={formik.values.settlementMonth}
+                    onChange={value => formik.setFieldValue('settlementMonth', value)}
                     format='yyyy-MM'
                     views={['year', 'month']}
-                    formik={formik}
+                    label='정산월'
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                      },
+                    }}
                   />
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
@@ -271,8 +276,8 @@ export default function MpAdminStatisticsList() {
                     companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
                     dealerName: searchType === 'dealerName' && searchKeyword !== '' ? searchKeyword : undefined,
                     institutionName: searchType === 'institutionName' && searchKeyword !== '' ? searchKeyword : undefined,
-                    startMonth: settlementDate ? new DateString(settlementDate) : undefined,
-                    endMonth: settlementDate ? new DateString(settlementDate) : undefined,
+                    startMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
+                    endMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
                     size: 2 ** 31 - 1,
                   })}
                   target='_blank'

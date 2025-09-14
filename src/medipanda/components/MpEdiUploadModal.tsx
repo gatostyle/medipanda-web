@@ -1,5 +1,4 @@
 import { DateString, MemberResponse, uploadEdiZip } from '@/backend';
-import MpDatePicker from '@/medipanda/components/MpDatePicker';
 import { MpMemberSelectModal } from '@/medipanda/components/MpMemberSelectModal';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { UploadFile } from '@mui/icons-material';
@@ -16,6 +15,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 import { useFormik } from 'formik';
 import { SearchNormal1 } from 'iconsax-react';
 import { useSnackbar } from 'notistack';
@@ -137,22 +137,32 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
           <Stack direction='row' spacing={2} justifyContent='center' alignItems='center' sx={{ mb: 3 }}>
             <Typography variant='body1'>처방월 선택</Typography>
             <Box>
-              <MpDatePicker
+              <DatePicker
                 value={formik.values.prescriptionMonth}
                 onChange={value => formik.setFieldValue('prescriptionMonth', value)}
-                placeholder='월 선택'
                 format='yyyy-MM'
                 views={['year', 'month']}
+                label='처방월'
+                slotProps={{
+                  textField: {
+                    size: 'small',
+                  },
+                }}
               />
             </Box>
             <Typography variant='body1'>정산월 선택</Typography>
             <Box>
-              <MpDatePicker
+              <DatePicker
                 value={formik.values.settlementMonth}
                 onChange={value => formik.setFieldValue('settlementMonth', value)}
-                placeholder='월 선택'
                 format='yyyy-MM'
                 views={['year', 'month']}
+                label='정산월'
+                slotProps={{
+                  textField: {
+                    size: 'small',
+                  },
+                }}
               />
             </Box>
             <Box>

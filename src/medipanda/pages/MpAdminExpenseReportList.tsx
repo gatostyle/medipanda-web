@@ -21,6 +21,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
@@ -36,7 +37,6 @@ import {
   getDownloadExpenseReportListExcel,
   getExpenseReportList,
 } from '@/backend';
-import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
@@ -251,10 +251,32 @@ export default function MpAdminExpenseReportList() {
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name='eventDateFrom' label='시작일' formik={formik} />
+                  <DatePicker
+                    value={formik.values.eventDateFrom}
+                    onChange={value => formik.setFieldValue('eventDateFrom', value)}
+                    format='yyyy-MM-dd'
+                    views={['year', 'month', 'day']}
+                    label='시작일'
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                      },
+                    }}
+                  />
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name='eventDateTo' label='종료일' formik={formik} />
+                  <DatePicker
+                    value={formik.values.eventDateTo}
+                    onChange={value => formik.setFieldValue('eventDateTo', value)}
+                    format='yyyy-MM-dd'
+                    views={['year', 'month', 'day']}
+                    label='종료일'
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                      },
+                    }}
+                  />
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField

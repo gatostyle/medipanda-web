@@ -13,6 +13,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
 import {
@@ -25,7 +26,6 @@ import {
   getBanner,
   updateBanner,
 } from '@/backend';
-import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { DateFix, formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -279,7 +279,18 @@ export default function MpAdminBannerEdit() {
                   </Typography>
                   <Stack direction='row' spacing={1} alignItems='center' flexWrap='wrap'>
                     <Box sx={{ width: 150 }}>
-                      <MpFormikDatePicker name='startDate' label='' formik={formik} />
+                      <DatePicker
+                        value={formik.values.startDate}
+                        onChange={value => formik.setFieldValue('startDate', value)}
+                        format='yyyy-MM-dd'
+                        views={['year', 'month', 'day']}
+                        label='시작일'
+                        slotProps={{
+                          textField: {
+                            size: 'small',
+                          },
+                        }}
+                      />
                     </Box>
                     <FormControl size='small' sx={{ minWidth: 70 }}>
                       <Select name='startHour' value={formik.values.startHour} onChange={formik.handleChange}>
@@ -303,7 +314,18 @@ export default function MpAdminBannerEdit() {
                       ~
                     </Typography>
                     <Box sx={{ width: 150 }}>
-                      <MpFormikDatePicker name='endDate' label='' formik={formik} />
+                      <DatePicker
+                        value={formik.values.endDate}
+                        onChange={value => formik.setFieldValue('endDate', value)}
+                        format='yyyy-MM-dd'
+                        views={['year', 'month', 'day']}
+                        label='종료일'
+                        slotProps={{
+                          textField: {
+                            size: 'small',
+                          },
+                        }}
+                      />
                     </Box>
                     <FormControl size='small' sx={{ minWidth: 70 }}>
                       <Select name='endHour' value={formik.values.endHour} onChange={formik.handleChange}>

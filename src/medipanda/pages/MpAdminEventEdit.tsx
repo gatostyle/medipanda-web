@@ -1,6 +1,7 @@
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { Box, Button, CircularProgress, FormControlLabel, Grid, Radio, RadioGroup, Stack, TextField, Typography } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
@@ -14,7 +15,6 @@ import {
   PostAttachmentType,
   updateEventBoard,
 } from '@/backend';
-import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -240,9 +240,31 @@ export default function MpAdminEventEdit() {
                   이벤트기간 *
                 </Typography>
                 <Stack direction='row' spacing={2} alignItems='center'>
-                  <MpFormikDatePicker name='startDate' label='시작일' formik={formik} />
+                  <DatePicker
+                    value={formik.values.startDate}
+                    onChange={value => formik.setFieldValue('startDate', value)}
+                    format='yyyy-MM-dd'
+                    views={['year', 'month', 'day']}
+                    label='시작일'
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                      },
+                    }}
+                  />
                   <Typography>~</Typography>
-                  <MpFormikDatePicker name='endDate' label='종료일' formik={formik} />
+                  <DatePicker
+                    value={formik.values.endDate}
+                    onChange={value => formik.setFieldValue('endDate', value)}
+                    format='yyyy-MM-dd'
+                    views={['year', 'month', 'day']}
+                    label='종료일'
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                      },
+                    }}
+                  />
                 </Stack>
               </Grid>
 

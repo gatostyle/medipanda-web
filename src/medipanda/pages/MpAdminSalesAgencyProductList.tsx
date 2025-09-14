@@ -1,6 +1,7 @@
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
+import { DatePicker } from '@mui/x-date-pickers';
 import { DocumentDownload } from 'iconsax-react';
 import {
   Box,
@@ -36,7 +37,6 @@ import {
   getSalesAgencyProducts,
   SalesAgencyProductSummaryResponse,
 } from '@/backend';
-import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
@@ -298,7 +298,18 @@ export default function MpAdminSalesAgencyProductList() {
                   />
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name='date' label='등록일' formik={formik} />
+                  <DatePicker
+                    value={formik.values.date}
+                    onChange={value => formik.setFieldValue('date', value)}
+                    format='yyyy-MM-dd'
+                    views={['year', 'month', 'day']}
+                    label='등록일'
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                      },
+                    }}
+                  />
                 </SearchFilterItem>
                 <SearchFilterActions>
                   <Button variant='contained' size='small' type='submit'>

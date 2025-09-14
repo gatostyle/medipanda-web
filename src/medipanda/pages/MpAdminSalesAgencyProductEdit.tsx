@@ -19,6 +19,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 import { EditorContent } from '@tiptap/react';
 import { useFormik } from 'formik';
 import {
@@ -32,7 +33,6 @@ import {
   SalesAgencyProductDetailsResponse,
   updateSalesAgencyProductBoard,
 } from '@/backend';
-import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { SyntheticEvent, useEffect, useState } from 'react';
@@ -524,7 +524,18 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
         </Grid>
 
         <Grid item xs={12} md={6}>
-          <MpFormikDatePicker name='contractDate' label='계약일 *' formik={formik} />
+          <DatePicker
+            value={formik.values.contractDate}
+            onChange={value => formik.setFieldValue('contractDate', value)}
+            format='yyyy-MM-dd'
+            views={['year', 'month', 'day']}
+            label='계약일 *'
+            slotProps={{
+              textField: {
+                size: 'small',
+              },
+            }}
+          />
         </Grid>
 
         <Grid item xs={12}>
@@ -532,11 +543,33 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
         </Grid>
 
         <Grid item xs={12} md={6}>
-          <MpFormikDatePicker name='startDate' label='게시기간 - 시작일 *' formik={formik} />
+          <DatePicker
+            value={formik.values.startDate}
+            onChange={value => formik.setFieldValue('startDate', value)}
+            format='yyyy-MM-dd'
+            views={['year', 'month', 'day']}
+            label='게시 시작일 *'
+            slotProps={{
+              textField: {
+                size: 'small',
+              },
+            }}
+          />
         </Grid>
 
         <Grid item xs={12} md={6}>
-          <MpFormikDatePicker name='endDate' label='게시기간 - 종료일 *' formik={formik} />
+          <DatePicker
+            value={formik.values.endDate}
+            onChange={value => formik.setFieldValue('endDate', value)}
+            format='yyyy-MM-dd'
+            views={['year', 'month', 'day']}
+            label='게시 종료일 *'
+            slotProps={{
+              textField: {
+                size: 'small',
+              },
+            }}
+          />
         </Grid>
 
         {detail !== null && (

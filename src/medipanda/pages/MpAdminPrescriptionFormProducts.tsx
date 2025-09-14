@@ -19,6 +19,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { Add, Minus, SearchNormal1 } from 'iconsax-react';
@@ -34,7 +35,6 @@ import {
   ProductSummaryResponse,
 } from '@/backend';
 import { MpChangeHistoryModal } from '@/medipanda/components/MpChangeHistoryModal';
-import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { MpOcrRequestModal } from '@/medipanda/components/MpOcrRequestModal';
 import { MpPartnerSelectModal } from '@/medipanda/components/MpPartnerSelectModal';
 import { Sequenced } from '@/medipanda/utils/withSequence';
@@ -456,24 +456,34 @@ export default function MpAdminPrescriptionFormProducts() {
                     <Typography variant='body2' color='text.secondary' sx={{ minWidth: 80 }}>
                       처방월:
                     </Typography>
-                    <MpFormikDatePicker
-                      name='prescriptionMonth'
-                      placeholder='월 선택'
+                    <DatePicker
+                      value={formik.values.prescriptionMonth}
+                      onChange={value => formik.setFieldValue('prescriptionMonth', value)}
                       format='yyyy-MM'
                       views={['year', 'month']}
-                      formik={formik}
+                      label='처방월'
+                      slotProps={{
+                        textField: {
+                          size: 'small',
+                        },
+                      }}
                     />
                   </Stack>
                   <Stack direction='row' alignItems='center'>
                     <Typography variant='body2' color='text.secondary' sx={{ minWidth: 80 }}>
                       정산월:
                     </Typography>
-                    <MpFormikDatePicker
-                      name='settlementMonth'
-                      placeholder='월 선택'
+                    <DatePicker
+                      value={formik.values.settlementMonth}
+                      onChange={value => formik.setFieldValue('settlementMonth', value)}
                       format='yyyy-MM'
                       views={['year', 'month']}
-                      formik={formik}
+                      label='정산월'
+                      slotProps={{
+                        textField: {
+                          size: 'small',
+                        },
+                      }}
                     />
                   </Stack>
                   <Stack direction='row' alignItems='center'>

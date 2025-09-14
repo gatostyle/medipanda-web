@@ -23,6 +23,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
@@ -36,7 +37,6 @@ import {
   PrescriptionPartnerStatus,
   PrescriptionPartnerStatusLabel,
 } from '@/backend';
-import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { formatYyyyMm, formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
@@ -98,8 +98,8 @@ export default function MpAdminPrescriptionFormList() {
       const url = setUrlParams(
         {
           ...values,
-          prescriptionMonthStart: values.prescriptionMonthStart !== null ? formatYyyyMmDd(values.prescriptionMonthStart) : undefined,
-          prescriptionMonthEnd: values.prescriptionMonthEnd !== null ? formatYyyyMmDd(values.prescriptionMonthEnd) : undefined,
+          prescriptionMonthStart: values.prescriptionMonthStart !== null ? formatYyyyMm(values.prescriptionMonthStart) : undefined,
+          prescriptionMonthEnd: values.prescriptionMonthEnd !== null ? formatYyyyMm(values.prescriptionMonthEnd) : undefined,
           page: 1,
         },
         initialSearchParams,
@@ -321,10 +321,32 @@ export default function MpAdminPrescriptionFormList() {
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name='prescriptionMonthStart' label='시작일' formik={formik} />
+                  <DatePicker
+                    value={formik.values.prescriptionMonthStart}
+                    onChange={value => formik.setFieldValue('prescriptionMonthStart', value)}
+                    format='yyyy-MM'
+                    views={['year', 'month']}
+                    label='처방 시작월'
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                      },
+                    }}
+                  />
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name='prescriptionMonthEnd' label='종료일' formik={formik} />
+                  <DatePicker
+                    value={formik.values.prescriptionMonthEnd}
+                    onChange={value => formik.setFieldValue('prescriptionMonthEnd', value)}
+                    format='yyyy-MM'
+                    views={['year', 'month']}
+                    label='처방 종료월'
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                      },
+                    }}
+                  />
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField

@@ -19,6 +19,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 import { EditorContent } from '@tiptap/react';
 import { isAxiosError } from 'axios';
 import { useFormik } from 'formik';
@@ -59,7 +60,7 @@ export default function MpAdminProductEdit() {
       price: '0',
       feeRate: '0',
       changedFeeRate: '0',
-      changedMonth: '',
+      changedMonth: null as Date | null,
       isAcquisition: false,
       isPromotion: false,
       isOutOfStock: false,
@@ -106,6 +107,11 @@ export default function MpAdminProductEdit() {
         return;
       }
 
+      if (values.changedMonth === null) {
+        await alert('변경월을 선택해주세요.');
+        return;
+      }
+
       try {
         if (isNew) {
           await createProductExtraInfo({
@@ -128,7 +134,7 @@ export default function MpAdminProductEdit() {
               composition: values.composition,
               productCode: values.productCode,
               changedFeeRate: String(changedFeeRate),
-              changedMonth: Number(values.changedMonth),
+              changedMonth: values.changedMonth.getMonth() + 1,
               priceUnit: PriceUnit.KRW,
               feeRate: String(feeRate),
               price: price,
@@ -161,7 +167,7 @@ export default function MpAdminProductEdit() {
               composition: values.composition,
               productCode: values.productCode,
               changedFeeRate: String(changedFeeRate),
-              changedMonth: values.changedMonth,
+              changedMonth: values.changedMonth.getMonth() + 1,
               priceUnit: PriceUnit.KRW,
               feeRate: String(feeRate),
               price: price,
@@ -219,8 +225,6 @@ export default function MpAdminProductEdit() {
       editor.commands.setContent(detail.boardDetailsResponse.content);
       setEditorAttachments(detail.boardDetailsResponse.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
 
-      const changedMonth = Number(detail.changedMonth?.slice(-2));
-
       formik.setValues({
         manufacturer: detail.manufacturer ?? '',
         productName: detail.productName ?? '',
@@ -229,7 +233,7 @@ export default function MpAdminProductEdit() {
         price: (detail.price ?? 0).toLocaleString(),
         feeRate: (detail.feeRate ?? 0).toString(),
         changedFeeRate: (detail.changedFeeRate ?? 0).toString(),
-        changedMonth: Number.isNaN(changedMonth) ? '' : changedMonth.toString(),
+        changedMonth: detail.changedMonth !== null ? new Date(detail.changedMonth) : null,
         isAcquisition: detail.isAcquisition ?? false,
         isPromotion: detail.isPromotion ?? false,
         isOutOfStock: detail.isOutOfStock ?? false,
@@ -393,13 +397,17 @@ export default function MpAdminProductEdit() {
                       }}
                       sx={{ width: { xs: '100%', sm: '200px' } }}
                     />
-                    <TextField
-                      size='small'
-                      name='changedMonth'
-                      placeholder='변경월 (예: 4)'
+                    <DatePicker
                       value={formik.values.changedMonth}
-                      onChange={formik.handleChange}
-                      sx={{ width: { xs: '100%', sm: '200px' } }}
+                      onChange={value => formik.setFieldValue('changedMonth', value)}
+                      format='yyyy-MM'
+                      views={['month']}
+                      label='변경월'
+                      slotProps={{
+                        textField: {
+                          size: 'small',
+                        },
+                      }}
                     />
                   </Box>
                 </Grid>

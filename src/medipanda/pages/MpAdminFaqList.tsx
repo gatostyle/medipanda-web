@@ -24,12 +24,12 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { BoardPostResponse, BoardType, DateString, deleteBoardPost, getBoards } from '@/backend';
-import MpFormikDatePicker from '@/medipanda/components/MpFormikDatePicker';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
@@ -260,10 +260,32 @@ export default function MpAdminFaqList() {
                   </FormControl>
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name='startAt' label='시작일' formik={formik} />
+                  <DatePicker
+                    value={formik.values.startAt}
+                    onChange={value => formik.setFieldValue('startAt', value)}
+                    format='yyyy-MM-dd'
+                    views={['year', 'month', 'day']}
+                    label='시작일'
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                      },
+                    }}
+                  />
                 </SearchFilterItem>
                 <SearchFilterItem minWidth={140}>
-                  <MpFormikDatePicker name='endAt' label='종료일' formik={formik} />
+                  <DatePicker
+                    value={formik.values.endAt}
+                    onChange={value => formik.setFieldValue('endAt', value)}
+                    format='yyyy-MM-dd'
+                    views={['year', 'month', 'day']}
+                    label='종료일'
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                      },
+                    }}
+                  />
                 </SearchFilterItem>
                 <SearchFilterItem flexGrow={1} minWidth={200}>
                   <TextField
