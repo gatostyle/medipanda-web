@@ -19,7 +19,15 @@ import {
 import Stack from '@mui/material/Stack';
 import { EditorContent } from '@tiptap/react';
 import MainCard from 'components/MainCard';
-import { BoardDetailsResponse, BoardExposureRangeLabel, getBoardDetails, NoticeTypeLabel, PostAttachmentType } from '@/backend';
+import {
+  BoardDetailsResponse,
+  BoardExposureRangeLabel,
+  getBoardDetails,
+  isDrugCompanyNoticeType,
+  NoticeType,
+  NoticeTypeLabel,
+  PostAttachmentType,
+} from '@/backend';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
@@ -92,22 +100,18 @@ export default function MpAdminNoticeDetail() {
               <TableBody>
                 <TableRow>
                   <TableCell component='th' scope='row' sx={{ width: 150, fontWeight: 'bold' }}>
-                    노출게시판 <span style={{ color: 'red' }}>*</span>
-                  </TableCell>
-                  <TableCell colSpan={5}>공지사항</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     공지분류 <span style={{ color: 'red' }}>*</span>
                   </TableCell>
                   <TableCell colSpan={5}>{NoticeTypeLabel[detail.noticeProperties!.noticeType]}</TableCell>
                 </TableRow>
-                <TableRow>
-                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
-                    제약사명
-                  </TableCell>
-                  <TableCell colSpan={5}>{detail.noticeProperties?.drugCompany}</TableCell>
-                </TableRow>
+                {isDrugCompanyNoticeType(detail.noticeProperties!.noticeType as NoticeType) && (
+                  <TableRow>
+                    <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
+                      제약사명
+                    </TableCell>
+                    <TableCell colSpan={5}>{detail.noticeProperties?.drugCompany}</TableCell>
+                  </TableRow>
+                )}
                 <TableRow>
                   <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     노출상태 <span style={{ color: 'red' }}>*</span>

@@ -52,6 +52,10 @@ export const NoticeTypeLabel: Record<NoticeType, string> = {
   [NoticeType.MR_CSO_MATCHING]: 'MR-CSO 매칭',
 };
 
+export function isDrugCompanyNoticeType(noticeType: NoticeType): boolean {
+  return [NoticeType.PRODUCT_STATUS, NoticeType.MANUFACTURING_SUSPENSION, NoticeType.NEW_PRODUCT, NoticeType.POLICY].includes(noticeType);
+}
+
 export enum BoardExposureRange {
   ALL = 'ALL',
   CONTRACTED = 'CONTRACTED',

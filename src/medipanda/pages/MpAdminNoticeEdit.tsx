@@ -1,7 +1,7 @@
+import { MpDrugCompanySelectModal } from '@/medipanda/components/MpDrugCompanySelectModal';
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { Close } from '@mui/icons-material';
-import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
   Button,
@@ -30,15 +30,17 @@ import {
   BoardExposureRange,
   BoardExposureRangeLabel,
   BoardType,
-  BoardTypeLabel,
   createBoardPost,
+  DrugCompanyResponse,
   getBoardDetails,
+  isDrugCompanyNoticeType,
   NoticeType,
   NoticeTypeLabel,
   PostAttachmentType,
   updateBoardPost,
 } from '@/backend';
 import { useSession } from '@/medipanda/hooks/useSession';
+import { SearchNormal1 } from 'iconsax-react';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
@@ -55,11 +57,12 @@ export default function MpAdminNoticeEdit() {
 
   const { alert, alertError } = useMpModal();
 
+  const [drugCompanySelectModalOpen, setDrugCompanySelectModalOpen] = useState(false);
+
   const formik = useFormik({
     initialValues: {
-      displayBoard: BoardType.NOTICE,
-      noticeCategory: NoticeType.GENERAL,
-      manufacturerName: '',
+      noticeType: NoticeType.GENERAL,
+      drugCompany: '',
       isExposed: true,
       exposureRange: BoardExposureRange.ALL,
       isTopFixed: false,
@@ -68,13 +71,13 @@ export default function MpAdminNoticeEdit() {
       newFiles: [] as File[],
     },
     onSubmit: async (values, { setSubmitting }) => {
-      if (values.title === '') {
-        await alert('제목을 입력해주세요.');
+      if (isDrugCompanyNoticeType(values.noticeType) && values.drugCompany === '') {
+        await alert('제약사명을 선택해주세요.');
         return;
       }
 
-      if (values.noticeCategory === NoticeType.GENERAL && values.manufacturerName === '') {
-        await alert('제약사명을 선택해주세요.');
+      if (values.title === '') {
+        await alert('제목을 입력해주세요.');
         return;
       }
 
@@ -82,7 +85,7 @@ export default function MpAdminNoticeEdit() {
         if (isNew) {
           await createBoardPost({
             request: {
-              boardType: values.displayBoard,
+              boardType: BoardType.NOTICE,
               title: values.title,
               content: editor.getHTML(),
               userId: session!.userId,
@@ -93,8 +96,8 @@ export default function MpAdminNoticeEdit() {
               editorFileIds: editorAttachments.map(image => image.s3fileId),
               exposureRange: values.exposureRange,
               noticeProperties: {
-                noticeType: values.noticeCategory,
-                drugCompany: values.manufacturerName ?? '',
+                noticeType: values.noticeType,
+                drugCompany: isDrugCompanyNoticeType(values.noticeType) ? values.drugCompany : '',
                 fixedTop: values.isTopFixed,
               },
             },
@@ -114,8 +117,8 @@ export default function MpAdminNoticeEdit() {
               keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
               editorFileIds: editorAttachments.map(attachment => attachment.s3fileId),
               noticeProperties: {
-                noticeType: values.noticeCategory,
-                drugCompany: values.manufacturerName ?? '',
+                noticeType: values.noticeType,
+                drugCompany: isDrugCompanyNoticeType(values.noticeType) ? values.drugCompany : '',
                 fixedTop: values.isTopFixed,
               },
             },
@@ -155,9 +158,8 @@ export default function MpAdminNoticeEdit() {
       setEditorAttachments(detail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
 
       formik.setValues({
-        displayBoard: detail.boardType as BoardType,
-        noticeCategory: (detail.noticeProperties?.noticeType as NoticeType) ?? NoticeType.GENERAL,
-        manufacturerName: detail.noticeProperties?.drugCompany ?? '',
+        noticeType: detail.noticeProperties!.noticeType as NoticeType,
+        drugCompany: detail.noticeProperties!.drugCompany ?? '',
         isExposed: detail.isExposed,
         exposureRange: detail.exposureRange as BoardExposureRange,
         isTopFixed: detail.noticeProperties?.fixedTop || false,
@@ -199,6 +201,11 @@ export default function MpAdminNoticeEdit() {
     }
   };
 
+  const handleDrugCompanySelect = (drugCompany: DrugCompanyResponse) => {
+    formik.setFieldValue('drugCompany', drugCompany.name);
+    setDrugCompanySelectModalOpen(false);
+  };
+
   if (loading) {
     return (
       <Box display='flex' justifyContent='center' alignItems='center' minHeight='400px'>
@@ -208,8 +215,8 @@ export default function MpAdminNoticeEdit() {
   }
 
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <Grid container spacing={3}>
+    <>
+      <Grid container spacing={3} component='form' onSubmit={formik.handleSubmit}>
         <Grid item xs={12}>
           <Typography variant='h4' gutterBottom>
             공지사항 {isNew ? '등록' : '수정'}
@@ -219,50 +226,38 @@ export default function MpAdminNoticeEdit() {
         <Grid item xs={12}>
           <MainCard>
             <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Typography variant='body2' sx={{ mb: 1 }}>
-                  노출게시판 <span style={{ color: 'red' }}>*</span>
-                </Typography>
-                <RadioGroup row name='displayBoard' value={formik.values.displayBoard} onChange={formik.handleChange}>
-                  {[BoardType.NOTICE, BoardType.ANONYMOUS, BoardType.MR_CSO_MATCHING].map(boardType => (
-                    <FormControlLabel key={boardType} value={boardType} control={<Radio />} label={BoardTypeLabel[boardType]} />
-                  ))}
-                </RadioGroup>
-              </Grid>
-
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth>
                   <InputLabel>공지분류 *</InputLabel>
-                  <Select name='noticeCategory' value={formik.values.noticeCategory} onChange={formik.handleChange}>
-                    {Object.keys(NoticeType).map(noticeCategory => (
-                      <MenuItem key={noticeCategory} value={noticeCategory}>
-                        {NoticeTypeLabel[noticeCategory]}
+                  <Select name='noticeType' value={formik.values.noticeType} onChange={formik.handleChange}>
+                    {Object.keys(NoticeType).map(noticeType => (
+                      <MenuItem key={noticeType} value={noticeType}>
+                        {NoticeTypeLabel[noticeType]}
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  name='manufacturerName'
-                  label='제약사명'
-                  placeholder={formik.values.noticeCategory === NoticeType.GENERAL ? '' : '일반공지 제외한 모든분류에 노출'}
-                  disabled={formik.values.noticeCategory === NoticeType.GENERAL}
-                  value={formik.values.manufacturerName}
-                  onChange={formik.handleChange}
-                  InputProps={{
-                    endAdornment: formik.values.noticeCategory !== NoticeType.GENERAL && (
-                      <InputAdornment position='end'>
-                        <IconButton edge='end'>
-                          <SearchIcon />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
+              {isDrugCompanyNoticeType(formik.values.noticeType) && (
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label='제약사명'
+                    value={formik.values.drugCompany}
+                    InputProps={{
+                      readOnly: true,
+                      endAdornment: (
+                        <InputAdornment position='end'>
+                          <IconButton edge='end' onClick={() => setDrugCompanySelectModalOpen(true)}>
+                            <SearchNormal1 />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+              )}
 
               <Grid item xs={12} md={6}>
                 <Typography variant='body2' sx={{ mb: 1 }}>
@@ -416,6 +411,12 @@ export default function MpAdminNoticeEdit() {
           </MainCard>
         </Grid>
       </Grid>
-    </form>
+
+      <MpDrugCompanySelectModal
+        open={drugCompanySelectModalOpen}
+        onClose={() => setDrugCompanySelectModalOpen(false)}
+        onSelect={handleDrugCompanySelect}
+      />
+    </>
   );
 }
