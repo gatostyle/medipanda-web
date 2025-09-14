@@ -24,7 +24,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -45,7 +45,6 @@ import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
-import { ArrayElement } from 'type-fest/source/internal';
 
 export default function MpAdminPrescriptionFormList() {
   const navigate = useNavigate();
@@ -147,104 +146,100 @@ export default function MpAdminPrescriptionFormList() {
 
   const table = useReactTable({
     data: contents,
-    columns: useMemo<ColumnDef<ArrayElement<typeof contents>>[]>(
-      () => [
-        {
-          id: 'select',
-          header: () => (
-            <Checkbox
-              checked={selectedIds.length === contents.length && contents.length > 0}
-              onChange={e => {
-                if (e.target.checked) {
-                  setSelectedIds(contents.map(item => item.id));
-                } else {
-                  setSelectedIds([]);
-                }
-              }}
-            />
-          ),
-          cell: ({ row }) => (
-            <Checkbox
-              checked={selectedIds.includes(row.original.id)}
-              onChange={e => {
-                if (e.target.checked) {
-                  setSelectedIds(prev => [...prev, row.original.id]);
-                } else {
-                  setSelectedIds(prev => prev.filter(id => id !== row.original.id));
-                }
-              }}
-            />
-          ),
-          size: 50,
-        },
-        {
-          header: 'No',
-          cell: ({ row }) => row.original.sequence,
-          size: 60,
-        },
-        {
-          header: '제약사명',
-          cell: ({ row }) => row.original.drugCompany,
-          size: 120,
-        },
-        {
-          header: '회사명',
-          cell: ({ row }) => row.original.companyName,
-          size: 120,
-        },
-        {
-          header: '거래처코드',
-          cell: ({ row }) => row.original.institutionCode,
-          size: 100,
-        },
-        {
-          header: '거래처명',
-          cell: ({ row }) => (
-            <Link component={RouterLink} to={`/admin/prescription-forms/${row.original.id}/products`}>
-              {row.original.institutionName}
-            </Link>
-          ),
-          size: 100,
-        },
-        {
-          header: '딜러명',
-          cell: ({ row }) => row.original.dealerName,
-        },
-        {
-          header: '사업자등록번호',
-          cell: ({ row }) => row.original.businessNumber,
-          size: 130,
-        },
-        {
-          header: '처방일',
-          cell: ({ row }) => formatYyyyMm(row.original.prescriptionMonth),
-          size: 100,
-        },
-        {
-          header: '접수일',
-          cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
-          size: 100,
-        },
-        {
-          header: '입력일',
-          cell: ({ row }) => formatYyyyMmDd(row.original.inputDate),
-          size: 100,
-        },
-        {
-          header: '처방금액',
-          cell: ({ row }) => `${row.original.amount.toLocaleString()}`,
-          size: 100,
-        },
-        {
-          header: '승인상태',
-          cell: ({ row }) => PrescriptionPartnerStatusLabel[row.original.status],
-          size: 80,
-        },
-      ],
-      [],
-    ),
+    columns: [
+      {
+        id: 'select',
+        header: () => (
+          <Checkbox
+            checked={selectedIds.length === contents.length && contents.length > 0}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedIds(contents.map(item => item.id));
+              } else {
+                setSelectedIds([]);
+              }
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={selectedIds.includes(row.original.id)}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedIds(prev => [...prev, row.original.id]);
+              } else {
+                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
+              }
+            }}
+          />
+        ),
+        size: 50,
+      },
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 60,
+      },
+      {
+        header: '제약사명',
+        cell: ({ row }) => row.original.drugCompany,
+        size: 120,
+      },
+      {
+        header: '회사명',
+        cell: ({ row }) => row.original.companyName,
+        size: 120,
+      },
+      {
+        header: '거래처코드',
+        cell: ({ row }) => row.original.institutionCode,
+        size: 100,
+      },
+      {
+        header: '거래처명',
+        cell: ({ row }) => (
+          <Link component={RouterLink} to={`/admin/prescription-forms/${row.original.id}/products`}>
+            {row.original.institutionName}
+          </Link>
+        ),
+        size: 100,
+      },
+      {
+        header: '딜러명',
+        cell: ({ row }) => row.original.dealerName,
+      },
+      {
+        header: '사업자등록번호',
+        cell: ({ row }) => row.original.businessNumber,
+        size: 130,
+      },
+      {
+        header: '처방일',
+        cell: ({ row }) => formatYyyyMm(row.original.prescriptionMonth),
+        size: 100,
+      },
+      {
+        header: '접수일',
+        cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
+        size: 100,
+      },
+      {
+        header: '입력일',
+        cell: ({ row }) => formatYyyyMmDd(row.original.inputDate),
+        size: 100,
+      },
+      {
+        header: '처방금액',
+        cell: ({ row }) => `${row.original.amount.toLocaleString()}`,
+        size: 100,
+      },
+      {
+        header: '승인상태',
+        cell: ({ row }) => PrescriptionPartnerStatusLabel[row.original.status],
+        size: 80,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
   });
 
   const handleApprove = async () => {

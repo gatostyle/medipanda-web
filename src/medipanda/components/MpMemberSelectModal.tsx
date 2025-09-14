@@ -20,9 +20,10 @@ export interface MpMemberSelectModalProps {
   open: boolean;
   onClose?: () => void;
   onSelect?: (member: MemberResponse) => void;
+  additionalFilter?: Partial<Parameters<typeof getUserMembers>[0]>;
 }
 
-function MpMemberSelectModalInternal({ open, onClose, onSelect }: MpMemberSelectModalProps) {
+function MpMemberSelectModalInternal({ open, onClose, onSelect, additionalFilter }: MpMemberSelectModalProps) {
   const [contents, setContents] = useState<MemberResponse[]>([]);
 
   const formik = useFormik({
@@ -37,6 +38,7 @@ function MpMemberSelectModalInternal({ open, onClose, onSelect }: MpMemberSelect
 
   const fetchContents = async () => {
     const response = await getUserMembers({
+      ...(additionalFilter ?? {}),
       name: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
       page: formik.values.pageIndex,
     });

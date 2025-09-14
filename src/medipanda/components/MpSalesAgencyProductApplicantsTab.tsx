@@ -31,7 +31,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-react';
 import { useEffect, useRef, useState } from 'react';
@@ -82,6 +82,8 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
     },
   });
 
+  const [notes, setNotes] = useState<string[]>(Array.from({ length: pageSize }, () => ''));
+
   const fetchContents = async () => {
     setLoading(true);
 
@@ -95,6 +97,8 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
       setContents(withSequence(response).content);
       setTotalElements(response.totalElements);
       setTotalPages(response.totalPages);
+
+      setNotes(notes.map((_, index) => response.content[index]?.note ?? ''));
     } catch (error) {
       console.error('Failed to fetch applicants:', error);
       await alertError('신청자 목록을 불러오는데 실패했습니다.');
@@ -205,7 +209,6 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
       },
     ],
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
   });
 
   const handleDelete = () => {

@@ -24,7 +24,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -35,7 +35,6 @@ import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
-import { ArrayElement } from 'type-fest/source/internal';
 
 export default function MpAdminBannerList() {
   const navigate = useNavigate();
@@ -131,100 +130,96 @@ export default function MpAdminBannerList() {
 
   const table = useReactTable({
     data: contents,
-    columns: useMemo<ColumnDef<ArrayElement<typeof contents>>[]>(
-      () => [
-        {
-          header: 'No',
-          cell: ({ row }) => row.original.sequence,
-          size: 60,
+    columns: [
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 60,
+      },
+      {
+        header: '배너위치',
+        cell: ({ row }) => {
+          const position = row.original.position;
+          switch (position) {
+            case 'POPUP':
+              return '팝업배너';
+            case 'PC_MAIN':
+              return 'PC 메인';
+            case 'PC_COMMUNITY':
+              return 'PC 커뮤니티';
+            case 'MOB_MAIN':
+              return 'Mob 메인';
+            default:
+              return position;
+          }
         },
-        {
-          header: '배너위치',
-          cell: ({ row }) => {
-            const position = row.original.position;
-            switch (position) {
-              case 'POPUP':
-                return '팝업배너';
-              case 'PC_MAIN':
-                return 'PC 메인';
-              case 'PC_COMMUNITY':
-                return 'PC 커뮤니티';
-              case 'MOB_MAIN':
-                return 'Mob 메인';
-              default:
-                return position;
-            }
-          },
-          size: 120,
+        size: 120,
+      },
+      {
+        header: '배너제목',
+        cell: ({ row }) => (
+          <Link component={RouterLink} to={`/admin/banners/${row.original.id}/edit`}>
+            {row.original.title}
+          </Link>
+        ),
+        size: 200,
+      },
+      {
+        header: '노출상태',
+        cell: ({ row }) => {
+          const status = row.original.status;
+          return (
+            <Chip
+              label={BannerStatusLabel[status]}
+              color={status === BannerStatus.VISIBLE ? 'success' : 'default'}
+              variant='light'
+              size='small'
+            />
+          );
         },
-        {
-          header: '배너제목',
-          cell: ({ row }) => (
-            <Link component={RouterLink} to={`/admin/banners/${row.original.id}/edit`}>
-              {row.original.title}
-            </Link>
-          ),
-          size: 200,
+        size: 100,
+      },
+      {
+        header: '노출범위',
+        cell: ({ row }) => BannerScopeLabel[row.original.scope],
+        size: 100,
+      },
+      {
+        header: '게시기간',
+        cell: ({ row }) => {
+          return `${formatYyyyMmDdHhMm(row.original.startAt)} ~ ${formatYyyyMmDdHhMm(row.original.endAt)}`;
         },
-        {
-          header: '노출상태',
-          cell: ({ row }) => {
-            const status = row.original.status;
-            return (
-              <Chip
-                label={BannerStatusLabel[status]}
-                color={status === BannerStatus.VISIBLE ? 'success' : 'default'}
-                variant='light'
-                size='small'
-              />
-            );
-          },
-          size: 100,
+        size: 300,
+      },
+      {
+        header: '등록일',
+        cell: ({ row }) => {
+          return formatYyyyMmDd(row.original.startAt);
         },
-        {
-          header: '노출범위',
-          cell: ({ row }) => BannerScopeLabel[row.original.scope],
-          size: 100,
-        },
-        {
-          header: '게시기간',
-          cell: ({ row }) => {
-            return `${formatYyyyMmDdHhMm(row.original.startAt)} ~ ${formatYyyyMmDdHhMm(row.original.endAt)}`;
-          },
-          size: 300,
-        },
-        {
-          header: '등록일',
-          cell: ({ row }) => {
-            return formatYyyyMmDd(row.original.startAt);
-          },
-          size: 150,
-        },
-        {
-          header: '노출순서',
-          cell: ({ row }) => row.original.displayOrder,
-          size: 80,
-        },
-        {
-          header: '노출수',
-          cell: ({ row }) => row.original.viewCount.toLocaleString(),
-          size: 100,
-        },
-        {
-          header: '클릭수',
-          cell: ({ row }) => row.original.clickCount.toLocaleString(),
-          size: 100,
-        },
-        {
-          header: 'CTR',
-          cell: ({ row }) => `${row.original.ctr}%`,
-          size: 80,
-        },
-      ],
-      [],
-    ),
+        size: 150,
+      },
+      {
+        header: '노출순서',
+        cell: ({ row }) => row.original.displayOrder,
+        size: 80,
+      },
+      {
+        header: '노출수',
+        cell: ({ row }) => row.original.viewCount.toLocaleString(),
+        size: 100,
+      },
+      {
+        header: '클릭수',
+        cell: ({ row }) => row.original.clickCount.toLocaleString(),
+        size: 100,
+      },
+      {
+        header: 'CTR',
+        cell: ({ row }) => `${row.original.ctr}%`,
+        size: 80,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
   });
 
   return (

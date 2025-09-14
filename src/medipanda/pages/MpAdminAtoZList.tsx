@@ -25,7 +25,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -37,7 +37,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
-import { ArrayElement } from 'type-fest/source/internal';
 
 export default function MpAdminAtoZList() {
   const navigate = useNavigate();
@@ -149,72 +148,68 @@ export default function MpAdminAtoZList() {
 
   const table = useReactTable({
     data: contents,
-    columns: useMemo<ColumnDef<ArrayElement<typeof contents>>[]>(
-      () => [
-        {
-          id: 'select',
-          header: () => (
-            <Checkbox
-              checked={selectedIds.length === contents.length && contents.length > 0}
-              onChange={e => {
-                if (e.target.checked) {
-                  setSelectedIds(contents.map(item => item.id));
-                } else {
-                  setSelectedIds([]);
-                }
-              }}
-            />
-          ),
-          cell: ({ row }) => (
-            <Checkbox
-              checked={selectedIds.includes(row.original.id)}
-              onChange={e => {
-                if (e.target.checked) {
-                  setSelectedIds(prev => [...prev, row.original.id]);
-                } else {
-                  setSelectedIds(prev => prev.filter(id => id !== row.original.id));
-                }
-              }}
-            />
-          ),
-          size: 50,
+    columns: [
+      {
+        id: 'select',
+        header: () => (
+          <Checkbox
+            checked={selectedIds.length === contents.length && contents.length > 0}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedIds(contents.map(item => item.id));
+              } else {
+                setSelectedIds([]);
+              }
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={selectedIds.includes(row.original.id)}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedIds(prev => [...prev, row.original.id]);
+              } else {
+                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
+              }
+            }}
+          />
+        ),
+        size: 50,
+      },
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 80,
+      },
+      {
+        header: '제목',
+        cell: ({ row }) => (
+          <Link component={RouterLink} to={`/admin/atoz/${row.original.id}`}>
+            {row.original.title}
+          </Link>
+        ),
+      },
+      {
+        header: '상태',
+        cell: ({ row }) => {
+          const isExposed = row.original.isExposed;
+          return <Chip label={isExposed ? '노출' : '미노출'} color={isExposed ? 'success' : 'default'} variant='light' size='small' />;
         },
-        {
-          header: 'No',
-          cell: ({ row }) => row.original.sequence,
-          size: 80,
-        },
-        {
-          header: '제목',
-          cell: ({ row }) => (
-            <Link component={RouterLink} to={`/admin/atoz/${row.original.id}`}>
-              {row.original.title}
-            </Link>
-          ),
-        },
-        {
-          header: '상태',
-          cell: ({ row }) => {
-            const isExposed = row.original.isExposed;
-            return <Chip label={isExposed ? '노출' : '미노출'} color={isExposed ? 'success' : 'default'} variant='light' size='small' />;
-          },
-          size: 100,
-        },
-        {
-          header: '조회 수',
-          cell: ({ row }) => row.original.viewsCount.toLocaleString(),
-          size: 100,
-        },
-        {
-          header: '작성일',
-          cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
-          size: 120,
-        },
-      ],
-      [],
-    ),
+        size: 100,
+      },
+      {
+        header: '조회 수',
+        cell: ({ row }) => row.original.viewsCount.toLocaleString(),
+        size: 100,
+      },
+      {
+        header: '작성일',
+        cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
+        size: 120,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
   });
 
   const handleDelete = () => {

@@ -5,17 +5,14 @@ import {
   SettlementResponse,
   SettlementStatus,
   SettlementStatusLabel,
-  uploadSettlementExcel,
 } from '@/backend';
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
-import { MpPartnerUploadModal } from '@/medipanda/components/MpPartnerUploadModal';
 import { MpSettlementUploadModal } from '@/medipanda/components/MpSettlementUploadModal';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { formatYyyyMm, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { AttachFile as AttachFileIcon } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -39,7 +36,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -47,7 +44,6 @@ import { DocumentDownload } from 'iconsax-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
-import { ArrayElement } from 'type-fest/source/internal';
 
 export default function MpAdminSettlementList() {
   const navigate = useNavigate();
@@ -155,95 +151,91 @@ export default function MpAdminSettlementList() {
 
   const table = useReactTable({
     data: contents,
-    columns: useMemo<ColumnDef<ArrayElement<typeof contents>>[]>(
-      () => [
-        {
-          id: 'select',
-          header: () => (
-            <Checkbox
-              checked={selectedIds.length === contents.length && contents.length > 0}
-              onChange={e => {
-                if (e.target.checked) {
-                  setSelectedIds(contents.map(item => item.id));
-                } else {
-                  setSelectedIds([]);
-                }
-              }}
-            />
-          ),
-          cell: ({ row }) => (
-            <Checkbox
-              checked={selectedIds.includes(row.original.id)}
-              onChange={e => {
-                if (e.target.checked) {
-                  setSelectedIds(prev => [...prev, row.original.id]);
-                } else {
-                  setSelectedIds(prev => prev.filter(id => id !== row.original.id));
-                }
-              }}
-            />
-          ),
-          size: 50,
-        },
-        {
-          header: 'No',
-          cell: ({ row }) => row.original.sequence,
-          size: 60,
-        },
-        {
-          header: '딜러번호',
-          cell: ({ row }) => row.original.dealerId,
-          size: 100,
-        },
-        {
-          header: '정산월',
-          cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
-          size: 100,
-        },
-        {
-          header: '회사명',
-          cell: ({ row }) => row.original.companyName,
-          size: 150,
-        },
-        {
-          header: '딜러명',
-          cell: ({ row }) => (
-            <Link component={RouterLink} to={`/admin/settlements/${row.original.id}`}>
-              {row.original.dealerName}
-            </Link>
-          ),
-          size: 100,
-        },
-        {
-          header: '처방금액',
-          cell: ({ row }) => row.original.prescriptionAmount.toLocaleString(),
-          size: 120,
-        },
-        {
-          header: '공급가액',
-          cell: ({ row }) => row.original.supplyAmount.toLocaleString(),
-          size: 120,
-        },
-        {
-          header: '세액',
-          cell: ({ row }) => row.original.taxAmount.toLocaleString(),
-          size: 100,
-        },
-        {
-          header: '합계금액',
-          cell: ({ row }) => row.original.totalAmount.toLocaleString(),
-          size: 120,
-        },
-        {
-          header: '사용자확인',
-          cell: ({ row }) => (row.original.status !== null ? SettlementStatusLabel[row.original.status] : '-'),
-          size: 100,
-        },
-      ],
-      [],
-    ),
+    columns: [
+      {
+        id: 'select',
+        header: () => (
+          <Checkbox
+            checked={selectedIds.length === contents.length && contents.length > 0}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedIds(contents.map(item => item.id));
+              } else {
+                setSelectedIds([]);
+              }
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={selectedIds.includes(row.original.id)}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedIds(prev => [...prev, row.original.id]);
+              } else {
+                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
+              }
+            }}
+          />
+        ),
+        size: 50,
+      },
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 60,
+      },
+      {
+        header: '딜러번호',
+        cell: ({ row }) => row.original.dealerId,
+        size: 100,
+      },
+      {
+        header: '정산월',
+        cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
+        size: 100,
+      },
+      {
+        header: '회사명',
+        cell: ({ row }) => row.original.companyName,
+        size: 150,
+      },
+      {
+        header: '딜러명',
+        cell: ({ row }) => (
+          <Link component={RouterLink} to={`/admin/settlements/${row.original.id}`}>
+            {row.original.dealerName}
+          </Link>
+        ),
+        size: 100,
+      },
+      {
+        header: '처방금액',
+        cell: ({ row }) => row.original.prescriptionAmount.toLocaleString(),
+        size: 120,
+      },
+      {
+        header: '공급가액',
+        cell: ({ row }) => row.original.supplyAmount.toLocaleString(),
+        size: 120,
+      },
+      {
+        header: '세액',
+        cell: ({ row }) => row.original.taxAmount.toLocaleString(),
+        size: 100,
+      },
+      {
+        header: '합계금액',
+        cell: ({ row }) => row.original.totalAmount.toLocaleString(),
+        size: 120,
+      },
+      {
+        header: '사용자확인',
+        cell: ({ row }) => (row.original.status !== null ? SettlementStatusLabel[row.original.status] : '-'),
+        size: 100,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
   });
 
   const handleSettlementUploadSuccess = () => {

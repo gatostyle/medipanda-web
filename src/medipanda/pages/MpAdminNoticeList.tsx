@@ -24,7 +24,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -47,7 +47,6 @@ import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
-import { ArrayElement } from 'type-fest/source/internal';
 
 export default function MpAdminNoticeList() {
   const navigate = useNavigate();
@@ -171,93 +170,89 @@ export default function MpAdminNoticeList() {
 
   const table = useReactTable({
     data: contents,
-    columns: useMemo<ColumnDef<ArrayElement<typeof contents>>[]>(
-      () => [
-        {
-          id: 'select',
-          header: () => (
-            <Checkbox
-              checked={selectedIds.length === contents.length && contents.length > 0}
-              onChange={e => {
-                if (e.target.checked) {
-                  setSelectedIds(contents.map(item => item.id));
-                } else {
-                  setSelectedIds([]);
-                }
-              }}
-            />
-          ),
-          cell: ({ row }) => (
-            <Checkbox
-              checked={selectedIds.includes(row.original.id)}
-              onChange={e => {
-                if (e.target.checked) {
-                  setSelectedIds(prev => [...prev, row.original.id]);
-                } else {
-                  setSelectedIds(prev => prev.filter(id => id !== row.original.id));
-                }
-              }}
-            />
-          ),
-          size: 50,
+    columns: [
+      {
+        id: 'select',
+        header: () => (
+          <Checkbox
+            checked={selectedIds.length === contents.length && contents.length > 0}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedIds(contents.map(item => item.id));
+              } else {
+                setSelectedIds([]);
+              }
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={selectedIds.includes(row.original.id)}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedIds(prev => [...prev, row.original.id]);
+              } else {
+                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
+              }
+            }}
+          />
+        ),
+        size: 50,
+      },
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 60,
+      },
+      {
+        header: '게시판',
+        cell: ({ row }) => BoardTypeLabel[row.original.boardType],
+        size: 100,
+      },
+      {
+        header: '공지분류',
+        cell: ({ row }) => {
+          const noticeType = row.original.noticeProperties!.noticeType;
+          if (!noticeType) return '-';
+          return NoticeTypeLabel[noticeType];
         },
-        {
-          header: 'No',
-          cell: ({ row }) => row.original.sequence,
-          size: 60,
-        },
-        {
-          header: '게시판',
-          cell: ({ row }) => BoardTypeLabel[row.original.boardType],
-          size: 100,
-        },
-        {
-          header: '공지분류',
-          cell: ({ row }) => {
-            const noticeType = row.original.noticeProperties!.noticeType;
-            if (!noticeType) return '-';
-            return NoticeTypeLabel[noticeType];
-          },
-          size: 100,
-        },
-        {
-          header: '제약사명',
-          cell: ({ row }) => row.original.noticeProperties!.drugCompany,
-          size: 120,
-        },
-        {
-          header: '제목',
-          cell: ({ row }) => (
-            <Link component={RouterLink} to={`/admin/notices/${row.original.id}`}>
-              {row.original.title}
-            </Link>
-          ),
-        },
-        {
-          header: '상태',
-          cell: ({ row }) => (row.original.isExposed ? '노출' : '미노출'),
-          size: 80,
-        },
-        {
-          header: '노출범위',
-          cell: ({ row }) => BoardExposureRangeLabel[row.original.exposureRange],
-          size: 80,
-        },
-        {
-          header: '조회수',
-          cell: ({ row }) => row.original.viewsCount.toLocaleString(),
-          size: 80,
-        },
-        {
-          header: '작성일',
-          cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
-          size: 100,
-        },
-      ],
-      [],
-    ),
+        size: 100,
+      },
+      {
+        header: '제약사명',
+        cell: ({ row }) => row.original.noticeProperties!.drugCompany,
+        size: 120,
+      },
+      {
+        header: '제목',
+        cell: ({ row }) => (
+          <Link component={RouterLink} to={`/admin/notices/${row.original.id}`}>
+            {row.original.title}
+          </Link>
+        ),
+      },
+      {
+        header: '상태',
+        cell: ({ row }) => (row.original.isExposed ? '노출' : '미노출'),
+        size: 80,
+      },
+      {
+        header: '노출범위',
+        cell: ({ row }) => BoardExposureRangeLabel[row.original.exposureRange],
+        size: 80,
+      },
+      {
+        header: '조회수',
+        cell: ({ row }) => row.original.viewsCount.toLocaleString(),
+        size: 80,
+      },
+      {
+        header: '작성일',
+        cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
+        size: 100,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
   });
 
   const handleDelete = () => {

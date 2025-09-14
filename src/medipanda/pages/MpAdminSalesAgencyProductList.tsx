@@ -26,7 +26,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
@@ -45,7 +45,6 @@ import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
-import { ArrayElement } from 'type-fest/source/internal';
 
 export default function MpAdminSalesAgencyProductList() {
   const navigate = useNavigate();
@@ -138,108 +137,104 @@ export default function MpAdminSalesAgencyProductList() {
 
   const table = useReactTable({
     data: contents,
-    columns: useMemo<ColumnDef<ArrayElement<typeof contents>>[]>(
-      () => [
-        {
-          id: 'select',
-          header: () => (
-            <Checkbox
-              checked={selectedIds.length === contents.length && contents.length > 0}
-              onChange={e => {
-                if (e.target.checked) {
-                  setSelectedIds(contents.map(item => item.id));
-                } else {
-                  setSelectedIds([]);
-                }
-              }}
+    columns: [
+      {
+        id: 'select',
+        header: () => (
+          <Checkbox
+            checked={selectedIds.length === contents.length && contents.length > 0}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedIds(contents.map(item => item.id));
+              } else {
+                setSelectedIds([]);
+              }
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={selectedIds.includes(row.original.id)}
+            onChange={e => {
+              if (e.target.checked) {
+                setSelectedIds(prev => [...prev, row.original.id]);
+              } else {
+                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
+              }
+            }}
+          />
+        ),
+        size: 50,
+      },
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 60,
+      },
+      {
+        header: '썸네일',
+        cell: ({ row }) => (
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <img
+              src={row.original.thumbnailUrl ?? ''}
+              alt='썸네일'
+              style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 4 }}
             />
-          ),
-          cell: ({ row }) => (
-            <Checkbox
-              checked={selectedIds.includes(row.original.id)}
-              onChange={e => {
-                if (e.target.checked) {
-                  setSelectedIds(prev => [...prev, row.original.id]);
-                } else {
-                  setSelectedIds(prev => prev.filter(id => id !== row.original.id));
-                }
-              }}
-            />
-          ),
-          size: 50,
+          </Box>
+        ),
+        size: 80,
+      },
+      {
+        header: '위탁사',
+        cell: ({ row }) => row.original.clientName,
+        size: 150,
+      },
+      {
+        header: '상품명',
+        cell: ({ row }) => (
+          <Link component={RouterLink} to={`/admin/sales-agency-products/${row.original.id}`}>
+            {row.original.productName}
+          </Link>
+        ),
+        size: 300,
+      },
+      {
+        header: '판매가',
+        cell: ({ row }) => row.original.price.toLocaleString(),
+        size: 100,
+      },
+      {
+        header: '계약일',
+        cell: ({ row }) => formatYyyyMmDd(row.original.contractDate),
+        size: 120,
+      },
+      {
+        header: '노출상태',
+        cell: ({ row }) => {
+          const isExposed = row.original.isExposed;
+          return <Chip label={isExposed ? '노출' : '미노출'} size='small' color={isExposed ? 'success' : 'default'} />;
         },
-        {
-          header: 'No',
-          cell: ({ row }) => row.original.sequence,
-          size: 60,
+        size: 100,
+      },
+      {
+        header: '게시기간',
+        cell: ({ row }) => {
+          return `${formatYyyyMmDd(row.original.startAt)} ~ ${formatYyyyMmDd(row.original.endAt)}`;
         },
-        {
-          header: '썸네일',
-          cell: ({ row }) => (
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-              <img
-                src={row.original.thumbnailUrl ?? ''}
-                alt='썸네일'
-                style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 4 }}
-              />
-            </Box>
-          ),
-          size: 80,
-        },
-        {
-          header: '위탁사',
-          cell: ({ row }) => row.original.clientName,
-          size: 150,
-        },
-        {
-          header: '상품명',
-          cell: ({ row }) => (
-            <Link component={RouterLink} to={`/admin/sales-agency-products/${row.original.id}`}>
-              {row.original.productName}
-            </Link>
-          ),
-          size: 300,
-        },
-        {
-          header: '판매가',
-          cell: ({ row }) => row.original.price.toLocaleString(),
-          size: 100,
-        },
-        {
-          header: '계약일',
-          cell: ({ row }) => formatYyyyMmDd(row.original.contractDate),
-          size: 120,
-        },
-        {
-          header: '노출상태',
-          cell: ({ row }) => {
-            const isExposed = row.original.isExposed;
-            return <Chip label={isExposed ? '노출' : '미노출'} size='small' color={isExposed ? 'success' : 'default'} />;
-          },
-          size: 100,
-        },
-        {
-          header: '게시기간',
-          cell: ({ row }) => {
-            return `${formatYyyyMmDd(row.original.startAt)} ~ ${formatYyyyMmDd(row.original.endAt)}`;
-          },
-          size: 200,
-        },
-        {
-          header: '신청자 수',
-          cell: ({ row }) => `${row.original.appliedCount}명`,
-          size: 100,
-        },
-        {
-          header: '판매수량',
-          cell: ({ row }) => row.original.quantity.toLocaleString(),
-          size: 100,
-        },
-      ],
-      [],
-    ),
+        size: 200,
+      },
+      {
+        header: '신청자 수',
+        cell: ({ row }) => `${row.original.appliedCount}명`,
+        size: 100,
+      },
+      {
+        header: '판매수량',
+        cell: ({ row }) => row.original.quantity.toLocaleString(),
+        size: 100,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
   });
 
   const handleDelete = () => {

@@ -21,17 +21,16 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { BoardMemberStatsResponse, ContractStatus, ContractStatusLabel, getBoardMembers } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
-import { ArrayElement } from 'type-fest/source/internal';
 
 export default function MpAdminCommunityUserList() {
   const navigate = useNavigate();
@@ -123,63 +122,59 @@ export default function MpAdminCommunityUserList() {
 
   const table = useReactTable({
     data: contents,
-    columns: useMemo<ColumnDef<ArrayElement<typeof contents>>[]>(
-      () => [
-        {
-          header: 'No',
-          cell: ({ row }) => row.original.sequence,
-          size: 60,
-        },
-        {
-          header: '회원번호',
-          cell: ({ row }) => row.original.id,
-          size: 100,
-        },
-        {
-          header: '아이디',
-          cell: ({ row }) => row.original.userId,
-          size: 120,
-        },
-        {
-          header: '회원명',
-          cell: ({ row }) => row.original.name,
-          size: 100,
-        },
-        {
-          header: '휴대폰번호',
-          cell: ({ row }) => row.original.phoneNumber,
-          size: 130,
-        },
-        {
-          header: '파트너사 계약여부',
-          cell: ({ row }) => ContractStatusLabel[row.original.contractStatus],
-          size: 130,
-        },
-        {
-          header: '작성글 수',
-          cell: ({ row }) => row.original.postCount,
-          size: 100,
-        },
-        {
-          header: '댓글 수',
-          cell: ({ row }) => row.original.commentCount,
-          size: 100,
-        },
-        {
-          header: '좋아요 수',
-          cell: ({ row }) => row.original.totalLikes,
-          size: 100,
-        },
-        {
-          header: '블라인드 글 수',
-          cell: ({ row }) => row.original.blindPostCount,
-          size: 120,
-        },
-      ],
-      [],
-    ),
+    columns: [
+      {
+        header: 'No',
+        cell: ({ row }) => row.original.sequence,
+        size: 60,
+      },
+      {
+        header: '회원번호',
+        cell: ({ row }) => row.original.id,
+        size: 100,
+      },
+      {
+        header: '아이디',
+        cell: ({ row }) => row.original.userId,
+        size: 120,
+      },
+      {
+        header: '회원명',
+        cell: ({ row }) => row.original.name,
+        size: 100,
+      },
+      {
+        header: '휴대폰번호',
+        cell: ({ row }) => row.original.phoneNumber,
+        size: 130,
+      },
+      {
+        header: '파트너사 계약여부',
+        cell: ({ row }) => ContractStatusLabel[row.original.contractStatus],
+        size: 130,
+      },
+      {
+        header: '작성글 수',
+        cell: ({ row }) => row.original.postCount,
+        size: 100,
+      },
+      {
+        header: '댓글 수',
+        cell: ({ row }) => row.original.commentCount,
+        size: 100,
+      },
+      {
+        header: '좋아요 수',
+        cell: ({ row }) => row.original.totalLikes,
+        size: 100,
+      },
+      {
+        header: '블라인드 글 수',
+        cell: ({ row }) => row.original.blindPostCount,
+        size: 120,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
   });
 
   return (

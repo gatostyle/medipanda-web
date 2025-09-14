@@ -1,4 +1,4 @@
-import { MemberResponse, uploadPartnersExcel } from '@/backend';
+import { ContractStatus, MemberResponse, uploadPartnersExcel } from '@/backend';
 import { MpMemberSelectModal } from '@/medipanda/components/MpMemberSelectModal';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { AttachFile as AttachFileIcon, UploadFile } from '@mui/icons-material';
@@ -158,7 +158,14 @@ function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUpl
         </DialogActions>
       </Dialog>
 
-      <MpMemberSelectModal open={memberSelectModalOpen} onClose={() => setMemberSelectModalOpen(false)} onSelect={handleMemberSelect} />
+      <MpMemberSelectModal
+        open={memberSelectModalOpen}
+        onClose={() => setMemberSelectModalOpen(false)}
+        onSelect={handleMemberSelect}
+        additionalFilter={{
+          contractStatus: ContractStatus.CONTRACT,
+        }}
+      />
     </>
   );
 }
