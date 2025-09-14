@@ -127,7 +127,7 @@ export default function MpAdminSettlementDetail() {
         {
           header: '거래처명',
           cell: ({ row }) => (
-            <Link component={RouterLink} to={`/admin/settlements/${settlementId}/partners/${row.original.institutionCode}`}>
+            <Link component={RouterLink} to={`/admin/settlements/${settlementId}/partners/${row.original.settlementPartnerId}`}>
               {row.original.institutionName}
             </Link>
           ),
