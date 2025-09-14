@@ -255,7 +255,13 @@ export default function MpAdminAtoZEdit() {
             </Grid>
 
             <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
-              <Button variant='outlined' onClick={() => window.history.back()} sx={{ minWidth: 120 }} disabled={formik.isSubmitting}>
+              <Button
+                variant='outlined'
+                component={RouterLink}
+                to={isNew ? '/admin/atoz' : `/admin/atoz/${boardId}`}
+                sx={{ minWidth: 120 }}
+                disabled={formik.isSubmitting}
+              >
                 취소
               </Button>
               <Button

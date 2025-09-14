@@ -36,7 +36,7 @@ import {
 import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { SyntheticEvent, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import { DateFix, formatYyyyMmDd } from '../utils/dateFormat';
 
 export default function MpAdminSalesAgencyProductEdit() {
@@ -583,7 +583,13 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
       </Grid>
 
       <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 4 }}>
-        <Button variant='outlined' size='large' onClick={window.history.back} sx={{ minWidth: 120 }}>
+        <Button
+          variant='outlined'
+          size='large'
+          component={RouterLink}
+          to={detail !== null ? `/admin/sales-agency-products/${detail.productId}` : '/admin/sales-agency-products'}
+          sx={{ minWidth: 120 }}
+        >
           취소
         </Button>
         <Button variant='contained' size='large' sx={{ minWidth: 120 }} onClick={formik.submitForm}>

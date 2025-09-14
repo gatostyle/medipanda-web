@@ -265,7 +265,8 @@ export default function MpAdminFaqEdit() {
             <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
               <Button
                 variant='outlined'
-                onClick={() => window.history.back()}
+                component={RouterLink}
+                to={isNew ? '/admin/faqs' : `/admin/faqs/${boardId}`}
                 sx={{
                   minWidth: 120,
                 }}

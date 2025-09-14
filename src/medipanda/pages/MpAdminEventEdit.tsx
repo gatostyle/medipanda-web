@@ -17,7 +17,7 @@ import {
 } from '@/backend';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import { useSession } from '../hooks/useSession';
 import { DateFix, formatYyyyMmDd } from '../utils/dateFormat';
 
@@ -365,7 +365,7 @@ export default function MpAdminEventEdit() {
 
               <Grid item xs={12}>
                 <Stack direction='row' spacing={2} justifyContent='center'>
-                  <Button variant='outlined' size='large' onClick={() => window.history.back()}>
+                  <Button variant='outlined' size='large' component={RouterLink} to={isNew ? '/admin/events' : `/admin/events/${eventId}`}>
                     취소
                   </Button>
                   <Button variant='contained' size='large' type='submit' disabled={formik.isSubmitting}>

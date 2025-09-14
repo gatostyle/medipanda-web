@@ -18,7 +18,7 @@ import { AdminPermission, getMemberDetails, getPermissions, signupByAdmin, updat
 import { isSuperAdmin, useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminAdminEdit() {
   const navigate = useNavigate();
@@ -428,7 +428,7 @@ export default function MpAdminAdminEdit() {
 
               <Grid item xs={12}>
                 <Stack direction='row' spacing={2} justifyContent='center'>
-                  <Button variant='outlined' size='large' onClick={() => window.history.back()}>
+                  <Button variant='outlined' size='large' component={RouterLink} to='/admin/admins'>
                     취소
                   </Button>
                   <Button variant='contained' size='large' type='submit'>

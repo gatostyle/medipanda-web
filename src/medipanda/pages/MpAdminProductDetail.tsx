@@ -279,7 +279,7 @@ export default function MpAdminProductDetail() {
 
         <Grid item xs={12}>
           <Stack direction='row' spacing={2} justifyContent='center'>
-            <Button variant='outlined' size='large' onClick={() => window.history.back()} sx={{ minWidth: 120 }}>
+            <Button variant='outlined' size='large' component={RouterLink} to='/admin/products' sx={{ minWidth: 120 }}>
               취소
             </Button>
             <Button variant='contained' size='large' component={RouterLink} to={`/admin/products/${productId}/edit`} sx={{ minWidth: 120 }}>

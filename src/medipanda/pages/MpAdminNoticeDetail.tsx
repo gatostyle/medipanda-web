@@ -202,7 +202,7 @@ export default function MpAdminNoticeDetail() {
           </Box>
 
           <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', gap: 2 }}>
-            <Button variant='outlined' onClick={() => window.history.back()} sx={{ minWidth: 120 }}>
+            <Button variant='outlined' component={RouterLink} to='/admin/notices' sx={{ minWidth: 120 }}>
               취소
             </Button>
             <Button variant='contained' component={RouterLink} to={`/admin/notices/${boardId}/edit`} sx={{ minWidth: 120 }}>

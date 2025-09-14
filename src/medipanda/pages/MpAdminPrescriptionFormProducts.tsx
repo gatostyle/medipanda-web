@@ -40,7 +40,7 @@ import { MpPartnerSelectModal } from '@/medipanda/components/MpPartnerSelectModa
 import { Sequenced } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import { ArrayElement } from 'type-fest/source/internal';
 import { MpPartnerProductSelectModal } from '../components/MpPartnerProductSelectModal';
 import { DateFix } from '../utils/dateFormat';
@@ -568,7 +568,7 @@ export default function MpAdminPrescriptionFormProducts() {
           </Box>
 
           <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 4 }}>
-            <Button variant='outlined' size='large' onClick={() => window.history.back()} sx={{ minWidth: 120 }}>
+            <Button variant='outlined' size='large' component={RouterLink} to='/admin/prescription-forms' sx={{ minWidth: 120 }}>
               취소
             </Button>
             <Button variant='contained' color='success' size='large' type='submit' sx={{ minWidth: 120 }}>

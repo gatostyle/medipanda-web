@@ -37,7 +37,7 @@ import {
 } from '@/backend';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminPartnerEdit() {
   const navigate = useNavigate();
@@ -394,7 +394,7 @@ export default function MpAdminPartnerEdit() {
           </Grid>
 
           <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 4 }}>
-            <Button variant='outlined' size='large' onClick={() => window.history.back()} sx={{ minWidth: 120 }}>
+            <Button variant='outlined' size='large' component={RouterLink} to='/admin/partners' sx={{ minWidth: 120 }}>
               취소
             </Button>
             <Button variant='contained' size='large' type='submit' sx={{ minWidth: 120 }}>

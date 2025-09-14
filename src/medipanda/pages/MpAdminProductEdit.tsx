@@ -36,7 +36,7 @@ import {
 import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { Fragment, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminProductEdit() {
   const navigate = useNavigate();
@@ -565,7 +565,8 @@ export default function MpAdminProductEdit() {
               <Button
                 variant='outlined'
                 size='large'
-                onClick={() => window.history.back()}
+                component={RouterLink}
+                to={isNew ? '/admin/products' : `/admin/products/${productId}`}
                 sx={{ minWidth: 120 }}
                 disabled={formik.isSubmitting}
               >

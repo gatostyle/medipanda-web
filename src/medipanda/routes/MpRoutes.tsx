@@ -213,14 +213,6 @@ const adminRoute: RouteObject = {
       ),
     },
     {
-      path: 'prescription-forms/new',
-      element: (
-        <MpAdminGuard requiredPermission={AdminPermission.PRESCRIPTION_MANAGEMENT}>
-          <MpAdminPrescriptionFormProducts />
-        </MpAdminGuard>
-      ),
-    },
-    {
       path: 'prescription-forms/:prescriptionPartnerId/products',
       element: (
         <MpAdminGuard requiredPermission={AdminPermission.PRESCRIPTION_MANAGEMENT}>

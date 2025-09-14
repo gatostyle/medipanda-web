@@ -211,7 +211,7 @@ export default function MpAdminEventDetail() {
 
             <Grid item xs={12}>
               <Stack direction='row' spacing={2} justifyContent='center'>
-                <Button variant='outlined' size='large' onClick={() => window.history.back()}>
+                <Button variant='outlined' size='large' component={RouterLink} to='/admin/events'>
                   취소
                 </Button>
                 <Button variant='contained' size='large' component={RouterLink} to={`/admin/events/${eventId}/edit`}>

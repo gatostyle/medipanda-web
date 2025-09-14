@@ -28,7 +28,7 @@ import {
 } from '@/backend';
 import { DateFix, formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminBannerEdit() {
   const navigate = useNavigate();
@@ -371,7 +371,8 @@ export default function MpAdminBannerEdit() {
                   <Button
                     variant='outlined'
                     size='medium'
-                    onClick={() => window.history.back()}
+                    component={RouterLink}
+                    to='/admin/banners'
                     sx={{
                       minWidth: 100,
                     }}
