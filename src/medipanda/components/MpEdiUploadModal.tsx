@@ -139,7 +139,7 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
             <Box>
               <DatePicker
                 value={formik.values.prescriptionMonth}
-                onChange={value => formik.setFieldValue('prescriptionMonth', value.setDate(1))}
+                onChange={value => formik.setFieldValue('prescriptionMonth', value?.setDate(1) ?? null)}
                 format='yyyy-MM'
                 views={['year', 'month']}
                 label='처방월'
@@ -154,7 +154,7 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
             <Box>
               <DatePicker
                 value={formik.values.settlementMonth}
-                onChange={value => formik.setFieldValue('settlementMonth', value.setDate(1))}
+                onChange={value => formik.setFieldValue('settlementMonth', value?.setDate(1) ?? null)}
                 format='yyyy-MM'
                 views={['year', 'month']}
                 label='정산월'
