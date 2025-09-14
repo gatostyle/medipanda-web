@@ -199,7 +199,6 @@ export default function MpAdminCommunityBlindList() {
         {
           header: '글 내용',
           cell: ({ row }) => {
-            const content = row.original.postType === PostType.BOARD ? row.original.content : '';
             return (
               <Typography
                 sx={{
@@ -209,7 +208,7 @@ export default function MpAdminCommunityBlindList() {
                   maxWidth: 300,
                 }}
               >
-                {content}
+                {row.original.content}
               </Typography>
             );
           },
