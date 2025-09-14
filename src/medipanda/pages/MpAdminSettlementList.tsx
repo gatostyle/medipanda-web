@@ -13,6 +13,7 @@ import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipa
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { formatYyyyMm, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
+import { AttachFile as AttachFileIcon } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -355,6 +356,16 @@ export default function MpAdminSettlementList() {
                   startIcon={<DocumentDownload size={16} />}
                 >
                   Excel
+                </Button>
+                <Button
+                  href={import.meta.env.VITE_APP_URL_FILE_SETTLEMENT}
+                  target='_blank'
+                  variant='contained'
+                  color='success'
+                  size='small'
+                  startIcon={<AttachFileIcon />}
+                >
+                  양식 다운로드
                 </Button>
                 <Button variant='contained' color='success' size='small' onClick={handleFileUpload}>
                   파일 업로드
