@@ -21,29 +21,28 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { Add, Minus, SearchNormal1 } from 'iconsax-react';
 import {
   AttachmentResponse,
-  createPartnerProducts,
   getAttachedEdiFiles,
   getPartnerProducts,
   getPrescriptionPartner,
   PartnerResponse,
   PrescriptionPartnerProductResponse,
-  PrescriptionPartnerResponse,
   PrescriptionProductItem,
-  PrescriptionStatus,
   ProductSummaryResponse,
+  upsertPatchPartnerProducts,
 } from '@/backend';
 import { MpChangeHistoryModal } from '@/medipanda/components/MpChangeHistoryModal';
 import { MpOcrRequestModal } from '@/medipanda/components/MpOcrRequestModal';
 import { MpPartnerSelectModal } from '@/medipanda/components/MpPartnerSelectModal';
 import { Sequenced } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
+import { ArrayElement } from 'type-fest/source/internal';
 import { MpPartnerProductSelectModal } from '../components/MpPartnerProductSelectModal';
 import { DateFix } from '../utils/dateFormat';
 
@@ -63,10 +62,10 @@ export default function MpAdminPrescriptionFormProducts() {
 
   const { alertError } = useMpModal();
 
-  const [prescriptionPartner, setPrescriptionPartner] = useState<PrescriptionPartnerResponse | null>(null);
   const [partnerProducts, setPartnerProducts] = useState<
-    Sequenced<PrescriptionPartnerProductResponse & Pick<PrescriptionProductItem, 'ocrItem'>>[]
+    Sequenced<Omit<PrescriptionPartnerProductResponse & Pick<PrescriptionProductItem, 'ocrItem'>, 'id'> & { id: number | null }>[]
   >([]);
+  const [deletePartnerProductIds, setDeletePartnerProductIds] = useState<number[]>([]);
   const [attachedFiles, setAttachedFiles] = useState<AttachmentResponse[]>([]);
 
   const [sendOcrReport, setSendOcrReport] = useState(false);
@@ -87,9 +86,9 @@ export default function MpAdminPrescriptionFormProducts() {
     },
     onSubmit: async () => {
       try {
-        await createPartnerProducts({
-          prescriptionPartnerId: prescriptionPartnerId,
+        await upsertPatchPartnerProducts(prescriptionPartnerId, {
           items: partnerProducts,
+          deletedPrescriptionPartnerProductIds: deletePartnerProductIds,
         });
 
         enqueueSnackbar('거래처별 제품 목록이 저장되었습니다.', { variant: 'success' });
@@ -114,139 +113,127 @@ export default function MpAdminPrescriptionFormProducts() {
 
   const table = useReactTable({
     data: partnerProducts,
-    columns: [
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '보험코드',
-        cell: ({ row }) => row.original.productCode,
-        size: 120,
-      },
-      {
-        header: '제품명',
-        cell: ({ row }) => (
-          <TextField
-            size='small'
-            fullWidth
-            value={row.original.productName}
-            placeholder='제품명'
-            InputProps={{
-              readOnly: true,
-              endAdornment: prescriptionPartner?.status !== PrescriptionStatus.COMPLETED && (
-                <InputAdornment position='end'>
-                  <IconButton
-                    size='small'
-                    onClick={() => {
-                      setCurrentProductItemIndex(row.index);
-                      setPartnerProductSelectModalOpen(true);
-                    }}
-                  >
-                    <SearchNormal1 size={16} />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-        ),
-        size: 200,
-      },
-      {
-        header: '단위',
-        cell: ({ row }) => row.original.unit,
-        size: 80,
-      },
-      {
-        header: '수량',
-        cell: ({ row }) => (
-          <TextField
-            size='small'
-            type='number'
-            fullWidth
-            value={row.original.quantity}
-            onChange={e => handleProductChange(row.index, 'quantity', e.target.value)}
-            InputProps={{
-              readOnly: prescriptionPartner?.status === PrescriptionStatus.COMPLETED,
-            }}
-          />
-        ),
-        size: 100,
-      },
-      {
-        header: '약가',
-        cell: ({ row }) => row.original.unitPrice.toLocaleString(),
-        size: 100,
-      },
-      {
-        header: '총 금액',
-        cell: ({ row }) => (
-          <TextField
-            size='small'
-            type='number'
-            fullWidth
-            name='totalPrice'
-            value={row.original.totalPrice}
-            onChange={e => handleProductChange(row.index, 'totalPrice', e.target.value)}
-            InputProps={{
-              readOnly: prescriptionPartner?.status === PrescriptionStatus.COMPLETED,
-            }}
-          />
-        ),
-        size: 120,
-      },
-      {
-        header: '기본수수료율',
-        cell: ({ row }) => (
-          <TextField
-            size='small'
-            type='number'
-            fullWidth
-            name='baseFeeRate'
-            value={row.original.baseFeeRate}
-            onChange={e => handleProductChange(row.index, 'baseFeeRate', e.target.value)}
-            InputProps={{
-              readOnly: prescriptionPartner?.status === PrescriptionStatus.COMPLETED,
-            }}
-          />
-        ),
-        size: 120,
-      },
-      {
-        header: '수수료 금액',
-        cell: ({ row }) => (
-          <TextField
-            size='small'
-            type='number'
-            fullWidth
-            name='feeAmount'
-            value={row.original.feeAmount}
-            onChange={e => handleProductChange(row.index, 'feeAmount', e.target.value)}
-            InputProps={{
-              readOnly: prescriptionPartner?.status === PrescriptionStatus.COMPLETED,
-            }}
-          />
-        ),
-        size: 120,
-      },
-      {
-        header: '비고',
-        cell: ({ row }) => (
-          <TextField
-            size='small'
-            fullWidth
-            name='note'
-            value={row.original.note}
-            onChange={e => handleProductChange(row.index, 'note', e.target.value)}
-            InputProps={{
-              readOnly: prescriptionPartner?.status === PrescriptionStatus.COMPLETED,
-            }}
-          />
-        ),
-        size: 150,
-      },
-    ],
+    columns: useMemo<ColumnDef<ArrayElement<typeof partnerProducts>>[]>(
+      () => [
+        {
+          header: 'No',
+          cell: ({ row }) => row.original.sequence,
+          size: 60,
+        },
+        {
+          header: '보험코드',
+          cell: ({ row }) => row.original.productCode,
+          size: 120,
+        },
+        {
+          header: '제품명',
+          cell: ({ row }) => (
+            <TextField
+              size='small'
+              fullWidth
+              value={row.original.productName}
+              placeholder='제품명'
+              InputProps={{
+                readOnly: true,
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <IconButton
+                      size='small'
+                      onClick={() => {
+                        setCurrentProductItemIndex(row.index);
+                        setPartnerProductSelectModalOpen(true);
+                      }}
+                    >
+                      <SearchNormal1 size={16} />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          ),
+          size: 200,
+        },
+        {
+          header: '단위',
+          cell: ({ row }) => row.original.unit,
+          size: 80,
+        },
+        {
+          header: '수량',
+          cell: ({ row }) => (
+            <TextField
+              size='small'
+              type='number'
+              fullWidth
+              value={row.original.quantity}
+              onChange={e => handleProductChange(row.index, 'quantity', e.target.value)}
+            />
+          ),
+          size: 100,
+        },
+        {
+          header: '약가',
+          cell: ({ row }) => row.original.unitPrice.toLocaleString(),
+          size: 100,
+        },
+        {
+          header: '총 금액',
+          cell: ({ row }) => (
+            <TextField
+              size='small'
+              type='number'
+              fullWidth
+              name='totalPrice'
+              value={row.original.totalPrice}
+              onChange={e => handleProductChange(row.index, 'totalPrice', e.target.value)}
+            />
+          ),
+          size: 120,
+        },
+        {
+          header: '기본수수료율',
+          cell: ({ row }) => (
+            <TextField
+              size='small'
+              type='number'
+              fullWidth
+              name='baseFeeRate'
+              value={row.original.baseFeeRate}
+              onChange={e => handleProductChange(row.index, 'baseFeeRate', e.target.value)}
+            />
+          ),
+          size: 120,
+        },
+        {
+          header: '수수료 금액',
+          cell: ({ row }) => (
+            <TextField
+              size='small'
+              type='number'
+              fullWidth
+              name='feeAmount'
+              value={row.original.feeAmount}
+              onChange={e => handleProductChange(row.index, 'feeAmount', e.target.value)}
+            />
+          ),
+          size: 120,
+        },
+        {
+          header: '비고',
+          cell: ({ row }) => (
+            <TextField
+              size='small'
+              fullWidth
+              name='note'
+              value={row.original.note}
+              onChange={e => handleProductChange(row.index, 'note', e.target.value)}
+            />
+          ),
+          size: 150,
+        },
+      ],
+      [],
+    ),
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -257,7 +244,7 @@ export default function MpAdminPrescriptionFormProducts() {
       ...partnerProducts,
       {
         sequence: maxSequence + 1,
-        id: -1,
+        id: null,
         productCode: '',
         productName: '',
         unit: '',
@@ -274,7 +261,11 @@ export default function MpAdminPrescriptionFormProducts() {
 
   const handleRemoveProduct = () => {
     if (partnerProducts.length > 1) {
+      const lastPartnerProduct = partnerProducts[partnerProducts.length - 1];
       setPartnerProducts(partnerProducts.slice(0, -1));
+      if (lastPartnerProduct.id !== null) {
+        setDeletePartnerProductIds(prev => [...prev, lastPartnerProduct.id!]);
+      }
     }
   };
 
@@ -321,7 +312,7 @@ export default function MpAdminPrescriptionFormProducts() {
       ...response.map((ocrItem, index) => {
         return {
           sequence: maxSequence + index + 1,
-          id: -1,
+          id: null,
           productCode: ocrItem.code,
           productName: ocrItem.name,
           unit: ocrItem.unit,
@@ -361,24 +352,23 @@ export default function MpAdminPrescriptionFormProducts() {
 
     try {
       setLoading(true);
-      const [prescriptionPartner, products, attachedFiles] = await Promise.all([
+      const [formDetail, products, attachedFiles] = await Promise.all([
         getPrescriptionPartner(prescriptionPartnerId),
         getPartnerProducts(prescriptionPartnerId),
         getAttachedEdiFiles(prescriptionPartnerId),
       ]);
-      setPrescriptionPartner(prescriptionPartner);
 
       formik.setValues({
-        drugCompany: prescriptionPartner.drugCompany,
-        drugCompanyCode: prescriptionPartner.drugCompanyCode,
-        companyName: prescriptionPartner.companyName,
-        institutionName: prescriptionPartner.partnerName,
-        institutionCode: prescriptionPartner.institutionCode,
-        businessNumber: prescriptionPartner.businessNumber,
-        dealerName: prescriptionPartner.dealerName,
-        prescriptionMonth: DateFix(prescriptionPartner.prescriptionMonth),
-        settlementMonth: DateFix(prescriptionPartner.settlementMonth),
-        prescriptionAmount: prescriptionPartner.amount.toLocaleString(),
+        drugCompany: formDetail.drugCompany,
+        drugCompanyCode: formDetail.drugCompanyCode,
+        companyName: formDetail.companyName,
+        institutionName: formDetail.partnerName,
+        institutionCode: formDetail.institutionCode,
+        businessNumber: formDetail.businessNumber,
+        dealerName: formDetail.dealerName,
+        prescriptionMonth: DateFix(formDetail.prescriptionMonth),
+        settlementMonth: DateFix(formDetail.settlementMonth),
+        prescriptionAmount: formDetail.amount.toLocaleString(),
       });
 
       setPartnerProducts(
@@ -388,6 +378,7 @@ export default function MpAdminPrescriptionFormProducts() {
           ocrItem: null,
         })),
       );
+      setDeletePartnerProductIds([]);
 
       setAttachedFiles(attachedFiles);
     } catch (error) {
@@ -441,10 +432,11 @@ export default function MpAdminPrescriptionFormProducts() {
                       size='small'
                       name='institutionName'
                       value={formik.values.institutionName}
+                      onChange={formik.handleChange}
                       fullWidth
                       InputProps={{
                         readOnly: true,
-                        endAdornment: prescriptionPartner?.status !== PrescriptionStatus.COMPLETED && (
+                        endAdornment: (
                           <InputAdornment position='end'>
                             <IconButton size='small' onClick={handlePartnerSearch}>
                               <SearchNormal1 size={16} />
@@ -492,7 +484,6 @@ export default function MpAdminPrescriptionFormProducts() {
                       format='yyyy-MM'
                       views={['year', 'month']}
                       label='처방월'
-                      readOnly={prescriptionPartner?.status === PrescriptionStatus.COMPLETED}
                       slotProps={{
                         textField: {
                           size: 'small',
@@ -510,7 +501,6 @@ export default function MpAdminPrescriptionFormProducts() {
                       format='yyyy-MM'
                       views={['year', 'month']}
                       label='정산월'
-                      readOnly={prescriptionPartner?.status === PrescriptionStatus.COMPLETED}
                       slotProps={{
                         textField: {
                           size: 'small',
@@ -528,16 +518,14 @@ export default function MpAdminPrescriptionFormProducts() {
               </Grid>
             </Grid>
 
-            {prescriptionPartner?.status !== PrescriptionStatus.COMPLETED && (
-              <Stack direction='row' spacing={2} sx={{ mt: 3 }}>
-                <Button variant='contained' color='success' size='small' onClick={handleEdiFileView}>
-                  EDI파일보기
-                </Button>
-                <Button variant='outlined' size='small' onClick={handleChangeHistory}>
-                  변경내역보기
-                </Button>
-              </Stack>
-            )}
+            <Stack direction='row' spacing={2} sx={{ mt: 3 }}>
+              <Button variant='contained' color='success' size='small' onClick={handleEdiFileView}>
+                EDI파일보기
+              </Button>
+              <Button variant='outlined' size='small' onClick={handleChangeHistory}>
+                변경내역보기
+              </Button>
+            </Stack>
           </Box>
 
           <TableContainer>
@@ -565,62 +553,50 @@ export default function MpAdminPrescriptionFormProducts() {
             </Table>
           </TableContainer>
 
-          {prescriptionPartner?.status !== PrescriptionStatus.COMPLETED && (
-            <Stack direction='row' spacing={2} sx={{ mt: 2 }}>
-              <Button variant='contained' color='success' size='small' onClick={handleAddProduct} startIcon={<Add size={16} />}>
-                내역추가
-              </Button>
-              <Button
-                variant='outlined'
-                color='error'
-                size='small'
-                onClick={handleRemoveProduct}
-                disabled={partnerProducts.length <= 1}
-                startIcon={<Minus size={16} />}
-              >
-                내역삭제
-              </Button>
-            </Stack>
-          )}
+          <Stack direction='row' spacing={2} sx={{ mt: 2 }}>
+            <Button variant='contained' color='success' size='small' onClick={handleAddProduct} startIcon={<Add size={16} />}>
+              내역추가
+            </Button>
+            <Button
+              variant='outlined'
+              color='error'
+              size='small'
+              onClick={handleRemoveProduct}
+              disabled={partnerProducts.length <= 1}
+              startIcon={<Minus size={16} />}
+            >
+              내역삭제
+            </Button>
+          </Stack>
 
-          {prescriptionPartner?.status !== PrescriptionStatus.COMPLETED && (
-            <Box sx={{ mt: 3 }}>
-              <Typography variant='subtitle1' sx={{ mb: 2 }}>
-                OCR리포트 보내기
-              </Typography>
-              <FormControlLabel
-                control={<Checkbox checked={sendOcrReport} onChange={e => setSendOcrReport(e.target.checked)} />}
-                label='OCR리포트 보내기'
-              />
-              <TextField
-                fullWidth
-                multiline
-                rows={6}
-                placeholder='OCR 리포트 내용을 입력하세요'
-                value={ocrReportContent}
-                onChange={e => setOcrReportContent(e.target.value)}
-                disabled={!sendOcrReport}
-                sx={{ mt: 2 }}
-              />
-            </Box>
-          )}
+          <Box sx={{ mt: 3 }}>
+            <Typography variant='subtitle1' sx={{ mb: 2 }}>
+              OCR리포트 보내기
+            </Typography>
+            <FormControlLabel
+              control={<Checkbox checked={sendOcrReport} onChange={e => setSendOcrReport(e.target.checked)} />}
+              label='OCR리포트 보내기'
+            />
+            <TextField
+              fullWidth
+              multiline
+              rows={6}
+              placeholder='OCR 리포트 내용을 입력하세요'
+              value={ocrReportContent}
+              onChange={e => setOcrReportContent(e.target.value)}
+              disabled={!sendOcrReport}
+              sx={{ mt: 2 }}
+            />
+          </Box>
 
-          {prescriptionPartner?.status !== PrescriptionStatus.COMPLETED ? (
-            <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 4 }}>
-              <Button variant='outlined' size='large' component={RouterLink} to='/admin/prescription-forms' sx={{ minWidth: 120 }}>
-                취소
-              </Button>
-              <Button variant='contained' color='success' size='large' type='submit' sx={{ minWidth: 120 }}>
-                저장
-              </Button>
-            </Stack>
-          ) : (
-            <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 4 }}>
-              <Button variant='outlined' size='large' component={RouterLink} to='/admin/prescription-forms' sx={{ minWidth: 120 }}>
-                뒤로
-              </Button>
-            </Stack>
-          )}
+          <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 4 }}>
+            <Button variant='outlined' size='large' component={RouterLink} to='/admin/prescription-forms' sx={{ minWidth: 120 }}>
+              취소
+            </Button>
+            <Button variant='contained' color='success' size='large' type='submit' sx={{ minWidth: 120 }}>
+              저장
+            </Button>
+          </Stack>
         </Card>
       </form>
 
