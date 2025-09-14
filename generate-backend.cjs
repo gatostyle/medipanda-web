@@ -494,134 +494,136 @@ function emitFormPopulation(rootSchema, formVar, dataVar, asUrlEncoded) {
 }
 
 function emitApis() {
-  Object.keys(paths).forEach(p => {
-    const item = paths[p];
-    ['get', 'post', 'put', 'patch', 'delete', 'head', 'options'].forEach(method => {
-      if (!item[method]) return;
-      const op = item[method];
+  Object.keys(paths)
+    .sort()
+    .forEach(p => {
+      const item = paths[p];
+      ['get', 'post', 'put', 'patch', 'delete', 'head', 'options'].forEach(method => {
+        if (!item[method]) return;
+        const op = item[method];
 
-      const fnName = buildFunctionName(method, p, op.operationId);
-      const pathParams = collectPathParams(op.parameters || []);
-      const queryParams = collectQueryParams(op.parameters || []);
+        const fnName = buildFunctionName(method, p, op.operationId);
+        const pathParams = collectPathParams(op.parameters || []);
+        const queryParams = collectQueryParams(op.parameters || []);
 
-      // Build param list
-      const fnParams = [];
+        // Build param list
+        const fnParams = [];
 
-      // Path params as positional args
-      pathParams.forEach(pp => {
-        const typ = tsParamType(pp);
-        fnParams.push(`${safeIdent(pp.name)}: ${typ}`);
-      });
+        // Path params as positional args
+        pathParams.forEach(pp => {
+          const typ = tsParamType(pp);
+          fnParams.push(`${safeIdent(pp.name)}: ${typ}`);
+        });
 
-      // Body / Form
-      const kinds = requestBodyKinds(op.requestBody);
-      let bodyArg = '';
-      if (kinds.json && kinds.json.schema) {
-        bodyArg = `data: ${tsType(kinds.json.schema)}`;
-        fnParams.push(bodyArg);
-      } else if (kinds.multipart && kinds.multipart.schema) {
-        // Strong type; build FormData internally
-        bodyArg = `data: ${tsType(kinds.multipart.schema)}`;
-        fnParams.push(bodyArg);
-      } else if (kinds.urlencoded && kinds.urlencoded.schema) {
-        // Strong type; build URLSearchParams internally
-        bodyArg = `data: ${tsType(kinds.urlencoded.schema)}`;
-        fnParams.push(bodyArg);
-      }
+        // Body / Form
+        const kinds = requestBodyKinds(op.requestBody);
+        let bodyArg = '';
+        if (kinds.json && kinds.json.schema) {
+          bodyArg = `data: ${tsType(kinds.json.schema)}`;
+          fnParams.push(bodyArg);
+        } else if (kinds.multipart && kinds.multipart.schema) {
+          // Strong type; build FormData internally
+          bodyArg = `data: ${tsType(kinds.multipart.schema)}`;
+          fnParams.push(bodyArg);
+        } else if (kinds.urlencoded && kinds.urlencoded.schema) {
+          // Strong type; build URLSearchParams internally
+          bodyArg = `data: ${tsType(kinds.urlencoded.schema)}`;
+          fnParams.push(bodyArg);
+        }
 
-      // Query options
-      if (queryParams.length > 0) {
-        const fields = queryParams
-          .map(qp => {
-            const t = tsParamType(qp);
-            return `  ${safeIdent(qp.name)}?: ${t};`;
-          })
-          .join('\n');
-        fnParams.push(`options?: {\n${fields}\n}`);
-      }
-
-      // Return type from best 2xx response
-      const resp = pick2xxResponse(op.responses);
-      const ret = analyzeReturn(resp);
-      const returnType = ret.ts;
-
-      // Emit function
-      addLine(`/**`);
-      if (op.summary) addLine(` * ${op.summary}`);
-      addLine(` * ${method.toUpperCase()} ${p}`);
-      addLine(` */`);
-      const urlExpr = pathParams.length > 0 ? buildUrlTemplate(p, pathParams) : JSON.stringify(p);
-
-      // Special case: GET + Blob → generate URL builder returning string
-      if (ret.wantsBlob && method === 'get') {
-        const urlFnName = ensureGetPrefix(fnName);
-        addLine(`export function ${urlFnName}(${fnParams.join(', ')}): string {`);
-        addLine(`  const baseUrl = ${urlExpr};`);
+        // Query options
         if (queryParams.length > 0) {
-          addLine(`  const paramsInit = Object.entries(options ?? {})`);
-          addLine(`    .filter(([_, value]) => value !== null && value !== undefined)`);
-          addLine(`    .map(([key, value]) => [key, String(value)]);`);
-          addLine(`  const params = new URLSearchParams(paramsInit);`);
-          addLine(`  return \`\${baseUrl}?\${params.toString()}\`;`);
+          const fields = queryParams
+            .map(qp => {
+              const t = tsParamType(qp);
+              return `  ${safeIdent(qp.name)}?: ${t};`;
+            })
+            .join('\n');
+          fnParams.push(`options?: {\n${fields}\n}`);
+        }
+
+        // Return type from best 2xx response
+        const resp = pick2xxResponse(op.responses);
+        const ret = analyzeReturn(resp);
+        const returnType = ret.ts;
+
+        // Emit function
+        addLine(`/**`);
+        if (op.summary) addLine(` * ${op.summary}`);
+        addLine(` * ${method.toUpperCase()} ${p}`);
+        addLine(` */`);
+        const urlExpr = pathParams.length > 0 ? buildUrlTemplate(p, pathParams) : JSON.stringify(p);
+
+        // Special case: GET + Blob → generate URL builder returning string
+        if (ret.wantsBlob && method === 'get') {
+          const urlFnName = ensureGetPrefix(fnName);
+          addLine(`export function ${urlFnName}(${fnParams.join(', ')}): string {`);
+          addLine(`  const baseUrl = ${urlExpr};`);
+          if (queryParams.length > 0) {
+            addLine(`  const paramsInit = Object.entries(options ?? {})`);
+            addLine(`    .filter(([_, value]) => value !== null && value !== undefined)`);
+            addLine(`    .map(([key, value]) => [key, String(value)]);`);
+            addLine(`  const params = new URLSearchParams(paramsInit);`);
+            addLine(`  return \`\${baseUrl}?\${params.toString()}\`;`);
+          } else {
+            addLine(`  return baseUrl;`);
+          }
+          addLine(`}`);
+          addLine();
+          return; // Skip axios-style emitter for this op
+        }
+
+        addLine(`export async function ${fnName}(${fnParams.join(', ')}): Promise<${returnType}> {`);
+
+        // Build axios request object text
+        const parts = [];
+        parts.push(`method: '${method.toUpperCase()}'`);
+        parts.push(`url: ${urlExpr}`);
+
+        if (queryParams.length > 0) {
+          const arrayFields = queryParams.filter(isArrayParam);
+          if (arrayFields.length === 0) {
+            parts.push(`params: options`);
+          } else {
+            parts.push(`params: {\n      ...options`);
+            arrayFields.forEach(qp => {
+              const key = safeIdent(qp.name);
+              parts.push(`  ${key}: options?.${key}?.join(',')`);
+            });
+            parts.push(`}`);
+          }
+        }
+        if (ret.wantsBlob) parts.push(`responseType: 'blob'`);
+
+        // Build body
+        if (kinds.json && kinds.json.schema) {
+          parts.push(`data`);
+        } else if (kinds.multipart && kinds.multipart.schema) {
+          // Build FormData from strong-typed 'data'
+          const formVar = 'form';
+          emitFormPopulation(kinds.multipart.schema, formVar, 'data', /*asUrlEncoded*/ false);
+          parts.push(`data: ${formVar}`);
+        } else if (kinds.urlencoded && kinds.urlencoded.schema) {
+          // Build URLSearchParams from strong-typed 'data'
+          const formVar = 'form';
+          emitFormPopulation(kinds.urlencoded.schema, formVar, 'data', /*asUrlEncoded*/ true);
+          parts.push(`data: ${formVar}`);
+        }
+
+        if (returnType === 'void') {
+          addLine(`  await axios.request({`);
+          addLine('    ' + parts.join(',\n    '));
+          addLine(`  });`);
         } else {
-          addLine(`  return baseUrl;`);
+          addLine(`  const response = await axios.request<${returnType}>({`);
+          addLine('    ' + parts.join(',\n    '));
+          addLine(`  });`);
+          addLine(`  return response.data;`);
         }
         addLine(`}`);
         addLine();
-        return; // Skip axios-style emitter for this op
-      }
-
-      addLine(`export async function ${fnName}(${fnParams.join(', ')}): Promise<${returnType}> {`);
-
-      // Build axios request object text
-      const parts = [];
-      parts.push(`method: '${method.toUpperCase()}'`);
-      parts.push(`url: ${urlExpr}`);
-
-      if (queryParams.length > 0) {
-        const arrayFields = queryParams.filter(isArrayParam);
-        if (arrayFields.length === 0) {
-          parts.push(`params: options`);
-        } else {
-          parts.push(`params: {\n      ...options`);
-          arrayFields.forEach(qp => {
-            const key = safeIdent(qp.name);
-            parts.push(`  ${key}: options?.${key}?.join(',')`);
-          });
-          parts.push(`}`);
-        }
-      }
-      if (ret.wantsBlob) parts.push(`responseType: 'blob'`);
-
-      // Build body
-      if (kinds.json && kinds.json.schema) {
-        parts.push(`data`);
-      } else if (kinds.multipart && kinds.multipart.schema) {
-        // Build FormData from strong-typed 'data'
-        const formVar = 'form';
-        emitFormPopulation(kinds.multipart.schema, formVar, 'data', /*asUrlEncoded*/ false);
-        parts.push(`data: ${formVar}`);
-      } else if (kinds.urlencoded && kinds.urlencoded.schema) {
-        // Build URLSearchParams from strong-typed 'data'
-        const formVar = 'form';
-        emitFormPopulation(kinds.urlencoded.schema, formVar, 'data', /*asUrlEncoded*/ true);
-        parts.push(`data: ${formVar}`);
-      }
-
-      if (returnType === 'void') {
-        addLine(`  await axios.request({`);
-        addLine('    ' + parts.join(',\n    '));
-        addLine(`  });`);
-      } else {
-        addLine(`  const response = await axios.request<${returnType}>({`);
-        addLine('    ' + parts.join(',\n    '));
-        addLine(`  });`);
-        addLine(`  return response.data;`);
-      }
-      addLine(`}`);
-      addLine();
+      });
     });
-  });
 }
 
 // --- Generate ----------------------------------------------------------------
