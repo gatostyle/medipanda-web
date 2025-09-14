@@ -206,7 +206,7 @@ export default function MpAdminPartnerEdit() {
               <TextField
                 fullWidth
                 label={(formik.values.drugCompany?.name ?? '') !== '' ? '제약사명' : ''}
-                placeholder={(formik.values.drugCompany?.name ?? '') === '' ? '사제약사명용자명' : ''}
+                placeholder={(formik.values.drugCompany?.name ?? '') === '' ? '제약사명' : ''}
                 name='drugCompany'
                 value={formik.values.drugCompany?.name ?? ''}
                 required
