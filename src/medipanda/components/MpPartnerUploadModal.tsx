@@ -153,7 +153,7 @@ function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUpl
             disabled={!formik.values.member || !formik.values.file}
             sx={{ minWidth: 100 }}
           >
-            업데이트
+            업로드
           </Button>
         </DialogActions>
       </Dialog>

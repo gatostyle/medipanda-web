@@ -93,7 +93,7 @@ function MpHospitalUploadModalInternal({ open, onClose, onSuccess }: MpHospitalU
           취소
         </Button>
         <Button variant='contained' color='success' onClick={formik.submitForm} disabled={!formik.values.file} sx={{ minWidth: 100 }}>
-          업데이트
+          업로드
         </Button>
       </DialogActions>
     </Dialog>
