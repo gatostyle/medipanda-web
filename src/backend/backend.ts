@@ -433,6 +433,18 @@ export interface InstitutionInfo {
   name: string;
 }
 
+export interface Item {
+  baseFeeRate: number | null;
+  feeAmount: number | null;
+  id: number | null;
+  note: string | null;
+  productCode: string | null;
+  quantity: number | null;
+  totalPrice: number | null;
+  unit: string | null;
+  unitPrice: number | null;
+}
+
 export interface KmcAuthRequest {
   certMet: string;
   cpId: string;
@@ -989,6 +1001,11 @@ export interface PrescriptionPartnerProductResponse {
   unitPrice: number;
 }
 
+export interface PrescriptionPartnerProductUpsertRequest {
+  deletedPrescriptionPartnerProductIds: number[];
+  items: Item[];
+}
+
 export interface PrescriptionPartnerResponse {
   amount: number;
   businessNumber: string;
@@ -1094,6 +1111,7 @@ export interface ProductBriefingMultiUpdateRequest {
   isJoint: boolean | null;
   location: string | null;
   mealFee: number | null;
+  productId: number | null;
   startedAt: DateTimeString | null;
   transportationFee: number | null;
 }
@@ -1133,6 +1151,7 @@ export interface ProductBriefingSingleUpdateRequest {
   isJoint: boolean | null;
   location: string | null;
   medicalPersons: MedicalPersonInfo[] | null;
+  productId: number | null;
   supportAmount: number | null;
 }
 
@@ -1320,6 +1339,7 @@ export interface SampleProvideReportUpdateRequest {
   institutionCode: string | null;
   institutionName: string | null;
   packCount: number | null;
+  productId: number | null;
   provideCount: number | null;
   providedAt: DateTimeString | null;
 }
@@ -1585,10 +1605,12 @@ export async function unblindPost(data: BlindUpdateRequest): Promise<void> {
  * POST /v1/settlements/upload
  */
 export async function uploadSettlementExcel(data: { file: File }): Promise<void> {
+  const form = new FormData();
+  form.append('file', data.file, data.file.name.normalize('NFC'));
   await axios.request({
     method: 'POST',
     url: '/v1/settlements/upload',
-    data,
+    data: form,
   });
 }
 
@@ -1623,7 +1645,7 @@ export async function notifyAdminForObjections(data: SettlementNotifyRequest): P
 export async function getSalesAgencyProducts(options?: {
   productName?: string;
   clientName?: string;
-  exposureRange?: 'ALL' | 'CONTRACTED' | 'UNCONTRACTED';
+  exposureRanges?: ('ALL' | 'CONTRACTED' | 'UNCONTRACTED')[];
   startAt?: DateString;
   endAt?: DateString;
   isExposed?: boolean;
@@ -1633,7 +1655,10 @@ export async function getSalesAgencyProducts(options?: {
   const response = await axios.request<PageSalesAgencyProductSummaryResponse>({
     method: 'GET',
     url: '/v1/sales-agency-products',
-    params: options,
+    params: {
+      ...options,
+      exposureRanges: options?.exposureRanges?.join(','),
+    },
   });
   return response.data;
 }
@@ -2185,7 +2210,7 @@ export async function createProductBriefingMultiReport(data: {
 export async function getEventBoards(options?: {
   status?: 'IN_PROGRESS' | 'FINISHED';
   isExposed?: boolean;
-  exposureRange?: 'ALL' | 'CONTRACTED' | 'UNCONTRACTED';
+  exposureRanges?: ('ALL' | 'CONTRACTED' | 'UNCONTRACTED')[];
   title?: string;
   startAt?: DateString;
   endAt?: DateString;
@@ -2195,7 +2220,10 @@ export async function getEventBoards(options?: {
   const response = await axios.request<PageEventBoardSummaryResponse>({
     method: 'GET',
     url: '/v1/events',
-    params: options,
+    params: {
+      ...options,
+      exposureRanges: options?.exposureRanges?.join(','),
+    },
   });
   return response.data;
 }
@@ -2292,19 +2320,30 @@ export async function getBoards(options?: {
   filterBlind?: boolean;
   boardTitle?: string;
   filterDeleted?: boolean;
+  exposureRanges?: ('ALL' | 'CONTRACTED' | 'UNCONTRACTED')[];
   isExposed?: boolean;
   drugCompanyIds?: number[];
   drugCompany?: string;
   myUserId?: string;
   includeChild?: boolean;
-  noticeType?: 'PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING';
+  noticeTypes?: (
+    | 'PRODUCT_STATUS'
+    | 'MANUFACTURING_SUSPENSION'
+    | 'NEW_PRODUCT'
+    | 'POLICY'
+    | 'GENERAL'
+    | 'ANONYMOUS_BOARD'
+    | 'MR_CSO_MATCHING'
+  )[];
 }): Promise<PageBoardPostResponse> {
   const response = await axios.request<PageBoardPostResponse>({
     method: 'GET',
     url: '/v1/boards',
     params: {
       ...options,
+      exposureRanges: options?.exposureRanges?.join(','),
       drugCompanyIds: options?.drugCompanyIds?.join(','),
+      noticeTypes: options?.noticeTypes?.join(','),
     },
   });
   return response.data;
@@ -2630,6 +2669,33 @@ export async function confirmPrescription(id: number): Promise<void> {
   await axios.request({
     method: 'PATCH',
     url: `/v1/prescriptions/${id}/confirm`,
+  });
+}
+
+/**
+ * 처방 입력 제품 목록 조회
+ * GET /v1/prescriptions/partners/{prescriptionPartnerId}/products
+ */
+export async function getPartnerProducts(prescriptionPartnerId: number): Promise<PrescriptionPartnerProductResponse[]> {
+  const response = await axios.request<PrescriptionPartnerProductResponse[]>({
+    method: 'GET',
+    url: `/v1/prescriptions/partners/${prescriptionPartnerId}/products`,
+  });
+  return response.data;
+}
+
+/**
+ * 처방 입력 제품 목록 수정(삭제/부분수정/신규추가)
+ * PATCH /v1/prescriptions/partners/{prescriptionPartnerId}/products
+ */
+export async function upsertPatchPartnerProducts(
+  prescriptionPartnerId: number,
+  data: PrescriptionPartnerProductUpsertRequest,
+): Promise<void> {
+  await axios.request({
+    method: 'PATCH',
+    url: `/v1/prescriptions/partners/${prescriptionPartnerId}/products`,
+    data,
   });
 }
 
@@ -3313,7 +3379,7 @@ export function getDownloadProductApplicantsExcel(
 export function getDownloadSalesAgencyProductsExcel(options?: {
   productName?: string;
   clientName?: string;
-  exposureRange?: 'ALL' | 'CONTRACTED' | 'UNCONTRACTED';
+  exposureRanges?: ('ALL' | 'CONTRACTED' | 'UNCONTRACTED')[];
   startAt?: DateString;
   endAt?: DateString;
   isExposed?: boolean;
@@ -3462,18 +3528,6 @@ export async function deletePrescriptionPartner(prescriptionPartnerId: number): 
     method: 'DELETE',
     url: `/v1/prescriptions/partners/${prescriptionPartnerId}`,
   });
-}
-
-/**
- * 처방 입력 제품 목록 조회
- * GET /v1/prescriptions/partners/{prescriptionPartnerId}/products
- */
-export async function getPartnerProducts(prescriptionPartnerId: number): Promise<PrescriptionPartnerProductResponse[]> {
-  const response = await axios.request<PrescriptionPartnerProductResponse[]>({
-    method: 'GET',
-    url: `/v1/prescriptions/partners/${prescriptionPartnerId}/products`,
-  });
-  return response.data;
 }
 
 /**
@@ -3729,6 +3783,17 @@ export async function getExpenseReportList(options?: {
 }
 
 /**
+ * 지출보고서 첨부파일 ZIP 다운로드
+ * GET /v1/expense-reports/{expenseReportId}/files/download
+ */
+export async function downloadExpenseReportFilesZip(expenseReportId: number): Promise<void> {
+  await axios.request({
+    method: 'GET',
+    url: `/v1/expense-reports/${expenseReportId}/files/download`,
+  });
+}
+
+/**
  * ExpenseReport 파일 일괄 다운로드
  * GET /v1/expense-reports/files/download
  */
@@ -3740,17 +3805,6 @@ export async function downloadExpenseReportFiles(options?: { ids?: number[] }): 
       ...options,
       ids: options?.ids?.join(','),
     },
-  });
-}
-
-/**
- * 지출보고서 첨부파일 ZIP 다운로드
- * GET /v1/expense-reports/expense-reports/{expenseReportId}/files/download
- */
-export async function downloadExpenseReportFilesZip(expenseReportId: number): Promise<void> {
-  await axios.request({
-    method: 'GET',
-    url: `/v1/expense-reports/expense-reports/${expenseReportId}/files/download`,
   });
 }
 
@@ -3807,10 +3861,19 @@ export async function getDealerIdByUserId(userId: string): Promise<number> {
  */
 export async function getFixedTopNotices(options?: {
   boardType?: 'ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z' | 'EVENT' | 'SALES_AGENCY' | 'PRODUCT';
-  noticeType?: 'PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING';
   filterBlind?: boolean;
   filterDeleted?: boolean;
   drugCompanyIds?: number[];
+  noticeTypes?: (
+    | 'PRODUCT_STATUS'
+    | 'MANUFACTURING_SUSPENSION'
+    | 'NEW_PRODUCT'
+    | 'POLICY'
+    | 'GENERAL'
+    | 'ANONYMOUS_BOARD'
+    | 'MR_CSO_MATCHING'
+  )[];
+  exposureRanges?: ('ALL' | 'CONTRACTED' | 'UNCONTRACTED')[];
 }): Promise<BoardPostResponse[]> {
   const response = await axios.request<BoardPostResponse[]>({
     method: 'GET',
@@ -3818,6 +3881,8 @@ export async function getFixedTopNotices(options?: {
     params: {
       ...options,
       drugCompanyIds: options?.drugCompanyIds?.join(','),
+      noticeTypes: options?.noticeTypes?.join(','),
+      exposureRanges: options?.exposureRanges?.join(','),
     },
   });
   return response.data;
@@ -3939,6 +4004,23 @@ export async function softDeleteHospital(id: number): Promise<void> {
   await axios.request({
     method: 'DELETE',
     url: `/v1/hospitals/${id}`,
+  });
+}
+
+/**
+ * 지출보고 삭제 (연관 엔티티 포함)
+ * DELETE /v1/expense-reports/{id}
+ */
+export async function deleteExpenseReport(
+  id: number,
+  options?: {
+    softDeleteS3?: boolean;
+  },
+): Promise<void> {
+  await axios.request({
+    method: 'DELETE',
+    url: `/v1/expense-reports/${id}`,
+    params: options,
   });
 }
 
