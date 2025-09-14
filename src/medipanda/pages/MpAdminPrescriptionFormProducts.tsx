@@ -9,6 +9,7 @@ import {
   FormControlLabel,
   Grid,
   IconButton,
+  InputAdornment,
   Stack,
   Table,
   TableBody,
@@ -126,18 +127,28 @@ export default function MpAdminPrescriptionFormProducts() {
         {
           header: '제품명',
           cell: ({ row }) => (
-            <Stack direction='row' spacing={1} alignItems='center'>
-              <TextField size='small' fullWidth value={row.original.productName} placeholder='제품명 검색' disabled />
-              <IconButton
-                size='small'
-                onClick={() => {
-                  setCurrentProductItemIndex(row.index);
-                  setPartnerProductSelectModalOpen(true);
-                }}
-              >
-                <SearchNormal1 size={16} />
-              </IconButton>
-            </Stack>
+            <TextField
+              size='small'
+              fullWidth
+              value={row.original.productName}
+              placeholder='제품명'
+              InputProps={{
+                readOnly: true,
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <IconButton
+                      size='small'
+                      onClick={() => {
+                        setCurrentProductItemIndex(row.index);
+                        setPartnerProductSelectModalOpen(true);
+                      }}
+                    >
+                      <SearchNormal1 size={16} />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
           ),
           size: 200,
         },
@@ -411,18 +422,23 @@ export default function MpAdminPrescriptionFormProducts() {
                     <Typography variant='body2' color='text.secondary' sx={{ minWidth: 100 }}>
                       거래처명:
                     </Typography>
-                    <Stack direction='row' spacing={1} alignItems='center' flex={1}>
-                      <TextField
-                        size='small'
-                        name='institutionName'
-                        value={formik.values.institutionName}
-                        onChange={formik.handleChange}
-                        fullWidth
-                      />
-                      <IconButton size='small' onClick={handlePartnerSearch}>
-                        <SearchNormal1 size={16} />
-                      </IconButton>
-                    </Stack>
+                    <TextField
+                      size='small'
+                      name='institutionName'
+                      value={formik.values.institutionName}
+                      onChange={formik.handleChange}
+                      fullWidth
+                      InputProps={{
+                        readOnly: true,
+                        endAdornment: (
+                          <InputAdornment position='end'>
+                            <IconButton size='small' onClick={handlePartnerSearch}>
+                              <SearchNormal1 size={16} />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
                   </Stack>
                 </Stack>
               </Grid>

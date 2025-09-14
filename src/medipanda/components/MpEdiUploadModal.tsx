@@ -167,11 +167,13 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
             </Box>
             <Box>
               <TextField
-                placeholder='사용자명'
+                label={(formik.values.partnerUser?.name ?? '') !== '' ? '사용자명' : ''}
+                placeholder={(formik.values.partnerUser?.name ?? '') === '' ? '사용자명' : ''}
                 value={formik.values.partnerUser?.name ?? ''}
+                size='small'
                 required
-                disabled
                 InputProps={{
+                  readOnly: true,
                   endAdornment: (
                     <InputAdornment position='end'>
                       <IconButton onClick={() => setMemberSearchDialogOpen(true)} edge='end'>

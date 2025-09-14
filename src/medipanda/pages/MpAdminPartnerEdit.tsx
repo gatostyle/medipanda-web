@@ -205,12 +205,13 @@ export default function MpAdminPartnerEdit() {
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label='제약사명'
+                label={(formik.values.drugCompany?.name ?? '') !== '' ? '제약사명' : ''}
+                placeholder={(formik.values.drugCompany?.name ?? '') === '' ? '사제약사명용자명' : ''}
                 name='drugCompany'
                 value={formik.values.drugCompany?.name ?? ''}
                 required
-                disabled
                 InputProps={{
+                  readOnly: true,
                   endAdornment: (
                     <InputAdornment position='end'>
                       <IconButton onClick={handlePharmaceuticalSearch} edge='end'>
@@ -225,11 +226,12 @@ export default function MpAdminPartnerEdit() {
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label='사용자명'
+                label={(formik.values.member?.name ?? '') !== '' ? '사용자명' : ''}
+                placeholder={(formik.values.member?.name ?? '') === '' ? '사용자명' : ''}
                 value={formik.values.member?.name ?? ''}
                 required
-                disabled
                 InputProps={{
+                  readOnly: true,
                   endAdornment: (
                     <InputAdornment position='end'>
                       <IconButton onClick={() => setMemberSelectModalOpen(true)} edge='end'>

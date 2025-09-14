@@ -80,15 +80,17 @@ function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUpl
     <>
       <Dialog open={open} onClose={onClose} maxWidth='sm' fullWidth>
         <DialogTitle sx={{ fontSize: '1.25rem', fontWeight: 600 }}>거래선 업로드</DialogTitle>
-        <DialogContent sx={{ mt: 1, pt: 3, pb: 3 }}>
-          <Stack direction='row' alignItems='center' sx={{ mb: 3 }}>
+        <DialogContent sx={{ pt: 3, pb: 3 }}>
+          <Stack direction='row' alignItems='center' sx={{ mt: 1, mb: 3 }}>
             <Box>
               <TextField
-                placeholder='사용자명'
+                label={(formik.values.member?.name ?? '') !== '' ? '사용자명' : ''}
+                placeholder={(formik.values.member?.name ?? '') === '' ? '사용자명' : ''}
                 value={formik.values.member?.name ?? ''}
+                size='small'
                 required
-                disabled
                 InputProps={{
+                  readOnly: true,
                   endAdornment: (
                     <InputAdornment position='end'>
                       <IconButton onClick={() => setMemberSelectModalOpen(true)} edge='end'>
