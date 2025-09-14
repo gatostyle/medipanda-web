@@ -68,6 +68,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           clearInterval(window.refreshTokenRotateInterval);
           localStorage.removeItem('refreshToken');
 
+          await logout();
           setSession(null);
         }
       },
