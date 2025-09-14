@@ -62,7 +62,6 @@ export default function MpAdminSettlementPartnerDetail() {
         getSettlement(settlementId),
         getSettlementPartnerSummary({
           settlementId: settlementId,
-          institutionCode: settlementPartnerId,
         }),
         getSettlementPartnerProducts(settlementPartnerId),
       ]);
