@@ -32,7 +32,9 @@ import {
   getPrescriptionPartner,
   PartnerResponse,
   PrescriptionPartnerProductResponse,
+  PrescriptionPartnerResponse,
   PrescriptionProductItem,
+  PrescriptionStatus,
   ProductSummaryResponse,
 } from '@/backend';
 import { MpChangeHistoryModal } from '@/medipanda/components/MpChangeHistoryModal';
@@ -62,6 +64,7 @@ export default function MpAdminPrescriptionFormProducts() {
 
   const { alertError } = useMpModal();
 
+  const [prescriptionPartner, setPrescriptionPartner] = useState<PrescriptionPartnerResponse | null>(null);
   const [partnerProducts, setPartnerProducts] = useState<
     Sequenced<PrescriptionPartnerProductResponse & Pick<PrescriptionProductItem, 'ocrItem'>>[]
   >([]);
@@ -134,7 +137,7 @@ export default function MpAdminPrescriptionFormProducts() {
               placeholder='제품명'
               InputProps={{
                 readOnly: true,
-                endAdornment: (
+                endAdornment: prescriptionPartner?.status !== PrescriptionStatus.COMPLETED && (
                   <InputAdornment position='end'>
                     <IconButton
                       size='small'
@@ -166,6 +169,9 @@ export default function MpAdminPrescriptionFormProducts() {
               fullWidth
               value={row.original.quantity}
               onChange={e => handleProductChange(row.index, 'quantity', e.target.value)}
+              InputProps={{
+                readOnly: prescriptionPartner?.status === PrescriptionStatus.COMPLETED,
+              }}
             />
           ),
           size: 100,
@@ -185,6 +191,9 @@ export default function MpAdminPrescriptionFormProducts() {
               name='totalPrice'
               value={row.original.totalPrice}
               onChange={e => handleProductChange(row.index, 'totalPrice', e.target.value)}
+              InputProps={{
+                readOnly: prescriptionPartner?.status === PrescriptionStatus.COMPLETED,
+              }}
             />
           ),
           size: 120,
@@ -199,6 +208,9 @@ export default function MpAdminPrescriptionFormProducts() {
               name='baseFeeRate'
               value={row.original.baseFeeRate}
               onChange={e => handleProductChange(row.index, 'baseFeeRate', e.target.value)}
+              InputProps={{
+                readOnly: prescriptionPartner?.status === PrescriptionStatus.COMPLETED,
+              }}
             />
           ),
           size: 120,
@@ -213,6 +225,9 @@ export default function MpAdminPrescriptionFormProducts() {
               name='feeAmount'
               value={row.original.feeAmount}
               onChange={e => handleProductChange(row.index, 'feeAmount', e.target.value)}
+              InputProps={{
+                readOnly: prescriptionPartner?.status === PrescriptionStatus.COMPLETED,
+              }}
             />
           ),
           size: 120,
@@ -226,6 +241,9 @@ export default function MpAdminPrescriptionFormProducts() {
               name='note'
               value={row.original.note}
               onChange={e => handleProductChange(row.index, 'note', e.target.value)}
+              InputProps={{
+                readOnly: prescriptionPartner?.status === PrescriptionStatus.COMPLETED,
+              }}
             />
           ),
           size: 150,
@@ -347,23 +365,24 @@ export default function MpAdminPrescriptionFormProducts() {
 
     try {
       setLoading(true);
-      const [formDetail, products, attachedFiles] = await Promise.all([
+      const [prescriptionPartner, products, attachedFiles] = await Promise.all([
         getPrescriptionPartner(prescriptionPartnerId),
         getPartnerProducts(prescriptionPartnerId),
         getAttachedEdiFiles(prescriptionPartnerId),
       ]);
+      setPrescriptionPartner(prescriptionPartner);
 
       formik.setValues({
-        drugCompany: formDetail.drugCompany,
-        drugCompanyCode: formDetail.drugCompanyCode,
-        companyName: formDetail.companyName,
-        institutionName: formDetail.partnerName,
-        institutionCode: formDetail.institutionCode,
-        businessNumber: formDetail.businessNumber,
-        dealerName: formDetail.dealerName,
-        prescriptionMonth: DateFix(formDetail.prescriptionMonth),
-        settlementMonth: DateFix(formDetail.settlementMonth),
-        prescriptionAmount: formDetail.amount.toLocaleString(),
+        drugCompany: prescriptionPartner.drugCompany,
+        drugCompanyCode: prescriptionPartner.drugCompanyCode,
+        companyName: prescriptionPartner.companyName,
+        institutionName: prescriptionPartner.partnerName,
+        institutionCode: prescriptionPartner.institutionCode,
+        businessNumber: prescriptionPartner.businessNumber,
+        dealerName: prescriptionPartner.dealerName,
+        prescriptionMonth: DateFix(prescriptionPartner.prescriptionMonth),
+        settlementMonth: DateFix(prescriptionPartner.settlementMonth),
+        prescriptionAmount: prescriptionPartner.amount.toLocaleString(),
       });
 
       setPartnerProducts(
@@ -426,11 +445,10 @@ export default function MpAdminPrescriptionFormProducts() {
                       size='small'
                       name='institutionName'
                       value={formik.values.institutionName}
-                      onChange={formik.handleChange}
                       fullWidth
                       InputProps={{
                         readOnly: true,
-                        endAdornment: (
+                        endAdornment: prescriptionPartner?.status !== PrescriptionStatus.COMPLETED && (
                           <InputAdornment position='end'>
                             <IconButton size='small' onClick={handlePartnerSearch}>
                               <SearchNormal1 size={16} />
@@ -478,6 +496,7 @@ export default function MpAdminPrescriptionFormProducts() {
                       format='yyyy-MM'
                       views={['year', 'month']}
                       label='처방월'
+                      readOnly={prescriptionPartner?.status === PrescriptionStatus.COMPLETED}
                       slotProps={{
                         textField: {
                           size: 'small',
@@ -495,6 +514,7 @@ export default function MpAdminPrescriptionFormProducts() {
                       format='yyyy-MM'
                       views={['year', 'month']}
                       label='정산월'
+                      readOnly={prescriptionPartner?.status === PrescriptionStatus.COMPLETED}
                       slotProps={{
                         textField: {
                           size: 'small',
@@ -512,14 +532,16 @@ export default function MpAdminPrescriptionFormProducts() {
               </Grid>
             </Grid>
 
-            <Stack direction='row' spacing={2} sx={{ mt: 3 }}>
-              <Button variant='contained' color='success' size='small' onClick={handleEdiFileView}>
-                EDI파일보기
-              </Button>
-              <Button variant='outlined' size='small' onClick={handleChangeHistory}>
-                변경내역보기
-              </Button>
-            </Stack>
+            {prescriptionPartner?.status !== PrescriptionStatus.COMPLETED && (
+              <Stack direction='row' spacing={2} sx={{ mt: 3 }}>
+                <Button variant='contained' color='success' size='small' onClick={handleEdiFileView}>
+                  EDI파일보기
+                </Button>
+                <Button variant='outlined' size='small' onClick={handleChangeHistory}>
+                  변경내역보기
+                </Button>
+              </Stack>
+            )}
           </Box>
 
           <TableContainer>
@@ -547,50 +569,62 @@ export default function MpAdminPrescriptionFormProducts() {
             </Table>
           </TableContainer>
 
-          <Stack direction='row' spacing={2} sx={{ mt: 2 }}>
-            <Button variant='contained' color='success' size='small' onClick={handleAddProduct} startIcon={<Add size={16} />}>
-              내역추가
-            </Button>
-            <Button
-              variant='outlined'
-              color='error'
-              size='small'
-              onClick={handleRemoveProduct}
-              disabled={partnerProducts.length <= 1}
-              startIcon={<Minus size={16} />}
-            >
-              내역삭제
-            </Button>
-          </Stack>
+          {prescriptionPartner?.status !== PrescriptionStatus.COMPLETED && (
+            <Stack direction='row' spacing={2} sx={{ mt: 2 }}>
+              <Button variant='contained' color='success' size='small' onClick={handleAddProduct} startIcon={<Add size={16} />}>
+                내역추가
+              </Button>
+              <Button
+                variant='outlined'
+                color='error'
+                size='small'
+                onClick={handleRemoveProduct}
+                disabled={partnerProducts.length <= 1}
+                startIcon={<Minus size={16} />}
+              >
+                내역삭제
+              </Button>
+            </Stack>
+          )}
 
-          <Box sx={{ mt: 3 }}>
-            <Typography variant='subtitle1' sx={{ mb: 2 }}>
-              OCR리포트 보내기
-            </Typography>
-            <FormControlLabel
-              control={<Checkbox checked={sendOcrReport} onChange={e => setSendOcrReport(e.target.checked)} />}
-              label='OCR리포트 보내기'
-            />
-            <TextField
-              fullWidth
-              multiline
-              rows={6}
-              placeholder='OCR 리포트 내용을 입력하세요'
-              value={ocrReportContent}
-              onChange={e => setOcrReportContent(e.target.value)}
-              disabled={!sendOcrReport}
-              sx={{ mt: 2 }}
-            />
-          </Box>
+          {prescriptionPartner?.status !== PrescriptionStatus.COMPLETED && (
+            <Box sx={{ mt: 3 }}>
+              <Typography variant='subtitle1' sx={{ mb: 2 }}>
+                OCR리포트 보내기
+              </Typography>
+              <FormControlLabel
+                control={<Checkbox checked={sendOcrReport} onChange={e => setSendOcrReport(e.target.checked)} />}
+                label='OCR리포트 보내기'
+              />
+              <TextField
+                fullWidth
+                multiline
+                rows={6}
+                placeholder='OCR 리포트 내용을 입력하세요'
+                value={ocrReportContent}
+                onChange={e => setOcrReportContent(e.target.value)}
+                disabled={!sendOcrReport}
+                sx={{ mt: 2 }}
+              />
+            </Box>
+          )}
 
-          <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 4 }}>
-            <Button variant='outlined' size='large' component={RouterLink} to='/admin/prescription-forms' sx={{ minWidth: 120 }}>
-              취소
-            </Button>
-            <Button variant='contained' color='success' size='large' type='submit' sx={{ minWidth: 120 }}>
-              저장
-            </Button>
-          </Stack>
+          {prescriptionPartner?.status !== PrescriptionStatus.COMPLETED ? (
+            <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 4 }}>
+              <Button variant='outlined' size='large' component={RouterLink} to='/admin/prescription-forms' sx={{ minWidth: 120 }}>
+                취소
+              </Button>
+              <Button variant='contained' color='success' size='large' type='submit' sx={{ minWidth: 120 }}>
+                저장
+              </Button>
+            </Stack>
+          ) : (
+            <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 4 }}>
+              <Button variant='outlined' size='large' component={RouterLink} to='/admin/prescription-forms' sx={{ minWidth: 120 }}>
+                뒤로
+              </Button>
+            </Stack>
+          )}
         </Card>
       </form>
 
