@@ -24,7 +24,7 @@ const MpAdminProductEdit = Loadable(lazy(() => import('medipanda/pages/MpAdminPr
 const MpAdminPrescriptionReceptionList = Loadable(lazy(() => import('medipanda/pages/MpAdminPrescriptionReceptionList')));
 const MpAdminPrescriptionFormList = Loadable(lazy(() => import('medipanda/pages/MpAdminPrescriptionFormList')));
 const MpAdminPrescriptionFormProducts = Loadable(lazy(() => import('medipanda/pages/MpAdminPrescriptionFormProducts')));
-const MpAdminSettlementBusinessPartnerDetail = Loadable(lazy(() => import('medipanda/pages/MpAdminSettlementBusinessPartnerDetail')));
+const MpAdminSettlementPartnerDetail = Loadable(lazy(() => import('@/medipanda/pages/MpAdminSettlementPartnerDetail')));
 const MpAdminSettlementList = Loadable(lazy(() => import('medipanda/pages/MpAdminSettlementList')));
 const MpAdminSettlementDetail = Loadable(lazy(() => import('@/medipanda/pages/MpAdminSettlementDetail')));
 const MpAdminStatisticsList = Loadable(lazy(() => import('medipanda/pages/MpAdminStatisticsList')));
@@ -245,10 +245,10 @@ const adminRoute: RouteObject = {
       ),
     },
     {
-      path: 'settlements/:settlementId/business-partners/:settlementPartnerId',
+      path: 'settlements/:settlementId/partners/:settlementPartnerId',
       element: (
         <MpAdminGuard requiredPermission={AdminPermission.SETTLEMENT_MANAGEMENT}>
-          <MpAdminSettlementBusinessPartnerDetail />
+          <MpAdminSettlementPartnerDetail />
         </MpAdminGuard>
       ),
     },

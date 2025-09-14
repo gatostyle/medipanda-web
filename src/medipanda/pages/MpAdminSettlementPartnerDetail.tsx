@@ -31,7 +31,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrayElement } from 'type-fest/source/internal';
 
-export default function MpAdminSettlementBusinessPartnerDetail() {
+export default function MpAdminSettlementPartnerDetail() {
   const navigate = useNavigate();
   const { settlementId: paramSettlementId, settlementPartnerId: paramSettlementPartnerId } = useParams();
   const settlementId = Number(paramSettlementId);
