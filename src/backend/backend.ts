@@ -477,7 +477,7 @@ export interface MemberDetailsResponse {
   accountStatus: 'ACTIVATED' | 'BLOCKED' | 'DELETED';
   birthDate: string;
   contractDate: string | null;
-  contractStatus: ('PENDING' | 'APPROVED' | 'REJECTED') | null;
+  contractStatus: ('PENDING' | 'APPROVED' | 'REJECTED' | 'CANCELLED') | null;
   csoCertUrl: string | null;
   email: string;
   gender: ('MALE' | 'FEMALE') | null;
@@ -860,7 +860,7 @@ export interface PartnerContractDetailsResponse {
   contractType: 'INDIVIDUAL' | 'ORGANIZATION';
   fileUrls: Record<string, string>;
   id: number;
-  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'CANCELLED';
 }
 
 export interface PartnerContractRequest {
@@ -1938,7 +1938,7 @@ export async function updateContract(
 }
 
 /**
- * 파트너 계약 거절
+ * 파트너 계약 종료 및 신청 거절
  * POST /v1/partner-contracts/{contractId}/reject
  */
 export async function rejectContract(contractId: number): Promise<void> {
