@@ -5,7 +5,6 @@ import {
   Button,
   Card,
   FormControl,
-  Grid,
   InputLabel,
   MenuItem,
   Pagination,
@@ -198,191 +197,185 @@ export default function MpAdminExpenseReportList() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Grid item xs={12}>
-        <Typography variant='h4' gutterBottom>
-          지출보고관리
-        </Typography>
-      </Grid>
+      <Typography variant='h4' gutterBottom>
+        지출보고관리
+      </Typography>
 
-      <Grid item xs={12}>
-        <Card sx={{ padding: 3 }}>
-          <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>
-            <SearchFilterItem minWidth={140}>
-              <FormControl fullWidth size='small'>
-                <InputLabel>신고상태</InputLabel>
-                <Select name='status' value={formik.values.status} onChange={formik.handleChange}>
-                  {Object.keys(ExpenseReportStatus).map(expenseReportStatus => (
-                    <MenuItem key={expenseReportStatus} value={expenseReportStatus}>
-                      {ExpenseReportStatusLabel[expenseReportStatus]}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </SearchFilterItem>
-            <SearchFilterItem minWidth={140}>
-              <FormControl fullWidth size='small'>
-                <InputLabel>검색유형</InputLabel>
-                <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
-                  <MenuItem value={'companyName'}>회사명</MenuItem>
-                  <MenuItem value={'userId'}>아이디</MenuItem>
-                  <MenuItem value={'productName'}>제품명</MenuItem>
-                </Select>
-              </FormControl>
-            </SearchFilterItem>
-            <SearchFilterItem minWidth={140}>
-              <FormControl fullWidth size='small'>
-                <InputLabel>유형</InputLabel>
-                <Select name='reportType' value={formik.values.reportType} onChange={formik.handleChange}>
-                  {Object.keys(ExpenseReportType).map(expenseReportType => (
-                    <MenuItem key={expenseReportType} value={expenseReportType}>
-                      {ExpenseReportTypeLabel[expenseReportType]}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </SearchFilterItem>
-            <SearchFilterItem minWidth={140}>
-              <DatePicker
-                value={formik.values.eventDateFrom}
-                onChange={value => formik.setFieldValue('eventDateFrom', value)}
-                format='yyyy-MM-dd'
-                views={['year', 'month', 'day']}
-                label='시작일'
-                slotProps={{
-                  textField: {
-                    size: 'small',
-                  },
-                }}
-              />
-            </SearchFilterItem>
-            <SearchFilterItem minWidth={140}>
-              <DatePicker
-                value={formik.values.eventDateTo}
-                onChange={value => formik.setFieldValue('eventDateTo', value)}
-                format='yyyy-MM-dd'
-                views={['year', 'month', 'day']}
-                label='종료일'
-                slotProps={{
-                  textField: {
-                    size: 'small',
-                  },
-                }}
-              />
-            </SearchFilterItem>
-            <SearchFilterItem flexGrow={1} minWidth={200}>
-              <TextField
-                size='small'
-                fullWidth
-                name='searchKeyword'
-                value={formik.values.searchKeyword}
-                onChange={formik.handleChange}
-                placeholder='검색어를 입력하세요'
-              />
-            </SearchFilterItem>
-            <SearchFilterActions>
-              <Button type='submit' variant='contained' size='small'>
-                검색
-              </Button>
-              <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
-                초기화
-              </Button>
-            </SearchFilterActions>
-          </SearchFilterBar>
-        </Card>
-      </Grid>
+      <Card sx={{ padding: 3 }}>
+        <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>
+          <SearchFilterItem minWidth={140}>
+            <FormControl fullWidth size='small'>
+              <InputLabel>신고상태</InputLabel>
+              <Select name='status' value={formik.values.status} onChange={formik.handleChange}>
+                {Object.keys(ExpenseReportStatus).map(expenseReportStatus => (
+                  <MenuItem key={expenseReportStatus} value={expenseReportStatus}>
+                    {ExpenseReportStatusLabel[expenseReportStatus]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </SearchFilterItem>
+          <SearchFilterItem minWidth={140}>
+            <FormControl fullWidth size='small'>
+              <InputLabel>검색유형</InputLabel>
+              <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
+                <MenuItem value={'companyName'}>회사명</MenuItem>
+                <MenuItem value={'userId'}>아이디</MenuItem>
+                <MenuItem value={'productName'}>제품명</MenuItem>
+              </Select>
+            </FormControl>
+          </SearchFilterItem>
+          <SearchFilterItem minWidth={140}>
+            <FormControl fullWidth size='small'>
+              <InputLabel>유형</InputLabel>
+              <Select name='reportType' value={formik.values.reportType} onChange={formik.handleChange}>
+                {Object.keys(ExpenseReportType).map(expenseReportType => (
+                  <MenuItem key={expenseReportType} value={expenseReportType}>
+                    {ExpenseReportTypeLabel[expenseReportType]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </SearchFilterItem>
+          <SearchFilterItem minWidth={140}>
+            <DatePicker
+              value={formik.values.eventDateFrom}
+              onChange={value => formik.setFieldValue('eventDateFrom', value)}
+              format='yyyy-MM-dd'
+              views={['year', 'month', 'day']}
+              label='시작일'
+              slotProps={{
+                textField: {
+                  size: 'small',
+                },
+              }}
+            />
+          </SearchFilterItem>
+          <SearchFilterItem minWidth={140}>
+            <DatePicker
+              value={formik.values.eventDateTo}
+              onChange={value => formik.setFieldValue('eventDateTo', value)}
+              format='yyyy-MM-dd'
+              views={['year', 'month', 'day']}
+              label='종료일'
+              slotProps={{
+                textField: {
+                  size: 'small',
+                },
+              }}
+            />
+          </SearchFilterItem>
+          <SearchFilterItem flexGrow={1} minWidth={200}>
+            <TextField
+              size='small'
+              fullWidth
+              name='searchKeyword'
+              value={formik.values.searchKeyword}
+              onChange={formik.handleChange}
+              placeholder='검색어를 입력하세요'
+            />
+          </SearchFilterItem>
+          <SearchFilterActions>
+            <Button type='submit' variant='contained' size='small'>
+              검색
+            </Button>
+            <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
+              초기화
+            </Button>
+          </SearchFilterActions>
+        </SearchFilterBar>
+      </Card>
 
-      <Grid item xs={12}>
-        <Card sx={{ padding: 3 }}>
-          <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
-            <Stack direction='row' spacing={2}>
-              <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
-            </Stack>
-            <Stack direction='row' spacing={1}>
-              <Button
-                variant='contained'
-                size='small'
-                color='success'
-                startIcon={<DocumentDownload size={16} />}
-                href={getDownloadExpenseReportListExcel({
-                  companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
-                  userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
-                  productName: searchType === 'productName' && searchKeyword !== '' ? searchKeyword : undefined,
-                  eventDateFrom: eventDateFrom ? new DateTimeString(eventDateFrom) : undefined,
-                  eventDateTo: eventDateTo ? new DateTimeString(eventDateTo) : undefined,
-                  status: formik.values.status !== '' ? formik.values.status : undefined,
-                  size: 2 ** 31 - 1,
-                })}
-                target='_blank'
-              >
-                Excel
-              </Button>
-            </Stack>
+      <Card sx={{ padding: 3 }}>
+        <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+          <Stack direction='row' spacing={2}>
+            <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
           </Stack>
+          <Stack direction='row' spacing={1}>
+            <Button
+              variant='contained'
+              size='small'
+              color='success'
+              startIcon={<DocumentDownload size={16} />}
+              href={getDownloadExpenseReportListExcel({
+                companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
+                userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
+                productName: searchType === 'productName' && searchKeyword !== '' ? searchKeyword : undefined,
+                eventDateFrom: eventDateFrom ? new DateTimeString(eventDateFrom) : undefined,
+                eventDateTo: eventDateTo ? new DateTimeString(eventDateTo) : undefined,
+                status: formik.values.status !== '' ? formik.values.status : undefined,
+                size: 2 ** 31 - 1,
+              })}
+              target='_blank'
+            >
+              Excel
+            </Button>
+          </Stack>
+        </Stack>
 
-          <TableContainer sx={{ overflowX: 'auto' }}>
-            <Table size='small'>
-              <TableHead>
-                {table.getHeaderGroups().map(headerGroup => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map(header => (
-                      <TableCell key={header.id} style={{ width: header.getSize() }}>
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                      </TableCell>
+        <TableContainer sx={{ overflowX: 'auto' }}>
+          <Table size='small'>
+            <TableHead>
+              {table.getHeaderGroups().map(headerGroup => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map(header => (
+                    <TableCell key={header.id} style={{ width: header.getSize() }}>
+                      {flexRender(header.column.columnDef.header, header.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHead>
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                    <Typography variant='body2' color='text.secondary'>
+                      데이터를 로드하는 중입니다.
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              ) : table.getRowModel().rows.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                    <Typography variant='body2' color='text.secondary'>
+                      검색 결과가 없습니다.
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                table.getRowModel().rows.map(row => (
+                  <TableRow key={row.id}>
+                    {row.getVisibleCells().map(cell => (
+                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                     ))}
                   </TableRow>
-                ))}
-              </TableHead>
-              <TableBody>
-                {loading ? (
-                  <TableRow>
-                    <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
-                      <Typography variant='body2' color='text.secondary'>
-                        데이터를 로드하는 중입니다.
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                ) : table.getRowModel().rows.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
-                      <Typography variant='body2' color='text.secondary'>
-                        검색 결과가 없습니다.
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  table.getRowModel().rows.map(row => (
-                    <TableRow key={row.id}>
-                      {row.getVisibleCells().map(cell => (
-                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-
-          <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
-            <Pagination
-              count={totalPages}
-              page={page}
-              renderItem={item => (
-                <PaginationItem
-                  {...item}
-                  color='primary'
-                  variant='outlined'
-                  component={RouterLink}
-                  to={setUrlParams({ page: item.page }, initialSearchParams)}
-                />
+                ))
               )}
-              color='primary'
-              variant='outlined'
-              showFirstButton
-              showLastButton
-            />
-          </Stack>
-        </Card>
-      </Grid>
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
+          <Pagination
+            count={totalPages}
+            page={page}
+            renderItem={item => (
+              <PaginationItem
+                {...item}
+                color='primary'
+                variant='outlined'
+                component={RouterLink}
+                to={setUrlParams({ page: item.page }, initialSearchParams)}
+              />
+            )}
+            color='primary'
+            variant='outlined'
+            showFirstButton
+            showLastButton
+          />
+        </Stack>
+      </Card>
     </Stack>
   );
 }

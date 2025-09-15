@@ -1,7 +1,7 @@
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { useSession } from '@/medipanda/hooks/useSession';
-import { Box, Button, Card, CircularProgress, Grid, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Card, CircularProgress, Stack, TextField, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import { useFormik } from 'formik';
 import {
@@ -144,153 +144,123 @@ export default function MpAdminInquiryDetail() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Grid item xs={12}>
-        <Typography variant='h4' gutterBottom>
-          1:1 문의 수정
-        </Typography>
-      </Grid>
+      <Typography variant='h4' gutterBottom>
+        1:1 문의 수정
+      </Typography>
 
-      <Grid item xs={12}>
-        <Card sx={{ padding: 3 }}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
-                  <Box>
-                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-                      회원정보
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      size='small'
-                      value={`${detail.nickname}(${detail.userId})`}
-                      InputProps={{ readOnly: true }}
-                      sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
-                    />
-                  </Box>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                  <Box>
-                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-                      회사정보
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      size='small'
-                      value={'-'}
-                      InputProps={{ readOnly: true }}
-                      sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
-                    />
-                  </Box>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                  <Box>
-                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-                      휴대폰번호
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      size='small'
-                      value={'-'}
-                      InputProps={{ readOnly: true }}
-                      sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
-                    />
-                  </Box>
-                </Grid>
-              </Grid>
-            </Grid>
+      <Card component={Stack} sx={{ padding: 3, gap: 3 }}>
+        <Stack direction='row' sx={{ gap: 2 }}>
+          <Stack sx={{ flex: '1 0', gap: 2 }}>
+            <Typography variant='subtitle2' color='text.secondary'>
+              회원정보
+            </Typography>
+            <TextField
+              fullWidth
+              size='small'
+              value={`${detail.nickname}(${detail.userId})`}
+              InputProps={{ readOnly: true }}
+              sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
+            />
+          </Stack>
+          <Stack sx={{ flex: '1 0', gap: 2 }}>
+            <Typography variant='subtitle2' color='text.secondary'>
+              회사정보
+            </Typography>
+            <TextField
+              fullWidth
+              size='small'
+              value={'-'}
+              InputProps={{ readOnly: true }}
+              sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
+            />
+          </Stack>
+          <Stack sx={{ flex: '1 0', gap: 2 }}>
+            <Typography variant='subtitle2' color='text.secondary'>
+              휴대폰번호
+            </Typography>
+            <TextField
+              fullWidth
+              size='small'
+              value={'-'}
+              InputProps={{ readOnly: true }}
+              sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
+            />
+          </Stack>
+        </Stack>
 
-            <Grid item xs={12}>
-              <Box>
-                <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-                  제목
-                </Typography>
-                <TextField
-                  fullWidth
-                  size='small'
-                  value={detail.title}
-                  InputProps={{ readOnly: true }}
-                  sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
-                />
-              </Box>
-            </Grid>
+        <Stack sx={{ gap: 2 }}>
+          <Typography variant='subtitle2' color='text.secondary'>
+            제목
+          </Typography>
+          <TextField
+            fullWidth
+            size='small'
+            value={detail.title}
+            InputProps={{ readOnly: true }}
+            sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
+          />
+        </Stack>
 
-            <Grid item xs={12}>
-              <Box>
-                <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-                  내용
-                </Typography>
-                <EditorContent editor={editor} />
-              </Box>
-            </Grid>
+        <Stack sx={{ gap: 2 }}>
+          <Typography variant='subtitle2' color='text.secondary'>
+            내용
+          </Typography>
+          <EditorContent editor={editor} />
+        </Stack>
 
-            <Grid item xs={12}>
-              <Typography variant='subtitle2' color='text.secondary' gutterBottom></Typography>
-            </Grid>
+        <Stack sx={{ gap: 2 }}>
+          <Typography variant='subtitle2' color='text.secondary'>
+            문의시간
+          </Typography>
+          <TextField
+            fullWidth
+            size='small'
+            value={formatYyyyMmDdHhMm(detail.createdAt)}
+            InputProps={{ readOnly: true }}
+            sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
+          />
+        </Stack>
 
-            <Grid item xs={12}>
-              <Box>
-                <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-                  문의시간
-                </Typography>
-                <TextField
-                  fullWidth
-                  size='small'
-                  value={formatYyyyMmDdHhMm(detail.createdAt)}
-                  InputProps={{ readOnly: true }}
-                  sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
-                />
-              </Box>
-            </Grid>
+        <Stack sx={{ gap: 2 }}>
+          <Typography variant='subtitle2' color='text.secondary'>
+            답변내용
+          </Typography>
+          <Stack
+            sx={{
+              '.tiptap': {
+                padding: '20px 10px',
+                border: '1px solid #c4c4c4',
+              },
+            }}
+          >
+            <EditorContent editor={responseEditor} />
+          </Stack>
+        </Stack>
 
-            <Grid item xs={12}>
-              <Box>
-                <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-                  답변내용
-                </Typography>
-                <Stack
-                  sx={{
-                    '.tiptap': {
-                      padding: '20px 10px',
-                      border: '1px solid #c4c4c4',
-                    },
-                  }}
-                >
-                  <EditorContent editor={responseEditor} />
-                </Stack>
-              </Box>
-            </Grid>
+        {detail.children.length > 0 && (
+          <Stack sx={{ gap: 2 }}>
+            <Typography variant='subtitle2' color='text.secondary'>
+              답변시간
+            </Typography>
+            <TextField
+              fullWidth
+              size='small'
+              value={formatYyyyMmDdHhMm(detail.children[0].createdAt)}
+              InputProps={{ readOnly: true }}
+              sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
+            />
+          </Stack>
+        )}
 
-            {detail.children.length > 0 && (
-              <Grid item xs={12}>
-                <Box>
-                  <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-                    답변시간
-                  </Typography>
-                  <TextField
-                    fullWidth
-                    size='small'
-                    value={formatYyyyMmDdHhMm(detail.children[0].createdAt)}
-                    InputProps={{ readOnly: true }}
-                    sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
-                  />
-                </Box>
-              </Grid>
-            )}
-
-            <Grid item xs={12}>
-              <Stack direction='row' spacing={2} justifyContent='center'>
-                <Button variant='outlined' size='large' component={RouterLink} to='/admin/inquiries'>
-                  취소
-                </Button>
-                <Button variant='contained' size='large' onClick={() => formik.handleSubmit()}>
-                  답변하기
-                </Button>
-              </Stack>
-            </Grid>
-          </Grid>
-        </Card>
-      </Grid>
+        <Stack direction='row' sx={{ justifyContent: 'center', gap: 2 }}>
+          <Button variant='outlined' size='large' component={RouterLink} to='/admin/inquiries'>
+            취소
+          </Button>
+          <Button variant='contained' size='large' onClick={() => formik.handleSubmit()}>
+            답변하기
+          </Button>
+        </Stack>
+      </Card>
     </Stack>
   );
 }

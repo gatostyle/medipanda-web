@@ -9,7 +9,6 @@ import {
   Checkbox,
   CircularProgress,
   FormControlLabel,
-  Grid,
   Stack,
   Table,
   TableBody,
@@ -262,262 +261,209 @@ export default function MpAdminProductEdit() {
         제품정보 {isNew ? '등록' : '수정'}
       </Typography>
 
-      <Grid container spacing={3} component='form' onSubmit={formik.handleSubmit}>
-        <Grid item xs={12}>
-          <Card sx={{ p: 3 }}>
-            <Typography variant='h6' gutterBottom sx={{ mb: 3 }}>
-              제품정보
-            </Typography>
+      <Stack component='form' onSubmit={formik.handleSubmit} sx={{ gap: 3 }}>
+        <Card sx={{ p: 3 }}>
+          <Typography variant='h6' gutterBottom sx={{ mb: 3 }}>
+            제품정보
+          </Typography>
 
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={3} md={2}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  제약사
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={9} md={10}>
-                <TextField
-                  fullWidth
-                  size='small'
-                  name='manufacturer'
-                  placeholder='제약사를 입력하세요'
-                  required
-                  value={formik.values.manufacturer}
-                  onChange={formik.handleChange}
-                />
-              </Grid>
+          <Stack sx={{ gap: 2 }}>
+            <Stack direction='row'>
+              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                제약사
+              </Typography>
+              <TextField
+                fullWidth
+                size='small'
+                name='manufacturer'
+                placeholder='제약사를 입력하세요'
+                required
+                value={formik.values.manufacturer}
+                onChange={formik.handleChange}
+              />
+            </Stack>
 
-              <Grid item xs={12} sm={3} md={2}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  제품명
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={9} md={10}>
-                <TextField
-                  fullWidth
-                  size='small'
-                  name='productName'
-                  placeholder='제품명을 입력하세요'
-                  required
-                  value={formik.values.productName}
-                  onChange={formik.handleChange}
-                />
-              </Grid>
+            <Stack direction='row'>
+              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                제품명
+              </Typography>
+              <TextField
+                fullWidth
+                size='small'
+                name='productName'
+                placeholder='제품명을 입력하세요'
+                required
+                value={formik.values.productName}
+                onChange={formik.handleChange}
+              />
+            </Stack>
 
-              <Grid item xs={12} sm={3} md={2}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  성분명
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={9} md={10}>
-                <TextField
-                  fullWidth
-                  size='small'
-                  name='composition'
-                  placeholder='성분명을 입력하세요'
-                  required
-                  value={formik.values.composition}
-                  onChange={formik.handleChange}
-                />
-              </Grid>
+            <Stack direction='row'>
+              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                성분명
+              </Typography>
+              <TextField
+                fullWidth
+                size='small'
+                name='composition'
+                placeholder='성분명을 입력하세요'
+                required
+                value={formik.values.composition}
+                onChange={formik.handleChange}
+              />
+            </Stack>
 
-              <Grid item xs={12} sm={3} md={2}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  제품코드
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={9} md={10}>
-                <TextField
-                  fullWidth
-                  size='small'
-                  name='productCode'
-                  placeholder='제품코드를 입력하세요'
-                  required
-                  value={formik.values.productCode}
-                  onChange={formik.handleChange}
-                />
-              </Grid>
+            <Stack direction='row'>
+              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                제품코드
+              </Typography>
+              <TextField
+                fullWidth
+                size='small'
+                name='productCode'
+                placeholder='제품코드를 입력하세요'
+                required
+                value={formik.values.productCode}
+                onChange={formik.handleChange}
+              />
+            </Stack>
 
-              <Grid item xs={12} sm={3} md={2}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  약가
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={9} md={10}>
-                <TextField
-                  fullWidth
-                  size='small'
-                  name='price'
-                  placeholder='약가를 입력하세요'
-                  required
-                  value={formik.values.price}
-                  onChange={handleNumberChange(formik)}
-                  InputProps={{
-                    endAdornment: <Typography variant='body2'>원</Typography>,
-                  }}
-                />
-              </Grid>
+            <Stack direction='row'>
+              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                약가
+              </Typography>
+              <TextField
+                fullWidth
+                size='small'
+                name='price'
+                placeholder='약가를 입력하세요'
+                required
+                value={formik.values.price}
+                onChange={handleNumberChange(formik)}
+                InputProps={{
+                  endAdornment: <Typography variant='body2'>원</Typography>,
+                }}
+              />
+            </Stack>
 
-              <Grid item xs={12} sm={3} md={2}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  기본수수료율
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={9} md={10}>
+            <Stack direction='row'>
+              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                기본수수료율
+              </Typography>
+              <TextField
+                fullWidth
+                size='small'
+                name='feeRate'
+                placeholder='수수료율을 입력하세요'
+                required
+                value={formik.values.feeRate}
+                onChange={handleNumberChange(formik, { min: 0, max: 100 })}
+                InputProps={{
+                  endAdornment: <Typography variant='body2'>%</Typography>,
+                }}
+              />
+            </Stack>
+
+            <Stack direction='row'>
+              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                변경요율/변경월
+              </Typography>
+              <Stack direction='row' sx={{ gap: 2 }}>
                 <TextField
-                  fullWidth
                   size='small'
-                  name='feeRate'
-                  placeholder='수수료율을 입력하세요'
-                  required
-                  value={formik.values.feeRate}
+                  name='changedFeeRate'
+                  label='변경요율'
+                  value={formik.values.changedFeeRate}
                   onChange={handleNumberChange(formik, { min: 0, max: 100 })}
                   InputProps={{
                     endAdornment: <Typography variant='body2'>%</Typography>,
                   }}
+                  sx={{ width: { xs: '100%', sm: '200px' } }}
                 />
-              </Grid>
-
-              <Grid item xs={12} sm={3} md={2}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  변경요율/변경월
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={9} md={10}>
-                <Box display='flex' gap={2} flexDirection={{ xs: 'column', sm: 'row' }}>
-                  <TextField
-                    size='small'
-                    name='changedFeeRate'
-                    label='변경요율'
-                    value={formik.values.changedFeeRate}
-                    onChange={handleNumberChange(formik, { min: 0, max: 100 })}
-                    InputProps={{
-                      endAdornment: <Typography variant='body2'>%</Typography>,
-                    }}
-                    sx={{ width: { xs: '100%', sm: '200px' } }}
-                  />
-                  <DatePicker
-                    value={formik.values.changedMonth}
-                    onChange={value => formik.setFieldValue('changedMonth', value)}
-                    format='yyyy-MM'
-                    views={['month']}
-                    label='변경월'
-                    slotProps={{
-                      textField: {
-                        size: 'small',
-                      },
-                    }}
-                  />
-                </Box>
-              </Grid>
-
-              <Grid item xs={12} sm={3} md={2}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  상태
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={9} md={10}>
-                <Box>
-                  <FormControlLabel
-                    control={<Checkbox name='isAcquisition' checked={formik.values.isAcquisition} onChange={formik.handleChange} />}
-                    label='취급품목'
-                  />
-                  <FormControlLabel
-                    control={<Checkbox name='isPromotion' checked={formik.values.isPromotion} onChange={formik.handleChange} />}
-                    label='프로모션'
-                  />
-                  <FormControlLabel
-                    control={<Checkbox name='isOutOfStock' checked={formik.values.isOutOfStock} onChange={formik.handleChange} />}
-                    label='품절'
-                  />
-                  <FormControlLabel
-                    control={<Checkbox name='isStopSelling' checked={formik.values.isStopSelling} onChange={formik.handleChange} />}
-                    label='판매중단'
-                  />
-                </Box>
-              </Grid>
-
-              <Grid item xs={12} sm={3} md={2}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  비고
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={9} md={10}>
-                <TextField
-                  fullWidth
-                  multiline
-                  rows={4}
-                  size='small'
-                  name='note'
-                  placeholder='비고를 입력하세요'
-                  value={formik.values.note}
-                  onChange={formik.handleChange}
+                <DatePicker
+                  value={formik.values.changedMonth}
+                  onChange={value => formik.setFieldValue('changedMonth', value)}
+                  format='yyyy-MM'
+                  views={['month']}
+                  label='변경월'
+                  slotProps={{
+                    textField: {
+                      size: 'small',
+                    },
+                  }}
                 />
-              </Grid>
+              </Stack>
+            </Stack>
 
-              <Grid item xs={12} sm={3} md={2}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  대체가능의약품
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={9} md={10}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>대체</TableCell>
-                      <TableCell>제약사명</TableCell>
-                      <TableCell>제품정보</TableCell>
-                      <TableCell>약가</TableCell>
-                      <TableCell>급여정보</TableCell>
-                      <TableCell>기본 수수료율</TableCell>
-                      <TableCell>상태</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {detail?.alternativeProducts.map(product => (
-                      <Fragment key={product.kdCode}>
-                        <TableRow>
-                          <TableCell rowSpan={2}>
-                            <Typography sx={{ whiteSpace: 'pre-line' }}>{product.substituent ?? '-'}</Typography>
-                          </TableCell>
-                          <TableCell rowSpan={2}>
-                            <Typography sx={{ whiteSpace: 'pre-line' }}>{product.manufacturer ?? '-'}</Typography>
-                          </TableCell>
-                          <TableCell sx={{ borderBottom: 'none', textAlign: 'left' }}>
-                            <Stack gap='5px'>
-                              <Typography>{product.productName}</Typography>
-                              <Typography
-                                sx={{
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis',
-                                  whiteSpace: 'nowrap',
-                                }}
-                              >
-                                {product.composition}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
-                          <TableCell align='center' sx={{ borderBottom: 'none' }}>
-                            {product.price?.toLocaleString() ?? '-'}
-                          </TableCell>
-                          <TableCell align='center' sx={{ borderBottom: 'none' }}>
-                            {product.note ?? '-'}
-                          </TableCell>
-                          <TableCell align='center' sx={{ borderBottom: 'none' }}>
-                            <Typography sx={{ fontWeight: 500 }}>{product.feeRate ?? '-'}</Typography>
-                          </TableCell>
-                          <TableCell align='center' sx={{ borderBottom: 'none' }}>
-                            {product.note ?? '-'}
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell
-                            colSpan={6}
-                            sx={{
-                              borderBottom: '1px solid rgba(219, 224, 229, 0.65) !important',
-                              textAlign: 'left',
-                            }}
-                          >
+            <Stack direction='row'>
+              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                상태
+              </Typography>
+              <Stack direction='row'>
+                <FormControlLabel
+                  control={<Checkbox name='isAcquisition' checked={formik.values.isAcquisition} onChange={formik.handleChange} />}
+                  label='취급품목'
+                />
+                <FormControlLabel
+                  control={<Checkbox name='isPromotion' checked={formik.values.isPromotion} onChange={formik.handleChange} />}
+                  label='프로모션'
+                />
+                <FormControlLabel
+                  control={<Checkbox name='isOutOfStock' checked={formik.values.isOutOfStock} onChange={formik.handleChange} />}
+                  label='품절'
+                />
+                <FormControlLabel
+                  control={<Checkbox name='isStopSelling' checked={formik.values.isStopSelling} onChange={formik.handleChange} />}
+                  label='판매중단'
+                />
+              </Stack>
+            </Stack>
+
+            <Stack direction='row'>
+              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                비고
+              </Typography>
+              <TextField
+                fullWidth
+                multiline
+                rows={4}
+                size='small'
+                name='note'
+                placeholder='비고를 입력하세요'
+                value={formik.values.note}
+                onChange={formik.handleChange}
+              />
+            </Stack>
+
+            <Stack direction='row'>
+              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                대체가능의약품
+              </Typography>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>대체</TableCell>
+                    <TableCell>제약사명</TableCell>
+                    <TableCell>제품정보</TableCell>
+                    <TableCell>약가</TableCell>
+                    <TableCell>급여정보</TableCell>
+                    <TableCell>기본 수수료율</TableCell>
+                    <TableCell>상태</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {detail?.alternativeProducts.map(product => (
+                    <Fragment key={product.kdCode}>
+                      <TableRow>
+                        <TableCell rowSpan={2}>
+                          <Typography sx={{ whiteSpace: 'pre-line' }}>{product.substituent ?? '-'}</Typography>
+                        </TableCell>
+                        <TableCell rowSpan={2}>
+                          <Typography sx={{ whiteSpace: 'pre-line' }}>{product.manufacturer ?? '-'}</Typography>
+                        </TableCell>
+                        <TableCell sx={{ borderBottom: 'none', textAlign: 'left' }}>
+                          <Stack gap='5px'>
+                            <Typography>{product.productName}</Typography>
                             <Typography
                               sx={{
                                 overflow: 'hidden',
@@ -525,65 +471,92 @@ export default function MpAdminProductEdit() {
                                 whiteSpace: 'nowrap',
                               }}
                             >
-                              {product.note}
+                              {product.composition}
                             </Typography>
-                          </TableCell>
-                        </TableRow>
-                      </Fragment>
-                    ))}
-                  </TableBody>
-                </Table>
-              </Grid>
-            </Grid>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12}>
-          <Card sx={{ p: 3 }}>
-            <Typography variant='h6' gutterBottom sx={{ mb: 3 }}>
-              디테일 정보
-            </Typography>
-
-            <Stack
-              gap='10px'
-              sx={{
-                '.tiptap[contenteditable=true]': {
-                  border: `1px solid #cccccc`,
-                  padding: '12px 15px',
-                },
-              }}
-            >
-              <TiptapMenuBar editor={editor} />
-              <EditorContent editor={editor} placeholder='제품 상세 정보를 입력하세요' />
+                          </Stack>
+                        </TableCell>
+                        <TableCell align='center' sx={{ borderBottom: 'none' }}>
+                          {product.price?.toLocaleString() ?? '-'}
+                        </TableCell>
+                        <TableCell align='center' sx={{ borderBottom: 'none' }}>
+                          {product.note ?? '-'}
+                        </TableCell>
+                        <TableCell align='center' sx={{ borderBottom: 'none' }}>
+                          <Typography sx={{ fontWeight: 500 }}>{product.feeRate ?? '-'}</Typography>
+                        </TableCell>
+                        <TableCell align='center' sx={{ borderBottom: 'none' }}>
+                          {product.note ?? '-'}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell
+                          colSpan={6}
+                          sx={{
+                            borderBottom: '1px solid rgba(219, 224, 229, 0.65) !important',
+                            textAlign: 'left',
+                          }}
+                        >
+                          <Typography
+                            sx={{
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            {product.note}
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    </Fragment>
+                  ))}
+                </TableBody>
+              </Table>
             </Stack>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12}>
-          <Stack direction='row' spacing={2} justifyContent='center'>
-            <Button
-              variant='outlined'
-              size='large'
-              component={RouterLink}
-              to={isNew ? '/admin/products' : `/admin/products/${productId}`}
-              sx={{ minWidth: 120 }}
-              disabled={formik.isSubmitting}
-            >
-              취소
-            </Button>
-            <Button
-              variant='contained'
-              size='large'
-              type='submit'
-              sx={{ minWidth: 120 }}
-              disabled={formik.isSubmitting}
-              startIcon={formik.isSubmitting ? <CircularProgress size={20} /> : null}
-            >
-              {formik.isSubmitting ? '저장 중...' : '저장'}
-            </Button>
           </Stack>
-        </Grid>
-      </Grid>
+        </Card>
+
+        <Card sx={{ p: 3 }}>
+          <Typography variant='h6' gutterBottom sx={{ mb: 3 }}>
+            디테일 정보
+          </Typography>
+
+          <Stack
+            gap='10px'
+            sx={{
+              '.tiptap[contenteditable=true]': {
+                border: `1px solid #cccccc`,
+                padding: '12px 15px',
+              },
+            }}
+          >
+            <TiptapMenuBar editor={editor} />
+            <EditorContent editor={editor} placeholder='제품 상세 정보를 입력하세요' />
+          </Stack>
+        </Card>
+
+        <Stack direction='row' sx={{ justifyContent: 'center', gap: 2 }}>
+          <Button
+            variant='outlined'
+            size='large'
+            component={RouterLink}
+            to={isNew ? '/admin/products' : `/admin/products/${productId}`}
+            sx={{ minWidth: 120 }}
+            disabled={formik.isSubmitting}
+          >
+            취소
+          </Button>
+          <Button
+            variant='contained'
+            size='large'
+            type='submit'
+            sx={{ minWidth: 120 }}
+            disabled={formik.isSubmitting}
+            startIcon={formik.isSubmitting ? <CircularProgress size={20} /> : null}
+          >
+            {formik.isSubmitting ? '저장 중...' : '저장'}
+          </Button>
+        </Stack>
+      </Stack>
     </Box>
   );
 }

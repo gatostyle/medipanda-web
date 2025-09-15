@@ -7,7 +7,6 @@ import {
   Checkbox,
   CircularProgress,
   FormControlLabel,
-  Grid,
   Stack,
   Table,
   TableBody,
@@ -80,171 +79,109 @@ export default function MpAdminProductDetail() {
         제품정보
       </Typography>
 
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Card sx={{ p: 3 }}>
-            <Typography variant='h6' gutterBottom sx={{ mb: 3 }}>
-              제품정보
-            </Typography>
+      <Stack sx={{ gap: 3 }}>
+        <Card sx={{ p: 3 }}>
+          <Typography variant='h6' gutterBottom sx={{ mb: 3 }}>
+            제품정보
+          </Typography>
 
-            <Grid container spacing={2}>
-              <Grid item xs={2}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  제약사
-                </Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <Typography variant='body1'>{detail.manufacturer}</Typography>
-              </Grid>
-
-              <Grid item xs={2}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  제품명
-                </Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <Typography variant='body1'>{detail.productName}</Typography>
-              </Grid>
-
-              <Grid item xs={2}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  성분명
-                </Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <Typography variant='body1'>{detail.composition}</Typography>
-              </Grid>
-
-              <Grid item xs={2}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  제품코드
-                </Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <Typography variant='body1'>{detail.productCode}</Typography>
-              </Grid>
-
-              <Grid item xs={2}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  약가
-                </Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <Typography variant='body1'>
-                  {detail.price !== null && detail.price !== undefined
-                    ? `${detail.price.toLocaleString()}원${detail.productCode !== '비급여' ? ' (급여)' : ''}`
-                    : '-'}
-                </Typography>
-              </Grid>
-
-              <Grid item xs={2}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  기본수수료율
-                </Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <Typography variant='body1'>
-                  {detail.feeRate !== null && detail.feeRate !== undefined ? `${detail.feeRate}%` : '-'}
-                </Typography>
-              </Grid>
-
-              <Grid item xs={2}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  변경요율/변경월
-                </Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <Typography variant='body1'>{getChangedRateDisplay()}</Typography>
-              </Grid>
-
-              <Grid item xs={2}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  상태
-                </Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <Box>
-                  <FormControlLabel control={<Checkbox checked={detail.isAcquisition ?? undefined} disabled />} label='취급품목' />
-                  <FormControlLabel control={<Checkbox checked={detail.isPromotion ?? undefined} disabled />} label='프로모션' />
-                  <FormControlLabel control={<Checkbox checked={detail.isOutOfStock ?? undefined} disabled />} label='품절' />
-                  <FormControlLabel control={<Checkbox checked={detail.isStopSelling ?? undefined} disabled />} label='판매중단' />
-                </Box>
-              </Grid>
-
-              <Grid item xs={2}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  비고
-                </Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <Typography variant='body1' style={{ whiteSpace: 'pre-wrap' }}>
-                  {detail.note}
-                </Typography>
-              </Grid>
-
-              <Grid item xs={2}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  대체가능의약품
-                </Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>대체</TableCell>
-                      <TableCell>제약사명</TableCell>
-                      <TableCell>제품정보</TableCell>
-                      <TableCell>약가</TableCell>
-                      <TableCell>급여정보</TableCell>
-                      <TableCell>기본 수수료율</TableCell>
-                      <TableCell>상태</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {detail?.alternativeProducts.map(product => (
-                      <Fragment key={product.kdCode}>
-                        <TableRow>
-                          <TableCell rowSpan={2}>
-                            <Typography sx={{ whiteSpace: 'pre-line' }}>{product.substituent ?? '-'}</Typography>
-                          </TableCell>
-                          <TableCell rowSpan={2}>
-                            <Typography sx={{ whiteSpace: 'pre-line' }}>{product.manufacturer ?? '-'}</Typography>
-                          </TableCell>
-                          <TableCell sx={{ borderBottom: 'none', textAlign: 'left' }}>
-                            <Stack gap='5px'>
-                              <Typography>{product.productName}</Typography>
-                              <Typography
-                                sx={{
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis',
-                                  whiteSpace: 'nowrap',
-                                }}
-                              >
-                                {product.composition}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
-                          <TableCell align='center' sx={{ borderBottom: 'none' }}>
-                            {product.price?.toLocaleString() ?? '-'}
-                          </TableCell>
-                          <TableCell align='center' sx={{ borderBottom: 'none' }}>
-                            {product.note ?? '-'}
-                          </TableCell>
-                          <TableCell align='center' sx={{ borderBottom: 'none' }}>
-                            <Typography sx={{ fontWeight: 500 }}>{product.feeRate ?? '-'}</Typography>
-                          </TableCell>
-                          <TableCell align='center' sx={{ borderBottom: 'none' }}>
-                            {product.note ?? '-'}
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell
-                            colSpan={6}
-                            sx={{
-                              borderBottom: '1px solid rgba(219, 224, 229, 0.65) !important',
-                              textAlign: 'left',
-                            }}
-                          >
+          <Stack sx={{ gap: 2 }}>
+            <Stack direction='row'>
+              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                제약사
+              </Typography>
+              <Typography variant='body1'>{detail.manufacturer}</Typography>
+            </Stack>
+            <Stack direction='row'>
+              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                제품명
+              </Typography>
+              <Typography variant='body1'>{detail.productName}</Typography>
+            </Stack>
+            <Stack direction='row'>
+              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                성분명
+              </Typography>
+              <Typography variant='body1'>{detail.composition}</Typography>
+            </Stack>
+            <Stack direction='row'>
+              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                제품코드
+              </Typography>
+              <Typography variant='body1'>{detail.productCode}</Typography>
+            </Stack>
+            <Stack direction='row'>
+              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                약가
+              </Typography>
+              <Typography variant='body1'>
+                {detail.price !== null && detail.price !== undefined
+                  ? `${detail.price.toLocaleString()}원${detail.productCode !== '비급여' ? ' (급여)' : ''}`
+                  : '-'}
+              </Typography>
+            </Stack>
+            <Stack direction='row'>
+              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                기본수수료율
+              </Typography>
+              <Typography variant='body1'>
+                {detail.feeRate !== null && detail.feeRate !== undefined ? `${detail.feeRate}%` : '-'}
+              </Typography>
+            </Stack>
+            <Stack direction='row'>
+              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                변경요율/변경월
+              </Typography>
+              <Typography variant='body1'>{getChangedRateDisplay()}</Typography>
+            </Stack>
+            <Stack direction='row'>
+              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                상태
+              </Typography>
+              <Stack direction='row' sx={{ gap: 2 }}>
+                <FormControlLabel control={<Checkbox checked={detail.isAcquisition ?? undefined} disabled />} label='취급품목' />
+                <FormControlLabel control={<Checkbox checked={detail.isPromotion ?? undefined} disabled />} label='프로모션' />
+                <FormControlLabel control={<Checkbox checked={detail.isOutOfStock ?? undefined} disabled />} label='품절' />
+                <FormControlLabel control={<Checkbox checked={detail.isStopSelling ?? undefined} disabled />} label='판매중단' />
+              </Stack>
+            </Stack>
+            <Stack direction='row'>
+              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                비고
+              </Typography>
+              <Typography variant='body1' style={{ whiteSpace: 'pre-wrap' }}>
+                {detail.note}
+              </Typography>
+            </Stack>
+            <Stack direction='row'>
+              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                대체가능의약품
+              </Typography>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>대체</TableCell>
+                    <TableCell>제약사명</TableCell>
+                    <TableCell>제품정보</TableCell>
+                    <TableCell>약가</TableCell>
+                    <TableCell>급여정보</TableCell>
+                    <TableCell>기본 수수료율</TableCell>
+                    <TableCell>상태</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {detail?.alternativeProducts.map(product => (
+                    <Fragment key={product.kdCode}>
+                      <TableRow>
+                        <TableCell rowSpan={2}>
+                          <Typography sx={{ whiteSpace: 'pre-line' }}>{product.substituent ?? '-'}</Typography>
+                        </TableCell>
+                        <TableCell rowSpan={2}>
+                          <Typography sx={{ whiteSpace: 'pre-line' }}>{product.manufacturer ?? '-'}</Typography>
+                        </TableCell>
+                        <TableCell sx={{ borderBottom: 'none', textAlign: 'left' }}>
+                          <Stack gap='5px'>
+                            <Typography>{product.productName}</Typography>
                             <Typography
                               sx={{
                                 overflow: 'hidden',
@@ -252,42 +189,67 @@ export default function MpAdminProductDetail() {
                                 whiteSpace: 'nowrap',
                               }}
                             >
-                              {product.note}
+                              {product.composition}
                             </Typography>
-                          </TableCell>
-                        </TableRow>
-                      </Fragment>
-                    ))}
-                  </TableBody>
-                </Table>
-              </Grid>
-            </Grid>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12}>
-          <Card sx={{ p: 3 }}>
-            <Typography variant='h6' gutterBottom sx={{ mb: 3 }}>
-              상세 정보
-            </Typography>
-
-            <Box sx={{ mt: 1 }}>
-              <EditorContent editor={editor} />
-            </Box>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12}>
-          <Stack direction='row' spacing={2} justifyContent='center'>
-            <Button variant='outlined' size='large' component={RouterLink} to='/admin/products' sx={{ minWidth: 120 }}>
-              취소
-            </Button>
-            <Button variant='contained' size='large' component={RouterLink} to={`/admin/products/${productId}/edit`} sx={{ minWidth: 120 }}>
-              수정
-            </Button>
+                          </Stack>
+                        </TableCell>
+                        <TableCell align='center' sx={{ borderBottom: 'none' }}>
+                          {product.price?.toLocaleString() ?? '-'}
+                        </TableCell>
+                        <TableCell align='center' sx={{ borderBottom: 'none' }}>
+                          {product.note ?? '-'}
+                        </TableCell>
+                        <TableCell align='center' sx={{ borderBottom: 'none' }}>
+                          <Typography sx={{ fontWeight: 500 }}>{product.feeRate ?? '-'}</Typography>
+                        </TableCell>
+                        <TableCell align='center' sx={{ borderBottom: 'none' }}>
+                          {product.note ?? '-'}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell
+                          colSpan={6}
+                          sx={{
+                            borderBottom: '1px solid rgba(219, 224, 229, 0.65) !important',
+                            textAlign: 'left',
+                          }}
+                        >
+                          <Typography
+                            sx={{
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            {product.note}
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    </Fragment>
+                  ))}
+                </TableBody>
+              </Table>
+            </Stack>
           </Stack>
-        </Grid>
-      </Grid>
+        </Card>
+
+        <Card component={Stack} sx={{ p: 3, gap: 3 }}>
+          <Typography variant='h6'>상세 정보</Typography>
+
+          <Box sx={{ mt: 1 }}>
+            <EditorContent editor={editor} />
+          </Box>
+        </Card>
+
+        <Stack direction='row' sx={{ justifyContent: 'center', gap: 2 }}>
+          <Button variant='outlined' size='large' component={RouterLink} to='/admin/products' sx={{ minWidth: 120 }}>
+            취소
+          </Button>
+          <Button variant='contained' size='large' component={RouterLink} to={`/admin/products/${productId}/edit`} sx={{ minWidth: 120 }}>
+            수정
+          </Button>
+        </Stack>
+      </Stack>
     </Box>
   );
 }

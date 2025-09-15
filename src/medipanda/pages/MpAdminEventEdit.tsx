@@ -1,18 +1,6 @@
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
-import {
-  Box,
-  Button,
-  Card,
-  CircularProgress,
-  FormControlLabel,
-  Grid,
-  Radio,
-  RadioGroup,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Card, CircularProgress, FormControlLabel, Radio, RadioGroup, Stack, TextField, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { EditorContent } from '@tiptap/react';
 import { useFormik } from 'formik';
@@ -205,163 +193,131 @@ export default function MpAdminEventEdit() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Grid item xs={12}>
-        <Typography variant='h4' gutterBottom>
-          이벤트 {isNew ? '등록' : '수정'}
-        </Typography>
-      </Grid>
+      <Typography variant='h4' gutterBottom>
+        이벤트 {isNew ? '등록' : '수정'}
+      </Typography>
 
-      <Grid item xs={12}>
-        <Card sx={{ padding: 3 }}>
-          <Grid container spacing={3} component='form' onSubmit={formik.handleSubmit}>
-            <Grid item xs={12}>
-              <Typography variant='subtitle1' gutterBottom>
-                노출상태 *
-              </Typography>
-              <RadioGroup
-                row
-                name='isExposed'
-                value={formik.values.isExposed ? 'true' : 'false'}
-                onChange={e => formik.setFieldValue('isExposed', e.target.value === 'true')}
-              >
-                <FormControlLabel value={'true'} control={<Radio />} label='노출' />
-                <FormControlLabel value={'false'} control={<Radio />} label='미노출' />
-              </RadioGroup>
-            </Grid>
+      <Card sx={{ padding: 3 }}>
+        <Stack component='form' onSubmit={formik.handleSubmit} sx={{ gap: 3 }}>
+          <Stack sx={{ gap: 2 }}>
+            <Typography variant='subtitle1'>노출상태 *</Typography>
+            <RadioGroup
+              row
+              name='isExposed'
+              value={formik.values.isExposed ? 'true' : 'false'}
+              onChange={e => formik.setFieldValue('isExposed', e.target.value === 'true')}
+            >
+              <FormControlLabel value={'true'} control={<Radio />} label='노출' />
+              <FormControlLabel value={'false'} control={<Radio />} label='미노출' />
+            </RadioGroup>
+          </Stack>
 
-            <Grid item xs={12}>
-              <Typography variant='subtitle1' gutterBottom>
-                노출범위 *
-              </Typography>
-              <RadioGroup row name='exposureRange' value={formik.values.exposureRange} onChange={formik.handleChange}>
-                {Object.keys(BoardExposureRange).map(exposureRange => (
-                  <FormControlLabel
-                    key={exposureRange}
-                    value={exposureRange}
-                    control={<Radio />}
-                    label={BoardExposureRangeLabel[exposureRange]}
-                  />
-                ))}
-              </RadioGroup>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Typography variant='subtitle1' gutterBottom>
-                이벤트기간 *
-              </Typography>
-              <Stack direction='row' spacing={2} alignItems='center'>
-                <DatePicker
-                  value={formik.values.startDate}
-                  onChange={value => formik.setFieldValue('startDate', value)}
-                  format='yyyy-MM-dd'
-                  views={['year', 'month', 'day']}
-                  label='시작일'
-                  slotProps={{
-                    textField: {
-                      size: 'small',
-                    },
-                  }}
+          <Stack sx={{ gap: 2 }}>
+            <Typography variant='subtitle1'>노출범위 *</Typography>
+            <RadioGroup row name='exposureRange' value={formik.values.exposureRange} onChange={formik.handleChange}>
+              {Object.keys(BoardExposureRange).map(exposureRange => (
+                <FormControlLabel
+                  key={exposureRange}
+                  value={exposureRange}
+                  control={<Radio />}
+                  label={BoardExposureRangeLabel[exposureRange]}
                 />
-                <Typography>~</Typography>
-                <DatePicker
-                  value={formik.values.endDate}
-                  onChange={value => formik.setFieldValue('endDate', value)}
-                  format='yyyy-MM-dd'
-                  views={['year', 'month', 'day']}
-                  label='종료일'
-                  slotProps={{
-                    textField: {
-                      size: 'small',
-                    },
-                  }}
-                />
-              </Stack>
-            </Grid>
+              ))}
+            </RadioGroup>
+          </Stack>
 
-            <Grid item xs={12}>
-              <TextField name='title' label='제목 *' fullWidth value={formik.values.title} onChange={formik.handleChange} />
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                name='description'
-                label='이벤트 설명'
-                fullWidth
-                value={formik.values.description}
-                onChange={formik.handleChange}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Typography variant='subtitle1' gutterBottom>
-                썸네일 *
-              </Typography>
-              <Stack direction='row' spacing={2} alignItems='center'>
-                <Button variant='contained' component='label'>
-                  첨부파일
-                  <input type='file' hidden accept='image/*' onChange={handleThumbnailChange} />
-                </Button>
-                <Typography variant='body2' color='text.secondary'>
-                  {thumbnailFile ? thumbnailFile.name : '파일을 선택하세요'}
-                </Typography>
-              </Stack>
-              {thumbnailPreview && (
-                <Box mt={2}>
-                  <img
-                    src={thumbnailPreview}
-                    alt='썸네일 미리보기'
-                    style={{
-                      maxWidth: '300px',
-                      maxHeight: '200px',
-                      objectFit: 'contain',
-                      borderRadius: '4px',
-                    }}
-                  />
-                </Box>
-              )}
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField name='internalName' label='썸네일' fullWidth value={formik.values.internalName} onChange={formik.handleChange} />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Typography variant='subtitle1' gutterBottom>
-                내용 *
-              </Typography>
-              <Stack
-                sx={{
-                  '.tiptap': {
-                    border: `1px solid #cccccc`,
-                    padding: '20px 10px',
+          <Stack sx={{ gap: 2 }}>
+            <Typography variant='subtitle1'>이벤트기간 *</Typography>
+            <Stack direction='row' spacing={2} alignItems='center'>
+              <DatePicker
+                value={formik.values.startDate}
+                onChange={value => formik.setFieldValue('startDate', value)}
+                format='yyyy-MM-dd'
+                views={['year', 'month', 'day']}
+                label='시작일'
+                slotProps={{
+                  textField: {
+                    size: 'small',
                   },
                 }}
-              >
-                <EditorContent editor={editor} placeholder='내용을 입력하세요' />
-              </Stack>
-            </Grid>
+              />
+              <Typography>~</Typography>
+              <DatePicker
+                value={formik.values.endDate}
+                onChange={value => formik.setFieldValue('endDate', value)}
+                format='yyyy-MM-dd'
+                views={['year', 'month', 'day']}
+                label='종료일'
+                slotProps={{
+                  textField: {
+                    size: 'small',
+                  },
+                }}
+              />
+            </Stack>
+          </Stack>
 
-            <Grid item xs={12}>
-              <TextField name='videoUrl' label='영상url' fullWidth value={formik.values.videoUrl} onChange={formik.handleChange} />
-            </Grid>
+          <TextField name='title' label='제목 *' fullWidth value={formik.values.title} onChange={formik.handleChange} />
 
-            <Grid item xs={12}>
-              <TextField name='note' label='비고' fullWidth multiline rows={3} value={formik.values.note} onChange={formik.handleChange} />
-            </Grid>
+          <TextField name='description' label='이벤트 설명' fullWidth value={formik.values.description} onChange={formik.handleChange} />
 
-            <Grid item xs={12}>
-              <Stack direction='row' spacing={2} justifyContent='center'>
-                <Button variant='outlined' size='large' component={RouterLink} to={isNew ? '/admin/events' : `/admin/events/${eventId}`}>
-                  취소
-                </Button>
-                <Button variant='contained' size='large' type='submit' disabled={formik.isSubmitting}>
-                  저장
-                </Button>
-              </Stack>
-            </Grid>
-          </Grid>
-        </Card>
-      </Grid>
+          <Stack sx={{ gap: 2 }}>
+            <Typography variant='subtitle1'>썸네일 *</Typography>
+            <Stack direction='row' spacing={2} alignItems='center'>
+              <Button variant='contained' component='label'>
+                첨부파일
+                <input type='file' hidden accept='image/*' onChange={handleThumbnailChange} />
+              </Button>
+              <Typography variant='body2' color='text.secondary'>
+                {thumbnailFile ? thumbnailFile.name : '파일을 선택하세요'}
+              </Typography>
+            </Stack>
+            {thumbnailPreview && (
+              <Box>
+                <img
+                  src={thumbnailPreview}
+                  alt='썸네일 미리보기'
+                  style={{
+                    maxWidth: '300px',
+                    maxHeight: '200px',
+                    objectFit: 'contain',
+                    borderRadius: '4px',
+                  }}
+                />
+              </Box>
+            )}
+          </Stack>
+
+          <TextField name='internalName' label='썸네일' fullWidth value={formik.values.internalName} onChange={formik.handleChange} />
+
+          <Stack sx={{ gap: 2 }}>
+            <Typography variant='subtitle1'>내용 *</Typography>
+            <Stack
+              sx={{
+                '.tiptap': {
+                  border: `1px solid #cccccc`,
+                  padding: '20px 10px',
+                },
+              }}
+            >
+              <EditorContent editor={editor} placeholder='내용을 입력하세요' />
+            </Stack>
+          </Stack>
+
+          <TextField name='videoUrl' label='영상url' fullWidth value={formik.values.videoUrl} onChange={formik.handleChange} />
+
+          <TextField name='note' label='비고' fullWidth multiline rows={3} value={formik.values.note} onChange={formik.handleChange} />
+
+          <Stack direction='row' spacing={2} justifyContent='center'>
+            <Button variant='outlined' size='large' component={RouterLink} to={isNew ? '/admin/events' : `/admin/events/${eventId}`}>
+              취소
+            </Button>
+            <Button variant='contained' size='large' type='submit' disabled={formik.isSubmitting}>
+              저장
+            </Button>
+          </Stack>
+        </Stack>
+      </Card>
     </Stack>
   );
 }

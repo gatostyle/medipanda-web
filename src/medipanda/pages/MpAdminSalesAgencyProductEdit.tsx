@@ -10,7 +10,6 @@ import {
   CircularProgress,
   FormControl,
   FormControlLabel,
-  Grid,
   Radio,
   RadioGroup,
   Stack,
@@ -431,33 +430,13 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
 
   return (
     <Box sx={{ p: 3 }}>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <TextField
-            fullWidth
-            label='위탁사명'
-            name='clientName'
-            value={formik.values.clientName}
-            onChange={formik.handleChange}
-            required
-          />
-        </Grid>
+      <Stack sx={{ gap: 3 }}>
+        <TextField fullWidth label='위탁사명' name='clientName' value={formik.values.clientName} onChange={formik.handleChange} required />
 
-        <Grid item xs={12}>
-          <TextField
-            fullWidth
-            label='상품명'
-            name='productName'
-            value={formik.values.productName}
-            onChange={formik.handleChange}
-            required
-          />
-        </Grid>
+        <TextField fullWidth label='상품명' name='productName' value={formik.values.productName} onChange={formik.handleChange} required />
 
-        <Grid item xs={12}>
-          <Typography variant='subtitle2' gutterBottom>
-            노출상태
-          </Typography>
+        <Stack sx={{ gap: 1.5 }}>
+          <Typography variant='subtitle2'>노출상태</Typography>
           <FormControl>
             <RadioGroup
               row
@@ -469,10 +448,10 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
               <FormControlLabel value={'false'} control={<Radio />} label={'미노출'} />
             </RadioGroup>
           </FormControl>
-        </Grid>
+        </Stack>
 
-        <Grid item xs={12}>
-          <Typography variant='subtitle2' gutterBottom>
+        <Stack sx={{ gap: 1.5 }}>
+          <Typography variant='subtitle2'>
             노출범위 <span style={{ color: 'red' }}>*</span>
           </Typography>
           <FormControl>
@@ -487,24 +466,26 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
               ))}
             </RadioGroup>
           </FormControl>
-        </Grid>
+        </Stack>
 
-        <Grid item xs={12}>
-          <Typography variant='subtitle2' gutterBottom>
+        <Stack sx={{ gap: 1.5 }}>
+          <Typography variant='subtitle2'>
             썸네일 <span style={{ color: 'red' }}>*</span>
           </Typography>
-          <Button variant='contained' onClick={handleFileUpload}>
-            첨부파일
-          </Button>
+          <Box>
+            <Button variant='contained' onClick={handleFileUpload}>
+              첨부파일
+            </Button>
+          </Box>
           {formik.values.thumbnailUrl && (
-            <Box sx={{ mt: 2 }}>
+            <Box>
               <img src={formik.values.thumbnailUrl} alt='썸네일 미리보기' style={{ maxWidth: 200, maxHeight: 200 }} />
             </Box>
           )}
-        </Grid>
+        </Stack>
 
-        <Grid item xs={12}>
-          <Typography variant='subtitle2' gutterBottom>
+        <Stack sx={{ gap: 1.5 }}>
+          <Typography variant='subtitle2'>
             내용 <span style={{ color: 'red' }}>*</span>
           </Typography>
           <Stack
@@ -517,13 +498,11 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
           >
             <EditorContent editor={editor} placeholder='내용을 입력하세요' />
           </Stack>
-        </Grid>
+        </Stack>
 
-        <Grid item xs={12}>
-          <TextField fullWidth label='영상url' name='videoUrl' value={formik.values.videoUrl} onChange={formik.handleChange} />
-        </Grid>
+        <TextField fullWidth label='영상url' name='videoUrl' value={formik.values.videoUrl} onChange={formik.handleChange} />
 
-        <Grid item xs={12} md={6}>
+        <Box>
           <DatePicker
             value={formik.values.contractDate}
             onChange={value => formik.setFieldValue('contractDate', value)}
@@ -536,51 +515,50 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
               },
             }}
           />
-        </Grid>
+        </Box>
 
-        <Grid item xs={12}>
-          <TextField fullWidth label='비고' name='note' value={formik.values.note} onChange={formik.handleChange} multiline rows={3} />
-        </Grid>
+        <TextField fullWidth label='비고' name='note' value={formik.values.note} onChange={formik.handleChange} multiline rows={3} />
 
-        <Grid item xs={12} md={6}>
-          <DatePicker
-            value={formik.values.startDate}
-            onChange={value => formik.setFieldValue('startDate', value)}
-            format='yyyy-MM-dd'
-            views={['year', 'month', 'day']}
-            label='게시 시작일 *'
-            slotProps={{
-              textField: {
-                size: 'small',
-              },
-            }}
-          />
-        </Grid>
+        <Stack direction='row'>
+          <Box sx={{ width: '100%' }}>
+            <DatePicker
+              value={formik.values.startDate}
+              onChange={value => formik.setFieldValue('startDate', value)}
+              format='yyyy-MM-dd'
+              views={['year', 'month', 'day']}
+              label='게시 시작일 *'
+              slotProps={{
+                textField: {
+                  size: 'small',
+                },
+              }}
+            />
+          </Box>
 
-        <Grid item xs={12} md={6}>
-          <DatePicker
-            value={formik.values.endDate}
-            onChange={value => formik.setFieldValue('endDate', value)}
-            format='yyyy-MM-dd'
-            views={['year', 'month', 'day']}
-            label='게시 종료일 *'
-            slotProps={{
-              textField: {
-                size: 'small',
-              },
-            }}
-          />
-        </Grid>
-
+          <Box sx={{ width: '100%' }}>
+            <DatePicker
+              value={formik.values.endDate}
+              onChange={value => formik.setFieldValue('endDate', value)}
+              format='yyyy-MM-dd'
+              views={['year', 'month', 'day']}
+              label='게시 종료일 *'
+              slotProps={{
+                textField: {
+                  size: 'small',
+                },
+              }}
+            />
+          </Box>
+        </Stack>
         {detail !== null && (
-          <Grid item xs={12}>
+          <Stack>
             <Typography variant='subtitle2' gutterBottom>
               조회수
             </Typography>
             <Typography variant='body1'>{detail.boardPostDetail.viewsCount.toLocaleString()}</Typography>
-          </Grid>
+          </Stack>
         )}
-      </Grid>
+      </Stack>
 
       <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 4 }}>
         <Button

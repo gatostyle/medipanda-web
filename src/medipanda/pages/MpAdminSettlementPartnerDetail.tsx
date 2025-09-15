@@ -3,7 +3,6 @@ import {
   Box,
   Card,
   CircularProgress,
-  Grid,
   IconButton,
   Stack,
   Table,
@@ -168,32 +167,66 @@ export default function MpAdminSettlementPartnerDetail() {
       </Stack>
 
       <Card sx={{ padding: 3 }}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={4}>
-            <TextField label='딜러명' value={partnerDetail.dealerName} fullWidth size='small' InputProps={{ readOnly: true }} />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <TextField label='거래처코드' value={partnerDetail.institutionCode} fullWidth size='small' InputProps={{ readOnly: true }} />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <TextField label='거래처명' value={partnerDetail.institutionName} fullWidth size='small' InputProps={{ readOnly: true }} />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <TextField label='사업자등록번호' value={partnerDetail.businessNumber} fullWidth size='small' InputProps={{ readOnly: true }} />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <TextField label='정산월' value={detail.settlementMonth} fullWidth size='small' InputProps={{ readOnly: true }} />
-          </Grid>
-          <Grid item xs={12} md={4}>
+        <Stack sx={{ gap: 3 }}>
+          <Stack direction='row' sx={{ gap: 3 }}>
+            <TextField
+              label='딜러명'
+              value={partnerDetail.dealerName}
+              fullWidth
+              size='small'
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+            <TextField
+              label='거래처코드'
+              value={partnerDetail.institutionCode}
+              fullWidth
+              size='small'
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+            <TextField
+              label='거래처명'
+              value={partnerDetail.institutionName}
+              fullWidth
+              size='small'
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          </Stack>
+          <Stack direction='row' sx={{ gap: 3 }}>
+            <TextField
+              label='사업자등록번호'
+              value={partnerDetail.businessNumber}
+              fullWidth
+              size='small'
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+            <TextField
+              label='정산월'
+              value={detail.settlementMonth}
+              fullWidth
+              size='small'
+              InputProps={{
+                readOnly: true,
+              }}
+            />
             <TextField
               label='처방금액'
               value={detail.prescriptionAmount.toLocaleString()}
               fullWidth
               size='small'
-              InputProps={{ readOnly: true }}
+              InputProps={{
+                readOnly: true,
+              }}
             />
-          </Grid>
-        </Grid>
+          </Stack>
+        </Stack>
       </Card>
 
       <Card sx={{ padding: 3, marginTop: 3 }}>

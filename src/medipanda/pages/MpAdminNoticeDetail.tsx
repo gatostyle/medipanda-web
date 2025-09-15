@@ -7,7 +7,6 @@ import {
   Card,
   CircularProgress,
   FormControlLabel,
-  Grid,
   Link,
   Switch,
   Table,
@@ -17,6 +16,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import { EditorContent } from '@tiptap/react';
 import {
@@ -87,134 +87,124 @@ export default function MpAdminNoticeDetail() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Grid item xs={12}>
-        <Typography variant='h4' gutterBottom>
-          공지사항 상세
+      <Typography variant='h4' gutterBottom>
+        공지사항 상세
+      </Typography>
+
+      <Card component={Stack} sx={{ padding: 3, gap: 2 }}>
+        <TableContainer>
+          <Table>
+            <TableBody>
+              <TableRow>
+                <TableCell component='th' scope='row' sx={{ width: 150, fontWeight: 'bold' }}>
+                  공지분류 <span style={{ color: 'red' }}>*</span>
+                </TableCell>
+                <TableCell colSpan={5}>{NoticeTypeLabel[detail.noticeProperties!.noticeType]}</TableCell>
+              </TableRow>
+              {isDrugCompanyNoticeType(detail.noticeProperties!.noticeType as NoticeType) && (
+                <TableRow>
+                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
+                    제약사명
+                  </TableCell>
+                  <TableCell colSpan={5}>{detail.noticeProperties?.drugCompany}</TableCell>
+                </TableRow>
+              )}
+              <TableRow>
+                <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
+                  노출상태 <span style={{ color: 'red' }}>*</span>
+                </TableCell>
+                <TableCell colSpan={5}>{detail.isExposed ? '노출' : '미노출'}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
+                  노출범위 <span style={{ color: 'red' }}>*</span>
+                </TableCell>
+                <TableCell colSpan={5}>{BoardExposureRangeLabel[detail.exposureRange]}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
+                  상단고정
+                </TableCell>
+                <TableCell colSpan={5}>
+                  <FormControlLabel
+                    control={<Switch checked={detail.noticeProperties?.fixedTop || false} disabled />}
+                    label={detail.noticeProperties?.fixedTop ? 'ON' : 'OFF'}
+                  />
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
+                  제목 <span style={{ color: 'red' }}>*</span>
+                </TableCell>
+                <TableCell colSpan={5}>{detail.title}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
+                  내용 <span style={{ color: 'red' }}>*</span>
+                </TableCell>
+                <TableCell colSpan={5}>
+                  <Stack
+                    sx={{
+                      '.tiptap': {
+                        padding: '20px 10px',
+                      },
+                    }}
+                  >
+                    <EditorContent editor={editor} placeholder='내용을 입력하세요' />
+                  </Stack>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
+                  첨부파일
+                </TableCell>
+                <TableCell colSpan={5}>
+                  {detail.attachments && detail.attachments.length > 0 ? (
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                      {detail.attachments.map((file, index) => {
+                        return (
+                          <Link
+                            key={index}
+                            href={file.fileUrl}
+                            download
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
+                            underline='hover'
+                          >
+                            <AttachFileIcon fontSize='small' />
+                            {file.originalFileName}
+                          </Link>
+                        );
+                      })}
+                    </Box>
+                  ) : (
+                    '-'
+                  )}
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        <Divider />
+
+        <Typography variant='body2' color='text.secondary'>
+          조회수: {detail.viewsCount.toLocaleString()}
         </Typography>
-      </Grid>
+        <Typography variant='body2' color='text.secondary'>
+          작성일: {formatYyyyMmDd(detail.createdAt)}
+        </Typography>
 
-      <Grid item xs={12}>
-        <Card sx={{ padding: 3 }}>
-          <TableContainer>
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell component='th' scope='row' sx={{ width: 150, fontWeight: 'bold' }}>
-                    공지분류 <span style={{ color: 'red' }}>*</span>
-                  </TableCell>
-                  <TableCell colSpan={5}>{NoticeTypeLabel[detail.noticeProperties!.noticeType]}</TableCell>
-                </TableRow>
-                {isDrugCompanyNoticeType(detail.noticeProperties!.noticeType as NoticeType) && (
-                  <TableRow>
-                    <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
-                      제약사명
-                    </TableCell>
-                    <TableCell colSpan={5}>{detail.noticeProperties?.drugCompany}</TableCell>
-                  </TableRow>
-                )}
-                <TableRow>
-                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
-                    노출상태 <span style={{ color: 'red' }}>*</span>
-                  </TableCell>
-                  <TableCell colSpan={5}>{detail.isExposed ? '노출' : '미노출'}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
-                    노출범위 <span style={{ color: 'red' }}>*</span>
-                  </TableCell>
-                  <TableCell colSpan={5}>{BoardExposureRangeLabel[detail.exposureRange]}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
-                    상단고정
-                  </TableCell>
-                  <TableCell colSpan={5}>
-                    <FormControlLabel
-                      control={<Switch checked={detail.noticeProperties?.fixedTop || false} disabled />}
-                      label={detail.noticeProperties?.fixedTop ? 'ON' : 'OFF'}
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
-                    제목 <span style={{ color: 'red' }}>*</span>
-                  </TableCell>
-                  <TableCell colSpan={5}>{detail.title}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
-                    내용 <span style={{ color: 'red' }}>*</span>
-                  </TableCell>
-                  <TableCell colSpan={5}>
-                    <Stack
-                      sx={{
-                        '.tiptap': {
-                          padding: '20px 10px',
-                        },
-                      }}
-                    >
-                      <EditorContent editor={editor} placeholder='내용을 입력하세요' />
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
-                    첨부파일
-                  </TableCell>
-                  <TableCell colSpan={5}>
-                    {detail.attachments && detail.attachments.length > 0 ? (
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                        {detail.attachments.map((file, index) => {
-                          return (
-                            <Link
-                              key={index}
-                              href={file.fileUrl}
-                              download
-                              target='_blank'
-                              rel='noopener noreferrer'
-                              sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
-                              underline='hover'
-                            >
-                              <AttachFileIcon fontSize='small' />
-                              {file.originalFileName}
-                            </Link>
-                          );
-                        })}
-                      </Box>
-                    ) : (
-                      '-'
-                    )}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-
-          <Box sx={{ mt: 3, borderTop: 1, borderColor: 'divider', pt: 2 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <Typography variant='body2' color='text.secondary'>
-                  조회수: {detail.viewsCount.toLocaleString()}
-                </Typography>
-              </Grid>
-              <Grid item xs={6} textAlign='right'>
-                <Typography variant='body2' color='text.secondary'>
-                  작성일: {formatYyyyMmDd(detail.createdAt)}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Box>
-
-          <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', gap: 2 }}>
-            <Button variant='outlined' component={RouterLink} to='/admin/notices' sx={{ minWidth: 120 }}>
-              취소
-            </Button>
-            <Button variant='contained' component={RouterLink} to={`/admin/notices/${boardId}/edit`} sx={{ minWidth: 120 }}>
-              수정
-            </Button>
-          </Box>
-        </Card>
-      </Grid>
+        <Stack direction='row' sx={{ justifyContent: 'center', gap: 2 }}>
+          <Button variant='outlined' component={RouterLink} to='/admin/notices' sx={{ minWidth: 120 }}>
+            취소
+          </Button>
+          <Button variant='contained' component={RouterLink} to={`/admin/notices/${boardId}/edit`} sx={{ minWidth: 120 }}>
+            수정
+          </Button>
+        </Stack>
+      </Card>
     </Stack>
   );
 }

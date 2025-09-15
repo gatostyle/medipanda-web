@@ -18,7 +18,6 @@ import {
   Card,
   Checkbox,
   FormControl,
-  Grid,
   InputLabel,
   Link,
   MenuItem,
@@ -243,169 +242,163 @@ export default function MpAdminSettlementList() {
 
   return (
     <>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Typography variant='h4' gutterBottom>
-            정산내역
-          </Typography>
-        </Grid>
+      <Stack sx={{ gap: 3 }}>
+        <Typography variant='h4' gutterBottom>
+          정산내역
+        </Typography>
 
-        <Grid item xs={12}>
-          <Card sx={{ padding: 3 }}>
-            <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>
-              <SearchFilterItem minWidth={140}>
-                <FormControl fullWidth size='small'>
-                  <InputLabel>사용자확인</InputLabel>
-                  <Select name='status' value={formik.values.status} onChange={formik.handleChange}>
-                    {Object.keys(SettlementStatus).map(settlementStatus => (
-                      <MenuItem key={settlementStatus} value={settlementStatus}>
-                        {SettlementStatusLabel[settlementStatus]}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </SearchFilterItem>
-              <SearchFilterItem minWidth={140}>
-                <FormControl fullWidth size='small'>
-                  <InputLabel>검색유형</InputLabel>
-                  <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
-                    <MenuItem value={'dealerId'}>딜러번호</MenuItem>
-                    <MenuItem value={'companyName'}>회사명</MenuItem>
-                  </Select>
-                </FormControl>
-              </SearchFilterItem>
-              <SearchFilterItem minWidth={140}>
-                <DatePicker
-                  value={formik.values.settlementMonth}
-                  onChange={value => formik.setFieldValue('settlementMonth', value)}
-                  format='yyyy-MM'
-                  views={['year', 'month']}
-                  label='정산월'
-                  slotProps={{
-                    textField: {
-                      size: 'small',
-                    },
-                  }}
-                />
-              </SearchFilterItem>
-              <SearchFilterItem flexGrow={1} minWidth={200}>
-                <TextField
-                  name='searchKeyword'
-                  size='small'
-                  placeholder='검색어를 입력하세요'
-                  fullWidth
-                  value={formik.values.searchKeyword}
-                  onChange={formik.handleChange}
-                />
-              </SearchFilterItem>
-              <SearchFilterActions>
-                <Button variant='contained' size='small' type='submit'>
-                  검색
-                </Button>
-                <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
-                  초기화
-                </Button>
-              </SearchFilterActions>
-            </SearchFilterBar>
-          </Card>
-        </Grid>
+        <Card sx={{ padding: 3 }}>
+          <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>
+            <SearchFilterItem minWidth={140}>
+              <FormControl fullWidth size='small'>
+                <InputLabel>사용자확인</InputLabel>
+                <Select name='status' value={formik.values.status} onChange={formik.handleChange}>
+                  {Object.keys(SettlementStatus).map(settlementStatus => (
+                    <MenuItem key={settlementStatus} value={settlementStatus}>
+                      {SettlementStatusLabel[settlementStatus]}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </SearchFilterItem>
+            <SearchFilterItem minWidth={140}>
+              <FormControl fullWidth size='small'>
+                <InputLabel>검색유형</InputLabel>
+                <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
+                  <MenuItem value={'dealerId'}>딜러번호</MenuItem>
+                  <MenuItem value={'companyName'}>회사명</MenuItem>
+                </Select>
+              </FormControl>
+            </SearchFilterItem>
+            <SearchFilterItem minWidth={140}>
+              <DatePicker
+                value={formik.values.settlementMonth}
+                onChange={value => formik.setFieldValue('settlementMonth', value)}
+                format='yyyy-MM'
+                views={['year', 'month']}
+                label='정산월'
+                slotProps={{
+                  textField: {
+                    size: 'small',
+                  },
+                }}
+              />
+            </SearchFilterItem>
+            <SearchFilterItem flexGrow={1} minWidth={200}>
+              <TextField
+                name='searchKeyword'
+                size='small'
+                placeholder='검색어를 입력하세요'
+                fullWidth
+                value={formik.values.searchKeyword}
+                onChange={formik.handleChange}
+              />
+            </SearchFilterItem>
+            <SearchFilterActions>
+              <Button variant='contained' size='small' type='submit'>
+                검색
+              </Button>
+              <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
+                초기화
+              </Button>
+            </SearchFilterActions>
+          </SearchFilterBar>
+        </Card>
 
-        <Grid item xs={12}>
-          <Card sx={{ padding: 3 }}>
-            <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
-              <Stack direction='row' spacing={2}>
-                <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
-              </Stack>
-              <Stack direction='row' spacing={1}>
-                <Button
-                  variant='contained'
-                  color='success'
-                  size='small'
-                  href={getDownloadSettlementListExcel({
-                    dealerName: undefined,
-                    dealerId: searchType === 'dealerId' && searchKeyword !== '' ? Number(searchKeyword) : undefined,
-                    companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
-                    status: status !== '' ? status : undefined,
-                    startMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
-                    endMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
-                    size: 2 ** 31 - 1,
-                  })}
-                  target='_blank'
-                  startIcon={<DocumentDownload size={16} />}
-                >
-                  Excel
-                </Button>
-                <Button variant='contained' color='success' size='small' onClick={() => setSettlementUploadModalOpen(true)}>
-                  파일 업로드
-                </Button>
-              </Stack>
+        <Card sx={{ padding: 3 }}>
+          <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+            <Stack direction='row' spacing={2}>
+              <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
             </Stack>
+            <Stack direction='row' spacing={1}>
+              <Button
+                variant='contained'
+                color='success'
+                size='small'
+                href={getDownloadSettlementListExcel({
+                  dealerName: undefined,
+                  dealerId: searchType === 'dealerId' && searchKeyword !== '' ? Number(searchKeyword) : undefined,
+                  companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
+                  status: status !== '' ? status : undefined,
+                  startMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
+                  endMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
+                  size: 2 ** 31 - 1,
+                })}
+                target='_blank'
+                startIcon={<DocumentDownload size={16} />}
+              >
+                Excel
+              </Button>
+              <Button variant='contained' color='success' size='small' onClick={() => setSettlementUploadModalOpen(true)}>
+                파일 업로드
+              </Button>
+            </Stack>
+          </Stack>
 
-            <TableContainer sx={{ overflowX: 'auto' }}>
-              <Table size='small'>
-                <TableHead>
-                  {table.getHeaderGroups().map(headerGroup => (
-                    <TableRow key={headerGroup.id}>
-                      {headerGroup.headers.map(header => (
-                        <TableCell key={header.id} style={{ width: header.getSize() }}>
-                          {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                        </TableCell>
+          <TableContainer sx={{ overflowX: 'auto' }}>
+            <Table size='small'>
+              <TableHead>
+                {table.getHeaderGroups().map(headerGroup => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map(header => (
+                      <TableCell key={header.id} style={{ width: header.getSize() }}>
+                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableHead>
+              <TableBody>
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                      <Typography variant='body2' color='text.secondary'>
+                        데이터를 로드하는 중입니다.
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ) : table.getRowModel().rows.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                      <Typography variant='body2' color='text.secondary'>
+                        검색 결과가 없습니다.
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  table.getRowModel().rows.map(row => (
+                    <TableRow key={row.id}>
+                      {row.getVisibleCells().map(cell => (
+                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                       ))}
                     </TableRow>
-                  ))}
-                </TableHead>
-                <TableBody>
-                  {loading ? (
-                    <TableRow>
-                      <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
-                        <Typography variant='body2' color='text.secondary'>
-                          데이터를 로드하는 중입니다.
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                  ) : table.getRowModel().rows.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
-                        <Typography variant='body2' color='text.secondary'>
-                          검색 결과가 없습니다.
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    table.getRowModel().rows.map(row => (
-                      <TableRow key={row.id}>
-                        {row.getVisibleCells().map(cell => (
-                          <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                        ))}
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-
-            <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
-              <Pagination
-                count={totalPages}
-                page={page}
-                renderItem={item => (
-                  <PaginationItem
-                    {...item}
-                    color='primary'
-                    variant='outlined'
-                    component={RouterLink}
-                    to={setUrlParams({ page: item.page }, initialSearchParams)}
-                  />
+                  ))
                 )}
-                color='primary'
-                variant='outlined'
-                showFirstButton
-                showLastButton
-              />
-            </Stack>
-          </Card>
-        </Grid>
-      </Grid>
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
+            <Pagination
+              count={totalPages}
+              page={page}
+              renderItem={item => (
+                <PaginationItem
+                  {...item}
+                  color='primary'
+                  variant='outlined'
+                  component={RouterLink}
+                  to={setUrlParams({ page: item.page }, initialSearchParams)}
+                />
+              )}
+              color='primary'
+              variant='outlined'
+              showFirstButton
+              showLastButton
+            />
+          </Stack>
+        </Card>
+      </Stack>
 
       <MpSettlementUploadModal
         open={settlementUploadModalOpen}

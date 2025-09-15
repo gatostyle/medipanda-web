@@ -1,6 +1,6 @@
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
-import { Box, Button, Card, Chip, CircularProgress, Divider, Grid, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, Chip, CircularProgress, Divider, Stack, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import { BoardExposureRangeLabel, EventBoardDetailsResponse, getEventBoardDetails, PostAttachmentType } from '@/backend';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
@@ -61,166 +61,138 @@ export default function MpAdminEventDetail() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Grid item xs={12}>
-        <Typography variant='h4' gutterBottom>
-          이벤트 상세
-        </Typography>
-      </Grid>
+      <Typography variant='h4' gutterBottom>
+        이벤트 상세
+      </Typography>
 
-      <Grid item xs={12}>
-        <Card sx={{ padding: 3 }}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
-              <Stack spacing={1}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  노출상태
-                </Typography>
-                <Box>
-                  <Chip
-                    label={event.boardPostDetail.isExposed ? '노출' : '미노출'}
-                    color={event.boardPostDetail.isExposed ? 'success' : 'default'}
-                    variant='light'
-                    size='small'
-                  />
-                </Box>
-              </Stack>
-            </Grid>
+      <Card sx={{ padding: 3 }}>
+        <Stack sx={{ gap: 3 }}>
+          <Stack direction='row'>
+            <Stack sx={{ flex: '1 0', gap: 1 }}>
+              <Typography variant='subtitle2' color='text.secondary'>
+                노출상태
+              </Typography>
+              <Box>
+                <Chip
+                  label={event.boardPostDetail.isExposed ? '노출' : '미노출'}
+                  color={event.boardPostDetail.isExposed ? 'success' : 'default'}
+                  variant='light'
+                  size='small'
+                />
+              </Box>
+            </Stack>
 
-            <Grid item xs={12} sm={6}>
-              <Stack spacing={1}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  노출범위
-                </Typography>
-                <Box>
-                  <Chip label={BoardExposureRangeLabel[event.boardPostDetail.exposureRange]} color='success' variant='light' size='small' />
-                </Box>
-              </Stack>
-            </Grid>
+            <Stack sx={{ flex: '1 0', gap: 1 }}>
+              <Typography variant='subtitle2' color='text.secondary'>
+                노출범위
+              </Typography>
+              <Box>
+                <Chip label={BoardExposureRangeLabel[event.boardPostDetail.exposureRange]} color='success' variant='light' size='small' />
+              </Box>
+            </Stack>
+          </Stack>
 
-            <Grid item xs={12}>
-              <Stack spacing={1}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  이벤트기간
-                </Typography>
-                <Typography variant='body1'>
-                  {formatYyyyMmDd(event.eventStartDate)} ~ {formatYyyyMmDd(event.eventEndDate)}
-                </Typography>
-              </Stack>
-            </Grid>
+          <Stack spacing={1}>
+            <Typography variant='subtitle2' color='text.secondary'>
+              이벤트기간
+            </Typography>
+            <Typography variant='body1'>
+              {formatYyyyMmDd(event.eventStartDate)} ~ {formatYyyyMmDd(event.eventEndDate)}
+            </Typography>
+          </Stack>
 
-            <Grid item xs={12}>
-              <Stack spacing={1}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  제목
-                </Typography>
-                <Typography variant='body1'>{event.boardPostDetail.title}</Typography>
-              </Stack>
-            </Grid>
+          <Stack spacing={1}>
+            <Typography variant='subtitle2' color='text.secondary'>
+              제목
+            </Typography>
+            <Typography variant='body1'>{event.boardPostDetail.title}</Typography>
+          </Stack>
 
-            <Grid item xs={12}>
-              <Stack spacing={1}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  이벤트 썸네일
-                </Typography>
-                <Typography variant='body1'>{event.description}</Typography>
-              </Stack>
-            </Grid>
+          <Stack spacing={1}>
+            <Typography variant='subtitle2' color='text.secondary'>
+              이벤트 썸네일
+            </Typography>
+            <Typography variant='body1'>{event.description}</Typography>
+          </Stack>
 
-            {event.thumbnailUrl && (
-              <Grid item xs={12}>
-                <Stack spacing={1}>
-                  <Typography variant='subtitle2' color='text.secondary'>
-                    썸네일
-                  </Typography>
-                  <Box>
-                    <img
-                      src={event.thumbnailUrl}
-                      alt='썸네일'
-                      style={{
-                        maxWidth: '300px',
-                        maxHeight: '200px',
-                        objectFit: 'contain',
-                        border: '1px solid #e0e0e0',
-                        borderRadius: '4px',
-                      }}
-                    />
-                  </Box>
-                </Stack>
-              </Grid>
-            )}
+          {event.thumbnailUrl && (
+            <Stack spacing={1}>
+              <Typography variant='subtitle2' color='text.secondary'>
+                썸네일
+              </Typography>
+              <Box>
+                <img
+                  src={event.thumbnailUrl}
+                  alt='썸네일'
+                  style={{
+                    maxWidth: '300px',
+                    maxHeight: '200px',
+                    objectFit: 'contain',
+                    border: '1px solid #e0e0e0',
+                    borderRadius: '4px',
+                  }}
+                />
+              </Box>
+            </Stack>
+          )}
 
-            <Grid item xs={12}>
-              <Divider />
-            </Grid>
+          <Divider />
 
-            <Grid item xs={12}>
-              <Stack spacing={1}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  내용
-                </Typography>
-                <Box sx={{ mt: 1 }}>
-                  <EditorContent editor={editor} />
-                </Box>
-              </Stack>
-            </Grid>
+          <Stack spacing={1}>
+            <Typography variant='subtitle2' color='text.secondary'>
+              내용
+            </Typography>
+            <Box sx={{ mt: 1 }}>
+              <EditorContent editor={editor} />
+            </Box>
+          </Stack>
 
-            {event.videoUrl && (
-              <Grid item xs={12}>
-                <Stack spacing={1}>
-                  <Typography variant='subtitle2' color='text.secondary'>
-                    영상url
-                  </Typography>
-                  <Typography
-                    variant='body1'
-                    component='a'
-                    href={event.videoUrl}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    sx={{ color: 'primary.main', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
-                  >
-                    {event.videoUrl}
-                  </Typography>
-                </Stack>
-              </Grid>
-            )}
+          {event.videoUrl && (
+            <Stack spacing={1}>
+              <Typography variant='subtitle2' color='text.secondary'>
+                영상url
+              </Typography>
+              <Typography
+                variant='body1'
+                component='a'
+                href={event.videoUrl}
+                target='_blank'
+                rel='noopener noreferrer'
+                sx={{ color: 'primary.main', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
+              >
+                {event.videoUrl}
+              </Typography>
+            </Stack>
+          )}
 
-            {event.note && (
-              <Grid item xs={12}>
-                <Stack spacing={1}>
-                  <Typography variant='subtitle2' color='text.secondary'>
-                    비고
-                  </Typography>
-                  <Typography variant='body1'>{event.note}</Typography>
-                </Stack>
-              </Grid>
-            )}
+          {event.note && (
+            <Stack spacing={1}>
+              <Typography variant='subtitle2' color='text.secondary'>
+                비고
+              </Typography>
+              <Typography variant='body1'>{event.note}</Typography>
+            </Stack>
+          )}
 
-            <Grid item xs={12}>
-              <Stack spacing={1}>
-                <Typography variant='subtitle2' color='text.secondary'>
-                  조회수
-                </Typography>
-                <Typography variant='body1'>{event.boardPostDetail.viewsCount.toLocaleString()}</Typography>
-              </Stack>
-            </Grid>
+          <Stack spacing={1}>
+            <Typography variant='subtitle2' color='text.secondary'>
+              조회수
+            </Typography>
+            <Typography variant='body1'>{event.boardPostDetail.viewsCount.toLocaleString()}</Typography>
+          </Stack>
 
-            <Grid item xs={12}>
-              <Divider />
-            </Grid>
+          <Divider />
 
-            <Grid item xs={12}>
-              <Stack direction='row' spacing={2} justifyContent='center'>
-                <Button variant='outlined' size='large' component={RouterLink} to='/admin/events'>
-                  취소
-                </Button>
-                <Button variant='contained' size='large' component={RouterLink} to={`/admin/events/${eventId}/edit`}>
-                  수정
-                </Button>
-              </Stack>
-            </Grid>
-          </Grid>
-        </Card>
-      </Grid>
+          <Stack direction='row' spacing={2} justifyContent='center'>
+            <Button variant='outlined' size='large' component={RouterLink} to='/admin/events'>
+              취소
+            </Button>
+            <Button variant='contained' size='large' component={RouterLink} to={`/admin/events/${eventId}/edit`}>
+              수정
+            </Button>
+          </Stack>
+        </Stack>
+      </Card>
     </Stack>
   );
 }

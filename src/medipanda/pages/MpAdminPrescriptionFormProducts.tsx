@@ -7,7 +7,6 @@ import {
   Checkbox,
   CircularProgress,
   FormControlLabel,
-  Grid,
   IconButton,
   InputAdornment,
   Stack,
@@ -406,116 +405,110 @@ export default function MpAdminPrescriptionFormProducts() {
 
       <Card sx={{ p: 3 }} component='form' onSubmit={formik.handleSubmit}>
         <Box sx={{ mb: 3 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={4}>
-              <Stack spacing={2}>
-                <Stack direction='row' alignItems='center'>
-                  <Typography variant='body2' color='text.secondary' sx={{ minWidth: 100 }}>
-                    제약사명:
-                  </Typography>
-                  <Stack direction='row' spacing={1} alignItems='center' flex={1}>
-                    <Typography variant='body1'>{formik.values.drugCompany}</Typography>
-                  </Stack>
-                </Stack>
-                <Stack direction='row' alignItems='center'>
-                  <Typography variant='body2' color='text.secondary' sx={{ minWidth: 100 }}>
-                    회사명:
-                  </Typography>
-                  <Typography variant='body1'>{formik.values.companyName}</Typography>
-                </Stack>
-                <Stack direction='row' alignItems='center'>
-                  <Typography variant='body2' color='text.secondary' sx={{ minWidth: 100 }}>
-                    거래처명:
-                  </Typography>
-                  <TextField
-                    size='small'
-                    name='institutionName'
-                    value={formik.values.institutionName}
-                    onChange={formik.handleChange}
-                    fullWidth
-                    InputProps={{
-                      readOnly: true,
-                      endAdornment: (
-                        <InputAdornment position='end'>
-                          <IconButton size='small' onClick={handlePartnerSearch}>
-                            <SearchNormal1 size={16} />
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
+          <Stack sx={{ gap: 2 }}>
+            <Stack direction='row' sx={{ gap: 2 }}>
+              <Stack direction='row' sx={{ flex: '1 0', alignItems: 'center' }}>
+                <Typography variant='body2' color='text.secondary' sx={{ minWidth: 100 }}>
+                  제약사명:
+                </Typography>
+                <Stack direction='row' spacing={1} alignItems='center' flex={1}>
+                  <Typography variant='body1'>{formik.values.drugCompany}</Typography>
                 </Stack>
               </Stack>
-            </Grid>
+              <Stack direction='row' sx={{ flex: '1 0', alignItems: 'center' }}>
+                <Typography variant='body2' color='text.secondary' sx={{ minWidth: 140 }}>
+                  거래처코드:
+                </Typography>
+                <Typography variant='body1'>{formik.values.institutionCode}</Typography>
+              </Stack>
+              <Stack direction='row' sx={{ flex: '1 0', alignItems: 'center' }}>
+                <Typography variant='body2' color='text.secondary' sx={{ minWidth: 80 }}>
+                  처방월:
+                </Typography>
+                <DatePicker
+                  value={formik.values.prescriptionMonth}
+                  onChange={value => formik.setFieldValue('prescriptionMonth', value)}
+                  format='yyyy-MM'
+                  views={['year', 'month']}
+                  label='처방월'
+                  slotProps={{
+                    textField: {
+                      size: 'small',
+                    },
+                  }}
+                />
+              </Stack>
+            </Stack>
 
-            <Grid item xs={12} md={4}>
-              <Stack spacing={2}>
-                <Stack direction='row' alignItems='center'>
-                  <Typography variant='body2' color='text.secondary' sx={{ minWidth: 140 }}>
-                    거래처코드:
-                  </Typography>
-                  <Typography variant='body1'>{formik.values.institutionCode}</Typography>
-                </Stack>
-                <Stack direction='row' alignItems='center'>
-                  <Typography variant='body2' color='text.secondary' sx={{ minWidth: 140 }}>
-                    사업자등록번호:
-                  </Typography>
-                  <Typography variant='body1'>{formik.values.businessNumber}</Typography>
-                </Stack>
-                <Stack direction='row' alignItems='center'>
-                  <Typography variant='body2' color='text.secondary' sx={{ minWidth: 140 }}>
-                    딜러명:
-                  </Typography>
-                  <Typography variant='body1'>{formik.values.dealerName}</Typography>
-                </Stack>
+            <Stack direction='row' sx={{ gap: 2 }}>
+              <Stack direction='row' sx={{ flex: '1 0', alignItems: 'center' }}>
+                <Typography variant='body2' color='text.secondary' sx={{ minWidth: 100 }}>
+                  회사명:
+                </Typography>
+                <Typography variant='body1'>{formik.values.companyName}</Typography>
               </Stack>
-            </Grid>
+              <Stack direction='row' sx={{ flex: '1 0', alignItems: 'center' }}>
+                <Typography variant='body2' color='text.secondary' sx={{ minWidth: 140 }}>
+                  사업자등록번호:
+                </Typography>
+                <Typography variant='body1'>{formik.values.businessNumber}</Typography>
+              </Stack>
+              <Stack direction='row' sx={{ flex: '1 0', alignItems: 'center' }}>
+                <Typography variant='body2' color='text.secondary' sx={{ minWidth: 80 }}>
+                  정산월:
+                </Typography>
+                <DatePicker
+                  value={formik.values.settlementMonth}
+                  onChange={value => formik.setFieldValue('settlementMonth', value)}
+                  format='yyyy-MM'
+                  views={['year', 'month']}
+                  label='정산월'
+                  slotProps={{
+                    textField: {
+                      size: 'small',
+                    },
+                  }}
+                />
+              </Stack>
+            </Stack>
 
-            <Grid item xs={12} md={4}>
-              <Stack spacing={2}>
-                <Stack direction='row' alignItems='center'>
-                  <Typography variant='body2' color='text.secondary' sx={{ minWidth: 80 }}>
-                    처방월:
-                  </Typography>
-                  <DatePicker
-                    value={formik.values.prescriptionMonth}
-                    onChange={value => formik.setFieldValue('prescriptionMonth', value)}
-                    format='yyyy-MM'
-                    views={['year', 'month']}
-                    label='처방월'
-                    slotProps={{
-                      textField: {
-                        size: 'small',
-                      },
-                    }}
-                  />
-                </Stack>
-                <Stack direction='row' alignItems='center'>
-                  <Typography variant='body2' color='text.secondary' sx={{ minWidth: 80 }}>
-                    정산월:
-                  </Typography>
-                  <DatePicker
-                    value={formik.values.settlementMonth}
-                    onChange={value => formik.setFieldValue('settlementMonth', value)}
-                    format='yyyy-MM'
-                    views={['year', 'month']}
-                    label='정산월'
-                    slotProps={{
-                      textField: {
-                        size: 'small',
-                      },
-                    }}
-                  />
-                </Stack>
-                <Stack direction='row' alignItems='center'>
-                  <Typography variant='body2' color='text.secondary' sx={{ minWidth: 80 }}>
-                    처방금액:
-                  </Typography>
-                  <Typography variant='body1'>{formik.values.prescriptionAmount}</Typography>
-                </Stack>
+            <Stack direction='row' sx={{ gap: 2 }}>
+              <Stack direction='row' sx={{ flex: '1 0', alignItems: 'center' }}>
+                <Typography variant='body2' color='text.secondary' sx={{ minWidth: 100 }}>
+                  거래처명:
+                </Typography>
+                <TextField
+                  size='small'
+                  name='institutionName'
+                  value={formik.values.institutionName}
+                  onChange={formik.handleChange}
+                  fullWidth
+                  InputProps={{
+                    readOnly: true,
+                    endAdornment: (
+                      <InputAdornment position='end'>
+                        <IconButton size='small' onClick={handlePartnerSearch}>
+                          <SearchNormal1 size={16} />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
               </Stack>
-            </Grid>
-          </Grid>
+              <Stack direction='row' sx={{ flex: '1 0', alignItems: 'center' }}>
+                <Typography variant='body2' color='text.secondary' sx={{ minWidth: 140 }}>
+                  딜러명:
+                </Typography>
+                <Typography variant='body1'>{formik.values.dealerName}</Typography>
+              </Stack>
+              <Stack direction='row' sx={{ flex: '1 0', alignItems: 'center' }}>
+                <Typography variant='body2' color='text.secondary' sx={{ minWidth: 80 }}>
+                  처방금액:
+                </Typography>
+                <Typography variant='body1'>{formik.values.prescriptionAmount}</Typography>
+              </Stack>
+            </Stack>
+          </Stack>
 
           <Stack direction='row' spacing={2} sx={{ mt: 3 }}>
             <Button variant='contained' color='success' size='small' onClick={handleEdiFileView}>

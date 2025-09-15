@@ -8,7 +8,6 @@ import {
   CircularProgress,
   FormControl,
   FormControlLabel,
-  Grid,
   IconButton,
   Link,
   Radio,
@@ -156,137 +155,133 @@ export default function MpAdminFaqEdit() {
   }
 
   return (
-    <Grid container spacing={3} component='form' onSubmit={formik.handleSubmit}>
-      <Grid item xs={12}>
-        <Typography variant='h4' gutterBottom>
-          FAQ 등록
-        </Typography>
-      </Grid>
+    <Stack component='form' onSubmit={formik.handleSubmit} sx={{ gap: 3 }}>
+      <Typography variant='h4' gutterBottom>
+        FAQ 등록
+      </Typography>
 
-      <Grid item xs={12}>
-        <Card sx={{ padding: 3 }}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Typography variant='body2' color='text.secondary' gutterBottom>
-                제목
-              </Typography>
-              <TextField fullWidth name='title' placeholder='' value={formik.values.title} onChange={formik.handleChange} />
-            </Grid>
+      <Card component={Stack} sx={{ padding: 3, gap: 3 }}>
+        <Stack>
+          <Typography variant='body2' color='text.secondary'>
+            제목
+          </Typography>
+          <TextField fullWidth name='title' placeholder='' value={formik.values.title} onChange={formik.handleChange} />
+        </Stack>
 
-            <Grid item xs={12}>
-              <Typography variant='body2' color='text.secondary' gutterBottom>
-                내용
-              </Typography>
-              <Stack
-                sx={{
-                  '.tiptap': {
-                    border: `1px solid #cccccc`,
-                    padding: '20px 10px',
-                  },
-                }}
-              >
-                <EditorContent editor={editor} placeholder='내용을 입력하세요' />
-              </Stack>
-            </Grid>
+        <Stack>
+          <Typography variant='body2' color='text.secondary'>
+            내용
+          </Typography>
+          <Stack
+            sx={{
+              '.tiptap': {
+                border: `1px solid #cccccc`,
+                padding: '20px 10px',
+              },
+            }}
+          >
+            <EditorContent editor={editor} placeholder='내용을 입력하세요' />
+          </Stack>
+        </Stack>
 
-            <Grid item xs={12}>
-              <Typography variant='body2' color='text.secondary' gutterBottom>
-                첨부파일
-              </Typography>
-              <Button variant='contained' component='label'>
-                파일첨부
-                <input type='file' hidden multiple onChange={handleFileChange} accept='*' />
-              </Button>
-
-              {(formik.values.attachedFiles.length > 0 || formik.values.newFiles.length > 0) && (
-                <Stack sx={{ mt: 2 }}>
-                  {formik.values.attachedFiles.map(file => (
-                    <Stack key={file.s3fileId} direction='row' alignItems='center'>
-                      <Link component={RouterLink} to={file.fileUrl} target='_blank'>
-                        {file.originalFileName}
-                      </Link>
-                      <IconButton
-                        size='small'
-                        onClick={() => {
-                          formik.setFieldValue(
-                            'attachedFiles',
-                            formik.values.attachedFiles.filter(a => a.s3fileId !== file.s3fileId),
-                          );
-                        }}
-                        sx={{
-                          marginLeft: '10px',
-                        }}
-                      >
-                        <Close />
-                      </IconButton>
-                    </Stack>
-                  ))}
-                  {formik.values.newFiles.map((file, index) => (
-                    <Stack key={`${index}:${file.name}`} direction='row' alignItems='center'>
-                      <Link underline='none'>{file.name}</Link>
-                      <IconButton
-                        size='small'
-                        onClick={() => {
-                          formik.setFieldValue(
-                            'newFiles',
-                            formik.values.newFiles.filter((_, i) => i !== index),
-                          );
-                        }}
-                        sx={{
-                          marginLeft: '10px',
-                        }}
-                      >
-                        <Close />
-                      </IconButton>
-                    </Stack>
-                  ))}
-                </Stack>
-              )}
-            </Grid>
-
-            <Grid item xs={12}>
-              <Typography variant='body2' color='text.secondary' gutterBottom>
-                노출상태
-              </Typography>
-              <FormControl component='fieldset'>
-                <RadioGroup
-                  row
-                  value={formik.values.isExposed ? 'visible' : 'hidden'}
-                  onChange={e => formik.setFieldValue('isExposed', e.target.value === 'visible')}
-                >
-                  <FormControlLabel value='visible' control={<Radio />} label='노출' />
-                  <FormControlLabel value='hidden' control={<Radio />} label='미노출' />
-                </RadioGroup>
-              </FormControl>
-            </Grid>
-          </Grid>
-
-          <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
-            <Button
-              variant='outlined'
-              component={RouterLink}
-              to={isNew ? '/admin/faqs' : `/admin/faqs/${boardId}`}
-              sx={{
-                minWidth: 120,
-              }}
-              disabled={formik.isSubmitting}
-            >
-              취소
-            </Button>
-            <Button
-              variant='contained'
-              type='submit'
-              sx={{
-                minWidth: 120,
-              }}
-              disabled={formik.isSubmitting}
-              startIcon={formik.isSubmitting ? <CircularProgress size={20} /> : null}
-            >
-              {formik.isSubmitting ? '저장 중...' : '저장'}
+        <Stack>
+          <Typography variant='body2' color='text.secondary'>
+            첨부파일
+          </Typography>
+          <Box>
+            <Button variant='contained' component='label'>
+              파일첨부
+              <input type='file' hidden multiple onChange={handleFileChange} accept='*' />
             </Button>
           </Box>
-        </Card>
-      </Grid>
-    </Grid>
+
+          {(formik.values.attachedFiles.length > 0 || formik.values.newFiles.length > 0) && (
+            <Stack sx={{ mt: 2 }}>
+              {formik.values.attachedFiles.map(file => (
+                <Stack key={file.s3fileId} direction='row' alignItems='center'>
+                  <Link component={RouterLink} to={file.fileUrl} target='_blank'>
+                    {file.originalFileName}
+                  </Link>
+                  <IconButton
+                    size='small'
+                    onClick={() => {
+                      formik.setFieldValue(
+                        'attachedFiles',
+                        formik.values.attachedFiles.filter(a => a.s3fileId !== file.s3fileId),
+                      );
+                    }}
+                    sx={{
+                      marginLeft: '10px',
+                    }}
+                  >
+                    <Close />
+                  </IconButton>
+                </Stack>
+              ))}
+              {formik.values.newFiles.map((file, index) => (
+                <Stack key={`${index}:${file.name}`} direction='row' alignItems='center'>
+                  <Link underline='none'>{file.name}</Link>
+                  <IconButton
+                    size='small'
+                    onClick={() => {
+                      formik.setFieldValue(
+                        'newFiles',
+                        formik.values.newFiles.filter((_, i) => i !== index),
+                      );
+                    }}
+                    sx={{
+                      marginLeft: '10px',
+                    }}
+                  >
+                    <Close />
+                  </IconButton>
+                </Stack>
+              ))}
+            </Stack>
+          )}
+        </Stack>
+
+        <Stack>
+          <Typography variant='body2' color='text.secondary'>
+            노출상태
+          </Typography>
+          <FormControl component='fieldset'>
+            <RadioGroup
+              row
+              value={formik.values.isExposed ? 'visible' : 'hidden'}
+              onChange={e => formik.setFieldValue('isExposed', e.target.value === 'visible')}
+            >
+              <FormControlLabel value='visible' control={<Radio />} label='노출' />
+              <FormControlLabel value='hidden' control={<Radio />} label='미노출' />
+            </RadioGroup>
+          </FormControl>
+        </Stack>
+
+        <Stack direction='row' sx={{ justifyContent: 'center', gap: 2 }}>
+          <Button
+            variant='outlined'
+            component={RouterLink}
+            to={isNew ? '/admin/faqs' : `/admin/faqs/${boardId}`}
+            sx={{
+              minWidth: 120,
+            }}
+            disabled={formik.isSubmitting}
+          >
+            취소
+          </Button>
+          <Button
+            variant='contained'
+            type='submit'
+            sx={{
+              minWidth: 120,
+            }}
+            disabled={formik.isSubmitting}
+            startIcon={formik.isSubmitting ? <CircularProgress size={20} /> : null}
+          >
+            {formik.isSubmitting ? '저장 중...' : '저장'}
+          </Button>
+        </Stack>
+      </Card>
+    </Stack>
   );
 }

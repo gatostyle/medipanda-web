@@ -6,7 +6,6 @@ import {
   Card,
   Chip,
   CircularProgress,
-  Grid,
   Link,
   Table,
   TableBody,
@@ -73,94 +72,90 @@ export default function MpAdminAtoZDetail() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Grid item xs={12}>
-        <Typography variant='h4' gutterBottom>
-          CSO A TO Z 상세
-        </Typography>
-      </Grid>
+      <Typography variant='h4' gutterBottom>
+        CSO A TO Z 상세
+      </Typography>
 
-      <Grid item xs={12}>
-        <Card sx={{ padding: 3 }}>
-          <TableContainer>
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell component='th' scope='row' sx={{ width: 120, fontWeight: 'bold' }}>
-                    제목
-                  </TableCell>
-                  <TableCell>{detail.title}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
-                    내용
-                  </TableCell>
-                  <TableCell>
-                    <EditorContent editor={editor} />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
-                    첨부파일
-                  </TableCell>
-                  <TableCell>
-                    {detail.attachments.map(file => {
-                      return (
-                        <Box key={file.s3fileId} sx={{ mb: 1 }}>
-                          <Link
-                            href={file.fileUrl}
-                            download
-                            target='_blank'
-                            rel='noopener noreferrer'
-                            sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
-                            underline='hover'
-                          >
-                            <AttachFileIcon fontSize='small' />
-                            {file.originalFileName}
-                          </Link>
-                        </Box>
-                      );
-                    })}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
-                    노출상태
-                  </TableCell>
-                  <TableCell>
-                    <Chip
-                      label={detail.isExposed ? '노출' : '미노출'}
-                      color={detail.isExposed ? 'success' : 'default'}
-                      variant='light'
-                      size='small'
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
-                    조회수
-                  </TableCell>
-                  <TableCell>{detail.viewsCount.toLocaleString()}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
-                    작성일
-                  </TableCell>
-                  <TableCell>{formatYyyyMmDd(detail.createdAt)}</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
+      <Card sx={{ padding: 3 }}>
+        <TableContainer>
+          <Table>
+            <TableBody>
+              <TableRow>
+                <TableCell component='th' scope='row' sx={{ width: 120, fontWeight: 'bold' }}>
+                  제목
+                </TableCell>
+                <TableCell>{detail.title}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
+                  내용
+                </TableCell>
+                <TableCell>
+                  <EditorContent editor={editor} />
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
+                  첨부파일
+                </TableCell>
+                <TableCell>
+                  {detail.attachments.map(file => {
+                    return (
+                      <Box key={file.s3fileId} sx={{ mb: 1 }}>
+                        <Link
+                          href={file.fileUrl}
+                          download
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
+                          underline='hover'
+                        >
+                          <AttachFileIcon fontSize='small' />
+                          {file.originalFileName}
+                        </Link>
+                      </Box>
+                    );
+                  })}
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
+                  노출상태
+                </TableCell>
+                <TableCell>
+                  <Chip
+                    label={detail.isExposed ? '노출' : '미노출'}
+                    color={detail.isExposed ? 'success' : 'default'}
+                    variant='light'
+                    size='small'
+                  />
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
+                  조회수
+                </TableCell>
+                <TableCell>{detail.viewsCount.toLocaleString()}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
+                  작성일
+                </TableCell>
+                <TableCell>{formatYyyyMmDd(detail.createdAt)}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
 
-          <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', gap: 2 }}>
-            <Button variant='outlined' component={RouterLink} to='/admin/atoz' sx={{ minWidth: 120 }}>
-              취소
-            </Button>
-            <Button variant='contained' component={RouterLink} to={`/admin/atoz/${boardId}/edit`} sx={{ minWidth: 120 }}>
-              수정
-            </Button>
-          </Box>
-        </Card>
-      </Grid>
+        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', gap: 2 }}>
+          <Button variant='outlined' component={RouterLink} to='/admin/atoz' sx={{ minWidth: 120 }}>
+            취소
+          </Button>
+          <Button variant='contained' component={RouterLink} to={`/admin/atoz/${boardId}/edit`} sx={{ minWidth: 120 }}>
+            수정
+          </Button>
+        </Box>
+      </Card>
     </Stack>
   );
 }

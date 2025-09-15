@@ -1,7 +1,7 @@
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import { Box, Button, Card, CircularProgress, Grid, Link, Typography } from '@mui/material';
+import { Box, Button, Card, CircularProgress, Link, Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import { EditorContent } from '@tiptap/react';
 import { BoardDetailsResponse, getBoardDetails, PostAttachmentType } from '@/backend';
@@ -63,105 +63,101 @@ export default function MpAdminCustomerCenterFaqDetail() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Grid item xs={12}>
-        <Typography variant='h4' gutterBottom>
-          FAQ 상세
-        </Typography>
-      </Grid>
+      <Typography variant='h4' gutterBottom>
+        FAQ 상세
+      </Typography>
 
-      <Grid item xs={12}>
-        <Card sx={{ padding: 3 }}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Typography variant='body2' color='text.secondary' gutterBottom>
-                제목
-              </Typography>
-              <Typography variant='body1'>{detail.title}</Typography>
-            </Grid>
+      <Card component={Stack} sx={{ padding: 3, gap: 3 }}>
+        <Stack>
+          <Typography variant='body2' color='text.secondary'>
+            제목
+          </Typography>
+          <Typography variant='body1'>{detail.title}</Typography>
+        </Stack>
 
-            <Grid item xs={12}>
-              <Typography variant='body2' color='text.secondary' gutterBottom>
-                내용
-              </Typography>
-              <Box sx={{ mt: 1 }}>
-                <EditorContent editor={editor} />
-              </Box>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Typography variant='body2' color='text.secondary' gutterBottom>
-                첨부파일
-              </Typography>
-              {detail.attachments && detail.attachments.length > 0 ? (
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                  {detail.attachments.map((file, index) => {
-                    return (
-                      <Link
-                        key={index}
-                        href={file.fileUrl}
-                        download
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
-                        underline='hover'
-                      >
-                        <AttachFileIcon fontSize='small' />
-                        {file.fileUrl}
-                      </Link>
-                    );
-                  })}
-                </Box>
-              ) : (
-                <Typography variant='body2'>-</Typography>
-              )}
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <Typography variant='body2' color='text.secondary' gutterBottom>
-                노출상태
-              </Typography>
-              <Typography variant='body1'>{detail.isExposed ? '노출' : '미노출'}</Typography>
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <Typography variant='body2' color='text.secondary' gutterBottom>
-                조회수
-              </Typography>
-              <Typography variant='body1'>{detail.viewsCount.toLocaleString()}</Typography>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Typography variant='body2' color='text.secondary' gutterBottom>
-                작성일
-              </Typography>
-              <Typography variant='body1'>{formatYyyyMmDd(detail.createdAt)}</Typography>
-            </Grid>
-          </Grid>
-
-          <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
-            <Button
-              variant='outlined'
-              component={RouterLink}
-              to='/admin/faqs'
-              sx={{
-                minWidth: 120,
-              }}
-            >
-              취소
-            </Button>
-            <Button
-              variant='contained'
-              component={RouterLink}
-              to={`/admin/faqs/${boardId}/edit`}
-              sx={{
-                minWidth: 120,
-              }}
-            >
-              수정
-            </Button>
+        <Stack>
+          <Typography variant='body2' color='text.secondary'>
+            내용
+          </Typography>
+          <Box sx={{ mt: 1 }}>
+            <EditorContent editor={editor} />
           </Box>
-        </Card>
-      </Grid>
+        </Stack>
+
+        <Stack>
+          <Typography variant='body2' color='text.secondary'>
+            첨부파일
+          </Typography>
+          {detail.attachments && detail.attachments.length > 0 ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              {detail.attachments.map((file, index) => {
+                return (
+                  <Link
+                    key={index}
+                    href={file.fileUrl}
+                    download
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
+                    underline='hover'
+                  >
+                    <AttachFileIcon fontSize='small' />
+                    {file.fileUrl}
+                  </Link>
+                );
+              })}
+            </Box>
+          ) : (
+            <Typography variant='body2'>-</Typography>
+          )}
+        </Stack>
+
+        <Stack direction='row'>
+          <Stack sx={{ flex: '1 0' }}>
+            <Typography variant='body2' color='text.secondary'>
+              노출상태
+            </Typography>
+            <Typography variant='body1'>{detail.isExposed ? '노출' : '미노출'}</Typography>
+          </Stack>
+
+          <Stack sx={{ flex: '1 0' }}>
+            <Typography variant='body2' color='text.secondary'>
+              조회수
+            </Typography>
+            <Typography variant='body1'>{detail.viewsCount.toLocaleString()}</Typography>
+          </Stack>
+        </Stack>
+
+        <Stack>
+          <Typography variant='body2' color='text.secondary'>
+            작성일
+          </Typography>
+          <Typography variant='body1'>{formatYyyyMmDd(detail.createdAt)}</Typography>
+        </Stack>
+
+        <Stack direction='row' sx={{ justifyContent: 'center', gap: 2 }}>
+          <Button
+            variant='outlined'
+            component={RouterLink}
+            to='/admin/faqs'
+            sx={{
+              minWidth: 120,
+            }}
+          >
+            취소
+          </Button>
+          <Button
+            variant='contained'
+            component={RouterLink}
+            to={`/admin/faqs/${boardId}/edit`}
+            sx={{
+              minWidth: 120,
+            }}
+          >
+            수정
+          </Button>
+        </Stack>
+      </Card>
     </Stack>
   );
 }

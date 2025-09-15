@@ -7,7 +7,6 @@ import {
   Card,
   CircularProgress,
   FormControl,
-  Grid,
   IconButton,
   Link,
   MenuItem,
@@ -180,32 +179,26 @@ export default function MpAdminSettlementDetail() {
       </Stack>
 
       <Card sx={{ padding: 3 }}>
-        <Grid container spacing={2} alignItems='center' component='form' onSubmit={formik.handleSubmit}>
-          <Grid item xs={12} md={2}>
-            <FormControl fullWidth size='small'>
-              <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange} displayEmpty>
-                <MenuItem value='institutionName'>거래처명</MenuItem>
-                <MenuItem value='businessNumber'>사업자등록번호</MenuItem>
-                <MenuItem value='institutionCode'>거래처코드</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <TextField
-              name='searchKeyword'
-              size='small'
-              placeholder='검색어를 입력하세요'
-              fullWidth
-              value={formik.values.searchKeyword}
-              onChange={formik.handleChange}
-            />
-          </Grid>
-          <Grid item>
-            <Button variant='contained' size='small' type='submit'>
-              검색
-            </Button>
-          </Grid>
-        </Grid>
+        <Stack direction='row' component='form' onSubmit={formik.handleSubmit} sx={{ alignItems: 'center', gap: 2 }}>
+          <FormControl size='small' sx={{ width: '120px' }}>
+            <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange} displayEmpty>
+              <MenuItem value='institutionName'>거래처명</MenuItem>
+              <MenuItem value='businessNumber'>사업자등록번호</MenuItem>
+              <MenuItem value='institutionCode'>거래처코드</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
+            name='searchKeyword'
+            size='small'
+            placeholder='검색어를 입력하세요'
+            value={formik.values.searchKeyword}
+            onChange={formik.handleChange}
+            sx={{ width: '300px' }}
+          />
+          <Button variant='contained' size='small' type='submit'>
+            검색
+          </Button>
+        </Stack>
 
         <Stack direction='row' justifyContent='space-between' alignItems='center' sx={{ marginTop: 4, marginBottom: 2 }}>
           <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
