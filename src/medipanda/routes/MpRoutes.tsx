@@ -1,11 +1,17 @@
 import { AdminPermission } from '@/backend';
+import Loader from '@/components/Loader';
 import { Base64ErrorBoundary } from '@/lib/react/Base64ErrorBoundary';
-import Loadable from 'components/Loadable';
 import AuthLayout from 'layout/Auth';
 import DashboardLayout from 'layout/Dashboard';
 import { MpAdminGuard } from '@/medipanda/utils/route-guard/MpAdminGuard';
-import React, { lazy } from 'react';
+import React, { ElementType, lazy, Suspense } from 'react';
 import { Navigate, RouteObject } from 'react-router-dom';
+
+const Loadable = (Component: ElementType) => (props: any) => (
+  <Suspense fallback={<Loader />}>
+    <Component {...props} />
+  </Suspense>
+);
 
 const MpLogin = Loadable(lazy(() => import('medipanda/pages/MpLogin')));
 const MpLogout = Loadable(lazy(() => import('medipanda/pages/MpLogout')));
