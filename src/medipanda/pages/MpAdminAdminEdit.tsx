@@ -409,7 +409,7 @@ export default function MpAdminAdminEdit() {
           <Button variant='outlined' size='large' component={RouterLink} to='/admin/admins'>
             취소
           </Button>
-          <Button variant='contained' size='large' type='submit'>
+          <Button variant='contained' size='large' onClick={formik.submitForm}>
             저장
           </Button>
         </Stack>
