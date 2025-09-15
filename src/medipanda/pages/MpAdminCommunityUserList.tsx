@@ -197,7 +197,7 @@ export default function MpAdminCommunityUserList() {
               <InputLabel>검색유형</InputLabel>
               <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
                 <MenuItem value={'userId'}>아이디</MenuItem>
-                <MenuItem value={'name'}>이름</MenuItem>
+                <MenuItem value={'name'}>회원명</MenuItem>
                 <MenuItem value={'nickname'}>닉네임</MenuItem>
                 <MenuItem value={'phoneNumber'}>연락처</MenuItem>
                 <MenuItem value={'email'}>이메일</MenuItem>

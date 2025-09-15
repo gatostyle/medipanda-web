@@ -280,7 +280,7 @@ export default function MpAdminAtoZList() {
               <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
                 <MenuItem value={'title'}>제목</MenuItem>
                 <MenuItem value={'userId'}>아이디</MenuItem>
-                <MenuItem value={'name'}>이름</MenuItem>
+                <MenuItem value={'name'}>회원명</MenuItem>
                 <MenuItem value={'nickname'}>닉네임</MenuItem>
               </Select>
             </FormControl>
