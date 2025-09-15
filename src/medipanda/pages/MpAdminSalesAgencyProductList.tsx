@@ -184,11 +184,13 @@ export default function MpAdminSalesAgencyProductList() {
         header: '썸네일',
         cell: ({ row }) => (
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <img
-              src={row.original.thumbnailUrl ?? ''}
-              alt='썸네일'
-              style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 4 }}
-            />
+            <RouterLink to={row.original.thumbnailUrl ?? ''} target='_blank'>
+              <img
+                src={row.original.thumbnailUrl ?? ''}
+                alt='썸네일'
+                style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 4 }}
+              />
+            </RouterLink>
           </Box>
         ),
         size: 80,

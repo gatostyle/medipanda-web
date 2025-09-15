@@ -190,16 +190,18 @@ export default function MpAdminEventList() {
           if (thumbnail) {
             return (
               <Box sx={{ width: 80, height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <img
-                  src={thumbnail}
-                  alt='썸네일'
-                  style={{
-                    maxWidth: '100%',
-                    maxHeight: '100%',
-                    objectFit: 'cover',
-                    borderRadius: '4px',
-                  }}
-                />
+                <RouterLink to={thumbnail} target='_blank'>
+                  <img
+                    src={thumbnail}
+                    alt='썸네일'
+                    style={{
+                      maxWidth: '100%',
+                      maxHeight: '100%',
+                      objectFit: 'cover',
+                      borderRadius: '4px',
+                    }}
+                  />
+                </RouterLink>
               </Box>
             );
           }
