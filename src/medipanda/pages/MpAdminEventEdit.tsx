@@ -204,7 +204,7 @@ export default function MpAdminEventEdit() {
   }
 
   return (
-    <Grid container spacing={3}>
+    <Stack sx={{ gap: 3 }}>
       <Grid item xs={12}>
         <Typography variant='h4' gutterBottom>
           이벤트 {isNew ? '등록' : '수정'}
@@ -362,6 +362,6 @@ export default function MpAdminEventEdit() {
           </Grid>
         </Card>
       </Grid>
-    </Grid>
+    </Stack>
   );
 }

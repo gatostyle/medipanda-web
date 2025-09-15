@@ -276,7 +276,7 @@ export default function MpAdminNoticeList() {
   };
 
   return (
-    <Grid container spacing={3}>
+    <Stack sx={{ gap: 3 }}>
       <Grid item xs={12}>
         <Typography variant='h4' gutterBottom>
           공지사항
@@ -441,6 +441,6 @@ export default function MpAdminNoticeList() {
           </Stack>
         </Card>
       </Grid>
-    </Grid>
+    </Stack>
   );
 }

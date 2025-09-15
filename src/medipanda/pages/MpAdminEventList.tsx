@@ -272,7 +272,7 @@ export default function MpAdminEventList() {
   };
 
   return (
-    <Grid container spacing={3}>
+    <Stack sx={{ gap: 3 }}>
       <Grid item xs={12}>
         <Typography variant='h4' gutterBottom>
           이벤트관리
@@ -424,6 +424,6 @@ export default function MpAdminEventList() {
           </Stack>
         </Card>
       </Grid>
-    </Grid>
+    </Stack>
   );
 }

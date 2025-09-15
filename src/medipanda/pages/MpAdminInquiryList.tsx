@@ -204,7 +204,7 @@ export default function MpAdminInquiryList() {
   });
 
   return (
-    <Grid container spacing={3}>
+    <Stack sx={{ gap: 3 }}>
       <Grid item xs={12}>
         <Typography variant='h4' gutterBottom>
           1:1 문의내역
@@ -356,6 +356,6 @@ export default function MpAdminInquiryList() {
           </Stack>
         </Card>
       </Grid>
-    </Grid>
+    </Stack>
   );
 }

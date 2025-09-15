@@ -190,7 +190,7 @@ export default function MpAdminStatisticsList() {
   });
 
   return (
-    <Grid container spacing={3}>
+    <Stack sx={{ gap: 3 }}>
       <Grid item xs={12}>
         <Typography variant='h4' gutterBottom>
           실적통계
@@ -340,6 +340,6 @@ export default function MpAdminStatisticsList() {
           </Stack>
         </Card>
       </Grid>
-    </Grid>
+    </Stack>
   );
 }

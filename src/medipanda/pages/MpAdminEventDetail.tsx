@@ -60,7 +60,7 @@ export default function MpAdminEventDetail() {
   }
 
   return (
-    <Grid container spacing={3}>
+    <Stack sx={{ gap: 3 }}>
       <Grid item xs={12}>
         <Typography variant='h4' gutterBottom>
           이벤트 상세
@@ -221,6 +221,6 @@ export default function MpAdminEventDetail() {
           </Grid>
         </Card>
       </Grid>
-    </Grid>
+    </Stack>
   );
 }

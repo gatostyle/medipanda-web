@@ -260,7 +260,7 @@ export default function MpAdminSalesAgencyProductList() {
   };
 
   return (
-    <Grid container spacing={3}>
+    <Stack sx={{ gap: 3 }}>
       <Grid item xs={12}>
         <Typography variant='h4' gutterBottom>
           영업대행상품
@@ -411,6 +411,6 @@ export default function MpAdminSalesAgencyProductList() {
           </Stack>
         </Card>
       </Grid>
-    </Grid>
+    </Stack>
   );
 }

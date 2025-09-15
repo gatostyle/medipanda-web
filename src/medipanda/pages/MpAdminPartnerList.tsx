@@ -239,7 +239,7 @@ export default function MpAdminPartnerList() {
   };
 
   return (
-    <Grid container spacing={3}>
+    <Stack sx={{ gap: 3 }}>
       <Grid item xs={12}>
         <Typography variant='h4' gutterBottom>
           거래선관리
@@ -382,6 +382,6 @@ export default function MpAdminPartnerList() {
         onClose={() => setPartnerUploadModalOpen(false)}
         onSuccess={handlePartnerUploadSuccess}
       />
-    </Grid>
+    </Stack>
   );
 }

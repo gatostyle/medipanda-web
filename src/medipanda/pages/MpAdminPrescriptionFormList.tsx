@@ -278,7 +278,7 @@ export default function MpAdminPrescriptionFormList() {
   };
 
   return (
-    <Grid container spacing={3}>
+    <Stack sx={{ gap: 3 }}>
       <Grid item xs={12}>
         <Typography variant='h4' gutterBottom>
           처방입력
@@ -444,6 +444,6 @@ export default function MpAdminPrescriptionFormList() {
           </Stack>
         </Card>
       </Grid>
-    </Grid>
+    </Stack>
   );
 }

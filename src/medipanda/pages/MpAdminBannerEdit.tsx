@@ -162,7 +162,7 @@ export default function MpAdminBannerEdit() {
   };
 
   return (
-    <Grid container spacing={3}>
+    <Stack sx={{ gap: 3 }}>
       <Grid item xs={12}>
         <Typography variant='h4'>배너등록</Typography>
       </Grid>
@@ -393,6 +393,6 @@ export default function MpAdminBannerEdit() {
           </Grid>
         </Card>
       </Grid>
-    </Grid>
+    </Stack>
   );
 }

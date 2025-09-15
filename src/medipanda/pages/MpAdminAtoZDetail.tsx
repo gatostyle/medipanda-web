@@ -15,6 +15,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import Stack from '@mui/material/Stack';
 import { EditorContent } from '@tiptap/react';
 import { BoardDetailsResponse, getBoardDetails, PostAttachmentType } from '@/backend';
 import { useSnackbar } from 'notistack';
@@ -71,7 +72,7 @@ export default function MpAdminAtoZDetail() {
   }
 
   return (
-    <Grid container spacing={3}>
+    <Stack sx={{ gap: 3 }}>
       <Grid item xs={12}>
         <Typography variant='h4' gutterBottom>
           CSO A TO Z 상세
@@ -160,6 +161,6 @@ export default function MpAdminAtoZDetail() {
           </Box>
         </Card>
       </Grid>
-    </Grid>
+    </Stack>
   );
 }

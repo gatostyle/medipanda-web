@@ -169,7 +169,7 @@ export default function MpAdminAdminList() {
   });
 
   return (
-    <Grid container spacing={3}>
+    <Stack sx={{ gap: 3 }}>
       <Grid item xs={12}>
         <Typography variant='h4' gutterBottom>
           관리자 권한
@@ -289,6 +289,6 @@ export default function MpAdminAdminList() {
           </Stack>
         </Card>
       </Grid>
-    </Grid>
+    </Stack>
   );
 }

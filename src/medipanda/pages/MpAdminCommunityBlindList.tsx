@@ -248,7 +248,7 @@ export default function MpAdminCommunityBlindList() {
   };
 
   return (
-    <Grid container spacing={3}>
+    <Stack sx={{ gap: 3 }}>
       <Grid item xs={12}>
         <Typography variant='h4' gutterBottom>
           블라인드 관리
@@ -407,6 +407,6 @@ export default function MpAdminCommunityBlindList() {
           </Stack>
         </Card>
       </Grid>
-    </Grid>
+    </Stack>
   );
 }

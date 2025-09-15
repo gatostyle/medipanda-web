@@ -143,7 +143,7 @@ export default function MpAdminInquiryDetail() {
   }
 
   return (
-    <Grid container spacing={3}>
+    <Stack sx={{ gap: 3 }}>
       <Grid item xs={12}>
         <Typography variant='h4' gutterBottom>
           1:1 문의 수정
@@ -291,6 +291,6 @@ export default function MpAdminInquiryDetail() {
           </Grid>
         </Card>
       </Grid>
-    </Grid>
+    </Stack>
   );
 }

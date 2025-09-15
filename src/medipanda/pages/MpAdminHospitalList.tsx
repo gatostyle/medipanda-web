@@ -267,7 +267,7 @@ export default function MpAdminHospitalList() {
   };
 
   return (
-    <Grid container spacing={3}>
+    <Stack sx={{ gap: 3 }}>
       <Grid item xs={12}>
         <Typography variant='h4' gutterBottom>
           개원병원페이지
@@ -444,6 +444,6 @@ export default function MpAdminHospitalList() {
         onClose={() => setHospitalUploadModalOpen(false)}
         onSuccess={handleHospitalUploadModalSuccess}
       />
-    </Grid>
+    </Stack>
   );
 }
