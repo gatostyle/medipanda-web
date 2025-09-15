@@ -29,9 +29,9 @@ import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { BoardPostResponse, BoardType, DateString, getBoards } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
-import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
+import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -47,7 +47,16 @@ export default function MpAdminInquiryList() {
     page: '1',
   };
 
-  const { searchType, searchKeyword, startAt, endAt, includeChild, page: paramPage } = useSearchParamsOrDefault(initialSearchParams);
+  const {
+    searchType,
+    searchKeyword,
+    startAt: paramStartAt,
+    endAt: paramEndAt,
+    includeChild,
+    page: paramPage,
+  } = useSearchParamsOrDefault(initialSearchParams);
+  const startAt = useMemo(() => SafeDate(paramStartAt) ?? null, [paramStartAt]);
+  const endAt = useMemo(() => SafeDate(paramEndAt) ?? null, [paramEndAt]);
   const page = Number(paramPage);
   const pageSize = 20;
 
@@ -61,6 +70,8 @@ export default function MpAdminInquiryList() {
   const formik = useFormik({
     initialValues: {
       ...initialSearchParams,
+      startAt: null as Date | null,
+      endAt: null as Date | null,
       page: null,
     },
     onSubmit: async values => {
@@ -72,6 +83,8 @@ export default function MpAdminInquiryList() {
       const url = setUrlParams(
         {
           ...values,
+          startAt: values.startAt !== null ? formatYyyyMmDd(values.startAt) : undefined,
+          endAt: values.endAt !== null ? formatYyyyMmDd(values.endAt) : undefined,
           page: 1,
         },
         initialSearchParams,
