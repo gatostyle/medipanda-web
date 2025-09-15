@@ -1,4 +1,4 @@
-import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
+import { FixedLinearProgress } from '@/lib/react/FixedLinearProgress';
 import { useEffect, useState } from 'react';
 import { useRouteError } from 'react-router-dom';
 
@@ -17,7 +17,7 @@ export function Base64ErrorBoundary() {
   }, [error]);
 
   if (displayError === null) {
-    return <FixedLinearLoader />;
+    return <FixedLinearProgress />;
   }
 
   return (
