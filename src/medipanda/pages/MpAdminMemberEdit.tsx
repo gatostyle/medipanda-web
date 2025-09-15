@@ -530,21 +530,6 @@ export default function MpAdminMemberEdit() {
                   </Stack>
                 )}
 
-                {contractDetail.fileUrls[PartnerContractFileType.SUBCONTRACT_AGREEMENT] !== null && (
-                  <Stack direction='row' spacing={2} alignItems='center'>
-                    <Typography variant='subtitle2' color='text.secondary'>
-                      {PartnerContractFileTypeLabel[PartnerContractFileType.SUBCONTRACT_AGREEMENT]}
-                    </Typography>
-                    <Link
-                      component={RouterLink}
-                      to={contractDetail.fileUrls[PartnerContractFileType.SUBCONTRACT_AGREEMENT]}
-                      target='_blank'
-                    >
-                      {MedipandaUrlFileName(contractDetail.fileUrls[PartnerContractFileType.SUBCONTRACT_AGREEMENT])}
-                    </Link>
-                  </Stack>
-                )}
-
                 {contractDetail.fileUrls[PartnerContractFileType.SALES_EDUCATION_CERT] !== null && (
                   <Stack direction='row' spacing={2} alignItems='center'>
                     <Typography variant='subtitle2' color='text.secondary'>
