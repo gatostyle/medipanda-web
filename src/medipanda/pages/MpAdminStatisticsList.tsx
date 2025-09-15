@@ -190,9 +190,7 @@ export default function MpAdminStatisticsList() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Typography variant='h4' gutterBottom>
-        실적통계
-      </Typography>
+      <Typography variant='h4'>실적통계</Typography>
 
       <Card sx={{ padding: 3 }}>
         <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>

@@ -156,9 +156,7 @@ export default function MpAdminFaqEdit() {
 
   return (
     <Stack component='form' onSubmit={formik.handleSubmit} sx={{ gap: 3 }}>
-      <Typography variant='h4' gutterBottom>
-        FAQ 등록
-      </Typography>
+      <Typography variant='h4'>FAQ 등록</Typography>
 
       <Card component={Stack} sx={{ padding: 3, gap: 3 }}>
         <Stack>

@@ -170,9 +170,9 @@ export default function MpAdminSettlementDetail() {
   }
 
   return (
-    <Box>
-      <Stack direction='row' alignItems='center' spacing={2} sx={{ mb: 3 }}>
-        <IconButton component={RouterLink} to='/admin/settlements' sx={{ p: 0 }}>
+    <Stack sx={{ gap: 3 }}>
+      <Stack direction='row' alignItems='center' spacing={2}>
+        <IconButton component={RouterLink} to='/admin/settlements' sx={{ width: '24px', height: '24px', padding: 0 }}>
           <ArrowLeft size={24} />
         </IconButton>
         <Typography variant='h4'>정산상세내역</Typography>
@@ -268,6 +268,6 @@ export default function MpAdminSettlementDetail() {
           />
         </Stack>
       </Card>
-    </Box>
+    </Stack>
   );
 }

@@ -189,10 +189,8 @@ export default function MpAdminPartnerEdit() {
   }
 
   return (
-    <Box>
-      <Typography variant='h4' gutterBottom sx={{ mb: 3 }}>
-        {isNew ? '거래선등록' : '거래선수정'}
-      </Typography>
+    <Stack sx={{ gap: 3 }}>
+      <Typography variant='h4'>{isNew ? '거래선등록' : '거래선수정'}</Typography>
 
       <Card component={Stack} sx={{ p: 3, gap: 3 }}>
         <Stack direction='row' sx={{ gap: 2 }}>
@@ -286,8 +284,10 @@ export default function MpAdminPartnerEdit() {
           </TextField>
         </Stack>
 
-        <Stack sx={{ gap: 2 }}>
-          <Typography variant='subtitle1'>문전약국</Typography>
+        <Stack sx={{ gap: 1 }}>
+          <Typography variant='subtitle2' color='text.secondary'>
+            문전약국
+          </Typography>
           <TableContainer>
             <Table size='small'>
               <TableHead>
@@ -354,6 +354,6 @@ export default function MpAdminPartnerEdit() {
       />
 
       <MpMemberSelectModal open={memberSelectModalOpen} onClose={() => setMemberSelectModalOpen(false)} onSelect={handleMemberSelect} />
-    </Box>
+    </Stack>
   );
 }

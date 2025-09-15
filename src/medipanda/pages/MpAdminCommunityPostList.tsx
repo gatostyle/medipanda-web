@@ -286,9 +286,7 @@ export default function MpAdminCommunityPostList() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Typography variant='h4' gutterBottom>
-        포스트 관리
-      </Typography>
+      <Typography variant='h4'>포스트 관리</Typography>
 
       <Card sx={{ padding: 3 }}>
         <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>

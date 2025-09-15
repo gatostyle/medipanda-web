@@ -204,9 +204,7 @@ export default function MpAdminInquiryList() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Typography variant='h4' gutterBottom>
-        1:1 문의내역
-      </Typography>
+      <Typography variant='h4'>1:1 문의내역</Typography>
 
       <Card sx={{ padding: 3 }}>
         <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>

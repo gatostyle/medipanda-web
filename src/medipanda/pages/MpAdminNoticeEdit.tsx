@@ -216,9 +216,7 @@ export default function MpAdminNoticeEdit() {
   return (
     <>
       <Stack component='form' onSubmit={formik.handleSubmit} sx={{ gap: 3 }}>
-        <Typography variant='h4' gutterBottom>
-          공지사항 {isNew ? '등록' : '수정'}
-        </Typography>
+        <Typography variant='h4'>공지사항 {isNew ? '등록' : '수정'}</Typography>
 
         <Card component={Stack} sx={{ padding: 3, gap: 3 }}>
           <Stack direction='row' sx={{ gap: 3 }}>

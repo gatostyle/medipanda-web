@@ -175,9 +175,7 @@ export default function MpAdminAdminEdit() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Typography variant='h4' gutterBottom>
-        관리자 권한등록
-      </Typography>
+      <Typography variant='h4'>관리자 권한등록</Typography>
 
       <Card component={Stack} sx={{ padding: 3, gap: 3 }}>
         <FormControlLabel
@@ -241,8 +239,8 @@ export default function MpAdminAdminEdit() {
 
         <TextField name='email' label='이메일' type='email' fullWidth required value={formik.values.email} onChange={formik.handleChange} />
 
-        <Stack>
-          <Typography variant='subtitle1' gutterBottom>
+        <Stack sx={{ gap: 1 }}>
+          <Typography variant='subtitle2' color='text.secondary'>
             연락처
           </Typography>
           <Stack direction='row' spacing={2} alignItems='center'>
@@ -275,8 +273,8 @@ export default function MpAdminAdminEdit() {
           </Stack>
         </Stack>
 
-        <Stack sx={{ gap: 2 }}>
-          <Typography variant='subtitle1' gutterBottom>
+        <Stack sx={{ gap: 1 }}>
+          <Typography variant='subtitle2' color='text.secondary'>
             관리메뉴
           </Typography>
           <Stack direction='row' sx={{ gap: 2 }}>

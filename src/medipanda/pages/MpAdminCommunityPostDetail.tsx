@@ -85,10 +85,8 @@ export default function MpAdminCommunityPostDetail() {
   }
 
   return (
-    <Box>
-      <Typography variant='h4' gutterBottom sx={{ mb: 3 }}>
-        포스트 상세
-      </Typography>
+    <Stack sx={{ gap: 3 }}>
+      <Typography variant='h4'>포스트 상세</Typography>
 
       <Card>
         <Tabs value={tab} onChange={handleTabChange} sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -103,7 +101,7 @@ export default function MpAdminCommunityPostDetail() {
 
         {tab === 'reports' && <ReportsTab reports={reports} />}
       </Card>
-    </Box>
+    </Stack>
   );
 }
 

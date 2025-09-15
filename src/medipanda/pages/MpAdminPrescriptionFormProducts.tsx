@@ -398,10 +398,8 @@ export default function MpAdminPrescriptionFormProducts() {
   }
 
   return (
-    <Box>
-      <Typography variant='h4' gutterBottom sx={{ mb: 3 }}>
-        거래처별 제품상세
-      </Typography>
+    <Stack sx={{ gap: 3 }}>
+      <Typography variant='h4'>거래처별 제품상세</Typography>
 
       <Card sx={{ p: 3 }} component='form' onSubmit={formik.handleSubmit}>
         <Box sx={{ mb: 3 }}>
@@ -562,9 +560,6 @@ export default function MpAdminPrescriptionFormProducts() {
         </Stack>
 
         <Box sx={{ mt: 3 }}>
-          <Typography variant='subtitle1' sx={{ mb: 2 }}>
-            OCR리포트 보내기
-          </Typography>
           <FormControlLabel
             control={<Checkbox checked={sendOcrReport} onChange={e => setSendOcrReport(e.target.checked)} />}
             label='OCR리포트 보내기'
@@ -609,6 +604,6 @@ export default function MpAdminPrescriptionFormProducts() {
         onClose={() => setPartnerProductSelectModalOpen(false)}
         onSelect={handleProductSelect}
       />
-    </Box>
+    </Stack>
   );
 }

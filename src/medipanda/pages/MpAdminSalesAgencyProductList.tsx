@@ -260,9 +260,7 @@ export default function MpAdminSalesAgencyProductList() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Typography variant='h4' gutterBottom>
-        영업대행상품
-      </Typography>
+      <Typography variant='h4'>영업대행상품</Typography>
 
       <Card sx={{ padding: 3 }}>
         <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>

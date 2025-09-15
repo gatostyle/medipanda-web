@@ -169,9 +169,7 @@ export default function MpAdminAdminList() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Typography variant='h4' gutterBottom>
-        관리자 권한
-      </Typography>
+      <Typography variant='h4'>관리자 권한</Typography>
 
       <Card sx={{ padding: 3 }}>
         <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>

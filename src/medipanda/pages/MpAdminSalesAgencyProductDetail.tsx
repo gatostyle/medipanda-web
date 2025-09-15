@@ -64,10 +64,8 @@ export default function MpAdminSalesAgencyProductDetail() {
   }
 
   return (
-    <Box>
-      <Typography variant='h4' gutterBottom sx={{ mb: 3 }}>
-        영업대행상품 상세
-      </Typography>
+    <Stack sx={{ gap: 3 }}>
+      <Typography variant='h4'>영업대행상품 상세</Typography>
 
       <Card>
         <Tabs value={tab} onChange={handleTabChange} sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -79,7 +77,7 @@ export default function MpAdminSalesAgencyProductDetail() {
 
         {tab === 'applicants' && <MpSalesAgencyProductApplicantsTab detail={detail} />}
       </Card>
-    </Box>
+    </Stack>
   );
 }
 
@@ -98,84 +96,86 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse }) {
         <Stack direction='row' sx={{ gap: 3 }}>
           <Stack sx={{ flex: '2 0' }}>
             <Stack spacing={3}>
-              <Box>
-                <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+              <Stack sx={{ gap: 1 }}>
+                <Typography variant='subtitle2' color='text.secondary'>
                   위탁사명
                 </Typography>
                 <Typography variant='body1'>{detail.clientName}</Typography>
-              </Box>
+              </Stack>
 
-              <Box>
-                <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+              <Stack sx={{ gap: 1 }}>
+                <Typography variant='subtitle2' color='text.secondary'>
                   상품명
                 </Typography>
                 <Typography variant='body1'>{detail.productName}</Typography>
-              </Box>
+              </Stack>
 
-              <Box>
-                <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+              <Stack sx={{ gap: 1 }}>
+                <Typography variant='subtitle2' color='text.secondary'>
                   노출상태
                 </Typography>
                 <Typography variant='body1'>{detail.boardPostDetail!.isExposed ? '노출' : '미노출'}</Typography>
-              </Box>
+              </Stack>
 
-              <Box>
-                <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+              <Stack sx={{ gap: 1 }}>
+                <Typography variant='subtitle2' color='text.secondary'>
                   노출범위
                 </Typography>
                 <Typography variant='body1'>{BoardExposureRangeLabel[detail.boardPostDetail!.exposureRange]}</Typography>
-              </Box>
+              </Stack>
 
-              <Box>
-                <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+              <Stack sx={{ gap: 1 }}>
+                <Typography variant='subtitle2' color='text.secondary'>
                   진행상태
                 </Typography>
-                <Chip label={detail.boardPostDetail!.isExposed ? '진행중' : '미노출'} color='success' size='small' />
-              </Box>
+                <Box>
+                  <Chip label={detail.boardPostDetail!.isExposed ? '진행중' : '미노출'} color='success' size='small' />
+                </Box>
+              </Stack>
 
-              <Box>
-                <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+              <Stack sx={{ gap: 1 }}>
+                <Typography variant='subtitle2' color='text.secondary'>
                   내용
                 </Typography>
                 <Box sx={{ mt: 1 }}>
                   <EditorContent editor={editor} />
                 </Box>
-              </Box>
+              </Stack>
 
-              <Box>
-                <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+              <Stack sx={{ gap: 1 }}>
+                <Typography variant='subtitle2' color='text.secondary'>
                   영상url
                 </Typography>
                 <Typography variant='body1'>{detail.videoUrl}</Typography>
-              </Box>
+              </Stack>
 
-              <Box>
-                <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+              <Stack sx={{ gap: 1 }}>
+                <Typography variant='subtitle2' color='text.secondary'>
                   계약일
                 </Typography>
                 <Typography variant='body1'>{detail ? formatYyyyMmDd(detail.contractDate) : '-'}</Typography>
-              </Box>
+              </Stack>
 
-              <Box>
-                <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+              <Stack sx={{ gap: 1 }}>
+                <Typography variant='subtitle2' color='text.secondary'>
                   비고
                 </Typography>
                 <Typography variant='body1'>{detail.note}</Typography>
-              </Box>
+              </Stack>
 
               <Stack direction='row' spacing={4}>
-                <Box>
-                  <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                <Stack sx={{ gap: 1 }}>
+                  <Typography variant='subtitle2' color='text.secondary'>
                     게시기간
                   </Typography>
                   <Typography variant='body1'>{`${formatYyyyMmDd(detail.startDate)} ~ ${formatYyyyMmDd(detail.endDate)}`}</Typography>
-                </Box>
-                <Box>
-                  <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                </Stack>
+                <Stack sx={{ gap: 1 }}>
+                  <Typography variant='subtitle2' color='text.secondary'>
                     조회수
                   </Typography>
                   <Typography variant='body1'>{detail.boardPostDetail!.viewsCount?.toLocaleString()}</Typography>
-                </Box>
+                </Stack>
               </Stack>
             </Stack>
           </Stack>

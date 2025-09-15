@@ -221,9 +221,7 @@ export default function MpAdminBannerList() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Typography variant='h4' gutterBottom>
-        배너관리
-      </Typography>
+      <Typography variant='h4'>배너관리</Typography>
 
       <Card sx={{ padding: 3 }}>
         <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>

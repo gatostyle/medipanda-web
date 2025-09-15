@@ -72,9 +72,7 @@ export default function MpAdminAtoZDetail() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Typography variant='h4' gutterBottom>
-        CSO A TO Z 상세
-      </Typography>
+      <Typography variant='h4'>CSO A TO Z 상세</Typography>
 
       <Card sx={{ padding: 3 }}>
         <TableContainer>

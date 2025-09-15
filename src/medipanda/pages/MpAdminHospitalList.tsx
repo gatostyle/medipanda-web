@@ -267,9 +267,7 @@ export default function MpAdminHospitalList() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Typography variant='h4' gutterBottom>
-        개원병원페이지
-      </Typography>
+      <Typography variant='h4'>개원병원페이지</Typography>
 
       <Card sx={{ padding: 3 }}>
         <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>

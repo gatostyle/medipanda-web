@@ -290,29 +290,25 @@ export default function MpAdminMemberEdit() {
   }
 
   return (
-    <Box>
-      <Typography variant='h4' gutterBottom sx={{ mb: 3 }}>
-        회원정보
-      </Typography>
+    <Stack sx={{ gap: 3 }}>
+      <Typography variant='h4'>회원정보</Typography>
 
       <Stack component='form' onSubmit={formik.handleSubmit} sx={{ gap: 3 }}>
         <Stack direction='row' sx={{ gap: 3 }}>
           <Stack sx={{ flex: '1 0' }}>
             <Card component={Stack} sx={{ p: 3, gap: 3 }}>
-              <Typography variant='h6' sx={{}}>
-                기본정보
-              </Typography>
+              <Typography variant='h6'>기본정보</Typography>
 
               <Stack direction='row' sx={{ gap: 2 }}>
-                <Stack sx={{ flex: '1 0' }}>
-                  <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                <Stack sx={{ flex: '1 0', gap: 1 }}>
+                  <Typography variant='subtitle2' color='text.secondary'>
                     회원번호
                   </Typography>
                   <Typography variant='body1'>{detail.id}</Typography>
                 </Stack>
 
-                <Stack sx={{ flex: '1 0' }}>
-                  <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                <Stack sx={{ flex: '1 0', gap: 1 }}>
+                  <Typography variant='subtitle2' color='text.secondary'>
                     아이디
                   </Typography>
                   <Typography variant='body1'>{detail.userId}</Typography>
@@ -345,8 +341,8 @@ export default function MpAdminMemberEdit() {
               </Stack>
 
               <Stack direction='row' sx={{ gap: 2 }}>
-                <Stack sx={{ flex: '1 0' }}>
-                  <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                <Stack sx={{ flex: '1 0', gap: 1 }}>
+                  <Typography variant='subtitle2' color='text.secondary'>
                     회원명
                   </Typography>
                   <Typography variant='body1'>{detail.name}</Typography>
@@ -365,8 +361,8 @@ export default function MpAdminMemberEdit() {
               </Stack>
 
               <Stack direction='row' sx={{ gap: 2 }}>
-                <Stack sx={{ flex: '1 0' }}>
-                  <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                <Stack sx={{ flex: '1 0', gap: 1 }}>
+                  <Typography variant='subtitle2' color='text.secondary'>
                     생년월일
                   </Typography>
                   <Typography variant='body1'>
@@ -387,15 +383,15 @@ export default function MpAdminMemberEdit() {
               </Stack>
 
               <Stack direction='row' sx={{ gap: 2 }}>
-                <Stack sx={{ flex: '1 0' }}>
-                  <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                <Stack sx={{ flex: '1 0', gap: 1 }}>
+                  <Typography variant='subtitle2' color='text.secondary'>
                     추천코드
                   </Typography>
                   <Typography variant='body1'>{detail.referralCode}</Typography>
                 </Stack>
 
-                <Stack sx={{ flex: '1 0' }}>
-                  <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                <Stack sx={{ flex: '1 0', gap: 1 }}>
+                  <Typography variant='subtitle2' color='text.secondary'>
                     가입일
                   </Typography>
                   <Typography variant='body1'>{formatYyyyMmDd(detail.registrationDate)}</Typography>
@@ -403,8 +399,8 @@ export default function MpAdminMemberEdit() {
               </Stack>
 
               <Stack direction='row' sx={{ gap: 2 }}>
-                <Stack sx={{ flex: '1 0' }}>
-                  <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                <Stack sx={{ flex: '1 0', gap: 1 }}>
+                  <Typography variant='subtitle2' color='text.secondary'>
                     최종접속일
                   </Typography>
                   <Typography variant='body1'>{formatYyyyMmDd(detail.lastLoginDate)}</Typography>
@@ -481,8 +477,8 @@ export default function MpAdminMemberEdit() {
                     </FormControl>
                   </Stack>
 
-                  <Stack sx={{ flex: '1 0' }}>
-                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                  <Stack sx={{ flex: '1 0', gap: 1 }}>
+                    <Typography variant='subtitle2' color='text.secondary'>
                       계약상태
                     </Typography>
                     <Typography variant='body1'>{PartnerContractStatusLabel[contractDetail.status]}</Typography>
@@ -490,15 +486,15 @@ export default function MpAdminMemberEdit() {
                 </Stack>
 
                 <Stack direction='row' sx={{ gap: 2 }}>
-                  <Stack sx={{ flex: '1 0' }}>
-                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                  <Stack sx={{ flex: '1 0', gap: 1 }}>
+                    <Typography variant='subtitle2' color='text.secondary'>
                       회사명
                     </Typography>
                     <Typography variant='body1'>{contractDetail.companyName}</Typography>
                   </Stack>
 
-                  <Stack sx={{ flex: '1 0' }}>
-                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                  <Stack sx={{ flex: '1 0', gap: 1 }}>
+                    <Typography variant='subtitle2' color='text.secondary'>
                       사업자등록번호
                     </Typography>
                     <Typography variant='body1'>{contractDetail.businessNumber}</Typography>
@@ -560,8 +556,8 @@ export default function MpAdminMemberEdit() {
                   </Stack>
                 )}
 
-                <Stack sx={{ flex: '1 0' }}>
-                  <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                <Stack sx={{ flex: '1 0', gap: 1 }}>
+                  <Typography variant='subtitle2' color='text.secondary'>
                     계약일
                   </Typography>
                   <Typography variant='body1'>{formatYyyyMmDd(contractDetail.contractDate)}</Typography>
@@ -569,10 +565,8 @@ export default function MpAdminMemberEdit() {
               </Card>
             )}
 
-            <Card sx={{ p: 3 }}>
-              <Typography variant='h6' gutterBottom sx={{ mb: 2 }}>
-                비고
-              </Typography>
+            <Card component={Stack} sx={{ p: 3, gap: 3 }}>
+              <Typography variant='h6'>비고</Typography>
               <TextField
                 fullWidth
                 multiline
@@ -586,10 +580,8 @@ export default function MpAdminMemberEdit() {
           </Stack>
         </Stack>
 
-        <Card sx={{ p: 3 }}>
-          <Typography variant='h6' gutterBottom sx={{ mb: 2 }}>
-            마케팅 수신동의
-          </Typography>
+        <Card component={Stack} sx={{ p: 3, gap: 3 }}>
+          <Typography variant='h6'>마케팅 수신동의</Typography>
           <Stack spacing={1}>
             <FormControlLabel
               control={
@@ -630,6 +622,6 @@ export default function MpAdminMemberEdit() {
           </Button>
         </Stack>
       </Stack>
-    </Box>
+    </Stack>
   );
 }

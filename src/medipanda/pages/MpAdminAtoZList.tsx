@@ -233,9 +233,7 @@ export default function MpAdminAtoZList() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Typography variant='h4' gutterBottom>
-        CSO A TO Z
-      </Typography>
+      <Typography variant='h4'>CSO A TO Z</Typography>
 
       <Card sx={{ padding: 3 }}>
         <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>

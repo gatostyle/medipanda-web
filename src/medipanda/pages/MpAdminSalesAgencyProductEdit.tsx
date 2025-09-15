@@ -230,10 +230,8 @@ export default function MpAdminSalesAgencyProductEdit() {
   }
 
   return (
-    <Box>
-      <Typography variant='h4' gutterBottom sx={{ mb: 3 }}>
-        영업대행상품 {isNew ? '등록' : '상세'}
-      </Typography>
+    <Stack sx={{ gap: 3 }}>
+      <Typography variant='h4'>영업대행상품 {isNew ? '등록' : '상세'}</Typography>
 
       <Card>
         <Tabs value={tab} onChange={handleTabChange} sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -245,7 +243,7 @@ export default function MpAdminSalesAgencyProductEdit() {
 
         {!isNew && tab === 'applicants' && <MpSalesAgencyProductApplicantsTab detail={detail!} />}
       </Card>
-    </Box>
+    </Stack>
   );
 }
 
@@ -552,9 +550,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
         </Stack>
         {detail !== null && (
           <Stack>
-            <Typography variant='subtitle2' gutterBottom>
-              조회수
-            </Typography>
+            <Typography variant='subtitle2'>조회수</Typography>
             <Typography variant='body1'>{detail.boardPostDetail.viewsCount.toLocaleString()}</Typography>
           </Stack>
         )}

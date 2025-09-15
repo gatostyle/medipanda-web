@@ -227,9 +227,7 @@ export default function MpAdminFaqList() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Typography variant='h4' gutterBottom>
-        FAQ
-      </Typography>
+      <Typography variant='h4'>FAQ</Typography>
 
       <Card sx={{ padding: 3 }}>
         <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>

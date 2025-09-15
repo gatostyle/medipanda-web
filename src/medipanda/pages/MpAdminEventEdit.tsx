@@ -193,14 +193,14 @@ export default function MpAdminEventEdit() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Typography variant='h4' gutterBottom>
-        이벤트 {isNew ? '등록' : '수정'}
-      </Typography>
+      <Typography variant='h4'>이벤트 {isNew ? '등록' : '수정'}</Typography>
 
       <Card sx={{ padding: 3 }}>
         <Stack component='form' onSubmit={formik.handleSubmit} sx={{ gap: 3 }}>
-          <Stack sx={{ gap: 2 }}>
-            <Typography variant='subtitle1'>노출상태 *</Typography>
+          <Stack sx={{ gap: 1 }}>
+            <Typography variant='subtitle2' color='text.secondary'>
+              노출상태 *
+            </Typography>
             <RadioGroup
               row
               name='isExposed'
@@ -212,8 +212,10 @@ export default function MpAdminEventEdit() {
             </RadioGroup>
           </Stack>
 
-          <Stack sx={{ gap: 2 }}>
-            <Typography variant='subtitle1'>노출범위 *</Typography>
+          <Stack sx={{ gap: 1 }}>
+            <Typography variant='subtitle2' color='text.secondary'>
+              노출범위 *
+            </Typography>
             <RadioGroup row name='exposureRange' value={formik.values.exposureRange} onChange={formik.handleChange}>
               {Object.keys(BoardExposureRange).map(exposureRange => (
                 <FormControlLabel
@@ -226,8 +228,10 @@ export default function MpAdminEventEdit() {
             </RadioGroup>
           </Stack>
 
-          <Stack sx={{ gap: 2 }}>
-            <Typography variant='subtitle1'>이벤트기간 *</Typography>
+          <Stack sx={{ gap: 1 }}>
+            <Typography variant='subtitle2' color='text.secondary'>
+              이벤트기간 *
+            </Typography>
             <Stack direction='row' spacing={2} alignItems='center'>
               <DatePicker
                 value={formik.values.startDate}
@@ -261,8 +265,10 @@ export default function MpAdminEventEdit() {
 
           <TextField name='description' label='이벤트 설명' fullWidth value={formik.values.description} onChange={formik.handleChange} />
 
-          <Stack sx={{ gap: 2 }}>
-            <Typography variant='subtitle1'>썸네일 *</Typography>
+          <Stack sx={{ gap: 1 }}>
+            <Typography variant='subtitle2' color='text.secondary'>
+              썸네일 *
+            </Typography>
             <Stack direction='row' spacing={2} alignItems='center'>
               <Button variant='contained' component='label'>
                 첨부파일
@@ -290,8 +296,10 @@ export default function MpAdminEventEdit() {
 
           <TextField name='internalName' label='썸네일' fullWidth value={formik.values.internalName} onChange={formik.handleChange} />
 
-          <Stack sx={{ gap: 2 }}>
-            <Typography variant='subtitle1'>내용 *</Typography>
+          <Stack sx={{ gap: 1 }}>
+            <Typography variant='subtitle2' color='text.secondary'>
+              내용 *
+            </Typography>
             <Stack
               sx={{
                 '.tiptap': {

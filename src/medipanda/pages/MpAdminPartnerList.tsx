@@ -239,9 +239,7 @@ export default function MpAdminPartnerList() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Typography variant='h4' gutterBottom>
-        거래선관리
-      </Typography>
+      <Typography variant='h4'>거래선관리</Typography>
 
       <Card sx={{ padding: 3 }}>
         <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>

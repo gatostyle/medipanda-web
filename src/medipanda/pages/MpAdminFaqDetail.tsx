@@ -63,9 +63,7 @@ export default function MpAdminCustomerCenterFaqDetail() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Typography variant='h4' gutterBottom>
-        FAQ 상세
-      </Typography>
+      <Typography variant='h4'>FAQ 상세</Typography>
 
       <Card component={Stack} sx={{ padding: 3, gap: 3 }}>
         <Stack>

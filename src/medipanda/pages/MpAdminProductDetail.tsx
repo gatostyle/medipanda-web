@@ -74,17 +74,11 @@ export default function MpAdminProductDetail() {
   };
 
   return (
-    <Box>
-      <Typography variant='h4' gutterBottom sx={{ mb: 3 }}>
-        제품정보
-      </Typography>
+    <Stack sx={{ gap: 3 }}>
+      <Typography variant='h4'>제품정보</Typography>
 
       <Stack sx={{ gap: 3 }}>
         <Card sx={{ p: 3 }}>
-          <Typography variant='h6' gutterBottom sx={{ mb: 3 }}>
-            제품정보
-          </Typography>
-
           <Stack sx={{ gap: 2 }}>
             <Stack direction='row'>
               <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
@@ -250,6 +244,6 @@ export default function MpAdminProductDetail() {
           </Button>
         </Stack>
       </Stack>
-    </Box>
+    </Stack>
   );
 }

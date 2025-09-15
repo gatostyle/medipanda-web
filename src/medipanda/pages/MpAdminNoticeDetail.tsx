@@ -87,9 +87,7 @@ export default function MpAdminNoticeDetail() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Typography variant='h4' gutterBottom>
-        공지사항 상세
-      </Typography>
+      <Typography variant='h4'>공지사항 상세</Typography>
 
       <Card component={Stack} sx={{ padding: 3, gap: 2 }}>
         <TableContainer>

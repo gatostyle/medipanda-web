@@ -242,9 +242,7 @@ export default function MpAdminPrescriptionReceptionList() {
   return (
     <>
       <Stack sx={{ gap: 3 }}>
-        <Typography variant='h4' gutterBottom>
-          처방접수
-        </Typography>
+        <Typography variant='h4'>처방접수</Typography>
 
         <Card sx={{ padding: 3 }}>
           <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>

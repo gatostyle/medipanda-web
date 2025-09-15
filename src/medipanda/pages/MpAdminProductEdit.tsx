@@ -256,17 +256,11 @@ export default function MpAdminProductEdit() {
   }
 
   return (
-    <Box>
-      <Typography variant='h4' gutterBottom sx={{ mb: 3 }}>
-        제품정보 {isNew ? '등록' : '수정'}
-      </Typography>
+    <Stack sx={{ gap: 3 }}>
+      <Typography variant='h4'>제품정보 {isNew ? '등록' : '수정'}</Typography>
 
       <Stack component='form' onSubmit={formik.handleSubmit} sx={{ gap: 3 }}>
         <Card sx={{ p: 3 }}>
-          <Typography variant='h6' gutterBottom sx={{ mb: 3 }}>
-            제품정보
-          </Typography>
-
           <Stack sx={{ gap: 2 }}>
             <Stack direction='row'>
               <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
@@ -515,10 +509,8 @@ export default function MpAdminProductEdit() {
           </Stack>
         </Card>
 
-        <Card sx={{ p: 3 }}>
-          <Typography variant='h6' gutterBottom sx={{ mb: 3 }}>
-            디테일 정보
-          </Typography>
+        <Card component={Stack} sx={{ p: 3, gap: 3 }}>
+          <Typography variant='h6'>디테일 정보</Typography>
 
           <Stack
             gap='10px'
@@ -557,6 +549,6 @@ export default function MpAdminProductEdit() {
           </Button>
         </Stack>
       </Stack>
-    </Box>
+    </Stack>
   );
 }

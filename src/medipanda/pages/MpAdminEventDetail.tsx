@@ -61,9 +61,7 @@ export default function MpAdminEventDetail() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Typography variant='h4' gutterBottom>
-        이벤트 상세
-      </Typography>
+      <Typography variant='h4'>이벤트 상세</Typography>
 
       <Card sx={{ padding: 3 }}>
         <Stack sx={{ gap: 3 }}>

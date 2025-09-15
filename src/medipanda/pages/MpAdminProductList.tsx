@@ -287,9 +287,7 @@ export default function MpAdminProductList() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Typography variant='h4' gutterBottom>
-        제품관리
-      </Typography>
+      <Typography variant='h4'>제품관리</Typography>
 
       <Card sx={{ padding: 3 }}>
         <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>

@@ -144,9 +144,7 @@ export default function MpAdminInquiryDetail() {
 
   return (
     <Stack sx={{ gap: 3 }}>
-      <Typography variant='h4' gutterBottom>
-        1:1 문의 수정
-      </Typography>
+      <Typography variant='h4'>1:1 문의 수정</Typography>
 
       <Card component={Stack} sx={{ padding: 3, gap: 3 }}>
         <Stack direction='row' sx={{ gap: 2 }}>

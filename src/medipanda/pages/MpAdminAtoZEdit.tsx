@@ -155,9 +155,7 @@ export default function MpAdminAtoZEdit() {
 
   return (
     <Stack component='form' onSubmit={formik.handleSubmit} sx={{ gap: 3 }}>
-      <Typography variant='h4' gutterBottom>
-        CSO A TO Z {isNew ? '등록' : '상세'}
-      </Typography>
+      <Typography variant='h4'>CSO A TO Z {isNew ? '등록' : '상세'}</Typography>
 
       <Card component={Stack} sx={{ padding: 3, gap: 3 }}>
         <TextField fullWidth name='title' label='제목' required value={formik.values.title} onChange={formik.handleChange} />

@@ -158,9 +158,9 @@ export default function MpAdminSettlementPartnerDetail() {
   }
 
   return (
-    <Box>
-      <Stack direction='row' alignItems='center' spacing={2} sx={{ mb: 3 }}>
-        <IconButton component={RouterLink} to={`/admin/settlements/${settlementId}`} sx={{ p: 0 }}>
+    <Stack sx={{ gap: 3 }}>
+      <Stack direction='row' alignItems='center' spacing={2}>
+        <IconButton component={RouterLink} to={`/admin/settlements/${settlementId}`} sx={{ width: '24px', height: '24px', padding: 0 }}>
           <ArrowLeft size={24} />
         </IconButton>
         <Typography variant='h4'>거래처별 제품상세</Typography>
@@ -255,6 +255,6 @@ export default function MpAdminSettlementPartnerDetail() {
           </Table>
         </TableContainer>
       </Card>
-    </Box>
+    </Stack>
   );
 }
