@@ -24,7 +24,6 @@ import {
   Typography,
 } from '@mui/material';
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { ArrowLeft, DocumentDownload } from 'iconsax-react';
 import { getDownloadSettlementPartnerSummaryExcel, getSettlementPartnerSummary, SettlementPartnerResponse } from '@/backend';
@@ -237,32 +236,30 @@ export default function MpAdminSettlementDetail() {
           </Button>
         </Stack>
 
-        <ScrollX>
-          <TableContainer>
-            <Table size='small'>
-              <TableHead>
-                {table.getHeaderGroups().map(headerGroup => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map(header => (
-                      <TableCell key={header.id} style={{ width: header.getSize() }}>
-                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableHead>
-              <TableBody>
-                {table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </ScrollX>
+        <TableContainer sx={{ overflowX: 'auto' }}>
+          <Table size='small'>
+            <TableHead>
+              {table.getHeaderGroups().map(headerGroup => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map(header => (
+                    <TableCell key={header.id} style={{ width: header.getSize() }}>
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHead>
+            <TableBody>
+              {table.getRowModel().rows.map(row => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map(cell => (
+                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
         <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
           <Pagination

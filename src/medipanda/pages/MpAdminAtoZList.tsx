@@ -26,7 +26,6 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { BoardPostResponse, BoardType, DateString, deleteBoardPost, getBoards } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
@@ -330,50 +329,48 @@ export default function MpAdminAtoZList() {
             </Stack>
           </Stack>
 
-          <ScrollX>
-            <TableContainer>
-              <Table size='small'>
-                <TableHead>
-                  {table.getHeaderGroups().map(headerGroup => (
-                    <TableRow key={headerGroup.id}>
-                      {headerGroup.headers.map(header => (
-                        <TableCell key={header.id} style={{ width: header.getSize() }}>
-                          {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                        </TableCell>
+          <TableContainer sx={{ overflowX: 'auto' }}>
+            <Table size='small'>
+              <TableHead>
+                {table.getHeaderGroups().map(headerGroup => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map(header => (
+                      <TableCell key={header.id} style={{ width: header.getSize() }}>
+                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableHead>
+              <TableBody>
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                      <Typography variant='body2' color='text.secondary'>
+                        데이터를 로드하는 중입니다.
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ) : table.getRowModel().rows.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                      <Typography variant='body2' color='text.secondary'>
+                        검색 결과가 없습니다.
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  table.getRowModel().rows.map(row => (
+                    <TableRow key={row.id}>
+                      {row.getVisibleCells().map(cell => (
+                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                       ))}
                     </TableRow>
-                  ))}
-                </TableHead>
-                <TableBody>
-                  {loading ? (
-                    <TableRow>
-                      <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
-                        <Typography variant='body2' color='text.secondary'>
-                          데이터를 로드하는 중입니다.
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                  ) : table.getRowModel().rows.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
-                        <Typography variant='body2' color='text.secondary'>
-                          검색 결과가 없습니다.
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    table.getRowModel().rows.map(row => (
-                      <TableRow key={row.id}>
-                        {row.getVisibleCells().map(cell => (
-                          <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                        ))}
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </ScrollX>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
 
           <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
             <Pagination
