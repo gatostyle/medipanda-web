@@ -34,7 +34,7 @@ import {
   searchPrescriptions,
 } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
-import { formatYyyyMm, formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
+import { formatYyyyMm, formatYyyyMmDd, formatYyyyMmDdHhMm, SafeDate } from '@/medipanda/utils/dateFormat';
 import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
@@ -215,7 +215,7 @@ export default function MpAdminPrescriptionReceptionList() {
               접수확인
             </Button>
           ) : (
-            <Typography variant='body2'>{row.original.checkedAt ? formatYyyyMmDd(row.original.checkedAt) : '-'}</Typography>
+            <Typography variant='body2'>{row.original.checkedAt ? formatYyyyMmDdHhMm(row.original.checkedAt) : '-'}</Typography>
           ),
         size: 120,
       },
