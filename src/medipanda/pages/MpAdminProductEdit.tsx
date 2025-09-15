@@ -67,34 +67,9 @@ export default function MpAdminProductEdit() {
       note: '',
     },
     onSubmit: async (values, { setSubmitting }) => {
-      if (values.manufacturer === '') {
-        await alert('제약사를 입력하세요.');
-        return;
-      }
-
-      if (values.productName === '') {
-        await alert('제품명을 입력하세요.');
-        return;
-      }
-
-      if (values.productCode === '') {
-        await alert('제품코드를 입력하세요.');
-        return;
-      }
-
-      if (values.composition === '') {
-        await alert('성분명을 입력하세요.');
-        return;
-      }
-
       const price = Number(values.price.replace(/,/g, ''));
       const feeRate = Number(values.feeRate);
       const changedFeeRate = Number(values.changedFeeRate);
-
-      if (price <= 0) {
-        await alert('약가는 0보다 커야 합니다.');
-        return;
-      }
 
       if (feeRate < 0 || feeRate > 100) {
         await alert('기본수수료율은 0 이상 100 이하이어야 합니다.');
@@ -270,10 +245,10 @@ export default function MpAdminProductEdit() {
                 fullWidth
                 size='small'
                 name='manufacturer'
-                placeholder='제약사를 입력하세요'
-                required
                 value={formik.values.manufacturer}
-                onChange={formik.handleChange}
+                InputProps={{
+                  readOnly: true,
+                }}
               />
             </Stack>
 
@@ -285,10 +260,10 @@ export default function MpAdminProductEdit() {
                 fullWidth
                 size='small'
                 name='productName'
-                placeholder='제품명을 입력하세요'
-                required
                 value={formik.values.productName}
-                onChange={formik.handleChange}
+                InputProps={{
+                  readOnly: true,
+                }}
               />
             </Stack>
 
@@ -300,10 +275,10 @@ export default function MpAdminProductEdit() {
                 fullWidth
                 size='small'
                 name='composition'
-                placeholder='성분명을 입력하세요'
-                required
                 value={formik.values.composition}
-                onChange={formik.handleChange}
+                InputProps={{
+                  readOnly: true,
+                }}
               />
             </Stack>
 
@@ -315,10 +290,10 @@ export default function MpAdminProductEdit() {
                 fullWidth
                 size='small'
                 name='productCode'
-                placeholder='제품코드를 입력하세요'
-                required
                 value={formik.values.productCode}
-                onChange={formik.handleChange}
+                InputProps={{
+                  readOnly: true,
+                }}
               />
             </Stack>
 
@@ -330,11 +305,9 @@ export default function MpAdminProductEdit() {
                 fullWidth
                 size='small'
                 name='price'
-                placeholder='약가를 입력하세요'
-                required
                 value={formik.values.price}
-                onChange={handleNumberChange(formik)}
                 InputProps={{
+                  readOnly: true,
                   endAdornment: <Typography variant='body2'>원</Typography>,
                 }}
               />
