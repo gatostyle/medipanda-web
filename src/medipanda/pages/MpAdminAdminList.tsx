@@ -2,8 +2,8 @@ import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
-  Box,
   Button,
+  Card,
   Chip,
   FormControl,
   Grid,
@@ -24,7 +24,6 @@ import {
   Typography,
 } from '@mui/material';
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { AccountStatusLabel, getUserMembers, MemberResponse, Role, RoleLabel } from '@/backend';
@@ -179,123 +178,119 @@ export default function MpAdminAdminList() {
       </Grid>
 
       <Grid item xs={12}>
-        <MainCard content={false}>
-          <Box sx={{ p: 3 }}>
-            <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>
-              <SearchFilterItem minWidth={140}>
-                <FormControl fullWidth size='small'>
-                  <InputLabel>검색유형</InputLabel>
-                  <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
-                    <MenuItem value={'name'}>관리자명</MenuItem>
-                    <MenuItem value={'userId'}>아이디</MenuItem>
-                    <MenuItem value={'email'}>이메일</MenuItem>
-                    <MenuItem value={'phoneNumber'}>연락처</MenuItem>
-                  </Select>
-                </FormControl>
-              </SearchFilterItem>
-              <SearchFilterItem flexGrow={1} minWidth={200}>
-                <TextField
-                  name='searchKeyword'
-                  size='small'
-                  placeholder='검색어를 입력하세요'
-                  fullWidth
-                  value={formik.values.searchKeyword}
-                  onChange={formik.handleChange}
-                />
-              </SearchFilterItem>
-              <SearchFilterActions>
-                <Button variant='contained' size='small' type='submit'>
-                  검색
-                </Button>
-                <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
-                  초기화
-                </Button>
-              </SearchFilterActions>
-            </SearchFilterBar>
-          </Box>
-        </MainCard>
+        <Card sx={{ padding: 3 }}>
+          <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>
+            <SearchFilterItem minWidth={140}>
+              <FormControl fullWidth size='small'>
+                <InputLabel>검색유형</InputLabel>
+                <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
+                  <MenuItem value={'name'}>관리자명</MenuItem>
+                  <MenuItem value={'userId'}>아이디</MenuItem>
+                  <MenuItem value={'email'}>이메일</MenuItem>
+                  <MenuItem value={'phoneNumber'}>연락처</MenuItem>
+                </Select>
+              </FormControl>
+            </SearchFilterItem>
+            <SearchFilterItem flexGrow={1} minWidth={200}>
+              <TextField
+                name='searchKeyword'
+                size='small'
+                placeholder='검색어를 입력하세요'
+                fullWidth
+                value={formik.values.searchKeyword}
+                onChange={formik.handleChange}
+              />
+            </SearchFilterItem>
+            <SearchFilterActions>
+              <Button variant='contained' size='small' type='submit'>
+                검색
+              </Button>
+              <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
+                초기화
+              </Button>
+            </SearchFilterActions>
+          </SearchFilterBar>
+        </Card>
       </Grid>
 
       <Grid item xs={12}>
-        <MainCard content={false}>
-          <Box sx={{ p: 2 }}>
-            <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
-              <Stack direction='row' spacing={2}>
-                <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
-              </Stack>
-              <Stack direction='row' spacing={1}>
-                <Button variant='contained' size='small' color='success' component={RouterLink} to='/admin/admins/new'>
-                  등록
-                </Button>
-              </Stack>
+        <Card sx={{ padding: 3 }}>
+          <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+            <Stack direction='row' spacing={2}>
+              <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
             </Stack>
+            <Stack direction='row' spacing={1}>
+              <Button variant='contained' size='small' color='success' component={RouterLink} to='/admin/admins/new'>
+                등록
+              </Button>
+            </Stack>
+          </Stack>
 
-            <ScrollX>
-              <TableContainer>
-                <Table size='small'>
-                  <TableHead>
-                    {table.getHeaderGroups().map(headerGroup => (
-                      <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map(header => (
-                          <TableCell key={header.id} style={{ width: header.getSize() }}>
-                            {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                          </TableCell>
+          <ScrollX>
+            <TableContainer>
+              <Table size='small'>
+                <TableHead>
+                  {table.getHeaderGroups().map(headerGroup => (
+                    <TableRow key={headerGroup.id}>
+                      {headerGroup.headers.map(header => (
+                        <TableCell key={header.id} style={{ width: header.getSize() }}>
+                          {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableHead>
+                <TableBody>
+                  {loading ? (
+                    <TableRow>
+                      <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                        <Typography variant='body2' color='text.secondary'>
+                          데이터를 로드하는 중입니다.
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  ) : table.getRowModel().rows.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                        <Typography variant='body2' color='text.secondary'>
+                          검색 결과가 없습니다.
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    table.getRowModel().rows.map(row => (
+                      <TableRow key={row.id}>
+                        {row.getVisibleCells().map(cell => (
+                          <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                         ))}
                       </TableRow>
-                    ))}
-                  </TableHead>
-                  <TableBody>
-                    {loading ? (
-                      <TableRow>
-                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
-                          <Typography variant='body2' color='text.secondary'>
-                            데이터를 로드하는 중입니다.
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    ) : table.getRowModel().rows.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
-                          <Typography variant='body2' color='text.secondary'>
-                            검색 결과가 없습니다.
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      table.getRowModel().rows.map(row => (
-                        <TableRow key={row.id}>
-                          {row.getVisibleCells().map(cell => (
-                            <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                          ))}
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </ScrollX>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </ScrollX>
 
-            <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
-              <Pagination
-                count={totalPages}
-                page={page}
-                renderItem={item => (
-                  <PaginationItem
-                    {...item}
-                    color='primary'
-                    variant='outlined'
-                    component={RouterLink}
-                    to={setUrlParams({ page: item.page }, initialSearchParams)}
-                  />
-                )}
-                color='primary'
-                variant='outlined'
-                showFirstButton
-                showLastButton
-              />
-            </Stack>
-          </Box>
-        </MainCard>
+          <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
+            <Pagination
+              count={totalPages}
+              page={page}
+              renderItem={item => (
+                <PaginationItem
+                  {...item}
+                  color='primary'
+                  variant='outlined'
+                  component={RouterLink}
+                  to={setUrlParams({ page: item.page }, initialSearchParams)}
+                />
+              )}
+              color='primary'
+              variant='outlined'
+              showFirstButton
+              showLastButton
+            />
+          </Stack>
+        </Card>
       </Grid>
     </Grid>
   );

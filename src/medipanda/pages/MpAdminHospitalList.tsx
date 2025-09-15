@@ -3,8 +3,8 @@ import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import { MpHospitalUploadModal } from '@/medipanda/components/MpHospitalUploadModal';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
-  Box,
   Button,
+  Card,
   Checkbox,
   FormControl,
   Grid,
@@ -25,7 +25,6 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import {
@@ -277,174 +276,170 @@ export default function MpAdminHospitalList() {
       </Grid>
 
       <Grid item xs={12}>
-        <MainCard content={false}>
-          <Box sx={{ p: 3 }}>
-            <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>
-              <SearchFilterItem minWidth={140}>
-                <FormControl fullWidth size='small'>
-                  <InputLabel>시/도</InputLabel>
-                  <Select
-                    name='sido'
-                    value={formik.values.sido === -1 ? '' : formik.values.sido}
-                    onChange={event => {
-                      formik.handleChange(event);
-                      formik.setFieldValue('sigungu', -1);
-                    }}
-                  >
-                    {sidoList.map(region => (
-                      <MenuItem key={region.id} value={region.id}>
-                        {region.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </SearchFilterItem>
-              <SearchFilterItem minWidth={140}>
-                <FormControl fullWidth size='small'>
-                  <InputLabel>시/군/구</InputLabel>
-                  <Select name='sigungu' value={formik.values.sigungu === -1 ? '' : formik.values.sigungu} onChange={formik.handleChange}>
-                    {(sigunguList[formik.values.sido] ?? []).map(region => (
-                      <MenuItem key={region.id} value={region.id}>
-                        {region.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </SearchFilterItem>
-              <SearchFilterItem minWidth={140}>
-                <DatePicker
-                  value={formik.values.startDate}
-                  onChange={value => formik.setFieldValue('startDate', value)}
-                  format='yyyy-MM-dd'
-                  views={['year', 'month', 'day']}
-                  label='시작일'
-                  slotProps={{
-                    textField: {
-                      size: 'small',
-                    },
+        <Card sx={{ padding: 3 }}>
+          <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>
+            <SearchFilterItem minWidth={140}>
+              <FormControl fullWidth size='small'>
+                <InputLabel>시/도</InputLabel>
+                <Select
+                  name='sido'
+                  value={formik.values.sido === -1 ? '' : formik.values.sido}
+                  onChange={event => {
+                    formik.handleChange(event);
+                    formik.setFieldValue('sigungu', -1);
                   }}
-                />
-              </SearchFilterItem>
-              <SearchFilterItem minWidth={140}>
-                <DatePicker
-                  value={formik.values.endDate}
-                  onChange={value => formik.setFieldValue('endDate', value)}
-                  format='yyyy-MM-dd'
-                  views={['year', 'month', 'day']}
-                  label='종료일'
-                  slotProps={{
-                    textField: {
-                      size: 'small',
-                    },
-                  }}
-                />
-              </SearchFilterItem>
-              <SearchFilterItem flexGrow={1} minWidth={200}>
-                <TextField
-                  name='searchKeyword'
-                  size='small'
-                  placeholder='검색어를 입력하세요'
-                  fullWidth
-                  value={formik.values.searchKeyword}
-                  onChange={formik.handleChange}
-                />
-              </SearchFilterItem>
-              <SearchFilterActions>
-                <Button variant='contained' size='small' type='submit'>
-                  검색
-                </Button>
-                <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
-                  초기화
-                </Button>
-              </SearchFilterActions>
-            </SearchFilterBar>
-          </Box>
-        </MainCard>
+                >
+                  {sidoList.map(region => (
+                    <MenuItem key={region.id} value={region.id}>
+                      {region.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </SearchFilterItem>
+            <SearchFilterItem minWidth={140}>
+              <FormControl fullWidth size='small'>
+                <InputLabel>시/군/구</InputLabel>
+                <Select name='sigungu' value={formik.values.sigungu === -1 ? '' : formik.values.sigungu} onChange={formik.handleChange}>
+                  {(sigunguList[formik.values.sido] ?? []).map(region => (
+                    <MenuItem key={region.id} value={region.id}>
+                      {region.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </SearchFilterItem>
+            <SearchFilterItem minWidth={140}>
+              <DatePicker
+                value={formik.values.startDate}
+                onChange={value => formik.setFieldValue('startDate', value)}
+                format='yyyy-MM-dd'
+                views={['year', 'month', 'day']}
+                label='시작일'
+                slotProps={{
+                  textField: {
+                    size: 'small',
+                  },
+                }}
+              />
+            </SearchFilterItem>
+            <SearchFilterItem minWidth={140}>
+              <DatePicker
+                value={formik.values.endDate}
+                onChange={value => formik.setFieldValue('endDate', value)}
+                format='yyyy-MM-dd'
+                views={['year', 'month', 'day']}
+                label='종료일'
+                slotProps={{
+                  textField: {
+                    size: 'small',
+                  },
+                }}
+              />
+            </SearchFilterItem>
+            <SearchFilterItem flexGrow={1} minWidth={200}>
+              <TextField
+                name='searchKeyword'
+                size='small'
+                placeholder='검색어를 입력하세요'
+                fullWidth
+                value={formik.values.searchKeyword}
+                onChange={formik.handleChange}
+              />
+            </SearchFilterItem>
+            <SearchFilterActions>
+              <Button variant='contained' size='small' type='submit'>
+                검색
+              </Button>
+              <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
+                초기화
+              </Button>
+            </SearchFilterActions>
+          </SearchFilterBar>
+        </Card>
       </Grid>
 
       <Grid item xs={12}>
-        <MainCard content={false}>
-          <Box sx={{ p: 2 }}>
-            <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
-              <Stack direction='row' spacing={2}>
-                <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
-              </Stack>
-              <Stack direction='row' spacing={1}>
-                <Button variant='contained' color='success' size='small' onClick={() => setHospitalUploadModalOpen(true)}>
-                  엑셀 업로드
-                </Button>
-                <Button variant='contained' color='error' size='small' onClick={handleDeleteSelected} disabled={selectedIds.length === 0}>
-                  삭제
-                </Button>
-              </Stack>
+        <Card sx={{ padding: 3 }}>
+          <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+            <Stack direction='row' spacing={2}>
+              <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
             </Stack>
+            <Stack direction='row' spacing={1}>
+              <Button variant='contained' color='success' size='small' onClick={() => setHospitalUploadModalOpen(true)}>
+                엑셀 업로드
+              </Button>
+              <Button variant='contained' color='error' size='small' onClick={handleDeleteSelected} disabled={selectedIds.length === 0}>
+                삭제
+              </Button>
+            </Stack>
+          </Stack>
 
-            <ScrollX>
-              <TableContainer>
-                <Table size='small'>
-                  <TableHead>
-                    {table.getHeaderGroups().map(headerGroup => (
-                      <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map(header => (
-                          <TableCell key={header.id} style={{ width: header.getSize() }}>
-                            {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                          </TableCell>
+          <ScrollX>
+            <TableContainer>
+              <Table size='small'>
+                <TableHead>
+                  {table.getHeaderGroups().map(headerGroup => (
+                    <TableRow key={headerGroup.id}>
+                      {headerGroup.headers.map(header => (
+                        <TableCell key={header.id} style={{ width: header.getSize() }}>
+                          {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableHead>
+                <TableBody>
+                  {loading ? (
+                    <TableRow>
+                      <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                        <Typography variant='body2' color='text.secondary'>
+                          데이터를 로드하는 중입니다.
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  ) : table.getRowModel().rows.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                        <Typography variant='body2' color='text.secondary'>
+                          검색 결과가 없습니다.
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    table.getRowModel().rows.map(row => (
+                      <TableRow key={row.id}>
+                        {row.getVisibleCells().map(cell => (
+                          <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                         ))}
                       </TableRow>
-                    ))}
-                  </TableHead>
-                  <TableBody>
-                    {loading ? (
-                      <TableRow>
-                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
-                          <Typography variant='body2' color='text.secondary'>
-                            데이터를 로드하는 중입니다.
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    ) : table.getRowModel().rows.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
-                          <Typography variant='body2' color='text.secondary'>
-                            검색 결과가 없습니다.
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      table.getRowModel().rows.map(row => (
-                        <TableRow key={row.id}>
-                          {row.getVisibleCells().map(cell => (
-                            <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                          ))}
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </ScrollX>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </ScrollX>
 
-            <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
-              <Pagination
-                count={totalPages}
-                page={page}
-                renderItem={item => (
-                  <PaginationItem
-                    {...item}
-                    color='primary'
-                    variant='outlined'
-                    component={RouterLink}
-                    to={setUrlParams({ page: item.page }, initialSearchParams)}
-                  />
-                )}
-                color='primary'
-                variant='outlined'
-                showFirstButton
-                showLastButton
-              />
-            </Stack>
-          </Box>
-        </MainCard>
+          <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
+            <Pagination
+              count={totalPages}
+              page={page}
+              renderItem={item => (
+                <PaginationItem
+                  {...item}
+                  color='primary'
+                  variant='outlined'
+                  component={RouterLink}
+                  to={setUrlParams({ page: item.page }, initialSearchParams)}
+                />
+              )}
+              color='primary'
+              variant='outlined'
+              showFirstButton
+              showLastButton
+            />
+          </Stack>
+        </Card>
       </Grid>
 
       <MpHospitalUploadModal

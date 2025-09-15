@@ -1,6 +1,7 @@
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
+  Card,
   CircularProgress,
   Grid,
   IconButton,
@@ -15,7 +16,6 @@ import {
   Typography,
 } from '@mui/material';
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { ArrowLeft } from 'iconsax-react';
 import {
@@ -168,7 +168,7 @@ export default function MpAdminSettlementPartnerDetail() {
         <Typography variant='h4'>거래처별 제품상세</Typography>
       </Stack>
 
-      <MainCard sx={{ mb: 3 }}>
+      <Card sx={{ padding: 3 }}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
             <TextField label='딜러명' value={partnerDetail.dealerName} fullWidth size='small' InputProps={{ readOnly: true }} />
@@ -195,9 +195,9 @@ export default function MpAdminSettlementPartnerDetail() {
             />
           </Grid>
         </Grid>
-      </MainCard>
+      </Card>
 
-      <MainCard content={false}>
+      <Card sx={{ padding: 3, marginTop: 3 }}>
         <ScrollX>
           <TableContainer>
             <Table size='small'>
@@ -224,7 +224,7 @@ export default function MpAdminSettlementPartnerDetail() {
             </Table>
           </TableContainer>
         </ScrollX>
-      </MainCard>
+      </Card>
     </Box>
   );
 }

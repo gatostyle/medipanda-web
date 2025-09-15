@@ -1,9 +1,8 @@
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import { Box, Button, CircularProgress, Grid, Link, Typography } from '@mui/material';
+import { Box, Button, Card, CircularProgress, Grid, Link, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
-import MainCard from 'components/MainCard';
 import { BoardDetailsResponse, getBoardDetails, PostAttachmentType } from '@/backend';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
@@ -70,7 +69,7 @@ export default function MpAdminCustomerCenterFaqDetail() {
       </Grid>
 
       <Grid item xs={12}>
-        <MainCard>
+        <Card sx={{ padding: 3 }}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <Typography variant='body2' color='text.secondary' gutterBottom>
@@ -160,7 +159,7 @@ export default function MpAdminCustomerCenterFaqDetail() {
               수정
             </Button>
           </Box>
-        </MainCard>
+        </Card>
       </Grid>
     </Grid>
   );

@@ -1,9 +1,20 @@
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
-import { Box, Button, CircularProgress, FormControlLabel, Grid, Radio, RadioGroup, Stack, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  CircularProgress,
+  FormControlLabel,
+  Grid,
+  Radio,
+  RadioGroup,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { EditorContent } from '@tiptap/react';
-import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
 import {
   AttachmentResponse,
@@ -201,7 +212,7 @@ export default function MpAdminEventEdit() {
       </Grid>
 
       <Grid item xs={12}>
-        <MainCard>
+        <Card sx={{ padding: 3 }}>
           <Grid container spacing={3} component='form' onSubmit={formik.handleSubmit}>
             <Grid item xs={12}>
               <Typography variant='subtitle1' gutterBottom>
@@ -349,7 +360,7 @@ export default function MpAdminEventEdit() {
               </Stack>
             </Grid>
           </Grid>
-        </MainCard>
+        </Card>
       </Grid>
     </Grid>
   );

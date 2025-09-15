@@ -3,6 +3,7 @@ import { Close } from '@mui/icons-material';
 import {
   Box,
   Button,
+  Card,
   CircularProgress,
   FormControl,
   FormControlLabel,
@@ -17,7 +18,6 @@ import {
   Typography,
 } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
-import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
 import {
   AttachmentResponse,
@@ -163,7 +163,7 @@ export default function MpAdminAtoZEdit() {
       </Grid>
 
       <Grid item xs={12}>
-        <MainCard>
+        <Card sx={{ padding: 3 }}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <TextField fullWidth name='title' label='제목' required value={formik.values.title} onChange={formik.handleChange} />
@@ -265,7 +265,7 @@ export default function MpAdminAtoZEdit() {
               {formik.isSubmitting ? '저장 중...' : '저장'}
             </Button>
           </Box>
-        </MainCard>
+        </Card>
       </Grid>
     </Grid>
   );

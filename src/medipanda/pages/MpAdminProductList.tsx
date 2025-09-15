@@ -4,8 +4,8 @@ import { MpProductUploadModal } from '@/medipanda/components/MpProductUploadModa
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { DocumentDownload } from 'iconsax-react';
 import {
-  Box,
   Button,
+  Card,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -28,7 +28,6 @@ import {
   Typography,
 } from '@mui/material';
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { getDownloadProductSummariesExcel, getProductSummaries, ProductSummaryResponse, softDelete } from '@/backend';
@@ -297,195 +296,191 @@ export default function MpAdminProductList() {
       </Grid>
 
       <Grid item xs={12}>
-        <MainCard content={false}>
-          <Box sx={{ p: 3 }}>
-            <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>
-              <SearchFilterItem minWidth={140}>
-                <FormControl fullWidth size='small'>
-                  <InputLabel>검색유형</InputLabel>
-                  <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
-                    <MenuItem value={'productName'}>제품명</MenuItem>
-                    <MenuItem value={'productCode'}>제품코드</MenuItem>
-                    <MenuItem value={'manufacturerName'}>제약사</MenuItem>
-                    <MenuItem value={'composition'}>성분명</MenuItem>
-                    <MenuItem value={'note'}>비고</MenuItem>
-                  </Select>
-                </FormControl>
-              </SearchFilterItem>
-              <SearchFilterItem flexGrow={1} minWidth={200}>
-                <TextField
-                  name='searchKeyword'
-                  size='small'
-                  placeholder='검색어를 입력하세요'
-                  fullWidth
-                  value={formik.values.searchKeyword}
-                  onChange={formik.handleChange}
+        <Card sx={{ padding: 3 }}>
+          <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>
+            <SearchFilterItem minWidth={140}>
+              <FormControl fullWidth size='small'>
+                <InputLabel>검색유형</InputLabel>
+                <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
+                  <MenuItem value={'productName'}>제품명</MenuItem>
+                  <MenuItem value={'productCode'}>제품코드</MenuItem>
+                  <MenuItem value={'manufacturerName'}>제약사</MenuItem>
+                  <MenuItem value={'composition'}>성분명</MenuItem>
+                  <MenuItem value={'note'}>비고</MenuItem>
+                </Select>
+              </FormControl>
+            </SearchFilterItem>
+            <SearchFilterItem flexGrow={1} minWidth={200}>
+              <TextField
+                name='searchKeyword'
+                size='small'
+                placeholder='검색어를 입력하세요'
+                fullWidth
+                value={formik.values.searchKeyword}
+                onChange={formik.handleChange}
+              />
+            </SearchFilterItem>
+            <SearchFilterItem minWidth={300}>
+              <FormGroup row>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      size='small'
+                      checked={formik.values.isAcquisition}
+                      onChange={e => formik.setFieldValue('isAcquisition', e.target.checked)}
+                    />
+                  }
+                  label='취급품목'
                 />
-              </SearchFilterItem>
-              <SearchFilterItem minWidth={300}>
-                <FormGroup row>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        size='small'
-                        checked={formik.values.isAcquisition}
-                        onChange={e => formik.setFieldValue('isAcquisition', e.target.checked)}
-                      />
-                    }
-                    label='취급품목'
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        size='small'
-                        checked={formik.values.isPromotion}
-                        onChange={e => formik.setFieldValue('isPromotion', e.target.checked)}
-                      />
-                    }
-                    label='프로모션'
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        size='small'
-                        checked={formik.values.isOutOfStock}
-                        onChange={e => formik.setFieldValue('isOutOfStock', e.target.checked)}
-                      />
-                    }
-                    label='품절'
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        size='small'
-                        checked={formik.values.isStopSelling}
-                        onChange={e => formik.setFieldValue('isStopSelling', e.target.checked)}
-                      />
-                    }
-                    label='판매중단'
-                  />
-                </FormGroup>
-              </SearchFilterItem>
-              <SearchFilterActions>
-                <Button variant='contained' size='small' type='submit'>
-                  검색
-                </Button>
-                <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
-                  초기화
-                </Button>
-              </SearchFilterActions>
-            </SearchFilterBar>
-          </Box>
-        </MainCard>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      size='small'
+                      checked={formik.values.isPromotion}
+                      onChange={e => formik.setFieldValue('isPromotion', e.target.checked)}
+                    />
+                  }
+                  label='프로모션'
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      size='small'
+                      checked={formik.values.isOutOfStock}
+                      onChange={e => formik.setFieldValue('isOutOfStock', e.target.checked)}
+                    />
+                  }
+                  label='품절'
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      size='small'
+                      checked={formik.values.isStopSelling}
+                      onChange={e => formik.setFieldValue('isStopSelling', e.target.checked)}
+                    />
+                  }
+                  label='판매중단'
+                />
+              </FormGroup>
+            </SearchFilterItem>
+            <SearchFilterActions>
+              <Button variant='contained' size='small' type='submit'>
+                검색
+              </Button>
+              <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
+                초기화
+              </Button>
+            </SearchFilterActions>
+          </SearchFilterBar>
+        </Card>
       </Grid>
 
       <Grid item xs={12}>
-        <MainCard content={false}>
-          <Box sx={{ p: 2 }}>
-            <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
-              <Stack direction='row' spacing={2}>
-                <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
-              </Stack>
-              <Stack direction='row' spacing={1}>
-                <Button
-                  variant='contained'
-                  color='success'
-                  size='small'
-                  href={getDownloadProductSummariesExcel({
-                    productName: searchType === 'productName' && searchKeyword !== '' ? searchKeyword : undefined,
-                    composition: searchType === 'composition' && searchKeyword !== '' ? searchKeyword : undefined,
-                    productCode: searchType === 'productCode' && searchKeyword !== '' ? searchKeyword : undefined,
-                    manufacturerName: searchType === 'manufacturerName' && searchKeyword !== '' ? searchKeyword : undefined,
-                    note: searchType === 'note' && searchKeyword !== '' ? searchKeyword : undefined,
-                    isAcquisition: isAcquisition || undefined,
-                    isPromotion: isPromotion || undefined,
-                    isOutOfStock: isOutOfStock || undefined,
-                    isStopSelling: isStopSelling || undefined,
-                    size: 2 ** 31 - 1,
-                  })}
-                  target='_blank'
-                  startIcon={<DocumentDownload size={16} />}
-                >
-                  Excel
-                </Button>
-                <Button variant='contained' color='success' size='small' onClick={() => setProductUploadModalOpen(true)}>
-                  요율표 업로드
-                </Button>
-                <Button variant='contained' color='error' size='small' disabled={selectedIds.length === 0} onClick={handleDelete}>
-                  삭제
-                </Button>
-                <Button variant='contained' color='success' size='small' component={RouterLink} to='/admin/products/new'>
-                  등록
-                </Button>
-              </Stack>
+        <Card sx={{ padding: 3 }}>
+          <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+            <Stack direction='row' spacing={2}>
+              <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
             </Stack>
+            <Stack direction='row' spacing={1}>
+              <Button
+                variant='contained'
+                color='success'
+                size='small'
+                href={getDownloadProductSummariesExcel({
+                  productName: searchType === 'productName' && searchKeyword !== '' ? searchKeyword : undefined,
+                  composition: searchType === 'composition' && searchKeyword !== '' ? searchKeyword : undefined,
+                  productCode: searchType === 'productCode' && searchKeyword !== '' ? searchKeyword : undefined,
+                  manufacturerName: searchType === 'manufacturerName' && searchKeyword !== '' ? searchKeyword : undefined,
+                  note: searchType === 'note' && searchKeyword !== '' ? searchKeyword : undefined,
+                  isAcquisition: isAcquisition || undefined,
+                  isPromotion: isPromotion || undefined,
+                  isOutOfStock: isOutOfStock || undefined,
+                  isStopSelling: isStopSelling || undefined,
+                  size: 2 ** 31 - 1,
+                })}
+                target='_blank'
+                startIcon={<DocumentDownload size={16} />}
+              >
+                Excel
+              </Button>
+              <Button variant='contained' color='success' size='small' onClick={() => setProductUploadModalOpen(true)}>
+                요율표 업로드
+              </Button>
+              <Button variant='contained' color='error' size='small' disabled={selectedIds.length === 0} onClick={handleDelete}>
+                삭제
+              </Button>
+              <Button variant='contained' color='success' size='small' component={RouterLink} to='/admin/products/new'>
+                등록
+              </Button>
+            </Stack>
+          </Stack>
 
-            <ScrollX>
-              <TableContainer>
-                <Table size='small'>
-                  <TableHead>
-                    {table.getHeaderGroups().map(headerGroup => (
-                      <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map(header => (
-                          <TableCell key={header.id} style={{ width: header.getSize() }}>
-                            {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                          </TableCell>
+          <ScrollX>
+            <TableContainer>
+              <Table size='small'>
+                <TableHead>
+                  {table.getHeaderGroups().map(headerGroup => (
+                    <TableRow key={headerGroup.id}>
+                      {headerGroup.headers.map(header => (
+                        <TableCell key={header.id} style={{ width: header.getSize() }}>
+                          {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableHead>
+                <TableBody>
+                  {loading ? (
+                    <TableRow>
+                      <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                        <Typography variant='body2' color='text.secondary'>
+                          데이터를 로드하는 중입니다.
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  ) : table.getRowModel().rows.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                        <Typography variant='body2' color='text.secondary'>
+                          검색 결과가 없습니다.
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    table.getRowModel().rows.map(row => (
+                      <TableRow key={row.id}>
+                        {row.getVisibleCells().map(cell => (
+                          <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                         ))}
                       </TableRow>
-                    ))}
-                  </TableHead>
-                  <TableBody>
-                    {loading ? (
-                      <TableRow>
-                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
-                          <Typography variant='body2' color='text.secondary'>
-                            데이터를 로드하는 중입니다.
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    ) : table.getRowModel().rows.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
-                          <Typography variant='body2' color='text.secondary'>
-                            검색 결과가 없습니다.
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      table.getRowModel().rows.map(row => (
-                        <TableRow key={row.id}>
-                          {row.getVisibleCells().map(cell => (
-                            <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                          ))}
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </ScrollX>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </ScrollX>
 
-            <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
-              <Pagination
-                count={totalPages}
-                page={page}
-                renderItem={item => (
-                  <PaginationItem
-                    {...item}
-                    color='primary'
-                    variant='outlined'
-                    component={RouterLink}
-                    to={setUrlParams({ page: item.page }, initialSearchParams)}
-                  />
-                )}
-                color='primary'
-                variant='outlined'
-                showFirstButton
-                showLastButton
-              />
-            </Stack>
-          </Box>
-        </MainCard>
+          <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
+            <Pagination
+              count={totalPages}
+              page={page}
+              renderItem={item => (
+                <PaginationItem
+                  {...item}
+                  color='primary'
+                  variant='outlined'
+                  component={RouterLink}
+                  to={setUrlParams({ page: item.page }, initialSearchParams)}
+                />
+              )}
+              color='primary'
+              variant='outlined'
+              showFirstButton
+              showLastButton
+            />
+          </Stack>
+        </Card>
       </Grid>
 
       <MpProductUploadModal

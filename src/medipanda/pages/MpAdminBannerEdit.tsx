@@ -2,6 +2,7 @@ import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   Button,
+  Card,
   FormControl,
   FormControlLabel,
   Grid,
@@ -14,7 +15,6 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
 import {
   BannerScope,
@@ -168,7 +168,7 @@ export default function MpAdminBannerEdit() {
       </Grid>
 
       <Grid item xs={12}>
-        <MainCard>
+        <Card sx={{ padding: 3 }}>
           <Grid container spacing={2.5} component='form' onSubmit={formik.handleSubmit}>
             <Grid item xs={12}>
               <Stack spacing={0.5}>
@@ -391,7 +391,7 @@ export default function MpAdminBannerEdit() {
               </Stack>
             </Grid>
           </Grid>
-        </MainCard>
+        </Card>
       </Grid>
     </Grid>
   );

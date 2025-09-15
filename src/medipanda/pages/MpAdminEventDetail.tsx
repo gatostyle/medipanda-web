@@ -1,8 +1,7 @@
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
-import { Box, Button, Chip, CircularProgress, Divider, Grid, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, Chip, CircularProgress, Divider, Grid, Stack, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
-import MainCard from 'components/MainCard';
 import { BoardExposureRangeLabel, EventBoardDetailsResponse, getEventBoardDetails, PostAttachmentType } from '@/backend';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { useSnackbar } from 'notistack';
@@ -69,7 +68,7 @@ export default function MpAdminEventDetail() {
       </Grid>
 
       <Grid item xs={12}>
-        <MainCard>
+        <Card sx={{ padding: 3 }}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <Stack spacing={1}>
@@ -220,7 +219,7 @@ export default function MpAdminEventDetail() {
               </Stack>
             </Grid>
           </Grid>
-        </MainCard>
+        </Card>
       </Grid>
     </Grid>
   );

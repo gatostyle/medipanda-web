@@ -4,6 +4,7 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import {
   Box,
   Button,
+  Card,
   CircularProgress,
   FormControlLabel,
   Grid,
@@ -18,7 +19,6 @@ import {
 } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import { EditorContent } from '@tiptap/react';
-import MainCard from 'components/MainCard';
 import {
   BoardDetailsResponse,
   BoardExposureRangeLabel,
@@ -94,7 +94,7 @@ export default function MpAdminNoticeDetail() {
       </Grid>
 
       <Grid item xs={12}>
-        <MainCard>
+        <Card sx={{ padding: 3 }}>
           <TableContainer>
             <Table>
               <TableBody>
@@ -213,7 +213,7 @@ export default function MpAdminNoticeDetail() {
               수정
             </Button>
           </Box>
-        </MainCard>
+        </Card>
       </Grid>
     </Grid>
   );

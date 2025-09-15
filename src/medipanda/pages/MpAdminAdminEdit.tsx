@@ -1,6 +1,7 @@
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Button,
+  Card,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -12,7 +13,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
 import { AdminPermission, getMemberDetails, getPermissions, signupByAdmin, updateByAdmin } from '@/backend';
 import { isSuperAdmin, useSession } from '@/medipanda/hooks/useSession';
@@ -183,7 +183,7 @@ export default function MpAdminAdminEdit() {
       </Grid>
 
       <Grid item xs={12}>
-        <MainCard>
+        <Card sx={{ padding: 3 }}>
           <Grid container spacing={3} component='form' onSubmit={formik.handleSubmit}>
             <Grid item xs={12}>
               <FormControlLabel
@@ -436,7 +436,7 @@ export default function MpAdminAdminEdit() {
               </Stack>
             </Grid>
           </Grid>
-        </MainCard>
+        </Card>
       </Grid>
     </Grid>
   );

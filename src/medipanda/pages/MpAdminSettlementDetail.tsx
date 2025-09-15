@@ -4,6 +4,7 @@ import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
   Button,
+  Card,
   CircularProgress,
   FormControl,
   Grid,
@@ -23,7 +24,6 @@ import {
   Typography,
 } from '@mui/material';
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { useFormik } from 'formik';
 import { ArrowLeft, DocumentDownload } from 'iconsax-react';
@@ -180,108 +180,104 @@ export default function MpAdminSettlementDetail() {
         <Typography variant='h4'>정산상세내역</Typography>
       </Stack>
 
-      <MainCard content={false}>
-        <Box sx={{ p: 3 }}>
-          <Grid container spacing={2} alignItems='center' component='form' onSubmit={formik.handleSubmit}>
-            <Grid item xs={12} md={2}>
-              <FormControl fullWidth size='small'>
-                <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange} displayEmpty>
-                  <MenuItem value='institutionName'>거래처명</MenuItem>
-                  <MenuItem value='businessNumber'>사업자등록번호</MenuItem>
-                  <MenuItem value='institutionCode'>거래처코드</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
-                name='searchKeyword'
-                size='small'
-                placeholder='검색어를 입력하세요'
-                fullWidth
-                value={formik.values.searchKeyword}
-                onChange={formik.handleChange}
-              />
-            </Grid>
-            <Grid item>
-              <Button variant='contained' size='small' type='submit'>
-                검색
-              </Button>
-            </Grid>
+      <Card sx={{ padding: 3 }}>
+        <Grid container spacing={2} alignItems='center' component='form' onSubmit={formik.handleSubmit}>
+          <Grid item xs={12} md={2}>
+            <FormControl fullWidth size='small'>
+              <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange} displayEmpty>
+                <MenuItem value='institutionName'>거래처명</MenuItem>
+                <MenuItem value='businessNumber'>사업자등록번호</MenuItem>
+                <MenuItem value='institutionCode'>거래처코드</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
-        </Box>
-
-        <Box sx={{ p: 2 }}>
-          <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
-            <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
-            <Button
-              variant='contained'
+          <Grid item xs={12} md={4}>
+            <TextField
+              name='searchKeyword'
               size='small'
-              color='success'
-              href={getDownloadSettlementPartnerSummaryExcel({
-                settlementId: parseInt(paramSettlementId!),
-                institutionName:
-                  formik.values.searchType === 'institutionName' && formik.values.searchKeyword !== ''
-                    ? formik.values.searchKeyword
-                    : undefined,
-                businessNumber:
-                  formik.values.searchType === 'businessNumber' && formik.values.searchKeyword !== ''
-                    ? formik.values.searchKeyword
-                    : undefined,
-                institutionCode:
-                  formik.values.searchType === 'institutionCode' && formik.values.searchKeyword !== ''
-                    ? formik.values.searchKeyword
-                    : undefined,
-                size: 2 ** 31 - 1,
-              })}
-              target='_blank'
-            >
-              <DocumentDownload style={{ marginRight: 8 }} />
-              Excel
-            </Button>
-          </Stack>
-
-          <ScrollX>
-            <TableContainer>
-              <Table size='small'>
-                <TableHead>
-                  {table.getHeaderGroups().map(headerGroup => (
-                    <TableRow key={headerGroup.id}>
-                      {headerGroup.headers.map(header => (
-                        <TableCell key={header.id} style={{ width: header.getSize() }}>
-                          {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))}
-                </TableHead>
-                <TableBody>
-                  {table.getRowModel().rows.map(row => (
-                    <TableRow key={row.id}>
-                      {row.getVisibleCells().map(cell => (
-                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                      ))}
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </ScrollX>
-
-          <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
-            <Pagination
-              count={totalPages}
-              page={pagination.pageIndex + 1}
-              onChange={(event, value) => {
-                setPagination({ ...pagination, pageIndex: value - 1 });
-              }}
-              color='primary'
-              variant='outlined'
-              showFirstButton
-              showLastButton
+              placeholder='검색어를 입력하세요'
+              fullWidth
+              value={formik.values.searchKeyword}
+              onChange={formik.handleChange}
             />
-          </Stack>
-        </Box>
-      </MainCard>
+          </Grid>
+          <Grid item>
+            <Button variant='contained' size='small' type='submit'>
+              검색
+            </Button>
+          </Grid>
+        </Grid>
+
+        <Stack direction='row' justifyContent='space-between' alignItems='center' sx={{ marginTop: 4, marginBottom: 2 }}>
+          <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
+          <Button
+            variant='contained'
+            size='small'
+            color='success'
+            href={getDownloadSettlementPartnerSummaryExcel({
+              settlementId: parseInt(paramSettlementId!),
+              institutionName:
+                formik.values.searchType === 'institutionName' && formik.values.searchKeyword !== ''
+                  ? formik.values.searchKeyword
+                  : undefined,
+              businessNumber:
+                formik.values.searchType === 'businessNumber' && formik.values.searchKeyword !== ''
+                  ? formik.values.searchKeyword
+                  : undefined,
+              institutionCode:
+                formik.values.searchType === 'institutionCode' && formik.values.searchKeyword !== ''
+                  ? formik.values.searchKeyword
+                  : undefined,
+              size: 2 ** 31 - 1,
+            })}
+            target='_blank'
+          >
+            <DocumentDownload style={{ marginRight: 8 }} />
+            Excel
+          </Button>
+        </Stack>
+
+        <ScrollX>
+          <TableContainer>
+            <Table size='small'>
+              <TableHead>
+                {table.getHeaderGroups().map(headerGroup => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map(header => (
+                      <TableCell key={header.id} style={{ width: header.getSize() }}>
+                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableHead>
+              <TableBody>
+                {table.getRowModel().rows.map(row => (
+                  <TableRow key={row.id}>
+                    {row.getVisibleCells().map(cell => (
+                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </ScrollX>
+
+        <Stack direction='row' justifyContent='center' sx={{ mt: 2 }}>
+          <Pagination
+            count={totalPages}
+            page={pagination.pageIndex + 1}
+            onChange={(event, value) => {
+              setPagination({ ...pagination, pageIndex: value - 1 });
+            }}
+            color='primary'
+            variant='outlined'
+            showFirstButton
+            showLastButton
+          />
+        </Stack>
+      </Card>
     </Box>
   );
 }

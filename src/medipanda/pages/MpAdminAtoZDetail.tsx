@@ -3,6 +3,7 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import {
   Box,
   Button,
+  Card,
   Chip,
   CircularProgress,
   Grid,
@@ -15,7 +16,6 @@ import {
   Typography,
 } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
-import MainCard from 'components/MainCard';
 import { BoardDetailsResponse, getBoardDetails, PostAttachmentType } from '@/backend';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
@@ -79,7 +79,7 @@ export default function MpAdminAtoZDetail() {
       </Grid>
 
       <Grid item xs={12}>
-        <MainCard>
+        <Card sx={{ padding: 3 }}>
           <TableContainer>
             <Table>
               <TableBody>
@@ -158,7 +158,7 @@ export default function MpAdminAtoZDetail() {
               수정
             </Button>
           </Box>
-        </MainCard>
+        </Card>
       </Grid>
     </Grid>
   );

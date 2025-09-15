@@ -1,9 +1,8 @@
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { useSession } from '@/medipanda/hooks/useSession';
-import { Box, Button, CircularProgress, Grid, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Card, CircularProgress, Grid, Stack, TextField, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
-import MainCard from 'components/MainCard';
 import { useFormik } from 'formik';
 import {
   BoardDetailsResponse,
@@ -152,7 +151,7 @@ export default function MpAdminInquiryDetail() {
       </Grid>
 
       <Grid item xs={12}>
-        <MainCard>
+        <Card sx={{ padding: 3 }}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <Grid container spacing={2}>
@@ -290,7 +289,7 @@ export default function MpAdminInquiryDetail() {
               </Stack>
             </Grid>
           </Grid>
-        </MainCard>
+        </Card>
       </Grid>
     </Grid>
   );
