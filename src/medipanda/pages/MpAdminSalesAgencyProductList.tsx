@@ -50,12 +50,20 @@ export default function MpAdminSalesAgencyProductList() {
   const initialSearchParams = {
     searchType: '' as 'productName' | 'clientName' | '',
     searchKeyword: '',
-    date: '',
+    startAt: '',
+    endAt: '',
     page: '1',
   };
 
-  const { searchType, searchKeyword, date: paramDate, page: paramPage } = useSearchParamsOrDefault(initialSearchParams);
-  const date = useMemo(() => SafeDate(paramDate) ?? null, [paramDate]);
+  const {
+    searchType,
+    searchKeyword,
+    startAt: paramStartAt,
+    endAt: paramEndAt,
+    page: paramPage,
+  } = useSearchParamsOrDefault(initialSearchParams);
+  const startAt = useMemo(() => SafeDate(paramStartAt) ?? null, [paramStartAt]);
+  const endAt = useMemo(() => SafeDate(paramEndAt) ?? null, [paramEndAt]);
   const page = Number(paramPage);
   const pageSize = 20;
 
@@ -72,7 +80,8 @@ export default function MpAdminSalesAgencyProductList() {
   const formik = useFormik({
     initialValues: {
       ...initialSearchParams,
-      date: null as Date | null,
+      startAt: null as Date | null,
+      endAt: null as Date | null,
       page: null,
     },
     onSubmit: async values => {
@@ -84,7 +93,8 @@ export default function MpAdminSalesAgencyProductList() {
       const url = setUrlParams(
         {
           ...values,
-          date: values.date !== null ? formatYyyyMmDd(values.date) : undefined,
+          startAt: values.startAt !== null ? formatYyyyMmDd(values.startAt) : undefined,
+          endAt: values.endAt !== null ? formatYyyyMmDd(values.endAt) : undefined,
           page: 1,
         },
         initialSearchParams,
@@ -103,8 +113,8 @@ export default function MpAdminSalesAgencyProductList() {
       const response = await getSalesAgencyProducts({
         productName: searchType === 'productName' && searchKeyword !== '' ? searchKeyword : undefined,
         clientName: searchType === 'clientName' && searchKeyword !== '' ? searchKeyword : undefined,
-        startAt: date ? new DateString(date) : undefined,
-        endAt: date ? new DateString(date) : undefined,
+        startAt: startAt ? new DateString(startAt) : undefined,
+        endAt: endAt ? new DateString(endAt) : undefined,
         page: page - 1,
         size: pageSize,
       });
@@ -127,11 +137,12 @@ export default function MpAdminSalesAgencyProductList() {
     formik.setValues({
       searchType,
       searchKeyword,
-      date,
+      startAt,
+      endAt,
       page: null,
     });
     fetchContents();
-  }, [searchType, searchKeyword, date, page]);
+  }, [searchType, searchKeyword, startAt, endAt, page]);
 
   const table = useReactTable({
     data: contents,
@@ -285,11 +296,25 @@ export default function MpAdminSalesAgencyProductList() {
           </SearchFilterItem>
           <SearchFilterItem minWidth={140}>
             <DatePicker
-              value={formik.values.date}
-              onChange={value => formik.setFieldValue('date', value)}
+              value={formik.values.startAt}
+              onChange={value => formik.setFieldValue('startAt', value)}
               format='yyyy-MM-dd'
               views={['year', 'month', 'day']}
-              label='등록일'
+              label='시작일'
+              slotProps={{
+                textField: {
+                  size: 'small',
+                },
+              }}
+            />
+          </SearchFilterItem>
+          <SearchFilterItem minWidth={140}>
+            <DatePicker
+              value={formik.values.endAt}
+              onChange={value => formik.setFieldValue('endAt', value)}
+              format='yyyy-MM-dd'
+              views={['year', 'month', 'day']}
+              label='종료일'
               slotProps={{
                 textField: {
                   size: 'small',
@@ -321,8 +346,8 @@ export default function MpAdminSalesAgencyProductList() {
               href={getDownloadSalesAgencyProductsExcel({
                 productName: searchType === 'productName' && searchKeyword !== '' ? searchKeyword : undefined,
                 clientName: searchType === 'clientName' && searchKeyword !== '' ? searchKeyword : undefined,
-                startAt: date ? new DateString(date) : undefined,
-                endAt: date ? new DateString(date) : undefined,
+                startAt: startAt ? new DateString(startAt) : undefined,
+                endAt: endAt ? new DateString(endAt) : undefined,
                 size: 2 ** 31 - 1,
               })}
               target='_blank'
