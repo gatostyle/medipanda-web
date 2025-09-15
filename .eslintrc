@@ -1,4 +1,8 @@
 {
+  "ignorePatterns": [
+    "node_modules/",
+    "dist/"
+  ],
   "plugins": ["prettier", "@typescript-eslint"],
   "extends": ["react-app", "prettier"],
   "parser": "@typescript-eslint/parser",
