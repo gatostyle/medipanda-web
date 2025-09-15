@@ -1,4 +1,4 @@
-import Loader from 'components/Loader';
+import { FixedLinearProgress } from '@/lib/react/FixedLinearProgress';
 import { isAdmin, useSession } from '@/medipanda/hooks/useSession';
 import { ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -22,8 +22,8 @@ export function MpGuestGuard({ children }: MpGuestGuardProps) {
   }, [session, isLoading, navigate]);
 
   if (isLoading) {
-    return <Loader />;
+    return <FixedLinearProgress />;
   }
 
-  return session ? <Loader /> : children;
+  return session ? <FixedLinearProgress /> : children;
 }

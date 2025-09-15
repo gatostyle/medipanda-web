@@ -1,5 +1,5 @@
+import { FixedLinearProgress } from '@/lib/react/FixedLinearProgress';
 import { useSession } from '@/medipanda/hooks/useSession';
-import { LinearProgress } from '@mui/material';
 import { useEffect } from 'react';
 
 export default function MpLogout() {
@@ -19,5 +19,5 @@ export default function MpLogout() {
     }
   };
 
-  return <LinearProgress />;
+  return <FixedLinearProgress />;
 }

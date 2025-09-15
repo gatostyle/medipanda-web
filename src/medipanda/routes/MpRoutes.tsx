@@ -1,6 +1,6 @@
 import { AdminPermission } from '@/backend';
-import Loader from '@/components/Loader';
 import { Base64ErrorBoundary } from '@/lib/react/Base64ErrorBoundary';
+import { FixedLinearProgress } from '@/lib/react/FixedLinearProgress';
 import AuthLayout from 'layout/Auth';
 import DashboardLayout from 'layout/Dashboard';
 import { MpAdminGuard } from '@/medipanda/utils/route-guard/MpAdminGuard';
@@ -8,7 +8,7 @@ import React, { ElementType, lazy, Suspense } from 'react';
 import { Navigate, RouteObject } from 'react-router-dom';
 
 const Loadable = (Component: ElementType) => (props: any) => (
-  <Suspense fallback={<Loader />}>
+  <Suspense fallback={<FixedLinearProgress />}>
     <Component {...props} />
   </Suspense>
 );

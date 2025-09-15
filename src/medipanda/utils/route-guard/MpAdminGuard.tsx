@@ -1,4 +1,4 @@
-import Loader from 'components/Loader';
+import { FixedLinearProgress } from '@/lib/react/FixedLinearProgress';
 import { AdminPermission, getPermissions } from '@/backend';
 import { isAdmin, isSuperAdmin, useSession } from '@/medipanda/hooks/useSession';
 import { ReactNode, useEffect, useState } from 'react';
@@ -61,11 +61,11 @@ export function MpAdminGuard({ children, requiredPermission }: MpAdminGuardProps
   }, [session, isLoading, navigate, location, requiredPermission]);
 
   if (isLoading || (requiredPermission && hasPermission === null)) {
-    return <Loader />;
+    return <FixedLinearProgress />;
   }
 
   if (!session || !isAdmin(session) || (requiredPermission && hasPermission === false)) {
-    return <Loader />;
+    return <FixedLinearProgress />;
   }
 
   return children;
