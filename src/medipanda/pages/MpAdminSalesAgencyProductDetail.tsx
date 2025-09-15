@@ -64,7 +64,7 @@ export default function MpAdminSalesAgencyProductDetail() {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box>
       <Typography variant='h4' gutterBottom sx={{ mb: 3 }}>
         영업대행상품 상세
       </Typography>

@@ -194,7 +194,7 @@ export default function MpAdminPartnerEdit() {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box>
       <Typography variant='h4' gutterBottom sx={{ mb: 3 }}>
         {isNew ? '거래선등록' : '거래선수정'}
       </Typography>

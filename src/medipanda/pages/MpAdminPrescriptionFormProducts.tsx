@@ -399,7 +399,7 @@ export default function MpAdminPrescriptionFormProducts() {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box>
       <Typography variant='h4' gutterBottom sx={{ mb: 3 }}>
         거래처별 제품상세
       </Typography>

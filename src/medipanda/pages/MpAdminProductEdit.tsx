@@ -257,7 +257,7 @@ export default function MpAdminProductEdit() {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box>
       <Typography variant='h4' gutterBottom sx={{ mb: 3 }}>
         제품정보 {isNew ? '등록' : '수정'}
       </Typography>

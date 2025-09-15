@@ -75,7 +75,7 @@ export default function MpAdminProductDetail() {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box>
       <Typography variant='h4' gutterBottom sx={{ mb: 3 }}>
         제품정보
       </Typography>

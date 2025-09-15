@@ -291,7 +291,7 @@ export default function MpAdminMemberEdit() {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box>
       <Typography variant='h4' gutterBottom sx={{ mb: 3 }}>
         회원정보
       </Typography>

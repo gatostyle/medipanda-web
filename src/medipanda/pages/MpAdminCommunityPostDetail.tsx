@@ -86,7 +86,7 @@ export default function MpAdminCommunityPostDetail() {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box>
       <Typography variant='h4' gutterBottom sx={{ mb: 3 }}>
         포스트 상세
       </Typography>

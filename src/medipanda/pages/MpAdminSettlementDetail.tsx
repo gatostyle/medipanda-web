@@ -172,7 +172,7 @@ export default function MpAdminSettlementDetail() {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box>
       <Stack direction='row' alignItems='center' spacing={2} sx={{ mb: 3 }}>
         <IconButton component={RouterLink} to='/admin/settlements' sx={{ p: 0 }}>
           <ArrowLeft size={24} />

@@ -231,7 +231,7 @@ export default function MpAdminSalesAgencyProductEdit() {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box>
       <Typography variant='h4' gutterBottom sx={{ mb: 3 }}>
         영업대행상품 {isNew ? '등록' : '상세'}
       </Typography>
