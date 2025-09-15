@@ -5,7 +5,7 @@ import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { Box, Button, Card, Chip, CircularProgress, Grid, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
-import { getSalesAgencyProductDetails, PostAttachmentType, SalesAgencyProductDetailsResponse } from '@/backend';
+import { BoardExposureRangeLabel, getSalesAgencyProductDetails, PostAttachmentType, SalesAgencyProductDetailsResponse } from '@/backend';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { useSnackbar } from 'notistack';
 import { SyntheticEvent, useEffect, useState } from 'react';
@@ -115,21 +115,21 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse }) {
               <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                 노출상태
               </Typography>
-              <Typography variant='body1'>{detail.boardPostDetail?.isExposed ? '노출' : '미노출'}</Typography>
+              <Typography variant='body1'>{detail.boardPostDetail!.isExposed ? '노출' : '미노출'}</Typography>
             </Box>
 
             <Box>
               <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                 노출범위
               </Typography>
-              <Typography variant='body1'>{detail.boardPostDetail?.exposureRange}</Typography>
+              <Typography variant='body1'>{BoardExposureRangeLabel[detail.boardPostDetail!.exposureRange]}</Typography>
             </Box>
 
             <Box>
               <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                 진행상태
               </Typography>
-              <Chip label={detail.boardPostDetail?.isExposed ? '진행중' : '미노출'} color='success' size='small' />
+              <Chip label={detail.boardPostDetail!.isExposed ? '진행중' : '미노출'} color='success' size='small' />
             </Box>
 
             <Box>
@@ -173,7 +173,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse }) {
                 <Typography variant='subtitle2' color='text.secondary' gutterBottom>
                   조회수
                 </Typography>
-                <Typography variant='body1'>{detail.boardPostDetail?.viewsCount?.toLocaleString()}</Typography>
+                <Typography variant='body1'>{detail.boardPostDetail!.viewsCount?.toLocaleString()}</Typography>
               </Box>
             </Stack>
           </Stack>
