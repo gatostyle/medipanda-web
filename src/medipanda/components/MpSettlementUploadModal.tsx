@@ -35,7 +35,7 @@ function MpSettlementUploadModalInternal({ open, onClose, onSuccess }: MpSettlem
 
   const handleFileUpload = async () => {
     if (formik.values.file === null) {
-      await alert('업로드할 파일을 선택해주세요.');
+      await alert('업로드할 파일을 선택하세요.');
       return;
     }
 

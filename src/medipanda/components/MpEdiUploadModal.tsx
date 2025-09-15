@@ -41,22 +41,22 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
     },
     onSubmit: async values => {
       if (values.prescriptionMonth === null) {
-        await alert('처방월을 선택해주세요.');
+        await alert('처방월을 선택하세요.');
         return;
       }
 
       if (values.settlementMonth === null) {
-        await alert('정산월을 선택해주세요.');
+        await alert('정산월을 선택하세요.');
         return;
       }
 
       if (values.partnerUser === null) {
-        await alert('사용자를 선택해주세요.');
+        await alert('사용자를 선택하세요.');
         return;
       }
 
       if (values.file === null) {
-        await alert('파일을 선택해주세요.');
+        await alert('파일을 선택하세요.');
         return;
       }
 
@@ -73,17 +73,15 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
 
           switch (error.error) {
             case 'INVALID_EXTENSION':
-              await alert('첨부하신 파일중에 jpg, jpeg, png, pdf파일이 아닌 형식이 있어요. 확인해주세요.');
+              await alert('첨부하신 파일중에 jpg, jpeg, png, pdf파일이 아닌 형식이 있습니다.');
               break;
             case 'INVALID_FILENAME_FORMAT':
-              await alert(
-                '첨부하신 파일중에 딜러명_거래처명_처방월 (홍길동_메디판다_202504)으로 입력하지 않은 파일명이 있어요. 확인해주세요.',
-              );
+              await alert('첨부하신 파일중에 딜러명_거래처명_처방월 (홍길동_메디판다_202504)으로 입력하지 않은 파일명이 있습니다.');
               break;
             case 'DEALER_NOT_FOUND':
             case 'PARTNER_NOT_FOUND':
             case 'DRUG_COMPANY_NOT_FOUND':
-              await alert(`파일중 거래선으로 등록되지 않은 거래처이오니 운영자에 필터링 문의해주세요.`);
+              await alert(`파일중 거래선으로 등록되지 않은 거래처가 있습니다.`);
               break;
             case 'INVALID_MONTH_FORMAT':
               await alertError(`EDI 등록 중 오류가 발생했습니다.\n${error.error}(${error.fileName}): ${error.message}\n`);

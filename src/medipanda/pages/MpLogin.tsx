@@ -23,7 +23,7 @@ export default function MpLogin() {
     const authError = params.get('authError');
 
     if (authError === 'true') {
-      enqueueSnackbar('인증이 만료되었습니다. 다시 로그인해주세요.', {
+      enqueueSnackbar('인증이 만료되었습니다. 다시 로그인하세요.', {
         variant: 'warning',
         autoHideDuration: 5000,
         preventDuplicate: true,

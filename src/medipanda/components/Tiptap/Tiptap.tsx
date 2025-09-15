@@ -86,7 +86,7 @@ export function TiptapMenuBar({ editor }: { editor: Editor }) {
         .run();
     } catch (e) {
       console.error('Error uploading image:', e);
-      alert('잘못된 이미지 파일입니다. 다시 시도해주세요.');
+      alert('잘못된 이미지 파일입니다.');
     }
   };
 

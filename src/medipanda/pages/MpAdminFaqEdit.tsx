@@ -55,7 +55,7 @@ export default function MpAdminFaqEdit() {
     },
     onSubmit: async (values, { setSubmitting }) => {
       if (values.title === '') {
-        await alert('제목을 입력해주세요.');
+        await alert('제목을 입력하세요.');
         return;
       }
 

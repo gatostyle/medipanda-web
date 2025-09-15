@@ -93,7 +93,7 @@ export default function MpAdminCommunityPostList() {
     },
     onSubmit: async values => {
       if (values.searchType === '' && values.searchKeyword !== '') {
-        await alert('검색유형을 선택해주세요.');
+        await alert('검색유형을 선택하세요.');
         return;
       }
 
@@ -259,7 +259,7 @@ export default function MpAdminCommunityPostList() {
 
   const handleBlind = async () => {
     if (selectedIds.length === 0) {
-      await alert('블라인드할 포스트를 선택해주세요.');
+      await alert('블라인드할 포스트를 선택하세요.');
       return;
     }
 

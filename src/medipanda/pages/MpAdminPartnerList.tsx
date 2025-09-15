@@ -70,7 +70,7 @@ export default function MpAdminPartnerList() {
     },
     onSubmit: async values => {
       if (values.searchType === '' && values.searchKeyword !== '') {
-        await alert('검색유형을 선택해주세요.');
+        await alert('검색유형을 선택하세요.');
         return;
       }
 
@@ -212,7 +212,7 @@ export default function MpAdminPartnerList() {
 
   const handleDelete = async () => {
     if (selectedIds.length === 0) {
-      await alert('삭제할 거래선을 선택해주세요.');
+      await alert('삭제할 거래선을 선택하세요.');
       return;
     }
 

@@ -112,12 +112,12 @@ export default function MpAdminPartnerEdit() {
     },
     onSubmit: async values => {
       if (values.drugCompany === null) {
-        await alert('제약사를 선택해주세요.');
+        await alert('제약사를 선택하세요.');
         return;
       }
 
       if (values.member === null) {
-        await alert('사용자를 선택해주세요.');
+        await alert('사용자를 선택하세요.');
         return;
       }
 
@@ -159,12 +159,12 @@ export default function MpAdminPartnerEdit() {
         navigate('/admin/partners');
       } catch (e) {
         if (e instanceof AxiosError && e.response?.status === 409) {
-          await alert('해당 제약사-거래처 조합이 이미 등록되어 있습니다. 다시 확인해주세요.');
+          await alert('해당 제약사-거래처 조합이 이미 등록되어 있습니다.');
           return;
         }
 
         console.error(e);
-        await alert('거래선 정보 저장에 실패했습니다. 다시 시도해주세요.');
+        await alert('거래선 정보 저장에 실패했습니다.');
       }
     },
   });

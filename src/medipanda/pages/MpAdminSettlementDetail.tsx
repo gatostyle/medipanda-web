@@ -197,7 +197,7 @@ export default function MpAdminSettlementDetail() {
                 <TextField
                   name='searchKeyword'
                   size='small'
-                  placeholder='검색어를 입력해주세요'
+                  placeholder='검색어를 입력하세요'
                   fullWidth
                   value={formik.values.searchKeyword}
                   onChange={formik.handleChange}

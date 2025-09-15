@@ -240,7 +240,7 @@ export default function MpAdminHospitalList() {
 
   const handleDeleteSelected = async () => {
     if (selectedIds.length === 0) {
-      await alert('삭제할 항목을 선택해주세요.');
+      await alert('삭제할 항목을 선택하세요.');
       return;
     }
 

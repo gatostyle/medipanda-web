@@ -23,7 +23,7 @@ function MpHospitalUploadModalInternal({ open, onClose, onSuccess }: MpHospitalU
     },
     onSubmit: async values => {
       if (values.file === null) {
-        await alert('파일을 선택해주세요.');
+        await alert('파일을 선택하세요.');
         return;
       }
 

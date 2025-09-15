@@ -57,12 +57,12 @@ function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUpl
 
   const handleFileUpload = async () => {
     if (formik.values.member === null) {
-      await alert('사용자명을 선택해주세요.');
+      await alert('사용자명을 선택하세요.');
       return;
     }
 
     if (formik.values.file === null) {
-      await alert('업로드할 파일을 선택해주세요.');
+      await alert('업로드할 파일을 선택하세요.');
       return;
     }
 

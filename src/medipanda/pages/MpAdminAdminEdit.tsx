@@ -85,12 +85,12 @@ export default function MpAdminAdminEdit() {
       }
 
       if (values.phoneNumber1 === '' || values.phoneNumber2 === '' || values.phoneNumber3 === '') {
-        await alert('연락처를 입력해주세요');
+        await alert('연락처를 입력하세요');
         return;
       }
 
       if (values.permissions.length === 0) {
-        await alert('최소 하나 이상의 권한을 선택해주세요');
+        await alert('최소 하나 이상의 권한을 선택하세요');
         return;
       }
 

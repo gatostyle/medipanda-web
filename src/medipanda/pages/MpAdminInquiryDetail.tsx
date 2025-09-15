@@ -40,7 +40,7 @@ export default function MpAdminInquiryDetail() {
       if (isNew) return;
 
       if (responseEditor.getHTML() === '<p></p>') {
-        await alert('답변 내용을 입력해주세요.');
+        await alert('답변 내용을 입력하세요.');
         return;
       }
 

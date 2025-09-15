@@ -90,7 +90,7 @@ export default function MpAdminProductList() {
     },
     onSubmit: async values => {
       if (values.searchType === '' && values.searchKeyword !== '') {
-        await alert('검색유형을 선택해주세요.');
+        await alert('검색유형을 선택하세요.');
         return;
       }
 

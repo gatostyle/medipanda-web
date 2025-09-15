@@ -251,7 +251,7 @@ export default function MpAdminEventList() {
 
   const handleDelete = async () => {
     if (selectedIds.length === 0) {
-      await alert('삭제할 이벤트를 선택해주세요.');
+      await alert('삭제할 이벤트를 선택하세요.');
       return;
     }
 
@@ -329,7 +329,7 @@ export default function MpAdminEventList() {
                   <TextField
                     name='searchKeyword'
                     size='small'
-                    placeholder='검색어를 입력해주세요'
+                    placeholder='검색어를 입력하세요'
                     fullWidth
                     value={formik.values.searchKeyword}
                     onChange={formik.handleChange}

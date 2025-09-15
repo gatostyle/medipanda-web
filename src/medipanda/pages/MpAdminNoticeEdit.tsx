@@ -72,12 +72,12 @@ export default function MpAdminNoticeEdit() {
     },
     onSubmit: async (values, { setSubmitting }) => {
       if (isDrugCompanyNoticeType(values.noticeType) && values.drugCompany === '') {
-        await alert('제약사명을 선택해주세요.');
+        await alert('제약사명을 선택하세요.');
         return;
       }
 
       if (values.title === '') {
-        await alert('제목을 입력해주세요.');
+        await alert('제목을 입력하세요.');
         return;
       }
 

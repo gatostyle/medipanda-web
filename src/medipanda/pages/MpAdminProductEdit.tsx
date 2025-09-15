@@ -69,22 +69,22 @@ export default function MpAdminProductEdit() {
     },
     onSubmit: async (values, { setSubmitting }) => {
       if (values.manufacturer === '') {
-        await alert('제약사를 입력해주세요.');
+        await alert('제약사를 입력하세요.');
         return;
       }
 
       if (values.productName === '') {
-        await alert('제품명을 입력해주세요.');
+        await alert('제품명을 입력하세요.');
         return;
       }
 
       if (values.productCode === '') {
-        await alert('제품코드를 입력해주세요.');
+        await alert('제품코드를 입력하세요.');
         return;
       }
 
       if (values.composition === '') {
-        await alert('성분명을 입력해주세요.');
+        await alert('성분명을 입력하세요.');
         return;
       }
 
@@ -108,7 +108,7 @@ export default function MpAdminProductEdit() {
       }
 
       if (values.changedMonth === null) {
-        await alert('변경월을 선택해주세요.');
+        await alert('변경월을 선택하세요.');
         return;
       }
 

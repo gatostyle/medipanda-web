@@ -608,7 +608,7 @@ function MpOcrRequestModalInternal({ drugCompanyCode, open, onClose, onSubmit, i
           <Typography variant='body1' color={currentPoints.length === 4 ? 'success.main' : 'text.secondary'} fontWeight='bold'>
             {currentPoints.length === 4
               ? '문서 모서리가 모두 선택되었습니다.'
-              : `4개 점을 클릭해서 문서 모서리를 선택해주세요 (${currentPoints.length}/4)`}
+              : `4개 점을 클릭해서 문서 모서리를 선택하세요 (${currentPoints.length}/4)`}
           </Typography>
           {hasImages && imageUrls.length > 1 && (
             <Typography variant='body2' color='text.secondary' sx={{ mt: 1 }}>

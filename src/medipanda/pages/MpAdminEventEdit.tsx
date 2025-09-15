@@ -52,17 +52,17 @@ export default function MpAdminEventEdit() {
     },
     onSubmit: async values => {
       if (values.title === '') {
-        await alert('제목을 입력해주세요');
+        await alert('제목을 입력하세요');
         return;
       }
 
       if (values.startDate === null) {
-        await alert('시작일을 선택해주세요');
+        await alert('시작일을 선택하세요');
         return;
       }
 
       if (values.endDate === null) {
-        await alert('종료일을 선택해주세요');
+        await alert('종료일을 선택하세요');
         return;
       }
 
@@ -300,7 +300,7 @@ export default function MpAdminEventEdit() {
                     <input type='file' hidden accept='image/*' onChange={handleThumbnailChange} />
                   </Button>
                   <Typography variant='body2' color='text.secondary'>
-                    {thumbnailFile ? thumbnailFile.name : '파일을 선택해주세요'}
+                    {thumbnailFile ? thumbnailFile.name : '파일을 선택하세요'}
                   </Typography>
                 </Stack>
                 {thumbnailPreview && (
