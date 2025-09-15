@@ -290,79 +290,77 @@ export default function MpAdminPrescriptionFormList() {
       <Grid item xs={12}>
         <MainCard content={false}>
           <Box sx={{ p: 3 }}>
-            <form onSubmit={formik.handleSubmit}>
-              <SearchFilterBar>
-                <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size='small'>
-                    <InputLabel>상태</InputLabel>
-                    <Select name='status' value={formik.values.status} onChange={formik.handleChange}>
-                      {Object.keys(PrescriptionPartnerStatus).map(prescriptionStatus => (
-                        <MenuItem key={prescriptionStatus} value={prescriptionStatus}>
-                          {PrescriptionPartnerStatusLabel[prescriptionStatus]}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </SearchFilterItem>
-                <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size='small'>
-                    <InputLabel>검색유형</InputLabel>
-                    <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
-                      <MenuItem value={'companyName'}>회사명</MenuItem>
-                      <MenuItem value={'institutionName'}>거래처명</MenuItem>
-                      <MenuItem value={'dealerName'}>딜러명</MenuItem>
-                      <MenuItem value={'drugCompany'}>제약사명</MenuItem>
-                    </Select>
-                  </FormControl>
-                </SearchFilterItem>
-                <SearchFilterItem minWidth={140}>
-                  <DatePicker
-                    value={formik.values.prescriptionMonthStart}
-                    onChange={value => formik.setFieldValue('prescriptionMonthStart', value)}
-                    format='yyyy-MM'
-                    views={['year', 'month']}
-                    label='처방 시작월'
-                    slotProps={{
-                      textField: {
-                        size: 'small',
-                      },
-                    }}
-                  />
-                </SearchFilterItem>
-                <SearchFilterItem minWidth={140}>
-                  <DatePicker
-                    value={formik.values.prescriptionMonthEnd}
-                    onChange={value => formik.setFieldValue('prescriptionMonthEnd', value)}
-                    format='yyyy-MM'
-                    views={['year', 'month']}
-                    label='처방 종료월'
-                    slotProps={{
-                      textField: {
-                        size: 'small',
-                      },
-                    }}
-                  />
-                </SearchFilterItem>
-                <SearchFilterItem flexGrow={1} minWidth={200}>
-                  <TextField
-                    name='searchKeyword'
-                    size='small'
-                    placeholder='검색어를 입력하세요'
-                    fullWidth
-                    value={formik.values.searchKeyword}
-                    onChange={formik.handleChange}
-                  />
-                </SearchFilterItem>
-                <SearchFilterActions>
-                  <Button variant='contained' size='small' type='submit'>
-                    검색
-                  </Button>
-                  <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
-                    초기화
-                  </Button>
-                </SearchFilterActions>
-              </SearchFilterBar>
-            </form>
+            <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>
+              <SearchFilterItem minWidth={140}>
+                <FormControl fullWidth size='small'>
+                  <InputLabel>상태</InputLabel>
+                  <Select name='status' value={formik.values.status} onChange={formik.handleChange}>
+                    {Object.keys(PrescriptionPartnerStatus).map(prescriptionStatus => (
+                      <MenuItem key={prescriptionStatus} value={prescriptionStatus}>
+                        {PrescriptionPartnerStatusLabel[prescriptionStatus]}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </SearchFilterItem>
+              <SearchFilterItem minWidth={140}>
+                <FormControl fullWidth size='small'>
+                  <InputLabel>검색유형</InputLabel>
+                  <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
+                    <MenuItem value={'companyName'}>회사명</MenuItem>
+                    <MenuItem value={'institutionName'}>거래처명</MenuItem>
+                    <MenuItem value={'dealerName'}>딜러명</MenuItem>
+                    <MenuItem value={'drugCompany'}>제약사명</MenuItem>
+                  </Select>
+                </FormControl>
+              </SearchFilterItem>
+              <SearchFilterItem minWidth={140}>
+                <DatePicker
+                  value={formik.values.prescriptionMonthStart}
+                  onChange={value => formik.setFieldValue('prescriptionMonthStart', value)}
+                  format='yyyy-MM'
+                  views={['year', 'month']}
+                  label='처방 시작월'
+                  slotProps={{
+                    textField: {
+                      size: 'small',
+                    },
+                  }}
+                />
+              </SearchFilterItem>
+              <SearchFilterItem minWidth={140}>
+                <DatePicker
+                  value={formik.values.prescriptionMonthEnd}
+                  onChange={value => formik.setFieldValue('prescriptionMonthEnd', value)}
+                  format='yyyy-MM'
+                  views={['year', 'month']}
+                  label='처방 종료월'
+                  slotProps={{
+                    textField: {
+                      size: 'small',
+                    },
+                  }}
+                />
+              </SearchFilterItem>
+              <SearchFilterItem flexGrow={1} minWidth={200}>
+                <TextField
+                  name='searchKeyword'
+                  size='small'
+                  placeholder='검색어를 입력하세요'
+                  fullWidth
+                  value={formik.values.searchKeyword}
+                  onChange={formik.handleChange}
+                />
+              </SearchFilterItem>
+              <SearchFilterActions>
+                <Button variant='contained' size='small' type='submit'>
+                  검색
+                </Button>
+                <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
+                  초기화
+                </Button>
+              </SearchFilterActions>
+            </SearchFilterBar>
           </Box>
         </MainCard>
       </Grid>

@@ -199,212 +199,210 @@ export default function MpAdminPartnerEdit() {
         {isNew ? '거래선등록' : '거래선수정'}
       </Typography>
 
-      <form onSubmit={formik.handleSubmit}>
-        <Card sx={{ p: 3 }}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label={(formik.values.drugCompany?.name ?? '') !== '' ? '제약사명' : ''}
-                placeholder={(formik.values.drugCompany?.name ?? '') === '' ? '제약사명' : ''}
-                name='drugCompany'
-                value={formik.values.drugCompany?.name ?? ''}
-                required
-                InputProps={{
-                  readOnly: true,
-                  endAdornment: (
-                    <InputAdornment position='end'>
-                      <IconButton onClick={handlePharmaceuticalSearch} edge='end'>
-                        <SearchNormal1 size={20} />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label={(formik.values.member?.name ?? '') !== '' ? '사용자명' : ''}
-                placeholder={(formik.values.member?.name ?? '') === '' ? '사용자명' : ''}
-                value={formik.values.member?.name ?? ''}
-                required
-                InputProps={{
-                  readOnly: true,
-                  endAdornment: (
-                    <InputAdornment position='end'>
-                      <IconButton onClick={() => setMemberSelectModalOpen(true)} edge='end'>
-                        <SearchNormal1 size={20} />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Grid>
-
-            {/*<Grid item xs={12} md={6}>*/}
-            {/*  <TextField*/}
-            {/*    fullWidth*/}
-            {/*    label='회사명'*/}
-            {/*    name='companyName'*/}
-            {/*    value={formik.values.companyName}*/}
-            {/*    onChange={formik.handleChange}*/}
-            {/*    required*/}
-            {/*    InputProps={{*/}
-            {/*      endAdornment: (*/}
-            {/*        <InputAdornment position='end'>*/}
-            {/*          <IconButton onClick={handleCompanySearch} edge='end'>*/}
-            {/*            <SearchNormal1 size={20} />*/}
-            {/*          </IconButton>*/}
-            {/*        </InputAdornment>*/}
-            {/*      ),*/}
-            {/*    }}*/}
-            {/*  />*/}
-            {/*</Grid>*/}
-
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label='거래처코드'
-                name='institutionCode'
-                value={formik.values.institutionCode}
-                onChange={formik.handleChange}
-                placeholder={isNew ? '' : formik.values.institutionCode}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label='거래처명'
-                name='institutionName'
-                value={formik.values.institutionName}
-                onChange={formik.handleChange}
-                required
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label='사업자등록번호'
-                name='businessNumber'
-                value={formik.values.businessNumber}
-                onChange={formik.handleChange}
-                required
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                select
-                label='진료과'
-                name='medicalDepartment'
-                value={formik.values.medicalDepartment}
-                onChange={formik.handleChange}
-              >
-                <MenuItem value=''>선택</MenuItem>
-                <MenuItem value={'피부과'}>피부과</MenuItem>
-                <MenuItem value={'내과'}>내과</MenuItem>
-                <MenuItem value={'정형외과'}>정형외과</MenuItem>
-                <MenuItem value={'소아과'}>소아과</MenuItem>
-              </TextField>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Typography variant='subtitle1' gutterBottom>
-                문전약국
-              </Typography>
-              <TableContainer>
-                <Table size='small'>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>약국명</TableCell>
-                      <TableCell>약국 주소</TableCell>
-                      <TableCell width={150}>상태</TableCell>
-                      <TableCell width={120}></TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {/*{pharmacyRows.map((row) => (*/}
-                    <TableRow>
-                      <TableCell>
-                        <TextField
-                          fullWidth
-                          size='small'
-                          name='pharmacyName'
-                          value={formik.values.pharmacyName}
-                          onChange={formik.handleChange}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <TextField
-                          fullWidth
-                          size='small'
-                          name='pharmacyAddress'
-                          value={formik.values.pharmacyAddress}
-                          onChange={formik.handleChange}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <FormControl fullWidth size='small'>
-                          <Select name='pharmacyStatus' value={formik.values.pharmacyStatus} onChange={formik.handleChange}>
-                            {[PharmacyStatus.NORMAL, PharmacyStatus.CLOSED].map(pharmacyStatus => (
-                              <MenuItem key={pharmacyStatus} value={pharmacyStatus}>
-                                {PharmacyStatusLabel[pharmacyStatus]}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                      </TableCell>
-                      <TableCell>
-                        {/*<Stack direction="row" spacing={1}>*/}
-                        {/*  <Button*/}
-                        {/*    variant="contained"*/}
-                        {/*    color="success"*/}
-                        {/*    size="small"*/}
-                        {/*    onClick={handleAddPharmacy}*/}
-                        {/*    startIcon={<Add size={16} />}*/}
-                        {/*  >*/}
-                        {/*    +추가*/}
-                        {/*  </Button>*/}
-                        {/*  {pharmacyRows.length > 1 && (*/}
-                        {/*    <Button*/}
-                        {/*      variant="contained"*/}
-                        {/*      size="small"*/}
-                        {/*      onClick={() => handleRemovePharmacy(row.id)}*/}
-                        {/*      startIcon={<Minus size={16} />}*/}
-                        {/*      sx={{ bgcolor: 'grey.500', '&:hover': { bgcolor: 'grey.600' } }}*/}
-                        {/*    >*/}
-                        {/*      -삭제*/}
-                        {/*    </Button>*/}
-                        {/*  )}*/}
-                        {/*</Stack>*/}
-                      </TableCell>
-                    </TableRow>
-                    {/*))}*/}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField fullWidth label='비고' name='note' value={formik.values.note} onChange={formik.handleChange} multiline rows={4} />
-            </Grid>
+      <Card sx={{ p: 3 }} component='form' onSubmit={formik.handleSubmit}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label={(formik.values.drugCompany?.name ?? '') !== '' ? '제약사명' : ''}
+              placeholder={(formik.values.drugCompany?.name ?? '') === '' ? '제약사명' : ''}
+              name='drugCompany'
+              value={formik.values.drugCompany?.name ?? ''}
+              required
+              InputProps={{
+                readOnly: true,
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <IconButton onClick={handlePharmaceuticalSearch} edge='end'>
+                      <SearchNormal1 size={20} />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
           </Grid>
 
-          <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 4 }}>
-            <Button variant='outlined' size='large' component={RouterLink} to='/admin/partners' sx={{ minWidth: 120 }}>
-              취소
-            </Button>
-            <Button variant='contained' size='large' type='submit' sx={{ minWidth: 120 }}>
-              저장
-            </Button>
-          </Stack>
-        </Card>
-      </form>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label={(formik.values.member?.name ?? '') !== '' ? '사용자명' : ''}
+              placeholder={(formik.values.member?.name ?? '') === '' ? '사용자명' : ''}
+              value={formik.values.member?.name ?? ''}
+              required
+              InputProps={{
+                readOnly: true,
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <IconButton onClick={() => setMemberSelectModalOpen(true)} edge='end'>
+                      <SearchNormal1 size={20} />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Grid>
+
+          {/*<Grid item xs={12} md={6}>*/}
+          {/*  <TextField*/}
+          {/*    fullWidth*/}
+          {/*    label='회사명'*/}
+          {/*    name='companyName'*/}
+          {/*    value={formik.values.companyName}*/}
+          {/*    onChange={formik.handleChange}*/}
+          {/*    required*/}
+          {/*    InputProps={{*/}
+          {/*      endAdornment: (*/}
+          {/*        <InputAdornment position='end'>*/}
+          {/*          <IconButton onClick={handleCompanySearch} edge='end'>*/}
+          {/*            <SearchNormal1 size={20} />*/}
+          {/*          </IconButton>*/}
+          {/*        </InputAdornment>*/}
+          {/*      ),*/}
+          {/*    }}*/}
+          {/*  />*/}
+          {/*</Grid>*/}
+
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label='거래처코드'
+              name='institutionCode'
+              value={formik.values.institutionCode}
+              onChange={formik.handleChange}
+              placeholder={isNew ? '' : formik.values.institutionCode}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label='거래처명'
+              name='institutionName'
+              value={formik.values.institutionName}
+              onChange={formik.handleChange}
+              required
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label='사업자등록번호'
+              name='businessNumber'
+              value={formik.values.businessNumber}
+              onChange={formik.handleChange}
+              required
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              select
+              label='진료과'
+              name='medicalDepartment'
+              value={formik.values.medicalDepartment}
+              onChange={formik.handleChange}
+            >
+              <MenuItem value=''>선택</MenuItem>
+              <MenuItem value={'피부과'}>피부과</MenuItem>
+              <MenuItem value={'내과'}>내과</MenuItem>
+              <MenuItem value={'정형외과'}>정형외과</MenuItem>
+              <MenuItem value={'소아과'}>소아과</MenuItem>
+            </TextField>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Typography variant='subtitle1' gutterBottom>
+              문전약국
+            </Typography>
+            <TableContainer>
+              <Table size='small'>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>약국명</TableCell>
+                    <TableCell>약국 주소</TableCell>
+                    <TableCell width={150}>상태</TableCell>
+                    <TableCell width={120}></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {/*{pharmacyRows.map((row) => (*/}
+                  <TableRow>
+                    <TableCell>
+                      <TextField
+                        fullWidth
+                        size='small'
+                        name='pharmacyName'
+                        value={formik.values.pharmacyName}
+                        onChange={formik.handleChange}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        fullWidth
+                        size='small'
+                        name='pharmacyAddress'
+                        value={formik.values.pharmacyAddress}
+                        onChange={formik.handleChange}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <FormControl fullWidth size='small'>
+                        <Select name='pharmacyStatus' value={formik.values.pharmacyStatus} onChange={formik.handleChange}>
+                          {[PharmacyStatus.NORMAL, PharmacyStatus.CLOSED].map(pharmacyStatus => (
+                            <MenuItem key={pharmacyStatus} value={pharmacyStatus}>
+                              {PharmacyStatusLabel[pharmacyStatus]}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </TableCell>
+                    <TableCell>
+                      {/*<Stack direction="row" spacing={1}>*/}
+                      {/*  <Button*/}
+                      {/*    variant="contained"*/}
+                      {/*    color="success"*/}
+                      {/*    size="small"*/}
+                      {/*    onClick={handleAddPharmacy}*/}
+                      {/*    startIcon={<Add size={16} />}*/}
+                      {/*  >*/}
+                      {/*    +추가*/}
+                      {/*  </Button>*/}
+                      {/*  {pharmacyRows.length > 1 && (*/}
+                      {/*    <Button*/}
+                      {/*      variant="contained"*/}
+                      {/*      size="small"*/}
+                      {/*      onClick={() => handleRemovePharmacy(row.id)}*/}
+                      {/*      startIcon={<Minus size={16} />}*/}
+                      {/*      sx={{ bgcolor: 'grey.500', '&:hover': { bgcolor: 'grey.600' } }}*/}
+                      {/*    >*/}
+                      {/*      -삭제*/}
+                      {/*    </Button>*/}
+                      {/*  )}*/}
+                      {/*</Stack>*/}
+                    </TableCell>
+                  </TableRow>
+                  {/*))}*/}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField fullWidth label='비고' name='note' value={formik.values.note} onChange={formik.handleChange} multiline rows={4} />
+          </Grid>
+        </Grid>
+
+        <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 4 }}>
+          <Button variant='outlined' size='large' component={RouterLink} to='/admin/partners' sx={{ minWidth: 120 }}>
+            취소
+          </Button>
+          <Button variant='contained' size='large' type='submit' sx={{ minWidth: 120 }}>
+            저장
+          </Button>
+        </Stack>
+      </Card>
 
       <MpDrugCompanySelectModal
         open={drugCompanySelectModalOpen}

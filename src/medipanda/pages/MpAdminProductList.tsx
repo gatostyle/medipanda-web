@@ -299,84 +299,82 @@ export default function MpAdminProductList() {
       <Grid item xs={12}>
         <MainCard content={false}>
           <Box sx={{ p: 3 }}>
-            <form onSubmit={formik.handleSubmit}>
-              <SearchFilterBar>
-                <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size='small'>
-                    <InputLabel>검색유형</InputLabel>
-                    <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
-                      <MenuItem value={'productName'}>제품명</MenuItem>
-                      <MenuItem value={'productCode'}>제품코드</MenuItem>
-                      <MenuItem value={'manufacturerName'}>제약사</MenuItem>
-                      <MenuItem value={'composition'}>성분명</MenuItem>
-                      <MenuItem value={'note'}>비고</MenuItem>
-                    </Select>
-                  </FormControl>
-                </SearchFilterItem>
-                <SearchFilterItem flexGrow={1} minWidth={200}>
-                  <TextField
-                    name='searchKeyword'
-                    size='small'
-                    placeholder='검색어를 입력하세요'
-                    fullWidth
-                    value={formik.values.searchKeyword}
-                    onChange={formik.handleChange}
+            <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>
+              <SearchFilterItem minWidth={140}>
+                <FormControl fullWidth size='small'>
+                  <InputLabel>검색유형</InputLabel>
+                  <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
+                    <MenuItem value={'productName'}>제품명</MenuItem>
+                    <MenuItem value={'productCode'}>제품코드</MenuItem>
+                    <MenuItem value={'manufacturerName'}>제약사</MenuItem>
+                    <MenuItem value={'composition'}>성분명</MenuItem>
+                    <MenuItem value={'note'}>비고</MenuItem>
+                  </Select>
+                </FormControl>
+              </SearchFilterItem>
+              <SearchFilterItem flexGrow={1} minWidth={200}>
+                <TextField
+                  name='searchKeyword'
+                  size='small'
+                  placeholder='검색어를 입력하세요'
+                  fullWidth
+                  value={formik.values.searchKeyword}
+                  onChange={formik.handleChange}
+                />
+              </SearchFilterItem>
+              <SearchFilterItem minWidth={300}>
+                <FormGroup row>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size='small'
+                        checked={formik.values.isAcquisition}
+                        onChange={e => formik.setFieldValue('isAcquisition', e.target.checked)}
+                      />
+                    }
+                    label='취급품목'
                   />
-                </SearchFilterItem>
-                <SearchFilterItem minWidth={300}>
-                  <FormGroup row>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          size='small'
-                          checked={formik.values.isAcquisition}
-                          onChange={e => formik.setFieldValue('isAcquisition', e.target.checked)}
-                        />
-                      }
-                      label='취급품목'
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          size='small'
-                          checked={formik.values.isPromotion}
-                          onChange={e => formik.setFieldValue('isPromotion', e.target.checked)}
-                        />
-                      }
-                      label='프로모션'
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          size='small'
-                          checked={formik.values.isOutOfStock}
-                          onChange={e => formik.setFieldValue('isOutOfStock', e.target.checked)}
-                        />
-                      }
-                      label='품절'
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          size='small'
-                          checked={formik.values.isStopSelling}
-                          onChange={e => formik.setFieldValue('isStopSelling', e.target.checked)}
-                        />
-                      }
-                      label='판매중단'
-                    />
-                  </FormGroup>
-                </SearchFilterItem>
-                <SearchFilterActions>
-                  <Button variant='contained' size='small' type='submit'>
-                    검색
-                  </Button>
-                  <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
-                    초기화
-                  </Button>
-                </SearchFilterActions>
-              </SearchFilterBar>
-            </form>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size='small'
+                        checked={formik.values.isPromotion}
+                        onChange={e => formik.setFieldValue('isPromotion', e.target.checked)}
+                      />
+                    }
+                    label='프로모션'
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size='small'
+                        checked={formik.values.isOutOfStock}
+                        onChange={e => formik.setFieldValue('isOutOfStock', e.target.checked)}
+                      />
+                    }
+                    label='품절'
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size='small'
+                        checked={formik.values.isStopSelling}
+                        onChange={e => formik.setFieldValue('isStopSelling', e.target.checked)}
+                      />
+                    }
+                    label='판매중단'
+                  />
+                </FormGroup>
+              </SearchFilterItem>
+              <SearchFilterActions>
+                <Button variant='contained' size='small' type='submit'>
+                  검색
+                </Button>
+                <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
+                  초기화
+                </Button>
+              </SearchFilterActions>
+            </SearchFilterBar>
           </Box>
         </MainCard>
       </Grid>

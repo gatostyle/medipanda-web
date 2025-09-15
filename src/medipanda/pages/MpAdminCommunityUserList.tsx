@@ -188,52 +188,50 @@ export default function MpAdminCommunityUserList() {
       <Grid item xs={12}>
         <MainCard content={false}>
           <Box sx={{ p: 3 }}>
-            <form onSubmit={formik.handleSubmit}>
-              <SearchFilterBar>
-                <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size='small'>
-                    <InputLabel>파트너사 계약여부</InputLabel>
-                    <Select name='contractStatus' value={formik.values.contractStatus} onChange={formik.handleChange} size='small'>
-                      {Object.keys(ContractStatus).map(contractStatus => (
-                        <MenuItem key={contractStatus} value={contractStatus}>
-                          {ContractStatusLabel[contractStatus]}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </SearchFilterItem>
-                <SearchFilterItem minWidth={140}>
-                  <FormControl fullWidth size='small'>
-                    <InputLabel>검색유형</InputLabel>
-                    <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
-                      <MenuItem value={'userId'}>아이디</MenuItem>
-                      <MenuItem value={'name'}>이름</MenuItem>
-                      <MenuItem value={'nickname'}>닉네임</MenuItem>
-                      <MenuItem value={'phoneNumber'}>연락처</MenuItem>
-                      <MenuItem value={'email'}>이메일</MenuItem>
-                    </Select>
-                  </FormControl>
-                </SearchFilterItem>
-                <SearchFilterItem flexGrow={1} minWidth={200}>
-                  <TextField
-                    fullWidth
-                    name='searchKeyword'
-                    value={formik.values.searchKeyword}
-                    onChange={formik.handleChange}
-                    placeholder='검색어를 입력하세요'
-                    size='small'
-                  />
-                </SearchFilterItem>
-                <SearchFilterActions>
-                  <Button type='submit' variant='contained' size='small'>
-                    검색
-                  </Button>
-                  <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
-                    초기화
-                  </Button>
-                </SearchFilterActions>
-              </SearchFilterBar>
-            </form>
+            <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>
+              <SearchFilterItem minWidth={140}>
+                <FormControl fullWidth size='small'>
+                  <InputLabel>파트너사 계약여부</InputLabel>
+                  <Select name='contractStatus' value={formik.values.contractStatus} onChange={formik.handleChange} size='small'>
+                    {Object.keys(ContractStatus).map(contractStatus => (
+                      <MenuItem key={contractStatus} value={contractStatus}>
+                        {ContractStatusLabel[contractStatus]}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </SearchFilterItem>
+              <SearchFilterItem minWidth={140}>
+                <FormControl fullWidth size='small'>
+                  <InputLabel>검색유형</InputLabel>
+                  <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
+                    <MenuItem value={'userId'}>아이디</MenuItem>
+                    <MenuItem value={'name'}>이름</MenuItem>
+                    <MenuItem value={'nickname'}>닉네임</MenuItem>
+                    <MenuItem value={'phoneNumber'}>연락처</MenuItem>
+                    <MenuItem value={'email'}>이메일</MenuItem>
+                  </Select>
+                </FormControl>
+              </SearchFilterItem>
+              <SearchFilterItem flexGrow={1} minWidth={200}>
+                <TextField
+                  fullWidth
+                  name='searchKeyword'
+                  value={formik.values.searchKeyword}
+                  onChange={formik.handleChange}
+                  placeholder='검색어를 입력하세요'
+                  size='small'
+                />
+              </SearchFilterItem>
+              <SearchFilterActions>
+                <Button type='submit' variant='contained' size='small'>
+                  검색
+                </Button>
+                <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
+                  초기화
+                </Button>
+              </SearchFilterActions>
+            </SearchFilterBar>
           </Box>
         </MainCard>
       </Grid>

@@ -255,63 +255,61 @@ export default function MpAdminSettlementList() {
         <Grid item xs={12}>
           <MainCard content={false}>
             <Box sx={{ p: 3 }}>
-              <form onSubmit={formik.handleSubmit}>
-                <SearchFilterBar>
-                  <SearchFilterItem minWidth={140}>
-                    <FormControl fullWidth size='small'>
-                      <InputLabel>사용자확인</InputLabel>
-                      <Select name='status' value={formik.values.status} onChange={formik.handleChange}>
-                        {Object.keys(SettlementStatus).map(settlementStatus => (
-                          <MenuItem key={settlementStatus} value={settlementStatus}>
-                            {SettlementStatusLabel[settlementStatus]}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </SearchFilterItem>
-                  <SearchFilterItem minWidth={140}>
-                    <FormControl fullWidth size='small'>
-                      <InputLabel>검색유형</InputLabel>
-                      <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
-                        <MenuItem value={'dealerId'}>딜러번호</MenuItem>
-                        <MenuItem value={'companyName'}>회사명</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </SearchFilterItem>
-                  <SearchFilterItem minWidth={140}>
-                    <DatePicker
-                      value={formik.values.settlementMonth}
-                      onChange={value => formik.setFieldValue('settlementMonth', value)}
-                      format='yyyy-MM'
-                      views={['year', 'month']}
-                      label='정산월'
-                      slotProps={{
-                        textField: {
-                          size: 'small',
-                        },
-                      }}
-                    />
-                  </SearchFilterItem>
-                  <SearchFilterItem flexGrow={1} minWidth={200}>
-                    <TextField
-                      name='searchKeyword'
-                      size='small'
-                      placeholder='검색어를 입력하세요'
-                      fullWidth
-                      value={formik.values.searchKeyword}
-                      onChange={formik.handleChange}
-                    />
-                  </SearchFilterItem>
-                  <SearchFilterActions>
-                    <Button variant='contained' size='small' type='submit'>
-                      검색
-                    </Button>
-                    <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
-                      초기화
-                    </Button>
-                  </SearchFilterActions>
-                </SearchFilterBar>
-              </form>
+              <SearchFilterBar component='form' onSubmit={formik.handleSubmit}>
+                <SearchFilterItem minWidth={140}>
+                  <FormControl fullWidth size='small'>
+                    <InputLabel>사용자확인</InputLabel>
+                    <Select name='status' value={formik.values.status} onChange={formik.handleChange}>
+                      {Object.keys(SettlementStatus).map(settlementStatus => (
+                        <MenuItem key={settlementStatus} value={settlementStatus}>
+                          {SettlementStatusLabel[settlementStatus]}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </SearchFilterItem>
+                <SearchFilterItem minWidth={140}>
+                  <FormControl fullWidth size='small'>
+                    <InputLabel>검색유형</InputLabel>
+                    <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
+                      <MenuItem value={'dealerId'}>딜러번호</MenuItem>
+                      <MenuItem value={'companyName'}>회사명</MenuItem>
+                    </Select>
+                  </FormControl>
+                </SearchFilterItem>
+                <SearchFilterItem minWidth={140}>
+                  <DatePicker
+                    value={formik.values.settlementMonth}
+                    onChange={value => formik.setFieldValue('settlementMonth', value)}
+                    format='yyyy-MM'
+                    views={['year', 'month']}
+                    label='정산월'
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                      },
+                    }}
+                  />
+                </SearchFilterItem>
+                <SearchFilterItem flexGrow={1} minWidth={200}>
+                  <TextField
+                    name='searchKeyword'
+                    size='small'
+                    placeholder='검색어를 입력하세요'
+                    fullWidth
+                    value={formik.values.searchKeyword}
+                    onChange={formik.handleChange}
+                  />
+                </SearchFilterItem>
+                <SearchFilterActions>
+                  <Button variant='contained' size='small' type='submit'>
+                    검색
+                  </Button>
+                  <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
+                    초기화
+                  </Button>
+                </SearchFilterActions>
+              </SearchFilterBar>
             </Box>
           </MainCard>
         </Grid>

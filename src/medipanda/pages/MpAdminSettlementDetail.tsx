@@ -182,34 +182,32 @@ export default function MpAdminSettlementDetail() {
 
       <MainCard content={false}>
         <Box sx={{ p: 3 }}>
-          <form onSubmit={formik.handleSubmit}>
-            <Grid container spacing={2} alignItems='center'>
-              <Grid item xs={12} md={2}>
-                <FormControl fullWidth size='small'>
-                  <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange} displayEmpty>
-                    <MenuItem value='institutionName'>거래처명</MenuItem>
-                    <MenuItem value='businessNumber'>사업자등록번호</MenuItem>
-                    <MenuItem value='institutionCode'>거래처코드</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <TextField
-                  name='searchKeyword'
-                  size='small'
-                  placeholder='검색어를 입력하세요'
-                  fullWidth
-                  value={formik.values.searchKeyword}
-                  onChange={formik.handleChange}
-                />
-              </Grid>
-              <Grid item>
-                <Button variant='contained' size='small' type='submit'>
-                  검색
-                </Button>
-              </Grid>
+          <Grid container spacing={2} alignItems='center' component='form' onSubmit={formik.handleSubmit}>
+            <Grid item xs={12} md={2}>
+              <FormControl fullWidth size='small'>
+                <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange} displayEmpty>
+                  <MenuItem value='institutionName'>거래처명</MenuItem>
+                  <MenuItem value='businessNumber'>사업자등록번호</MenuItem>
+                  <MenuItem value='institutionCode'>거래처코드</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
-          </form>
+            <Grid item xs={12} md={4}>
+              <TextField
+                name='searchKeyword'
+                size='small'
+                placeholder='검색어를 입력하세요'
+                fullWidth
+                value={formik.values.searchKeyword}
+                onChange={formik.handleChange}
+              />
+            </Grid>
+            <Grid item>
+              <Button variant='contained' size='small' type='submit'>
+                검색
+              </Button>
+            </Grid>
+          </Grid>
         </Box>
 
         <Box sx={{ p: 2 }}>

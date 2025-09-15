@@ -2,11 +2,6 @@ import { Box, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import React, { ReactNode } from 'react';
 
-interface SearchFilterBarProps {
-  children: ReactNode;
-  spacing?: number;
-}
-
 interface SearchFilterItemProps {
   children: ReactNode;
   flexGrow?: number;
@@ -18,7 +13,7 @@ interface SearchFilterActionsProps {
   children: ReactNode;
 }
 
-const FilterContainer = styled(Box)(({ theme }) => ({
+export const SearchFilterBar = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexWrap: 'nowrap',
   alignItems: 'center',
@@ -35,7 +30,7 @@ const FilterContainer = styled(Box)(({ theme }) => ({
       width: '100%',
     },
   },
-}));
+})) as typeof Box;
 
 const FilterItem = styled(Box)<{ flexGrow?: number; minWidth?: number; maxWidth?: number }>(({ theme, flexGrow, minWidth, maxWidth }) => ({
   flexGrow: flexGrow || 0,
@@ -58,10 +53,6 @@ const FilterActions = styled(Stack)(({ theme }) => ({
     justifyContent: 'center',
   },
 }));
-
-export function SearchFilterBar({ children, spacing = 2 }: SearchFilterBarProps) {
-  return <FilterContainer sx={{ gap: spacing }}>{children}</FilterContainer>;
-}
 
 export function SearchFilterItem({ children, flexGrow, minWidth, maxWidth }: SearchFilterItemProps) {
   return (

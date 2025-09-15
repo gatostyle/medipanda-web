@@ -296,360 +296,358 @@ export default function MpAdminMemberEdit() {
         회원정보
       </Typography>
 
-      <form onSubmit={formik.handleSubmit}>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <Card sx={{ p: 3 }}>
-                  <Typography variant='h6' gutterBottom sx={{ mb: 3 }}>
-                    기본정보
-                  </Typography>
+      <Grid container spacing={3} component='form' onSubmit={formik.handleSubmit}>
+        <Grid item xs={12}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6}>
+              <Card sx={{ p: 3 }}>
+                <Typography variant='h6' gutterBottom sx={{ mb: 3 }}>
+                  기본정보
+                </Typography>
 
-                  <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-                        회원번호
-                      </Typography>
-                      <Typography variant='body1'>{detail.id}</Typography>
-                    </Grid>
-
-                    <Grid item xs={6}>
-                      <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-                        아이디
-                      </Typography>
-                      <Typography variant='body1'>{detail.userId}</Typography>
-                    </Grid>
-
-                    <Grid item xs={6}>
-                      <TextField
-                        fullWidth
-                        label='비밀번호'
-                        name='password'
-                        type='password'
-                        value={formik.values.password}
-                        onChange={formik.handleChange}
-                        size='small'
-                      />
-                    </Grid>
-
-                    <Grid item xs={6}>
-                      <TextField
-                        fullWidth
-                        label='비밀번호 확인'
-                        name='confirmPassword'
-                        type='password'
-                        value={formik.values.confirmPassword}
-                        onChange={formik.handleChange}
-                        size='small'
-                      />
-                    </Grid>
-
-                    <Grid item xs={6}>
-                      <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-                        회원명
-                      </Typography>
-                      <Typography variant='body1'>{detail.name}</Typography>
-                    </Grid>
-
-                    <Grid item xs={6}>
-                      <TextField
-                        fullWidth
-                        label='휴대폰번호'
-                        name='phoneNumber'
-                        value={formik.values.phoneNumber}
-                        onChange={formik.handleChange}
-                        size='small'
-                      />
-                    </Grid>
-
-                    <Grid item xs={6}>
-                      <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-                        생년월일
-                      </Typography>
-                      <Typography variant='body1'>
-                        {formatYyyyMmDd(detail.birthDate)} {detail.gender}
-                      </Typography>
-                    </Grid>
-
-                    <Grid item xs={6}>
-                      <TextField
-                        fullWidth
-                        label='E-mail'
-                        name='email'
-                        value={formik.values.email}
-                        onChange={formik.handleChange}
-                        size='small'
-                      />
-                    </Grid>
-
-                    <Grid item xs={6}>
-                      <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-                        추천코드
-                      </Typography>
-                      <Typography variant='body1'>{detail.referralCode}</Typography>
-                    </Grid>
-
-                    <Grid item xs={6}>
-                      <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-                        가입일
-                      </Typography>
-                      <Typography variant='body1'>{formatYyyyMmDd(detail.registrationDate)}</Typography>
-                    </Grid>
-
-                    <Grid item xs={6}>
-                      <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-                        최종접속일
-                      </Typography>
-                      <Typography variant='body1'>{formatYyyyMmDd(detail.lastLoginDate)}</Typography>
-                    </Grid>
-
-                    <Grid item xs={6}>
-                      <FormControl fullWidth size='small'>
-                        <InputLabel>계정상태</InputLabel>
-                        <Select name='accountStatus' value={formik.values.accountStatus} onChange={formik.handleChange}>
-                          {Object.keys(AccountStatus).map(accountStatus => (
-                            <MenuItem key={accountStatus} value={accountStatus}>
-                              {AccountStatusLabel[accountStatus]}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </Grid>
-
-                    <Grid item xs={12}>
-                      <Stack direction='row' spacing={2} alignItems='center'>
-                        <Typography variant='subtitle2' color='text.secondary'>
-                          CSO 신고증
-                        </Typography>
-                        {detail.csoCertUrl !== null ? (
-                          <Link href={detail.csoCertUrl} download target='_blank' rel='noopener noreferrer' underline='hover'>
-                            {MedipandaUrlFileName(detail.csoCertUrl)}
-                          </Link>
-                        ) : (
-                          <Button variant='outlined' color='primary' size='small' onClick={handleCsoUpload}>
-                            업로드
-                          </Button>
-                        )}
-                        {detail.csoCertUrl !== null && detail.partnerContractStatus === MemberType.NONE && (
-                          <>
-                            <Button variant='outlined' color='error' size='small' onClick={handleCsoReject}>
-                              반려
-                            </Button>
-                            <Button variant='contained' size='small' onClick={handleCsoApprove}>
-                              승인
-                            </Button>
-                          </>
-                        )}
-                      </Stack>
-                    </Grid>
-                  </Grid>
-                </Card>
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Stack spacing={3}>
-                  {contractDetail !== null && (
-                    <Card sx={{ p: 3 }}>
-                      <Stack direction='row' justifyContent='space-between' alignItems='center' sx={{ mb: 3 }}>
-                        <Typography variant='h6'>파트너사 계약</Typography>
-                        {contractDetail.status !== PartnerContractStatus.APPROVED ? (
-                          <Button variant='contained' size='small' onClick={handleContractApprove}>
-                            계약 승인
-                          </Button>
-                        ) : (
-                          <Button variant='contained' size='small' color='error' onClick={handleContractReject}>
-                            계약 종료
-                          </Button>
-                        )}
-                      </Stack>
-
-                      <Grid container spacing={2}>
-                        <Grid item xs={6}>
-                          <FormControl fullWidth size='small'>
-                            <InputLabel>유형</InputLabel>
-                            <Select name='contractType' value={formik.values.contractType} onChange={formik.handleChange}>
-                              {Object.keys(PartnerContractType).map(contractType => (
-                                <MenuItem key={contractType} value={contractType}>
-                                  {PartnerContractTypeLabel[contractType]}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </Grid>
-
-                        <Grid item xs={6}>
-                          <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-                            계약상태
-                          </Typography>
-                          <Typography variant='body1'>{PartnerContractStatusLabel[contractDetail.status]}</Typography>
-                        </Grid>
-
-                        <Grid item xs={6}>
-                          <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-                            회사명
-                          </Typography>
-                          <Typography variant='body1'>{contractDetail.companyName}</Typography>
-                        </Grid>
-
-                        <Grid item xs={6}>
-                          <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-                            사업자등록번호
-                          </Typography>
-                          <Typography variant='body1'>{contractDetail.businessNumber}</Typography>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                          <TextField
-                            fullWidth
-                            label='정산은행'
-                            name='bankName'
-                            value={formik.values.bankName}
-                            onChange={formik.handleChange}
-                            size='small'
-                          />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                          <TextField
-                            fullWidth
-                            label='계좌번호'
-                            name='accountNumber'
-                            value={formik.values.accountNumber}
-                            onChange={formik.handleChange}
-                            size='small'
-                          />
-                        </Grid>
-
-                        {contractDetail.fileUrls[PartnerContractFileType.CSO_CERTIFICATE] !== null && (
-                          <Grid item xs={12}>
-                            <Stack direction='row' spacing={2} alignItems='center'>
-                              <Typography variant='subtitle2' color='text.secondary'>
-                                {PartnerContractFileTypeLabel[PartnerContractFileType.CSO_CERTIFICATE]}
-                              </Typography>
-                              <Link
-                                component={RouterLink}
-                                to={contractDetail.fileUrls[PartnerContractFileType.CSO_CERTIFICATE]}
-                                target='_blank'
-                              >
-                                {MedipandaUrlFileName(contractDetail.fileUrls[PartnerContractFileType.CSO_CERTIFICATE])}
-                              </Link>
-                            </Stack>
-                          </Grid>
-                        )}
-
-                        {contractDetail.fileUrls[PartnerContractFileType.SUBCONTRACT_AGREEMENT] !== null && (
-                          <Grid item xs={12}>
-                            <Stack direction='row' spacing={2} alignItems='center'>
-                              <Typography variant='subtitle2' color='text.secondary'>
-                                {PartnerContractFileTypeLabel[PartnerContractFileType.SUBCONTRACT_AGREEMENT]}
-                              </Typography>
-                              <Link
-                                component={RouterLink}
-                                to={contractDetail.fileUrls[PartnerContractFileType.SUBCONTRACT_AGREEMENT]}
-                                target='_blank'
-                              >
-                                {MedipandaUrlFileName(contractDetail.fileUrls[PartnerContractFileType.SUBCONTRACT_AGREEMENT])}
-                              </Link>
-                            </Stack>
-                          </Grid>
-                        )}
-
-                        {contractDetail.fileUrls[PartnerContractFileType.SALES_EDUCATION_CERT] !== null && (
-                          <Grid item xs={12}>
-                            <Stack direction='row' spacing={2} alignItems='center'>
-                              <Typography variant='subtitle2' color='text.secondary'>
-                                {PartnerContractFileTypeLabel[PartnerContractFileType.SALES_EDUCATION_CERT]}
-                              </Typography>
-                              <Link
-                                component={RouterLink}
-                                to={contractDetail.fileUrls[PartnerContractFileType.SALES_EDUCATION_CERT]}
-                                target='_blank'
-                              >
-                                {MedipandaUrlFileName(contractDetail.fileUrls[PartnerContractFileType.SALES_EDUCATION_CERT])}
-                              </Link>
-                            </Stack>
-                          </Grid>
-                        )}
-
-                        <Grid item xs={6}>
-                          <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-                            계약일
-                          </Typography>
-                          <Typography variant='body1'>{formatYyyyMmDd(contractDetail.contractDate)}</Typography>
-                        </Grid>
-                      </Grid>
-                    </Card>
-                  )}
-
-                  <Card sx={{ p: 3 }}>
-                    <Typography variant='h6' gutterBottom sx={{ mb: 2 }}>
-                      비고
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                      회원번호
                     </Typography>
+                    <Typography variant='body1'>{detail.id}</Typography>
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                      아이디
+                    </Typography>
+                    <Typography variant='body1'>{detail.userId}</Typography>
+                  </Grid>
+
+                  <Grid item xs={6}>
                     <TextField
                       fullWidth
-                      multiline
-                      rows={4}
-                      name='note'
-                      value={formik.values.note}
+                      label='비밀번호'
+                      name='password'
+                      type='password'
+                      value={formik.values.password}
                       onChange={formik.handleChange}
-                      placeholder='메모를 입력하세요'
+                      size='small'
                     />
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label='비밀번호 확인'
+                      name='confirmPassword'
+                      type='password'
+                      value={formik.values.confirmPassword}
+                      onChange={formik.handleChange}
+                      size='small'
+                    />
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                      회원명
+                    </Typography>
+                    <Typography variant='body1'>{detail.name}</Typography>
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label='휴대폰번호'
+                      name='phoneNumber'
+                      value={formik.values.phoneNumber}
+                      onChange={formik.handleChange}
+                      size='small'
+                    />
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                      생년월일
+                    </Typography>
+                    <Typography variant='body1'>
+                      {formatYyyyMmDd(detail.birthDate)} {detail.gender}
+                    </Typography>
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label='E-mail'
+                      name='email'
+                      value={formik.values.email}
+                      onChange={formik.handleChange}
+                      size='small'
+                    />
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                      추천코드
+                    </Typography>
+                    <Typography variant='body1'>{detail.referralCode}</Typography>
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                      가입일
+                    </Typography>
+                    <Typography variant='body1'>{formatYyyyMmDd(detail.registrationDate)}</Typography>
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                      최종접속일
+                    </Typography>
+                    <Typography variant='body1'>{formatYyyyMmDd(detail.lastLoginDate)}</Typography>
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <FormControl fullWidth size='small'>
+                      <InputLabel>계정상태</InputLabel>
+                      <Select name='accountStatus' value={formik.values.accountStatus} onChange={formik.handleChange}>
+                        {Object.keys(AccountStatus).map(accountStatus => (
+                          <MenuItem key={accountStatus} value={accountStatus}>
+                            {AccountStatusLabel[accountStatus]}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <Stack direction='row' spacing={2} alignItems='center'>
+                      <Typography variant='subtitle2' color='text.secondary'>
+                        CSO 신고증
+                      </Typography>
+                      {detail.csoCertUrl !== null ? (
+                        <Link href={detail.csoCertUrl} download target='_blank' rel='noopener noreferrer' underline='hover'>
+                          {MedipandaUrlFileName(detail.csoCertUrl)}
+                        </Link>
+                      ) : (
+                        <Button variant='outlined' color='primary' size='small' onClick={handleCsoUpload}>
+                          업로드
+                        </Button>
+                      )}
+                      {detail.csoCertUrl !== null && detail.partnerContractStatus === MemberType.NONE && (
+                        <>
+                          <Button variant='outlined' color='error' size='small' onClick={handleCsoReject}>
+                            반려
+                          </Button>
+                          <Button variant='contained' size='small' onClick={handleCsoApprove}>
+                            승인
+                          </Button>
+                        </>
+                      )}
+                    </Stack>
+                  </Grid>
+                </Grid>
+              </Card>
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <Stack spacing={3}>
+                {contractDetail !== null && (
+                  <Card sx={{ p: 3 }}>
+                    <Stack direction='row' justifyContent='space-between' alignItems='center' sx={{ mb: 3 }}>
+                      <Typography variant='h6'>파트너사 계약</Typography>
+                      {contractDetail.status !== PartnerContractStatus.APPROVED ? (
+                        <Button variant='contained' size='small' onClick={handleContractApprove}>
+                          계약 승인
+                        </Button>
+                      ) : (
+                        <Button variant='contained' size='small' color='error' onClick={handleContractReject}>
+                          계약 종료
+                        </Button>
+                      )}
+                    </Stack>
+
+                    <Grid container spacing={2}>
+                      <Grid item xs={6}>
+                        <FormControl fullWidth size='small'>
+                          <InputLabel>유형</InputLabel>
+                          <Select name='contractType' value={formik.values.contractType} onChange={formik.handleChange}>
+                            {Object.keys(PartnerContractType).map(contractType => (
+                              <MenuItem key={contractType} value={contractType}>
+                                {PartnerContractTypeLabel[contractType]}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
+
+                      <Grid item xs={6}>
+                        <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                          계약상태
+                        </Typography>
+                        <Typography variant='body1'>{PartnerContractStatusLabel[contractDetail.status]}</Typography>
+                      </Grid>
+
+                      <Grid item xs={6}>
+                        <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                          회사명
+                        </Typography>
+                        <Typography variant='body1'>{contractDetail.companyName}</Typography>
+                      </Grid>
+
+                      <Grid item xs={6}>
+                        <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                          사업자등록번호
+                        </Typography>
+                        <Typography variant='body1'>{contractDetail.businessNumber}</Typography>
+                      </Grid>
+
+                      <Grid item xs={12}>
+                        <TextField
+                          fullWidth
+                          label='정산은행'
+                          name='bankName'
+                          value={formik.values.bankName}
+                          onChange={formik.handleChange}
+                          size='small'
+                        />
+                      </Grid>
+
+                      <Grid item xs={12}>
+                        <TextField
+                          fullWidth
+                          label='계좌번호'
+                          name='accountNumber'
+                          value={formik.values.accountNumber}
+                          onChange={formik.handleChange}
+                          size='small'
+                        />
+                      </Grid>
+
+                      {contractDetail.fileUrls[PartnerContractFileType.CSO_CERTIFICATE] !== null && (
+                        <Grid item xs={12}>
+                          <Stack direction='row' spacing={2} alignItems='center'>
+                            <Typography variant='subtitle2' color='text.secondary'>
+                              {PartnerContractFileTypeLabel[PartnerContractFileType.CSO_CERTIFICATE]}
+                            </Typography>
+                            <Link
+                              component={RouterLink}
+                              to={contractDetail.fileUrls[PartnerContractFileType.CSO_CERTIFICATE]}
+                              target='_blank'
+                            >
+                              {MedipandaUrlFileName(contractDetail.fileUrls[PartnerContractFileType.CSO_CERTIFICATE])}
+                            </Link>
+                          </Stack>
+                        </Grid>
+                      )}
+
+                      {contractDetail.fileUrls[PartnerContractFileType.SUBCONTRACT_AGREEMENT] !== null && (
+                        <Grid item xs={12}>
+                          <Stack direction='row' spacing={2} alignItems='center'>
+                            <Typography variant='subtitle2' color='text.secondary'>
+                              {PartnerContractFileTypeLabel[PartnerContractFileType.SUBCONTRACT_AGREEMENT]}
+                            </Typography>
+                            <Link
+                              component={RouterLink}
+                              to={contractDetail.fileUrls[PartnerContractFileType.SUBCONTRACT_AGREEMENT]}
+                              target='_blank'
+                            >
+                              {MedipandaUrlFileName(contractDetail.fileUrls[PartnerContractFileType.SUBCONTRACT_AGREEMENT])}
+                            </Link>
+                          </Stack>
+                        </Grid>
+                      )}
+
+                      {contractDetail.fileUrls[PartnerContractFileType.SALES_EDUCATION_CERT] !== null && (
+                        <Grid item xs={12}>
+                          <Stack direction='row' spacing={2} alignItems='center'>
+                            <Typography variant='subtitle2' color='text.secondary'>
+                              {PartnerContractFileTypeLabel[PartnerContractFileType.SALES_EDUCATION_CERT]}
+                            </Typography>
+                            <Link
+                              component={RouterLink}
+                              to={contractDetail.fileUrls[PartnerContractFileType.SALES_EDUCATION_CERT]}
+                              target='_blank'
+                            >
+                              {MedipandaUrlFileName(contractDetail.fileUrls[PartnerContractFileType.SALES_EDUCATION_CERT])}
+                            </Link>
+                          </Stack>
+                        </Grid>
+                      )}
+
+                      <Grid item xs={6}>
+                        <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+                          계약일
+                        </Typography>
+                        <Typography variant='body1'>{formatYyyyMmDd(contractDetail.contractDate)}</Typography>
+                      </Grid>
+                    </Grid>
                   </Card>
-                </Stack>
-              </Grid>
+                )}
+
+                <Card sx={{ p: 3 }}>
+                  <Typography variant='h6' gutterBottom sx={{ mb: 2 }}>
+                    비고
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    multiline
+                    rows={4}
+                    name='note'
+                    value={formik.values.note}
+                    onChange={formik.handleChange}
+                    placeholder='메모를 입력하세요'
+                  />
+                </Card>
+              </Stack>
             </Grid>
           </Grid>
-
-          <Grid item xs={12}>
-            <Card sx={{ p: 3 }}>
-              <Typography variant='h6' gutterBottom sx={{ mb: 2 }}>
-                마케팅 수신동의
-              </Typography>
-              <Stack spacing={1}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={formik.values.marketingAgreementsSms}
-                      onChange={e => formik.setFieldValue('marketingAgreementsSms', e.target.checked)}
-                    />
-                  }
-                  label='SMS'
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={formik.values.marketingAgreementsEmail}
-                      onChange={e => formik.setFieldValue('marketingAgreementsEmail', e.target.checked)}
-                    />
-                  }
-                  label='이메일'
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={formik.values.marketingAgreementsPush}
-                      onChange={e => formik.setFieldValue('marketingAgreementsPush', e.target.checked)}
-                    />
-                  }
-                  label={`App Push`}
-                />
-              </Stack>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12}>
-            <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 3 }}>
-              <Button variant='outlined' size='large' component={RouterLink} to='/admin/members' sx={{ minWidth: 120 }}>
-                취소
-              </Button>
-              <Button variant='contained' size='large' type='submit' sx={{ minWidth: 120 }}>
-                저장
-              </Button>
-            </Stack>
-          </Grid>
         </Grid>
-      </form>
+
+        <Grid item xs={12}>
+          <Card sx={{ p: 3 }}>
+            <Typography variant='h6' gutterBottom sx={{ mb: 2 }}>
+              마케팅 수신동의
+            </Typography>
+            <Stack spacing={1}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formik.values.marketingAgreementsSms}
+                    onChange={e => formik.setFieldValue('marketingAgreementsSms', e.target.checked)}
+                  />
+                }
+                label='SMS'
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formik.values.marketingAgreementsEmail}
+                    onChange={e => formik.setFieldValue('marketingAgreementsEmail', e.target.checked)}
+                  />
+                }
+                label='이메일'
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formik.values.marketingAgreementsPush}
+                    onChange={e => formik.setFieldValue('marketingAgreementsPush', e.target.checked)}
+                  />
+                }
+                label={`App Push`}
+              />
+            </Stack>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 3 }}>
+            <Button variant='outlined' size='large' component={RouterLink} to='/admin/members' sx={{ minWidth: 120 }}>
+              취소
+            </Button>
+            <Button variant='contained' size='large' type='submit' sx={{ minWidth: 120 }}>
+              저장
+            </Button>
+          </Stack>
+        </Grid>
+      </Grid>
     </Box>
   );
 }
