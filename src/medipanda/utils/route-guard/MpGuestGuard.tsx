@@ -1,10 +1,13 @@
 import Loader from 'components/Loader';
 import { isAdmin, useSession } from '@/medipanda/hooks/useSession';
-import { useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GuardProps } from 'types/auth';
 
-export function MpGuestGuard({ children }: GuardProps) {
+interface MpGuestGuardProps {
+  children: ReactNode;
+}
+
+export function MpGuestGuard({ children }: MpGuestGuardProps) {
   const { session, isLoading } = useSession();
   const navigate = useNavigate();
 

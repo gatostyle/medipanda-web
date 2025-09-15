@@ -1,12 +1,12 @@
 import Loader from 'components/Loader';
 import { AdminPermission, getPermissions } from '@/backend';
 import { isAdmin, isSuperAdmin, useSession } from '@/medipanda/hooks/useSession';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { GuardProps } from 'types/auth';
 import { saveRedirectTo } from '../redirectTo';
 
-interface MpAdminGuardProps extends GuardProps {
+interface MpAdminGuardProps {
+  children: ReactNode;
   requiredPermission?: AdminPermission;
 }
 
