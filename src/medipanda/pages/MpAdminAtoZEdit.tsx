@@ -167,15 +167,7 @@ export default function MpAdminAtoZEdit() {
           <MainCard>
             <Grid container spacing={3}>
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  name='title'
-                  label='제목'
-                  placeholder=''
-                  required
-                  value={formik.values.title}
-                  onChange={formik.handleChange}
-                />
+                <TextField fullWidth name='title' label='제목' required value={formik.values.title} onChange={formik.handleChange} />
               </Grid>
 
               <Grid item xs={12}>

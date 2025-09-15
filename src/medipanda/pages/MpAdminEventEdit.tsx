@@ -269,14 +269,7 @@ export default function MpAdminEventEdit() {
               </Grid>
 
               <Grid item xs={12}>
-                <TextField
-                  name='title'
-                  label='제목 *'
-                  fullWidth
-                  placeholder=''
-                  value={formik.values.title}
-                  onChange={formik.handleChange}
-                />
+                <TextField name='title' label='제목 *' fullWidth value={formik.values.title} onChange={formik.handleChange} />
               </Grid>
 
               <Grid item xs={12}>
@@ -284,7 +277,6 @@ export default function MpAdminEventEdit() {
                   name='description'
                   label='이벤트 설명'
                   fullWidth
-                  placeholder=''
                   value={formik.values.description}
                   onChange={formik.handleChange}
                 />
@@ -340,14 +332,7 @@ export default function MpAdminEventEdit() {
               </Grid>
 
               <Grid item xs={12}>
-                <TextField
-                  name='videoUrl'
-                  label='영상url'
-                  fullWidth
-                  placeholder=''
-                  value={formik.values.videoUrl}
-                  onChange={formik.handleChange}
-                />
+                <TextField name='videoUrl' label='영상url' fullWidth value={formik.values.videoUrl} onChange={formik.handleChange} />
               </Grid>
 
               <Grid item xs={12}>
@@ -357,7 +342,6 @@ export default function MpAdminEventEdit() {
                   fullWidth
                   multiline
                   rows={3}
-                  placeholder=''
                   value={formik.values.note}
                   onChange={formik.handleChange}
                 />
