@@ -5,8 +5,8 @@ import { NavItemType } from 'types/menu';
 const initialState = {
   menuItems: [] as NavItemType[],
   menuOrientation: MenuOrientation.VERTICAL,
-  setMenuItems: (menuItems: NavItemType[]) => {},
-  setMenuOrientation: (menuOrientation: MenuOrientation) => {},
+  setMenuItems: (_: NavItemType[]) => {},
+  setMenuOrientation: (_: MenuOrientation) => {},
 };
 
 export const MpMenuContext = createContext(initialState);

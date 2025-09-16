@@ -46,7 +46,7 @@ function MpChangeHistoryModalInternal({ open, onClose, prescriptionFormId }: MpC
     }
   }, [open, prescriptionFormId]);
 
-  const handlePageChange = (event: ChangeEvent<unknown>, value: number) => {
+  const handlePageChange = (_: ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 

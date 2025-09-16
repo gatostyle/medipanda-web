@@ -159,7 +159,7 @@ export default function MpAdminInquiryList() {
       },
       {
         header: '회사명',
-        cell: ({ row }) => '-',
+        cell: () => '-',
         size: 150,
       },
       {

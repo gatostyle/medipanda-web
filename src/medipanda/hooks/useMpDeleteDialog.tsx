@@ -8,7 +8,7 @@ export interface DeleteDialogConfig {
 }
 
 const initialState = {
-  open: (config: DeleteDialogConfig) => {},
+  open: (_: DeleteDialogConfig) => {},
 };
 
 export const MpDeleteDialogContext = createContext(initialState);

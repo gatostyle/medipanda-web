@@ -258,7 +258,7 @@ export default function MpAdminSettlementDetail() {
           <Pagination
             count={totalPages}
             page={pagination.pageIndex + 1}
-            onChange={(event, value) => {
+            onChange={(_, value) => {
               setPagination({ ...pagination, pageIndex: value - 1 });
             }}
             color='primary'
