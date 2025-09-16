@@ -1,59 +1,176 @@
-import { Outlet } from 'react-router-dom';
-
-// material-ui
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Toolbar from '@mui/material/Toolbar';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { useSession } from '@/medipanda/hooks/useSession';
+import { isLeafMenuItem, MenuItem } from '@/medipanda/menus';
+import { Circle } from '@mui/icons-material';
+import {
+  Box,
+  Collapse,
+  Container,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Stack,
+  Typography,
+} from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import ko from 'date-fns/locale/ko';
+import { ko } from 'date-fns/locale';
+import { ArrowDown2, ArrowUp2, Copy, Logout } from 'iconsax-react';
+import { Fragment, useState } from 'react';
+import { Outlet, Link as RouterLink, useLocation } from 'react-router-dom';
 
-// project-imports
-import Drawer from './Drawer';
-import Header from './Header';
-import Loader from 'components/Loader';
-import Breadcrumbs from 'components/@extended/Breadcrumbs';
+function matchesPath(menuItem: MenuItem, currentPath: string): boolean {
+  if (isLeafMenuItem(menuItem)) {
+    return currentPath.startsWith(menuItem.path);
+  }
 
-import { DRAWER_WIDTH } from 'config';
-import useConfig from 'hooks/useConfig';
-import { useGetMenuMaster } from 'api/menu';
-import { MpAdminGuard } from '@/medipanda/utils/route-guard';
+  return menuItem.children.some(child => matchesPath(child, currentPath));
+}
 
 // ==============================|| MAIN LAYOUT ||============================== //
 
-export default function MainLayout() {
-  const { menuMasterLoading } = useGetMenuMaster();
+function MenuList({
+  menuItems,
+  openedMenus,
+  setOpenedMenus,
+}: {
+  menuItems: MenuItem[];
+  openedMenus: MenuItem[];
+  setOpenedMenus: (openedMenus: MenuItem[]) => void;
+}) {
+  const location = useLocation();
 
-  const { container } = useConfig();
-
-  if (menuMasterLoading) return <Loader />;
+  const theme = useTheme();
+  const primaryColor = theme.palette.primary.main;
 
   return (
-    <MpAdminGuard>
-      <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
-        <Box sx={{ display: 'flex', width: '100%' }}>
-          <Header />
-          <Drawer />
+    <>
+      {menuItems.map(menuItem => {
+        const active = matchesPath(menuItem, location.pathname);
+        const isOpened = openedMenus.includes(menuItem) || active;
+        const textColor = active ? primaryColor : undefined;
 
-          <Box component='main' sx={{ width: `calc(100% - ${DRAWER_WIDTH}px)`, flexGrow: 1, p: { xs: 2, md: 3 } }}>
-            <Toolbar sx={{ mt: 'inherit', mb: 'inherit' }} />
-            <Container
-              maxWidth={container ? 'xl' : false}
-              sx={{
-                xs: 0,
-                ...(container && { px: { xs: 0, md: 2 } }),
-                position: 'relative',
-                minHeight: 'calc(100vh - 110px)',
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-            >
-              <Breadcrumbs />
-              <Outlet />
-            </Container>
-          </Box>
-        </Box>
-      </LocalizationProvider>
-    </MpAdminGuard>
+        return (
+          <Fragment key={menuItem.label}>
+            {isLeafMenuItem(menuItem) ? (
+              <>
+                <ListItemButton onClick={() => setOpenedMenus([])} component={RouterLink} to={menuItem.path} sx={{ color: textColor }}>
+                  <ListItemIcon sx={{ width: '40px' }}>
+                    <Circle
+                      sx={{
+                        width: '24px',
+                        fontSize: '6px',
+                        color: textColor,
+                      }}
+                    />
+                  </ListItemIcon>
+                  <ListItemText primary={menuItem.label} />
+                </ListItemButton>
+              </>
+            ) : (
+              <>
+                <ListItemButton
+                  onClick={() => {
+                    setOpenedMenus(isOpened ? openedMenus.filter(m => m !== menuItem) : [...openedMenus, menuItem]);
+                  }}
+                  sx={{ color: textColor }}
+                >
+                  <ListItemIcon sx={{ width: '40px' }}>
+                    <Copy variant='Bulk' color={textColor} />
+                  </ListItemIcon>
+                  <ListItemText primary={menuItem.label} />
+                  {isOpened ? (
+                    <ArrowUp2 size={12} color={textColor} style={{ marginLeft: 1 }} />
+                  ) : (
+                    <ArrowDown2 size={12} color={textColor} style={{ marginLeft: 1 }} />
+                  )}
+                </ListItemButton>
+                <Collapse in={isOpened} timeout='auto' unmountOnExit>
+                  <List disablePadding>
+                    <MenuList menuItems={menuItem.children} openedMenus={openedMenus} setOpenedMenus={setOpenedMenus} />
+                  </List>
+                </Collapse>
+              </>
+            )}
+          </Fragment>
+        );
+      })}
+    </>
+  );
+}
+
+export default function MainLayout() {
+  const drawerWidth = '280px';
+
+  const { session, menus } = useSession();
+
+  const [openedMenus, setOpenedMenus] = useState<MenuItem[]>([]);
+
+  return (
+    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+      <Drawer
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: drawerWidth,
+            boxSizing: 'border-box',
+            backgroundColor: 'unset',
+          },
+        }}
+        variant='permanent'
+        anchor='left'
+      >
+        <Stack sx={{ padding: '10px 24px' }}>
+          <Typography variant='h5'>
+            {session!.name}({session!.userId})
+          </Typography>
+        </Stack>
+        <Divider />
+        <List sx={{ paddingX: '15px' }}>
+          <MenuList menuItems={menus} openedMenus={openedMenus} setOpenedMenus={setOpenedMenus} />
+        </List>
+      </Drawer>
+
+      <Box
+        component='main'
+        sx={{
+          flexGrow: 1,
+          width: `calc(100% - ${drawerWidth})`,
+          marginLeft: drawerWidth,
+          padding: 3,
+        }}
+      >
+        <Stack sx={{ justifyContent: 'center' }}>
+          <IconButton
+            size='large'
+            color='error'
+            component={RouterLink}
+            to='/logout'
+            sx={{
+              alignSelf: 'flex-end',
+              p: 1,
+            }}
+          >
+            <Logout variant='Bulk' />
+          </IconButton>
+        </Stack>
+        <Container
+          sx={{
+            xs: 0,
+            position: 'relative',
+            minHeight: 'calc(100vh - 110px)',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <Outlet />
+        </Container>
+      </Box>
+    </LocalizationProvider>
   );
 }

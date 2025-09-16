@@ -86,7 +86,11 @@ const authRoutes: RouteObject[] = [
 
 const adminRoute: RouteObject = {
   path: 'admin',
-  element: <DashboardLayout />,
+  element: (
+    <MpAdminGuard>
+      <DashboardLayout />
+    </MpAdminGuard>
+  ),
   children: [
     {
       element: <MpAdminMain />,
