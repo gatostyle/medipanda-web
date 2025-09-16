@@ -1,4 +1,5 @@
 import { getUserMembers, MemberResponse } from '@/backend';
+import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Button,
   Dialog,
@@ -12,6 +13,7 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
@@ -25,6 +27,9 @@ export interface MpMemberSelectModalProps {
 
 function MpMemberSelectModalInternal({ open, onClose, onSelect, additionalFilter }: MpMemberSelectModalProps) {
   const [contents, setContents] = useState<MemberResponse[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const { alertError } = useMpModal();
 
   const formik = useFormik({
     initialValues: {
@@ -37,12 +42,20 @@ function MpMemberSelectModalInternal({ open, onClose, onSelect, additionalFilter
   });
 
   const fetchContents = async () => {
-    const response = await getUserMembers({
-      ...(additionalFilter ?? {}),
-      name: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-      page: formik.values.pageIndex,
-    });
-    setContents(response.content);
+    try {
+      setLoading(true);
+      const response = await getUserMembers({
+        ...(additionalFilter ?? {}),
+        name: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        page: formik.values.pageIndex,
+      });
+      setContents(response.content);
+    } catch (error) {
+      console.error('Failed to fetch members:', error);
+      await alertError('사용자 조회 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -75,17 +88,35 @@ function MpMemberSelectModalInternal({ open, onClose, onSelect, additionalFilter
                 </TableRow>
               </TableHead>
               <TableBody>
-                {contents.map(member => (
-                  <TableRow key={member.id}>
-                    <TableCell>{member.name}</TableCell>
-                    <TableCell>{member.companyName}</TableCell>
-                    <TableCell align='center'>
-                      <Button variant='contained' size='small' onClick={() => onSelect?.(member)}>
-                        선택
-                      </Button>
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={5} align='center' sx={{ py: 3 }}>
+                      <Typography variant='body2' color='text.secondary'>
+                        데이터를 로드하는 중입니다.
+                      </Typography>
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : contents.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={5} align='center' sx={{ py: 3 }}>
+                      <Typography variant='body1' color='text.secondary'>
+                        검색 결과가 없습니다.
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  contents.map(member => (
+                    <TableRow key={member.id}>
+                      <TableCell>{member.name}</TableCell>
+                      <TableCell>{member.companyName}</TableCell>
+                      <TableCell align='center'>
+                        <Button variant='contained' size='small' onClick={() => onSelect?.(member)}>
+                          선택
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </TableContainer>
