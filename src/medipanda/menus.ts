@@ -188,12 +188,12 @@ export const menuItems: MenuItem[] = [
   },
   {
     label: '권한관리',
-    permission: AdminPermission.PERMISSION_MANAGEMENT,
+    permission: 'NEVER',
     children: [
       {
         label: '관리자 권한',
         path: '/admin/admins',
-        permission: AdminPermission.PERMISSION_MANAGEMENT,
+        permission: 'NEVER',
       },
     ],
   },

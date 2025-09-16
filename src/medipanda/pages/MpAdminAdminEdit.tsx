@@ -1,5 +1,6 @@
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
+  Box,
   Button,
   Card,
   Checkbox,
@@ -104,7 +105,7 @@ export default function MpAdminAdminEdit() {
             password: values.password,
             email: values.email,
             phoneNumber,
-            permissions: values.permissions,
+            permissions: [...values.permissions, AdminPermission.PERMISSION_MANAGEMENT],
           });
           enqueueSnackbar('관리자가 등록되었습니다.', { variant: 'success' });
           navigate('/admin/admins');
@@ -115,7 +116,7 @@ export default function MpAdminAdminEdit() {
             password: values.password !== '' ? values.password : null,
             email: values.email,
             phoneNumber,
-            permissions: values.permissions,
+            permissions: [...values.permissions, AdminPermission.PERMISSION_MANAGEMENT],
           });
           enqueueSnackbar('관리자 권한이 수정되었습니다.', { variant: 'success' });
           navigate('/admin/admins');
@@ -392,16 +393,7 @@ export default function MpAdminAdminEdit() {
               label='배너관리'
               sx={{ flex: '1 0' }}
             />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={formik.values.permissions.includes(AdminPermission.PERMISSION_MANAGEMENT)}
-                  onChange={() => handlePermissionChange(AdminPermission.PERMISSION_MANAGEMENT)}
-                />
-              }
-              label='권한관리'
-              sx={{ flex: '1 0' }}
-            />
+            <Box sx={{ flex: '1 0' }} />
           </Stack>
         </Stack>
 
