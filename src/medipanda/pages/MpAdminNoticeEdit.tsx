@@ -60,10 +60,10 @@ export default function MpAdminNoticeEdit() {
 
   const formik = useFormik({
     initialValues: {
-      noticeType: NoticeType.GENERAL,
+      noticeType: NoticeType.GENERAL as keyof typeof NoticeType,
       drugCompany: '',
       isExposed: true,
-      exposureRange: BoardExposureRange.ALL,
+      exposureRange: BoardExposureRange.ALL as keyof typeof BoardExposureRange,
       isTopFixed: false,
       title: '',
       attachedFiles: [] as AttachmentResponse[],
@@ -157,10 +157,10 @@ export default function MpAdminNoticeEdit() {
       setEditorAttachments(detail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
 
       formik.setValues({
-        noticeType: detail.noticeProperties!.noticeType as NoticeType,
+        noticeType: detail.noticeProperties!.noticeType,
         drugCompany: detail.noticeProperties!.drugCompany ?? '',
         isExposed: detail.isExposed,
-        exposureRange: detail.exposureRange as BoardExposureRange,
+        exposureRange: detail.exposureRange,
         isTopFixed: detail.noticeProperties?.fixedTop || false,
         title: detail.title,
         attachedFiles: detail.attachments,

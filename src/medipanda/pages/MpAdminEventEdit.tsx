@@ -38,7 +38,7 @@ export default function MpAdminEventEdit() {
   const formik = useFormik({
     initialValues: {
       isExposed: true,
-      exposureRange: BoardExposureRange.ALL,
+      exposureRange: BoardExposureRange.ALL as keyof typeof BoardExposureRange,
       startDate: new Date(),
       endDate: new Date(),
       title: '',
@@ -147,7 +147,7 @@ export default function MpAdminEventEdit() {
 
       formik.setValues({
         isExposed: detail.boardPostDetail.isExposed,
-        exposureRange: detail.boardPostDetail.exposureRange as BoardExposureRange,
+        exposureRange: detail.boardPostDetail.exposureRange,
         startDate: DateFix(detail.eventStartDate),
         endDate: DateFix(detail.eventEndDate),
         title: detail.boardPostDetail.title,

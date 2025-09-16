@@ -49,7 +49,7 @@ export default function MpAdminSettlementList() {
     searchType: '' as 'dealerId' | 'companyName' | '',
     searchKeyword: '',
     settlementMonth: '',
-    status: '' as SettlementStatus | '',
+    status: '' as keyof typeof SettlementStatus | '',
     page: '1',
   };
 

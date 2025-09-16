@@ -34,7 +34,6 @@ import {
   getUserMembers,
   MemberResponse,
   AccountStatusLabel,
-  MemberType,
 } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { formatYyyyMmDd, formatYyyyMmDdHhMm, SafeDate } from '@/medipanda/utils/dateFormat';
@@ -51,7 +50,7 @@ export default function MpAdminMemberList() {
     searchKeyword: '',
     startAt: '',
     endAt: '',
-    contractStatus: '' as ContractStatus | '',
+    contractStatus: '' as keyof typeof ContractStatus | '',
     page: '1',
   };
 
@@ -197,7 +196,7 @@ export default function MpAdminMemberList() {
       },
       {
         header: '파트너사 계약여부',
-        cell: ({ row }) => ContractStatusLabel[memberTypeToContractStatus(row.original.partnerContractStatus as MemberType)],
+        cell: ({ row }) => ContractStatusLabel[memberTypeToContractStatus(row.original.partnerContractStatus)],
         size: 130,
       },
       {

@@ -51,7 +51,7 @@ export default function MpAdminPrescriptionFormList() {
     searchKeyword: '',
     prescriptionMonthStart: '',
     prescriptionMonthEnd: '',
-    status: '' as PrescriptionPartnerStatus | '',
+    status: '' as keyof typeof PrescriptionPartnerStatus | '',
     page: '1',
   };
 

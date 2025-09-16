@@ -50,7 +50,7 @@ export default function MpAdminAdminEdit() {
       phoneNumber1: '010',
       phoneNumber2: '',
       phoneNumber3: '',
-      permissions: [] as AdminPermission[],
+      permissions: [] as (keyof typeof AdminPermission)[],
     },
     onSubmit: async values => {
       if (values.name === '') {
@@ -151,7 +151,7 @@ export default function MpAdminAdminEdit() {
         phoneNumber2: phoneParts[1] ?? '',
         phoneNumber3: phoneParts[2] ?? '',
         status: true,
-        permissions: permissionData.permissions as AdminPermission[],
+        permissions: permissionData.permissions as (keyof typeof AdminPermission)[],
       });
     } catch (error) {
       console.error('Failed to fetch admin data:', error);
@@ -160,7 +160,7 @@ export default function MpAdminAdminEdit() {
     }
   };
 
-  const handlePermissionChange = (permission: AdminPermission) => {
+  const handlePermissionChange = (permission: keyof typeof AdminPermission) => {
     const currentPermissions = [...formik.values.permissions];
     const index = currentPermissions.indexOf(permission);
 

@@ -40,7 +40,7 @@ export default function MpAdminBannerList() {
     searchKeyword: '',
     startAt: '',
     endAt: '',
-    bannerStatus: '' as BannerStatus | '',
+    bannerStatus: '' as keyof typeof BannerStatus | '',
     page: '1',
   };
 

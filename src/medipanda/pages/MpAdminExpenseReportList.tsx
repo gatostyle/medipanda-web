@@ -49,8 +49,8 @@ export default function MpAdminExpenseReportList() {
     searchKeyword: '',
     eventDateFrom: '',
     eventDateTo: '',
-    status: '' as ExpenseReportStatus | '',
-    reportType: '' as ExpenseReportType.SAMPLE_PROVIDE | '',
+    status: '' as keyof typeof ExpenseReportStatus | '',
+    reportType: '' as typeof ExpenseReportType.SAMPLE_PROVIDE | '',
     page: '1',
   };
 

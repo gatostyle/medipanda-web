@@ -7,7 +7,7 @@ import { saveRedirectTo } from '../redirectTo';
 
 interface MpAdminGuardProps {
   children: ReactNode;
-  requiredPermission?: AdminPermission;
+  requiredPermission?: keyof typeof AdminPermission;
 }
 
 export function MpAdminGuard({ children, requiredPermission }: MpAdminGuardProps) {

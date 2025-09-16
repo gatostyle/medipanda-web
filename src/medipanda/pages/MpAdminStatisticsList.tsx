@@ -39,7 +39,7 @@ export default function MpAdminStatisticsList() {
     searchType: '' as 'drugCompany' | 'companyName' | 'dealerName' | 'institutionName' | '',
     searchKeyword: '',
     settlementMonth: '',
-    status: '' as SettlementStatus | '',
+    status: '' as keyof typeof SettlementStatus | '',
     page: '1',
   };
 

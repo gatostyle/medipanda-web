@@ -24,7 +24,6 @@ import {
   BoardExposureRangeLabel,
   getBoardDetails,
   isDrugCompanyNoticeType,
-  NoticeType,
   NoticeTypeLabel,
   PostAttachmentType,
 } from '@/backend';
@@ -99,7 +98,7 @@ export default function MpAdminNoticeDetail() {
                 </TableCell>
                 <TableCell colSpan={5}>{NoticeTypeLabel[detail.noticeProperties!.noticeType]}</TableCell>
               </TableRow>
-              {isDrugCompanyNoticeType(detail.noticeProperties!.noticeType as NoticeType) && (
+              {isDrugCompanyNoticeType(detail.noticeProperties!.noticeType) && (
                 <TableRow>
                   <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                     제약사명

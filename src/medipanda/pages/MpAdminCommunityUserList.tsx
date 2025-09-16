@@ -35,7 +35,7 @@ export default function MpAdminCommunityUserList() {
   const initialSearchParams = {
     searchType: '' as 'userId' | 'name' | 'nickname' | 'phoneNumber' | 'email' | '',
     searchKeyword: '',
-    contractStatus: '' as ContractStatus | '',
+    contractStatus: '' as keyof typeof ContractStatus | '',
     page: '1',
   };
 

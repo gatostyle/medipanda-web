@@ -5,7 +5,6 @@ import {
   ContractStatus,
   DateString,
   getBoards,
-  MemberType,
   memberTypeToContractStatus,
   toggleBlindStatus_1,
 } from '@/backend';
@@ -50,7 +49,7 @@ export default function MpAdminCommunityPostList() {
   const navigate = useNavigate();
 
   const initialSearchParams = {
-    boardType: '' as BoardType | '',
+    boardType: '' as keyof typeof BoardType | '',
     searchType: '' as 'title' | 'userId' | 'name' | 'nickname' | '',
     searchKeyword: '',
     startAt: '',
@@ -214,7 +213,7 @@ export default function MpAdminCommunityPostList() {
       },
       {
         header: '파트너사 계약여부',
-        cell: ({ row }) => (memberTypeToContractStatus(row.original.memberType as MemberType) === ContractStatus.CONTRACT ? 'Y' : 'N'),
+        cell: ({ row }) => (memberTypeToContractStatus(row.original.memberType) === ContractStatus.CONTRACT ? 'Y' : 'N'),
         size: 120,
       },
       {

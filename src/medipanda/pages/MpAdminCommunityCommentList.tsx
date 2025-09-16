@@ -47,7 +47,7 @@ export default function MpAdminCommunityCommentList() {
   const initialSearchParams = {
     searchType: '' as 'nickname' | 'userId' | '',
     searchKeyword: '',
-    commentType: '' as CommentType | '',
+    commentType: '' as keyof typeof CommentType | '',
     startAt: '',
     endAt: '',
     page: '1',

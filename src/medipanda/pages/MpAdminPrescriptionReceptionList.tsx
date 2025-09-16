@@ -49,7 +49,7 @@ export default function MpAdminPrescriptionReceptionList() {
     searchKeyword: '',
     startAt: '',
     endAt: '',
-    status: '' as PrescriptionStatus | '',
+    status: '' as keyof typeof PrescriptionStatus | '',
     page: '1',
   };
 

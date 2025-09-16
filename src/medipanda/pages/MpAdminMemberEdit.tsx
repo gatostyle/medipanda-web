@@ -60,8 +60,8 @@ export default function MpAdminMemberEdit() {
       confirmPassword: '',
       phoneNumber: '',
       email: '',
-      accountStatus: AccountStatus.ACTIVATED,
-      contractType: PartnerContractType.INDIVIDUAL,
+      accountStatus: AccountStatus.ACTIVATED as keyof typeof AccountStatus,
+      contractType: PartnerContractType.INDIVIDUAL as keyof typeof PartnerContractType,
       bankName: '',
       accountNumber: '',
       note: '',
@@ -165,7 +165,7 @@ export default function MpAdminMemberEdit() {
         confirmPassword: '',
         phoneNumber: detail.phoneNumber,
         email: detail.email,
-        accountStatus: detail.accountStatus as AccountStatus,
+        accountStatus: detail.accountStatus,
         note: detail.note ?? '',
         marketingAgreementsSms: detail.marketingAgreements?.sms ?? false,
         marketingAgreementsEmail: detail.marketingAgreements?.email ?? false,
@@ -192,7 +192,7 @@ export default function MpAdminMemberEdit() {
       formik.resetForm({
         values: {
           ...values,
-          contractType: contractDetail.contractType as PartnerContractType,
+          contractType: contractDetail.contractType,
           bankName: contractDetail.bankName,
           accountNumber: contractDetail.accountNumber,
         },

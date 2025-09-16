@@ -43,8 +43,8 @@ export default function MpAdminBannerEdit() {
   const formik = useFormik({
     initialValues: {
       position: 'POPUP',
-      status: BannerStatus.VISIBLE,
-      scope: BannerScope.ENTIRE,
+      status: BannerStatus.VISIBLE as keyof typeof BannerStatus,
+      scope: BannerScope.ENTIRE as keyof typeof BannerScope,
       title: '',
       linkUrl: '',
       startDate: null as Date | null,
@@ -123,8 +123,8 @@ export default function MpAdminBannerEdit() {
 
       formik.setValues({
         position: detail.position,
-        status: detail.status as BannerStatus,
-        scope: detail.scope as BannerScope,
+        status: detail.status,
+        scope: detail.scope,
         title: detail.title,
         linkUrl: detail.linkUrl,
         startDate: startDate,

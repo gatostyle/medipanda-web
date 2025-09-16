@@ -44,7 +44,7 @@ export default function MpAdminEventList() {
     searchKeyword: '',
     startAt: '',
     endAt: '',
-    status: '' as EventStatus | '',
+    status: '' as keyof typeof EventStatus | '',
     page: '1',
   };
 

@@ -41,7 +41,7 @@ export default function MpAdminCommunityBlindList() {
     searchKeyword: '',
     startAt: '',
     endAt: '',
-    postType: '' as PostType | '',
+    postType: '' as keyof typeof PostType | '',
     page: '1',
   };
 
