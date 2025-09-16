@@ -1665,6 +1665,7 @@ export async function getBoards(options?: {
   page?: number;
   size?: number;
   sortType?: 'LATEST' | 'VIEWS' | 'LIKES' | 'COMMENTS';
+  ignoreFixedTop?: boolean;
   boardType?: 'ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z' | 'EVENT' | 'SALES_AGENCY' | 'PRODUCT';
   userId?: string;
   name?: string;

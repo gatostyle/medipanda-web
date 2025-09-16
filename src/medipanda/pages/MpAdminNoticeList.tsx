@@ -111,6 +111,7 @@ export default function MpAdminNoticeList() {
     try {
       const response = await getBoards({
         boardType: BoardType.NOTICE,
+        ignoreFixedTop: true,
         userId: undefined,
         name: undefined,
         nickname: undefined,
