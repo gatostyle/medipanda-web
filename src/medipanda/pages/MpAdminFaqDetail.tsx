@@ -25,6 +25,14 @@ export default function MpAdminCustomerCenterFaqDetail() {
 
   const { editor, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
+  useEffect(() => {
+    if (detail !== null) {
+      editor.setEditable(false);
+      editor.commands.setContent(detail.content);
+      setEditorAttachments(detail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
+    }
+  }, [detail, editor]);
+
   const fetchDetail = async (boardId: number) => {
     if (Number.isNaN(boardId)) {
       await alertError('잘못된 접근입니다.');
@@ -35,10 +43,6 @@ export default function MpAdminCustomerCenterFaqDetail() {
     try {
       const detail = await getBoardDetails(boardId);
       setDetail(detail);
-
-      editor.setEditable(false);
-      editor.commands.setContent(detail.content);
-      setEditorAttachments(detail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
     } catch (error) {
       console.error('Failed to fetch FAQ detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });

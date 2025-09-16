@@ -185,6 +185,13 @@ export default function MpAdminProductEdit() {
     }
   }, [isNew, productId]);
 
+  useEffect(() => {
+    if (detail !== null) {
+      editor.commands.setContent(detail.boardDetailsResponse.content);
+      setEditorAttachments(detail.boardDetailsResponse.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
+    }
+  }, [detail, editor]);
+
   const fetchDetail = async (productId: number) => {
     if (Number.isNaN(productId)) {
       await alertError('잘못된 접근입니다.');
@@ -195,9 +202,6 @@ export default function MpAdminProductEdit() {
     try {
       const detail = await getProductDetails(productId);
       setDetail(detail);
-
-      editor.commands.setContent(detail.boardDetailsResponse.content);
-      setEditorAttachments(detail.boardDetailsResponse.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
 
       formik.setValues({
         manufacturer: detail.manufacturer ?? '',

@@ -112,7 +112,7 @@ function PostTab({ detail }: { detail: BoardDetailsResponse }) {
     editor.setEditable(false);
     editor.commands.setContent(detail.content);
     setEditorAttachments(detail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
-  }, [detail]);
+  }, [detail, editor]);
 
   return (
     <Box sx={{ p: 3 }}>

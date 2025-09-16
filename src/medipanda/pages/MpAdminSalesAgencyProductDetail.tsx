@@ -88,7 +88,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse }) {
     editor.setEditable(false);
     editor.commands.setContent(detail.boardPostDetail.content);
     setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
-  }, [detail]);
+  }, [detail, editor]);
 
   return (
     <Box sx={{ p: 3 }}>

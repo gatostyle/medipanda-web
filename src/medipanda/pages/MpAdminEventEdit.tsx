@@ -10,6 +10,7 @@ import {
   BoardExposureRangeLabel,
   BoardType,
   createEventBoard,
+  EventBoardDetailsResponse,
   getEventBoardDetails,
   PostAttachmentType,
   updateEventBoard,
@@ -26,6 +27,7 @@ export default function MpAdminEventEdit() {
   const isNew = paramEventId === undefined;
   const eventId = Number(paramEventId);
 
+  const [detail, setDetail] = useState<EventBoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string>('');
@@ -131,6 +133,13 @@ export default function MpAdminEventEdit() {
     }
   }, [isNew, eventId]);
 
+  useEffect(() => {
+    if (detail !== null) {
+      editor.commands.setContent(detail.boardPostDetail.content);
+      setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
+    }
+  }, [detail, editor]);
+
   const fetchDetail = async (eventId: number) => {
     if (Number.isNaN(eventId)) {
       await alertError('잘못된 접근입니다.');
@@ -140,9 +149,7 @@ export default function MpAdminEventEdit() {
     setLoading(true);
     try {
       const detail = await getEventBoardDetails(eventId);
-
-      editor.commands.setContent(detail.boardPostDetail.content);
-      setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
+      setDetail(detail);
 
       formik.setValues({
         isExposed: detail.boardPostDetail.isExposed,

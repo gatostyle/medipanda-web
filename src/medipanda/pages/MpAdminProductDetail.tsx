@@ -34,15 +34,19 @@ export default function MpAdminProductDetail() {
 
   const { editor, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
+  useEffect(() => {
+    if (detail !== null) {
+      editor.setEditable(false);
+      editor.commands.setContent(detail.boardDetailsResponse.content);
+      setEditorAttachments(detail.boardDetailsResponse.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
+    }
+  }, [detail, editor]);
+
   const fetchDetail = async (productId: number) => {
     setLoading(true);
     try {
       const detail = await getProductDetails(productId);
       setDetail(detail);
-
-      editor.setEditable(false);
-      editor.commands.setContent(detail.boardDetailsResponse.content);
-      setEditorAttachments(detail.boardDetailsResponse.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
     } catch (error) {
       console.error('Failed to fetch product detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });

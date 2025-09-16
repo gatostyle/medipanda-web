@@ -103,6 +103,20 @@ export default function MpAdminInquiryDetail() {
     }
   }, [boardId]);
 
+  useEffect(() => {
+    if (detail !== null) {
+      editor.setEditable(false);
+      editor.commands.setContent(detail.content);
+      setEditorAttachments(detail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
+
+      if (detail.children.length > 0) {
+        responseEditor.commands.setContent(detail.children[0].content);
+        responseEditor.setEditable(false);
+        setResponseEditorAttachments(detail.children[0].attachments.filter(a => a.type === PostAttachmentType.EDITOR));
+      }
+    }
+  }, [detail, editor]);
+
   const fetchDetail = async (boardId: number) => {
     if (Number.isNaN(boardId)) {
       await alertError('잘못된 접근입니다.');
@@ -113,16 +127,6 @@ export default function MpAdminInquiryDetail() {
     try {
       const detail = await getBoardDetails(boardId);
       setDetail(detail);
-
-      editor.commands.setContent(detail.content);
-      editor.setEditable(false);
-      setEditorAttachments(detail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
-
-      if (detail.children.length > 0) {
-        responseEditor.commands.setContent(detail.children[0].content);
-        responseEditor.setEditable(false);
-        setResponseEditorAttachments(detail.children[0].attachments.filter(a => a.type === PostAttachmentType.EDITOR));
-      }
     } catch (error) {
       console.error('Failed to fetch inquiry detail:', error);
       enqueueSnackbar('문의 정보를 불러오는데 실패했습니다.', { variant: 'error' });

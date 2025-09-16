@@ -20,6 +20,7 @@ import { EditorContent } from '@tiptap/react';
 import { useFormik } from 'formik';
 import {
   AttachmentResponse,
+  BoardDetailsResponse,
   BoardExposureRange,
   BoardType,
   createBoardPost,
@@ -41,6 +42,7 @@ export default function MpAdminFaqEdit() {
   const { alert, alertError } = useMpModal();
   const { enqueueSnackbar } = useSnackbar();
   const { session } = useSession();
+  const [detail, setDetail] = useState<BoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
   const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
@@ -111,6 +113,13 @@ export default function MpAdminFaqEdit() {
     }
   }, [isNew, boardId]);
 
+  useEffect(() => {
+    if (detail !== null) {
+      editor.commands.setContent(detail.content);
+      setEditorAttachments(detail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
+    }
+  }, [detail, editor]);
+
   const fetchDetail = async (boardId: number) => {
     if (Number.isNaN(boardId)) {
       await alertError('잘못된 접근입니다.');
@@ -120,9 +129,7 @@ export default function MpAdminFaqEdit() {
     setLoading(true);
     try {
       const detail = await getBoardDetails(boardId);
-
-      editor.commands.setContent(detail.content);
-      setEditorAttachments(detail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
+      setDetail(detail);
 
       formik.setValues({
         title: detail.title,

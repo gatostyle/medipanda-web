@@ -14,7 +14,7 @@ export default function MpAdminEventDetail() {
   const eventId = Number(paramEventId);
 
   const { enqueueSnackbar } = useSnackbar();
-  const [event, setDetail] = useState<EventBoardDetailsResponse | null>(null);
+  const [detail, setDetail] = useState<EventBoardDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const { alertError } = useMpModal();
 
@@ -30,10 +30,6 @@ export default function MpAdminEventDetail() {
     try {
       const detail = await getEventBoardDetails(eventId);
       setDetail(detail);
-
-      editor.setEditable(false);
-      editor.commands.setContent(detail.boardPostDetail.content);
-      setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
     } catch (error) {
       console.error('Failed to fetch event detail:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -47,6 +43,14 @@ export default function MpAdminEventDetail() {
     fetchDetail(eventId);
   }, [eventId]);
 
+  useEffect(() => {
+    if (detail !== null) {
+      editor.setEditable(false);
+      editor.commands.setContent(detail.boardPostDetail.content);
+      setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
+    }
+  }, [detail, editor]);
+
   if (loading) {
     return (
       <Box display='flex' justifyContent='center' alignItems='center' minHeight='400px'>
@@ -55,7 +59,7 @@ export default function MpAdminEventDetail() {
     );
   }
 
-  if (!event) {
+  if (!detail) {
     return null;
   }
 
@@ -72,8 +76,8 @@ export default function MpAdminEventDetail() {
               </Typography>
               <Box>
                 <Chip
-                  label={event.boardPostDetail.isExposed ? '노출' : '미노출'}
-                  color={event.boardPostDetail.isExposed ? 'success' : 'default'}
+                  label={detail.boardPostDetail.isExposed ? '노출' : '미노출'}
+                  color={detail.boardPostDetail.isExposed ? 'success' : 'default'}
                   variant='light'
                   size='small'
                 />
@@ -85,7 +89,7 @@ export default function MpAdminEventDetail() {
                 노출범위
               </Typography>
               <Box>
-                <Chip label={BoardExposureRangeLabel[event.boardPostDetail.exposureRange]} color='success' variant='light' size='small' />
+                <Chip label={BoardExposureRangeLabel[detail.boardPostDetail.exposureRange]} color='success' variant='light' size='small' />
               </Box>
             </Stack>
           </Stack>
@@ -95,7 +99,7 @@ export default function MpAdminEventDetail() {
               이벤트기간
             </Typography>
             <Typography variant='body1'>
-              {formatYyyyMmDd(event.eventStartDate)} ~ {formatYyyyMmDd(event.eventEndDate)}
+              {formatYyyyMmDd(detail.eventStartDate)} ~ {formatYyyyMmDd(detail.eventEndDate)}
             </Typography>
           </Stack>
 
@@ -103,24 +107,24 @@ export default function MpAdminEventDetail() {
             <Typography variant='subtitle2' color='text.secondary'>
               제목
             </Typography>
-            <Typography variant='body1'>{event.boardPostDetail.title}</Typography>
+            <Typography variant='body1'>{detail.boardPostDetail.title}</Typography>
           </Stack>
 
           <Stack spacing={1}>
             <Typography variant='subtitle2' color='text.secondary'>
               이벤트 썸네일
             </Typography>
-            <Typography variant='body1'>{event.description}</Typography>
+            <Typography variant='body1'>{detail.description}</Typography>
           </Stack>
 
-          {event.thumbnailUrl && (
+          {detail.thumbnailUrl && (
             <Stack spacing={1}>
               <Typography variant='subtitle2' color='text.secondary'>
                 썸네일
               </Typography>
               <Box>
                 <img
-                  src={event.thumbnailUrl}
+                  src={detail.thumbnailUrl}
                   alt='썸네일'
                   style={{
                     maxWidth: '300px',
@@ -145,7 +149,7 @@ export default function MpAdminEventDetail() {
             </Box>
           </Stack>
 
-          {event.videoUrl && (
+          {detail.videoUrl && (
             <Stack spacing={1}>
               <Typography variant='subtitle2' color='text.secondary'>
                 영상url
@@ -153,22 +157,22 @@ export default function MpAdminEventDetail() {
               <Typography
                 variant='body1'
                 component='a'
-                href={event.videoUrl}
+                href={detail.videoUrl}
                 target='_blank'
                 rel='noopener noreferrer'
                 sx={{ color: 'primary.main', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
               >
-                {event.videoUrl}
+                {detail.videoUrl}
               </Typography>
             </Stack>
           )}
 
-          {event.note && (
+          {detail.note && (
             <Stack spacing={1}>
               <Typography variant='subtitle2' color='text.secondary'>
                 비고
               </Typography>
-              <Typography variant='body1'>{event.note}</Typography>
+              <Typography variant='body1'>{detail.note}</Typography>
             </Stack>
           )}
 
@@ -176,7 +180,7 @@ export default function MpAdminEventDetail() {
             <Typography variant='subtitle2' color='text.secondary'>
               조회수
             </Typography>
-            <Typography variant='body1'>{event.boardPostDetail.viewsCount.toLocaleString()}</Typography>
+            <Typography variant='body1'>{detail.boardPostDetail.viewsCount.toLocaleString()}</Typography>
           </Stack>
 
           <Divider />

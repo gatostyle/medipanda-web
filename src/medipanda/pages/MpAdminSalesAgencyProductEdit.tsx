@@ -50,127 +50,9 @@ export default function MpAdminSalesAgencyProductEdit() {
   const [loading, setLoading] = useState(false);
   const [detail, setDetail] = useState<SalesAgencyProductDetailsResponse | null>(null);
 
-  const { alert, alertError } = useMpModal();
+  const { alertError } = useMpModal();
 
   const { enqueueSnackbar } = useSnackbar();
-  const { session } = useSession();
-
-  const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
-
-  const formik = useFormik({
-    initialValues: {
-      clientName: '',
-      productName: '',
-      isExposed: true,
-      exposureRange: '' as keyof typeof BoardExposureRange | '',
-      thumbnail: null as File | null,
-      thumbnailUrl: '',
-      videoUrl: '',
-      contractDate: null as Date | null,
-      note: '',
-      startDate: null as Date | null,
-      endDate: null as Date | null,
-      attachedFiles: [] as AttachmentResponse[],
-      newFiles: [] as File[],
-    },
-    onSubmit: async values => {
-      if (values.clientName === '') {
-        await alert('위탁사명은 필수입니다');
-        return;
-      }
-      if (values.productName === '') {
-        await alert('상품명은 필수입니다');
-        return;
-      }
-      if (values.exposureRange === '') {
-        await alert('노출범위는 필수입니다');
-        return;
-      }
-      if (values.thumbnailUrl === '') {
-        await alert('썸네일은 필수입니다');
-        return;
-      }
-      if (values.contractDate === null) {
-        await alert('계약일은 필수입니다');
-        return;
-      }
-      if (values.startDate === null) {
-        await alert('게시 시작일은 필수입니다');
-        return;
-      }
-      if (values.endDate === null) {
-        await alert('게시 종료일은 필수입니다');
-        return;
-      }
-      if (values.endDate < values.startDate) {
-        await alert('종료일은 시작일 이후여야 합니다');
-        return;
-      }
-
-      try {
-        if (isNew) {
-          await createSalesAgencyProductBoard({
-            boardPostCreateRequest: {
-              boardType: BoardType.SALES_AGENCY,
-              userId: session!.userId,
-              nickname: session!.name,
-              hiddenNickname: false,
-              title: values.productName,
-              content: editor.getHTML(),
-              parentId: null,
-              isExposed: values.isExposed,
-              exposureRange: values.exposureRange,
-              editorFileIds: editorAttachments.map(image => image.s3fileId),
-              noticeProperties: null,
-            },
-            salesAgencyProductCreateRequest: {
-              clientName: values.clientName,
-              productName: values.productName,
-              contractDate: formatYyyyMmDd(values.contractDate!),
-              videoUrl: values.videoUrl,
-              note: values.note,
-              startAt: formatYyyyMmDd(values.startDate!),
-              endAt: formatYyyyMmDd(values.endDate!),
-              quantity: 1,
-            },
-            thumbnail: values.thumbnail!,
-            files: [],
-          });
-          enqueueSnackbar('영업대행상품이 등록되었습니다.', { variant: 'success' });
-          navigate('/admin/sales-agency-products');
-        } else {
-          await updateSalesAgencyProductBoard(salesAgencyProductId, {
-            boardPostUpdateRequest: {
-              title: values.productName,
-              content: editor.getHTML(),
-              hiddenNickname: null,
-              isBlind: null,
-              isExposed: values.isExposed,
-              exposureRange: values.exposureRange,
-              keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
-              editorFileIds: editorAttachments.map(attachment => attachment.s3fileId),
-              noticeProperties: null,
-            },
-            salesAgencyProductUpdateRequest: {
-              clientName: values.clientName,
-              productName: values.productName,
-              contractDate: formatYyyyMmDd(values.contractDate!),
-              videoUrl: values.videoUrl,
-              note: values.note,
-              startAt: formatYyyyMmDd(values.startDate!),
-              endAt: formatYyyyMmDd(values.endDate!),
-              quantity: null,
-            },
-            thumbnail: values.thumbnail ?? undefined,
-          });
-          enqueueSnackbar('영업대행상품이 수정되었습니다.', { variant: 'success' });
-          navigate(`/admin/sales-agency-products/${salesAgencyProductId}`);
-        }
-      } catch (error) {
-        console.error('Failed to save sales agency product:', error);
-      }
-    },
-  });
 
   useEffect(() => {
     if (!isNew) {
@@ -188,24 +70,6 @@ export default function MpAdminSalesAgencyProductEdit() {
     try {
       const detail = await getSalesAgencyProductDetails(salesAgencyProductId);
       setDetail(detail);
-
-      formik.setValues({
-        clientName: detail.clientName,
-        productName: detail.productName,
-        isExposed: detail.boardPostDetail.isExposed,
-        exposureRange: detail.boardPostDetail.exposureRange,
-        thumbnail: null,
-        thumbnailUrl: detail.thumbnailUrl,
-        videoUrl: detail.videoUrl ?? '',
-        contractDate: DateFix(detail.contractDate),
-        note: detail.note ?? '',
-        startDate: DateFix(detail.startDate),
-        endDate: DateFix(detail.endDate),
-        attachedFiles: detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT),
-        newFiles: [],
-      });
-      editor.commands.setContent(detail.boardPostDetail.content);
-      setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
     } catch (error) {
       console.error('Failed to load product detail:', error);
       enqueueSnackbar('영업대행상품 정보를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -376,6 +240,13 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
 
   useEffect(() => {
     if (detail !== null) {
+      editor.commands.setContent(detail.boardPostDetail.content);
+      setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
+    }
+  }, [detail, editor]);
+
+  useEffect(() => {
+    if (detail !== null) {
       formik.setValues({
         clientName: detail.clientName,
         productName: detail.productName,
@@ -391,9 +262,6 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
         attachedFiles: detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT),
         newFiles: [],
       });
-
-      editor.commands.setContent(detail.boardPostDetail.content);
-      setEditorAttachments(detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
     }
   }, [detail]);
 
