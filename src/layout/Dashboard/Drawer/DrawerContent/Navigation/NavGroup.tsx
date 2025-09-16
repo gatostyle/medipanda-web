@@ -34,7 +34,6 @@ import { More2 } from 'iconsax-react';
 
 // types
 import { NavItemType } from 'types/menu';
-import { useMpMenu } from '@/medipanda/hooks/useMpMenu';
 
 interface Props {
   item: NavItemType;
@@ -95,7 +94,7 @@ export default function NavGroup({
   const { pathname } = useLocation();
 
   const { mode, menuCaption } = useConfig();
-  const { menuOrientation } = useMpMenu();
+  const menuOrientation = MenuOrientation.VERTICAL as MenuOrientation;
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
 

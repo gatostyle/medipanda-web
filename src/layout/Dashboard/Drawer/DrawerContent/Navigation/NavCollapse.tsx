@@ -31,7 +31,6 @@ import { ArrowDown2, ArrowUp2, ArrowRight2, Copy } from 'iconsax-react';
 
 // types
 import { NavItemType } from 'types/menu';
-import { useMpMenu } from '@/medipanda/hooks/useMpMenu';
 
 type VirtualElement = {
   getBoundingClientRect: () => DOMRect;
@@ -76,7 +75,7 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
   const { mode } = useConfig();
-  const { menuOrientation } = useMpMenu();
+  const menuOrientation = MenuOrientation.VERTICAL as MenuOrientation;
 
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<string | null | undefined>(null);

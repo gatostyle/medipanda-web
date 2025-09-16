@@ -21,7 +21,6 @@ import { useGetMenuMaster } from 'api/menu';
 
 // types
 import { LinkTarget, NavItemType } from 'types/menu';
-import { useMpMenu } from '@/medipanda/hooks/useMpMenu';
 
 interface Props {
   item: NavItemType;
@@ -38,7 +37,7 @@ export default function NavItem({ item, level, isParents = false }: Props) {
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
   const { mode } = useConfig();
-  const { menuOrientation } = useMpMenu();
+  const menuOrientation = MenuOrientation.VERTICAL as MenuOrientation;
 
   let itemTarget: LinkTarget = '_self';
   if (item.target) {

@@ -15,7 +15,6 @@ import MainCard from 'components/MainCard';
 
 import { MenuOrientation, ThemeDirection } from 'config';
 import useConfig from 'hooks/useConfig';
-import { useMpMenu } from '@/medipanda/hooks/useMpMenu';
 
 // assets
 import defaultLayout from 'assets/images/customization/ltr.svg';
@@ -29,7 +28,7 @@ export default function ThemeLayout() {
   const downLG = useMediaQuery(theme.breakpoints.down('lg'));
 
   const { miniDrawer, themeDirection, onChangeDirection, onChangeMiniDrawer } = useConfig();
-  const { menuOrientation } = useMpMenu();
+  const menuOrientation = MenuOrientation.VERTICAL as MenuOrientation;
 
   let initialTheme = 'default';
   if (miniDrawer === true) initialTheme = 'mini';

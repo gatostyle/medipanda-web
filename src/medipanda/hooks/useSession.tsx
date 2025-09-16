@@ -8,11 +8,9 @@ import {
   whoAmI,
   Role,
 } from '@/backend';
-import { MenuOrientation } from '@/config';
 import { encryptRSA } from '@/lib/rsa';
-import { filterMenuByPermissions, mpAdminMenu } from '@/medipanda/menu-items';
+import { MenuItem, filterMenuByPermissions, menuItems } from '@/medipanda/menus';
 import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
-import { useMpMenu } from './useMpMenu';
 
 declare global {
   interface Window {
@@ -22,6 +20,7 @@ declare global {
 
 const initialState = {
   session: null as MemberDetailsResponse | null,
+  menus: [] as MenuItem[],
   isLoading: true,
   login: Promise.resolve as (userId: string, password: string) => Promise<void>,
   logout: Promise.resolve as () => Promise<void>,
@@ -30,9 +29,9 @@ const initialState = {
 const SessionContext = createContext(initialState);
 
 export function SessionProvider({ children }: { children: ReactNode }) {
-  const { setMenuItems, setMenuOrientation } = useMpMenu();
   const [session, setSession] = useState(initialState.session);
   const [isLoading, setIsLoading] = useState(true);
+  const [menus, setMenus] = useState<MenuItem[]>([]);
 
   const getSession = async () => {
     const member = await whoAmI();
@@ -45,13 +44,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     if (!isSuperAdmin(member)) {
       const permissions = (await getPermissions(member.userId)).permissions;
 
-      const filteredMenu = filterMenuByPermissions(mpAdminMenu, permissions);
-      setMenuItems(filteredMenu);
+      setMenus(filterMenuByPermissions(menuItems, permissions));
     } else {
-      setMenuItems(mpAdminMenu);
+      setMenus(menuItems);
     }
-
-    setMenuOrientation(MenuOrientation.VERTICAL);
 
     clearInterval(window.refreshTokenRotateInterval);
     window.refreshTokenRotateInterval = setInterval(
@@ -126,6 +122,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     <SessionContext.Provider
       value={{
         session,
+        menus,
         isLoading,
         login,
         logout,

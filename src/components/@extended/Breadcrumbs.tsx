@@ -1,3 +1,5 @@
+import { useSession } from '@/medipanda/hooks/useSession';
+import { isLeafMenuItem, MenuItem } from '@/medipanda/menus';
 import { CSSProperties, ReactElement, useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 
@@ -11,7 +13,6 @@ import MuiBreadcrumbs from '@mui/material/Breadcrumbs';
 // project-imports
 import MainCard from 'components/MainCard';
 import { ThemeDirection } from 'config';
-import { useMpMenu } from '@/medipanda/hooks/useMpMenu';
 
 // assets
 import { ArrowRight2, Buildings2, Home3 } from 'iconsax-react';
@@ -69,7 +70,7 @@ export default function Breadcrumbs({
   const location = useLocation();
   const [main, setMain] = useState<NavItemType | undefined>();
   const [item, setItem] = useState<NavItemType>();
-  const { menuItems } = useMpMenu();
+  const { menus } = useSession();
 
   const iconSX = {
     marginRight: theme.direction === ThemeDirection.RTL ? 0 : theme.spacing(0.75),
@@ -87,7 +88,7 @@ export default function Breadcrumbs({
   }
 
   useEffect(() => {
-    menuItems.map((menu: NavItemType) => {
+    menus.map(menuToNavItem).map(menu => {
       if (menu.type && menu.type === 'group') {
         if (menu?.url && menu.url === customLocation) {
           setMain(menu);
@@ -98,7 +99,29 @@ export default function Breadcrumbs({
       }
       return false;
     });
-  });
+  }, [menus, customLocation]);
+
+  const menuToNavItem = (menu: MenuItem): NavItemType => {
+    if (isLeafMenuItem(menu)) {
+      return {
+        id: menu.path,
+        title: menu.label,
+        type: 'item',
+        url: menu.path,
+        icon: menu.icon,
+        permission: menu.permission,
+      };
+    } else {
+      return {
+        id: Math.random().toString(),
+        title: menu.label,
+        type: 'collapse',
+        icon: menu.icon,
+        permission: menu.permission,
+        children: menu.children.map(child => menuToNavItem(child)),
+      };
+    }
+  };
 
   // set active item state
   const getCollapse = (menu: NavItemType) => {

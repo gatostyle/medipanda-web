@@ -1,3 +1,5 @@
+import { useSession } from '@/medipanda/hooks/useSession';
+import { isLeafMenuItem, MenuItem } from '@/medipanda/menus';
 import { Fragment, useLayoutEffect, useState } from 'react';
 
 // material-ui
@@ -16,7 +18,6 @@ import { useGetMenuMaster } from 'api/menu';
 
 // types
 import { NavItemType } from 'types/menu';
-import { useMpMenu } from '@/medipanda/hooks/useMpMenu';
 
 // ==============================|| DRAWER CONTENT - NAVIGATION ||============================== //
 
@@ -25,7 +26,8 @@ export default function Navigation() {
 
   const downLG = useMediaQuery(theme.breakpoints.down('lg'));
 
-  const { menuOrientation, menuItems: globalMenuItems } = useMpMenu();
+  const menuOrientation = MenuOrientation.VERTICAL as MenuOrientation;
+  const { menus } = useSession();
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
 
@@ -36,8 +38,39 @@ export default function Navigation() {
 
   // let dashboardMenu = MenuFromAPI();
   useLayoutEffect(() => {
-    setMenuItems({ items: [...globalMenuItems] });
-  }, [globalMenuItems]);
+    setMenuItems({
+      items: [
+        {
+          id: 'MENU',
+          title: 'MENU',
+          type: 'item',
+          children: menus.map(menuToNavItem),
+        },
+      ],
+    });
+  }, [menus]);
+
+  const menuToNavItem = (menu: MenuItem): NavItemType => {
+    if (isLeafMenuItem(menu)) {
+      return {
+        id: menu.path,
+        title: menu.label,
+        type: 'item',
+        url: menu.path,
+        icon: menu.icon,
+        permission: menu.permission,
+      };
+    } else {
+      return {
+        id: Math.random().toString(),
+        title: menu.label,
+        type: 'collapse',
+        icon: menu.icon,
+        permission: menu.permission,
+        children: menu.children.map(child => menuToNavItem(child)),
+      };
+    }
+  };
 
   const isHorizontal = menuOrientation === MenuOrientation.HORIZONTAL && !downLG;
 

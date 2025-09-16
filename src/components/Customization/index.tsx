@@ -24,9 +24,8 @@ import MainCard from 'components/MainCard';
 import IconButton from 'components/@extended/IconButton';
 import SimpleBar from 'components/third-party/SimpleBar';
 
-import { HEADER_HEIGHT } from 'config';
+import { HEADER_HEIGHT, MenuOrientation } from 'config';
 import useConfig from 'hooks/useConfig';
-import { useMpMenu } from '@/medipanda/hooks/useMpMenu';
 
 // assets
 import { Add, Setting2 } from 'iconsax-react';
@@ -36,7 +35,7 @@ import { Add, Setting2 } from 'iconsax-react';
 export default function Customization() {
   const theme = useTheme();
   const { container, mode, presetColor, miniDrawer, themeDirection, menuCaption, themeContrast, fontFamily } = useConfig();
-  const { menuOrientation } = useMpMenu();
+  const menuOrientation = MenuOrientation.VERTICAL as MenuOrientation;
 
   // eslint-disable-next-line
   const themeLayout = useMemo(() => <ThemeLayout />, [miniDrawer, themeDirection]);
