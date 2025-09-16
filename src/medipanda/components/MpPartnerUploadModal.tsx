@@ -1,5 +1,4 @@
 import { ContractStatus, MemberResponse, uploadPartnersExcel } from '@/backend';
-import { MpMemberSelectModal } from '@/medipanda/components/MpMemberSelectModal';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { AttachFile as AttachFileIcon, UploadFile } from '@mui/icons-material';
 import {
@@ -20,6 +19,7 @@ import { SearchNormal1 } from 'iconsax-react';
 import { useSnackbar } from 'notistack';
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { MpMemberSelectModal } from './MpMemberSelectModal';
 
 export interface MpPartnerUploadModalProps {
   open: boolean;

@@ -1,4 +1,4 @@
-import { FixedLinearProgress } from '@/lib/react/FixedLinearProgress';
+import { FixedLinearProgress } from './FixedLinearProgress';
 import { useEffect, useState } from 'react';
 import { useRouteError } from 'react-router-dom';
 

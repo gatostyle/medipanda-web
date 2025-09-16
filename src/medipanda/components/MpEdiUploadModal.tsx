@@ -1,5 +1,5 @@
 import { DateString, MemberResponse, uploadEdiZip } from '@/backend';
-import { MpMemberSelectModal } from '@/medipanda/components/MpMemberSelectModal';
+import { MpMemberSelectModal } from './MpMemberSelectModal';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { UploadFile } from '@mui/icons-material';
 import {

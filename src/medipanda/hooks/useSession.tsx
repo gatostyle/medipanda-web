@@ -10,9 +10,9 @@ import {
 } from '@/backend';
 import { MenuOrientation } from '@/config';
 import { encryptRSA } from '@/lib/rsa';
-import { useMpMenu } from '@/medipanda/hooks/useMpMenu';
 import { filterMenuByPermissions, mpAdminMenu } from '@/medipanda/menu-items';
 import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
+import { useMpMenu } from './useMpMenu';
 
 declare global {
   interface Window {

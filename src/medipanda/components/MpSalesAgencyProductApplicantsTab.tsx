@@ -10,7 +10,6 @@ import {
 import ScrollX from '@/components/ScrollX';
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
-import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
@@ -36,6 +35,7 @@ import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-react';
 import { useEffect, useRef, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from './SearchFilterBar';
 
 export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAgencyProductDetailsResponse }) {
   const navigate = useNavigate();
