@@ -1,4 +1,4 @@
-import { Button, FormHelperText, IconButton, InputAdornment, Stack, TextField } from '@mui/material';
+import { Box, Button, Card, FormHelperText, IconButton, InputAdornment, Stack, TextField } from '@mui/material';
 import { isAxiosError } from 'axios';
 import { useFormik } from 'formik';
 import { Eye, EyeSlash } from 'iconsax-react';
@@ -6,7 +6,6 @@ import { NotAdminError, useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { SyntheticEvent, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import AuthWrapper from 'sections/auth/AuthWrapper';
 import * as Yup from 'yup';
 
 export default function MpLogin() {
@@ -70,51 +69,109 @@ export default function MpLogin() {
   };
 
   return (
-    <AuthWrapper>
-      <Stack component='form' noValidate onSubmit={handleSubmit} sx={{ width: '415px', gap: 3 }}>
-        <h3 style={{ textAlign: 'center' }}>로그인</h3>
-        <TextField
-          type='userId'
-          value={values.userId}
-          name='userId'
-          onBlur={handleBlur}
-          onChange={handleChange}
-          label='이메일'
-          fullWidth
-          error={Boolean(touched.userId && errors.userId)}
-          helperText={touched.userId ? errors.userId : ''}
-        />
-        <TextField
-          fullWidth
-          type={showPassword ? 'text' : 'password'}
-          value={values.password}
-          name='password'
-          onBlur={handleBlur}
-          onChange={handleChange}
-          error={Boolean(touched.password && errors.password)}
-          helperText={touched.password ? errors.password : ''}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position='end'>
-                <IconButton
-                  aria-label='toggle password visibility'
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge='end'
-                  color='secondary'
-                >
-                  {showPassword ? <Eye /> : <EyeSlash />}
-                </IconButton>
-              </InputAdornment>
-            ),
+    <Box sx={{ minHeight: '100vh' }}>
+      <Box
+        sx={{
+          position: 'absolute',
+          filter: 'blur(140px)',
+          zIndex: -1,
+          bottom: 0,
+          left: 0,
+          top: 0,
+          right: 0,
+          overflow: 'hidden',
+          '&:before': {
+            content: `" "`,
+            width: 300,
+            height: 300,
+            borderRadius: '50%',
+            bgcolor: 'warning.lighter',
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            opacity: 1,
+          },
+        }}
+      >
+        <Box
+          sx={{
+            width: 250,
+            height: 250,
+            borderRadius: '50%',
+            bgcolor: 'success.lighter',
+            ml: 20,
+            position: 'absolute',
+            bottom: 180,
+            opacity: 1,
           }}
-          label='비밀번호'
         />
-        {errors.submit && <FormHelperText error>{errors.submit}</FormHelperText>}
-        <Button disabled={isSubmitting} fullWidth size='large' type='submit' variant='contained' color='primary'>
-          로그인
-        </Button>
+        <Box
+          sx={{
+            width: 200,
+            height: 200,
+            borderRadius: '50%',
+            bgcolor: 'error.light',
+            position: 'absolute',
+            bottom: 0,
+            left: -50,
+            opacity: 1,
+          }}
+        />
+      </Box>
+      <Stack
+        sx={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
+        }}
+      >
+        <Card sx={{ padding: 3 }}>
+          <Stack component='form' noValidate onSubmit={handleSubmit} sx={{ width: '415px', gap: 3 }}>
+            <h3 style={{ textAlign: 'center' }}>로그인</h3>
+            <TextField
+              type='userId'
+              value={values.userId}
+              name='userId'
+              onBlur={handleBlur}
+              onChange={handleChange}
+              label='이메일'
+              fullWidth
+              error={Boolean(touched.userId && errors.userId)}
+              helperText={touched.userId ? errors.userId : ''}
+            />
+            <TextField
+              fullWidth
+              type={showPassword ? 'text' : 'password'}
+              value={values.password}
+              name='password'
+              onBlur={handleBlur}
+              onChange={handleChange}
+              error={Boolean(touched.password && errors.password)}
+              helperText={touched.password ? errors.password : ''}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <IconButton
+                      aria-label='toggle password visibility'
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge='end'
+                      color='secondary'
+                    >
+                      {showPassword ? <Eye /> : <EyeSlash />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              label='비밀번호'
+            />
+            {errors.submit && <FormHelperText error>{errors.submit}</FormHelperText>}
+            <Button disabled={isSubmitting} fullWidth size='large' type='submit' variant='contained' color='primary'>
+              로그인
+            </Button>
+          </Stack>
+        </Card>
       </Stack>
-    </AuthWrapper>
+    </Box>
   );
 }

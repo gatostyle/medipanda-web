@@ -1,11 +1,11 @@
 import { AdminPermission } from '@/backend';
 import { Base64ErrorBoundary } from '@/lib/react/Base64ErrorBoundary';
 import { FixedLinearProgress } from '@/lib/react/FixedLinearProgress';
-import AuthLayout from 'layout/Auth';
+import { MpGuestGuard } from '@/medipanda/utils/route-guard';
 import DashboardLayout from 'layout/Dashboard';
 import { MpAdminGuard } from '@/medipanda/utils/route-guard/MpAdminGuard';
 import { ElementType, lazy, Suspense } from 'react';
-import { Navigate, RouteObject } from 'react-router-dom';
+import { Navigate, Outlet, RouteObject } from 'react-router-dom';
 
 const Loadable = (Component: ElementType) => (props: any) => (
   <Suspense fallback={<FixedLinearProgress />}>
@@ -65,15 +65,17 @@ const MpAdminCommunityPostDetail = Loadable(lazy(() => import('medipanda/pages/M
 
 const authRoutes: RouteObject[] = [
   {
-    path: '/',
-    element: <AuthLayout />,
+    element: (
+      <MpGuestGuard>
+        <Outlet />
+      </MpGuestGuard>
+    ),
     children: [
       {
         path: 'login',
         element: <MpLogin />,
       },
       { path: '', element: <Navigate to='/login' /> },
-      { path: '*', element: <MaintenanceError /> },
     ],
   },
   {
