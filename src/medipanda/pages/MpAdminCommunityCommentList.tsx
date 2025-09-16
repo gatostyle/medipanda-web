@@ -287,6 +287,7 @@ export default function MpAdminCommunityCommentList() {
               <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
                 <MenuItem value={'nickname'}>닉네임</MenuItem>
                 <MenuItem value={'userId'}>아이디</MenuItem>
+                <MenuItem value={'member'}>회원명</MenuItem>
               </Select>
             </FormControl>
           </SearchFilterItem>

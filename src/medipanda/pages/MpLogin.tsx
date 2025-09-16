@@ -1,7 +1,5 @@
-import { Button, FormHelperText, InputAdornment, Stack } from '@mui/material';
-import TextField from '@mui/material/TextField';
+import { Button, FormHelperText, IconButton, InputAdornment, Stack, TextField } from '@mui/material';
 import { isAxiosError } from 'axios';
-import IconButton from 'components/@extended/IconButton';
 import { useFormik } from 'formik';
 import { Eye, EyeSlash } from 'iconsax-react';
 import { NotAdminError, useSession } from '@/medipanda/hooks/useSession';

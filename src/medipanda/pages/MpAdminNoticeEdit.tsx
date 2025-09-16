@@ -17,11 +17,11 @@ import {
   Radio,
   RadioGroup,
   Select,
+  Stack,
   Switch,
   TextField,
   Typography,
 } from '@mui/material';
-import Stack from '@mui/material/Stack';
 import { EditorContent } from '@tiptap/react';
 import { useFormik } from 'formik';
 import {

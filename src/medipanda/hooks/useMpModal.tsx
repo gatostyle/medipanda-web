@@ -1,6 +1,5 @@
 import { Info } from '@mui/icons-material';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
-import Stack from '@mui/material/Stack';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack } from '@mui/material';
 import { createContext, ReactNode, useCallback, useContext, useState } from 'react';
 
 interface MpModalContextType {

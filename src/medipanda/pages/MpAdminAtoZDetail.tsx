@@ -7,6 +7,7 @@ import {
   Chip,
   CircularProgress,
   Link,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -14,7 +15,6 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import Stack from '@mui/material/Stack';
 import { EditorContent } from '@tiptap/react';
 import { BoardDetailsResponse, getBoardDetails, PostAttachmentType } from '@/backend';
 import { useSnackbar } from 'notistack';

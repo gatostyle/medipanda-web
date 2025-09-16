@@ -6,8 +6,10 @@ import {
   Button,
   Card,
   CircularProgress,
+  Divider,
   FormControlLabel,
   Link,
+  Stack,
   Switch,
   Table,
   TableBody,
@@ -16,8 +18,6 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import Divider from '@mui/material/Divider';
-import Stack from '@mui/material/Stack';
 import { EditorContent } from '@tiptap/react';
 import {
   BoardDetailsResponse,
