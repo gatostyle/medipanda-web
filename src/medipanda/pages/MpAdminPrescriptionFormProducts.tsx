@@ -41,7 +41,6 @@ import { Sequenced } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
-import { ArrayElement } from 'type-fest/source/internal';
 import { MpPartnerProductSelectModal } from '../components/MpPartnerProductSelectModal';
 import { DateFix } from '../utils/dateFormat';
 
