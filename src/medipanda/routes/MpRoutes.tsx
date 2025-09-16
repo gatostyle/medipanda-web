@@ -58,7 +58,7 @@ const MpAdminEventList = Loadable(lazy(() => import('medipanda/pages/MpAdminEven
 const MpAdminEventDetail = Loadable(lazy(() => import('medipanda/pages/MpAdminEventDetail')));
 const MpAdminEventEdit = Loadable(lazy(() => import('medipanda/pages/MpAdminEventEdit')));
 
-const MaintenanceError = Loadable(lazy(() => import('pages/maintenance/error/404')));
+const Error404 = Loadable(lazy(() => import('medipanda/pages/Error404')));
 
 const MpAdminCommunityUserList = Loadable(lazy(() => import('medipanda/pages/MpAdminCommunityUserList')));
 const MpAdminCommunityPostDetail = Loadable(lazy(() => import('medipanda/pages/MpAdminCommunityPostDetail')));
@@ -517,6 +517,6 @@ const adminRoute: RouteObject = {
 
 export const MpRoutes: RouteObject = {
   path: '/',
-  children: [...authRoutes, adminRoute, { path: '*', element: <MaintenanceError /> }],
+  children: [...authRoutes, adminRoute, { path: '*', element: <Error404 /> }],
   errorElement: <Base64ErrorBoundary />,
 };
