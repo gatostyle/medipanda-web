@@ -69,7 +69,8 @@ export default function MpAdminPartnerEdit() {
 
       formik.setValues({
         drugCompany: { id: -1, name: detail.drugCompanyName, code: '' },
-        member: null,
+        memberId: '',
+        memberName: detail.memberName,
         companyName: detail.companyName,
         contractType: detail.contractType,
         institutionCode: detail.institutionCode,
@@ -93,7 +94,8 @@ export default function MpAdminPartnerEdit() {
   const formik = useFormik({
     initialValues: {
       drugCompany: null as DrugCompanyResponse | null,
-      member: null as MemberResponse | null,
+      memberId: '',
+      memberName: '',
       companyName: '',
       contractType: ContractStatus.CONTRACT as keyof typeof ContractStatus,
       institutionCode: '',
@@ -111,8 +113,18 @@ export default function MpAdminPartnerEdit() {
         return;
       }
 
-      if (values.member === null) {
+      if (values.memberName === '') {
         await alert('사용자를 선택하세요.');
+        return;
+      }
+
+      if (values.institutionName === '') {
+        await alert('거래처명을 입력하세요.');
+        return;
+      }
+
+      if (values.businessNumber === '') {
+        await alert('사업자등록번호를 입력하세요.');
         return;
       }
 
@@ -120,7 +132,7 @@ export default function MpAdminPartnerEdit() {
         if (isNew) {
           await createPartner({
             drugCompanyId: values.drugCompany!.id,
-            userId: values.member!.userId,
+            userId: values.memberId,
             drugCompany: values.drugCompany!.name,
             companyName: values.companyName,
             contractType: values.contractType!,
@@ -174,7 +186,8 @@ export default function MpAdminPartnerEdit() {
   };
 
   const handleMemberSelect = (member: MemberResponse) => {
-    formik.setFieldValue('member', member);
+    formik.setFieldValue('memberId', member.id);
+    formik.setFieldValue('memberName', member.name);
     formik.setFieldValue('companyName', member.companyName);
 
     setMemberSelectModalOpen(false);
@@ -216,9 +229,9 @@ export default function MpAdminPartnerEdit() {
 
           <TextField
             fullWidth
-            label={(formik.values.member?.name ?? '') !== '' ? '사용자명' : ''}
-            placeholder={(formik.values.member?.name ?? '') === '' ? '사용자명' : ''}
-            value={formik.values.member?.name ?? ''}
+            label={formik.values.memberName !== '' ? '사용자명' : ''}
+            placeholder={formik.values.memberName === '' ? '사용자명' : ''}
+            value={formik.values.memberName}
             required
             InputProps={{
               readOnly: true,
@@ -276,11 +289,30 @@ export default function MpAdminPartnerEdit() {
             onChange={formik.handleChange}
             sx={{ flex: '1 0' }}
           >
-            <MenuItem value=''>선택</MenuItem>
-            <MenuItem value={'피부과'}>피부과</MenuItem>
+            <MenuItem value={'세미병원'}>세미병원</MenuItem>
+            <MenuItem value={'종합병원'}>종합병원</MenuItem>
+            <MenuItem value={'보건소'}>보건소</MenuItem>
+            <MenuItem value={'가정의학과'}>가정의학과</MenuItem>
             <MenuItem value={'내과'}>내과</MenuItem>
-            <MenuItem value={'정형외과'}>정형외과</MenuItem>
+            <MenuItem value={'마취의학과'}>마취의학과</MenuItem>
+            <MenuItem value={'마취통증의학과'}>마취통증의학과</MenuItem>
+            <MenuItem value={'비뇨기과'}>비뇨기과</MenuItem>
+            <MenuItem value={'산부인과'}>산부인과</MenuItem>
+            <MenuItem value={'성형외과'}>성형외과</MenuItem>
             <MenuItem value={'소아과'}>소아과</MenuItem>
+            <MenuItem value={'신경과'}>신경과</MenuItem>
+            <MenuItem value={'신경외과'}>신경외과</MenuItem>
+            <MenuItem value={'신경정신과'}>신경정신과</MenuItem>
+            <MenuItem value={'안과'}>안과</MenuItem>
+            <MenuItem value={'일반의원'}>일반의원</MenuItem>
+            <MenuItem value={'일반외과'}>일반외과</MenuItem>
+            <MenuItem value={'이비인후과'}>이비인후과</MenuItem>
+            <MenuItem value={'재활의학과'}>재활의학과</MenuItem>
+            <MenuItem value={'정신과'}>정신과</MenuItem>
+            <MenuItem value={'정형외과'}>정형외과</MenuItem>
+            <MenuItem value={'치과'}>치과</MenuItem>
+            <MenuItem value={'통증의학과'}>통증의학과</MenuItem>
+            <MenuItem value={'피부과'}>피부과</MenuItem>
           </TextField>
         </Stack>
 
@@ -353,7 +385,14 @@ export default function MpAdminPartnerEdit() {
         onSelect={handleDrugCompanySelect}
       />
 
-      <MpMemberSelectModal open={memberSelectModalOpen} onClose={() => setMemberSelectModalOpen(false)} onSelect={handleMemberSelect} />
+      <MpMemberSelectModal
+        open={memberSelectModalOpen}
+        onClose={() => setMemberSelectModalOpen(false)}
+        onSelect={handleMemberSelect}
+        additionalFilter={{
+          contractStatus: ContractStatus.CONTRACT,
+        }}
+      />
     </Stack>
   );
 }
