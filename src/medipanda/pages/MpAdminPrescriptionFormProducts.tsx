@@ -1,5 +1,4 @@
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
-import { OcrResponse } from '@/ocr';
 import {
   Box,
   Button,
@@ -28,6 +27,7 @@ import {
   getAttachedEdiFiles,
   getPartnerProducts,
   getPrescriptionPartner,
+  OcrResponse,
   PartnerResponse,
   PrescriptionPartnerProductResponse,
   PrescriptionProductItem,
