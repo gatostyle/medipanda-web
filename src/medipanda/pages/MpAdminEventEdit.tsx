@@ -45,7 +45,6 @@ export default function MpAdminEventEdit() {
       description: '',
       videoUrl: '',
       note: '',
-      internalName: '',
       attachedFiles: [] as AttachmentResponse[],
       newFiles: [] as File[],
     },
@@ -154,7 +153,6 @@ export default function MpAdminEventEdit() {
         description: detail.description,
         videoUrl: detail.videoUrl ?? '',
         note: detail.note ?? '',
-        internalName: '',
         attachedFiles: detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT),
         newFiles: [],
       });
@@ -293,8 +291,6 @@ export default function MpAdminEventEdit() {
               </Box>
             )}
           </Stack>
-
-          <TextField name='internalName' label='썸네일' fullWidth value={formik.values.internalName} onChange={formik.handleChange} />
 
           <Stack sx={{ gap: 1 }}>
             <Typography variant='subtitle2' color='text.secondary'>
