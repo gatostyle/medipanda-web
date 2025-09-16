@@ -1,7 +1,8 @@
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { useSession } from '@/medipanda/hooks/useSession';
-import { Box, Button, Card, CircularProgress, Stack, TextField, Typography } from '@mui/material';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import { Box, Button, Card, CircularProgress, Link, Stack, TextField, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import { useFormik } from 'formik';
 import {
@@ -209,6 +210,31 @@ export default function MpAdminInquiryDetail() {
 
         <Stack sx={{ gap: 2 }}>
           <Typography variant='subtitle2' color='text.secondary'>
+            첨부파일
+          </Typography>
+          {detail.attachments
+            .filter(a => a.type === PostAttachmentType.ATTACHMENT)
+            .map(file => {
+              return (
+                <Box key={file.s3fileId} sx={{ mb: 1 }}>
+                  <Link
+                    href={file.fileUrl}
+                    download
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
+                    underline='hover'
+                  >
+                    <AttachFileIcon fontSize='small' />
+                    {file.originalFileName}
+                  </Link>
+                </Box>
+              );
+            })}
+        </Stack>
+
+        <Stack sx={{ gap: 2 }}>
+          <Typography variant='subtitle2' color='text.secondary'>
             문의시간
           </Typography>
           <TextField
@@ -237,18 +263,44 @@ export default function MpAdminInquiryDetail() {
         </Stack>
 
         {detail.children.length > 0 && (
-          <Stack sx={{ gap: 2 }}>
-            <Typography variant='subtitle2' color='text.secondary'>
-              답변시간
-            </Typography>
-            <TextField
-              fullWidth
-              size='small'
-              value={formatYyyyMmDdHhMm(detail.children[0].createdAt)}
-              InputProps={{ readOnly: true }}
-              sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
-            />
-          </Stack>
+          <>
+            <Stack sx={{ gap: 2 }}>
+              <Typography variant='subtitle2' color='text.secondary'>
+                첨부파일
+              </Typography>
+              {detail.children[0].attachments
+                .filter(a => a.type === PostAttachmentType.ATTACHMENT)
+                .map(file => {
+                  return (
+                    <Box key={file.s3fileId} sx={{ mb: 1 }}>
+                      <Link
+                        href={file.fileUrl}
+                        download
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
+                        underline='hover'
+                      >
+                        <AttachFileIcon fontSize='small' />
+                        {file.originalFileName}
+                      </Link>
+                    </Box>
+                  );
+                })}
+            </Stack>
+            <Stack sx={{ gap: 2 }}>
+              <Typography variant='subtitle2' color='text.secondary'>
+                답변시간
+              </Typography>
+              <TextField
+                fullWidth
+                size='small'
+                value={formatYyyyMmDdHhMm(detail.children[0].createdAt)}
+                InputProps={{ readOnly: true }}
+                sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
+              />
+            </Stack>
+          </>
         )}
 
         <Stack direction='row' sx={{ justifyContent: 'center', gap: 2 }}>

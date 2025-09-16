@@ -163,7 +163,7 @@ export default function MpAdminNoticeEdit() {
         exposureRange: detail.exposureRange,
         isTopFixed: detail.noticeProperties?.fixedTop || false,
         title: detail.title,
-        attachedFiles: detail.attachments,
+        attachedFiles: detail.attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT),
         newFiles: [],
       });
     } catch (error) {

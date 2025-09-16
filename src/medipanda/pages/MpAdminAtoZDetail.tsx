@@ -97,23 +97,25 @@ export default function MpAdminAtoZDetail() {
                   첨부파일
                 </TableCell>
                 <TableCell>
-                  {detail.attachments.map(file => {
-                    return (
-                      <Box key={file.s3fileId} sx={{ mb: 1 }}>
-                        <Link
-                          href={file.fileUrl}
-                          download
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
-                          underline='hover'
-                        >
-                          <AttachFileIcon fontSize='small' />
-                          {file.originalFileName}
-                        </Link>
-                      </Box>
-                    );
-                  })}
+                  {detail.attachments
+                    .filter(a => a.type === PostAttachmentType.ATTACHMENT)
+                    .map(file => {
+                      return (
+                        <Box key={file.s3fileId} sx={{ mb: 1 }}>
+                          <Link
+                            href={file.fileUrl}
+                            download
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
+                            underline='hover'
+                          >
+                            <AttachFileIcon fontSize='small' />
+                            {file.originalFileName}
+                          </Link>
+                        </Box>
+                      );
+                    })}
                 </TableCell>
               </TableRow>
               <TableRow>

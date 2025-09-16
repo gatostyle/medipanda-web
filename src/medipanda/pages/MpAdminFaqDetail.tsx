@@ -85,12 +85,12 @@ export default function MpAdminCustomerCenterFaqDetail() {
           <Typography variant='body2' color='text.secondary'>
             첨부파일
           </Typography>
-          {detail.attachments && detail.attachments.length > 0 ? (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              {detail.attachments.map((file, index) => {
-                return (
+          {detail.attachments
+            .filter(a => a.type === PostAttachmentType.ATTACHMENT)
+            .map(file => {
+              return (
+                <Box key={file.s3fileId} sx={{ mb: 1 }}>
                   <Link
-                    key={index}
                     href={file.fileUrl}
                     download
                     target='_blank'
@@ -99,14 +99,11 @@ export default function MpAdminCustomerCenterFaqDetail() {
                     underline='hover'
                   >
                     <AttachFileIcon fontSize='small' />
-                    {file.fileUrl}
+                    {file.originalFileName}
                   </Link>
-                );
-              })}
-            </Box>
-          ) : (
-            <Typography variant='body2'>-</Typography>
-          )}
+                </Box>
+              );
+            })}
         </Stack>
 
         <Stack direction='row'>

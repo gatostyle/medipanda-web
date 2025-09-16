@@ -156,12 +156,12 @@ export default function MpAdminNoticeDetail() {
                   첨부파일
                 </TableCell>
                 <TableCell colSpan={5}>
-                  {detail.attachments && detail.attachments.length > 0 ? (
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                      {detail.attachments.map((file, index) => {
-                        return (
+                  {detail.attachments
+                    .filter(a => a.type === PostAttachmentType.ATTACHMENT)
+                    .map(file => {
+                      return (
+                        <Box key={file.s3fileId} sx={{ mb: 1 }}>
                           <Link
-                            key={index}
                             href={file.fileUrl}
                             download
                             target='_blank'
@@ -172,12 +172,9 @@ export default function MpAdminNoticeDetail() {
                             <AttachFileIcon fontSize='small' />
                             {file.originalFileName}
                           </Link>
-                        );
-                      })}
-                    </Box>
-                  ) : (
-                    '-'
-                  )}
+                        </Box>
+                      );
+                    })}
                 </TableCell>
               </TableRow>
             </TableBody>
