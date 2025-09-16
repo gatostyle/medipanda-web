@@ -1,5 +1,5 @@
 import { Box, Stack, styled } from '@mui/material';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 interface SearchFilterItemProps {
   children: ReactNode;

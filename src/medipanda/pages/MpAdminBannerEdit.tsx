@@ -26,7 +26,7 @@ import {
   updateBanner,
 } from '@/backend';
 import { DateFix, formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminBannerEdit() {
@@ -148,7 +148,7 @@ export default function MpAdminBannerEdit() {
     }
   };
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setImageFile(file);

@@ -29,7 +29,7 @@ import {
 } from '@/backend';
 import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminFaqEdit() {
@@ -139,7 +139,7 @@ export default function MpAdminFaqEdit() {
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
     if (files.length > 0) {
       formik.setFieldValue('newFiles', [...formik.values.newFiles, ...files]);

@@ -15,7 +15,7 @@ import {
   updateEventBoard,
 } from '@/backend';
 import { useSnackbar } from 'notistack';
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import { useSession } from '../hooks/useSession';
 import { DateFix, formatYyyyMmDd } from '../utils/dateFormat';
@@ -171,7 +171,7 @@ export default function MpAdminEventEdit() {
     }
   };
 
-  const handleThumbnailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleThumbnailChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setThumbnailFile(file);

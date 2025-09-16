@@ -41,7 +41,7 @@ import {
 import { useSession } from '@/medipanda/hooks/useSession';
 import { SearchNormal1 } from 'iconsax-react';
 import { useSnackbar } from 'notistack';
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 
 export default function MpAdminNoticeEdit() {
@@ -175,7 +175,7 @@ export default function MpAdminNoticeEdit() {
     }
   };
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
     const MAX_FILE_SIZE = 1 * 1024 * 1024;
 

@@ -22,7 +22,7 @@ import {
 } from '@mui/material';
 import { SearchNormal1 } from 'iconsax-react';
 import { getPartners, PartnerResponse } from '@/backend';
-import React, { useCallback, useState } from 'react';
+import { KeyboardEvent, useCallback, useEffect, useState } from 'react';
 
 export interface MpPartnerSelectModalProps {
   open: boolean;
@@ -75,7 +75,7 @@ function MpPartnerSelectModalInternal({ open, onClose, onSelect }: MpPartnerSele
   }, [onClose]);
 
   const handleKeyPress = useCallback(
-    (event: React.KeyboardEvent) => {
+    (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
         handleSearch();
       }
@@ -83,7 +83,7 @@ function MpPartnerSelectModalInternal({ open, onClose, onSelect }: MpPartnerSele
     [handleSearch],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (open && !hasSearched) {
       handleSearch();
     }

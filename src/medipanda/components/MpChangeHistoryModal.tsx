@@ -17,7 +17,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 interface ChangeHistory {
   id: number;
@@ -46,7 +46,7 @@ function MpChangeHistoryModalInternal({ open, onClose, prescriptionFormId }: MpC
     }
   }, [open, prescriptionFormId]);
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+  const handlePageChange = (event: ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 

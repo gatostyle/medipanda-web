@@ -4,7 +4,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, LinearProgress, Typography } from '@mui/material';
 import { OcrResponse, requestOcr } from '@/ocr';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { MouseEvent, useCallback, useEffect, useRef, useState } from 'react';
 
 interface Point {
   x: number;
@@ -86,7 +86,7 @@ function MpOcrRequestModalInternal({ drugCompanyCode, open, onClose, onSubmit, i
     setAllPoints(updatedAllPoints);
   };
 
-  const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const handleCanvasClick = (e: MouseEvent<HTMLCanvasElement>) => {
     if (currentPoints.length >= 4 && draggedPointIndex === -1) return;
 
     const canvas = canvasRef.current;
@@ -104,7 +104,7 @@ function MpOcrRequestModalInternal({ drugCompanyCode, open, onClose, onSubmit, i
     }
   };
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const handleMouseDown = (e: MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -119,7 +119,7 @@ function MpOcrRequestModalInternal({ drugCompanyCode, open, onClose, onSubmit, i
     }
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const handleMouseMove = (e: MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 

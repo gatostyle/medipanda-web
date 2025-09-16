@@ -22,7 +22,7 @@ import {
 import { useFormik } from 'formik';
 import { SearchNormal1 } from 'iconsax-react';
 import { getProductSummaries, ProductSummaryResponse } from '@/backend';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export interface MpPartnerProductSelectModalProps {
   open: boolean;
