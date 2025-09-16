@@ -165,7 +165,7 @@ export default function MpAdminBannerEdit() {
       <Typography variant='h4'>배너등록</Typography>
 
       <Card sx={{ padding: 3 }}>
-        <Stack component='form' onSubmit={formik.handleSubmit} sx={{ gap: 2.5 }}>
+        <Stack sx={{ gap: 2.5 }}>
           <Stack spacing={0.5}>
             <Typography variant='body2' component='label'>
               배너위치 <span style={{ color: 'red' }}>*</span>
@@ -350,7 +350,7 @@ export default function MpAdminBannerEdit() {
             <Button
               variant='contained'
               size='medium'
-              type='submit'
+              onClick={formik.submitForm}
               sx={{
                 minWidth: 100,
               }}

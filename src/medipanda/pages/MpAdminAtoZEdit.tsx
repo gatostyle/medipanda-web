@@ -154,7 +154,7 @@ export default function MpAdminAtoZEdit() {
   }
 
   return (
-    <Stack component='form' onSubmit={formik.handleSubmit} sx={{ gap: 3 }}>
+    <Stack sx={{ gap: 3 }}>
       <Typography variant='h4'>CSO A TO Z {isNew ? '등록' : '상세'}</Typography>
 
       <Card component={Stack} sx={{ padding: 3, gap: 3 }}>
@@ -249,7 +249,7 @@ export default function MpAdminAtoZEdit() {
           </Button>
           <Button
             variant='contained'
-            type='submit'
+            onClick={formik.submitForm}
             sx={{ minWidth: 120 }}
             disabled={formik.isSubmitting}
             startIcon={formik.isSubmitting ? <CircularProgress size={20} /> : null}

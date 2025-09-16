@@ -401,7 +401,7 @@ export default function MpAdminPrescriptionFormProducts() {
     <Stack sx={{ gap: 3 }}>
       <Typography variant='h4'>거래처별 제품상세</Typography>
 
-      <Card sx={{ p: 3 }} component='form' onSubmit={formik.handleSubmit}>
+      <Card sx={{ p: 3 }}>
         <Box sx={{ mb: 3 }}>
           <Stack sx={{ gap: 2 }}>
             <Stack direction='row' sx={{ gap: 2 }}>
@@ -580,7 +580,7 @@ export default function MpAdminPrescriptionFormProducts() {
           <Button variant='outlined' size='large' component={RouterLink} to='/admin/prescription-forms' sx={{ minWidth: 120 }}>
             취소
           </Button>
-          <Button variant='contained' color='success' size='large' type='submit' sx={{ minWidth: 120 }}>
+          <Button variant='contained' color='success' size='large' onClick={formik.submitForm} sx={{ minWidth: 120 }}>
             저장
           </Button>
         </Stack>

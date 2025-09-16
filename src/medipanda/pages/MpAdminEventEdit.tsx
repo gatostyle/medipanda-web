@@ -196,7 +196,7 @@ export default function MpAdminEventEdit() {
       <Typography variant='h4'>이벤트 {isNew ? '등록' : '수정'}</Typography>
 
       <Card sx={{ padding: 3 }}>
-        <Stack component='form' onSubmit={formik.handleSubmit} sx={{ gap: 3 }}>
+        <Stack sx={{ gap: 3 }}>
           <Stack sx={{ gap: 1 }}>
             <Typography variant='subtitle2' color='text.secondary'>
               노출상태 *
@@ -320,7 +320,7 @@ export default function MpAdminEventEdit() {
             <Button variant='outlined' size='large' component={RouterLink} to={isNew ? '/admin/events' : `/admin/events/${eventId}`}>
               취소
             </Button>
-            <Button variant='contained' size='large' type='submit' disabled={formik.isSubmitting}>
+            <Button variant='contained' size='large' onClick={formik.submitForm} disabled={formik.isSubmitting}>
               저장
             </Button>
           </Stack>

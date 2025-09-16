@@ -293,7 +293,7 @@ export default function MpAdminMemberEdit() {
     <Stack sx={{ gap: 3 }}>
       <Typography variant='h4'>회원정보</Typography>
 
-      <Stack component='form' onSubmit={formik.handleSubmit} sx={{ gap: 3 }}>
+      <Stack sx={{ gap: 3 }}>
         <Stack direction='row' sx={{ gap: 3 }}>
           <Stack sx={{ flex: '1 0' }}>
             <Card component={Stack} sx={{ p: 3, gap: 3 }}>
@@ -602,7 +602,7 @@ export default function MpAdminMemberEdit() {
           <Button variant='outlined' size='large' component={RouterLink} to='/admin/members' sx={{ minWidth: 120 }}>
             취소
           </Button>
-          <Button variant='contained' size='large' type='submit' sx={{ minWidth: 120 }}>
+          <Button variant='contained' size='large' onClick={formik.submitForm} sx={{ minWidth: 120 }}>
             저장
           </Button>
         </Stack>

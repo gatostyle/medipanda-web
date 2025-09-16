@@ -234,7 +234,7 @@ export default function MpAdminProductEdit() {
     <Stack sx={{ gap: 3 }}>
       <Typography variant='h4'>제품정보 {isNew ? '등록' : '수정'}</Typography>
 
-      <Stack component='form' onSubmit={formik.handleSubmit} sx={{ gap: 3 }}>
+      <Stack sx={{ gap: 3 }}>
         <Card sx={{ p: 3 }}>
           <Stack sx={{ gap: 2 }}>
             <Stack direction='row'>
@@ -513,7 +513,7 @@ export default function MpAdminProductEdit() {
           <Button
             variant='contained'
             size='large'
-            type='submit'
+            onClick={formik.submitForm}
             sx={{ minWidth: 120 }}
             disabled={formik.isSubmitting}
             startIcon={formik.isSubmitting ? <CircularProgress size={20} /> : null}

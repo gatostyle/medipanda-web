@@ -341,7 +341,7 @@ export default function MpAdminPartnerEdit() {
           <Button variant='outlined' size='large' component={RouterLink} to='/admin/partners' sx={{ minWidth: 120 }}>
             취소
           </Button>
-          <Button variant='contained' size='large' type='submit' sx={{ minWidth: 120 }}>
+          <Button variant='contained' size='large' onClick={formik.submitForm} sx={{ minWidth: 120 }}>
             저장
           </Button>
         </Stack>
