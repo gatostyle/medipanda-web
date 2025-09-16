@@ -42,7 +42,7 @@ export default function MpAdminBannerEdit() {
 
   const formik = useFormik({
     initialValues: {
-      position: 'POPUP',
+      position: 'ALL',
       status: BannerStatus.VISIBLE as keyof typeof BannerStatus,
       scope: BannerScope.ENTIRE as keyof typeof BannerScope,
       title: '',
@@ -54,9 +54,33 @@ export default function MpAdminBannerEdit() {
       endHour: '0',
       endMinute: '0',
       displayOrder: 1,
-      note: '',
     },
     onSubmit: async values => {
+      if (values.title === '') {
+        await alert('배너제목을 입력하세요');
+        return;
+      }
+
+      if (!imageFile && isNew) {
+        await alert('배너이미지를 선택하세요');
+        return;
+      }
+
+      if (values.linkUrl === '') {
+        await alert('배너링크를 입력하세요');
+        return;
+      }
+
+      if (values.startDate === null) {
+        await alert('시작일을 선택하세요');
+        return;
+      }
+
+      if (values.endDate === null) {
+        await alert('종료일을 선택하세요');
+        return;
+      }
+
       try {
         const startDateStr = values.startDate ? formatYyyyMmDd(values.startDate) : '';
         const endDateStr = values.endDate ? formatYyyyMmDd(values.endDate) : '';
@@ -64,21 +88,6 @@ export default function MpAdminBannerEdit() {
         const endAt = `${endDateStr}T${values.endHour.padStart(2, '0')}:${values.endMinute.padStart(2, '0')}:00`;
 
         if (isNew) {
-          await updateBanner(bannerId, {
-            request: {
-              position: values.position,
-              status: values.status,
-              scope: values.scope,
-              title: values.title,
-              linkUrl: values.linkUrl,
-              startAt: new DateTimeString(startAt),
-              endAt: new DateTimeString(endAt),
-              displayOrder: values.displayOrder,
-            },
-            imageFile: imageFile ?? undefined,
-          });
-          await alert('배너가 수정되었습니다');
-        } else {
           await createBanner({
             request: {
               title: values.title,
@@ -93,6 +102,21 @@ export default function MpAdminBannerEdit() {
             imageFile: imageFile!,
           });
           await alert('배너가 등록되었습니다');
+        } else {
+          await updateBanner(bannerId, {
+            request: {
+              position: values.position,
+              status: values.status,
+              scope: values.scope,
+              title: values.title,
+              linkUrl: values.linkUrl,
+              startAt: new DateTimeString(startAt),
+              endAt: new DateTimeString(endAt),
+              displayOrder: values.displayOrder,
+            },
+            imageFile: imageFile ?? undefined,
+          });
+          await alert('배너가 수정되었습니다');
         }
         navigate('/admin/banners');
       } catch (error) {
@@ -134,7 +158,6 @@ export default function MpAdminBannerEdit() {
         endHour: endDate.getHours().toString(),
         endMinute: endDate.getMinutes().toString(),
         displayOrder: detail.displayOrder,
-        note: detail.note ?? '',
       });
 
       if (detail.imageUrl) {
@@ -172,10 +195,11 @@ export default function MpAdminBannerEdit() {
             </Typography>
             <FormControl fullWidth size='small'>
               <Select name='position' value={formik.values.position} onChange={formik.handleChange} displayEmpty>
+                <MenuItem value='ALL'>전체</MenuItem>
                 <MenuItem value='POPUP'>팝업배너</MenuItem>
                 <MenuItem value='PC_MAIN'>PC 메인</MenuItem>
                 <MenuItem value='PC_COMMUNITY'>PC 커뮤니티</MenuItem>
-                <MenuItem value='MOB_MAIN'>Mob 메인</MenuItem>
+                <MenuItem value='MOB_MAIN'>모바일 메인</MenuItem>
               </Select>
             </FormControl>
           </Stack>
@@ -186,9 +210,9 @@ export default function MpAdminBannerEdit() {
             </Typography>
             <FormControl fullWidth size='small'>
               <Select name='displayOrder' value={formik.values.displayOrder} onChange={formik.handleChange} displayEmpty>
-                {[1, 2, 3, 4, 5].map(num => (
-                  <MenuItem key={num} value={num}>
-                    {num}
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <MenuItem key={i + 1} value={i + 1}>
+                    {i + 1}
                   </MenuItem>
                 ))}
               </Select>
@@ -326,13 +350,6 @@ export default function MpAdminBannerEdit() {
                 </Select>
               </FormControl>
             </Stack>
-          </Stack>
-
-          <Stack spacing={0.5}>
-            <Typography variant='body2' component='label'>
-              비고
-            </Typography>
-            <TextField name='note' fullWidth multiline rows={3} size='small' value={formik.values.note} onChange={formik.handleChange} />
           </Stack>
 
           <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 2 }}>
