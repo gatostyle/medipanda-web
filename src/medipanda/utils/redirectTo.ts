@@ -1,5 +1,3 @@
-import { APP_DEFAULT_PATH } from 'config';
-
 export function saveRedirectTo(location: { pathname: string } = window.location): string {
   const redirectTo = encodeURIComponent(location.pathname);
   return `/login?redirectTo=${redirectTo}`;
@@ -8,5 +6,5 @@ export function saveRedirectTo(location: { pathname: string } = window.location)
 export function restoreRedirectTo(location: { search: string } = window.location): string {
   const redirectTo = new URLSearchParams(location.search).get('redirectTo');
 
-  return redirectTo ? decodeURIComponent(redirectTo) : APP_DEFAULT_PATH;
+  return redirectTo ? decodeURIComponent(redirectTo) : import.meta.env.VITE_APP_BASE_NAME;
 }
