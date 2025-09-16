@@ -119,6 +119,7 @@ export default function MpAdminInquiryDetail() {
 
       if (detail.children.length > 0) {
         responseEditor.commands.setContent(detail.children[0].content);
+        responseEditor.setEditable(false);
         setResponseEditorAttachments(detail.children[0].attachments.filter(a => a.type === PostAttachmentType.EDITOR));
       }
     } catch (error) {
@@ -251,12 +252,20 @@ export default function MpAdminInquiryDetail() {
         )}
 
         <Stack direction='row' sx={{ justifyContent: 'center', gap: 2 }}>
-          <Button variant='outlined' size='large' component={RouterLink} to='/admin/inquiries'>
-            취소
-          </Button>
-          <Button variant='contained' size='large' onClick={() => formik.handleSubmit()}>
-            답변하기
-          </Button>
+          {detail.children.length > 0 ? (
+            <Button variant='outlined' size='large' component={RouterLink} to='/admin/inquiries'>
+              뒤로
+            </Button>
+          ) : (
+            <>
+              <Button variant='outlined' size='large' component={RouterLink} to='/admin/inquiries'>
+                취소
+              </Button>
+              <Button variant='contained' size='large' onClick={() => formik.handleSubmit()}>
+                답변하기
+              </Button>
+            </>
+          )}
         </Stack>
       </Card>
     </Stack>
