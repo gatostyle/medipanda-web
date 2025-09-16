@@ -4,7 +4,6 @@ import { Circle } from '@mui/icons-material';
 import {
   Box,
   Collapse,
-  Container,
   Divider,
   Drawer,
   IconButton,
@@ -159,7 +158,7 @@ export default function DashboardLayout() {
             <Logout variant='Bulk' />
           </IconButton>
         </Stack>
-        <Container
+        <Stack
           sx={{
             xs: 0,
             position: 'relative',
@@ -169,7 +168,7 @@ export default function DashboardLayout() {
           }}
         >
           <Outlet />
-        </Container>
+        </Stack>
       </Box>
     </LocalizationProvider>
   );
