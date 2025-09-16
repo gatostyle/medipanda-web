@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
-import { createContext, ReactNode, useContext, useState } from 'react';
+import { createContext, type ReactNode, useContext, useState } from 'react';
 
 export interface DeleteDialogConfig {
   title?: string;
@@ -8,14 +8,14 @@ export interface DeleteDialogConfig {
 }
 
 const initialState = {
-  open: (_: DeleteDialogConfig) => {},
+  open: (_: DeleteDialogConfig) => undefined,
 };
 
 export const MpDeleteDialogContext = createContext(initialState);
 
-type MpDeleteDialogProviderProps = {
+interface MpDeleteDialogProviderProps {
   children: ReactNode;
-};
+}
 
 export function MpDeleteDialogProvider({ children }: MpDeleteDialogProviderProps) {
   const [open, setOpen] = useState(false);

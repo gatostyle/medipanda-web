@@ -1,6 +1,6 @@
 import { Info } from '@mui/icons-material';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack } from '@mui/material';
-import { createContext, ReactNode, useCallback, useContext, useState } from 'react';
+import { createContext, type ReactNode, useCallback, useContext, useState } from 'react';
 
 interface MpModalContextType {
   alert: (message: string) => Promise<void>;
@@ -59,16 +59,16 @@ function MpModal(props: MpModalProps) {
   return <MpModalInternal {...props} />;
 }
 
-type MpModalProviderProps = {
+interface MpModalProviderProps {
   children: ReactNode;
-};
+}
 
 export function MpModalProvider({ children }: MpModalProviderProps) {
   const [modalProps, setModalProps] = useState<MpModalProps>({
     open: false,
     message: '',
     title: '알림',
-    onClose: () => {},
+    onClose: () => undefined,
   });
 
   const alert: (message: string) => Promise<void> = useCallback((message: string) => {

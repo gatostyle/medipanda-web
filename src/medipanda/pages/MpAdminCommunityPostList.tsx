@@ -1,5 +1,5 @@
 import {
-  BoardPostResponse,
+  type BoardPostResponse,
   BoardType,
   BoardTypeLabel,
   ContractStatus,
@@ -14,7 +14,7 @@ import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipa
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { formatYyyyMmDd, formatYyyyMmDdHhMm, SafeDate } from '@/medipanda/utils/dateFormat';
-import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
+import { type Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import {
   Button,
   Card,

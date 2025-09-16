@@ -25,13 +25,13 @@ import {
 import { EditorContent } from '@tiptap/react';
 import { useFormik } from 'formik';
 import {
-  AttachmentResponse,
-  BoardDetailsResponse,
+  type AttachmentResponse,
+  type BoardDetailsResponse,
   BoardExposureRange,
   BoardExposureRangeLabel,
   BoardType,
   createBoardPost,
-  DrugCompanyResponse,
+  type DrugCompanyResponse,
   getBoardDetails,
   isDrugCompanyNoticeType,
   NoticeType,
@@ -40,9 +40,9 @@ import {
   updateBoardPost,
 } from '@/backend';
 import { useSession } from '@/medipanda/hooks/useSession';
-import { SearchNormal1 } from 'iconsax-react';
+import { SearchNormal1 } from 'iconsax-reactjs';
 import { useSnackbar } from 'notistack';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { type ChangeEvent, useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 
 export default function MpAdminNoticeEdit() {

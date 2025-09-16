@@ -24,9 +24,9 @@ import {
 } from '@mui/material';
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
-import { ArrowLeft, DocumentDownload } from 'iconsax-react';
-import { getDownloadSettlementPartnerSummaryExcel, getSettlementPartnerSummary, SettlementPartnerResponse } from '@/backend';
-import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
+import { ArrowLeft, DocumentDownload } from 'iconsax-reactjs';
+import { getDownloadSettlementPartnerSummaryExcel, getSettlementPartnerSummary, type SettlementPartnerResponse } from '@/backend';
+import { type Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';

@@ -23,13 +23,13 @@ import {
 } from '@mui/material';
 import { AxiosError } from 'axios';
 import { useFormik } from 'formik';
-import { SearchNormal1 } from 'iconsax-react';
+import { SearchNormal1 } from 'iconsax-reactjs';
 import {
   ContractStatus,
   createPartner,
-  DrugCompanyResponse,
+  type DrugCompanyResponse,
   getPartnerDetails,
-  MemberResponse,
+  type MemberResponse,
   PharmacyStatus,
   PharmacyStatusLabel,
   updatePartner,

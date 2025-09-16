@@ -5,18 +5,18 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { EditorContent } from '@tiptap/react';
 import { useFormik } from 'formik';
 import {
-  AttachmentResponse,
+  type AttachmentResponse,
   BoardExposureRange,
   BoardExposureRangeLabel,
   BoardType,
   createEventBoard,
-  EventBoardDetailsResponse,
+  type EventBoardDetailsResponse,
   getEventBoardDetails,
   PostAttachmentType,
   updateEventBoard,
 } from '@/backend';
 import { useSnackbar } from 'notistack';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { type ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import { useSession } from '../hooks/useSession';
 import { DateFix, formatYyyyMmDd } from '../utils/dateFormat';

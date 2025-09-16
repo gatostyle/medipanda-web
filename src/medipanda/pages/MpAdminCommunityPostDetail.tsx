@@ -21,11 +21,11 @@ import {
 } from '@mui/material';
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { EditorContent } from '@tiptap/react';
-import { BoardDetailsResponse, BoardReportResponse, CommentResponse, getBoardDetails, PostAttachmentType } from '@/backend';
+import { type BoardDetailsResponse, type BoardReportResponse, type CommentResponse, getBoardDetails, PostAttachmentType } from '@/backend';
 import { formatYyyyMmDd, formatYyyyMmDdHhMm } from '@/medipanda/utils/dateFormat';
-import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
+import { type Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { type SyntheticEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminCommunityPostDetail() {

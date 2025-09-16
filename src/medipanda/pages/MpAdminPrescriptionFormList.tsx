@@ -30,14 +30,14 @@ import {
   DateTimeString,
   deletePrescriptionPartner,
   getPrescriptionPartnerList,
-  PrescriptionPartnerResponse,
+  type PrescriptionPartnerResponse,
   PrescriptionPartnerStatus,
   PrescriptionPartnerStatusLabel,
 } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { formatYyyyMm, formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
-import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
+import { type Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';

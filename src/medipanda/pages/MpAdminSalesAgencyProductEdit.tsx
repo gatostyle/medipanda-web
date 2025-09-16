@@ -22,19 +22,19 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { EditorContent } from '@tiptap/react';
 import { useFormik } from 'formik';
 import {
-  AttachmentResponse,
+  type AttachmentResponse,
   BoardExposureRange,
   BoardExposureRangeLabel,
   BoardType,
   createSalesAgencyProductBoard,
   getSalesAgencyProductDetails,
   PostAttachmentType,
-  SalesAgencyProductDetailsResponse,
+  type SalesAgencyProductDetailsResponse,
   updateSalesAgencyProductBoard,
 } from '@/backend';
 import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { type SyntheticEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import { DateFix, formatYyyyMmDd } from '../utils/dateFormat';
 

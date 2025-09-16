@@ -1,10 +1,10 @@
 import { Box, Button, Card, FormHelperText, IconButton, InputAdornment, Stack, TextField } from '@mui/material';
 import { isAxiosError } from 'axios';
 import { useFormik } from 'formik';
-import { Eye, EyeSlash } from 'iconsax-react';
+import { Eye, EyeSlash } from 'iconsax-reactjs';
 import { NotAdminError, useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { type SyntheticEvent, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 

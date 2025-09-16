@@ -17,7 +17,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { type ChangeEvent, useEffect, useState } from 'react';
 
 interface ChangeHistory {
   id: number;

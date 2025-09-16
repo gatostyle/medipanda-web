@@ -1,4 +1,4 @@
-import { ContractStatus, MemberResponse, uploadPartnersExcel } from '@/backend';
+import { ContractStatus, type MemberResponse, uploadPartnersExcel } from '@/backend';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { AttachFile as AttachFileIcon, UploadFile } from '@mui/icons-material';
 import {
@@ -15,7 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
-import { SearchNormal1 } from 'iconsax-react';
+import { SearchNormal1 } from 'iconsax-reactjs';
 import { useSnackbar } from 'notistack';
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -36,7 +36,7 @@ function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUpl
       member: null as MemberResponse | null,
       file: null as File | null,
     },
-    onSubmit: () => {},
+    onSubmit: () => undefined,
   });
 
   const [memberSelectModalOpen, setMemberSelectModalOpen] = useState(false);

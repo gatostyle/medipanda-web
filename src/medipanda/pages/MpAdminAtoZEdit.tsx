@@ -19,8 +19,8 @@ import {
 import { EditorContent } from '@tiptap/react';
 import { useFormik } from 'formik';
 import {
-  AttachmentResponse,
-  BoardDetailsResponse,
+  type AttachmentResponse,
+  type BoardDetailsResponse,
   BoardExposureRange,
   BoardType,
   createBoardPost,

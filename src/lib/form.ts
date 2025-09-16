@@ -1,7 +1,7 @@
-import { ChangeEventHandler } from 'react';
+import { type ChangeEventHandler } from 'react';
 
-export function normalizeFormNumber(value: any, config?: { min?: number; max?: number }): string | null {
-  const stringValue = String(value).trim();
+export function normalizeFormNumber(value: string, config?: { min?: number; max?: number }): string | null {
+  const stringValue = value.trim();
 
   if (stringValue === '') {
     return stringValue;
@@ -36,7 +36,7 @@ export function handleNumberChange(
   {
     setFieldValue,
   }: {
-    setFieldValue: (field: string, value: any) => void;
+    setFieldValue: (field: string, value: string) => void;
   },
   config?: { min?: number; max?: number },
 ): ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> {

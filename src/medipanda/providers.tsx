@@ -1,5 +1,5 @@
 import { MpModalProvider } from '@/medipanda/hooks/useMpModal';
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { MpDeleteDialogProvider } from './hooks/useMpDeleteDialog';
 import { SessionProvider } from './hooks/useSession';
 

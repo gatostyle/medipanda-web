@@ -20,8 +20,8 @@ import {
   Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
-import { SearchNormal1 } from 'iconsax-react';
-import { getProductSummaries, ProductSummaryResponse } from '@/backend';
+import { SearchNormal1 } from 'iconsax-reactjs';
+import { getProductSummaries, type ProductSummaryResponse } from '@/backend';
 import { useEffect, useState } from 'react';
 
 export interface MpPartnerProductSelectModalProps {

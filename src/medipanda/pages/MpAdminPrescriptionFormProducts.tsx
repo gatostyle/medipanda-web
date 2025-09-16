@@ -19,25 +19,25 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
-import { Add, Minus, SearchNormal1 } from 'iconsax-react';
+import { Add, Minus, SearchNormal1 } from 'iconsax-reactjs';
 import {
-  AttachmentResponse,
+  type AttachmentResponse,
   getAttachedEdiFiles,
   getPartnerProducts,
   getPrescriptionPartner,
-  OcrResponse,
-  PartnerResponse,
-  PrescriptionPartnerProductResponse,
-  PrescriptionProductItem,
-  ProductSummaryResponse,
+  type OcrResponse,
+  type PartnerResponse,
+  type PrescriptionPartnerProductResponse,
+  type PrescriptionProductItem,
+  type ProductSummaryResponse,
   upsertPatchPartnerProducts,
 } from '@/backend';
 import { MpChangeHistoryModal } from '@/medipanda/components/MpChangeHistoryModal';
 import { MpOcrRequestModal } from '@/medipanda/components/MpOcrRequestModal';
 import { MpPartnerSelectModal } from '@/medipanda/components/MpPartnerSelectModal';
-import { Sequenced } from '@/medipanda/utils/withSequence';
+import { type Sequenced } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
@@ -98,7 +98,7 @@ export default function MpAdminPrescriptionFormProducts() {
     },
   });
 
-  const handleProductChange = useCallback((index: number, field: keyof PrescriptionPartnerProductResponse, value: any) => {
+  const handleProductChange = useCallback((index: number, field: keyof PrescriptionPartnerProductResponse, value: unknown) => {
     setPartnerProducts(prev =>
       prev.map((p, i) => {
         if (index === i) {

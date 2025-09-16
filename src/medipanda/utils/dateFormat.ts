@@ -4,8 +4,6 @@ export const DATEFORMAT_YYYY_MM_DD_HH_MM = 'yyyy-MM-dd HH:mm';
 export const DATEFORMAT_YYYY_MM_DD = 'yyyy-MM-dd';
 export const DATEFORMAT_YYYY_MM = 'yyyy-MM';
 
-export function formatYyyyMmDdHhMm(dateString: string): string;
-export function formatYyyyMmDdHhMm(date: Date): string;
 export function formatYyyyMmDdHhMm(dateOrString: Date | string): string {
   return format(
     typeof dateOrString === 'string' ? KoreanDateFix(new Date(DateFix(dateOrString))) : dateOrString,
@@ -13,14 +11,10 @@ export function formatYyyyMmDdHhMm(dateOrString: Date | string): string {
   );
 }
 
-export function formatYyyyMmDd(dateString: string): string;
-export function formatYyyyMmDd(date: Date): string;
 export function formatYyyyMmDd(dateOrString: Date | string): string {
   return format(typeof dateOrString === 'string' ? KoreanDateFix(new Date(DateFix(dateOrString))) : dateOrString, DATEFORMAT_YYYY_MM_DD);
 }
 
-export function formatYyyyMm(dateString: string): string;
-export function formatYyyyMm(date: Date): string;
 export function formatYyyyMm(dateOrString: Date | string): string {
   return format(typeof dateOrString === 'string' ? KoreanDateFix(new Date(DateFix(dateOrString))) : dateOrString, DATEFORMAT_YYYY_MM);
 }
@@ -34,8 +28,6 @@ export function SafeDate(dateString: string): Date | null {
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
-export function KoreanDateFix(date: Date): Date;
-export function KoreanDateFix(dateString: string): Date;
 export function KoreanDateFix(dateOrString: Date | string): Date {
   const fixedDate = typeof dateOrString === 'string' ? new Date(dateOrString) : dateOrString;
   fixedDate.setHours(fixedDate.getHours() + 9);

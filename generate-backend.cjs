@@ -342,7 +342,8 @@ function requestBodyKinds(requestBody) {
 }
 
 function emitHeader() {
-  addLine(`import axios from 'utils/axios';`);
+  addLine(`/* eslint-disable @typescript-eslint/no-empty-object-type */`);
+  addLine(`import axios from '@/utils/axios';`);
   addLine();
   addLine(`export class DateTimeString extends String {`);
   addLine(`  public constructor(value: string | Date) {`);

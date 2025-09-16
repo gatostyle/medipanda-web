@@ -27,11 +27,11 @@ import {
 import { DatePicker } from '@mui/x-date-pickers';
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
-import { DateString, EventBoardSummaryResponse, EventStatus, EventStatusLabel, getEventBoards, softDeleteEventBoard } from '@/backend';
+import { DateString, type EventBoardSummaryResponse, EventStatus, EventStatusLabel, getEventBoards, softDeleteEventBoard } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
-import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
+import { type Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';

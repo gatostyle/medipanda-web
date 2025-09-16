@@ -2,7 +2,7 @@ import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { Box, Button, Card, Chip, CircularProgress, Divider, Stack, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
-import { BoardExposureRangeLabel, EventBoardDetailsResponse, getEventBoardDetails, PostAttachmentType } from '@/backend';
+import { BoardExposureRangeLabel, type EventBoardDetailsResponse, getEventBoardDetails, PostAttachmentType } from '@/backend';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';

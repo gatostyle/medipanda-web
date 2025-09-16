@@ -1,7 +1,7 @@
 import { FixedLinearProgress } from '@/lib/react/FixedLinearProgress';
 import { AdminPermission, getPermissions } from '@/backend';
 import { isAdmin, isSuperAdmin, useSession } from '@/medipanda/hooks/useSession';
-import { ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { saveRedirectTo } from '../redirectTo';
 

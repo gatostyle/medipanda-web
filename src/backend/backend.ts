@@ -1,4 +1,5 @@
-import axios from 'utils/axios';
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+import axios from '@/utils/axios';
 
 export class DateTimeString extends String {
   public constructor(value: string | Date) {

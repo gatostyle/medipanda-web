@@ -15,14 +15,14 @@ import {
   Typography,
 } from '@mui/material';
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { ArrowLeft } from 'iconsax-react';
+import { ArrowLeft } from 'iconsax-reactjs';
 import {
   getSettlement,
   getSettlementPartnerProducts,
   getSettlementPartnerSummary,
-  SettlementPartnerProductResponse,
-  SettlementPartnerResponse,
-  SettlementResponse,
+  type SettlementPartnerProductResponse,
+  type SettlementPartnerResponse,
+  type SettlementResponse,
 } from '@/backend';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';

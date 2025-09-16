@@ -1,4 +1,4 @@
-import { getUserMembers, MemberResponse } from '@/backend';
+import { getUserMembers, type MemberResponse } from '@/backend';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Button,

@@ -29,7 +29,7 @@ import {
   getProductDetails,
   PostAttachmentType,
   PriceUnit,
-  ProductDetailsResponse,
+  type ProductDetailsResponse,
   updateProductExtraInfo,
 } from '@/backend';
 import { useSession } from '@/medipanda/hooks/useSession';

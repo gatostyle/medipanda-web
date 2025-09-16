@@ -14,7 +14,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import { getProductDetails, PostAttachmentType, ProductDetailsResponse } from '@/backend';
+import { getProductDetails, PostAttachmentType, type ProductDetailsResponse } from '@/backend';
 import { EditorContent } from '@tiptap/react';
 import { useSnackbar } from 'notistack';
 import { Fragment, useEffect, useState } from 'react';

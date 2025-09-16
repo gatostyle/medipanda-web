@@ -2,7 +2,7 @@ import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import { MpProductUploadModal } from '@/medipanda/components/MpProductUploadModal';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
-import { DocumentDownload } from 'iconsax-react';
+import { DocumentDownload } from 'iconsax-reactjs';
 import {
   Button,
   Card,
@@ -28,10 +28,10 @@ import {
 } from '@mui/material';
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
-import { getDownloadProductSummariesExcel, getProductSummaries, ProductSummaryResponse, softDelete } from '@/backend';
+import { getDownloadProductSummariesExcel, getProductSummaries, type ProductSummaryResponse, softDelete } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
-import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
+import { type Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';

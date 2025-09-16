@@ -3,7 +3,7 @@ import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Box, Button, Card, CircularProgress, Link, Stack, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
-import { BoardDetailsResponse, getBoardDetails, PostAttachmentType } from '@/backend';
+import { type BoardDetailsResponse, getBoardDetails, PostAttachmentType } from '@/backend';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';

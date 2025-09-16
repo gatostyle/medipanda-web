@@ -21,7 +21,7 @@ function MpSettlementUploadModalInternal({ open, onClose, onSuccess }: MpSettlem
     initialValues: {
       file: null as File | null,
     },
-    onSubmit: () => {},
+    onSubmit: () => undefined,
   });
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

@@ -1,4 +1,4 @@
-import { DateString, MemberResponse, uploadEdiZip } from '@/backend';
+import { DateString, type MemberResponse, uploadEdiZip } from '@/backend';
 import { MpMemberSelectModal } from './MpMemberSelectModal';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { UploadFile } from '@mui/icons-material';
@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useFormik } from 'formik';
-import { SearchNormal1 } from 'iconsax-react';
+import { SearchNormal1 } from 'iconsax-reactjs';
 import { useSnackbar } from 'notistack';
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';

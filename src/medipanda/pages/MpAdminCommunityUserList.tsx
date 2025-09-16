@@ -22,9 +22,9 @@ import {
 } from '@mui/material';
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
-import { BoardMemberStatsResponse, ContractStatus, ContractStatusLabel, getBoardMembers } from '@/backend';
+import { type BoardMemberStatsResponse, ContractStatus, ContractStatusLabel, getBoardMembers } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
-import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
+import { type Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';

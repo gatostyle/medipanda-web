@@ -15,7 +15,7 @@ export default function MpLogout() {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      window.location.replace(import.meta.env.VITE_APP_BASE_NAME);
+      window.location.replace(import.meta.env.VITE_APP_BASE_NAME ?? '/');
     }
   };
 

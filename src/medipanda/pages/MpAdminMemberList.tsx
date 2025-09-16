@@ -24,7 +24,7 @@ import {
 import { DatePicker } from '@mui/x-date-pickers';
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
-import { DocumentDownload } from 'iconsax-react';
+import { DocumentDownload } from 'iconsax-reactjs';
 import {
   ContractStatus,
   memberTypeToContractStatus,
@@ -32,12 +32,12 @@ import {
   DateString,
   getDownloadUserMembersExcel,
   getUserMembers,
-  MemberResponse,
+  type MemberResponse,
   AccountStatusLabel,
 } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { formatYyyyMmDd, formatYyyyMmDdHhMm, SafeDate } from '@/medipanda/utils/dateFormat';
-import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
+import { type Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';

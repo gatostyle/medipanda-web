@@ -2,7 +2,7 @@ import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { DatePicker } from '@mui/x-date-pickers';
-import { DocumentDownload } from 'iconsax-react';
+import { DocumentDownload } from 'iconsax-reactjs';
 import {
   Box,
   Button,
@@ -33,12 +33,12 @@ import {
   deleteSalesAgencyProduct,
   getDownloadSalesAgencyProductsExcel,
   getSalesAgencyProducts,
-  SalesAgencyProductSummaryResponse,
+  type SalesAgencyProductSummaryResponse,
 } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
-import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
+import { type Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';

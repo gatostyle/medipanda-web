@@ -2,7 +2,7 @@ import {
   DateString,
   getDownloadSettlementListExcel,
   getSettlements,
-  SettlementResponse,
+  type SettlementResponse,
   SettlementStatus,
   SettlementStatusLabel,
 } from '@/backend';
@@ -12,7 +12,7 @@ import { MpSettlementUploadModal } from '@/medipanda/components/MpSettlementUplo
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { formatYyyyMm, SafeDate } from '@/medipanda/utils/dateFormat';
-import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
+import { type Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import {
   Button,
   Card,
@@ -37,7 +37,7 @@ import {
 import { DatePicker } from '@mui/x-date-pickers';
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
-import { DocumentDownload } from 'iconsax-react';
+import { DocumentDownload } from 'iconsax-reactjs';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';

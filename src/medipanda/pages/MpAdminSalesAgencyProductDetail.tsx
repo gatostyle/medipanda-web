@@ -5,10 +5,15 @@ import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { Box, Button, Card, Chip, CircularProgress, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
-import { BoardExposureRangeLabel, getSalesAgencyProductDetails, PostAttachmentType, SalesAgencyProductDetailsResponse } from '@/backend';
+import {
+  BoardExposureRangeLabel,
+  getSalesAgencyProductDetails,
+  PostAttachmentType,
+  type SalesAgencyProductDetailsResponse,
+} from '@/backend';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
 import { useSnackbar } from 'notistack';
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { type SyntheticEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminSalesAgencyProductDetail() {
@@ -193,8 +198,8 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse }) {
                 backgroundColor: 'grey.100',
                 borderRadius: 1,
               }}
-              onError={(e: any) => {
-                e.target.src =
+              onError={e => {
+                (e.target as HTMLImageElement).src =
                   'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2Y1ZjVmNSIvPgogIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5OTkiPkltYWdlIE5vdCBBdmFpbGFibGU8L3RleHQ+Cjwvc3ZnPg==';
               }}
             />

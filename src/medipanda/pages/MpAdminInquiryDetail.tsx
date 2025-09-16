@@ -6,7 +6,7 @@ import { Box, Button, Card, CircularProgress, Link, Stack, TextField, Typography
 import { EditorContent } from '@tiptap/react';
 import { useFormik } from 'formik';
 import {
-  BoardDetailsResponse,
+  type BoardDetailsResponse,
   BoardExposureRange,
   BoardType,
   createBoardPost,

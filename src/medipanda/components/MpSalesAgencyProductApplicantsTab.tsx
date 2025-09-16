@@ -3,8 +3,8 @@ import {
   deleteSalesAgencyProductApplicant,
   getDownloadProductApplicantsExcel,
   getProductApplicants,
-  SalesAgencyProductApplicantResponse,
-  SalesAgencyProductDetailsResponse,
+  type SalesAgencyProductApplicantResponse,
+  type SalesAgencyProductDetailsResponse,
   updateApplicantNotes,
 } from '@/backend';
 import { setUrlParams } from '@/lib/url';
@@ -12,7 +12,7 @@ import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
-import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
+import { type Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import {
   Box,
   Button,
@@ -31,7 +31,7 @@ import {
 } from '@mui/material';
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
-import { DocumentDownload } from 'iconsax-react';
+import { DocumentDownload } from 'iconsax-reactjs';
 import { useEffect, useRef, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from './SearchFilterBar';

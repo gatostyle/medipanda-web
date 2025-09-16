@@ -25,10 +25,10 @@ import {
 } from '@mui/material';
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
-import { ContractStatus, ContractStatusLabel, deletePartner, getPartners, PartnerResponse } from '@/backend';
+import { ContractStatus, ContractStatusLabel, deletePartner, getPartners, type PartnerResponse } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
-import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
+import { type Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';

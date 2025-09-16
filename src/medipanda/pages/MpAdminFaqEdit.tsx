@@ -19,8 +19,8 @@ import {
 import { EditorContent } from '@tiptap/react';
 import { useFormik } from 'formik';
 import {
-  AttachmentResponse,
-  BoardDetailsResponse,
+  type AttachmentResponse,
+  type BoardDetailsResponse,
   BoardExposureRange,
   BoardType,
   createBoardPost,
@@ -30,7 +30,7 @@ import {
 } from '@/backend';
 import { useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { type ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminFaqEdit() {

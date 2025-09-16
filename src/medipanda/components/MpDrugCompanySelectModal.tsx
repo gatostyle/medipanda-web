@@ -1,4 +1,4 @@
-import { DrugCompanyResponse, getAllDrugCompanies } from '@/backend';
+import { type DrugCompanyResponse, getAllDrugCompanies } from '@/backend';
 import {
   Button,
   Dialog,

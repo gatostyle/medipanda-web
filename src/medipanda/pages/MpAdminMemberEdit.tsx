@@ -25,9 +25,9 @@ import {
   approveOrRejectCso,
   getContractDetails,
   getMemberDetails,
-  MemberDetailsResponse,
+  type MemberDetailsResponse,
   MemberType,
-  PartnerContractDetailsResponse,
+  type PartnerContractDetailsResponse,
   PartnerContractFileType,
   PartnerContractFileTypeLabel,
   PartnerContractStatus,
@@ -197,7 +197,7 @@ export default function MpAdminMemberEdit() {
           accountNumber: contractDetail.accountNumber,
         },
       });
-    } catch (e) {
+    } catch {
       setContractDetail(null);
       console.log('No partner contract found for member:', userId);
     }
@@ -228,8 +228,8 @@ export default function MpAdminMemberEdit() {
   const handleCsoUpload = async () => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.onchange = async (event: any) => {
-      const file = event.target.files[0];
+    input.onchange = async event => {
+      const file = (event.target as HTMLInputElement).files?.[0];
       if (!file) return;
 
       try {

@@ -20,9 +20,9 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { SearchNormal1 } from 'iconsax-react';
-import { getPartners, PartnerResponse } from '@/backend';
-import { KeyboardEvent, useCallback, useEffect, useState } from 'react';
+import { SearchNormal1 } from 'iconsax-reactjs';
+import { getPartners, type PartnerResponse } from '@/backend';
+import { type KeyboardEvent, useCallback, useEffect, useState } from 'react';
 
 export interface MpPartnerSelectModalProps {
   open: boolean;

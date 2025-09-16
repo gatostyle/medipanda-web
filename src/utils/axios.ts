@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 
 const axiosServices = axios.create({
   withCredentials: true, // Ensure cookies are sent with requests
@@ -29,19 +29,3 @@ axiosServices.interceptors.response.use(
 );
 
 export default axiosServices;
-
-export const fetcher = async (args: string | [string, AxiosRequestConfig]) => {
-  const [url, config] = Array.isArray(args) ? args : [args];
-
-  const res = await axiosServices.get(url, { ...config });
-
-  return res.data;
-};
-
-export const fetcherPost = async (args: string | [string, AxiosRequestConfig]) => {
-  const [url, config] = Array.isArray(args) ? args : [args];
-
-  const res = await axiosServices.post(url, { ...config });
-
-  return res.data;
-};

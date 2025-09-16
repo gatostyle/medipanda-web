@@ -9,7 +9,7 @@ import {
   Role,
 } from '@/backend';
 import { encryptRSA } from '@/lib/rsa';
-import { MenuItem, filterMenuByPermissions, menuItems } from '@/medipanda/menus';
+import { type MenuItem, filterMenuByPermissions, menuItems } from '@/medipanda/menus';
 import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
 
 declare global {

@@ -27,12 +27,12 @@ import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-tabl
 import { useFormik } from 'formik';
 import {
   BoardExposureRangeLabel,
-  BoardPostResponse,
+  type BoardPostResponse,
   BoardType,
   BoardTypeLabel,
   DateString,
   deleteBoardPost,
-  DrugCompanyResponse,
+  type DrugCompanyResponse,
   getAllDrugCompanies,
   getBoards,
   NoticeTypeLabel,
@@ -40,7 +40,7 @@ import {
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
 import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
-import { Sequenced, withSequence } from '@/medipanda/utils/withSequence';
+import { type Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';

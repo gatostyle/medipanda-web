@@ -26,7 +26,7 @@ import {
   updateBanner,
 } from '@/backend';
 import { DateFix, formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { type ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminBannerEdit() {

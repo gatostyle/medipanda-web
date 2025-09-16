@@ -20,7 +20,7 @@ import {
 } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import {
-  BoardDetailsResponse,
+  type BoardDetailsResponse,
   BoardExposureRangeLabel,
   getBoardDetails,
   isDrugCompanyNoticeType,

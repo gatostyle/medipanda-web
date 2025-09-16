@@ -8,7 +8,7 @@ import { Text } from '@tiptap/extension-text';
 import { Dropcursor, Placeholder } from '@tiptap/extensions';
 import { Editor, useEditor } from '@tiptap/react';
 import { useRef } from 'react';
-import type { ExtendedUseEditorOptions } from './Tiptap';
+import { type ExtendedUseEditorOptions } from './Tiptap';
 
 export interface UseTiptapOptions {
   placeholder?: string;

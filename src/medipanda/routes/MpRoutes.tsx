@@ -2,16 +2,18 @@ import { AdminPermission } from '@/backend';
 import { Base64ErrorBoundary } from '@/lib/react/Base64ErrorBoundary';
 import { FixedLinearProgress } from '@/lib/react/FixedLinearProgress';
 import { MpGuestGuard } from '@/medipanda/utils/route-guard';
-import DashboardLayout from 'layout/Dashboard';
 import { MpAdminGuard } from '@/medipanda/utils/route-guard/MpAdminGuard';
-import { ElementType, lazy, Suspense } from 'react';
-import { Navigate, Outlet, RouteObject } from 'react-router-dom';
+import { type ElementType, lazy, Suspense } from 'react';
+import { Outlet, Navigate, type RouteObject } from 'react-router-dom';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any,react/display-name
 const Loadable = (Component: ElementType) => (props: any) => (
   <Suspense fallback={<FixedLinearProgress />}>
     <Component {...props} />
   </Suspense>
 );
+
+const DashboardLayout = Loadable(lazy(() => import('medipanda/layouts/DashboardLayout')));
 
 const MpLogin = Loadable(lazy(() => import('medipanda/pages/MpLogin')));
 const MpLogout = Loadable(lazy(() => import('medipanda/pages/MpLogout')));

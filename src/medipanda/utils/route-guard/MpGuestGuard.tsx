@@ -1,6 +1,6 @@
 import { FixedLinearProgress } from '@/lib/react/FixedLinearProgress';
 import { isAdmin, useSession } from '@/medipanda/hooks/useSession';
-import { ReactNode, useEffect } from 'react';
+import { type ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface MpGuestGuardProps {
