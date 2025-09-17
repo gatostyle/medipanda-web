@@ -289,6 +289,8 @@ export default function MpAdminMemberEdit() {
     );
   }
 
+  const isEditable = detail.accountStatus !== AccountStatus.DELETED;
+
   return (
     <Stack sx={{ gap: 3 }}>
       <Typography variant='h4'>회원정보</Typography>
@@ -322,6 +324,7 @@ export default function MpAdminMemberEdit() {
                     label='비밀번호'
                     name='password'
                     type='password'
+                    disabled={!isEditable}
                     value={formik.values.password}
                     onChange={formik.handleChange}
                     size='small'
@@ -333,6 +336,7 @@ export default function MpAdminMemberEdit() {
                     label='비밀번호 확인'
                     name='confirmPassword'
                     type='password'
+                    disabled={!isEditable}
                     value={formik.values.confirmPassword}
                     onChange={formik.handleChange}
                     size='small'
@@ -353,6 +357,7 @@ export default function MpAdminMemberEdit() {
                     fullWidth
                     label='휴대폰번호'
                     name='phoneNumber'
+                    disabled={!isEditable}
                     value={formik.values.phoneNumber}
                     onChange={formik.handleChange}
                     size='small'
@@ -375,6 +380,7 @@ export default function MpAdminMemberEdit() {
                     fullWidth
                     label='E-mail'
                     name='email'
+                    disabled={!isEditable}
                     value={formik.values.email}
                     onChange={formik.handleChange}
                     size='small'
@@ -407,7 +413,7 @@ export default function MpAdminMemberEdit() {
                 </Stack>
 
                 <Stack sx={{ flex: '1 0' }}>
-                  <FormControl fullWidth size='small'>
+                  <FormControl fullWidth size='small' disabled={!isEditable}>
                     <InputLabel>계정상태</InputLabel>
                     <Select name='accountStatus' value={formik.values.accountStatus} onChange={formik.handleChange}>
                       {Object.keys(AccountStatus).map(accountStatus => (
@@ -429,16 +435,16 @@ export default function MpAdminMemberEdit() {
                     {MedipandaUrlFileName(detail.csoCertUrl)}
                   </Link>
                 ) : (
-                  <Button variant='outlined' color='primary' size='small' onClick={handleCsoUpload}>
+                  <Button variant='outlined' color='primary' size='small' disabled={!isEditable} onClick={handleCsoUpload}>
                     업로드
                   </Button>
                 )}
                 {detail.csoCertUrl !== null && detail.partnerContractStatus === MemberType.NONE && (
                   <>
-                    <Button variant='outlined' color='error' size='small' onClick={handleCsoReject}>
+                    <Button variant='outlined' color='error' size='small' disabled={!isEditable} onClick={handleCsoReject}>
                       반려
                     </Button>
-                    <Button variant='contained' size='small' onClick={handleCsoApprove}>
+                    <Button variant='contained' size='small' disabled={!isEditable} onClick={handleCsoApprove}>
                       승인
                     </Button>
                   </>
@@ -453,11 +459,11 @@ export default function MpAdminMemberEdit() {
                 <Stack direction='row' justifyContent='space-between' alignItems='center'>
                   <Typography variant='h6'>파트너사 계약</Typography>
                   {contractDetail.status !== PartnerContractStatus.APPROVED ? (
-                    <Button variant='contained' size='small' onClick={handleContractApprove}>
+                    <Button variant='contained' size='small' disabled={!isEditable} onClick={handleContractApprove}>
                       계약 승인
                     </Button>
                   ) : (
-                    <Button variant='contained' size='small' color='error' onClick={handleContractReject}>
+                    <Button variant='contained' size='small' color='error' disabled={!isEditable} onClick={handleContractReject}>
                       계약 종료
                     </Button>
                   )}
@@ -465,7 +471,7 @@ export default function MpAdminMemberEdit() {
 
                 <Stack direction='row' sx={{ gap: 2 }}>
                   <Stack sx={{ flex: '1 0' }}>
-                    <FormControl fullWidth size='small'>
+                    <FormControl fullWidth size='small' disabled={!isEditable}>
                       <InputLabel>유형</InputLabel>
                       <Select name='contractType' value={formik.values.contractType} onChange={formik.handleChange}>
                         {Object.keys(PartnerContractType).map(contractType => (
@@ -505,6 +511,7 @@ export default function MpAdminMemberEdit() {
                   fullWidth
                   label='정산은행'
                   name='bankName'
+                  disabled={!isEditable}
                   value={formik.values.bankName}
                   onChange={formik.handleChange}
                   size='small'
@@ -514,6 +521,7 @@ export default function MpAdminMemberEdit() {
                   fullWidth
                   label='계좌번호'
                   name='accountNumber'
+                  disabled={!isEditable}
                   value={formik.values.accountNumber}
                   onChange={formik.handleChange}
                   size='small'
@@ -557,6 +565,7 @@ export default function MpAdminMemberEdit() {
                 multiline
                 rows={4}
                 name='note'
+                disabled={!isEditable}
                 value={formik.values.note}
                 onChange={formik.handleChange}
                 placeholder='메모를 입력하세요'
@@ -571,6 +580,7 @@ export default function MpAdminMemberEdit() {
             <FormControlLabel
               control={
                 <Checkbox
+                  disabled={!isEditable}
                   checked={formik.values.marketingAgreementsSms}
                   onChange={e => formik.setFieldValue('marketingAgreementsSms', e.target.checked)}
                 />
@@ -580,6 +590,7 @@ export default function MpAdminMemberEdit() {
             <FormControlLabel
               control={
                 <Checkbox
+                  disabled={!isEditable}
                   checked={formik.values.marketingAgreementsEmail}
                   onChange={e => formik.setFieldValue('marketingAgreementsEmail', e.target.checked)}
                 />
@@ -589,6 +600,7 @@ export default function MpAdminMemberEdit() {
             <FormControlLabel
               control={
                 <Checkbox
+                  disabled={!isEditable}
                   checked={formik.values.marketingAgreementsPush}
                   onChange={e => formik.setFieldValue('marketingAgreementsPush', e.target.checked)}
                 />
@@ -600,11 +612,13 @@ export default function MpAdminMemberEdit() {
 
         <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 3 }}>
           <Button variant='outlined' size='large' component={RouterLink} to='/admin/members' sx={{ minWidth: 120 }}>
-            취소
+            {isEditable ? '취소' : '뒤로'}
           </Button>
-          <Button variant='contained' size='large' onClick={formik.submitForm} sx={{ minWidth: 120 }}>
-            저장
-          </Button>
+          {isEditable && (
+            <Button variant='contained' size='large' onClick={formik.submitForm} sx={{ minWidth: 120 }}>
+              저장
+            </Button>
+          )}
         </Stack>
       </Stack>
     </Stack>
