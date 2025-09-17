@@ -1,3 +1,4 @@
+import { normalizePhoneNumber } from '@/lib/form';
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { useSession } from '@/medipanda/hooks/useSession';
@@ -11,6 +12,10 @@ import {
   BoardType,
   createBoardPost,
   getBoardDetails,
+  getContractDetails,
+  getMemberDetails,
+  type MemberDetailsResponse,
+  type PartnerContractDetailsResponse,
   PostAttachmentType,
   updateBoardPost,
 } from '@/backend';
@@ -27,6 +32,8 @@ export default function MpAdminInquiryDetail() {
 
   const { enqueueSnackbar } = useSnackbar();
   const [detail, setDetail] = useState<BoardDetailsResponse | null>(null);
+  const [memberDetail, setMemberDetail] = useState<MemberDetailsResponse | null>(null);
+  const [partnerContractDetail, setPartnerContractDetail] = useState<PartnerContractDetailsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const { session } = useSession();
 
@@ -127,6 +134,16 @@ export default function MpAdminInquiryDetail() {
     try {
       const detail = await getBoardDetails(boardId);
       setDetail(detail);
+      const memberDetail = await getMemberDetails(detail.userId);
+      setMemberDetail(memberDetail);
+
+      try {
+        const contractDetail = await getContractDetails(detail.userId);
+        setPartnerContractDetail(contractDetail);
+      } catch {
+        setPartnerContractDetail(null);
+        console.log('No partner contract found for member:', detail.userId);
+      }
     } catch (error) {
       console.error('Failed to fetch inquiry detail:', error);
       enqueueSnackbar('문의 정보를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -144,7 +161,7 @@ export default function MpAdminInquiryDetail() {
     );
   }
 
-  if (detail === null) {
+  if (detail === null || memberDetail === null) {
     return null;
   }
 
@@ -173,19 +190,19 @@ export default function MpAdminInquiryDetail() {
             <TextField
               fullWidth
               size='small'
-              value={'-'}
+              value={partnerContractDetail?.companyName ?? '-'}
               InputProps={{ readOnly: true }}
               sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
             />
           </Stack>
           <Stack sx={{ flex: '1 0', gap: 2 }}>
             <Typography variant='subtitle2' color='text.secondary'>
-              휴대폰번호
+              연락처
             </Typography>
             <TextField
               fullWidth
               size='small'
-              value={'-'}
+              value={normalizePhoneNumber(memberDetail.phoneNumber)}
               InputProps={{ readOnly: true }}
               sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
             />
