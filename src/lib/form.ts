@@ -15,56 +15,6 @@ export function normalizeSeperatedString(value: string, separator: string, charC
   }
 }
 
-export function normalizeFormNumber(value: string, config?: { min?: number; max?: number }): string | null {
-  const stringValue = value.trim();
-
-  if (stringValue === '') {
-    return stringValue;
-  }
-
-  const numberValue = Number(stringValue.replace(/,/g, ''));
-
-  if (isNaN(numberValue)) {
-    return null;
-  }
-
-  if (numberValue > Number.MAX_SAFE_INTEGER) {
-    return String(Number.MAX_SAFE_INTEGER);
-  }
-
-  if (numberValue < Number.MIN_SAFE_INTEGER) {
-    return String(Number.MIN_SAFE_INTEGER);
-  }
-
-  if (config?.max !== undefined && numberValue > config.max) {
-    return String(config.max);
-  }
-
-  if (config?.min !== undefined && numberValue < config.min) {
-    return String(config.min);
-  }
-
-  return numberValue.toLocaleString(undefined, { maximumFractionDigits: 9 }) + (stringValue.endsWith('.') ? '.' : '');
-}
-
-export function handleNumberChange(
-  {
-    setFieldValue,
-  }: {
-    setFieldValue: (field: string, value: string) => void;
-  },
-  config?: { min?: number; max?: number },
-): ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> {
-  return event => {
-    const normalized = normalizeFormNumber(event.target.value, config);
-
-    if (normalized !== null) {
-      setFieldValue(event.target.name, normalized);
-      return;
-    }
-  };
-}
-
 export function normalizePhoneNumber(value: string, prevValue = ''): string {
   return normalizeSeperatedString(value, '-', [3, 4, 4], prevValue);
 }
@@ -101,4 +51,32 @@ export function handleBusinessNumberChange<K extends string, T extends Record<K,
   key: K,
 ): ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> {
   return handleNumberStringChange({ values, setFieldValue }, key, normalizeBusinessNumber);
+}
+
+export function normalizeLocaleNumber(value: string, config?: { min?: number; max?: number }): string {
+  const numberValue = Number(value.trim().replace(/,/g, ''));
+
+  if (Number.isNaN(numberValue)) {
+    return '0';
+  }
+
+  const clampedValue = Math.max(Math.min(numberValue, config?.max ?? Number.MAX_SAFE_INTEGER), config?.min ?? Number.MIN_SAFE_INTEGER);
+
+  return clampedValue.toLocaleString(undefined, { maximumFractionDigits: 9 }) + (value.toString().endsWith('.') ? '.' : '');
+}
+
+export function handleLocaleNumberChange<K extends string, T extends Record<K, string>>(
+  { values: _, setFieldValue }: { values: T; setFieldValue: (field: K, value: string) => void },
+  key: K,
+  config?: { min?: number; max?: number },
+): ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> {
+  return event => {
+    const normalized = normalizeLocaleNumber(event.target.value, config);
+    const nextSelectionEnd = event.target.selectionEnd === event.target.value.length ? normalized.length : (event.target.selectionEnd ?? 0);
+
+    event.target.value = normalized;
+    event.target.setSelectionRange(nextSelectionEnd, nextSelectionEnd);
+
+    setFieldValue(key, normalized);
+  };
 }

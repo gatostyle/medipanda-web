@@ -1,4 +1,4 @@
-import { handleNumberChange } from '@/lib/form';
+import { handleLocaleNumberChange } from '@/lib/form';
 import { TiptapMenuBar } from '@/medipanda/components/Tiptap';
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
@@ -308,8 +308,8 @@ export default function MpAdminProductEdit() {
               <TextField
                 fullWidth
                 size='small'
-                name='price'
                 value={formik.values.price}
+                onChange={handleLocaleNumberChange(formik, 'price')}
                 InputProps={{
                   readOnly: true,
                   endAdornment: <Typography variant='body2'>원</Typography>,
@@ -324,11 +324,10 @@ export default function MpAdminProductEdit() {
               <TextField
                 fullWidth
                 size='small'
-                name='feeRate'
                 placeholder='수수료율을 입력하세요'
                 required
                 value={formik.values.feeRate}
-                onChange={handleNumberChange(formik, { min: 0, max: 100 })}
+                onChange={handleLocaleNumberChange(formik, 'feeRate', { min: 0, max: 100 })}
                 InputProps={{
                   endAdornment: <Typography variant='body2'>%</Typography>,
                 }}
@@ -342,10 +341,9 @@ export default function MpAdminProductEdit() {
               <Stack direction='row' sx={{ gap: 2 }}>
                 <TextField
                   size='small'
-                  name='changedFeeRate'
                   label='변경요율'
                   value={formik.values.changedFeeRate}
-                  onChange={handleNumberChange(formik, { min: 0, max: 100 })}
+                  onChange={handleLocaleNumberChange(formik, 'changedFeeRate', { min: 0, max: 100 })}
                   InputProps={{
                     endAdornment: <Typography variant='body2'>%</Typography>,
                   }}

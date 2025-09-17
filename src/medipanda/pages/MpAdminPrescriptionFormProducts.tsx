@@ -1,4 +1,4 @@
-import { normalizeBusinessNumber, normalizeFormNumber } from '@/lib/form';
+import { normalizeBusinessNumber, normalizeLocaleNumber } from '@/lib/form';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
@@ -191,7 +191,7 @@ export default function MpAdminPrescriptionFormProducts() {
               name='quantity'
               value={row.original.quantity}
               onChange={event => {
-                const normalized = normalizeFormNumber(event.target.value);
+                const normalized = normalizeLocaleNumber(event.target.value);
 
                 if (normalized !== null) {
                   handleProductChange(row.index, 'quantity', normalized);
@@ -215,7 +215,7 @@ export default function MpAdminPrescriptionFormProducts() {
               name='totalPrice'
               value={row.original.totalPrice}
               onChange={event => {
-                const normalized = normalizeFormNumber(event.target.value);
+                const normalized = normalizeLocaleNumber(event.target.value);
 
                 if (normalized !== null) {
                   handleProductChange(row.index, 'totalPrice', normalized);
@@ -237,7 +237,7 @@ export default function MpAdminPrescriptionFormProducts() {
               name='baseFeeRate'
               value={row.original.baseFeeRate}
               onChange={event => {
-                const normalized = normalizeFormNumber(event.target.value, { min: 0, max: 100 });
+                const normalized = normalizeLocaleNumber(event.target.value, { min: 0, max: 100 });
 
                 if (normalized !== null) {
                   handleProductChange(row.index, 'baseFeeRate', normalized);
@@ -259,7 +259,7 @@ export default function MpAdminPrescriptionFormProducts() {
               name='feeAmount'
               value={row.original.feeAmount}
               onChange={event => {
-                const normalized = normalizeFormNumber(event.target.value);
+                const normalized = normalizeLocaleNumber(event.target.value);
 
                 if (normalized !== null) {
                   handleProductChange(row.index, 'feeAmount', normalized);
@@ -343,8 +343,8 @@ export default function MpAdminPrescriptionFormProducts() {
         ...currentPartnerProduct,
         productCode: product.productCode,
         productName: product.productName ?? '',
-        unitPrice: normalizeFormNumber(String(product.price ?? 0)) ?? '0',
-        baseFeeRate: normalizeFormNumber(String(product.feeRate ?? 0)) ?? '0',
+        unitPrice: normalizeLocaleNumber(String(product.price ?? 0)),
+        baseFeeRate: normalizeLocaleNumber(String(product.feeRate ?? 0)),
       },
       ...partnerProducts.slice(currentProductItemIndex + 1),
     ]);
@@ -370,11 +370,11 @@ export default function MpAdminPrescriptionFormProducts() {
           productCode: ocrItem.code,
           productName: ocrItem.name,
           unit: ocrItem.unit,
-          quantity: normalizeFormNumber(String(ocrItem.volume)) ?? '0',
-          unitPrice: normalizeFormNumber(String(ocrItem.price)) ?? '0',
-          totalPrice: normalizeFormNumber(String(ocrItem.totalAmount)) ?? '0',
-          baseFeeRate: normalizeFormNumber(String(ocrItem.rate * 100)) ?? '0',
-          feeAmount: normalizeFormNumber(String(Math.floor(ocrItem.feeAmount))) ?? '0',
+          quantity: normalizeLocaleNumber(String(ocrItem.volume)),
+          unitPrice: normalizeLocaleNumber(String(ocrItem.price)),
+          totalPrice: normalizeLocaleNumber(String(ocrItem.totalAmount)),
+          baseFeeRate: normalizeLocaleNumber(String(ocrItem.rate * 100)),
+          feeAmount: normalizeLocaleNumber(String(Math.floor(ocrItem.feeAmount))),
           note: '',
           ocrItem: {
             productCode: ocrItem.code,
@@ -432,11 +432,11 @@ export default function MpAdminPrescriptionFormProducts() {
           productCode: product.productCode,
           productName: product.productName,
           unit: product.unit,
-          quantity: normalizeFormNumber(String(product.quantity)) ?? '0',
-          unitPrice: normalizeFormNumber(String(product.unitPrice)) ?? '0',
-          totalPrice: normalizeFormNumber(String(product.totalPrice)) ?? '0',
-          baseFeeRate: normalizeFormNumber(String(product.baseFeeRate)) ?? '0',
-          feeAmount: normalizeFormNumber(String(product.feeAmount)) ?? '0',
+          quantity: normalizeLocaleNumber(String(product.quantity)),
+          unitPrice: normalizeLocaleNumber(String(product.unitPrice)),
+          totalPrice: normalizeLocaleNumber(String(product.totalPrice)),
+          baseFeeRate: normalizeLocaleNumber(String(product.baseFeeRate)),
+          feeAmount: normalizeLocaleNumber(String(product.feeAmount)),
           note: product.note,
           ocrItem: null,
         })),
