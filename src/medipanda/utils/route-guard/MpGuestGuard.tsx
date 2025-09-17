@@ -1,7 +1,8 @@
 import { FixedLinearProgress } from '@/lib/react/FixedLinearProgress';
-import { isAdmin, useSession } from '@/medipanda/hooks/useSession';
+import { useSession } from '@/medipanda/hooks/useSession';
 import { type ReactNode, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { restoreRedirectTo } from '../redirectTo';
 
 interface MpGuestGuardProps {
   children: ReactNode;
@@ -10,16 +11,13 @@ interface MpGuestGuardProps {
 export function MpGuestGuard({ children }: MpGuestGuardProps) {
   const { session, isLoading } = useSession();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (!isLoading && session) {
-      if (isAdmin(session)) {
-        navigate('/admin', { replace: true });
-      } else {
-        navigate('/', { replace: true });
-      }
+      navigate(restoreRedirectTo(location.search), { replace: true });
     }
-  }, [session, isLoading, navigate]);
+  }, [session, isLoading, location.search]);
 
   if (isLoading) {
     return <FixedLinearProgress />;

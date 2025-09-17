@@ -1,6 +1,6 @@
 import { FixedLinearProgress } from '@/lib/react/FixedLinearProgress';
 import { AdminPermission, getPermissions } from '@/backend';
-import { isAdmin, isSuperAdmin, useSession } from '@/medipanda/hooks/useSession';
+import { isSuperAdmin, useSession } from '@/medipanda/hooks/useSession';
 import { type ReactNode, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { saveRedirectTo } from '../redirectTo';
@@ -23,12 +23,7 @@ export function MpAdminGuard({ children, requiredPermission }: MpAdminGuardProps
       }
 
       if (!session) {
-        navigate(saveRedirectTo(location), { replace: true });
-        return;
-      }
-
-      if (!isAdmin(session)) {
-        navigate('/', { replace: true });
+        navigate(saveRedirectTo(location.pathname + location.search), { replace: true });
         return;
       }
 
@@ -49,7 +44,7 @@ export function MpAdminGuard({ children, requiredPermission }: MpAdminGuardProps
           } catch (error) {
             console.error('권한 확인 실패:', error);
             setHasPermission(false);
-            navigate('/admin', { replace: true });
+            window.history.back();
           }
         }
       } else {
@@ -58,13 +53,13 @@ export function MpAdminGuard({ children, requiredPermission }: MpAdminGuardProps
     };
 
     checkPermission();
-  }, [session, isLoading, navigate, location, requiredPermission]);
+  }, [session, isLoading, location, requiredPermission]);
 
   if (isLoading || (requiredPermission && hasPermission === null)) {
     return <FixedLinearProgress />;
   }
 
-  if (!session || !isAdmin(session) || (requiredPermission && hasPermission === false)) {
+  if (!session || (requiredPermission && hasPermission === false)) {
     return <FixedLinearProgress />;
   }
 

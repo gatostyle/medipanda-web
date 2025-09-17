@@ -1,10 +1,10 @@
-export function saveRedirectTo(location: { pathname: string } = window.location): string {
-  const redirectTo = encodeURIComponent(location.pathname);
+export function saveRedirectTo(currentUrl: string): string {
+  const redirectTo = encodeURIComponent(currentUrl);
   return `/login?redirectTo=${redirectTo}`;
 }
 
-export function restoreRedirectTo(location: { search: string } = window.location): string {
-  const redirectTo = new URLSearchParams(location.search).get('redirectTo');
+export function restoreRedirectTo(search: string): string {
+  const redirectTo = new URLSearchParams(search).get('redirectTo');
 
   return redirectTo ? decodeURIComponent(redirectTo) : '/';
 }
