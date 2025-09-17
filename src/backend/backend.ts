@@ -1633,6 +1633,8 @@ export async function updateBanner(
 export async function getBlindPosts(options?: {
   postType?: 'BOARD' | 'COMMENT';
   memberName?: string;
+  userId?: string;
+  nickname?: string;
   startAt?: DateTimeString;
   endAt?: DateTimeString;
   page?: number;
