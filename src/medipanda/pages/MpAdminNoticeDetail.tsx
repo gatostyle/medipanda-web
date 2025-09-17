@@ -7,10 +7,8 @@ import {
   Card,
   CircularProgress,
   Divider,
-  FormControlLabel,
   Link,
   Stack,
-  Switch,
   Table,
   TableBody,
   TableCell,
@@ -121,17 +119,6 @@ export default function MpAdminNoticeDetail() {
                   노출범위 <span style={{ color: 'red' }}>*</span>
                 </TableCell>
                 <TableCell colSpan={5}>{BoardExposureRangeLabel[detail.exposureRange]}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
-                  상단고정
-                </TableCell>
-                <TableCell colSpan={5}>
-                  <FormControlLabel
-                    control={<Switch checked={detail.noticeProperties?.fixedTop || false} disabled />}
-                    label={detail.noticeProperties?.fixedTop ? 'ON' : 'OFF'}
-                  />
-                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>

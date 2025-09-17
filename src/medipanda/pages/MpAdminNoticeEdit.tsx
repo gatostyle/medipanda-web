@@ -18,7 +18,6 @@ import {
   RadioGroup,
   Select,
   Stack,
-  Switch,
   TextField,
   Typography,
 } from '@mui/material';
@@ -34,6 +33,7 @@ import {
   type DrugCompanyResponse,
   getBoardDetails,
   isDrugCompanyNoticeType,
+  isTopFixedNoticeType,
   NoticeType,
   NoticeTypeLabel,
   PostAttachmentType,
@@ -66,7 +66,6 @@ export default function MpAdminNoticeEdit() {
       drugCompany: '',
       isExposed: true,
       exposureRange: BoardExposureRange.ALL as keyof typeof BoardExposureRange,
-      isTopFixed: false,
       title: '',
       attachedFiles: [] as AttachmentResponse[],
       newFiles: [] as File[],
@@ -99,7 +98,7 @@ export default function MpAdminNoticeEdit() {
               noticeProperties: {
                 noticeType: values.noticeType,
                 drugCompany: isDrugCompanyNoticeType(values.noticeType) ? values.drugCompany : '',
-                fixedTop: values.isTopFixed,
+                fixedTop: isTopFixedNoticeType(values.noticeType),
               },
             },
             files: values.newFiles,
@@ -120,7 +119,7 @@ export default function MpAdminNoticeEdit() {
               noticeProperties: {
                 noticeType: values.noticeType,
                 drugCompany: isDrugCompanyNoticeType(values.noticeType) ? values.drugCompany : '',
-                fixedTop: values.isTopFixed,
+                fixedTop: isTopFixedNoticeType(values.noticeType),
               },
             },
             newFiles: values.newFiles,
@@ -168,7 +167,6 @@ export default function MpAdminNoticeEdit() {
         drugCompany: detail.noticeProperties!.drugCompany ?? '',
         isExposed: detail.isExposed,
         exposureRange: detail.exposureRange,
-        isTopFixed: detail.noticeProperties?.fixedTop || false,
         title: detail.title,
         attachedFiles: detail.attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT),
         newFiles: [],
@@ -292,17 +290,6 @@ export default function MpAdminNoticeEdit() {
               </RadioGroup>
             </Stack>
           </Stack>
-
-          <FormControlLabel
-            control={
-              <Switch
-                checked={formik.values.isTopFixed}
-                onChange={e => formik.setFieldValue('isTopFixed', e.target.checked)}
-                name='isTopFixed'
-              />
-            }
-            label='상단고정'
-          />
 
           <TextField
             fullWidth

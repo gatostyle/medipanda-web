@@ -63,6 +63,10 @@ export function isDrugCompanyNoticeType(noticeType: keyof typeof NoticeType): bo
   ).includes(noticeType);
 }
 
+export function isTopFixedNoticeType(noticeType: keyof typeof NoticeType): boolean {
+  return ([NoticeType.ANONYMOUS_BOARD, NoticeType.MR_CSO_MATCHING] as (keyof typeof NoticeType)[]).includes(noticeType);
+}
+
 export const BoardExposureRange = {
   ALL: 'ALL',
   CONTRACTED: 'CONTRACTED',
