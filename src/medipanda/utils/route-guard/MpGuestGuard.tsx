@@ -15,7 +15,7 @@ export function MpGuestGuard({ children }: MpGuestGuardProps) {
 
   useEffect(() => {
     if (!isLoading && session) {
-      navigate(restoreRedirectTo(location.search), { replace: true });
+      navigate(restoreRedirectTo(location.search) ?? '/admin', { replace: true });
     }
   }, [session, isLoading, location.search]);
 

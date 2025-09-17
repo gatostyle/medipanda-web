@@ -3,8 +3,8 @@ export function saveRedirectTo(currentUrl: string): string {
   return `/login?redirectTo=${redirectTo}`;
 }
 
-export function restoreRedirectTo(search: string): string {
+export function restoreRedirectTo(search: string): string | null {
   const redirectTo = new URLSearchParams(search).get('redirectTo');
 
-  return redirectTo ? decodeURIComponent(redirectTo) : '/';
+  return redirectTo !== null ? decodeURIComponent(redirectTo) : null;
 }
