@@ -41,7 +41,7 @@ import {
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
-import { formatYyyyMmDd } from '../utils/dateFormat';
+import { formatYyyyMmDd, formatYyyyMmDdHhMm } from '../utils/dateFormat';
 
 export default function MpAdminMemberEdit() {
   const navigate = useNavigate();
@@ -111,8 +111,11 @@ export default function MpAdminMemberEdit() {
             note: values.note,
             marketingAgreement: {
               sms: values.marketingAgreementsSms,
+              emailAgreedAt: null,
               email: values.marketingAgreementsEmail,
+              pushAgreedAt: null,
               push: values.marketingAgreementsPush,
+              smsAgreedAt: null,
             },
           },
         });
@@ -585,7 +588,12 @@ export default function MpAdminMemberEdit() {
                   onChange={e => formik.setFieldValue('marketingAgreementsSms', e.target.checked)}
                 />
               }
-              label='SMS'
+              label={
+                'SMS' +
+                (detail.marketingAgreements.sms && detail.marketingAgreements.smsAgreedAt !== null
+                  ? ` (${formatYyyyMmDdHhMm(detail.marketingAgreements.smsAgreedAt)})`
+                  : '')
+              }
             />
             <FormControlLabel
               control={
@@ -595,7 +603,12 @@ export default function MpAdminMemberEdit() {
                   onChange={e => formik.setFieldValue('marketingAgreementsEmail', e.target.checked)}
                 />
               }
-              label='이메일'
+              label={
+                '이메일' +
+                (detail.marketingAgreements.email && detail.marketingAgreements.emailAgreedAt !== null
+                  ? ` (${formatYyyyMmDdHhMm(detail.marketingAgreements.emailAgreedAt)})`
+                  : '')
+              }
             />
             <FormControlLabel
               control={
@@ -605,7 +618,12 @@ export default function MpAdminMemberEdit() {
                   onChange={e => formik.setFieldValue('marketingAgreementsPush', e.target.checked)}
                 />
               }
-              label={`App Push`}
+              label={
+                `App Push` +
+                (detail.marketingAgreements.push && detail.marketingAgreements.pushAgreedAt !== null
+                  ? ` (${formatYyyyMmDdHhMm(detail.marketingAgreements.pushAgreedAt)})`
+                  : '')
+              }
             />
           </Stack>
         </Card>

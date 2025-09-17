@@ -473,8 +473,11 @@ export interface LoginResponse {
 
 export interface MarketingAgreements {
   email: boolean;
+  emailAgreedAt: string | null;
   push: boolean;
+  pushAgreedAt: string | null;
   sms: boolean;
+  smsAgreedAt: string | null;
 }
 
 export interface MedicalPersonInfo {
