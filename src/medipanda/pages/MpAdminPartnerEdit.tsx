@@ -69,7 +69,7 @@ export default function MpAdminPartnerEdit() {
 
       formik.setValues({
         drugCompany: { id: -1, name: detail.drugCompanyName, code: '' },
-        memberId: '',
+        userId: '',
         memberName: detail.memberName,
         companyName: detail.companyName,
         contractType: detail.contractType,
@@ -94,7 +94,7 @@ export default function MpAdminPartnerEdit() {
   const formik = useFormik({
     initialValues: {
       drugCompany: null as DrugCompanyResponse | null,
-      memberId: '',
+      userId: '',
       memberName: '',
       companyName: '',
       contractType: ContractStatus.CONTRACT as keyof typeof ContractStatus,
@@ -132,7 +132,7 @@ export default function MpAdminPartnerEdit() {
         if (isNew) {
           await createPartner({
             drugCompanyId: values.drugCompany!.id,
-            userId: values.memberId,
+            userId: values.userId,
             drugCompany: values.drugCompany!.name,
             companyName: values.companyName,
             contractType: values.contractType!,
@@ -186,7 +186,7 @@ export default function MpAdminPartnerEdit() {
   };
 
   const handleMemberSelect = (member: MemberResponse) => {
-    formik.setFieldValue('memberId', member.id);
+    formik.setFieldValue('userId', member.userId);
     formik.setFieldValue('memberName', member.name);
     formik.setFieldValue('companyName', member.companyName);
 
