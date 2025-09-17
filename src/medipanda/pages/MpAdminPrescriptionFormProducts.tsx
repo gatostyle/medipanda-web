@@ -1,3 +1,4 @@
+import { normalizeFormNumber } from '@/lib/form';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
@@ -27,10 +28,9 @@ import {
   getAttachedEdiFiles,
   getPartnerProducts,
   getPrescriptionPartner,
+  type OcrOriginalItem,
   type OcrResponse,
   type PartnerResponse,
-  type PrescriptionPartnerProductResponse,
-  type PrescriptionProductItem,
   type ProductSummaryResponse,
   upsertPatchPartnerProducts,
 } from '@/backend';
@@ -43,6 +43,20 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import { MpPartnerProductSelectModal } from '../components/MpPartnerProductSelectModal';
 import { DateFix } from '../utils/dateFormat';
+
+interface CustomPartnerProducts {
+  id: number | null;
+  productCode: string;
+  productName: string;
+  unit: string;
+  quantity: string;
+  unitPrice: string;
+  totalPrice: string;
+  baseFeeRate: string;
+  feeAmount: string;
+  note: string | null;
+  ocrItem: OcrOriginalItem | null;
+}
 
 export default function MpAdminPrescriptionFormProducts() {
   const navigate = useNavigate();
@@ -60,9 +74,7 @@ export default function MpAdminPrescriptionFormProducts() {
 
   const { alertError } = useMpModal();
 
-  const [partnerProducts, setPartnerProducts] = useState<
-    Sequenced<Omit<PrescriptionPartnerProductResponse & Pick<PrescriptionProductItem, 'ocrItem'>, 'id'> & { id: number | null }>[]
-  >([]);
+  const [partnerProducts, setPartnerProducts] = useState<Sequenced<CustomPartnerProducts>[]>([]);
   const [deletePartnerProductIds, setDeletePartnerProductIds] = useState<number[]>([]);
   const [attachedFiles, setAttachedFiles] = useState<AttachmentResponse[]>([]);
 
@@ -85,7 +97,18 @@ export default function MpAdminPrescriptionFormProducts() {
     onSubmit: async () => {
       try {
         await upsertPatchPartnerProducts(prescriptionPartnerId, {
-          items: partnerProducts,
+          items: partnerProducts.map(product => ({
+            id: product.id,
+            productCode: product.productCode,
+            unit: product.unit,
+            quantity: Number(product.quantity.replace(/,/g, '')),
+            unitPrice: Number(product.unitPrice.replace(/,/g, '')),
+            totalPrice: Number(product.totalPrice.replace(/,/g, '')),
+            baseFeeRate: Number(product.baseFeeRate.replace(/,/g, '')),
+            feeAmount: Number(product.feeAmount.replace(/,/g, '')),
+            note: product.note,
+            ocrItem: product.ocrItem,
+          })),
           deletedPrescriptionPartnerProductIds: deletePartnerProductIds,
         });
 
@@ -98,16 +121,19 @@ export default function MpAdminPrescriptionFormProducts() {
     },
   });
 
-  const handleProductChange = useCallback((index: number, field: keyof PrescriptionPartnerProductResponse, value: unknown) => {
-    setPartnerProducts(prev =>
-      prev.map((p, i) => {
-        if (index === i) {
-          return { ...p, [field]: value };
-        }
-        return p;
-      }),
-    );
-  }, []);
+  const handleProductChange = useCallback(
+    <K extends keyof CustomPartnerProducts, T extends CustomPartnerProducts[K]>(index: number, field: K, value: T) => {
+      setPartnerProducts(prev =>
+        prev.map((p, i) => {
+          if (index === i) {
+            return { ...p, [field]: value };
+          }
+          return p;
+        }),
+      );
+    },
+    [],
+  );
 
   const table = useReactTable({
     data: partnerProducts,
@@ -161,10 +187,16 @@ export default function MpAdminPrescriptionFormProducts() {
           cell: ({ row }) => (
             <TextField
               size='small'
-              type='number'
               fullWidth
+              name='quantity'
               value={row.original.quantity}
-              onChange={e => handleProductChange(row.index, 'quantity', e.target.value)}
+              onChange={event => {
+                const normalized = normalizeFormNumber(event.target.value);
+
+                if (normalized !== null) {
+                  handleProductChange(row.index, 'quantity', normalized);
+                }
+              }}
             />
           ),
           size: 100,
@@ -179,11 +211,19 @@ export default function MpAdminPrescriptionFormProducts() {
           cell: ({ row }) => (
             <TextField
               size='small'
-              type='number'
               fullWidth
               name='totalPrice'
               value={row.original.totalPrice}
-              onChange={e => handleProductChange(row.index, 'totalPrice', e.target.value)}
+              onChange={event => {
+                const normalized = normalizeFormNumber(event.target.value);
+
+                if (normalized !== null) {
+                  handleProductChange(row.index, 'totalPrice', normalized);
+                }
+              }}
+              InputProps={{
+                endAdornment: <Typography variant='body2'>원</Typography>,
+              }}
             />
           ),
           size: 120,
@@ -193,11 +233,19 @@ export default function MpAdminPrescriptionFormProducts() {
           cell: ({ row }) => (
             <TextField
               size='small'
-              type='number'
               fullWidth
               name='baseFeeRate'
               value={row.original.baseFeeRate}
-              onChange={e => handleProductChange(row.index, 'baseFeeRate', e.target.value)}
+              onChange={event => {
+                const normalized = normalizeFormNumber(event.target.value, { min: 0, max: 100 });
+
+                if (normalized !== null) {
+                  handleProductChange(row.index, 'baseFeeRate', normalized);
+                }
+              }}
+              InputProps={{
+                endAdornment: <Typography variant='body2'>%</Typography>,
+              }}
             />
           ),
           size: 120,
@@ -207,11 +255,19 @@ export default function MpAdminPrescriptionFormProducts() {
           cell: ({ row }) => (
             <TextField
               size='small'
-              type='number'
               fullWidth
               name='feeAmount'
               value={row.original.feeAmount}
-              onChange={e => handleProductChange(row.index, 'feeAmount', e.target.value)}
+              onChange={event => {
+                const normalized = normalizeFormNumber(event.target.value);
+
+                if (normalized !== null) {
+                  handleProductChange(row.index, 'feeAmount', normalized);
+                }
+              }}
+              InputProps={{
+                endAdornment: <Typography variant='body2'>원</Typography>,
+              }}
             />
           ),
           size: 120,
@@ -246,11 +302,11 @@ export default function MpAdminPrescriptionFormProducts() {
         productCode: '',
         productName: '',
         unit: '',
-        quantity: 0,
-        unitPrice: 0,
-        totalPrice: 0,
-        baseFeeRate: 0,
-        feeAmount: 0,
+        quantity: '0',
+        unitPrice: '0',
+        totalPrice: '0',
+        baseFeeRate: '0',
+        feeAmount: '0',
         note: '',
         ocrItem: null,
       },
@@ -287,8 +343,8 @@ export default function MpAdminPrescriptionFormProducts() {
         ...currentPartnerProduct,
         productCode: product.productCode,
         productName: product.productName ?? '',
-        unitPrice: product.price ?? 0,
-        baseFeeRate: product.feeRate ?? 0,
+        unitPrice: normalizeFormNumber(String(product.price ?? 0)) ?? '0',
+        baseFeeRate: normalizeFormNumber(String(product.feeRate ?? 0)) ?? '0',
       },
       ...partnerProducts.slice(currentProductItemIndex + 1),
     ]);
@@ -314,11 +370,11 @@ export default function MpAdminPrescriptionFormProducts() {
           productCode: ocrItem.code,
           productName: ocrItem.name,
           unit: ocrItem.unit,
-          quantity: ocrItem.volume,
-          unitPrice: ocrItem.price,
-          totalPrice: ocrItem.totalAmount,
-          baseFeeRate: ocrItem.rate,
-          feeAmount: ocrItem.feeAmount,
+          quantity: normalizeFormNumber(String(ocrItem.volume)) ?? '0',
+          unitPrice: normalizeFormNumber(String(ocrItem.price)) ?? '0',
+          totalPrice: normalizeFormNumber(String(ocrItem.totalAmount)) ?? '0',
+          baseFeeRate: normalizeFormNumber(String(ocrItem.rate * 100)) ?? '0',
+          feeAmount: normalizeFormNumber(String(Math.floor(ocrItem.feeAmount))) ?? '0',
           note: '',
           ocrItem: {
             productCode: ocrItem.code,
@@ -327,7 +383,7 @@ export default function MpAdminPrescriptionFormProducts() {
             quantity: ocrItem.volume,
             unitPrice: ocrItem.price,
             totalPrice: ocrItem.totalAmount,
-            baseFeeRate: ocrItem.rate,
+            baseFeeRate: ocrItem.rate * 100,
             feeAmount: ocrItem.feeAmount,
             note: '',
           },
@@ -371,8 +427,17 @@ export default function MpAdminPrescriptionFormProducts() {
 
       setPartnerProducts(
         products.map((product, index) => ({
-          ...product,
           sequence: index + 1,
+          id: product.id,
+          productCode: product.productCode,
+          productName: product.productName,
+          unit: product.unit,
+          quantity: normalizeFormNumber(String(product.quantity)) ?? '0',
+          unitPrice: normalizeFormNumber(String(product.unitPrice)) ?? '0',
+          totalPrice: normalizeFormNumber(String(product.totalPrice)) ?? '0',
+          baseFeeRate: normalizeFormNumber(String(product.baseFeeRate)) ?? '0',
+          feeAmount: normalizeFormNumber(String(product.feeAmount)) ?? '0',
+          note: product.note,
           ocrItem: null,
         })),
       );
