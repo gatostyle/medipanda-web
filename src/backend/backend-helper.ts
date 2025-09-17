@@ -43,7 +43,7 @@ export const NoticeType = {
 } as const;
 
 export const NoticeTypeLabel: Record<keyof typeof NoticeType, string> = {
-  [NoticeType.PRODUCT_STATUS]: '제약사 - 제품현향',
+  [NoticeType.PRODUCT_STATUS]: '제약사 - 제품현황',
   [NoticeType.MANUFACTURING_SUSPENSION]: '제약사 - 정산 및 생산중단',
   [NoticeType.NEW_PRODUCT]: '제약사 - 신제품 정보',
   [NoticeType.POLICY]: '제약사 정책',
