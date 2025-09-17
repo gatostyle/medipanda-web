@@ -1,3 +1,4 @@
+import { handlePhoneNumberChange, normalizeBusinessNumber, normalizePhoneNumber } from '@/lib/form';
 import { MedipandaUrlFileName } from '@/lib/url';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
@@ -81,7 +82,7 @@ export default function MpAdminMemberEdit() {
       }
 
       if (values.phoneNumber !== detail?.phoneNumber && values.phoneNumber === '') {
-        await alert('휴대폰번호를 입력하세요.');
+        await alert('연락처를 입력하세요.');
         return;
       }
 
@@ -104,7 +105,7 @@ export default function MpAdminMemberEdit() {
             name: null,
             birthDate: null,
             accountStatus: values.accountStatus,
-            phoneNumber: values.phoneNumber !== detail?.phoneNumber ? values.phoneNumber : null,
+            phoneNumber: values.phoneNumber.replace(/-/g, ''),
             email: values.email,
             nickname: null,
             referralCode: null,
@@ -140,8 +141,8 @@ export default function MpAdminMemberEdit() {
         navigate('/admin/members');
       } catch (e) {
         switch (true) {
-          case isAxiosError(e) && e.response?.data === `Bad request: phone number ${values.phoneNumber} already exists.`:
-            await alert('이미 사용중인 휴대폰번호입니다.');
+          case isAxiosError(e) && /Bad request: phone number \w+ already exists./.test(e.response?.data ?? ''):
+            await alert('이미 사용중인 연락처입니다.');
             break;
           default:
             console.error(e);
@@ -166,7 +167,7 @@ export default function MpAdminMemberEdit() {
         ...formik.values,
         password: '',
         confirmPassword: '',
-        phoneNumber: detail.phoneNumber,
+        phoneNumber: normalizePhoneNumber(detail.phoneNumber),
         email: detail.email,
         accountStatus: detail.accountStatus,
         note: detail.note ?? '',
@@ -358,11 +359,10 @@ export default function MpAdminMemberEdit() {
                 <Stack sx={{ flex: '1 0' }}>
                   <TextField
                     fullWidth
-                    label='휴대폰번호'
-                    name='phoneNumber'
+                    label='연락처'
                     disabled={!isEditable}
-                    value={formik.values.phoneNumber}
-                    onChange={formik.handleChange}
+                    value={normalizePhoneNumber(formik.values.phoneNumber)}
+                    onChange={handlePhoneNumberChange(formik, 'phoneNumber')}
                     size='small'
                   />
                 </Stack>
@@ -506,7 +506,7 @@ export default function MpAdminMemberEdit() {
                     <Typography variant='subtitle2' color='text.secondary'>
                       사업자등록번호
                     </Typography>
-                    <Typography variant='body1'>{contractDetail.businessNumber}</Typography>
+                    <Typography variant='body1'>{normalizeBusinessNumber(contractDetail.businessNumber)}</Typography>
                   </Stack>
                 </Stack>
 

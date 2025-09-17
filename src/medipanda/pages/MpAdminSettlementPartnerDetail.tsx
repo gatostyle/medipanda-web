@@ -1,3 +1,4 @@
+import { normalizeBusinessNumber } from '@/lib/form';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
@@ -200,7 +201,7 @@ export default function MpAdminSettlementPartnerDetail() {
           <Stack direction='row' sx={{ gap: 3 }}>
             <TextField
               label='사업자등록번호'
-              value={partnerDetail.businessNumber}
+              value={normalizeBusinessNumber(partnerDetail.businessNumber)}
               fullWidth
               size='small'
               InputProps={{

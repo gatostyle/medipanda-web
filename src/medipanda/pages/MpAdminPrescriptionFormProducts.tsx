@@ -1,4 +1,4 @@
-import { normalizeFormNumber } from '@/lib/form';
+import { normalizeBusinessNumber, normalizeFormNumber } from '@/lib/form';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
@@ -418,7 +418,7 @@ export default function MpAdminPrescriptionFormProducts() {
         companyName: formDetail.companyName,
         institutionName: formDetail.partnerName,
         institutionCode: formDetail.institutionCode,
-        businessNumber: formDetail.businessNumber,
+        businessNumber: normalizeBusinessNumber(formDetail.businessNumber),
         dealerName: formDetail.dealerName,
         prescriptionMonth: DateFix(formDetail.prescriptionMonth),
         settlementMonth: DateFix(formDetail.settlementMonth),

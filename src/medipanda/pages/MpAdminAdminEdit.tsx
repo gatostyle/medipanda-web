@@ -1,20 +1,9 @@
+import { handlePhoneNumberChange, normalizePhoneNumber } from '@/lib/form';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
-import {
-  Box,
-  Button,
-  Card,
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  MenuItem,
-  Select,
-  Stack,
-  Switch,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Card, Checkbox, FormControlLabel, Stack, Switch, TextField, Typography } from '@mui/material';
+import { isAxiosError } from 'axios';
 import { useFormik } from 'formik';
-import { AdminPermission, getMemberDetails, getPermissions, signupByAdmin, updateByAdmin } from '@/backend';
+import { AdminPermission, getMemberDetails, getPermissions, type MemberDetailsResponse, signupByAdmin, updateByAdmin } from '@/backend';
 import { isSuperAdmin, useSession } from '@/medipanda/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
@@ -30,6 +19,7 @@ export default function MpAdminAdminEdit() {
   const [, setLoading] = useState(false);
   const { alert, alertError } = useMpModal();
   const { enqueueSnackbar } = useSnackbar();
+  const [detail, setDetail] = useState<MemberDetailsResponse | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -48,9 +38,7 @@ export default function MpAdminAdminEdit() {
       password: '',
       passwordConfirm: '',
       email: '',
-      phoneNumber1: '010',
-      phoneNumber2: '',
-      phoneNumber3: '',
+      phoneNumber: '',
       permissions: [] as (keyof typeof AdminPermission)[],
     },
     onSubmit: async values => {
@@ -84,8 +72,8 @@ export default function MpAdminAdminEdit() {
         return;
       }
 
-      if (values.phoneNumber1 === '' || values.phoneNumber2 === '' || values.phoneNumber3 === '') {
-        await alert('연락처를 입력하세요');
+      if (values.phoneNumber !== detail?.phoneNumber && values.phoneNumber === '') {
+        await alert('연락처를 입력하세요.');
         return;
       }
 
@@ -95,8 +83,6 @@ export default function MpAdminAdminEdit() {
       }
 
       try {
-        const phoneNumber = `${values.phoneNumber1}-${values.phoneNumber2}-${values.phoneNumber3}`;
-
         if (isNew) {
           await signupByAdmin({
             status: values.status,
@@ -104,7 +90,7 @@ export default function MpAdminAdminEdit() {
             userId: values.userId,
             password: values.password,
             email: values.email,
-            phoneNumber,
+            phoneNumber: values.phoneNumber.replace(/-/g, ''),
             permissions: [...values.permissions, AdminPermission.PERMISSION_MANAGEMENT],
           });
           enqueueSnackbar('관리자가 등록되었습니다.', { variant: 'success' });
@@ -115,15 +101,22 @@ export default function MpAdminAdminEdit() {
             userId: values.userId,
             password: values.password !== '' ? values.password : null,
             email: values.email,
-            phoneNumber,
+            phoneNumber: values.phoneNumber.replace(/-/g, ''),
             permissions: [...values.permissions, AdminPermission.PERMISSION_MANAGEMENT],
           });
           enqueueSnackbar('관리자 권한이 수정되었습니다.', { variant: 'success' });
           navigate('/admin/admins');
         }
-      } catch (error) {
-        console.error('Failed to save admin:', error);
-        await alertError('저장 중 오류가 발생했습니다.');
+      } catch (e) {
+        switch (true) {
+          case isAxiosError(e) && /Bad request: phone number \w+ already exists./.test(e.response?.data ?? ''):
+            await alert('이미 사용중인 연락처입니다.');
+            break;
+          default:
+            console.error('Failed to save admin:', e);
+            await alertError('저장 중 오류가 발생했습니다.');
+            break;
+        }
       }
     },
   });
@@ -138,19 +131,14 @@ export default function MpAdminAdminEdit() {
     setLoading(true);
     try {
       const [detail, permissionData] = await Promise.all([getMemberDetails(userId), getPermissions(userId)]);
-
-      const phoneParts = detail.phoneNumber.includes('-')
-        ? detail.phoneNumber.split('-')
-        : [detail.phoneNumber.slice(0, 3), detail.phoneNumber.slice(3, 7), detail.phoneNumber.slice(7)];
+      setDetail(detail);
 
       formik.setValues({
         ...formik.values,
         userId: detail.userId,
         name: detail.name,
         email: detail.email,
-        phoneNumber1: phoneParts[0] !== '' ? phoneParts[0] : '010',
-        phoneNumber2: phoneParts[1] ?? '',
-        phoneNumber3: phoneParts[2] ?? '',
+        phoneNumber: normalizePhoneNumber(detail.phoneNumber),
         status: true,
         permissions: permissionData.permissions as (keyof typeof AdminPermission)[],
       });
@@ -240,39 +228,7 @@ export default function MpAdminAdminEdit() {
 
         <TextField name='email' label='이메일' type='email' fullWidth required value={formik.values.email} onChange={formik.handleChange} />
 
-        <Stack sx={{ gap: 1 }}>
-          <Typography variant='subtitle2' color='text.secondary'>
-            연락처
-          </Typography>
-          <Stack direction='row' spacing={2} alignItems='center'>
-            <FormControl size='small' sx={{ minWidth: 100 }}>
-              <Select name='phoneNumber1' value={formik.values.phoneNumber1} onChange={formik.handleChange}>
-                <MenuItem value='010'>010</MenuItem>
-                <MenuItem value='011'>011</MenuItem>
-                <MenuItem value='016'>016</MenuItem>
-                <MenuItem value='017'>017</MenuItem>
-                <MenuItem value='018'>018</MenuItem>
-                <MenuItem value='019'>019</MenuItem>
-              </Select>
-            </FormControl>
-            <Typography>-</Typography>
-            <TextField
-              name='phoneNumber2'
-              size='small'
-              sx={{ width: 100 }}
-              value={formik.values.phoneNumber2}
-              onChange={formik.handleChange}
-            />
-            <Typography>-</Typography>
-            <TextField
-              name='phoneNumber3'
-              size='small'
-              sx={{ width: 100 }}
-              value={formik.values.phoneNumber3}
-              onChange={formik.handleChange}
-            />
-          </Stack>
-        </Stack>
+        <TextField fullWidth label='연락처' value={formik.values.phoneNumber} onChange={handlePhoneNumberChange(formik, 'phoneNumber')} />
 
         <Stack sx={{ gap: 1 }}>
           <Typography variant='subtitle2' color='text.secondary'>

@@ -185,7 +185,7 @@ export default function MpAdminMemberList() {
         size: 150,
       },
       {
-        header: '휴대폰번호',
+        header: '연락처',
         cell: ({ row }) => row.original.phoneNumber,
         size: 130,
       },
@@ -253,7 +253,7 @@ export default function MpAdminMemberList() {
                 <MenuItem value={'name'}>회원명</MenuItem>
                 <MenuItem value={'memberId'}>회원번호</MenuItem>
                 <MenuItem value={'userId'}>아이디</MenuItem>
-                <MenuItem value={'phoneNumber'}>휴대폰번호</MenuItem>
+                <MenuItem value={'phoneNumber'}>연락처</MenuItem>
                 <MenuItem value={'email'}>이메일</MenuItem>
                 <MenuItem value={'companyName'}>회사명</MenuItem>
               </Select>

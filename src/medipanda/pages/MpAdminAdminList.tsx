@@ -1,3 +1,4 @@
+import { normalizePhoneNumber } from '@/lib/form';
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
@@ -143,7 +144,7 @@ export default function MpAdminAdminList() {
       },
       {
         header: '연락처',
-        cell: ({ row }) => row.original.phoneNumber,
+        cell: ({ row }) => normalizePhoneNumber(row.original.phoneNumber),
         size: 150,
       },
       {

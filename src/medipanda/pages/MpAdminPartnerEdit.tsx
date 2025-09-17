@@ -1,3 +1,4 @@
+import { handleBusinessNumberChange, normalizeBusinessNumber } from '@/lib/form';
 import { MpDrugCompanySelectModal } from '@/medipanda/components/MpDrugCompanySelectModal';
 import { MpMemberSelectModal } from '@/medipanda/components/MpMemberSelectModal';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
@@ -75,7 +76,7 @@ export default function MpAdminPartnerEdit() {
         contractType: detail.contractType,
         institutionCode: detail.institutionCode,
         institutionName: detail.institutionName,
-        businessNumber: detail.businessNumber,
+        businessNumber: normalizeBusinessNumber(detail.businessNumber),
         medicalDepartment: detail.medicalDepartment ?? '',
         pharmacyName: detail.pharmacyName ?? '',
         pharmacyAddress: detail.pharmacyAddress ?? '',
@@ -138,7 +139,7 @@ export default function MpAdminPartnerEdit() {
             contractType: values.contractType!,
             institutionCode: values.institutionCode,
             institutionName: values.institutionName,
-            businessNumber: values.businessNumber,
+            businessNumber: values.businessNumber.replace(/-/g, ''),
             medicalDepartment: values.medicalDepartment,
             pharmacyName: values.pharmacyName,
             pharmacyAddress: values.pharmacyAddress,
@@ -153,7 +154,7 @@ export default function MpAdminPartnerEdit() {
             contractType: values.contractType,
             institutionCode: values.institutionCode,
             institutionName: values.institutionName,
-            businessNumber: values.businessNumber,
+            businessNumber: values.businessNumber.replace(/-/g, ''),
             medicalDepartment: values.medicalDepartment,
             pharmacyName: values.pharmacyName,
             pharmacyAddress: values.pharmacyAddress,
@@ -275,7 +276,7 @@ export default function MpAdminPartnerEdit() {
             label='사업자등록번호'
             name='businessNumber'
             value={formik.values.businessNumber}
-            onChange={formik.handleChange}
+            onChange={handleBusinessNumberChange(formik, 'businessNumber')}
             required
             sx={{ flex: '1 0' }}
           />

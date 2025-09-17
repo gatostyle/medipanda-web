@@ -1,5 +1,6 @@
 // noinspection ES6UnusedImports
 
+import { normalizeBusinessNumber } from '@/lib/form';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import {
   Box,
@@ -133,7 +134,7 @@ export default function MpAdminSettlementDetail() {
       },
       {
         header: '사업자등록번호',
-        cell: ({ row }) => row.original.businessNumber,
+        cell: ({ row }) => normalizeBusinessNumber(row.original.businessNumber),
         size: 140,
       },
       {

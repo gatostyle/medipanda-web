@@ -1,3 +1,4 @@
+import { normalizeBusinessNumber } from '@/lib/form';
 import { setUrlParams } from '@/lib/url';
 import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import { MpPartnerUploadModal } from '@/medipanda/components/MpPartnerUploadModal';
@@ -190,7 +191,7 @@ export default function MpAdminPartnerList() {
       },
       {
         header: '사업자등록번호',
-        cell: ({ row }) => row.original.businessNumber,
+        cell: ({ row }) => normalizeBusinessNumber(row.original.businessNumber),
         size: 130,
       },
       {
