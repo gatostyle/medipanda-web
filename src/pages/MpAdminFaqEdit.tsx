@@ -30,7 +30,7 @@ import {
 } from '@/backend';
 import { useSession } from '@/hooks/useSession';
 import { useSnackbar } from 'notistack';
-import { type ChangeEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 
 export default function MpAdminFaqEdit() {
@@ -146,11 +146,14 @@ export default function MpAdminFaqEdit() {
     }
   };
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files ?? []);
-    if (files.length > 0) {
-      formik.setFieldValue('newFiles', [...formik.values.newFiles, ...files]);
-    }
+  const handleFileUpload = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true;
+    input.onchange = async () => {
+      formik.setFieldValue('newFiles', [...formik.values.newFiles, ...(Array.from(input.files ?? []) as File[])]);
+    };
+    input.click();
   };
 
   if (loading) {
@@ -194,9 +197,8 @@ export default function MpAdminFaqEdit() {
             첨부파일
           </Typography>
           <Box>
-            <Button variant='contained' component='label'>
+            <Button onClick={handleFileUpload} variant='contained' component='label'>
               파일첨부
-              <input type='file' hidden multiple onChange={handleFileChange} accept='*' />
             </Button>
           </Box>
 

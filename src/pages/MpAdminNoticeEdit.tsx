@@ -42,7 +42,7 @@ import {
 import { useSession } from '@/hooks/useSession';
 import { SearchNormal1 } from 'iconsax-reactjs';
 import { useSnackbar } from 'notistack';
-import { type ChangeEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 
 export default function MpAdminNoticeEdit() {
@@ -180,29 +180,14 @@ export default function MpAdminNoticeEdit() {
     }
   };
 
-  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || []);
-    const MAX_FILE_SIZE = 1 * 1024 * 1024;
-
-    const validFiles: File[] = [];
-    const oversizedFiles: string[] = [];
-
-    files.forEach(file => {
-      if (file.size > MAX_FILE_SIZE) {
-        oversizedFiles.push(file.name);
-      } else {
-        validFiles.push(file);
-      }
-    });
-
-    if (oversizedFiles.length > 0) {
-      await alert(`다음 파일이 1MB를 초과합니다: ${oversizedFiles.join(', ')}`);
-      return;
-    }
-
-    if (validFiles.length > 0) {
-      formik.setFieldValue('newFiles', [...formik.values.newFiles, ...validFiles]);
-    }
+  const handleFileUpload = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true;
+    input.onchange = async () => {
+      formik.setFieldValue('newFiles', [...formik.values.newFiles, ...(Array.from(input.files ?? []) as File[])]);
+    };
+    input.click();
   };
 
   const handleDrugCompanySelect = (drugCompany: DrugCompanyResponse) => {
@@ -323,9 +308,8 @@ export default function MpAdminNoticeEdit() {
               첨부파일
             </Typography>
             <Box>
-              <Button variant='contained' component='label'>
+              <Button onClick={handleFileUpload} variant='contained' component='label'>
                 파일첨부
-                <input type='file' hidden multiple onChange={handleFileChange} accept='*' />
               </Button>
             </Box>
 
