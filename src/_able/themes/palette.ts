@@ -5,7 +5,7 @@ import { alpha, createTheme } from '@mui/material/styles';
 import ThemeOption from './theme';
 
 // types
-import { type PaletteThemeProps } from '@/_able/types/theme';
+import { type PaletteThemeProps } from '../types/theme';
 
 // ==============================|| DEFAULT THEME - PALETTE  ||============================== //
 

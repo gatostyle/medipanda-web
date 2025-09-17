@@ -2,11 +2,11 @@
 import { type Theme } from '@mui/material/styles';
 
 // project-imports
-import getColors from '@/_able/utils/getColors';
-import getShadow from '@/_able/utils/getShadow';
+import getColors from '../../utils/getColors';
+import getShadow from '../../utils/getShadow';
 
 // types
-import { type ColorProps } from '@/_able/types/extended';
+import { type ColorProps } from '../../types/extended';
 
 interface Props {
   variant: ColorProps;

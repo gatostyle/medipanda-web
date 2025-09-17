@@ -2,7 +2,7 @@
 import { type Theme } from '@mui/material/styles';
 
 // types
-import { type ColorProps } from '@/_able/types/extended';
+import { type ColorProps } from '../types/extended';
 
 // ==============================|| CUSTOM FUNCTION - COLORS ||============================== //
 

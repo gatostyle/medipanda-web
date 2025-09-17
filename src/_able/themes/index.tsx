@@ -12,7 +12,7 @@ import CustomShadows from './shadows';
 import componentsOverride from './overrides';
 
 // types
-import { type CustomShadowProps } from '@/_able/types/theme';
+import { type CustomShadowProps } from '../types/theme';
 
 interface ThemeCustomizationProps {
   children: ReactNode;

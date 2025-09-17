@@ -1,4 +1,4 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { MpRoutes } from './medipanda/routes/MpRoutes';
+import { routes } from './routes';
 
-export const router = createBrowserRouter([MpRoutes], { basename: import.meta.env.VITE_APP_BASE_NAME ?? '/' });
+export const router = createBrowserRouter([routes], { basename: import.meta.env.VITE_APP_BASE_NAME ?? '/' });

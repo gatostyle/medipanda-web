@@ -1,4 +1,4 @@
-import { MpProviders } from '@/medipanda/providers';
+import { Providers } from '@/Providers';
 import Notistack from '@/_able/components/third-party/Notistack';
 import ThemeCustomization from '@/_able/themes';
 import { RouterProvider } from 'react-router';
@@ -8,11 +8,11 @@ export function App() {
   return (
     <>
       <ThemeCustomization>
-        <MpProviders>
-          <Notistack>
+        <Notistack>
+          <Providers>
             <RouterProvider router={router} />
-          </Notistack>
-        </MpProviders>
+          </Providers>
+        </Notistack>
       </ThemeCustomization>
     </>
   );

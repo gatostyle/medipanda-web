@@ -1,5 +1,5 @@
 // types
-import { type PaletteThemeProps } from '@/_able/types/theme';
+import { type PaletteThemeProps } from '../../types/theme';
 
 // ==============================|| PRESET THEME - DEFAULT ||============================== //
 

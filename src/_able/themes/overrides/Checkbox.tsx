@@ -3,13 +3,13 @@ import { type Theme } from '@mui/material/styles';
 import { type CheckboxProps } from '@mui/material/Checkbox';
 
 // project-imports
-import getColors from '@/_able/utils/getColors';
+import getColors from '../../utils/getColors';
 
 // assets
 import { Stop, TickSquare, MinusSquare } from 'iconsax-reactjs';
 
 // types
-import { type ExtendedStyleProps } from '@/_able/types/extended';
+import { type ExtendedStyleProps } from '../../types/extended';
 
 // ==============================|| RADIO - COLORS ||============================== //
 

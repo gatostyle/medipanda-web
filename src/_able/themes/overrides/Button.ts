@@ -2,11 +2,11 @@
 import { alpha, type Theme } from '@mui/material/styles';
 
 // project-imports
-import getColors from '@/_able/utils/getColors';
-import getShadow from '@/_able/utils/getShadow';
+import getColors from '../../utils/getColors';
+import getShadow from '../../utils/getShadow';
 
 // types
-import { type ButtonVariantProps, type ExtendedStyleProps } from '@/_able/types/extended';
+import { type ButtonVariantProps, type ExtendedStyleProps } from '../../types/extended';
 
 interface ButtonStyleProps extends ExtendedStyleProps {
   variant: ButtonVariantProps;
