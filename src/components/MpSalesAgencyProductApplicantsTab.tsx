@@ -29,10 +29,9 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-reactjs';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from './MpSearchFilterBar';
 
@@ -53,11 +52,6 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-
-  const noteInputRefs = Array.from({ length: pageSize }, () => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    return useRef<HTMLInputElement>(null);
-  });
 
   const deleteDialog = useMpDeleteDialog();
   const { alertError } = useMpModal();
@@ -116,99 +110,6 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
     });
     fetchContents();
   }, [searchKeyword, page]);
-
-  const table = useReactTable({
-    data: contents,
-    columns: [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedIds.length === contents.length && contents.length > 0}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(contents.map(item => item.userId));
-              } else {
-                setSelectedIds([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedIds.includes(row.original.userId)}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(prev => [...prev, row.original.userId]);
-              } else {
-                setSelectedIds(prev => prev.filter(id => id !== row.original.userId));
-              }
-            }}
-          />
-        ),
-        size: 50,
-      },
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '회원번호',
-        cell: ({ row }) => row.original.id,
-        size: 100,
-      },
-      {
-        header: '아이디',
-        cell: ({ row }) => row.original.userId,
-        size: 120,
-      },
-      {
-        header: '회원명',
-        cell: ({ row }) => row.original.memberName,
-        size: 100,
-      },
-      {
-        header: '핸드폰번호',
-        cell: ({ row }) => row.original.phoneNumber,
-        size: 140,
-      },
-      {
-        header: '신청일',
-        cell: ({ row }) => formatYyyyMmDd(row.original.appliedDate),
-        size: 120,
-      },
-      {
-        header: '파트너사 계약여부',
-        cell: ({ row }) => (row.original.contractStatus === ContractStatus.CONTRACT ? 'Y' : 'N'),
-        size: 140,
-      },
-      {
-        header: '비고',
-        cell: ({ row }) => {
-          setTimeout(() => {
-            const input = noteInputRefs[row.index].current?.querySelector('input') ?? null;
-
-            if (input !== null) {
-              input.value = row.original.note ?? '';
-            }
-          });
-
-          return (
-            <TextField
-              ref={noteInputRefs[row.index]}
-              fullWidth
-              size='small'
-              placeholder='비고를 입력하세요'
-              onBlur={event => handleNoteUpdate(row.original.userId, event.target.value)}
-            />
-          );
-        },
-        size: 100,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-  });
 
   const handleDelete = () => {
     const count = selectedIds.length;
@@ -318,39 +219,80 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table size='small'>
             <TableHead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableCell key={header.id} style={{ width: header.getSize() }}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableCell width={50}>
+                  <Checkbox
+                    checked={selectedIds.length === contents.length && contents.length > 0}
+                    onChange={e => {
+                      if (e.target.checked) {
+                        setSelectedIds(contents.map(item => item.userId));
+                      } else {
+                        setSelectedIds([]);
+                      }
+                    }}
+                  />
+                </TableCell>
+                <TableCell width={60}>No</TableCell>
+                <TableCell width={100}>회원번호</TableCell>
+                <TableCell width={120}>아이디</TableCell>
+                <TableCell width={100}>회원명</TableCell>
+                <TableCell width={140}>핸드폰번호</TableCell>
+                <TableCell width={120}>신청일</TableCell>
+                <TableCell width={140}>파트너사 계약여부</TableCell>
+                <TableCell width={100}>비고</TableCell>
+              </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={9} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       데이터를 로드하는 중입니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
-              ) : table.getRowModel().rows.length === 0 ? (
+              ) : contents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={9} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       검색 결과가 없습니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
-                table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                    ))}
+                contents.map(item => (
+                  <TableRow key={item.id}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedIds.includes(item.userId)}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            setSelectedIds(prev => [...prev, item.userId]);
+                          } else {
+                            setSelectedIds(prev => prev.filter(id => id !== item.userId));
+                          }
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>{item.sequence}</TableCell>
+                    <TableCell>{item.id}</TableCell>
+                    <TableCell>{item.userId}</TableCell>
+                    <TableCell>{item.memberName}</TableCell>
+                    <TableCell>{item.phoneNumber}</TableCell>
+                    <TableCell>{formatYyyyMmDd(item.appliedDate)}</TableCell>
+                    <TableCell>{item.contractStatus === ContractStatus.CONTRACT ? 'Y' : 'N'}</TableCell>
+                    <TableCell>
+                      <TextField
+                        fullWidth
+                        size='small'
+                        placeholder='비고를 입력하세요'
+                        value={item.note}
+                        onChange={e => {
+                          setContents(prev => prev.map(item => (item.userId === item.userId ? { ...item, note: e.target.value } : item)));
+                        }}
+                        onBlur={e => handleNoteUpdate(item.userId, e.target.value)}
+                      />
+                    </TableCell>
                   </TableRow>
                 ))
               )}

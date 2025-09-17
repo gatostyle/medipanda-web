@@ -35,7 +35,6 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-reactjs';
 import { useEffect, useMemo, useState } from 'react';
@@ -146,95 +145,6 @@ export default function MpAdminSettlementList() {
     fetchContents();
   }, [searchType, searchKeyword, settlementMonth, status, page]);
 
-  const table = useReactTable({
-    data: contents,
-    columns: [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedIds.length === contents.length && contents.length > 0}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(contents.map(item => item.id));
-              } else {
-                setSelectedIds([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedIds.includes(row.original.id)}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(prev => [...prev, row.original.id]);
-              } else {
-                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50,
-      },
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '딜러번호',
-        cell: ({ row }) => row.original.dealerId,
-        size: 100,
-      },
-      {
-        header: '정산월',
-        cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
-        size: 100,
-      },
-      {
-        header: '회사명',
-        cell: ({ row }) => row.original.companyName,
-        size: 150,
-      },
-      {
-        header: '딜러명',
-        cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/settlements/${row.original.id}`}>
-            {row.original.dealerName}
-          </Link>
-        ),
-        size: 100,
-      },
-      {
-        header: '처방금액',
-        cell: ({ row }) => row.original.prescriptionAmount.toLocaleString(),
-        size: 120,
-      },
-      {
-        header: '공급가액',
-        cell: ({ row }) => row.original.supplyAmount.toLocaleString(),
-        size: 120,
-      },
-      {
-        header: '세액',
-        cell: ({ row }) => row.original.taxAmount.toLocaleString(),
-        size: 100,
-      },
-      {
-        header: '합계금액',
-        cell: ({ row }) => row.original.totalAmount.toLocaleString(),
-        size: 120,
-      },
-      {
-        header: '사용자확인',
-        cell: ({ row }) => (row.original.status !== null ? SettlementStatusLabel[row.original.status] : '-'),
-        size: 100,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-  });
-
   const handleSettlementUploadSuccess = () => {
     setSettlementUploadModalOpen(false);
     fetchContents();
@@ -336,39 +246,77 @@ export default function MpAdminSettlementList() {
           <TableContainer sx={{ overflowX: 'auto' }}>
             <Table size='small'>
               <TableHead>
-                {table.getHeaderGroups().map(headerGroup => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map(header => (
-                      <TableCell key={header.id} style={{ width: header.getSize() }}>
-                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
+                <TableRow>
+                  <TableCell width={50}>
+                    <Checkbox
+                      checked={selectedIds.length === contents.length && contents.length > 0}
+                      onChange={e => {
+                        if (e.target.checked) {
+                          setSelectedIds(contents.map(item => item.id));
+                        } else {
+                          setSelectedIds([]);
+                        }
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell width={60}>No</TableCell>
+                  <TableCell width={100}>딜러번호</TableCell>
+                  <TableCell width={100}>정산월</TableCell>
+                  <TableCell width={150}>회사명</TableCell>
+                  <TableCell width={100}>딜러명</TableCell>
+                  <TableCell width={120}>처방금액</TableCell>
+                  <TableCell width={120}>공급가액</TableCell>
+                  <TableCell width={100}>세액</TableCell>
+                  <TableCell width={120}>합계금액</TableCell>
+                  <TableCell width={100}>사용자확인</TableCell>
+                </TableRow>
               </TableHead>
               <TableBody>
                 {loading ? (
                   <TableRow>
-                    <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                    <TableCell colSpan={11} align='center' sx={{ py: 3 }}>
                       <Typography variant='body2' color='text.secondary'>
                         데이터를 로드하는 중입니다.
                       </Typography>
                     </TableCell>
                   </TableRow>
-                ) : table.getRowModel().rows.length === 0 ? (
+                ) : contents.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                    <TableCell colSpan={11} align='center' sx={{ py: 3 }}>
                       <Typography variant='body2' color='text.secondary'>
                         검색 결과가 없습니다.
                       </Typography>
                     </TableCell>
                   </TableRow>
                 ) : (
-                  table.getRowModel().rows.map(row => (
-                    <TableRow key={row.id}>
-                      {row.getVisibleCells().map(cell => (
-                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                      ))}
+                  contents.map(item => (
+                    <TableRow key={item.id}>
+                      <TableCell>
+                        <Checkbox
+                          checked={selectedIds.includes(item.id)}
+                          onChange={e => {
+                            if (e.target.checked) {
+                              setSelectedIds(prev => [...prev, item.id]);
+                            } else {
+                              setSelectedIds(prev => prev.filter(id => id !== item.id));
+                            }
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>{item.sequence}</TableCell>
+                      <TableCell>{item.dealerId}</TableCell>
+                      <TableCell>{formatYyyyMm(item.settlementMonth)}</TableCell>
+                      <TableCell>{item.companyName}</TableCell>
+                      <TableCell>
+                        <Link component={RouterLink} to={`/admin/settlements/${item.id}`}>
+                          {item.dealerName}
+                        </Link>
+                      </TableCell>
+                      <TableCell>{item.prescriptionAmount.toLocaleString()}</TableCell>
+                      <TableCell>{item.supplyAmount.toLocaleString()}</TableCell>
+                      <TableCell>{item.taxAmount.toLocaleString()}</TableCell>
+                      <TableCell>{item.totalAmount.toLocaleString()}</TableCell>
+                      <TableCell>{item.status !== null ? SettlementStatusLabel[item.status] : '-'}</TableCell>
                     </TableRow>
                   ))
                 )}

@@ -1,5 +1,6 @@
 import { normalizeBusinessNumber } from '@/lib/utils/form';
 import { useMpModal } from '@/hooks/useMpModal';
+import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import {
   Box,
   Card,
@@ -15,7 +16,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { ArrowLeft } from 'iconsax-reactjs';
 import {
   getSettlement,
@@ -39,7 +39,7 @@ export default function MpAdminSettlementPartnerDetail() {
   const [loading, setLoading] = useState(true);
   const [detail, setDetail] = useState<SettlementResponse | null>(null);
   const [partnerDetail, setPartnerDetail] = useState<SettlementPartnerResponse | null>(null);
-  const [partnerProducts, setPartnerProducts] = useState<SettlementPartnerProductResponse[]>([]);
+  const [partnerProducts, setPartnerProducts] = useState<Sequenced<SettlementPartnerProductResponse>[]>([]);
 
   const { alertError } = useMpModal();
 
@@ -66,7 +66,7 @@ export default function MpAdminSettlementPartnerDetail() {
 
       setDetail(detail);
       setPartnerDetail(partnerDetail.content[0]);
-      setPartnerProducts(partnerProducts);
+      setPartnerProducts(withSequence(partnerProducts));
     } catch (error) {
       console.error('Failed to load data:', error);
       enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -79,68 +79,6 @@ export default function MpAdminSettlementPartnerDetail() {
   useEffect(() => {
     fetchDetail(settlementId, settlementPartnerId);
   }, [settlementId, settlementPartnerId]);
-
-  const table = useReactTable({
-    data: partnerProducts,
-    columns: [
-      {
-        header: 'No',
-        accessorFn: (_, index) => index + 1,
-        size: 60,
-      },
-      {
-        header: '보험코드',
-        cell: ({ row }) => row.original.productCode,
-        size: 120,
-      },
-      {
-        header: '제품명',
-        cell: ({ row }) => row.original.productName,
-        size: 150,
-      },
-      {
-        header: '표준코드',
-        cell: ({ row }) => row.original.productCode,
-        size: 140,
-      },
-      {
-        header: '수량',
-        cell: ({ row }) => row.original.quantity,
-        size: 80,
-      },
-      {
-        header: '약가',
-        cell: ({ row }) => row.original.unitPrice?.toLocaleString() ?? '-',
-        size: 100,
-      },
-      {
-        header: '처방금액',
-        cell: ({ row }) => row.original.prescriptionAmount?.toLocaleString() ?? '-',
-        size: 120,
-      },
-      {
-        header: '기본수수료율',
-        cell: ({ row }) => (row.original.feeRate !== null ? `${row.original.feeRate}%` : '-'),
-        size: 120,
-      },
-      {
-        header: '거래수수료율',
-        cell: ({ row }) => (row.original.extraFeeRate !== null ? `${row.original.extraFeeRate}%` : '-'),
-        size: 120,
-      },
-      {
-        header: '수수료 금액',
-        cell: ({ row }) => row.original.feeAmount?.toLocaleString() ?? '-',
-        size: 120,
-      },
-      {
-        header: '비고',
-        cell: ({ row }) => row.original.note ?? '-',
-        size: 200,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-  });
 
   if (loading) {
     return (
@@ -234,24 +172,46 @@ export default function MpAdminSettlementPartnerDetail() {
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table size='small'>
             <TableHead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableCell key={header.id} style={{ width: header.getSize() }}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableCell width={60}>No</TableCell>
+                <TableCell width={120}>보험코드</TableCell>
+                <TableCell width={150}>제품명</TableCell>
+                <TableCell width={140}>표준코드</TableCell>
+                <TableCell width={80}>수량</TableCell>
+                <TableCell width={100}>약가</TableCell>
+                <TableCell width={120}>처방금액</TableCell>
+                <TableCell width={120}>기본수수료율</TableCell>
+                <TableCell width={120}>거래수수료율</TableCell>
+                <TableCell width={120}>수수료 금액</TableCell>
+                <TableCell width={200}>비고</TableCell>
+              </TableRow>
             </TableHead>
             <TableBody>
-              {table.getRowModel().rows.map(row => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map(cell => (
-                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                  ))}
+              {partnerProducts.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={11} align='center' sx={{ py: 3 }}>
+                    <Typography variant='body2' color='text.secondary'>
+                      검색 결과가 없습니다.
+                    </Typography>
+                  </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                partnerProducts.map(item => (
+                  <TableRow key={item.id}>
+                    <TableCell>{item.sequence}</TableCell>
+                    <TableCell>{item.productCode}</TableCell>
+                    <TableCell>{item.productName}</TableCell>
+                    <TableCell>{item.productCode}</TableCell>
+                    <TableCell>{item.quantity}</TableCell>
+                    <TableCell>{item.unitPrice?.toLocaleString() ?? '-'}</TableCell>
+                    <TableCell>{item.prescriptionAmount?.toLocaleString() ?? '-'}</TableCell>
+                    <TableCell>{item.feeRate !== null ? `${item.feeRate}%` : '-'}</TableCell>
+                    <TableCell>{item.extraFeeRate !== null ? `${item.extraFeeRate}%` : '-'}</TableCell>
+                    <TableCell>{item.feeAmount?.toLocaleString() ?? '-'}</TableCell>
+                    <TableCell>{item.note ?? '-'}</TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>

@@ -21,7 +21,6 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-reactjs';
 import { DateString, getDownloadPerformanceExcel, getPerformanceStats, type PerformanceStatsResponse, SettlementStatus } from '@/backend';
@@ -131,63 +130,6 @@ export default function MpAdminStatisticsList() {
     fetchContents();
   }, [searchType, searchKeyword, settlementMonth, status, page]);
 
-  const table = useReactTable({
-    data: contents,
-    columns: [
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '제약사명',
-        cell: ({ row }) => row.original.drugCompany,
-        size: 120,
-      },
-      {
-        header: '회사명',
-        cell: ({ row }) => row.original.companyName,
-        size: 120,
-      },
-      {
-        header: '딜러명',
-        cell: ({ row }) => row.original.dealerName,
-        size: 100,
-      },
-      {
-        header: '거래처코드',
-        cell: ({ row }) => row.original.institutionCode,
-        size: 120,
-      },
-      {
-        header: '거래처명',
-        cell: ({ row }) => row.original.institutionName,
-        size: 120,
-      },
-      {
-        header: '정산월',
-        cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
-        size: 100,
-      },
-      {
-        header: '처방금액',
-        cell: ({ row }) => row.original.prescriptionAmount.toLocaleString(),
-        size: 120,
-      },
-      {
-        header: '합계금액',
-        cell: ({ row }) => row.original.totalAmount.toLocaleString(),
-        size: 120,
-      },
-      {
-        header: '수수료금액',
-        cell: ({ row }) => row.original.feeAmount.toLocaleString(),
-        size: 120,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-  });
-
   return (
     <Stack sx={{ gap: 3 }}>
       <Typography variant='h4'>실적통계</Typography>
@@ -271,39 +213,49 @@ export default function MpAdminStatisticsList() {
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table size='small'>
             <TableHead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableCell key={header.id} style={{ width: header.getSize() }}>
-                      {flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableCell width={60}>No</TableCell>
+                <TableCell width={120}>제약사명</TableCell>
+                <TableCell width={120}>회사명</TableCell>
+                <TableCell width={100}>딜러명</TableCell>
+                <TableCell width={120}>거래처코드</TableCell>
+                <TableCell width={120}>거래처명</TableCell>
+                <TableCell width={100}>정산월</TableCell>
+                <TableCell width={120}>처방금액</TableCell>
+                <TableCell width={120}>합계금액</TableCell>
+                <TableCell width={120}>수수료금액</TableCell>
+              </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={10} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       데이터를 로드하는 중입니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
-              ) : table.getRowModel().rows.length === 0 ? (
+              ) : contents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={10} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       검색 결과가 없습니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
-                table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                    ))}
+                contents.map(item => (
+                  <TableRow key={`${item.drugCompany}-${item.institutionCode}-${item.settlementMonth}`}>
+                    <TableCell>{item.sequence}</TableCell>
+                    <TableCell>{item.drugCompany}</TableCell>
+                    <TableCell>{item.companyName}</TableCell>
+                    <TableCell>{item.dealerName}</TableCell>
+                    <TableCell>{item.institutionCode}</TableCell>
+                    <TableCell>{item.institutionName}</TableCell>
+                    <TableCell>{formatYyyyMm(item.settlementMonth)}</TableCell>
+                    <TableCell>{item.prescriptionAmount.toLocaleString()}</TableCell>
+                    <TableCell>{item.totalAmount.toLocaleString()}</TableCell>
+                    <TableCell>{item.feeAmount.toLocaleString()}</TableCell>
                   </TableRow>
                 ))
               )}

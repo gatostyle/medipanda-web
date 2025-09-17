@@ -20,7 +20,6 @@
     "@mui/material": "^7.3.2",
     "@mui/x-charts": "^8.11.2",
     "@mui/x-date-pickers": "^8.11.2",
-    "@tanstack/react-table": "^8.21.3",
     "@tiptap/extension-bold": "^3.4.3",
     "@tiptap/extension-document": "^3.4.3",
     "@tiptap/extension-file-handler": "^3.4.3",

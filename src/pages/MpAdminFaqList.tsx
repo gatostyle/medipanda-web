@@ -24,7 +24,6 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { type BoardPostResponse, BoardType, DateString, deleteBoardPost, getBoards } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
@@ -135,74 +134,6 @@ export default function MpAdminFaqList() {
     fetchContents();
   }, [searchKeyword, startAt, endAt, isExposed, page]);
 
-  const table = useReactTable({
-    data: contents,
-    columns: [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedIds.length === contents.length && contents.length > 0}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(contents.map(item => item.id));
-              } else {
-                setSelectedIds([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedIds.includes(row.original.id)}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(prev => [...prev, row.original.id]);
-              } else {
-                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50,
-      },
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 80,
-      },
-      {
-        header: '제목',
-        cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/faqs/${row.original.id}`}>
-            {row.original.title}
-          </Link>
-        ),
-      },
-      {
-        header: '상태',
-        cell: ({ row }) => {
-          const isExposed = row.original.isExposed;
-          return <Chip label={isExposed ? '노출' : '미노출'} color={isExposed ? 'success' : 'default'} variant='light' size='small' />;
-        },
-        size: 100,
-      },
-      {
-        header: '조회수',
-        cell: ({ row }) => row.original.viewsCount.toLocaleString(),
-        size: 100,
-      },
-      {
-        header: '작성일',
-        cell: ({ row }) => {
-          return formatYyyyMmDd(row.original.createdAt);
-        },
-        size: 120,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-  });
-
   const handleDelete = () => {
     const count = selectedIds.length;
     const message =
@@ -311,39 +242,74 @@ export default function MpAdminFaqList() {
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table size='small'>
             <TableHead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableCell key={header.id} style={{ width: header.getSize() }}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableCell width={50}>
+                  <Checkbox
+                    checked={selectedIds.length === contents.length && contents.length > 0}
+                    onChange={e => {
+                      if (e.target.checked) {
+                        setSelectedIds(contents.map(item => item.id));
+                      } else {
+                        setSelectedIds([]);
+                      }
+                    }}
+                  />
+                </TableCell>
+                <TableCell width={80}>No</TableCell>
+                <TableCell width={150}>제목</TableCell>
+                <TableCell width={100}>상태</TableCell>
+                <TableCell width={100}>조회수</TableCell>
+                <TableCell width={120}>작성일</TableCell>
+              </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={6} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       데이터를 로드하는 중입니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
-              ) : table.getRowModel().rows.length === 0 ? (
+              ) : contents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={6} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       검색 결과가 없습니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
-                table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                    ))}
+                contents.map(item => (
+                  <TableRow key={item.id}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedIds.includes(item.id)}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            setSelectedIds(prev => [...prev, item.id]);
+                          } else {
+                            setSelectedIds(prev => prev.filter(id => id !== item.id));
+                          }
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>{item.sequence}</TableCell>
+                    <TableCell>
+                      <Link component={RouterLink} to={`/admin/faqs/${item.id}`}>
+                        {item.title}
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={item.isExposed ? '노출' : '미노출'}
+                        color={item.isExposed ? 'success' : 'default'}
+                        variant='light'
+                        size='small'
+                      />
+                    </TableCell>
+                    <TableCell>{item.viewsCount.toLocaleString()}</TableCell>
+                    <TableCell>{formatYyyyMmDd(item.createdAt)}</TableCell>
                   </TableRow>
                 ))
               )}

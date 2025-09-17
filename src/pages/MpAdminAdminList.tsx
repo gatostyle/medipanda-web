@@ -23,7 +23,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { AccountStatusLabel, getUserMembers, type MemberResponse, Role, RoleLabel } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
@@ -115,59 +114,6 @@ export default function MpAdminAdminList() {
     fetchContents();
   }, [searchType, searchKeyword, page]);
 
-  const table = useReactTable({
-    data: contents,
-    columns: [
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '아이디',
-        cell: ({ row }) => row.original.userId,
-        size: 120,
-      },
-      {
-        header: '관리자',
-        cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/admins/${row.original.userId}/edit`}>
-            {row.original.name}
-          </Link>
-        ),
-        size: 120,
-      },
-      {
-        header: '이메일',
-        cell: ({ row }) => row.original.email,
-        size: 200,
-      },
-      {
-        header: '연락처',
-        cell: ({ row }) => normalizePhoneNumber(row.original.phoneNumber),
-        size: 150,
-      },
-      {
-        header: '권한',
-        cell: ({ row }) => RoleLabel[row.original.role],
-        size: 100,
-      },
-      {
-        header: '상태',
-        cell: ({ row }) => {
-          return <Chip label={AccountStatusLabel[row.original.accountStatus]} color='success' variant='light' size='small' />;
-        },
-        size: 80,
-      },
-      {
-        header: '등록일',
-        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.registrationDate),
-        size: 150,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-  });
-
   return (
     <Stack sx={{ gap: 3 }}>
       <Typography variant='h4'>관리자 권한</Typography>
@@ -221,39 +167,51 @@ export default function MpAdminAdminList() {
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table size='small'>
             <TableHead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableCell key={header.id} style={{ width: header.getSize() }}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableCell style={{ width: 60 }}>No</TableCell>
+                <TableCell style={{ width: 120 }}>아이디</TableCell>
+                <TableCell style={{ width: 120 }}>관리자</TableCell>
+                <TableCell style={{ width: 200 }}>이메일</TableCell>
+                <TableCell style={{ width: 150 }}>연락처</TableCell>
+                <TableCell style={{ width: 100 }}>권한</TableCell>
+                <TableCell style={{ width: 80 }}>상태</TableCell>
+                <TableCell style={{ width: 150 }}>등록일</TableCell>
+              </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={8} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       데이터를 로드하는 중입니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
-              ) : table.getRowModel().rows.length === 0 ? (
+              ) : contents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={8} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       검색 결과가 없습니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
-                table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                    ))}
+                contents.map(row => (
+                  <TableRow key={row.userId}>
+                    <TableCell>{row.sequence}</TableCell>
+                    <TableCell>{row.userId}</TableCell>
+                    <TableCell>
+                      <Link component={RouterLink} to={`/admin/admins/${row.userId}/edit`}>
+                        {row.name}
+                      </Link>
+                    </TableCell>
+                    <TableCell>{row.email}</TableCell>
+                    <TableCell>{normalizePhoneNumber(row.phoneNumber)}</TableCell>
+                    <TableCell>{RoleLabel[row.role]}</TableCell>
+                    <TableCell>
+                      <Chip label={AccountStatusLabel[row.accountStatus]} color='success' variant='light' size='small' />
+                    </TableCell>
+                    <TableCell>{formatYyyyMmDdHhMm(row.registrationDate)}</TableCell>
                   </TableRow>
                 ))
               )}

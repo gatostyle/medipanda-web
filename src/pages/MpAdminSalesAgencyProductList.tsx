@@ -26,7 +26,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import {
   DateString,
@@ -143,110 +142,6 @@ export default function MpAdminSalesAgencyProductList() {
     });
     fetchContents();
   }, [searchType, searchKeyword, startAt, endAt, page]);
-
-  const table = useReactTable({
-    data: contents,
-    columns: [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedIds.length === contents.length && contents.length > 0}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(contents.map(item => item.id));
-              } else {
-                setSelectedIds([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedIds.includes(row.original.id)}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(prev => [...prev, row.original.id]);
-              } else {
-                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50,
-      },
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '썸네일',
-        cell: ({ row }) => (
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <RouterLink to={row.original.thumbnailUrl ?? ''} target='_blank'>
-              <img
-                src={row.original.thumbnailUrl ?? ''}
-                alt='썸네일'
-                style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 4 }}
-              />
-            </RouterLink>
-          </Box>
-        ),
-        size: 80,
-      },
-      {
-        header: '위탁사',
-        cell: ({ row }) => row.original.clientName,
-        size: 150,
-      },
-      {
-        header: '상품명',
-        cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/sales-agency-products/${row.original.id}`}>
-            {row.original.productName}
-          </Link>
-        ),
-        size: 300,
-      },
-      {
-        header: '판매가',
-        cell: ({ row }) => row.original.price.toLocaleString(),
-        size: 100,
-      },
-      {
-        header: '계약일',
-        cell: ({ row }) => formatYyyyMmDd(row.original.contractDate),
-        size: 120,
-      },
-      {
-        header: '노출상태',
-        cell: ({ row }) => {
-          const isExposed = row.original.isExposed;
-          return <Chip label={isExposed ? '노출' : '미노출'} size='small' color={isExposed ? 'success' : 'default'} />;
-        },
-        size: 100,
-      },
-      {
-        header: '게시기간',
-        cell: ({ row }) => {
-          return `${formatYyyyMmDd(row.original.startAt)} ~ ${formatYyyyMmDd(row.original.endAt)}`;
-        },
-        size: 200,
-      },
-      {
-        header: '신청자 수',
-        cell: ({ row }) => `${row.original.appliedCount}명`,
-        size: 100,
-      },
-      {
-        header: '판매수량',
-        cell: ({ row }) => row.original.quantity.toLocaleString(),
-        size: 100,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-  });
 
   const handleDelete = () => {
     const count = selectedIds.length;
@@ -369,39 +264,89 @@ export default function MpAdminSalesAgencyProductList() {
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table size='small'>
             <TableHead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableCell key={header.id} style={{ width: header.getSize() }}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableCell width={50}>
+                  <Checkbox
+                    checked={selectedIds.length === contents.length && contents.length > 0}
+                    onChange={e => {
+                      if (e.target.checked) {
+                        setSelectedIds(contents.map(item => item.id));
+                      } else {
+                        setSelectedIds([]);
+                      }
+                    }}
+                  />
+                </TableCell>
+                <TableCell width={60}>No</TableCell>
+                <TableCell width={80}>썸네일</TableCell>
+                <TableCell width={150}>위탁사</TableCell>
+                <TableCell width={300}>상품명</TableCell>
+                <TableCell width={100}>판매가</TableCell>
+                <TableCell width={120}>계약일</TableCell>
+                <TableCell width={100}>노출상태</TableCell>
+                <TableCell width={200}>게시기간</TableCell>
+                <TableCell width={100}>신청자 수</TableCell>
+                <TableCell width={100}>판매수량</TableCell>
+              </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={11} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       데이터를 로드하는 중입니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
-              ) : table.getRowModel().rows.length === 0 ? (
+              ) : contents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={11} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       검색 결과가 없습니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
-                table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                    ))}
+                contents.map(item => (
+                  <TableRow key={item.id}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedIds.includes(item.id)}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            setSelectedIds(prev => [...prev, item.id]);
+                          } else {
+                            setSelectedIds(prev => prev.filter(id => id !== item.id));
+                          }
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>{item.sequence}</TableCell>
+                    <TableCell>
+                      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <RouterLink to={item.thumbnailUrl ?? ''} target='_blank'>
+                          <img
+                            src={item.thumbnailUrl ?? ''}
+                            alt='썸네일'
+                            style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 4 }}
+                          />
+                        </RouterLink>
+                      </Box>
+                    </TableCell>
+                    <TableCell>{item.clientName}</TableCell>
+                    <TableCell>
+                      <Link component={RouterLink} to={`/admin/sales-agency-products/${item.id}`}>
+                        {item.productName}
+                      </Link>
+                    </TableCell>
+                    <TableCell>{item.price.toLocaleString()}</TableCell>
+                    <TableCell>{formatYyyyMmDd(item.contractDate)}</TableCell>
+                    <TableCell>
+                      <Chip label={item.isExposed ? '노출' : '미노출'} size='small' color={item.isExposed ? 'success' : 'default'} />
+                    </TableCell>
+                    <TableCell>{`${formatYyyyMmDd(item.startAt)} ~ ${formatYyyyMmDd(item.endAt)}`}</TableCell>
+                    <TableCell>{`${item.appliedCount}명`}</TableCell>
+                    <TableCell>{item.quantity.toLocaleString()}</TableCell>
                   </TableRow>
                 ))
               )}

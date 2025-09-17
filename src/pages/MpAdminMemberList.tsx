@@ -22,7 +22,6 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-reactjs';
 import {
@@ -152,82 +151,6 @@ export default function MpAdminMemberList() {
     fetchContents();
   }, [searchType, searchKeyword, startAt, endAt, contractStatus, page]);
 
-  const table = useReactTable({
-    data: contents,
-    columns: [
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '회원번호',
-        cell: ({ row }) => row.original.id,
-        size: 80,
-      },
-      {
-        header: '아이디',
-        cell: ({ row }) => row.original.userId,
-        size: 120,
-      },
-      {
-        header: '회원명',
-        cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/members/${row.original.userId}/edit`}>
-            {row.original.name}
-          </Link>
-        ),
-        size: 100,
-      },
-      {
-        header: '회사명',
-        cell: ({ row }) => row.original.companyName,
-        size: 150,
-      },
-      {
-        header: '연락처',
-        cell: ({ row }) => row.original.phoneNumber,
-        size: 130,
-      },
-      {
-        header: '이메일',
-        cell: ({ row }) => row.original.email,
-        size: 200,
-      },
-      {
-        header: '파트너사 계약여부',
-        cell: ({ row }) => ContractStatusLabel[memberTypeToContractStatus(row.original.partnerContractStatus)],
-        size: 130,
-      },
-      {
-        header: 'CSO신고증 유무',
-        cell: ({ row }) => (row.original.hasCsoCert ? 'Y' : 'N'),
-        size: 120,
-      },
-      {
-        header: '계정상태',
-        cell: ({ row }) => AccountStatusLabel[row.original.accountStatus],
-        size: 90,
-      },
-      {
-        header: '마케팅수신동의',
-        cell: ({ row }) => (row.original.marketingConsent ? '동의' : '미동의'),
-        size: 120,
-      },
-      {
-        header: '가입일',
-        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.registrationDate),
-        size: 150,
-      },
-      {
-        header: '최종접속일',
-        cell: ({ row }) => formatYyyyMmDd(row.original.lastLoginDate),
-        size: 110,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-  });
-
   return (
     <Stack sx={{ gap: 3 }}>
       <Typography variant='h4'>회원관리</Typography>
@@ -341,39 +264,59 @@ export default function MpAdminMemberList() {
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table size='small'>
             <TableHead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableCell key={header.id} style={{ width: header.getSize() }}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableCell width={60}>No</TableCell>
+                <TableCell width={80}>회원번호</TableCell>
+                <TableCell width={120}>아이디</TableCell>
+                <TableCell width={100}>회원명</TableCell>
+                <TableCell width={150}>회사명</TableCell>
+                <TableCell width={130}>연락처</TableCell>
+                <TableCell width={200}>이메일</TableCell>
+                <TableCell width={130}>파트너사 계약여부</TableCell>
+                <TableCell width={120}>CSO신고증 유무</TableCell>
+                <TableCell width={90}>계정상태</TableCell>
+                <TableCell width={120}>마케팅수신동의</TableCell>
+                <TableCell width={150}>가입일</TableCell>
+                <TableCell width={110}>최종접속일</TableCell>
+              </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={13} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       데이터를 로드하는 중입니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
-              ) : table.getRowModel().rows.length === 0 ? (
+              ) : contents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={13} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       검색 결과가 없습니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
-                table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                    ))}
+                contents.map(item => (
+                  <TableRow key={item.id}>
+                    <TableCell>{item.sequence}</TableCell>
+                    <TableCell>{item.id}</TableCell>
+                    <TableCell>{item.userId}</TableCell>
+                    <TableCell>
+                      <Link component={RouterLink} to={`/admin/members/${item.userId}/edit`}>
+                        {item.name}
+                      </Link>
+                    </TableCell>
+                    <TableCell>{item.companyName}</TableCell>
+                    <TableCell>{item.phoneNumber}</TableCell>
+                    <TableCell>{item.email}</TableCell>
+                    <TableCell>{ContractStatusLabel[memberTypeToContractStatus(item.partnerContractStatus)]}</TableCell>
+                    <TableCell>{item.hasCsoCert ? 'Y' : 'N'}</TableCell>
+                    <TableCell>{AccountStatusLabel[item.accountStatus]}</TableCell>
+                    <TableCell>{item.marketingConsent ? '동의' : '미동의'}</TableCell>
+                    <TableCell>{formatYyyyMmDdHhMm(item.registrationDate)}</TableCell>
+                    <TableCell>{formatYyyyMmDd(item.lastLoginDate)}</TableCell>
                   </TableRow>
                 ))
               )}

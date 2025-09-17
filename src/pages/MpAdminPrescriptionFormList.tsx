@@ -24,7 +24,6 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import {
   completePrescriptionPartner,
@@ -141,104 +140,6 @@ export default function MpAdminPrescriptionFormList() {
   useEffect(() => {
     fetchContents();
   }, [searchType, searchKeyword, prescriptionMonthStart, prescriptionMonthEnd, status, page]);
-
-  const table = useReactTable({
-    data: contents,
-    columns: [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedIds.length === contents.length && contents.length > 0}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(contents.map(item => item.id));
-              } else {
-                setSelectedIds([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedIds.includes(row.original.id)}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(prev => [...prev, row.original.id]);
-              } else {
-                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50,
-      },
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '제약사명',
-        cell: ({ row }) => row.original.drugCompany,
-        size: 120,
-      },
-      {
-        header: '회사명',
-        cell: ({ row }) => row.original.companyName,
-        size: 120,
-      },
-      {
-        header: '거래처코드',
-        cell: ({ row }) => row.original.institutionCode,
-        size: 100,
-      },
-      {
-        header: '거래처명',
-        cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/prescription-forms/${row.original.id}/edit`}>
-            {row.original.institutionName}
-          </Link>
-        ),
-        size: 100,
-      },
-      {
-        header: '딜러명',
-        cell: ({ row }) => row.original.dealerName,
-      },
-      {
-        header: '사업자등록번호',
-        cell: ({ row }) => normalizeBusinessNumber(row.original.businessNumber),
-        size: 130,
-      },
-      {
-        header: '처방일',
-        cell: ({ row }) => formatYyyyMm(row.original.prescriptionMonth),
-        size: 100,
-      },
-      {
-        header: '접수일',
-        cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
-        size: 100,
-      },
-      {
-        header: '입력일',
-        cell: ({ row }) => formatYyyyMmDd(row.original.inputDate),
-        size: 100,
-      },
-      {
-        header: '처방금액',
-        cell: ({ row }) => `${row.original.amount.toLocaleString()}`,
-        size: 100,
-      },
-      {
-        header: '승인상태',
-        cell: ({ row }) => PrescriptionPartnerStatusLabel[row.original.status],
-        size: 80,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-  });
 
   const handleApprove = async () => {
     try {
@@ -376,39 +277,81 @@ export default function MpAdminPrescriptionFormList() {
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table size='small'>
             <TableHead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableCell key={header.id} style={{ width: header.getSize() }}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableCell width={50}>
+                  <Checkbox
+                    checked={selectedIds.length === contents.length && contents.length > 0}
+                    onChange={e => {
+                      if (e.target.checked) {
+                        setSelectedIds(contents.map(item => item.id));
+                      } else {
+                        setSelectedIds([]);
+                      }
+                    }}
+                  />
+                </TableCell>
+                <TableCell width={60}>No</TableCell>
+                <TableCell width={120}>제약사명</TableCell>
+                <TableCell width={120}>회사명</TableCell>
+                <TableCell width={100}>거래처코드</TableCell>
+                <TableCell width={100}>거래처명</TableCell>
+                <TableCell width={150}>딜러명</TableCell>
+                <TableCell width={130}>사업자등록번호</TableCell>
+                <TableCell width={100}>처방일</TableCell>
+                <TableCell width={100}>접수일</TableCell>
+                <TableCell width={100}>입력일</TableCell>
+                <TableCell width={100}>처방금액(원)</TableCell>
+                <TableCell width={80}>승인상태</TableCell>
+              </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={13} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       데이터를 로드하는 중입니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
-              ) : table.getRowModel().rows.length === 0 ? (
+              ) : contents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={13} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       검색 결과가 없습니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
-                table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                    ))}
+                contents.map(item => (
+                  <TableRow key={item.id}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedIds.includes(item.id)}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            setSelectedIds(prev => [...prev, item.id]);
+                          } else {
+                            setSelectedIds(prev => prev.filter(id => id !== item.id));
+                          }
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>{item.sequence}</TableCell>
+                    <TableCell>{item.drugCompany}</TableCell>
+                    <TableCell>{item.companyName}</TableCell>
+                    <TableCell>{item.institutionCode}</TableCell>
+                    <TableCell>
+                      <Link component={RouterLink} to={`/admin/prescription-forms/${item.id}/edit`}>
+                        {item.institutionName}
+                      </Link>
+                    </TableCell>
+                    <TableCell>{item.dealerName}</TableCell>
+                    <TableCell>{normalizeBusinessNumber(item.businessNumber)}</TableCell>
+                    <TableCell>{formatYyyyMm(item.prescriptionMonth)}</TableCell>
+                    <TableCell>{formatYyyyMm(item.settlementMonth)}</TableCell>
+                    <TableCell>{formatYyyyMmDd(item.inputDate)}</TableCell>
+                    <TableCell>{item.amount.toLocaleString()}</TableCell>
+                    <TableCell>{PrescriptionPartnerStatusLabel[item.status]}</TableCell>
                   </TableRow>
                 ))
               )}

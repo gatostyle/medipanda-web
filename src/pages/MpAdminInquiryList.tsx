@@ -22,7 +22,6 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { type BoardPostResponse, BoardType, DateString, getBoards } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
@@ -134,74 +133,6 @@ export default function MpAdminInquiryList() {
     fetchContents();
   }, [searchType, searchKeyword, startAt, endAt, includeChild, page]);
 
-  const table = useReactTable({
-    data: contents,
-    columns: [
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '회원번호',
-        cell: ({ row }) => row.original.id,
-        size: 100,
-      },
-      {
-        header: '아이디',
-        cell: ({ row }) => row.original.userId,
-        size: 120,
-      },
-      {
-        header: '회원명',
-        cell: ({ row }) => row.original.name,
-        size: 100,
-      },
-      {
-        header: '회사명',
-        cell: () => '-',
-        size: 150,
-      },
-      {
-        header: '제목',
-        cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/inquiries/${row.original.id}`}>
-            {row.original.title}
-          </Link>
-        ),
-        size: 250,
-      },
-      {
-        header: '문의일',
-        cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
-        size: 100,
-      },
-      {
-        header: '답변일',
-        cell: ({ row }) => {
-          if (row.original.hasChildren) {
-            return formatYyyyMmDd(row.original.createdAt);
-          } else {
-            return '-';
-          }
-        },
-        size: 100,
-      },
-      {
-        header: '처리상태',
-        cell: ({ row }) => {
-          if (row.original.hasChildren) {
-            return '처리완료';
-          } else {
-            return '처리중';
-          }
-        },
-        size: 100,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-  });
-
   return (
     <Stack sx={{ gap: 3 }}>
       <Typography variant='h4'>1:1 문의내역</Typography>
@@ -287,39 +218,51 @@ export default function MpAdminInquiryList() {
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table size='small'>
             <TableHead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableCell key={header.id} style={{ width: header.getSize() }}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableCell width={60}>No</TableCell>
+                <TableCell width={100}>회원번호</TableCell>
+                <TableCell width={120}>아이디</TableCell>
+                <TableCell width={100}>회원명</TableCell>
+                <TableCell width={150}>회사명</TableCell>
+                <TableCell width={250}>제목</TableCell>
+                <TableCell width={100}>문의일</TableCell>
+                <TableCell width={100}>답변일</TableCell>
+                <TableCell width={100}>처리상태</TableCell>
+              </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={9} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       데이터를 로드하는 중입니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
-              ) : table.getRowModel().rows.length === 0 ? (
+              ) : contents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={9} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       검색 결과가 없습니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
-                table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                    ))}
+                contents.map(item => (
+                  <TableRow key={item.id}>
+                    <TableCell>{item.sequence}</TableCell>
+                    <TableCell>{item.id}</TableCell>
+                    <TableCell>{item.userId}</TableCell>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>-</TableCell>
+                    <TableCell>
+                      <Link component={RouterLink} to={`/admin/inquiries/${item.id}`}>
+                        {item.title}
+                      </Link>
+                    </TableCell>
+                    <TableCell>{formatYyyyMmDd(item.createdAt)}</TableCell>
+                    <TableCell>{item.hasChildren ? formatYyyyMmDd(item.createdAt) : '-'}</TableCell>
+                    <TableCell>{item.hasChildren ? '처리완료' : '처리중'}</TableCell>
                   </TableRow>
                 ))
               )}

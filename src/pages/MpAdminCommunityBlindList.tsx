@@ -22,7 +22,6 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { type BlindPostResponse, DateString, getBlindPosts, PostType, PostTypeLabel, unblindPost } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
@@ -136,88 +135,6 @@ export default function MpAdminCommunityBlindList() {
     });
     fetchContents();
   }, [searchType, searchKeyword, startAt, endAt, postType, page]);
-
-  const table = useReactTable({
-    data: contents,
-    columns: [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedIds.length === contents.length && contents.length > 0}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(contents.map(item => item.id));
-              } else {
-                setSelectedIds([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedIds.includes(row.original.id)}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(prev => [...prev, row.original.id]);
-              } else {
-                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50,
-      },
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '아이디',
-        cell: ({ row }) => row.original.userId,
-        size: 120,
-      },
-      {
-        header: '회원명',
-        cell: ({ row }) => row.original.memberName,
-        size: 100,
-      },
-      {
-        header: '닉네임',
-        cell: ({ row }) => row.original.nickname,
-        size: 100,
-      },
-      {
-        header: '글 유형',
-        cell: ({ row }) => PostTypeLabel[row.original.postType],
-        size: 80,
-      },
-      {
-        header: '글 내용',
-        cell: ({ row }) => {
-          return (
-            <Typography
-              sx={{
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                maxWidth: 300,
-              }}
-            >
-              {row.original.content}
-            </Typography>
-          );
-        },
-      },
-      {
-        header: '블라인드 처리일',
-        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.blindAt),
-        size: 150,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-  });
 
   const handleUnblind = () => {
     const count = selectedIds.length;
@@ -340,39 +257,78 @@ export default function MpAdminCommunityBlindList() {
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table size='small'>
             <TableHead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableCell key={header.id} style={{ width: header.getSize() }}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableCell width={50}>
+                  <Checkbox
+                    checked={selectedIds.length === contents.length && contents.length > 0}
+                    onChange={e => {
+                      if (e.target.checked) {
+                        setSelectedIds(contents.map(item => item.id));
+                      } else {
+                        setSelectedIds([]);
+                      }
+                    }}
+                  />
+                </TableCell>
+                <TableCell width={60}>No</TableCell>
+                <TableCell width={120}>아이디</TableCell>
+                <TableCell width={100}>회원명</TableCell>
+                <TableCell width={100}>닉네임</TableCell>
+                <TableCell width={80}>글 유형</TableCell>
+                <TableCell width={150}>글 내용</TableCell>
+                <TableCell width={150}>블라인드 처리일</TableCell>
+              </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={8} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       데이터를 로드하는 중입니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
-              ) : table.getRowModel().rows.length === 0 ? (
+              ) : contents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={8} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       검색 결과가 없습니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
-                table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                    ))}
+                contents.map(item => (
+                  <TableRow key={item.id}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedIds.includes(item.id)}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            setSelectedIds(prev => [...prev, item.id]);
+                          } else {
+                            setSelectedIds(prev => prev.filter(id => id !== item.id));
+                          }
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>{item.sequence}</TableCell>
+                    <TableCell>{item.userId}</TableCell>
+                    <TableCell>{item.memberName}</TableCell>
+                    <TableCell>{item.nickname}</TableCell>
+                    <TableCell>{PostTypeLabel[item.postType]}</TableCell>
+                    <TableCell>
+                      <Typography
+                        sx={{
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                          maxWidth: 300,
+                        }}
+                      >
+                        {item.content}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>{formatYyyyMmDdHhMm(item.blindAt)}</TableCell>
                   </TableRow>
                 ))
               )}

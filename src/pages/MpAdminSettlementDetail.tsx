@@ -23,7 +23,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { ArrowLeft, DocumentDownload } from 'iconsax-reactjs';
 import { getDownloadSettlementPartnerSummaryExcel, getSettlementPartnerSummary, type SettlementPartnerResponse } from '@/backend';
@@ -100,68 +99,6 @@ export default function MpAdminSettlementDetail() {
     }
   };
 
-  const table = useReactTable({
-    data: settlementSummaries,
-    columns: [
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '회사명',
-        cell: ({ row }) => row.original.companyName,
-        size: 120,
-      },
-      {
-        header: '딜러명',
-        cell: ({ row }) => row.original.dealerName,
-        size: 100,
-      },
-      {
-        header: '거래처코드',
-        cell: ({ row }) => row.original.institutionCode,
-        size: 120,
-      },
-      {
-        header: '거래처명',
-        cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/settlements/${settlementId}/partners/${row.original.settlementPartnerId}`}>
-            {row.original.institutionName}
-          </Link>
-        ),
-        size: 120,
-      },
-      {
-        header: '사업자등록번호',
-        cell: ({ row }) => normalizeBusinessNumber(row.original.businessNumber),
-        size: 140,
-      },
-      {
-        header: '공급가액',
-        cell: ({ row }) => row.original.supplyAmount.toLocaleString(),
-        size: 120,
-      },
-      {
-        header: '세액',
-        cell: ({ row }) => row.original.taxAmount.toLocaleString(),
-        size: 100,
-      },
-      {
-        header: '합계금액(수수료금액)',
-        cell: ({ row }) => row.original.totalAmount.toLocaleString(),
-        size: 130,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-    state: {
-      pagination,
-    },
-    onPaginationChange: setPagination,
-    pageCount: totalPages,
-    manualPagination: true,
-  });
-
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
@@ -233,24 +170,54 @@ export default function MpAdminSettlementDetail() {
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table size='small'>
             <TableHead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableCell key={header.id} style={{ width: header.getSize() }}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableCell width={60}>No</TableCell>
+                <TableCell width={120}>회사명</TableCell>
+                <TableCell width={100}>딜러명</TableCell>
+                <TableCell width={120}>거래처코드</TableCell>
+                <TableCell width={120}>거래처명</TableCell>
+                <TableCell width={140}>사업자등록번호</TableCell>
+                <TableCell width={120}>공급가액</TableCell>
+                <TableCell width={100}>세액</TableCell>
+                <TableCell width={130}>합계금액(수수료금액)</TableCell>
+              </TableRow>
             </TableHead>
             <TableBody>
-              {table.getRowModel().rows.map(row => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map(cell => (
-                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                  ))}
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={9} align='center' sx={{ py: 3 }}>
+                    <Typography variant='body2' color='text.secondary'>
+                      데이터를 로드하는 중입니다.
+                    </Typography>
+                  </TableCell>
                 </TableRow>
-              ))}
+              ) : settlementSummaries.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={9} align='center' sx={{ py: 3 }}>
+                    <Typography variant='body2' color='text.secondary'>
+                      검색 결과가 없습니다.
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                settlementSummaries.map(item => (
+                  <TableRow key={item.settlementPartnerId}>
+                    <TableCell>{item.sequence}</TableCell>
+                    <TableCell>{item.companyName}</TableCell>
+                    <TableCell>{item.dealerName}</TableCell>
+                    <TableCell>{item.institutionCode}</TableCell>
+                    <TableCell>
+                      <Link component={RouterLink} to={`/admin/settlements/${settlementId}/partners/${item.settlementPartnerId}`}>
+                        {item.institutionName}
+                      </Link>
+                    </TableCell>
+                    <TableCell>{normalizeBusinessNumber(item.businessNumber)}</TableCell>
+                    <TableCell>{item.supplyAmount.toLocaleString()}</TableCell>
+                    <TableCell>{item.taxAmount.toLocaleString()}</TableCell>
+                    <TableCell>{item.totalAmount.toLocaleString()}</TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>

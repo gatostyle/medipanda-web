@@ -23,7 +23,6 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import {
   BoardExposureRangeLabel,
@@ -166,93 +165,6 @@ export default function MpAdminNoticeList() {
     }
   };
 
-  const table = useReactTable({
-    data: contents,
-    columns: [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedIds.length === contents.length && contents.length > 0}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(contents.map(item => item.id));
-              } else {
-                setSelectedIds([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedIds.includes(row.original.id)}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(prev => [...prev, row.original.id]);
-              } else {
-                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50,
-      },
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '게시판',
-        cell: ({ row }) => BoardTypeLabel[row.original.boardType],
-        size: 100,
-      },
-      {
-        header: '공지분류',
-        cell: ({ row }) => {
-          const noticeType = row.original.noticeProperties!.noticeType;
-          if (!noticeType) return '-';
-          return NoticeTypeLabel[noticeType];
-        },
-        size: 100,
-      },
-      {
-        header: '제약사명',
-        cell: ({ row }) => row.original.noticeProperties!.drugCompany,
-        size: 120,
-      },
-      {
-        header: '제목',
-        cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/notices/${row.original.id}`}>
-            {row.original.title}
-          </Link>
-        ),
-      },
-      {
-        header: '상태',
-        cell: ({ row }) => (row.original.isExposed ? '노출' : '미노출'),
-        size: 80,
-      },
-      {
-        header: '노출범위',
-        cell: ({ row }) => BoardExposureRangeLabel[row.original.exposureRange],
-        size: 80,
-      },
-      {
-        header: '조회수',
-        cell: ({ row }) => row.original.viewsCount.toLocaleString(),
-        size: 80,
-      },
-      {
-        header: '작성일',
-        cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
-        size: 100,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-  });
-
   const handleDelete = () => {
     const count = selectedIds.length;
     const message =
@@ -373,39 +285,75 @@ export default function MpAdminNoticeList() {
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table size='small'>
             <TableHead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableCell key={header.id} style={{ width: header.getSize() }}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableCell width={50}>
+                  <Checkbox
+                    checked={selectedIds.length === contents.length && contents.length > 0}
+                    onChange={e => {
+                      if (e.target.checked) {
+                        setSelectedIds(contents.map(item => item.id));
+                      } else {
+                        setSelectedIds([]);
+                      }
+                    }}
+                  />
+                </TableCell>
+                <TableCell width={60}>No</TableCell>
+                <TableCell width={100}>게시판</TableCell>
+                <TableCell width={100}>공지분류</TableCell>
+                <TableCell width={120}>제약사명</TableCell>
+                <TableCell width={150}>제목</TableCell>
+                <TableCell width={80}>상태</TableCell>
+                <TableCell width={80}>노출범위</TableCell>
+                <TableCell width={80}>조회수</TableCell>
+                <TableCell width={100}>작성일</TableCell>
+              </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={10} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       데이터를 로드하는 중입니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
-              ) : table.getRowModel().rows.length === 0 ? (
+              ) : contents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={10} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       검색 결과가 없습니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
-                table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                    ))}
+                contents.map(item => (
+                  <TableRow key={item.id}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedIds.includes(item.id)}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            setSelectedIds(prev => [...prev, item.id]);
+                          } else {
+                            setSelectedIds(prev => prev.filter(id => id !== item.id));
+                          }
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>{item.sequence}</TableCell>
+                    <TableCell>{BoardTypeLabel[item.boardType]}</TableCell>
+                    <TableCell>{item.noticeProperties!.noticeType ? NoticeTypeLabel[item.noticeProperties!.noticeType] : '-'}</TableCell>
+                    <TableCell>{item.noticeProperties!.drugCompany}</TableCell>
+                    <TableCell>
+                      <Link component={RouterLink} to={`/admin/notices/${item.id}`}>
+                        {item.title}
+                      </Link>
+                    </TableCell>
+                    <TableCell>{item.isExposed ? '노출' : '미노출'}</TableCell>
+                    <TableCell>{BoardExposureRangeLabel[item.exposureRange]}</TableCell>
+                    <TableCell>{item.viewsCount.toLocaleString()}</TableCell>
+                    <TableCell>{formatYyyyMmDd(item.createdAt)}</TableCell>
                   </TableRow>
                 ))
               )}

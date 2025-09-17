@@ -21,7 +21,6 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { Add, Minus, SearchNormal1 } from 'iconsax-reactjs';
 import {
@@ -40,7 +39,7 @@ import { MpOcrRequestModal } from '@/components/MpOcrRequestModal';
 import { MpPartnerSelectModal } from '@/components/MpPartnerSelectModal';
 import { type Sequenced } from '@/lib/utils/withSequence';
 import { useSnackbar } from 'notistack';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import { DateFix, DATEFORMAT_YYYY_MM } from '@/lib/utils/dateFormat';
 
@@ -134,162 +133,6 @@ export default function MpAdminPrescriptionFormEdit() {
     },
     [],
   );
-
-  const table = useReactTable({
-    data: partnerProducts,
-    columns: useMemo<ColumnDef<ArrayElement<typeof partnerProducts>>[]>(
-      () => [
-        {
-          header: 'No',
-          cell: ({ row }) => row.original.sequence,
-          size: 60,
-        },
-        {
-          header: '보험코드',
-          cell: ({ row }) => row.original.productCode,
-          size: 120,
-        },
-        {
-          header: '제품명',
-          cell: ({ row }) => (
-            <TextField
-              size='small'
-              fullWidth
-              value={row.original.productName}
-              placeholder='제품명'
-              InputProps={{
-                readOnly: true,
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <IconButton
-                      size='small'
-                      onClick={() => {
-                        setCurrentProductItemIndex(row.index);
-                        setPartnerProductSelectModalOpen(true);
-                      }}
-                    >
-                      <SearchNormal1 size={16} />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          ),
-          size: 200,
-        },
-        {
-          header: '단위',
-          cell: ({ row }) => row.original.unit,
-          size: 80,
-        },
-        {
-          header: '수량',
-          cell: ({ row }) => (
-            <TextField
-              size='small'
-              fullWidth
-              name='quantity'
-              value={row.original.quantity}
-              onChange={event => {
-                const normalized = normalizeLocaleNumber(event.target.value);
-
-                if (normalized !== null) {
-                  handleProductChange(row.index, 'quantity', normalized);
-                }
-              }}
-            />
-          ),
-          size: 100,
-        },
-        {
-          header: '약가',
-          cell: ({ row }) => row.original.unitPrice.toLocaleString(),
-          size: 100,
-        },
-        {
-          header: '총 금액',
-          cell: ({ row }) => (
-            <TextField
-              size='small'
-              fullWidth
-              name='totalPrice'
-              value={row.original.totalPrice}
-              onChange={event => {
-                const normalized = normalizeLocaleNumber(event.target.value);
-
-                if (normalized !== null) {
-                  handleProductChange(row.index, 'totalPrice', normalized);
-                }
-              }}
-              InputProps={{
-                endAdornment: <Typography variant='body2'>원</Typography>,
-              }}
-            />
-          ),
-          size: 120,
-        },
-        {
-          header: '기본수수료율',
-          cell: ({ row }) => (
-            <TextField
-              size='small'
-              fullWidth
-              name='baseFeeRate'
-              value={row.original.baseFeeRate}
-              onChange={event => {
-                const normalized = normalizeLocaleNumber(event.target.value, { min: 0, max: 100 });
-
-                if (normalized !== null) {
-                  handleProductChange(row.index, 'baseFeeRate', normalized);
-                }
-              }}
-              InputProps={{
-                endAdornment: <Typography variant='body2'>%</Typography>,
-              }}
-            />
-          ),
-          size: 120,
-        },
-        {
-          header: '수수료 금액',
-          cell: ({ row }) => (
-            <TextField
-              size='small'
-              fullWidth
-              name='feeAmount'
-              value={row.original.feeAmount}
-              onChange={event => {
-                const normalized = normalizeLocaleNumber(event.target.value);
-
-                if (normalized !== null) {
-                  handleProductChange(row.index, 'feeAmount', normalized);
-                }
-              }}
-              InputProps={{
-                endAdornment: <Typography variant='body2'>원</Typography>,
-              }}
-            />
-          ),
-          size: 120,
-        },
-        {
-          header: '비고',
-          cell: ({ row }) => (
-            <TextField
-              size='small'
-              fullWidth
-              name='note'
-              value={row.original.note}
-              onChange={e => handleProductChange(row.index, 'note', e.target.value)}
-            />
-          ),
-          size: 150,
-        },
-      ],
-      [],
-    ),
-    getCoreRowModel: getCoreRowModel(),
-  });
 
   const handleAddProduct = () => {
     const maxSequence = Math.max(...partnerProducts.map(p => p.sequence || 0), 0);
@@ -585,24 +428,148 @@ export default function MpAdminPrescriptionFormEdit() {
         <TableContainer>
           <Table size='small'>
             <TableHead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableCell key={header.id} style={{ width: header.getSize() }}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableCell width={60}>No</TableCell>
+                <TableCell width={120}>보험코드</TableCell>
+                <TableCell width={200}>제품명</TableCell>
+                <TableCell width={80}>단위</TableCell>
+                <TableCell width={100}>수량</TableCell>
+                <TableCell width={100}>약가</TableCell>
+                <TableCell width={120}>총 금액</TableCell>
+                <TableCell width={120}>기본수수료율</TableCell>
+                <TableCell width={120}>수수료 금액</TableCell>
+                <TableCell width={150}>비고</TableCell>
+              </TableRow>
             </TableHead>
             <TableBody>
-              {table.getRowModel().rows.map(row => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map(cell => (
-                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                  ))}
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={10} align='center' sx={{ py: 3 }}>
+                    <Typography variant='body2' color='text.secondary'>
+                      데이터를 로드하는 중입니다.
+                    </Typography>
+                  </TableCell>
                 </TableRow>
-              ))}
+              ) : partnerProducts.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={10} align='center' sx={{ py: 3 }}>
+                    <Typography variant='body2' color='text.secondary'>
+                      검색 결과가 없습니다.
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                partnerProducts.map(item => (
+                  <TableRow key={item.sequence}>
+                    <TableCell>{item.sequence}</TableCell>
+                    <TableCell>{item.productCode}</TableCell>
+                    <TableCell>
+                      <TextField
+                        size='small'
+                        fullWidth
+                        value={item.productName}
+                        placeholder='제품명'
+                        InputProps={{
+                          readOnly: true,
+                          endAdornment: (
+                            <InputAdornment position='end'>
+                              <IconButton
+                                size='small'
+                                onClick={() => {
+                                  setCurrentProductItemIndex(item.sequence - 1);
+                                  setPartnerProductSelectModalOpen(true);
+                                }}
+                              >
+                                <SearchNormal1 size={16} />
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>{item.unit}</TableCell>
+                    <TableCell>
+                      <TextField
+                        size='small'
+                        fullWidth
+                        name='quantity'
+                        value={item.quantity}
+                        onChange={event => {
+                          const normalized = normalizeLocaleNumber(event.target.value);
+
+                          if (normalized !== null) {
+                            handleProductChange(item.sequence - 1, 'quantity', normalized);
+                          }
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>{item.unitPrice.toLocaleString()}</TableCell>
+                    <TableCell>
+                      <TextField
+                        size='small'
+                        fullWidth
+                        name='totalPrice'
+                        value={item.totalPrice}
+                        onChange={event => {
+                          const normalized = normalizeLocaleNumber(event.target.value);
+
+                          if (normalized !== null) {
+                            handleProductChange(item.sequence - 1, 'totalPrice', normalized);
+                          }
+                        }}
+                        InputProps={{
+                          endAdornment: <Typography variant='body2'>원</Typography>,
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        size='small'
+                        fullWidth
+                        name='baseFeeRate'
+                        value={item.baseFeeRate}
+                        onChange={event => {
+                          const normalized = normalizeLocaleNumber(event.target.value, { min: 0, max: 100 });
+
+                          if (normalized !== null) {
+                            handleProductChange(item.sequence - 1, 'baseFeeRate', normalized);
+                          }
+                        }}
+                        InputProps={{
+                          endAdornment: <Typography variant='body2'>%</Typography>,
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        size='small'
+                        fullWidth
+                        name='feeAmount'
+                        value={item.feeAmount}
+                        onChange={event => {
+                          const normalized = normalizeLocaleNumber(event.target.value);
+
+                          if (normalized !== null) {
+                            handleProductChange(item.sequence - 1, 'feeAmount', normalized);
+                          }
+                        }}
+                        InputProps={{
+                          endAdornment: <Typography variant='body2'>원</Typography>,
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        size='small'
+                        fullWidth
+                        name='note'
+                        value={item.note}
+                        onChange={e => handleProductChange(item.sequence - 1, 'note', e.target.value)}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>

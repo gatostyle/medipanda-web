@@ -23,7 +23,6 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import {
   DateTimeString,
@@ -166,75 +165,6 @@ export default function MpAdminHospitalList() {
     fetchRegionData();
   }, []);
 
-  const table = useReactTable({
-    data: contents,
-    columns: [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedIds.length === contents.length && contents.length > 0}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(contents.map(item => item.id));
-              } else {
-                setSelectedIds([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedIds.includes(row.original.id)}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(prev => [...prev, row.original.id]);
-              } else {
-                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 60,
-      },
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '지역',
-        cell: ({ row }) => row.original.sido,
-        size: 80,
-      },
-      {
-        header: '병의원명',
-        cell: ({ row }) => row.original.name,
-        size: 200,
-      },
-      {
-        header: '주소',
-        cell: ({ row }) => row.original.address,
-        size: 400,
-      },
-      {
-        header: '허가예정일',
-        cell: ({ row }) => {
-          const value = row.original.scheduledOpenDate;
-
-          return value !== null ? formatYyyyMmDd(value) : '-';
-        },
-        size: 120,
-      },
-      {
-        header: '분류',
-        cell: ({ row }) => row.original.source,
-        size: 120,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-  });
-
   const handleDeleteSelected = async () => {
     if (selectedIds.length === 0) {
       await alert('삭제할 항목을 선택하세요.');
@@ -369,39 +299,65 @@ export default function MpAdminHospitalList() {
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table size='small'>
             <TableHead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableCell key={header.id} style={{ width: header.getSize() }}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableCell width={60}>
+                  <Checkbox
+                    checked={selectedIds.length === contents.length && contents.length > 0}
+                    onChange={e => {
+                      if (e.target.checked) {
+                        setSelectedIds(contents.map(item => item.id));
+                      } else {
+                        setSelectedIds([]);
+                      }
+                    }}
+                  />
+                </TableCell>
+                <TableCell width={60}>No</TableCell>
+                <TableCell width={80}>지역</TableCell>
+                <TableCell width={200}>병의원명</TableCell>
+                <TableCell width={400}>주소</TableCell>
+                <TableCell width={120}>허가예정일</TableCell>
+                <TableCell width={120}>분류</TableCell>
+              </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={7} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       데이터를 로드하는 중입니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
-              ) : table.getRowModel().rows.length === 0 ? (
+              ) : contents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={7} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       검색 결과가 없습니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
-                table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                    ))}
+                contents.map(item => (
+                  <TableRow key={item.id}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedIds.includes(item.id)}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            setSelectedIds(prev => [...prev, item.id]);
+                          } else {
+                            setSelectedIds(prev => prev.filter(id => id !== item.id));
+                          }
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>{item.sequence}</TableCell>
+                    <TableCell>{item.sido}</TableCell>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.address}</TableCell>
+                    <TableCell>{item.scheduledOpenDate ? formatYyyyMmDd(item.scheduledOpenDate) : '-'}</TableCell>
+                    <TableCell>{item.source}</TableCell>
                   </TableRow>
                 ))
               )}

@@ -21,7 +21,6 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-reactjs';
 import {
@@ -146,55 +145,6 @@ export default function MpAdminExpenseReportList() {
     fetchContents();
   }, [searchType, searchKeyword, eventDateFrom, eventDateTo, status, reportType, page]);
 
-  const table = useReactTable({
-    data: contents,
-    columns: [
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '아이디',
-        cell: ({ row }) => row.original.userId,
-        size: 100,
-      },
-      {
-        header: '회사명',
-        cell: ({ row }) => row.original.companyName,
-        size: 120,
-      },
-      {
-        header: '제품명',
-        cell: ({ row }) => row.original.productName,
-        size: 150,
-      },
-      {
-        header: '유형',
-        cell: ({ row }) => ExpenseReportTypeLabel[row.original.reportType],
-        size: 150,
-      },
-      {
-        header: '시행일시',
-        cell: ({ row }) => {
-          return `${row.original.eventStartAt !== null ? formatYyyyMmDd(row.original.eventStartAt) : '-'} ~ ${row.original.eventEndAt !== null ? formatYyyyMmDd(row.original.eventEndAt) : '-'}`;
-        },
-        size: 100,
-      },
-      {
-        header: '지원금액',
-        cell: ({ row }) => `${row.original.supportAmount.toLocaleString()}원`,
-        size: 120,
-      },
-      {
-        header: '신고상태',
-        cell: ({ row }) => ExpenseReportStatusLabel[row.original.status],
-        size: 100,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-  });
-
   return (
     <Stack sx={{ gap: 3 }}>
       <Typography variant='h4'>지출보고관리</Typography>
@@ -314,39 +264,45 @@ export default function MpAdminExpenseReportList() {
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table size='small'>
             <TableHead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableCell key={header.id} style={{ width: header.getSize() }}>
-                      {flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableCell width={60}>No</TableCell>
+                <TableCell width={100}>아이디</TableCell>
+                <TableCell width={120}>회사명</TableCell>
+                <TableCell width={150}>제품명</TableCell>
+                <TableCell width={150}>유형</TableCell>
+                <TableCell width={100}>시행일시</TableCell>
+                <TableCell width={120}>지원금액</TableCell>
+                <TableCell width={100}>신고상태</TableCell>
+              </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={8} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       데이터를 로드하는 중입니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
-              ) : table.getRowModel().rows.length === 0 ? (
+              ) : contents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={8} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       검색 결과가 없습니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
-                table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                    ))}
+                contents.map(item => (
+                  <TableRow key={item.reportId}>
+                    <TableCell>{item.sequence}</TableCell>
+                    <TableCell>{item.userId}</TableCell>
+                    <TableCell>{item.companyName}</TableCell>
+                    <TableCell>{item.productName}</TableCell>
+                    <TableCell>{ExpenseReportTypeLabel[item.reportType]}</TableCell>
+                    <TableCell>{`${item.eventStartAt !== null ? formatYyyyMmDd(item.eventStartAt) : '-'} ~ ${item.eventEndAt !== null ? formatYyyyMmDd(item.eventEndAt) : '-'}`}</TableCell>
+                    <TableCell>{`${item.supportAmount.toLocaleString()}원`}</TableCell>
+                    <TableCell>{ExpenseReportStatusLabel[item.status]}</TableCell>
                   </TableRow>
                 ))
               )}

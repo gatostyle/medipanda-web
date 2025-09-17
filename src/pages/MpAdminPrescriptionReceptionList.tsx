@@ -23,7 +23,6 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import {
   confirmPrescription,
@@ -144,85 +143,6 @@ export default function MpAdminPrescriptionReceptionList() {
     fetchContents();
   }, [searchType, searchKeyword, startAt, endAt, status, page]);
 
-  const table = useReactTable({
-    data: contents,
-    columns: [
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '딜러번호',
-        cell: ({ row }) => row.original.dealerId,
-        size: 100,
-      },
-      {
-        header: '아이디',
-        cell: ({ row }) => row.original.userId,
-        size: 120,
-      },
-      {
-        header: '회사명',
-        cell: ({ row }) => row.original.companyName,
-        size: 150,
-      },
-      {
-        header: '딜러명',
-        cell: ({ row }) => row.original.dealerName,
-        size: 100,
-      },
-      {
-        header: '처방월',
-        cell: ({ row }) => formatYyyyMm(row.original.prescriptionMonth),
-        size: 100,
-      },
-      {
-        header: '정산월',
-        cell: ({ row }) => formatYyyyMm(row.original.settlementMonth),
-        size: 100,
-      },
-      {
-        header: '접수신청일',
-        cell: ({ row }) => formatYyyyMmDd(row.original.submittedAt),
-        size: 120,
-      },
-      {
-        header: '접수파일',
-        cell: ({ row }) => (
-          <Button
-            variant='contained'
-            color='success'
-            size='small'
-            href={`/v1/prescriptions/partners/${row.original.id}/edi-files/download`}
-            target='_blank'
-          >
-            다운로드
-          </Button>
-        ),
-        size: 120,
-      },
-      {
-        header: '접수상태',
-        cell: ({ row }) => <Chip label={PrescriptionStatusLabel[row.original.status]} size='small' color='success' />,
-        size: 100,
-      },
-      {
-        header: '관리자확인',
-        cell: ({ row }) =>
-          row.original.status === PrescriptionStatus.PENDING ? (
-            <Button variant='contained' color='success' size='small' onClick={() => handleConfirm(row.original.id)}>
-              접수확인
-            </Button>
-          ) : (
-            <Typography variant='body2'>{row.original.checkedAt ? formatYyyyMmDdHhMm(row.original.checkedAt) : '-'}</Typography>
-          ),
-        size: 120,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-  });
-
   const handleConfirm = async (id: number) => {
     try {
       await confirmPrescription(id);
@@ -333,39 +253,71 @@ export default function MpAdminPrescriptionReceptionList() {
           <TableContainer sx={{ overflowX: 'auto' }}>
             <Table size='small'>
               <TableHead>
-                {table.getHeaderGroups().map(headerGroup => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map(header => (
-                      <TableCell key={header.id} style={{ width: header.getSize() }}>
-                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
+                <TableRow>
+                  <TableCell width={60}>No</TableCell>
+                  <TableCell width={100}>딜러번호</TableCell>
+                  <TableCell width={120}>아이디</TableCell>
+                  <TableCell width={150}>회사명</TableCell>
+                  <TableCell width={100}>딜러명</TableCell>
+                  <TableCell width={100}>처방월</TableCell>
+                  <TableCell width={100}>정산월</TableCell>
+                  <TableCell width={120}>접수신청일</TableCell>
+                  <TableCell width={120}>접수파일</TableCell>
+                  <TableCell width={100}>접수상태</TableCell>
+                  <TableCell width={120}>관리자확인</TableCell>
+                </TableRow>
               </TableHead>
               <TableBody>
                 {loading ? (
                   <TableRow>
-                    <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                    <TableCell colSpan={11} align='center' sx={{ py: 3 }}>
                       <Typography variant='body2' color='text.secondary'>
                         데이터를 로드하는 중입니다.
                       </Typography>
                     </TableCell>
                   </TableRow>
-                ) : table.getRowModel().rows.length === 0 ? (
+                ) : contents.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                    <TableCell colSpan={11} align='center' sx={{ py: 3 }}>
                       <Typography variant='body2' color='text.secondary'>
                         검색 결과가 없습니다.
                       </Typography>
                     </TableCell>
                   </TableRow>
                 ) : (
-                  table.getRowModel().rows.map(row => (
-                    <TableRow key={row.id}>
-                      {row.getVisibleCells().map(cell => (
-                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                      ))}
+                  contents.map(item => (
+                    <TableRow key={item.id}>
+                      <TableCell>{item.sequence}</TableCell>
+                      <TableCell>{item.dealerId}</TableCell>
+                      <TableCell>{item.userId}</TableCell>
+                      <TableCell>{item.companyName}</TableCell>
+                      <TableCell>{item.dealerName}</TableCell>
+                      <TableCell>{formatYyyyMm(item.prescriptionMonth)}</TableCell>
+                      <TableCell>{formatYyyyMm(item.settlementMonth)}</TableCell>
+                      <TableCell>{formatYyyyMmDd(item.submittedAt)}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant='contained'
+                          color='success'
+                          size='small'
+                          href={`/v1/prescriptions/partners/${item.id}/edi-files/download`}
+                          target='_blank'
+                        >
+                          다운로드
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Chip label={PrescriptionStatusLabel[item.status]} size='small' color='success' />
+                      </TableCell>
+                      <TableCell>
+                        {item.status === PrescriptionStatus.PENDING ? (
+                          <Button variant='contained' color='success' size='small' onClick={() => handleConfirm(item.id)}>
+                            접수확인
+                          </Button>
+                        ) : (
+                          <Typography variant='body2'>{item.checkedAt ? formatYyyyMmDdHhMm(item.checkedAt) : '-'}</Typography>
+                        )}
+                      </TableCell>
                     </TableRow>
                   ))
                 )}

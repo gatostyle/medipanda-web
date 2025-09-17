@@ -19,7 +19,6 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { EditorContent } from '@tiptap/react';
 import { type BoardDetailsResponse, type BoardReportResponse, type CommentResponse, getBoardDetails, PostAttachmentType } from '@/backend';
 import { formatYyyyMmDd, formatYyyyMmDdHhMm } from '@/lib/utils/dateFormat';
@@ -200,71 +199,41 @@ function PostTab({ detail }: { detail: BoardDetailsResponse }) {
 }
 
 function CommentsTab({ comments }: { comments: Sequenced<CommentResponse>[] }) {
-  const table = useReactTable({
-    data: comments,
-    columns: [
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '아이디',
-        cell: ({ row }) => row.original.userId,
-        size: 120,
-      },
-      {
-        header: '회원명',
-        cell: ({ row }) => row.original.name,
-        size: 100,
-      },
-      {
-        header: '닉네임',
-        cell: ({ row }) => row.original.nickname,
-        size: 120,
-      },
-      {
-        header: '댓글내용',
-        cell: ({ row }) => row.original.content,
-        size: 300,
-      },
-      {
-        header: '작성일시',
-        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.createdAt),
-        size: 160,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-    state: {
-      pagination: { pageIndex: 0, pageSize: 20 },
-    },
-    pageCount: 1,
-    manualPagination: true,
-  });
-
   return (
     <Box sx={{ p: 3 }}>
       <TableContainer sx={{ overflowX: 'auto' }}>
         <Table size='small'>
           <TableHead>
-            {table.getHeaderGroups().map(headerGroup => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map(header => (
-                  <TableCell key={header.id} style={{ width: header.getSize() }}>
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
+            <TableRow>
+              <TableCell width={60}>No</TableCell>
+              <TableCell width={120}>아이디</TableCell>
+              <TableCell width={100}>회원명</TableCell>
+              <TableCell width={120}>닉네임</TableCell>
+              <TableCell width={300}>댓글내용</TableCell>
+              <TableCell width={160}>작성일시</TableCell>
+            </TableRow>
           </TableHead>
           <TableBody>
-            {table.getRowModel().rows.map(row => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map(cell => (
-                  <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                ))}
+            {comments.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} align='center' sx={{ py: 3 }}>
+                  <Typography variant='body2' color='text.secondary'>
+                    검색 결과가 없습니다.
+                  </Typography>
+                </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              comments.map(item => (
+                <TableRow key={item.id}>
+                  <TableCell>{item.sequence}</TableCell>
+                  <TableCell>{item.userId}</TableCell>
+                  <TableCell>{item.name}</TableCell>
+                  <TableCell>{item.nickname}</TableCell>
+                  <TableCell>{item.content}</TableCell>
+                  <TableCell>{formatYyyyMmDdHhMm(item.createdAt)}</TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </TableContainer>
@@ -277,71 +246,41 @@ function CommentsTab({ comments }: { comments: Sequenced<CommentResponse>[] }) {
 }
 
 function ReportsTab({ reports }: { reports: Sequenced<BoardReportResponse>[] }) {
-  const table = useReactTable({
-    data: reports,
-    columns: [
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '아이디',
-        cell: ({ row }) => row.original.userId,
-        size: 120,
-      },
-      {
-        header: '회원명',
-        cell: ({ row }) => row.original.memberName,
-        size: 100,
-      },
-      {
-        header: '닉네임',
-        cell: ({ row }) => row.original.nickname,
-        size: 120,
-      },
-      {
-        header: '신고유형',
-        cell: ({ row }) => row.original.reportType,
-        size: 150,
-      },
-      {
-        header: '신고일시',
-        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.reportDateTime),
-        size: 160,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-    state: {
-      pagination: { pageIndex: 0, pageSize: 20 },
-    },
-    pageCount: 1,
-    manualPagination: true,
-  });
-
   return (
     <Box sx={{ p: 3 }}>
       <TableContainer sx={{ overflowX: 'auto' }}>
         <Table size='small'>
           <TableHead>
-            {table.getHeaderGroups().map(headerGroup => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map(header => (
-                  <TableCell key={header.id} style={{ width: header.getSize() }}>
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
+            <TableRow>
+              <TableCell width={60}>No</TableCell>
+              <TableCell width={120}>아이디</TableCell>
+              <TableCell width={100}>회원명</TableCell>
+              <TableCell width={120}>닉네임</TableCell>
+              <TableCell width={150}>신고유형</TableCell>
+              <TableCell width={160}>신고일시</TableCell>
+            </TableRow>
           </TableHead>
           <TableBody>
-            {table.getRowModel().rows.map(row => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map(cell => (
-                  <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                ))}
+            {reports.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} align='center' sx={{ py: 3 }}>
+                  <Typography variant='body2' color='text.secondary'>
+                    검색 결과가 없습니다.
+                  </Typography>
+                </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              reports.map(item => (
+                <TableRow key={item.id}>
+                  <TableCell>{item.sequence}</TableCell>
+                  <TableCell>{item.userId}</TableCell>
+                  <TableCell>{item.memberName}</TableCell>
+                  <TableCell>{item.nickname}</TableCell>
+                  <TableCell>{item.reportType}</TableCell>
+                  <TableCell>{formatYyyyMmDdHhMm(item.reportDateTime)}</TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </TableContainer>

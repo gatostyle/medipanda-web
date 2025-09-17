@@ -25,7 +25,6 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { DateString, type EventBoardSummaryResponse, EventStatus, EventStatusLabel, getEventBoards, softDeleteEventBoard } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
@@ -131,123 +130,6 @@ export default function MpAdminEventList() {
     });
     fetchContents();
   }, [searchKeyword, startAt, endAt, status, page]);
-
-  const table = useReactTable({
-    data: contents,
-    columns: [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedIds.length === contents.length && contents.length > 0}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(contents.map(item => item.id));
-              } else {
-                setSelectedIds([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedIds.includes(row.original.id)}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(prev => [...prev, row.original.id]);
-              } else {
-                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50,
-      },
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '이벤트 상태',
-        cell: ({ row }) => {
-          const status = row.original.eventStatus;
-          return (
-            <Chip
-              label={EventStatusLabel[status]}
-              color={status === EventStatus.IN_PROGRESS ? 'success' : 'default'}
-              variant='light'
-              size='small'
-            />
-          );
-        },
-        size: 100,
-      },
-      {
-        header: '썸네일',
-        cell: ({ row }) => {
-          const thumbnail = row.original.thumbnailUrl;
-          if (thumbnail) {
-            return (
-              <Box sx={{ width: 80, height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <RouterLink to={thumbnail} target='_blank'>
-                  <img
-                    src={thumbnail}
-                    alt='썸네일'
-                    style={{
-                      maxWidth: '100%',
-                      maxHeight: '100%',
-                      objectFit: 'cover',
-                      borderRadius: '4px',
-                    }}
-                  />
-                </RouterLink>
-              </Box>
-            );
-          }
-          return <Box sx={{ width: 80, height: 60, bgcolor: 'grey.200', borderRadius: 1 }} />;
-        },
-        size: 100,
-      },
-      {
-        header: '제목',
-        cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/events/${row.original.id}`}>
-            {row.original.title}
-          </Link>
-        ),
-        size: 300,
-      },
-      {
-        header: '조회 수',
-        cell: ({ row }) => row.original.viewCount.toLocaleString(),
-        size: 100,
-      },
-      {
-        header: '작성일',
-        cell: ({ row }) => {
-          return formatYyyyMmDd(row.original.createdDate);
-        },
-        size: 120,
-      },
-      {
-        header: '노출상태',
-        cell: ({ row }) => {
-          const isExposed = row.original.isExposed;
-          return <Chip label={isExposed ? '노출' : '미노출'} color={isExposed ? 'success' : 'default'} variant='light' size='small' />;
-        },
-        size: 100,
-      },
-      {
-        header: '이벤트 기간',
-        cell: ({ row }) => {
-          return `${formatYyyyMmDd(row.original.eventStartAt)} ~ ${formatYyyyMmDd(row.original.eventEndAt)}`;
-        },
-        size: 250,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-  });
 
   const handleDelete = async () => {
     if (selectedIds.length === 0) {
@@ -357,39 +239,105 @@ export default function MpAdminEventList() {
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table size='small'>
             <TableHead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableCell key={header.id} style={{ width: header.getSize() }}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableCell width={50}>
+                  <Checkbox
+                    checked={selectedIds.length === contents.length && contents.length > 0}
+                    onChange={e => {
+                      if (e.target.checked) {
+                        setSelectedIds(contents.map(item => item.id));
+                      } else {
+                        setSelectedIds([]);
+                      }
+                    }}
+                  />
+                </TableCell>
+                <TableCell width={60}>No</TableCell>
+                <TableCell width={100}>이벤트 상태</TableCell>
+                <TableCell width={100}>썸네일</TableCell>
+                <TableCell width={300}>제목</TableCell>
+                <TableCell width={100}>조회 수</TableCell>
+                <TableCell width={120}>작성일</TableCell>
+                <TableCell width={100}>노출상태</TableCell>
+                <TableCell width={250}>이벤트 기간</TableCell>
+              </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={9} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       데이터를 로드하는 중입니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
-              ) : table.getRowModel().rows.length === 0 ? (
+              ) : contents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={9} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       검색 결과가 없습니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
-                table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                    ))}
+                contents.map(item => (
+                  <TableRow key={item.id}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedIds.includes(item.id)}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            setSelectedIds(prev => [...prev, item.id]);
+                          } else {
+                            setSelectedIds(prev => prev.filter(id => id !== item.id));
+                          }
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>{item.sequence}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={EventStatusLabel[item.eventStatus]}
+                        color={item.eventStatus === EventStatus.IN_PROGRESS ? 'success' : 'default'}
+                        variant='light'
+                        size='small'
+                      />
+                    </TableCell>
+                    <TableCell>
+                      {item.thumbnailUrl ? (
+                        <Box sx={{ width: 80, height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <RouterLink to={item.thumbnailUrl} target='_blank'>
+                            <img
+                              src={item.thumbnailUrl}
+                              style={{
+                                maxWidth: '100%',
+                                maxHeight: '100%',
+                                objectFit: 'cover',
+                                borderRadius: '4px',
+                              }}
+                            />
+                          </RouterLink>
+                        </Box>
+                      ) : (
+                        <Box sx={{ width: 80, height: 60, bgcolor: 'grey.200', borderRadius: 1 }} />
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Link component={RouterLink} to={`/admin/events/${item.id}`}>
+                        {item.title}
+                      </Link>
+                    </TableCell>
+                    <TableCell>{item.viewCount.toLocaleString()}</TableCell>
+                    <TableCell>{formatYyyyMmDd(item.createdDate)}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={item.isExposed ? '노출' : '미노출'}
+                        color={item.isExposed ? 'success' : 'default'}
+                        variant='light'
+                        size='small'
+                      />
+                    </TableCell>
+                    <TableCell>{`${formatYyyyMmDd(item.eventStartAt)} ~ ${formatYyyyMmDd(item.eventEndAt)}`}</TableCell>
                   </TableRow>
                 ))
               )}

@@ -38,7 +38,6 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
@@ -151,107 +150,6 @@ export default function MpAdminCommunityPostList() {
     });
     fetchContents();
   }, [boardType, searchType, searchKeyword, startAt, endAt, page]);
-
-  const table = useReactTable({
-    data: contents,
-    columns: [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedIds.length === contents.length && contents.length > 0}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(contents.map(item => item.id));
-              } else {
-                setSelectedIds([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedIds.includes(row.original.id)}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(prev => [...prev, row.original.id]);
-              } else {
-                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50,
-      },
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '게시판유형',
-        cell: ({ row }) => {
-          const boardType = row.original.boardType;
-          return <Chip label={BoardTypeLabel[boardType]} color='success' variant='light' size='small' />;
-        },
-        size: 120,
-      },
-      {
-        header: '아이디',
-        cell: ({ row }) => row.original.userId,
-        size: 100,
-      },
-      {
-        header: '회원명',
-        cell: ({ row }) => row.original.name,
-        size: 100,
-      },
-      {
-        header: '닉네임',
-        cell: ({ row }) => row.original.nickname,
-        size: 100,
-      },
-      {
-        header: '파트너사 계약여부',
-        cell: ({ row }) => (memberTypeToContractStatus(row.original.memberType) === ContractStatus.CONTRACT ? 'Y' : 'N'),
-        size: 120,
-      },
-      {
-        header: '제목',
-        cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/community-posts/${row.original.id}`}>
-            {row.original.title}
-          </Link>
-        ),
-      },
-      {
-        header: '좋아요 수',
-        cell: ({ row }) => row.original.likesCount,
-        size: 100,
-      },
-      {
-        header: '댓글 수',
-        cell: ({ row }) => row.original.commentCount,
-        size: 100,
-      },
-      {
-        header: '조회수',
-        cell: ({ row }) => row.original.viewsCount,
-        size: 100,
-      },
-      {
-        header: '블라인드 여부',
-        cell: ({ row }) => (row.original.isBlind ? 'Y' : 'N'),
-        size: 120,
-      },
-      {
-        header: '등록일',
-        cell: ({ row }) => formatYyyyMmDdHhMm(row.original.createdAt),
-        size: 150,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-  });
 
   const handleBlind = async () => {
     if (selectedIds.length === 0) {
@@ -376,39 +274,83 @@ export default function MpAdminCommunityPostList() {
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table size='small'>
             <TableHead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableCell key={header.id} style={{ width: header.getSize() }}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableCell width={50}>
+                  <Checkbox
+                    checked={selectedIds.length === contents.length && contents.length > 0}
+                    onChange={e => {
+                      if (e.target.checked) {
+                        setSelectedIds(contents.map(item => item.id));
+                      } else {
+                        setSelectedIds([]);
+                      }
+                    }}
+                  />
+                </TableCell>
+                <TableCell width={60}>No</TableCell>
+                <TableCell width={120}>게시판유형</TableCell>
+                <TableCell width={100}>아이디</TableCell>
+                <TableCell width={100}>회원명</TableCell>
+                <TableCell width={100}>닉네임</TableCell>
+                <TableCell width={120}>파트너사 계약여부</TableCell>
+                <TableCell width={150}>제목</TableCell>
+                <TableCell width={100}>좋아요 수</TableCell>
+                <TableCell width={100}>댓글 수</TableCell>
+                <TableCell width={100}>조회수</TableCell>
+                <TableCell width={120}>블라인드 여부</TableCell>
+                <TableCell width={150}>등록일</TableCell>
+              </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={13} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       데이터를 로드하는 중입니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
-              ) : table.getRowModel().rows.length === 0 ? (
+              ) : contents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={13} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       검색 결과가 없습니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
-                table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                    ))}
+                contents.map(item => (
+                  <TableRow key={item.id}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedIds.includes(item.id)}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            setSelectedIds(prev => [...prev, item.id]);
+                          } else {
+                            setSelectedIds(prev => prev.filter(id => id !== item.id));
+                          }
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>{item.sequence}</TableCell>
+                    <TableCell>
+                      <Chip label={BoardTypeLabel[item.boardType]} color='success' variant='light' size='small' />
+                    </TableCell>
+                    <TableCell>{item.userId}</TableCell>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.nickname}</TableCell>
+                    <TableCell>{memberTypeToContractStatus(item.memberType) === ContractStatus.CONTRACT ? 'Y' : 'N'}</TableCell>
+                    <TableCell>
+                      <Link component={RouterLink} to={`/admin/community-posts/${item.id}`}>
+                        {item.title}
+                      </Link>
+                    </TableCell>
+                    <TableCell>{item.likesCount}</TableCell>
+                    <TableCell>{item.commentCount}</TableCell>
+                    <TableCell>{item.viewsCount}</TableCell>
+                    <TableCell>{item.isBlind ? 'Y' : 'N'}</TableCell>
+                    <TableCell>{formatYyyyMmDdHhMm(item.createdAt)}</TableCell>
                   </TableRow>
                 ))
               )}

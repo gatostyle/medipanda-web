@@ -21,7 +21,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { type BoardMemberStatsResponse, ContractStatus, ContractStatusLabel, getBoardMembers } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
@@ -118,63 +117,6 @@ export default function MpAdminCommunityUserList() {
     fetchContents();
   }, [searchType, searchKeyword, contractStatus, page]);
 
-  const table = useReactTable({
-    data: contents,
-    columns: [
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '회원번호',
-        cell: ({ row }) => row.original.id,
-        size: 100,
-      },
-      {
-        header: '아이디',
-        cell: ({ row }) => row.original.userId,
-        size: 120,
-      },
-      {
-        header: '회원명',
-        cell: ({ row }) => row.original.name,
-        size: 100,
-      },
-      {
-        header: '연락처',
-        cell: ({ row }) => normalizePhoneNumber(row.original.phoneNumber),
-        size: 130,
-      },
-      {
-        header: '파트너사 계약여부',
-        cell: ({ row }) => ContractStatusLabel[row.original.contractStatus],
-        size: 130,
-      },
-      {
-        header: '작성글 수',
-        cell: ({ row }) => row.original.postCount,
-        size: 100,
-      },
-      {
-        header: '댓글 수',
-        cell: ({ row }) => row.original.commentCount,
-        size: 100,
-      },
-      {
-        header: '좋아요 수',
-        cell: ({ row }) => row.original.totalLikes,
-        size: 100,
-      },
-      {
-        header: '블라인드 글 수',
-        cell: ({ row }) => row.original.blindPostCount,
-        size: 120,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-  });
-
   return (
     <Stack sx={{ gap: 3 }}>
       <Typography variant='h4'>이용자 관리</Typography>
@@ -236,39 +178,49 @@ export default function MpAdminCommunityUserList() {
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table size='small'>
             <TableHead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableCell key={header.id} style={{ width: header.getSize() }}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableCell width={60}>No</TableCell>
+                <TableCell width={100}>회원번호</TableCell>
+                <TableCell width={120}>아이디</TableCell>
+                <TableCell width={100}>회원명</TableCell>
+                <TableCell width={130}>연락처</TableCell>
+                <TableCell width={130}>파트너사 계약여부</TableCell>
+                <TableCell width={100}>작성글 수</TableCell>
+                <TableCell width={100}>댓글 수</TableCell>
+                <TableCell width={100}>좋아요 수</TableCell>
+                <TableCell width={120}>블라인드 글 수</TableCell>
+              </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={10} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       데이터를 로드하는 중입니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
-              ) : table.getRowModel().rows.length === 0 ? (
+              ) : contents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={10} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       검색 결과가 없습니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
-                table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                    ))}
+                contents.map(item => (
+                  <TableRow key={item.id}>
+                    <TableCell>{item.sequence}</TableCell>
+                    <TableCell>{item.id}</TableCell>
+                    <TableCell>{item.userId}</TableCell>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{normalizePhoneNumber(item.phoneNumber)}</TableCell>
+                    <TableCell>{ContractStatusLabel[item.contractStatus]}</TableCell>
+                    <TableCell>{item.postCount}</TableCell>
+                    <TableCell>{item.commentCount}</TableCell>
+                    <TableCell>{item.totalLikes}</TableCell>
+                    <TableCell>{item.blindPostCount}</TableCell>
                   </TableRow>
                 ))
               )}

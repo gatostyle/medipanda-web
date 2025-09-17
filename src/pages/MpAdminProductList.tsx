@@ -26,7 +26,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { getDownloadProductSummariesExcel, getProductSummaries, type ProductSummaryResponse, softDelete } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
@@ -167,97 +166,6 @@ export default function MpAdminProductList() {
     }
     return '-';
   };
-
-  const table = useReactTable({
-    data: contents,
-    columns: [
-      {
-        id: 'select',
-        header: () => (
-          <Checkbox
-            checked={selectedIds.length === contents.length && contents.length > 0}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(contents.map(item => item.id));
-              } else {
-                setSelectedIds([]);
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={selectedIds.includes(row.original.id)}
-            onChange={e => {
-              if (e.target.checked) {
-                setSelectedIds(prev => [...prev, row.original.id]);
-              } else {
-                setSelectedIds(prev => prev.filter(id => id !== row.original.id));
-              }
-            }}
-          />
-        ),
-        size: 50,
-      },
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '제약사',
-        cell: ({ row }) => row.original.manufacturerName ?? '-',
-        size: 150,
-      },
-      {
-        header: '제품명',
-        cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/products/${row.original.id}`}>
-            {row.original.productName ?? '-'}
-          </Link>
-        ),
-        size: 300,
-      },
-      {
-        header: '성분명',
-        cell: ({ row }) => row.original.composition ?? '-',
-        size: 250,
-      },
-      {
-        header: '제품코드',
-        cell: ({ row }) => row.original.productCode,
-        size: 120,
-      },
-      {
-        header: '약가',
-        cell: ({ row }) => {
-          return row.original.price !== null ? `${row.original.price.toLocaleString()}` : '-';
-        },
-        size: 100,
-      },
-      {
-        header: '기본수수료율',
-        cell: ({ row }) => (row.original.feeRate !== null ? `${row.original.feeRate}%` : '-'),
-        size: 120,
-      },
-      {
-        header: '변경요율',
-        cell: ({ row }) => getChangedRateDisplay(row.original),
-        size: 120,
-      },
-      {
-        header: '상태',
-        cell: ({ row }) => getStatusDisplay(row.original),
-        size: 200,
-      },
-      {
-        header: '비고',
-        cell: ({ row }) => row.original.note ?? '-',
-        size: 200,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-  });
 
   const handleDelete = () => {
     const count = selectedIds.length;
@@ -410,39 +318,77 @@ export default function MpAdminProductList() {
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table size='small'>
             <TableHead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableCell key={header.id} style={{ width: header.getSize() }}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableCell width={50}>
+                  <Checkbox
+                    checked={selectedIds.length === contents.length && contents.length > 0}
+                    onChange={e => {
+                      if (e.target.checked) {
+                        setSelectedIds(contents.map(item => item.id));
+                      } else {
+                        setSelectedIds([]);
+                      }
+                    }}
+                  />
+                </TableCell>
+                <TableCell width={60}>No</TableCell>
+                <TableCell width={150}>제약사</TableCell>
+                <TableCell width={300}>제품명</TableCell>
+                <TableCell width={250}>성분명</TableCell>
+                <TableCell width={120}>제품코드</TableCell>
+                <TableCell width={100}>약가</TableCell>
+                <TableCell width={120}>기본수수료율</TableCell>
+                <TableCell width={120}>변경요율</TableCell>
+                <TableCell width={200}>상태</TableCell>
+                <TableCell width={200}>비고</TableCell>
+              </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={11} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       데이터를 로드하는 중입니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
-              ) : table.getRowModel().rows.length === 0 ? (
+              ) : contents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={11} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       검색 결과가 없습니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
-                table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                    ))}
+                contents.map(item => (
+                  <TableRow key={item.id}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedIds.includes(item.id)}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            setSelectedIds(prev => [...prev, item.id]);
+                          } else {
+                            setSelectedIds(prev => prev.filter(id => id !== item.id));
+                          }
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>{item.sequence}</TableCell>
+                    <TableCell>{item.manufacturerName ?? '-'}</TableCell>
+                    <TableCell>
+                      <Link component={RouterLink} to={`/admin/products/${item.id}`}>
+                        {item.productName ?? '-'}
+                      </Link>
+                    </TableCell>
+                    <TableCell>{item.composition ?? '-'}</TableCell>
+                    <TableCell>{item.productCode}</TableCell>
+                    <TableCell>{item.price !== null ? `${item.price.toLocaleString()}` : '-'}</TableCell>
+                    <TableCell>{item.feeRate !== null ? `${item.feeRate}%` : '-'}</TableCell>
+                    <TableCell>{getChangedRateDisplay(item)}</TableCell>
+                    <TableCell>{getStatusDisplay(item)}</TableCell>
+                    <TableCell>{item.note ?? '-'}</TableCell>
                   </TableRow>
                 ))
               )}

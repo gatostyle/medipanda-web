@@ -23,7 +23,6 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { type BannerResponse, BannerScopeLabel, BannerStatus, BannerStatusLabel, DateTimeString, getBanners } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
@@ -125,100 +124,6 @@ export default function MpAdminBannerList() {
     fetchContent();
   }, [searchKeyword, startAt, endAt, bannerStatus, page]);
 
-  const table = useReactTable({
-    data: contents,
-    columns: [
-      {
-        header: 'No',
-        cell: ({ row }) => row.original.sequence,
-        size: 60,
-      },
-      {
-        header: '배너위치',
-        cell: ({ row }) => {
-          const position = row.original.position;
-          switch (position) {
-            case 'POPUP':
-              return '팝업배너';
-            case 'PC_MAIN':
-              return 'PC 메인';
-            case 'PC_COMMUNITY':
-              return 'PC 커뮤니티';
-            case 'MOB_MAIN':
-              return 'Mob 메인';
-            default:
-              return position;
-          }
-        },
-        size: 120,
-      },
-      {
-        header: '배너제목',
-        cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/banners/${row.original.id}/edit`}>
-            {row.original.title}
-          </Link>
-        ),
-        size: 200,
-      },
-      {
-        header: '노출상태',
-        cell: ({ row }) => {
-          const status = row.original.status;
-          return (
-            <Chip
-              label={BannerStatusLabel[status]}
-              color={status === BannerStatus.VISIBLE ? 'success' : 'default'}
-              variant='light'
-              size='small'
-            />
-          );
-        },
-        size: 100,
-      },
-      {
-        header: '노출범위',
-        cell: ({ row }) => BannerScopeLabel[row.original.scope],
-        size: 100,
-      },
-      {
-        header: '게시기간',
-        cell: ({ row }) => {
-          return `${formatYyyyMmDdHhMm(row.original.startAt)} ~ ${formatYyyyMmDdHhMm(row.original.endAt)}`;
-        },
-        size: 300,
-      },
-      {
-        header: '등록일',
-        cell: ({ row }) => {
-          return formatYyyyMmDd(row.original.startAt);
-        },
-        size: 150,
-      },
-      {
-        header: '노출순서',
-        cell: ({ row }) => row.original.displayOrder,
-        size: 80,
-      },
-      {
-        header: '노출수',
-        cell: ({ row }) => row.original.viewCount.toLocaleString(),
-        size: 100,
-      },
-      {
-        header: '클릭수',
-        cell: ({ row }) => row.original.clickCount.toLocaleString(),
-        size: 100,
-      },
-      {
-        header: 'CTR',
-        cell: ({ row }) => `${row.original.ctr}%`,
-        size: 80,
-      },
-    ],
-    getCoreRowModel: getCoreRowModel(),
-  });
-
   return (
     <Stack sx={{ gap: 3 }}>
       <Typography variant='h4'>배너관리</Typography>
@@ -301,39 +206,69 @@ export default function MpAdminBannerList() {
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table size='small'>
             <TableHead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableCell key={header.id} style={{ width: header.getSize() }}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableCell width={60}>No</TableCell>
+                <TableCell width={120}>배너위치</TableCell>
+                <TableCell width={200}>배너제목</TableCell>
+                <TableCell width={100}>노출상태</TableCell>
+                <TableCell width={100}>노출범위</TableCell>
+                <TableCell width={300}>게시기간</TableCell>
+                <TableCell width={150}>등록일</TableCell>
+                <TableCell width={80}>노출순서</TableCell>
+                <TableCell width={100}>노출수</TableCell>
+                <TableCell width={100}>클릭수</TableCell>
+                <TableCell width={80}>CTR</TableCell>
+              </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={11} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       데이터를 로드하는 중입니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
-              ) : table.getRowModel().rows.length === 0 ? (
+              ) : contents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={table.getAllColumns().length} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={11} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       검색 결과가 없습니다.
                     </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
-                table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                    ))}
+                contents.map(item => (
+                  <TableRow key={item.id}>
+                    <TableCell>{item.sequence}</TableCell>
+                    <TableCell>
+                      {{
+                        POPUP: '팝업배너',
+                        PC_MAIN: 'PC 메인',
+                        PC_COMMUNITY: 'PC 커뮤니티',
+                        MOB_MAIN: 'Mob 메인',
+                      }[item.position] ?? item.position}
+                    </TableCell>
+                    <TableCell>
+                      <Link component={RouterLink} to={`/admin/banners/${item.id}/edit`}>
+                        {item.title}
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={BannerStatusLabel[item.status]}
+                        color={item.status === BannerStatus.VISIBLE ? 'success' : 'default'}
+                        variant='light'
+                        size='small'
+                      />
+                    </TableCell>
+                    <TableCell>{BannerScopeLabel[item.scope]}</TableCell>
+                    <TableCell>{`${formatYyyyMmDdHhMm(item.startAt)} ~ ${formatYyyyMmDdHhMm(item.endAt)}`}</TableCell>
+                    <TableCell>{formatYyyyMmDd(item.startAt)}</TableCell>
+                    <TableCell>{item.displayOrder}</TableCell>
+                    <TableCell>{item.viewCount.toLocaleString()}</TableCell>
+                    <TableCell>{item.clickCount.toLocaleString()}</TableCell>
+                    <TableCell>{`${item.ctr}%`}</TableCell>
                   </TableRow>
                 ))
               )}
