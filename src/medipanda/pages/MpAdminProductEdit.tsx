@@ -76,14 +76,13 @@ export default function MpAdminProductEdit() {
         return;
       }
 
-      if (changedFeeRate < 0 || changedFeeRate > 100) {
-        await alert('변경요율은 0 이상 100 이하이어야 합니다.');
-        return;
-      }
-
-      if (values.changedMonth === null) {
-        await alert('변경월을 선택하세요.');
-        return;
+      if (!isNew) {
+        if (detail!.changedFeeRate === null ? changedFeeRate !== 0 : changedFeeRate !== detail!.changedFeeRate) {
+          if (values.changedMonth === null) {
+            await alert('변경월을 선택하세요.');
+            return;
+          }
+        }
       }
 
       try {
@@ -107,10 +106,10 @@ export default function MpAdminProductEdit() {
               productName: values.productName,
               composition: values.composition,
               productCode: values.productCode,
-              changedFeeRate: String(changedFeeRate),
-              changedMonth: values.changedMonth.getMonth() + 1,
+              changedFeeRate: values.changedFeeRate,
+              changedMonth: values.changedMonth !== null ? values.changedMonth.getMonth() + 1 : null,
               priceUnit: PriceUnit.KRW,
-              feeRate: String(feeRate),
+              feeRate: values.feeRate,
               price: price,
               note: values.note,
               detailInfo: editor.getHTML(),
@@ -140,10 +139,10 @@ export default function MpAdminProductEdit() {
               productName: values.productName,
               composition: values.composition,
               productCode: values.productCode,
-              changedFeeRate: String(changedFeeRate),
-              changedMonth: values.changedMonth.getMonth() + 1,
+              changedFeeRate: values.changedFeeRate,
+              changedMonth: values.changedMonth !== null ? values.changedMonth.getMonth() + 1 : null,
               priceUnit: PriceUnit.KRW,
-              feeRate: String(feeRate),
+              feeRate: values.feeRate,
               price: price,
               note: values.note,
               detailInfo: editor.getHTML(),
@@ -250,9 +249,8 @@ export default function MpAdminProductEdit() {
                 size='small'
                 name='manufacturer'
                 value={formik.values.manufacturer}
-                InputProps={{
-                  readOnly: true,
-                }}
+                onChange={formik.handleChange}
+                disabled={!isNew}
               />
             </Stack>
 
@@ -265,9 +263,8 @@ export default function MpAdminProductEdit() {
                 size='small'
                 name='productName'
                 value={formik.values.productName}
-                InputProps={{
-                  readOnly: true,
-                }}
+                onChange={formik.handleChange}
+                disabled={!isNew}
               />
             </Stack>
 
@@ -280,9 +277,8 @@ export default function MpAdminProductEdit() {
                 size='small'
                 name='composition'
                 value={formik.values.composition}
-                InputProps={{
-                  readOnly: true,
-                }}
+                onChange={formik.handleChange}
+                disabled={!isNew}
               />
             </Stack>
 
@@ -295,9 +291,8 @@ export default function MpAdminProductEdit() {
                 size='small'
                 name='productCode'
                 value={formik.values.productCode}
-                InputProps={{
-                  readOnly: true,
-                }}
+                onChange={formik.handleChange}
+                disabled={!isNew}
               />
             </Stack>
 
@@ -310,8 +305,8 @@ export default function MpAdminProductEdit() {
                 size='small'
                 value={formik.values.price}
                 onChange={handleLocaleNumberChange(formik, 'price')}
+                disabled={!isNew}
                 InputProps={{
-                  readOnly: true,
                   endAdornment: <Typography variant='body2'>원</Typography>,
                 }}
               />
@@ -334,35 +329,37 @@ export default function MpAdminProductEdit() {
               />
             </Stack>
 
-            <Stack direction='row'>
-              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
-                변경요율/변경월
-              </Typography>
-              <Stack direction='row' sx={{ gap: 2 }}>
-                <TextField
-                  size='small'
-                  label='변경요율'
-                  value={formik.values.changedFeeRate}
-                  onChange={handleLocaleNumberChange(formik, 'changedFeeRate', { min: 0, max: 100 })}
-                  InputProps={{
-                    endAdornment: <Typography variant='body2'>%</Typography>,
-                  }}
-                  sx={{ width: { xs: '100%', sm: '200px' } }}
-                />
-                <DatePicker
-                  value={formik.values.changedMonth}
-                  onChange={value => formik.setFieldValue('changedMonth', value)}
-                  format='yyyy-MM'
-                  views={['month']}
-                  label='변경월'
-                  slotProps={{
-                    textField: {
-                      size: 'small',
-                    },
-                  }}
-                />
+            {!isNew && (
+              <Stack direction='row'>
+                <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                  변경요율/변경월
+                </Typography>
+                <Stack direction='row' sx={{ gap: 2 }}>
+                  <TextField
+                    size='small'
+                    label='변경요율'
+                    value={formik.values.changedFeeRate}
+                    onChange={handleLocaleNumberChange(formik, 'changedFeeRate', { min: 0, max: 100 })}
+                    InputProps={{
+                      endAdornment: <Typography variant='body2'>%</Typography>,
+                    }}
+                    sx={{ width: { xs: '100%', sm: '200px' } }}
+                  />
+                  <DatePicker
+                    value={formik.values.changedMonth}
+                    onChange={value => formik.setFieldValue('changedMonth', value)}
+                    format='yyyy-MM'
+                    views={['month']}
+                    label='변경월'
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                      },
+                    }}
+                  />
+                </Stack>
               </Stack>
-            </Stack>
+            )}
 
             <Stack direction='row'>
               <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
@@ -404,35 +401,68 @@ export default function MpAdminProductEdit() {
               />
             </Stack>
 
-            <Stack direction='row'>
-              <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
-                대체가능의약품
-              </Typography>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>대체</TableCell>
-                    <TableCell>제약사명</TableCell>
-                    <TableCell>제품정보</TableCell>
-                    <TableCell>약가</TableCell>
-                    <TableCell>급여정보</TableCell>
-                    <TableCell>기본 수수료율</TableCell>
-                    <TableCell>상태</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {detail?.alternativeProducts.map(product => (
-                    <Fragment key={product.kdCode}>
-                      <TableRow>
-                        <TableCell rowSpan={2}>
-                          <Typography sx={{ whiteSpace: 'pre-line' }}>{product.substituent ?? '-'}</Typography>
-                        </TableCell>
-                        <TableCell rowSpan={2}>
-                          <Typography sx={{ whiteSpace: 'pre-line' }}>{product.manufacturer ?? '-'}</Typography>
-                        </TableCell>
-                        <TableCell sx={{ borderBottom: 'none', textAlign: 'left' }}>
-                          <Stack gap='5px'>
-                            <Typography>{product.productName}</Typography>
+            {!isNew && (
+              <Stack direction='row'>
+                <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
+                  대체가능의약품
+                </Typography>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>대체</TableCell>
+                      <TableCell>제약사명</TableCell>
+                      <TableCell>제품정보</TableCell>
+                      <TableCell>약가</TableCell>
+                      <TableCell>급여정보</TableCell>
+                      <TableCell>기본 수수료율</TableCell>
+                      <TableCell>상태</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {detail?.alternativeProducts.map(product => (
+                      <Fragment key={product.kdCode}>
+                        <TableRow>
+                          <TableCell rowSpan={2}>
+                            <Typography sx={{ whiteSpace: 'pre-line' }}>{product.substituent ?? '-'}</Typography>
+                          </TableCell>
+                          <TableCell rowSpan={2}>
+                            <Typography sx={{ whiteSpace: 'pre-line' }}>{product.manufacturer ?? '-'}</Typography>
+                          </TableCell>
+                          <TableCell sx={{ borderBottom: 'none', textAlign: 'left' }}>
+                            <Stack gap='5px'>
+                              <Typography>{product.productName}</Typography>
+                              <Typography
+                                sx={{
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap',
+                                }}
+                              >
+                                {product.composition}
+                              </Typography>
+                            </Stack>
+                          </TableCell>
+                          <TableCell align='center' sx={{ borderBottom: 'none' }}>
+                            {product.price?.toLocaleString() ?? '-'}
+                          </TableCell>
+                          <TableCell align='center' sx={{ borderBottom: 'none' }}>
+                            {product.note ?? '-'}
+                          </TableCell>
+                          <TableCell align='center' sx={{ borderBottom: 'none' }}>
+                            <Typography sx={{ fontWeight: 500 }}>{product.feeRate ?? '-'}</Typography>
+                          </TableCell>
+                          <TableCell align='center' sx={{ borderBottom: 'none' }}>
+                            {product.note ?? '-'}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell
+                            colSpan={6}
+                            sx={{
+                              borderBottom: '1px solid rgba(219, 224, 229, 0.65) !important',
+                              textAlign: 'left',
+                            }}
+                          >
                             <Typography
                               sx={{
                                 overflow: 'hidden',
@@ -440,47 +470,16 @@ export default function MpAdminProductEdit() {
                                 whiteSpace: 'nowrap',
                               }}
                             >
-                              {product.composition}
+                              {product.note}
                             </Typography>
-                          </Stack>
-                        </TableCell>
-                        <TableCell align='center' sx={{ borderBottom: 'none' }}>
-                          {product.price?.toLocaleString() ?? '-'}
-                        </TableCell>
-                        <TableCell align='center' sx={{ borderBottom: 'none' }}>
-                          {product.note ?? '-'}
-                        </TableCell>
-                        <TableCell align='center' sx={{ borderBottom: 'none' }}>
-                          <Typography sx={{ fontWeight: 500 }}>{product.feeRate ?? '-'}</Typography>
-                        </TableCell>
-                        <TableCell align='center' sx={{ borderBottom: 'none' }}>
-                          {product.note ?? '-'}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell
-                          colSpan={6}
-                          sx={{
-                            borderBottom: '1px solid rgba(219, 224, 229, 0.65) !important',
-                            textAlign: 'left',
-                          }}
-                        >
-                          <Typography
-                            sx={{
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              whiteSpace: 'nowrap',
-                            }}
-                          >
-                            {product.note}
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    </Fragment>
-                  ))}
-                </TableBody>
-              </Table>
-            </Stack>
+                          </TableCell>
+                        </TableRow>
+                      </Fragment>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Stack>
+            )}
           </Stack>
         </Card>
 
