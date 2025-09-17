@@ -37,7 +37,7 @@ import {
 } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
-import { formatYyyyMm, formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM, formatYyyyMm, formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
@@ -310,7 +310,7 @@ export default function MpAdminPrescriptionFormList() {
             <DatePicker
               value={formik.values.prescriptionMonthStart}
               onChange={value => formik.setFieldValue('prescriptionMonthStart', value)}
-              format='yyyy-MM'
+              format={DATEFORMAT_YYYY_MM}
               views={['year', 'month']}
               label='처방 시작월'
               slotProps={{
@@ -324,7 +324,7 @@ export default function MpAdminPrescriptionFormList() {
             <DatePicker
               value={formik.values.prescriptionMonthEnd}
               onChange={value => formik.setFieldValue('prescriptionMonthEnd', value)}
-              format='yyyy-MM'
+              format={DATEFORMAT_YYYY_MM}
               views={['year', 'month']}
               label='처방 종료월'
               slotProps={{

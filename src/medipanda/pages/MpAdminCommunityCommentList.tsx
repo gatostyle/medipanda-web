@@ -35,7 +35,7 @@ import {
 } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
-import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -295,7 +295,7 @@ export default function MpAdminCommunityCommentList() {
             <DatePicker
               value={formik.values.startAt}
               onChange={value => formik.setFieldValue('startAt', value)}
-              format='yyyy-MM-dd'
+              format={DATEFORMAT_YYYY_MM_DD}
               views={['year', 'month', 'day']}
               label='시작일'
               slotProps={{
@@ -309,7 +309,7 @@ export default function MpAdminCommunityCommentList() {
             <DatePicker
               value={formik.values.endAt}
               onChange={value => formik.setFieldValue('endAt', value)}
-              format='yyyy-MM-dd'
+              format={DATEFORMAT_YYYY_MM_DD}
               views={['year', 'month', 'day']}
               label='종료일'
               slotProps={{

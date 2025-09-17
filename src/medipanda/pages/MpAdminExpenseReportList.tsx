@@ -35,7 +35,7 @@ import {
   getExpenseReportList,
 } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
-import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -239,7 +239,7 @@ export default function MpAdminExpenseReportList() {
             <DatePicker
               value={formik.values.eventDateFrom}
               onChange={value => formik.setFieldValue('eventDateFrom', value)}
-              format='yyyy-MM-dd'
+              format={DATEFORMAT_YYYY_MM_DD}
               views={['year', 'month', 'day']}
               label='시작일'
               slotProps={{
@@ -253,7 +253,7 @@ export default function MpAdminExpenseReportList() {
             <DatePicker
               value={formik.values.eventDateTo}
               onChange={value => formik.setFieldValue('eventDateTo', value)}
-              format='yyyy-MM-dd'
+              format={DATEFORMAT_YYYY_MM_DD}
               views={['year', 'month', 'day']}
               label='종료일'
               slotProps={{

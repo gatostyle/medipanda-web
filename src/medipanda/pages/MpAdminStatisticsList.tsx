@@ -26,7 +26,7 @@ import { useFormik } from 'formik';
 import { DocumentDownload } from 'iconsax-reactjs';
 import { DateString, getDownloadPerformanceExcel, getPerformanceStats, type PerformanceStatsResponse, SettlementStatus } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
-import { formatYyyyMm, SafeDate } from '@/medipanda/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM, formatYyyyMm, SafeDate } from '@/medipanda/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -209,7 +209,7 @@ export default function MpAdminStatisticsList() {
             <DatePicker
               value={formik.values.settlementMonth}
               onChange={value => formik.setFieldValue('settlementMonth', value)}
-              format='yyyy-MM'
+              format={DATEFORMAT_YYYY_MM}
               views={['year', 'month']}
               label='정산월'
               slotProps={{

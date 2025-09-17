@@ -25,7 +25,7 @@ import {
   getBanner,
   updateBanner,
 } from '@/backend';
-import { DateFix } from '@/medipanda/utils/dateFormat';
+import { DateFix, DATEFORMAT_YYYY_MM_DD_HH_MM } from '@/medipanda/utils/dateFormat';
 import { type ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 
@@ -270,7 +270,7 @@ export default function MpAdminBannerEdit() {
                 <DateTimePicker
                   value={formik.values.startAt}
                   onChange={value => formik.setFieldValue('startAt', value)}
-                  format='yyyy-MM-dd HH:mm'
+                  format={DATEFORMAT_YYYY_MM_DD_HH_MM}
                   label='시작일'
                   slotProps={{
                     textField: {
@@ -286,7 +286,7 @@ export default function MpAdminBannerEdit() {
                 <DateTimePicker
                   value={formik.values.endAt}
                   onChange={value => formik.setFieldValue('endAt', value)}
-                  format='yyyy-MM-dd HH:mm'
+                  format={DATEFORMAT_YYYY_MM_DD_HH_MM}
                   label='종료일'
                   slotProps={{
                     textField: {

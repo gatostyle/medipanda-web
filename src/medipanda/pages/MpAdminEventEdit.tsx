@@ -19,7 +19,7 @@ import { useSnackbar } from 'notistack';
 import { type ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import { useSession } from '../hooks/useSession';
-import { DateFix, formatYyyyMmDd } from '../utils/dateFormat';
+import { DateFix, DATEFORMAT_YYYY_MM_DD, formatYyyyMmDd } from '../utils/dateFormat';
 
 export default function MpAdminEventEdit() {
   const navigate = useNavigate();
@@ -241,7 +241,7 @@ export default function MpAdminEventEdit() {
               <DatePicker
                 value={formik.values.startDate}
                 onChange={value => formik.setFieldValue('startDate', value)}
-                format='yyyy-MM-dd'
+                format={DATEFORMAT_YYYY_MM_DD}
                 views={['year', 'month', 'day']}
                 label='시작일'
                 slotProps={{
@@ -254,7 +254,7 @@ export default function MpAdminEventEdit() {
               <DatePicker
                 value={formik.values.endDate}
                 onChange={value => formik.setFieldValue('endDate', value)}
-                format='yyyy-MM-dd'
+                format={DATEFORMAT_YYYY_MM_DD}
                 views={['year', 'month', 'day']}
                 label='종료일'
                 slotProps={{

@@ -42,7 +42,7 @@ import { useSnackbar } from 'notistack';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import { MpPartnerProductSelectModal } from '../components/MpPartnerProductSelectModal';
-import { DateFix } from '../utils/dateFormat';
+import { DateFix, DATEFORMAT_YYYY_MM } from '../utils/dateFormat';
 
 interface CustomPartnerProducts {
   id: number | null;
@@ -490,7 +490,7 @@ export default function MpAdminPrescriptionFormProducts() {
                 <DatePicker
                   value={formik.values.prescriptionMonth}
                   onChange={value => formik.setFieldValue('prescriptionMonth', value)}
-                  format='yyyy-MM'
+                  format={DATEFORMAT_YYYY_MM}
                   views={['year', 'month']}
                   label='처방월'
                   slotProps={{
@@ -522,7 +522,7 @@ export default function MpAdminPrescriptionFormProducts() {
                 <DatePicker
                   value={formik.values.settlementMonth}
                   onChange={value => formik.setFieldValue('settlementMonth', value)}
-                  format='yyyy-MM'
+                  format={DATEFORMAT_YYYY_MM}
                   views={['year', 'month']}
                   label='정산월'
                   slotProps={{

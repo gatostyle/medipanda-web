@@ -11,7 +11,7 @@ import { useSearchParamsOrDefault } from '@/lib/useSearchParamsOrDefault';
 import { MpSettlementUploadModal } from '@/medipanda/components/MpSettlementUploadModal';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
-import { formatYyyyMm, SafeDate } from '@/medipanda/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM, formatYyyyMm, SafeDate } from '@/medipanda/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import {
   Button,
@@ -272,7 +272,7 @@ export default function MpAdminSettlementList() {
               <DatePicker
                 value={formik.values.settlementMonth}
                 onChange={value => formik.setFieldValue('settlementMonth', value)}
-                format='yyyy-MM'
+                format={DATEFORMAT_YYYY_MM}
                 views={['year', 'month']}
                 label='정산월'
                 slotProps={{

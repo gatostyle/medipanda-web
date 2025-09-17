@@ -2,6 +2,7 @@ import { handleLocaleNumberChange } from '@/lib/form';
 import { TiptapMenuBar } from '@/medipanda/components/Tiptap';
 import { useMedipandaEditor } from '@/medipanda/components/useMedipandaEditor';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
+import { DATEFORMAT_YYYY_MM } from '@/medipanda/utils/dateFormat';
 import {
   Box,
   Button,
@@ -348,7 +349,7 @@ export default function MpAdminProductEdit() {
                   <DatePicker
                     value={formik.values.changedMonth}
                     onChange={value => formik.setFieldValue('changedMonth', value)}
-                    format='yyyy-MM'
+                    format={DATEFORMAT_YYYY_MM}
                     views={['month']}
                     label='변경월'
                     slotProps={{

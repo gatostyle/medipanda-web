@@ -1,4 +1,5 @@
 import { DateString, type MemberResponse, uploadEdiZip } from '@/backend';
+import { DATEFORMAT_YYYY_MM } from '@/medipanda/utils/dateFormat';
 import { MpMemberSelectModal } from './MpMemberSelectModal';
 import { useMpModal } from '@/medipanda/hooks/useMpModal';
 import { UploadFile } from '@mui/icons-material';
@@ -138,7 +139,7 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
               <DatePicker
                 value={formik.values.prescriptionMonth}
                 onChange={value => formik.setFieldValue('prescriptionMonth', value?.setDate(1) ?? null)}
-                format='yyyy-MM'
+                format={DATEFORMAT_YYYY_MM}
                 views={['year', 'month']}
                 label='처방월'
                 slotProps={{
@@ -153,7 +154,7 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
               <DatePicker
                 value={formik.values.settlementMonth}
                 onChange={value => formik.setFieldValue('settlementMonth', value?.setDate(1) ?? null)}
-                format='yyyy-MM'
+                format={DATEFORMAT_YYYY_MM}
                 views={['year', 'month']}
                 label='정산월'
                 slotProps={{

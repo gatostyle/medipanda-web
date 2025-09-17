@@ -36,7 +36,7 @@ import {
 } from '@/backend';
 import { SearchFilterActions, SearchFilterBar, SearchFilterItem } from '@/medipanda/components/SearchFilterBar';
 import { useMpDeleteDialog } from '@/medipanda/hooks/useMpDeleteDialog';
-import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
@@ -306,7 +306,7 @@ export default function MpAdminHospitalList() {
             <DatePicker
               value={formik.values.startDate}
               onChange={value => formik.setFieldValue('startDate', value)}
-              format='yyyy-MM-dd'
+              format={DATEFORMAT_YYYY_MM_DD}
               views={['year', 'month', 'day']}
               label='시작일'
               slotProps={{
@@ -320,7 +320,7 @@ export default function MpAdminHospitalList() {
             <DatePicker
               value={formik.values.endDate}
               onChange={value => formik.setFieldValue('endDate', value)}
-              format='yyyy-MM-dd'
+              format={DATEFORMAT_YYYY_MM_DD}
               views={['year', 'month', 'day']}
               label='종료일'
               slotProps={{

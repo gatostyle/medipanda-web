@@ -33,7 +33,7 @@ import { type Sequenced, withSequence } from '@/medipanda/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
-import { formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, formatYyyyMmDd, SafeDate } from '@/medipanda/utils/dateFormat';
 
 export default function MpAdminAtoZList() {
   const navigate = useNavigate();
@@ -250,7 +250,7 @@ export default function MpAdminAtoZList() {
             <DatePicker
               value={formik.values.startAt}
               onChange={value => formik.setFieldValue('startAt', value)}
-              format='yyyy-MM-dd'
+              format={DATEFORMAT_YYYY_MM_DD}
               views={['year', 'month', 'day']}
               label='시작일'
               slotProps={{
@@ -264,7 +264,7 @@ export default function MpAdminAtoZList() {
             <DatePicker
               value={formik.values.endAt}
               onChange={value => formik.setFieldValue('endAt', value)}
-              format='yyyy-MM-dd'
+              format={DATEFORMAT_YYYY_MM_DD}
               views={['year', 'month', 'day']}
               label='종료일'
               slotProps={{
