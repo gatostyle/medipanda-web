@@ -13,7 +13,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers';
+import { DateTimePicker } from '@mui/x-date-pickers';
 import { useFormik } from 'formik';
 import {
   BannerScope,
@@ -25,7 +25,7 @@ import {
   getBanner,
   updateBanner,
 } from '@/backend';
-import { DateFix, formatYyyyMmDd } from '@/medipanda/utils/dateFormat';
+import { DateFix } from '@/medipanda/utils/dateFormat';
 import { type ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 
@@ -47,12 +47,8 @@ export default function MpAdminBannerEdit() {
       scope: BannerScope.ENTIRE as keyof typeof BannerScope,
       title: '',
       linkUrl: '',
-      startDate: null as Date | null,
-      startHour: '0',
-      startMinute: '0',
-      endDate: null as Date | null,
-      endHour: '0',
-      endMinute: '0',
+      startAt: null as Date | null,
+      endAt: null as Date | null,
       displayOrder: 1,
     },
     onSubmit: async values => {
@@ -71,22 +67,17 @@ export default function MpAdminBannerEdit() {
         return;
       }
 
-      if (values.startDate === null) {
+      if (values.startAt === null) {
         await alert('시작일을 선택하세요');
         return;
       }
 
-      if (values.endDate === null) {
+      if (values.endAt === null) {
         await alert('종료일을 선택하세요');
         return;
       }
 
       try {
-        const startDateStr = values.startDate ? formatYyyyMmDd(values.startDate) : '';
-        const endDateStr = values.endDate ? formatYyyyMmDd(values.endDate) : '';
-        const startAt = `${startDateStr}T${values.startHour.padStart(2, '0')}:${values.startMinute.padStart(2, '0')}:00`;
-        const endAt = `${endDateStr}T${values.endHour.padStart(2, '0')}:${values.endMinute.padStart(2, '0')}:00`;
-
         if (isNew) {
           await createBanner({
             request: {
@@ -96,8 +87,8 @@ export default function MpAdminBannerEdit() {
               scope: values.scope,
               position: values.position,
               displayOrder: values.displayOrder,
-              startAt: new DateTimeString(startAt),
-              endAt: new DateTimeString(endAt),
+              startAt: new DateTimeString(values.startAt),
+              endAt: new DateTimeString(values.endAt),
             },
             imageFile: imageFile!,
           });
@@ -110,8 +101,8 @@ export default function MpAdminBannerEdit() {
               scope: values.scope,
               title: values.title,
               linkUrl: values.linkUrl,
-              startAt: new DateTimeString(startAt),
-              endAt: new DateTimeString(endAt),
+              startAt: new DateTimeString(values.startAt),
+              endAt: new DateTimeString(values.endAt),
               displayOrder: values.displayOrder,
             },
             imageFile: imageFile ?? undefined,
@@ -142,21 +133,14 @@ export default function MpAdminBannerEdit() {
     try {
       const detail = await getBanner(bannerId);
 
-      const startDate = DateFix(detail.startAt);
-      const endDate = DateFix(detail.endAt);
-
       formik.setValues({
         position: detail.position,
         status: detail.status,
         scope: detail.scope,
         title: detail.title,
         linkUrl: detail.linkUrl,
-        startDate: startDate,
-        startHour: startDate.getHours().toString(),
-        startMinute: startDate.getMinutes().toString(),
-        endDate: endDate,
-        endHour: endDate.getHours().toString(),
-        endMinute: endDate.getMinutes().toString(),
+        startAt: DateFix(detail.startAt),
+        endAt: DateFix(detail.endAt),
         displayOrder: detail.displayOrder,
       });
 
@@ -282,12 +266,11 @@ export default function MpAdminBannerEdit() {
               게시기간 <span style={{ color: 'red' }}>*</span>
             </Typography>
             <Stack direction='row' spacing={1} alignItems='center' flexWrap='wrap'>
-              <Box sx={{ width: 150 }}>
-                <DatePicker
-                  value={formik.values.startDate}
-                  onChange={value => formik.setFieldValue('startDate', value)}
-                  format='yyyy-MM-dd'
-                  views={['year', 'month', 'day']}
+              <Box sx={{ width: 200 }}>
+                <DateTimePicker
+                  value={formik.values.startAt}
+                  onChange={value => formik.setFieldValue('startAt', value)}
+                  format='yyyy-MM-dd HH:mm'
                   label='시작일'
                   slotProps={{
                     textField: {
@@ -296,33 +279,14 @@ export default function MpAdminBannerEdit() {
                   }}
                 />
               </Box>
-              <FormControl size='small' sx={{ minWidth: 70 }}>
-                <Select name='startHour' value={formik.values.startHour} onChange={formik.handleChange}>
-                  {Array.from({ length: 24 }, (_, i) => (
-                    <MenuItem key={i} value={i.toString()}>
-                      {i}시
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl size='small' sx={{ minWidth: 70 }}>
-                <Select name='startMinute' value={formik.values.startMinute} onChange={formik.handleChange}>
-                  {Array.from({ length: 60 }, (_, i) => (
-                    <MenuItem key={i} value={i.toString()}>
-                      {i}분
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
               <Typography variant='body1' sx={{ mx: 1 }}>
                 ~
               </Typography>
-              <Box sx={{ width: 150 }}>
-                <DatePicker
-                  value={formik.values.endDate}
-                  onChange={value => formik.setFieldValue('endDate', value)}
-                  format='yyyy-MM-dd'
-                  views={['year', 'month', 'day']}
+              <Box sx={{ width: 200 }}>
+                <DateTimePicker
+                  value={formik.values.endAt}
+                  onChange={value => formik.setFieldValue('endAt', value)}
+                  format='yyyy-MM-dd HH:mm'
                   label='종료일'
                   slotProps={{
                     textField: {
@@ -331,24 +295,6 @@ export default function MpAdminBannerEdit() {
                   }}
                 />
               </Box>
-              <FormControl size='small' sx={{ minWidth: 70 }}>
-                <Select name='endHour' value={formik.values.endHour} onChange={formik.handleChange}>
-                  {Array.from({ length: 24 }, (_, i) => (
-                    <MenuItem key={i} value={i.toString()}>
-                      {i}시
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl size='small' sx={{ minWidth: 70 }}>
-                <Select name='endMinute' value={formik.values.endMinute} onChange={formik.handleChange}>
-                  {Array.from({ length: 60 }, (_, i) => (
-                    <MenuItem key={i} value={i.toString()}>
-                      {i}분
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
             </Stack>
           </Stack>
 
