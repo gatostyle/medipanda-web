@@ -196,7 +196,7 @@ export default function MpAdminPrescriptionFormList() {
       {
         header: '거래처명',
         cell: ({ row }) => (
-          <Link component={RouterLink} to={`/admin/prescription-forms/${row.original.id}/products`}>
+          <Link component={RouterLink} to={`/admin/prescription-forms/${row.original.id}/edit`}>
             {row.original.institutionName}
           </Link>
         ),

@@ -58,7 +58,7 @@ interface CustomPartnerProducts {
   ocrItem: OcrOriginalItem | null;
 }
 
-export default function MpAdminPrescriptionFormProducts() {
+export default function MpAdminPrescriptionFormEdit() {
   const navigate = useNavigate();
   const { prescriptionPartnerId: paramPrescriptionPartnerId } = useParams();
   const isNew = paramPrescriptionPartnerId === undefined;

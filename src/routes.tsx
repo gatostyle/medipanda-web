@@ -30,7 +30,7 @@ const MpAdminProductDetail = Loadable(lazy(() => import('@/pages/MpAdminProductD
 const MpAdminProductEdit = Loadable(lazy(() => import('@/pages/MpAdminProductEdit')));
 const MpAdminPrescriptionReceptionList = Loadable(lazy(() => import('@/pages/MpAdminPrescriptionReceptionList')));
 const MpAdminPrescriptionFormList = Loadable(lazy(() => import('@/pages/MpAdminPrescriptionFormList')));
-const MpAdminPrescriptionFormProducts = Loadable(lazy(() => import('@/pages/MpAdminPrescriptionFormProducts')));
+const MpAdminPrescriptionFormEdit = Loadable(lazy(() => import('@/pages/MpAdminPrescriptionFormEdit')));
 const MpAdminSettlementPartnerDetail = Loadable(lazy(() => import('@/pages/MpAdminSettlementPartnerDetail')));
 const MpAdminSettlementList = Loadable(lazy(() => import('@/pages/MpAdminSettlementList')));
 const MpAdminSettlementDetail = Loadable(lazy(() => import('@/pages/MpAdminSettlementDetail')));
@@ -226,10 +226,10 @@ const adminRoute: RouteObject = {
       ),
     },
     {
-      path: 'prescription-forms/:prescriptionPartnerId/products',
+      path: 'prescription-forms/:prescriptionPartnerId/edit',
       element: (
         <MpAdminGuard requiredPermission={AdminPermission.PRESCRIPTION_MANAGEMENT}>
-          <MpAdminPrescriptionFormProducts />
+          <MpAdminPrescriptionFormEdit />
         </MpAdminGuard>
       ),
     },
