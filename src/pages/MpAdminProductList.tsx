@@ -382,7 +382,9 @@ export default function MpAdminProductList() {
                         {item.productName ?? '-'}
                       </Link>
                     </TableCell>
-                    <TableCell>{item.composition ?? '-'}</TableCell>
+                    <TableCell>
+                      <p dangerouslySetInnerHTML={{ __html: item.composition ?? '-' }} style={{ margin: 0 }} />
+                    </TableCell>
                     <TableCell>{item.productCode}</TableCell>
                     <TableCell>{item.price !== null ? `${item.price.toLocaleString()}` : '-'}</TableCell>
                     <TableCell>{item.feeRate !== null ? `${item.feeRate}%` : '-'}</TableCell>
