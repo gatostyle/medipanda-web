@@ -410,37 +410,37 @@ export default function MpAdminProductEdit() {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>대체</TableCell>
-                      <TableCell>제약사명</TableCell>
+                      <TableCell width={100} align='center'>
+                        대체
+                      </TableCell>
+                      <TableCell width={200}>제약사명</TableCell>
                       <TableCell>제품정보</TableCell>
-                      <TableCell>약가</TableCell>
-                      <TableCell>급여정보</TableCell>
-                      <TableCell>기본 수수료율</TableCell>
-                      <TableCell>상태</TableCell>
+                      <TableCell width={80} align='center'>
+                        약가
+                      </TableCell>
+                      <TableCell width={120} align='center'>
+                        급여정보
+                      </TableCell>
+                      <TableCell width={100} align='center'>
+                        기본 수수료율
+                      </TableCell>
+                      <TableCell width={80} align='center'>
+                        상태
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {detail?.alternativeProducts.map(product => (
                       <Fragment key={product.kdCode}>
                         <TableRow>
-                          <TableCell rowSpan={2}>
-                            <Typography sx={{ whiteSpace: 'pre-line' }}>{product.substituent ?? '-'}</Typography>
+                          <TableCell rowSpan={2} align='center'>
+                            {product.substituent ?? '-'}
                           </TableCell>
-                          <TableCell rowSpan={2}>
-                            <Typography sx={{ whiteSpace: 'pre-line' }}>{product.manufacturer ?? '-'}</Typography>
-                          </TableCell>
-                          <TableCell sx={{ borderBottom: 'none', textAlign: 'left' }}>
+                          <TableCell rowSpan={2}>{product.manufacturer ?? '-'}</TableCell>
+                          <TableCell sx={{ borderBottom: 'none' }}>
                             <Stack gap='5px'>
                               <Typography>{product.productName}</Typography>
-                              <Typography
-                                sx={{
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis',
-                                  whiteSpace: 'nowrap',
-                                }}
-                              >
-                                {product.composition}
-                              </Typography>
+                              <p dangerouslySetInnerHTML={{ __html: product.composition ?? '' }} style={{ margin: 0 }} />
                             </Stack>
                           </TableCell>
                           <TableCell align='center' sx={{ borderBottom: 'none' }}>
@@ -450,7 +450,7 @@ export default function MpAdminProductEdit() {
                             {product.note ?? '-'}
                           </TableCell>
                           <TableCell align='center' sx={{ borderBottom: 'none' }}>
-                            <Typography sx={{ fontWeight: 500 }}>{product.feeRate ?? '-'}</Typography>
+                            {product.feeRate ?? '-'}
                           </TableCell>
                           <TableCell align='center' sx={{ borderBottom: 'none' }}>
                             {product.note ?? '-'}
