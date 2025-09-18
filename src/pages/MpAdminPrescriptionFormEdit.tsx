@@ -1,6 +1,7 @@
 import { MpPartnerProductSelectModal } from '@/components/MpPartnerProductSelectModal';
 import { normalizeBusinessNumber, normalizeLocaleNumber } from '@/lib/utils/form';
 import { useMpModal } from '@/hooks/useMpModal';
+import { PercentUtils } from '@/utils/PercentUtils';
 import {
   Box,
   Button,
@@ -103,7 +104,7 @@ export default function MpAdminPrescriptionFormEdit() {
             quantity: Number(product.quantity.replace(/,/g, '')),
             unitPrice: Number(product.unitPrice.replace(/,/g, '')),
             totalPrice: Number(product.totalPrice.replace(/,/g, '')),
-            baseFeeRate: Number(product.baseFeeRate.replace(/,/g, '')),
+            baseFeeRate: PercentUtils.percentStringToDecimal(product.baseFeeRate),
             feeAmount: Number(product.feeAmount.replace(/,/g, '')),
             note: product.note,
             ocrItem: product.ocrItem,
@@ -187,7 +188,7 @@ export default function MpAdminPrescriptionFormEdit() {
         productCode: product.productCode,
         productName: product.productName ?? '',
         unitPrice: normalizeLocaleNumber(String(product.price ?? 0)),
-        baseFeeRate: normalizeLocaleNumber(String(product.feeRate ?? 0)),
+        baseFeeRate: PercentUtils.formatDecimal(product.feeRate ?? 0),
       },
       ...partnerProducts.slice(currentProductItemIndex + 1),
     ]);
@@ -283,7 +284,7 @@ export default function MpAdminPrescriptionFormEdit() {
           quantity: normalizeLocaleNumber(String(product.quantity)),
           unitPrice: normalizeLocaleNumber(String(product.unitPrice)),
           totalPrice: normalizeLocaleNumber(String(product.totalPrice)),
-          baseFeeRate: normalizeLocaleNumber(String(product.baseFeeRate)),
+          baseFeeRate: PercentUtils.formatDecimal(product.baseFeeRate),
           feeAmount: normalizeLocaleNumber(String(product.feeAmount)),
           note: product.note,
           ocrItem: null,
@@ -534,7 +535,11 @@ export default function MpAdminPrescriptionFormEdit() {
                         name='baseFeeRate'
                         value={item.baseFeeRate}
                         onChange={event => {
-                          const normalized = normalizeLocaleNumber(event.target.value, { min: 0, max: 100 });
+                          const normalized = normalizeLocaleNumber(event.target.value, {
+                            maximumFractionDigits: 1,
+                            min: 0,
+                            max: 100,
+                          });
 
                           if (normalized !== null) {
                             handleProductChange(item.sequence - 1, 'baseFeeRate', normalized);

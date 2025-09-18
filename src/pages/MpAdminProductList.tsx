@@ -2,6 +2,7 @@ import { setUrlParams } from '@/lib/utils/url';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
 import { MpProductUploadModal } from '@/components/MpProductUploadModal';
 import { useMpModal } from '@/hooks/useMpModal';
+import { PercentUtils } from '@/utils/PercentUtils';
 import { DocumentDownload } from 'iconsax-reactjs';
 import {
   Button,
@@ -156,15 +157,6 @@ export default function MpAdminProductList() {
     if (product.isOutOfStock) statuses.push('품절');
     if (product.isStopSelling) statuses.push('판매중단');
     return statuses.join(', ');
-  };
-
-  const getChangedRateDisplay = (product: ProductSummaryResponse): string => {
-    if (product.changedFeeRate && product.changedMonth) {
-      return `${product.changedFeeRate}% (${product.changedMonth})`;
-    } else if (product.changedFeeRate) {
-      return `${product.changedFeeRate}%`;
-    }
-    return '-';
   };
 
   const handleDelete = () => {
@@ -387,8 +379,14 @@ export default function MpAdminProductList() {
                     </TableCell>
                     <TableCell>{item.productCode}</TableCell>
                     <TableCell>{item.price !== null ? `${item.price.toLocaleString()}` : '-'}</TableCell>
-                    <TableCell>{item.feeRate !== null ? `${item.feeRate}%` : '-'}</TableCell>
-                    <TableCell>{getChangedRateDisplay(item)}</TableCell>
+                    <TableCell>{item.feeRate !== null ? PercentUtils.formatDecimal(item.feeRate) + '%' : '-'}</TableCell>
+                    <TableCell>
+                      {item.changedFeeRate !== null
+                        ? PercentUtils.formatDecimal(item.changedFeeRate) +
+                          '%' +
+                          (item.changedMonth !== null ? ` (${item.changedMonth})` : '')
+                        : '-'}
+                    </TableCell>
                     <TableCell>{getStatusDisplay(item)}</TableCell>
                     <TableCell>{item.note ?? '-'}</TableCell>
                   </TableRow>

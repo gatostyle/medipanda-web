@@ -53,7 +53,12 @@ export function handleBusinessNumberChange<K extends string, T extends Record<K,
   return handleNumberStringChange({ values, setFieldValue }, key, normalizeBusinessNumber);
 }
 
-export function normalizeLocaleNumber(value: string, config?: { min?: number; max?: number }): string {
+interface NumberNormalizeConfig extends Intl.NumberFormatOptions {
+  min?: number;
+  max?: number;
+}
+
+export function normalizeLocaleNumber(value: string, config?: NumberNormalizeConfig): string {
   const numberValue = Number(value.trim().replace(/,/g, ''));
 
   if (Number.isNaN(numberValue)) {
@@ -62,13 +67,13 @@ export function normalizeLocaleNumber(value: string, config?: { min?: number; ma
 
   const clampedValue = Math.max(Math.min(numberValue, config?.max ?? Number.MAX_SAFE_INTEGER), config?.min ?? Number.MIN_SAFE_INTEGER);
 
-  return clampedValue.toLocaleString(undefined, { maximumFractionDigits: 9 }) + (value.toString().endsWith('.') ? '.' : '');
+  return clampedValue.toLocaleString(undefined, config) + (value.toString().endsWith('.') ? '.' : '');
 }
 
 export function handleLocaleNumberChange<K extends string, T extends Record<K, string>>(
   { values: _, setFieldValue }: { values: T; setFieldValue: (field: K, value: string) => void },
   key: K,
-  config?: { min?: number; max?: number },
+  config?: NumberNormalizeConfig,
 ): ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> {
   return event => {
     const normalized = normalizeLocaleNumber(event.target.value, config);

@@ -3,6 +3,7 @@ import { TiptapMenuBar } from '@/lib/Tiptap';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { useMpModal } from '@/hooks/useMpModal';
 import { DATEFORMAT_YYYY_MM } from '@/lib/utils/dateFormat';
+import { PercentUtils } from '@/utils/PercentUtils';
 import {
   Box,
   Button,
@@ -107,10 +108,10 @@ export default function MpAdminProductEdit() {
               productName: values.productName,
               composition: values.composition,
               productCode: values.productCode,
-              changedFeeRate: values.changedFeeRate,
+              changedFeeRate: String(PercentUtils.percentStringToDecimal(values.changedFeeRate)),
               changedMonth: values.changedMonth !== null ? values.changedMonth.getMonth() + 1 : null,
               priceUnit: PriceUnit.KRW,
-              feeRate: values.feeRate,
+              feeRate: String(PercentUtils.percentStringToDecimal(values.feeRate)),
               price: price,
               note: values.note,
               detailInfo: editor.getHTML(),
@@ -140,10 +141,10 @@ export default function MpAdminProductEdit() {
               productName: values.productName,
               composition: values.composition,
               productCode: values.productCode,
-              changedFeeRate: values.changedFeeRate,
+              changedFeeRate: String(PercentUtils.percentStringToDecimal(values.changedFeeRate)),
               changedMonth: values.changedMonth !== null ? values.changedMonth.getMonth() + 1 : null,
               priceUnit: PriceUnit.KRW,
-              feeRate: values.feeRate,
+              feeRate: String(PercentUtils.percentStringToDecimal(values.feeRate)),
               price: price,
               note: values.note,
               detailInfo: editor.getHTML(),
@@ -209,8 +210,8 @@ export default function MpAdminProductEdit() {
         composition: detail.composition ?? '',
         productCode: detail.productCode ?? '',
         price: (detail.price ?? 0).toLocaleString(),
-        feeRate: (detail.feeRate ?? 0).toString(),
-        changedFeeRate: (detail.changedFeeRate ?? 0).toString(),
+        feeRate: (detail.feeRate !== null ? PercentUtils.decimalToPercent(detail.feeRate) : 0).toString(),
+        changedFeeRate: (detail.changedFeeRate !== null ? PercentUtils.decimalToPercent(detail.changedFeeRate) : 0).toString(),
         changedMonth: detail.changedMonth !== null ? new Date(detail.changedMonth) : null,
         isAcquisition: detail.isAcquisition ?? false,
         isPromotion: detail.isPromotion ?? false,
@@ -323,7 +324,11 @@ export default function MpAdminProductEdit() {
                 placeholder='수수료율을 입력하세요'
                 required
                 value={formik.values.feeRate}
-                onChange={handleLocaleNumberChange(formik, 'feeRate', { min: 0, max: 100 })}
+                onChange={handleLocaleNumberChange(formik, 'feeRate', {
+                  maximumFractionDigits: 1,
+                  min: 0,
+                  max: 100,
+                })}
                 InputProps={{
                   endAdornment: <Typography variant='body2'>%</Typography>,
                 }}
@@ -340,7 +345,11 @@ export default function MpAdminProductEdit() {
                     size='small'
                     label='변경요율'
                     value={formik.values.changedFeeRate}
-                    onChange={handleLocaleNumberChange(formik, 'changedFeeRate', { min: 0, max: 100 })}
+                    onChange={handleLocaleNumberChange(formik, 'changedFeeRate', {
+                      maximumFractionDigits: 1,
+                      min: 0,
+                      max: 100,
+                    })}
                     InputProps={{
                       endAdornment: <Typography variant='body2'>%</Typography>,
                     }}
@@ -450,7 +459,7 @@ export default function MpAdminProductEdit() {
                             {product.note ?? '-'}
                           </TableCell>
                           <TableCell align='center' sx={{ borderBottom: 'none' }}>
-                            {product.feeRate ?? '-'}
+                            {product.feeRate ? PercentUtils.formatDecimal(product.feeRate) + '%' : '-'}
                           </TableCell>
                           <TableCell align='center' sx={{ borderBottom: 'none' }}>
                             {product.note ?? '-'}

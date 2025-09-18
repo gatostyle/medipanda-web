@@ -1,4 +1,5 @@
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
+import { PercentUtils } from '@/utils/PercentUtils';
 import {
   TableCell,
   Box,
@@ -68,15 +69,6 @@ export default function MpAdminProductDetail() {
     return null;
   }
 
-  const getChangedRateDisplay = () => {
-    if (detail.changedFeeRate && detail.changedMonth) {
-      return `${detail.changedFeeRate}% / ${detail.changedMonth}`;
-    } else if (detail.changedFeeRate) {
-      return `${detail.changedFeeRate}%`;
-    }
-    return '-';
-  };
-
   return (
     <Stack sx={{ gap: 3 }}>
       <Typography variant='h4'>제품정보</Typography>
@@ -130,7 +122,13 @@ export default function MpAdminProductDetail() {
               <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
                 변경요율/변경월
               </Typography>
-              <Typography variant='body1'>{getChangedRateDisplay()}</Typography>
+              <Typography variant='body1'>
+                {detail.changedFeeRate !== null
+                  ? PercentUtils.formatDecimal(detail.changedFeeRate) +
+                    '%' +
+                    (detail.changedMonth !== null ? ` (${detail.changedMonth})` : '')
+                  : '-'}
+              </Typography>
             </Stack>
             <Stack direction='row'>
               <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
@@ -198,7 +196,7 @@ export default function MpAdminProductDetail() {
                           {product.note ?? '-'}
                         </TableCell>
                         <TableCell align='center' sx={{ borderBottom: 'none' }}>
-                          {product.feeRate ?? '-'}
+                          {product.feeRate !== null ? PercentUtils.formatDecimal(product.feeRate) + '%' : '-'}
                         </TableCell>
                         <TableCell align='center' sx={{ borderBottom: 'none' }}>
                           {product.note ?? '-'}
