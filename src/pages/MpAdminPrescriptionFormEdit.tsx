@@ -71,7 +71,7 @@ export default function MpAdminPrescriptionFormEdit() {
   const [partnerProductSelectModalOpen, setPartnerProductSelectModalOpen] = useState(false);
   const [currentProductItemIndex, setCurrentProductItemIndex] = useState<number>(0);
 
-  const { alertError } = useMpModal();
+  const { alert, alertError } = useMpModal();
 
   const [partnerProducts, setPartnerProducts] = useState<Sequenced<CustomPartnerProducts>[]>([]);
   const [deletePartnerProductIds, setDeletePartnerProductIds] = useState<number[]>([]);
@@ -201,7 +201,12 @@ export default function MpAdminPrescriptionFormEdit() {
     setChangeHistoryModalOpen(true);
   };
 
-  const handleOcrSubmit = (response: OcrResponse[]) => {
+  const handleOcrSubmit = async (response: OcrResponse[]) => {
+    if (response.length === 0) {
+      await alert('OCR 결과가 없습니다. 거래선에 등록된 제약사가 EDI 내용에 포함되어 있는지 확인하세요.');
+      return;
+    }
+
     const maxSequence = Math.max(...partnerProducts.map(p => p.sequence), 0);
 
     setPartnerProducts([
