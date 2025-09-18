@@ -228,6 +228,7 @@ export interface BoardPostResponse {
   isBlind: boolean;
   isExposed: boolean;
   likesCount: number;
+  memberId: number;
   memberType: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
   name: string;
   nickname: string;

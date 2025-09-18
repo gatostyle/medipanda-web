@@ -251,7 +251,7 @@ export default function MpAdminInquiryList() {
                 contents.map(item => (
                   <TableRow key={item.id}>
                     <TableCell>{item.sequence}</TableCell>
-                    <TableCell>{item.id}</TableCell>
+                    <TableCell>{item.memberId}</TableCell>
                     <TableCell>{item.userId}</TableCell>
                     <TableCell>{item.name}</TableCell>
                     <TableCell>-</TableCell>
