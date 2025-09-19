@@ -114,9 +114,7 @@ export default function MpAdminProductDetail() {
               <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
                 기본수수료율
               </Typography>
-              <Typography variant='body1'>
-                {detail.feeRate !== null && detail.feeRate !== undefined ? `${detail.feeRate}%` : '-'}
-              </Typography>
+              <Typography variant='body1'>{detail.feeRate !== null ? PercentUtils.formatDecimal(detail.feeRate) + '%' : '-'}</Typography>
             </Stack>
             <Stack direction='row'>
               <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
