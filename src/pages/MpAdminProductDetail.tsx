@@ -228,7 +228,7 @@ export default function MpAdminProductDetail() {
         </Card>
 
         <Card component={Stack} sx={{ p: 3, gap: 3 }}>
-          <Typography variant='h6'>상세 정보</Typography>
+          <Typography variant='h6'>Detail Info</Typography>
 
           <Box sx={{ mt: 1 }}>
             <EditorContent editor={editor} />
