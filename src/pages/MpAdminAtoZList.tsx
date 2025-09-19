@@ -110,10 +110,10 @@ export default function MpAdminAtoZList() {
         startAt: startAt ? new DateString(startAt) : undefined,
         endAt: endAt ? new DateString(endAt) : undefined,
         isExposed: isExposed !== '' ? isExposed === 'true' : undefined,
+        filterDeleted: true,
         page: page - 1,
         size: pageSize,
         filterBlind: undefined,
-        filterDeleted: undefined,
       });
 
       setContents(withSequence(response).content);

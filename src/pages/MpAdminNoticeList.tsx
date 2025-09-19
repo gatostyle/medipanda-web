@@ -118,9 +118,9 @@ export default function MpAdminNoticeList() {
         endAt: endAt ? new DateString(endAt) : undefined,
         filterBlind: undefined,
         boardTitle: searchKeyword !== '' ? searchKeyword : undefined,
-        filterDeleted: undefined,
         isExposed: isExposed !== '' ? isExposed === 'true' : undefined,
         drugCompany: drugCompany !== '' ? drugCompany : undefined,
+        filterDeleted: true,
         page: page - 1,
         size: pageSize,
       });

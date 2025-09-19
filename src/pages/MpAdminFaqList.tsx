@@ -103,8 +103,8 @@ export default function MpAdminFaqList() {
         endAt: endAt ? new DateString(endAt) : undefined,
         filterBlind: undefined,
         boardTitle: searchKeyword !== '' ? searchKeyword : undefined,
-        filterDeleted: undefined,
         isExposed: isExposed !== '' ? isExposed === 'true' : undefined,
+        filterDeleted: true,
         page: page - 1,
         size: pageSize,
       });

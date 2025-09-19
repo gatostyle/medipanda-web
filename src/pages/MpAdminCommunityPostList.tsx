@@ -120,9 +120,9 @@ export default function MpAdminCommunityPostList() {
         nickname: searchType === 'nickname' && searchKeyword !== '' ? searchKeyword : undefined,
         startAt: startAt ? new DateString(startAt) : undefined,
         endAt: endAt ? new DateString(endAt) : undefined,
+        filterDeleted: true,
         page: page - 1,
         size: pageSize,
-        filterBlind: true,
       });
 
       setContents(withSequence(response).content);
