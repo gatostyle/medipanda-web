@@ -29,10 +29,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { DocumentDownload } from 'iconsax-reactjs';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from './MpSearchFilterBar';
 
 export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAgencyProductDetailsResponse }) {
@@ -56,24 +57,29 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
   const deleteDialog = useMpDeleteDialog();
   const { alertError } = useMpModal();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       ...initialSearchParams,
-      page: null,
-    },
-    onSubmit: async values => {
-      const url = setUrlParams(
-        {
-          ...searchParams,
-          ...values,
-          page: 1,
-        },
-        initialSearchParams,
-      );
-
-      navigate(url);
     },
   });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    const url = setUrlParams(
+      {
+        ...searchParams,
+        ...values,
+        page: 1,
+      },
+      initialSearchParams,
+    );
+
+    navigate(url);
+  };
+
+  const handleReset = () => {
+    navigate('');
+    form.reset();
+  };
 
   const [notes, setNotes] = useState<string[]>(Array.from({ length: pageSize }, () => ''));
 
@@ -104,10 +110,7 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
   };
 
   useEffect(() => {
-    formik.setValues({
-      searchKeyword,
-      page: null,
-    });
+    form.setValue('searchKeyword', searchKeyword);
     fetchContents();
   }, [searchKeyword, page]);
 
@@ -169,23 +172,20 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
           </Typography>
         </Stack>
 
-        <Box component='form' onSubmit={formik.handleSubmit}>
+        <Box component='form' onSubmit={form.handleSubmit(submitHandler)}>
           <MpSearchFilterBar>
             <SearchFilterItem flexGrow={1} minWidth={200}>
-              <TextField
+              <Controller
+                control={form.control}
                 name='searchKeyword'
-                size='small'
-                placeholder='검색어를 입력하세요'
-                fullWidth
-                value={formik.values.searchKeyword}
-                onChange={formik.handleChange}
+                render={({ field }) => <TextField {...field} size='small' label='검색어' fullWidth />}
               />
             </SearchFilterItem>
             <SearchFilterActions>
               <Button variant='contained' size='small' type='submit'>
                 검색
               </Button>
-              <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
+              <Button variant='outlined' size='small' onClick={handleReset}>
                 초기화
               </Button>
             </SearchFilterActions>

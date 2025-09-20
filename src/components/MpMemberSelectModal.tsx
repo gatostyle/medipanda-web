@@ -5,6 +5,8 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  IconButton,
+  InputAdornment,
   Stack,
   Table,
   TableBody,
@@ -15,8 +17,10 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useFormik } from 'formik';
+import { SearchNormal1 } from 'iconsax-reactjs';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
+import type { RequiredDeep } from 'type-fest';
 
 export interface MpMemberSelectModalProps {
   open: boolean;
@@ -31,23 +35,24 @@ function MpMemberSelectModalInternal({ open, onClose, onSelect, additionalFilter
 
   const { alertError } = useMpModal();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       searchKeyword: '',
       pageIndex: 0,
     },
-    onSubmit: () => {
-      fetchContents();
-    },
   });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async () => {
+    fetchContents();
+  };
 
   const fetchContents = async () => {
     try {
       setLoading(true);
       const response = await getUserMembers({
         ...(additionalFilter ?? {}),
-        name: formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        page: formik.values.pageIndex,
+        name: form.getValues('searchKeyword') !== '' ? form.getValues('searchKeyword') : undefined,
+        page: form.getValues('pageIndex'),
       });
       setContents(response.content);
     } catch (error) {
@@ -69,8 +74,28 @@ function MpMemberSelectModalInternal({ open, onClose, onSelect, additionalFilter
       <DialogTitle>사용자명 조회</DialogTitle>
       <DialogContent>
         <Stack spacing={2}>
-          <Stack direction='row' spacing={1} component='form' noValidate onSubmit={formik.handleSubmit}>
-            <TextField fullWidth size='small' placeholder='검색어를 입력하세요' name='searchKeyword' onChange={formik.handleChange} />
+          <Stack direction='row' spacing={1} component='form' noValidate onSubmit={form.handleSubmit(submitHandler)}>
+            <Controller
+              control={form.control}
+              name={'searchKeyword'}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  size='small'
+                  fullWidth
+                  label='검색어'
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position='end'>
+                        <IconButton edge='end' size='small' onClick={form.handleSubmit(submitHandler)} disabled={loading}>
+                          <SearchNormal1 size={16} />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              )}
+            />
             <Button variant='contained' size='small' type='submit'>
               검색
             </Button>

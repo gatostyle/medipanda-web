@@ -1,4 +1,4 @@
-import { handlePhoneNumberChange, normalizeBusinessNumber, normalizePhoneNumber } from '@/lib/utils/form';
+import { normalizeBusinessNumber, normalizePhoneNumber } from '@/lib/utils/form';
 import { useMpModal } from '@/hooks/useMpModal';
 import { MedipandaUrlFileName } from '@/utils/url';
 import {
@@ -18,7 +18,7 @@ import {
   Typography,
 } from '@mui/material';
 import { isAxiosError } from 'axios';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import {
   AccountStatus,
   AccountStatusLabel,
@@ -42,6 +42,7 @@ import {
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 import { formatYyyyMmDd, formatYyyyMmDdHhMm } from '@/lib/utils/dateFormat';
 
 export default function MpAdminMemberEdit() {
@@ -55,8 +56,8 @@ export default function MpAdminMemberEdit() {
   const [detail, setDetail] = useState<MemberDetailsResponse | null>(null);
   const [contractDetail, setContractDetail] = useState<PartnerContractDetailsResponse | null>(null);
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       password: '',
       confirmPassword: '',
       phoneNumber: '',
@@ -70,88 +71,89 @@ export default function MpAdminMemberEdit() {
       marketingAgreementsEmail: false,
       marketingAgreementsPush: false,
     },
-    onSubmit: async values => {
-      if (values.password !== '' && values.password !== values.confirmPassword) {
-        await alert('입력한 비밀번호가 불일치합니다.');
+  });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.password !== '' && values.password !== values.confirmPassword) {
+      await alert('입력한 비밀번호가 불일치합니다.');
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
+      await alert('올바른 이메일 형식이 아닙니다.');
+      return;
+    }
+
+    if (values.phoneNumber !== detail?.phoneNumber && values.phoneNumber === '') {
+      await alert('연락처를 입력하세요.');
+      return;
+    }
+
+    if (contractDetail !== null) {
+      if (values.bankName === '') {
+        await alert('정산은행을 입력하세요.');
         return;
       }
 
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
-        await alert('올바른 이메일 형식이 아닙니다.');
+      if (values.accountNumber === '') {
+        await alert('계좌번호를 입력하세요.');
         return;
       }
+    }
 
-      if (values.phoneNumber !== detail?.phoneNumber && values.phoneNumber === '') {
-        await alert('연락처를 입력하세요.');
-        return;
-      }
+    try {
+      await updateMember(userId, {
+        request: {
+          password: values.password !== '' ? values.password : null,
+          name: null,
+          birthDate: null,
+          accountStatus: values.accountStatus,
+          phoneNumber: values.phoneNumber.replace(/-/g, ''),
+          email: values.email,
+          nickname: null,
+          referralCode: null,
+          note: values.note,
+          marketingAgreement: {
+            sms: values.marketingAgreementsSms,
+            emailAgreedAt: null,
+            email: values.marketingAgreementsEmail,
+            pushAgreedAt: null,
+            push: values.marketingAgreementsPush,
+            smsAgreedAt: null,
+          },
+        },
+      });
 
       if (contractDetail !== null) {
-        if (values.bankName === '') {
-          await alert('정산은행을 입력하세요.');
-          return;
-        }
-
-        if (values.accountNumber === '') {
-          await alert('계좌번호를 입력하세요.');
-          return;
-        }
-      }
-
-      try {
-        await updateMember(userId, {
+        await updateContract(contractDetail.id, {
           request: {
-            password: values.password !== '' ? values.password : null,
-            name: null,
-            birthDate: null,
-            accountStatus: values.accountStatus,
-            phoneNumber: values.phoneNumber.replace(/-/g, ''),
-            email: values.email,
-            nickname: null,
-            referralCode: null,
-            note: values.note,
-            marketingAgreement: {
-              sms: values.marketingAgreementsSms,
-              emailAgreedAt: null,
-              email: values.marketingAgreementsEmail,
-              pushAgreedAt: null,
-              push: values.marketingAgreementsPush,
-              smsAgreedAt: null,
-            },
+            contractType: values.contractType,
+            companyName: null,
+            businessNumber: null,
+            bankName: values.bankName,
+            accountNumber: values.accountNumber,
           },
+          business_registration: undefined,
+          subcontract_agreement: undefined,
+          cso_certificate: undefined,
+          education_certificate: undefined,
         });
-
-        if (contractDetail !== null) {
-          await updateContract(contractDetail.id, {
-            request: {
-              contractType: values.contractType,
-              companyName: null,
-              businessNumber: null,
-              bankName: values.bankName,
-              accountNumber: values.accountNumber,
-            },
-            business_registration: undefined,
-            subcontract_agreement: undefined,
-            cso_certificate: undefined,
-            education_certificate: undefined,
-          });
-        }
-
-        enqueueSnackbar('회원정보가 수정되었습니다.', { variant: 'success' });
-        navigate('/admin/members');
-      } catch (e) {
-        switch (true) {
-          case isAxiosError(e) && /Bad request: phone number \w+ already exists./.test(e.response?.data ?? ''):
-            await alert('이미 사용중인 연락처입니다.');
-            break;
-          default:
-            console.error(e);
-            await alertError('회원정보 수정 중 오류가 발생했습니다.');
-            break;
-        }
       }
-    },
-  });
+
+      enqueueSnackbar('회원정보가 수정되었습니다.', { variant: 'success' });
+      navigate('/admin/members');
+    } catch (e) {
+      switch (true) {
+        case isAxiosError(e) && /Bad request: phone number \w+ already exists./.test(e.response?.data ?? ''):
+          await alert('이미 사용중인 연락처입니다.');
+          break;
+        default:
+          console.error(e);
+          await alertError('회원정보 수정 중 오류가 발생했습니다.');
+          break;
+      }
+    }
+  };
 
   useEffect(() => {
     if (!isNew) {
@@ -161,26 +163,24 @@ export default function MpAdminMemberEdit() {
 
   const fetchDetail = async (userId: string) => {
     try {
-      const detail = await getMemberDetails(userId);
+      const [detail, contractDetail] = await Promise.all([getMemberDetails(userId), fetchContractDetail(userId)]);
       setDetail(detail);
-      const values: (typeof formik)['values'] = {
-        ...formik.values,
+      setContractDetail(contractDetail ?? null);
+
+      form.reset({
         password: '',
         confirmPassword: '',
         phoneNumber: normalizePhoneNumber(detail.phoneNumber),
         email: detail.email,
         accountStatus: detail.accountStatus,
+        contractType: contractDetail?.contractType ?? PartnerContractType.INDIVIDUAL,
+        bankName: contractDetail?.bankName ?? '',
+        accountNumber: contractDetail?.accountNumber ?? '',
         note: detail.note ?? '',
         marketingAgreementsSms: detail.marketingAgreements?.sms ?? false,
         marketingAgreementsEmail: detail.marketingAgreements?.email ?? false,
         marketingAgreementsPush: detail.marketingAgreements?.push ?? false,
-      };
-
-      formik.resetForm({
-        values,
       });
-
-      await fetchContractDetail(values);
     } catch (error) {
       console.error('Failed to fetch member data:', error);
       enqueueSnackbar('회원 정보를 불러오는데 실패했습니다.', { variant: 'error' });
@@ -188,23 +188,16 @@ export default function MpAdminMemberEdit() {
     }
   };
 
-  const fetchContractDetail = async (values: (typeof formik)['values']) => {
-    try {
-      const contractDetail = await getContractDetails(userId);
-      setContractDetail(contractDetail);
+  const fetchContractDetail = async (userId: string): Promise<PartnerContractDetailsResponse | null> => {
+    let contractDetail: PartnerContractDetailsResponse | null = null;
 
-      formik.resetForm({
-        values: {
-          ...values,
-          contractType: contractDetail.contractType,
-          bankName: contractDetail.bankName,
-          accountNumber: contractDetail.accountNumber,
-        },
-      });
+    try {
+      contractDetail = await getContractDetails(userId);
     } catch {
-      setContractDetail(null);
       console.log('No partner contract found for member:', userId);
     }
+
+    return contractDetail ?? null;
   };
 
   const handleCsoApprove = async () => {
@@ -267,7 +260,7 @@ export default function MpAdminMemberEdit() {
     try {
       await approveContract(contractDetail!.id);
       enqueueSnackbar('파트너사 계약이 승인되었습니다.', { variant: 'success' });
-      await fetchContractDetail(formik.values);
+      await fetchDetail(userId);
     } catch (error) {
       console.error('Failed to approve partner contract:', error);
       await alertError('파트너사 계약 승인 중 오류가 발생했습니다.');
@@ -278,7 +271,7 @@ export default function MpAdminMemberEdit() {
     try {
       await rejectContract(contractDetail!.id);
       enqueueSnackbar('파트너사 계약이 종료되었습니다.', { variant: 'success' });
-      await fetchContractDetail(formik.values);
+      await fetchDetail(userId);
     } catch (error) {
       console.error('Failed to reject partner contract:', error);
       await alertError('파트너사 계약 종료 중 오류가 발생했습니다.');
@@ -323,27 +316,21 @@ export default function MpAdminMemberEdit() {
 
               <Stack direction='row' sx={{ gap: 2 }}>
                 <Stack sx={{ flex: '1 0' }}>
-                  <TextField
-                    fullWidth
-                    label='비밀번호'
-                    name='password'
-                    type='password'
-                    disabled={!isEditable}
-                    value={formik.values.password}
-                    onChange={formik.handleChange}
-                    size='small'
+                  <Controller
+                    control={form.control}
+                    name={'password'}
+                    render={({ field }) => (
+                      <TextField {...field} fullWidth label='비밀번호' type='password' disabled={!isEditable} size='small' />
+                    )}
                   />
                 </Stack>
                 <Stack sx={{ flex: '1 0' }}>
-                  <TextField
-                    fullWidth
-                    label='비밀번호 확인'
-                    name='confirmPassword'
-                    type='password'
-                    disabled={!isEditable}
-                    value={formik.values.confirmPassword}
-                    onChange={formik.handleChange}
-                    size='small'
+                  <Controller
+                    control={form.control}
+                    name={'confirmPassword'}
+                    render={({ field }) => (
+                      <TextField {...field} fullWidth label='비밀번호 확인' type='password' disabled={!isEditable} size='small' />
+                    )}
                   />
                 </Stack>
               </Stack>
@@ -357,13 +344,19 @@ export default function MpAdminMemberEdit() {
                 </Stack>
 
                 <Stack sx={{ flex: '1 0' }}>
-                  <TextField
-                    fullWidth
-                    label='연락처'
-                    disabled={!isEditable}
-                    value={normalizePhoneNumber(formik.values.phoneNumber)}
-                    onChange={handlePhoneNumberChange(formik, 'phoneNumber')}
-                    size='small'
+                  <Controller
+                    control={form.control}
+                    name='phoneNumber'
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        fullWidth
+                        label='연락처'
+                        disabled={!isEditable}
+                        onChange={event => field.onChange(normalizePhoneNumber(event.target.value, field.value))}
+                        size='small'
+                      />
+                    )}
                   />
                 </Stack>
               </Stack>
@@ -379,14 +372,10 @@ export default function MpAdminMemberEdit() {
                 </Stack>
 
                 <Stack sx={{ flex: '1 0' }}>
-                  <TextField
-                    fullWidth
-                    label='E-mail'
+                  <Controller
+                    control={form.control}
                     name='email'
-                    disabled={!isEditable}
-                    value={formik.values.email}
-                    onChange={formik.handleChange}
-                    size='small'
+                    render={({ field }) => <TextField {...field} fullWidth label='E-mail' disabled={!isEditable} size='small' />}
                   />
                 </Stack>
               </Stack>
@@ -418,13 +407,19 @@ export default function MpAdminMemberEdit() {
                 <Stack sx={{ flex: '1 0' }}>
                   <FormControl fullWidth size='small' disabled={!isEditable}>
                     <InputLabel>계정상태</InputLabel>
-                    <Select name='accountStatus' value={formik.values.accountStatus} onChange={formik.handleChange}>
-                      {Object.keys(AccountStatus).map(accountStatus => (
-                        <MenuItem key={accountStatus} value={accountStatus}>
-                          {AccountStatusLabel[accountStatus]}
-                        </MenuItem>
-                      ))}
-                    </Select>
+                    <Controller
+                      control={form.control}
+                      name={'accountStatus'}
+                      render={({ field }) => (
+                        <Select {...field}>
+                          {Object.keys(AccountStatus).map(accountStatus => (
+                            <MenuItem key={accountStatus} value={accountStatus}>
+                              {AccountStatusLabel[accountStatus]}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      )}
+                    />
                   </FormControl>
                 </Stack>
               </Stack>
@@ -476,13 +471,19 @@ export default function MpAdminMemberEdit() {
                   <Stack sx={{ flex: '1 0' }}>
                     <FormControl fullWidth size='small' disabled={!isEditable}>
                       <InputLabel>유형</InputLabel>
-                      <Select name='contractType' value={formik.values.contractType} onChange={formik.handleChange}>
-                        {Object.keys(PartnerContractType).map(contractType => (
-                          <MenuItem key={contractType} value={contractType}>
-                            {PartnerContractTypeLabel[contractType]}
-                          </MenuItem>
-                        ))}
-                      </Select>
+                      <Controller
+                        control={form.control}
+                        name={'contractType'}
+                        render={({ field }) => (
+                          <Select {...field}>
+                            {Object.keys(PartnerContractType).map(contractType => (
+                              <MenuItem key={contractType} value={contractType}>
+                                {PartnerContractTypeLabel[contractType]}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        )}
+                      />
                     </FormControl>
                   </Stack>
 
@@ -510,24 +511,16 @@ export default function MpAdminMemberEdit() {
                   </Stack>
                 </Stack>
 
-                <TextField
-                  fullWidth
-                  label='정산은행'
+                <Controller
+                  control={form.control}
                   name='bankName'
-                  disabled={!isEditable}
-                  value={formik.values.bankName}
-                  onChange={formik.handleChange}
-                  size='small'
+                  render={({ field }) => <TextField {...field} fullWidth label='정산은행' disabled={!isEditable} size='small' />}
                 />
 
-                <TextField
-                  fullWidth
-                  label='계좌번호'
+                <Controller
+                  control={form.control}
                   name='accountNumber'
-                  disabled={!isEditable}
-                  value={formik.values.accountNumber}
-                  onChange={formik.handleChange}
-                  size='small'
+                  render={({ field }) => <TextField {...field} fullWidth label='계좌번호' disabled={!isEditable} size='small' />}
                 />
 
                 {contractDetail.fileUrls[PartnerContractFileType.CSO_CERTIFICATE] !== null && (
@@ -563,15 +556,12 @@ export default function MpAdminMemberEdit() {
 
             <Card component={Stack} sx={{ p: 3, gap: 3 }}>
               <Typography variant='h6'>비고</Typography>
-              <TextField
-                fullWidth
-                multiline
-                rows={4}
-                name='note'
-                disabled={!isEditable}
-                value={formik.values.note}
-                onChange={formik.handleChange}
-                placeholder='메모를 입력하세요'
+              <Controller
+                control={form.control}
+                name={'note'}
+                render={({ field }) => (
+                  <TextField {...field} fullWidth multiline rows={4} disabled={!isEditable} placeholder='메모를 입력하세요' />
+                )}
               />
             </Card>
           </Stack>
@@ -582,10 +572,10 @@ export default function MpAdminMemberEdit() {
           <Stack spacing={1}>
             <FormControlLabel
               control={
-                <Checkbox
-                  disabled={!isEditable}
-                  checked={formik.values.marketingAgreementsSms}
-                  onChange={e => formik.setFieldValue('marketingAgreementsSms', e.target.checked)}
+                <Controller
+                  control={form.control}
+                  name={'marketingAgreementsSms'}
+                  render={({ field }) => <Checkbox {...field} disabled={!isEditable} checked={field.value} />}
                 />
               }
               label={
@@ -597,10 +587,10 @@ export default function MpAdminMemberEdit() {
             />
             <FormControlLabel
               control={
-                <Checkbox
-                  disabled={!isEditable}
-                  checked={formik.values.marketingAgreementsEmail}
-                  onChange={e => formik.setFieldValue('marketingAgreementsEmail', e.target.checked)}
+                <Controller
+                  control={form.control}
+                  name={'marketingAgreementsEmail'}
+                  render={({ field }) => <Checkbox {...field} disabled={!isEditable} checked={field.value} />}
                 />
               }
               label={
@@ -612,10 +602,10 @@ export default function MpAdminMemberEdit() {
             />
             <FormControlLabel
               control={
-                <Checkbox
-                  disabled={!isEditable}
-                  checked={formik.values.marketingAgreementsPush}
-                  onChange={e => formik.setFieldValue('marketingAgreementsPush', e.target.checked)}
+                <Controller
+                  control={form.control}
+                  name={'marketingAgreementsPush'}
+                  render={({ field }) => <Checkbox {...field} disabled={!isEditable} checked={field.value} />}
                 />
               }
               label={
@@ -633,7 +623,7 @@ export default function MpAdminMemberEdit() {
             {isEditable ? '취소' : '뒤로'}
           </Button>
           {isEditable && (
-            <Button variant='contained' size='large' onClick={formik.submitForm} sx={{ minWidth: 120 }}>
+            <Button variant='contained' size='large' onClick={form.handleSubmit(submitHandler)} sx={{ minWidth: 120 }}>
               저장
             </Button>
           )}

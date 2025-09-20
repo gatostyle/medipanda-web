@@ -23,14 +23,15 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useFormik } from 'formik';
 import { AccountStatusLabel, getUserMembers, type MemberResponse, Role, RoleLabel } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
 import { formatYyyyMmDdHhMm } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { useEffect, useState } from 'react';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function MpAdminAdminList() {
   const navigate = useNavigate();
@@ -52,31 +53,33 @@ export default function MpAdminAdminList() {
 
   const { alert, alertError } = useMpModal();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       ...initialSearchParams,
-      page: null,
-    },
-    onSubmit: async values => {
-      if (values.searchType === '' && values.searchKeyword !== '') {
-        await alert('검색유형을 선택하세요.');
-        return;
-      }
-
-      const url = setUrlParams(
-        {
-          ...values,
-          page: 1,
-        },
-        initialSearchParams,
-      );
-
-      navigate(url);
-    },
-    onReset: () => {
-      navigate('');
     },
   });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.searchType === '' && values.searchKeyword !== '') {
+      await alert('검색유형을 선택하세요.');
+      return;
+    }
+
+    const url = setUrlParams(
+      {
+        ...values,
+        page: 1,
+      },
+      initialSearchParams,
+    );
+
+    navigate(url);
+  };
+
+  const handleReset = () => {
+    navigate('');
+    form.reset();
+  };
 
   const fetchContents = async () => {
     setLoading(true);
@@ -106,11 +109,8 @@ export default function MpAdminAdminList() {
   };
 
   useEffect(() => {
-    formik.setValues({
-      searchType,
-      searchKeyword,
-      page: null,
-    });
+    form.setValue('searchType', searchType);
+    form.setValue('searchKeyword', searchKeyword);
     fetchContents();
   }, [searchType, searchKeyword, page]);
 
@@ -119,33 +119,36 @@ export default function MpAdminAdminList() {
       <Typography variant='h4'>관리자 권한</Typography>
 
       <Card sx={{ padding: 3 }}>
-        <MpSearchFilterBar component='form' onSubmit={formik.handleSubmit}>
+        <MpSearchFilterBar component='form' onSubmit={form.handleSubmit(submitHandler)}>
           <SearchFilterItem minWidth={140}>
             <FormControl fullWidth size='small'>
               <InputLabel>검색유형</InputLabel>
-              <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
-                <MenuItem value={'name'}>관리자명</MenuItem>
-                <MenuItem value={'userId'}>아이디</MenuItem>
-                <MenuItem value={'email'}>이메일</MenuItem>
-                <MenuItem value={'phoneNumber'}>연락처</MenuItem>
-              </Select>
+              <Controller
+                control={form.control}
+                name='searchType'
+                render={({ field }) => (
+                  <Select {...field}>
+                    <MenuItem value={'name'}>관리자명</MenuItem>
+                    <MenuItem value={'userId'}>아이디</MenuItem>
+                    <MenuItem value={'email'}>이메일</MenuItem>
+                    <MenuItem value={'phoneNumber'}>연락처</MenuItem>
+                  </Select>
+                )}
+              />
             </FormControl>
           </SearchFilterItem>
           <SearchFilterItem flexGrow={1} minWidth={200}>
-            <TextField
+            <Controller
+              control={form.control}
               name='searchKeyword'
-              size='small'
-              placeholder='검색어를 입력하세요'
-              fullWidth
-              value={formik.values.searchKeyword}
-              onChange={formik.handleChange}
+              render={({ field }) => <TextField {...field} size='small' label='검색어' fullWidth />}
             />
           </SearchFilterItem>
           <SearchFilterActions>
             <Button variant='contained' size='small' type='submit'>
               검색
             </Button>
-            <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
+            <Button variant='outlined' size='small' onClick={handleReset}>
               초기화
             </Button>
           </SearchFilterActions>

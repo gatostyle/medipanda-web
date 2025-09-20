@@ -2,10 +2,11 @@ import { uploadHospitalExcel } from '@/backend';
 import { useMpModal } from '@/hooks/useMpModal';
 import { AttachFile as AttachFileIcon, UploadFile } from '@mui/icons-material';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
-import { useFormik } from 'formik';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import { useSnackbar } from 'notistack';
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
+import type { RequiredDeep } from 'type-fest';
 
 export interface MpHospitalUploadModalProps {
   open: boolean;
@@ -17,31 +18,32 @@ function MpHospitalUploadModalInternal({ open, onClose, onSuccess }: MpHospitalU
   const { alert, alertError } = useMpModal();
   const { enqueueSnackbar } = useSnackbar();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       file: null as File | null,
     },
-    onSubmit: async values => {
-      if (values.file === null) {
-        await alert('파일을 선택하세요.');
-        return;
-      }
-
-      try {
-        await uploadHospitalExcel({ file: values.file });
-        enqueueSnackbar('업로드가 완료되었습니다.', { variant: 'success' });
-        onSuccess?.();
-      } catch (error) {
-        console.error('Failed to upload rate table:', error);
-        await alertError('업로드 중 오류가 발생했습니다.');
-      }
-    },
   });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.file === null) {
+      await alert('파일을 선택하세요.');
+      return;
+    }
+
+    try {
+      await uploadHospitalExcel({ file: values.file });
+      enqueueSnackbar('업로드가 완료되었습니다.', { variant: 'success' });
+      onSuccess?.();
+    } catch (error) {
+      console.error('Failed to upload rate table:', error);
+      await alertError('업로드 중 오류가 발생했습니다.');
+    }
+  };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: useCallback((acceptedFiles: File[]) => {
       if (acceptedFiles.length > 0) {
-        formik.setFieldValue('file', acceptedFiles[0]);
+        form.setValue('file', acceptedFiles[0]);
       }
     }, []),
   });
@@ -81,9 +83,9 @@ function MpHospitalUploadModalInternal({ open, onClose, onSuccess }: MpHospitalU
           <Typography variant='h6' color='text.secondary'>
             여기에 파일을 드래그하거나 클릭하여 업로드하세요.
           </Typography>
-          {formik.values.file && (
+          {form.getValues('file') && (
             <Typography variant='body2' sx={{ mt: 1 }}>
-              선택된 파일: {formik.values.file.name}
+              선택된 파일: {form.getValues('file')!.name}
             </Typography>
           )}
         </Box>
@@ -92,7 +94,13 @@ function MpHospitalUploadModalInternal({ open, onClose, onSuccess }: MpHospitalU
         <Button variant='outlined' onClick={onClose} sx={{ minWidth: 100 }}>
           취소
         </Button>
-        <Button variant='contained' color='success' onClick={formik.submitForm} disabled={!formik.values.file} sx={{ minWidth: 100 }}>
+        <Button
+          variant='contained'
+          color='success'
+          onClick={form.handleSubmit(submitHandler)}
+          disabled={!form.getValues('file')}
+          sx={{ minWidth: 100 }}
+        >
           업로드
         </Button>
       </DialogActions>

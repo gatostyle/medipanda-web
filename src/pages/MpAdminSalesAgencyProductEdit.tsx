@@ -20,7 +20,7 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { EditorContent } from '@tiptap/react';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import {
   type AttachmentResponse,
   BoardExposureRange,
@@ -36,6 +36,7 @@ import { useSession } from '@/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { type SyntheticEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 import { DateFix, DATEFORMAT_YYYY_MM_DD, formatYyyyMmDd } from '@/lib/utils/dateFormat';
 
 export default function MpAdminSalesAgencyProductEdit() {
@@ -121,8 +122,8 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
   const { alert, alertError } = useMpModal();
   const { enqueueSnackbar } = useSnackbar();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       clientName: '',
       productName: '',
       isExposed: true,
@@ -137,104 +138,106 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
       attachedFiles: [] as AttachmentResponse[],
       newFiles: [] as File[],
     },
-    onSubmit: async values => {
-      if (values.clientName === '') {
-        await alert('위탁사명은 필수입니다');
-        return;
-      }
-      if (values.productName === '') {
-        await alert('상품명은 필수입니다');
-        return;
-      }
-      if (values.exposureRange === '') {
-        await alert('노출범위는 필수입니다');
-        return;
-      }
-      if (values.thumbnailUrl === '') {
-        await alert('썸네일은 필수입니다');
-        return;
-      }
-      if (values.contractDate === null) {
-        await alert('계약일은 필수입니다');
-        return;
-      }
-      if (values.startDate === null) {
-        await alert('게시 시작일은 필수입니다');
-        return;
-      }
-      if (values.endDate === null) {
-        await alert('게시 종료일은 필수입니다');
-        return;
-      }
-      if (values.endDate < values.startDate) {
-        await alert('종료일은 시작일 이후여야 합니다');
-        return;
-      }
-
-      try {
-        if (isNew) {
-          await createSalesAgencyProductBoard({
-            boardPostCreateRequest: {
-              boardType: BoardType.SALES_AGENCY,
-              userId: session!.userId,
-              nickname: session!.name,
-              hiddenNickname: false,
-              title: values.productName,
-              content: editor.getHTML(),
-              parentId: null,
-              isExposed: values.isExposed,
-              exposureRange: values.exposureRange,
-              editorFileIds: editorAttachments.map(image => image.s3fileId),
-              noticeProperties: null,
-            },
-            salesAgencyProductCreateRequest: {
-              clientName: values.clientName,
-              productName: values.productName,
-              contractDate: formatYyyyMmDd(values.contractDate!),
-              videoUrl: values.videoUrl,
-              note: values.note,
-              startAt: formatYyyyMmDd(values.startDate!),
-              endAt: formatYyyyMmDd(values.endDate!),
-              quantity: 1,
-            },
-            thumbnail: values.thumbnail!,
-            files: [],
-          });
-          enqueueSnackbar('영업대행상품이 등록되었습니다.', { variant: 'success' });
-          navigate('/admin/sales-agency-products');
-        } else {
-          await updateSalesAgencyProductBoard(detail!.productId, {
-            boardPostUpdateRequest: {
-              title: values.productName,
-              content: editor.getHTML(),
-              hiddenNickname: null,
-              isBlind: null,
-              isExposed: values.isExposed,
-              exposureRange: values.exposureRange,
-              keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
-              editorFileIds: editorAttachments.map(attachment => attachment.s3fileId),
-              noticeProperties: null,
-            },
-            salesAgencyProductUpdateRequest: {
-              clientName: values.clientName,
-              productName: values.productName,
-              contractDate: formatYyyyMmDd(values.contractDate!),
-              videoUrl: values.videoUrl,
-              note: values.note,
-              startAt: formatYyyyMmDd(values.startDate!),
-              endAt: formatYyyyMmDd(values.endDate!),
-              quantity: null,
-            },
-            thumbnail: values.thumbnail ?? undefined,
-          });
-          enqueueSnackbar('영업대행상품이 수정되었습니다.', { variant: 'success' });
-          navigate(`/admin/sales-agency-products/${detail!.productId}`);
-        }
-      } catch (error) {
-        console.error('Failed to save sales agency product:', error);
-      }
-    },
   });
+  const formThumbnailUrl = form.watch('thumbnailUrl');
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.clientName === '') {
+      await alert('위탁사명은 필수입니다');
+      return;
+    }
+    if (values.productName === '') {
+      await alert('상품명은 필수입니다');
+      return;
+    }
+    if (values.exposureRange === '') {
+      await alert('노출범위는 필수입니다');
+      return;
+    }
+    if (values.thumbnailUrl === '') {
+      await alert('썸네일은 필수입니다');
+      return;
+    }
+    if (values.contractDate === null) {
+      await alert('계약일은 필수입니다');
+      return;
+    }
+    if (values.startDate === null) {
+      await alert('게시 시작일은 필수입니다');
+      return;
+    }
+    if (values.endDate === null) {
+      await alert('게시 종료일은 필수입니다');
+      return;
+    }
+    if (values.endDate < values.startDate) {
+      await alert('종료일은 시작일 이후여야 합니다');
+      return;
+    }
+
+    try {
+      if (isNew) {
+        await createSalesAgencyProductBoard({
+          boardPostCreateRequest: {
+            boardType: BoardType.SALES_AGENCY,
+            userId: session!.userId,
+            nickname: session!.name,
+            hiddenNickname: false,
+            title: values.productName,
+            content: editor.getHTML(),
+            parentId: null,
+            isExposed: values.isExposed,
+            exposureRange: values.exposureRange,
+            editorFileIds: editorAttachments.map(image => image.s3fileId),
+            noticeProperties: null,
+          },
+          salesAgencyProductCreateRequest: {
+            clientName: values.clientName,
+            productName: values.productName,
+            contractDate: formatYyyyMmDd(values.contractDate),
+            videoUrl: values.videoUrl,
+            note: values.note,
+            startAt: formatYyyyMmDd(values.startDate),
+            endAt: formatYyyyMmDd(values.endDate),
+            quantity: 1,
+          },
+          thumbnail: values.thumbnail!,
+          files: [],
+        });
+        enqueueSnackbar('영업대행상품이 등록되었습니다.', { variant: 'success' });
+        navigate('/admin/sales-agency-products');
+      } else {
+        await updateSalesAgencyProductBoard(detail!.productId, {
+          boardPostUpdateRequest: {
+            title: values.productName,
+            content: editor.getHTML(),
+            hiddenNickname: null,
+            isBlind: null,
+            isExposed: values.isExposed,
+            exposureRange: values.exposureRange,
+            keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
+            editorFileIds: editorAttachments.map(attachment => attachment.s3fileId),
+            noticeProperties: null,
+          },
+          salesAgencyProductUpdateRequest: {
+            clientName: values.clientName,
+            productName: values.productName,
+            contractDate: formatYyyyMmDd(values.contractDate),
+            videoUrl: values.videoUrl,
+            note: values.note,
+            startAt: formatYyyyMmDd(values.startDate),
+            endAt: formatYyyyMmDd(values.endDate),
+            quantity: null,
+          },
+          thumbnail: values.thumbnail ?? undefined,
+        });
+        enqueueSnackbar('영업대행상품이 수정되었습니다.', { variant: 'success' });
+        navigate(`/admin/sales-agency-products/${detail!.productId}`);
+      }
+    } catch (error) {
+      console.error('Failed to save sales agency product:', error);
+    }
+  };
 
   const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
@@ -247,7 +250,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
 
   useEffect(() => {
     if (detail !== null) {
-      formik.setValues({
+      form.reset({
         clientName: detail.clientName,
         productName: detail.productName,
         isExposed: detail.boardPostDetail.isExposed,
@@ -280,8 +283,8 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
               return;
             }
 
-            formik.setFieldValue('thumbnail', file);
-            formik.setFieldValue('thumbnailUrl', fileReader.result as string);
+            form.setValue('thumbnail', file);
+            form.setValue('thumbnailUrl', fileReader.result as string);
           };
 
           fileReader.readAsDataURL(file);
@@ -297,22 +300,36 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
   return (
     <Box sx={{ p: 3 }}>
       <Stack sx={{ gap: 3 }}>
-        <TextField fullWidth label='위탁사명' name='clientName' value={formik.values.clientName} onChange={formik.handleChange} required />
+        <Controller
+          control={form.control}
+          name={'clientName'}
+          render={({ field }) => <TextField {...field} fullWidth label='위탁사명' required />}
+        />
 
-        <TextField fullWidth label='상품명' name='productName' value={formik.values.productName} onChange={formik.handleChange} required />
+        <Controller
+          control={form.control}
+          name={'productName'}
+          render={({ field }) => <TextField {...field} fullWidth label='상품명' required />}
+        />
 
         <Stack sx={{ gap: 1.5 }}>
           <Typography variant='subtitle2'>노출상태</Typography>
           <FormControl>
-            <RadioGroup
-              row
-              name='isExposed'
-              value={formik.values.isExposed ? 'true' : 'false'}
-              onChange={e => formik.setFieldValue('isExposed', e.target.value === 'true')}
-            >
-              <FormControlLabel value={'true'} control={<Radio />} label={'노출'} />
-              <FormControlLabel value={'false'} control={<Radio />} label={'미노출'} />
-            </RadioGroup>
+            <Controller
+              control={form.control}
+              name={'isExposed'}
+              render={({ field }) => (
+                <RadioGroup
+                  {...field}
+                  row
+                  value={String(field.value)}
+                  onChange={e => form.setValue('isExposed', e.target.value === 'true')}
+                >
+                  <FormControlLabel value='true' control={<Radio />} label='노출' />
+                  <FormControlLabel value='false' control={<Radio />} label='미노출' />
+                </RadioGroup>
+              )}
+            />
           </FormControl>
         </Stack>
 
@@ -321,16 +338,22 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
             노출범위 <span style={{ color: 'red' }}>*</span>
           </Typography>
           <FormControl>
-            <RadioGroup row name='exposureRange' value={formik.values.exposureRange} onChange={formik.handleChange}>
-              {Object.keys(BoardExposureRange).map(exposureRange => (
-                <FormControlLabel
-                  key={exposureRange}
-                  value={exposureRange}
-                  control={<Radio />}
-                  label={BoardExposureRangeLabel[exposureRange]}
-                />
-              ))}
-            </RadioGroup>
+            <Controller
+              control={form.control}
+              name={'exposureRange'}
+              render={({ field }) => (
+                <RadioGroup {...field} row>
+                  {Object.keys(BoardExposureRange).map(exposureRange => (
+                    <FormControlLabel
+                      key={exposureRange}
+                      value={exposureRange}
+                      control={<Radio />}
+                      label={BoardExposureRangeLabel[exposureRange]}
+                    />
+                  ))}
+                </RadioGroup>
+              )}
+            />
           </FormControl>
         </Stack>
 
@@ -343,9 +366,9 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
               첨부파일
             </Button>
           </Box>
-          {formik.values.thumbnailUrl && (
+          {formThumbnailUrl && (
             <Box>
-              <img src={formik.values.thumbnailUrl} alt='썸네일 미리보기' style={{ maxWidth: 200, maxHeight: 200 }} />
+              <img src={formThumbnailUrl} alt='썸네일 미리보기' style={{ maxWidth: 200, maxHeight: 200 }} />
             </Box>
           )}
         </Stack>
@@ -366,53 +389,72 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
           </Stack>
         </Stack>
 
-        <TextField fullWidth label='영상url' name='videoUrl' value={formik.values.videoUrl} onChange={formik.handleChange} />
+        <Controller control={form.control} name={'videoUrl'} render={({ field }) => <TextField {...field} fullWidth label='영상url' />} />
 
         <Box>
-          <DatePicker
-            value={formik.values.contractDate}
-            onChange={value => formik.setFieldValue('contractDate', value)}
-            format={DATEFORMAT_YYYY_MM_DD}
-            views={['year', 'month', 'day']}
-            label='계약일 *'
-            slotProps={{
-              textField: {
-                size: 'small',
-              },
-            }}
+          <Controller
+            control={form.control}
+            name={'contractDate'}
+            render={({ field }) => (
+              <DatePicker
+                {...field}
+                format={DATEFORMAT_YYYY_MM_DD}
+                views={['year', 'month', 'day']}
+                label='계약일 *'
+                slotProps={{
+                  textField: {
+                    size: 'small',
+                  },
+                }}
+              />
+            )}
           />
         </Box>
 
-        <TextField fullWidth label='비고' name='note' value={formik.values.note} onChange={formik.handleChange} multiline rows={3} />
+        <Controller
+          control={form.control}
+          name={'note'}
+          render={({ field }) => <TextField {...field} fullWidth label='비고' multiline rows={3} />}
+        />
 
         <Stack direction='row'>
           <Box sx={{ width: '100%' }}>
-            <DatePicker
-              value={formik.values.startDate}
-              onChange={value => formik.setFieldValue('startDate', value)}
-              format={DATEFORMAT_YYYY_MM_DD}
-              views={['year', 'month', 'day']}
-              label='게시 시작일 *'
-              slotProps={{
-                textField: {
-                  size: 'small',
-                },
-              }}
+            <Controller
+              control={form.control}
+              name={'startDate'}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  format={DATEFORMAT_YYYY_MM_DD}
+                  views={['year', 'month', 'day']}
+                  label='게시 시작일 *'
+                  slotProps={{
+                    textField: {
+                      size: 'small',
+                    },
+                  }}
+                />
+              )}
             />
           </Box>
 
           <Box sx={{ width: '100%' }}>
-            <DatePicker
-              value={formik.values.endDate}
-              onChange={value => formik.setFieldValue('endDate', value)}
-              format={DATEFORMAT_YYYY_MM_DD}
-              views={['year', 'month', 'day']}
-              label='게시 종료일 *'
-              slotProps={{
-                textField: {
-                  size: 'small',
-                },
-              }}
+            <Controller
+              control={form.control}
+              name={'endDate'}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  format={DATEFORMAT_YYYY_MM_DD}
+                  views={['year', 'month', 'day']}
+                  label='게시 종료일 *'
+                  slotProps={{
+                    textField: {
+                      size: 'small',
+                    },
+                  }}
+                />
+              )}
             />
           </Box>
         </Stack>
@@ -434,7 +476,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
         >
           취소
         </Button>
-        <Button variant='contained' size='large' sx={{ minWidth: 120 }} onClick={formik.submitForm}>
+        <Button variant='contained' size='large' sx={{ minWidth: 120 }} onClick={form.handleSubmit(submitHandler)}>
           저장
         </Button>
       </Stack>

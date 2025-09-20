@@ -14,7 +14,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useFormik } from 'formik';
+import { useForm } from 'react-hook-form';
 import { SearchNormal1 } from 'iconsax-reactjs';
 import { useSnackbar } from 'notistack';
 import { useCallback, useState } from 'react';
@@ -31,12 +31,11 @@ function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUpl
   const { alert, alertError } = useMpModal();
   const { enqueueSnackbar } = useSnackbar();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       member: null as MemberResponse | null,
       file: null as File | null,
     },
-    onSubmit: () => undefined,
   });
 
   const [memberSelectModalOpen, setMemberSelectModalOpen] = useState(false);
@@ -44,30 +43,30 @@ function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUpl
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: useCallback((acceptedFiles: File[]) => {
       if (acceptedFiles.length > 0) {
-        formik.setFieldValue('file', acceptedFiles[0]);
+        form.setValue('file', acceptedFiles[0]);
       }
     }, []),
     accept: { 'application/vnd.ms-excel': ['.xls', '.xlsx'] },
   });
 
   const handleMemberSelect = async (member: MemberResponse) => {
-    await formik.setFieldValue('member', member);
+    await form.setValue('member', member);
     setMemberSelectModalOpen(false);
   };
 
   const handleFileUpload = async () => {
-    if (formik.values.member === null) {
+    if (form.getValues('member') === null) {
       await alert('사용자명을 선택하세요.');
       return;
     }
 
-    if (formik.values.file === null) {
+    if (form.getValues('file') === null) {
       await alert('업로드할 파일을 선택하세요.');
       return;
     }
 
     try {
-      await uploadPartnersExcel(formik.values.member.userId, { file: formik.values.file });
+      await uploadPartnersExcel(form.getValues('member')!.userId, { file: form.getValues('file')! });
       enqueueSnackbar('업로드가 완료되었습니다.', { variant: 'success' });
       onSuccess?.();
     } catch (error) {
@@ -84,9 +83,9 @@ function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUpl
           <Stack direction='row' alignItems='center' sx={{ mt: 1, mb: 3 }}>
             <Box>
               <TextField
-                label={(formik.values.member?.name ?? '') !== '' ? '사용자명' : ''}
-                placeholder={(formik.values.member?.name ?? '') === '' ? '사용자명' : ''}
-                value={formik.values.member?.name ?? ''}
+                label={(form.getValues('member')?.name ?? '') !== '' ? '사용자명' : ''}
+                placeholder={(form.getValues('member')?.name ?? '') === '' ? '사용자명' : ''}
+                value={form.getValues('member')?.name ?? ''}
                 size='small'
                 required
                 InputProps={{
@@ -135,9 +134,9 @@ function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUpl
             <Typography variant='h6' color='text.secondary'>
               여기에 파일을 드래그하거나 클릭하여 업로드하세요.
             </Typography>
-            {formik.values.file && (
+            {form.getValues('file') && (
               <Typography variant='body2' sx={{ mt: 1 }}>
-                선택된 파일: {formik.values.file.name}
+                선택된 파일: {form.getValues('file')!.name}
               </Typography>
             )}
           </Box>
@@ -150,7 +149,7 @@ function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUpl
             variant='contained'
             color='success'
             onClick={handleFileUpload}
-            disabled={!formik.values.member || !formik.values.file}
+            disabled={!form.getValues('member') || !form.getValues('file')}
             sx={{ minWidth: 100 }}
           >
             업로드

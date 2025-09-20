@@ -1,4 +1,4 @@
-import { handleLocaleNumberChange } from '@/lib/utils/form';
+import { normalizeLocaleNumber } from '@/lib/utils/form';
 import { TiptapMenuBar } from '@/lib/Tiptap';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { useMpModal } from '@/hooks/useMpModal';
@@ -23,7 +23,7 @@ import {
 import { DatePicker } from '@mui/x-date-pickers';
 import { EditorContent } from '@tiptap/react';
 import { isAxiosError } from 'axios';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import {
   BoardExposureRange,
   BoardType,
@@ -38,6 +38,7 @@ import { useSession } from '@/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { Fragment, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function MpAdminProductEdit() {
   const navigate = useNavigate();
@@ -52,8 +53,8 @@ export default function MpAdminProductEdit() {
 
   const { alert, alertError } = useMpModal();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       manufacturer: '',
       productName: '',
       composition: '',
@@ -68,115 +69,114 @@ export default function MpAdminProductEdit() {
       isStopSelling: false,
       note: '',
     },
-    onSubmit: async (values, { setSubmitting }) => {
-      const price = Number(values.price.replace(/,/g, ''));
-      const feeRate = Number(values.feeRate);
-      const changedFeeRate = Number(values.changedFeeRate);
-
-      if (feeRate < 0 || feeRate > 100) {
-        await alert('기본수수료율은 0 이상 100 이하이어야 합니다.');
-        return;
-      }
-
-      if (!isNew) {
-        if (detail!.changedFeeRate === null ? changedFeeRate !== 0 : changedFeeRate !== detail!.changedFeeRate) {
-          if (values.changedMonth === null) {
-            await alert('변경월을 선택하세요.');
-            return;
-          }
-        }
-      }
-
-      try {
-        if (isNew) {
-          await createProductExtraInfo({
-            boardPostCreateRequest: {
-              boardType: BoardType.PRODUCT,
-              userId: session!.userId,
-              nickname: session!.userId,
-              hiddenNickname: false,
-              title: values.productName,
-              content: editor.getHTML(),
-              parentId: null,
-              isExposed: true,
-              editorFileIds: editorAttachments.map(image => image.s3fileId),
-              exposureRange: BoardExposureRange.ALL,
-              noticeProperties: null,
-            },
-            productExtraInfoCreateRequest: {
-              manufacturer: values.manufacturer,
-              productName: values.productName,
-              composition: values.composition,
-              productCode: values.productCode,
-              changedFeeRate: String(PercentUtils.percentStringToDecimal(values.changedFeeRate)),
-              changedMonth: values.changedMonth !== null ? values.changedMonth.getMonth() + 1 : null,
-              priceUnit: PriceUnit.KRW,
-              feeRate: String(PercentUtils.percentStringToDecimal(values.feeRate)),
-              price: price,
-              note: values.note,
-              detailInfo: editor.getHTML(),
-              isPromotion: values.isPromotion,
-              isOutOfStock: values.isOutOfStock,
-              isStopSelling: values.isStopSelling,
-              isAcquisition: values.isAcquisition,
-            },
-            files: undefined,
-          });
-          enqueueSnackbar('제품이 성공적으로 등록되었습니다.', { variant: 'success' });
-        } else {
-          await updateProductExtraInfo(productId, {
-            boardPostUpdateRequest: {
-              title: values.productName,
-              content: editor.getHTML(),
-              hiddenNickname: null,
-              isBlind: null,
-              isExposed: null,
-              exposureRange: null,
-              keepFileIds: [...editorAttachments].map(image => image.s3fileId),
-              editorFileIds: editorAttachments.map(image => image.s3fileId),
-              noticeProperties: null,
-            },
-            productExtraInfoCreateRequest: {
-              manufacturer: values.manufacturer,
-              productName: values.productName,
-              composition: values.composition,
-              productCode: values.productCode,
-              changedFeeRate: String(PercentUtils.percentStringToDecimal(values.changedFeeRate)),
-              changedMonth: values.changedMonth !== null ? values.changedMonth.getMonth() + 1 : null,
-              priceUnit: PriceUnit.KRW,
-              feeRate: String(PercentUtils.percentStringToDecimal(values.feeRate)),
-              price: price,
-              note: values.note,
-              detailInfo: editor.getHTML(),
-              isPromotion: values.isPromotion,
-              isOutOfStock: values.isOutOfStock,
-              isStopSelling: values.isStopSelling,
-              isAcquisition: values.isAcquisition,
-            },
-            newFiles: [],
-          });
-          enqueueSnackbar('제품이 성공적으로 수정되었습니다.', { variant: 'success' });
-        }
-        navigate('/admin/products');
-      } catch (error) {
-        if (isAxiosError(error)) {
-          if (
-            error.response !== undefined &&
-            typeof error.response.data === 'string' &&
-            error.response.data.startsWith('Bad request: Invalid product code format:')
-          ) {
-            await alert(`"${values.productCode}"는 잘못된 코드 형식입니다.`);
-            return;
-          }
-        }
-
-        console.error('Failed to submit form:', error);
-        await alertError(isNew ? '제품 등록 중 오류가 발생했습니다.' : '제품 수정 중 오류가 발생했습니다.');
-      } finally {
-        setSubmitting(false);
-      }
-    },
   });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    const price = Number(values.price.replace(/,/g, ''));
+    const feeRate = Number(values.feeRate);
+    const changedFeeRate = Number(values.changedFeeRate);
+
+    if (feeRate < 0 || feeRate > 100) {
+      await alert('기본수수료율은 0 이상 100 이하이어야 합니다.');
+      return;
+    }
+
+    if (!isNew) {
+      if (detail!.changedFeeRate === null ? changedFeeRate !== 0 : changedFeeRate !== detail!.changedFeeRate) {
+        if (values.changedMonth === null) {
+          await alert('변경월을 선택하세요.');
+          return;
+        }
+      }
+    }
+
+    try {
+      if (isNew) {
+        await createProductExtraInfo({
+          boardPostCreateRequest: {
+            boardType: BoardType.PRODUCT,
+            userId: session!.userId,
+            nickname: session!.userId,
+            hiddenNickname: false,
+            title: values.productName,
+            content: editor.getHTML(),
+            parentId: null,
+            isExposed: true,
+            editorFileIds: editorAttachments.map(image => image.s3fileId),
+            exposureRange: BoardExposureRange.ALL,
+            noticeProperties: null,
+          },
+          productExtraInfoCreateRequest: {
+            manufacturer: values.manufacturer,
+            productName: values.productName,
+            composition: values.composition,
+            productCode: values.productCode,
+            changedFeeRate: String(PercentUtils.percentStringToDecimal(values.changedFeeRate)),
+            changedMonth: values.changedMonth !== null ? values.changedMonth.getMonth() + 1 : null,
+            priceUnit: PriceUnit.KRW,
+            feeRate: String(PercentUtils.percentStringToDecimal(values.feeRate)),
+            price: price,
+            note: values.note,
+            detailInfo: editor.getHTML(),
+            isPromotion: values.isPromotion,
+            isOutOfStock: values.isOutOfStock,
+            isStopSelling: values.isStopSelling,
+            isAcquisition: values.isAcquisition,
+          },
+          files: undefined,
+        });
+        enqueueSnackbar('제품이 성공적으로 등록되었습니다.', { variant: 'success' });
+      } else {
+        await updateProductExtraInfo(productId, {
+          boardPostUpdateRequest: {
+            title: values.productName,
+            content: editor.getHTML(),
+            hiddenNickname: null,
+            isBlind: null,
+            isExposed: null,
+            exposureRange: null,
+            keepFileIds: [...editorAttachments].map(image => image.s3fileId),
+            editorFileIds: editorAttachments.map(image => image.s3fileId),
+            noticeProperties: null,
+          },
+          productExtraInfoCreateRequest: {
+            manufacturer: values.manufacturer,
+            productName: values.productName,
+            composition: values.composition,
+            productCode: values.productCode,
+            changedFeeRate: String(PercentUtils.percentStringToDecimal(values.changedFeeRate)),
+            changedMonth: values.changedMonth !== null ? values.changedMonth.getMonth() + 1 : null,
+            priceUnit: PriceUnit.KRW,
+            feeRate: String(PercentUtils.percentStringToDecimal(values.feeRate)),
+            price: price,
+            note: values.note,
+            detailInfo: editor.getHTML(),
+            isPromotion: values.isPromotion,
+            isOutOfStock: values.isOutOfStock,
+            isStopSelling: values.isStopSelling,
+            isAcquisition: values.isAcquisition,
+          },
+          newFiles: [],
+        });
+        enqueueSnackbar('제품이 성공적으로 수정되었습니다.', { variant: 'success' });
+      }
+      navigate('/admin/products');
+    } catch (error) {
+      if (isAxiosError(error)) {
+        if (
+          error.response !== undefined &&
+          typeof error.response.data === 'string' &&
+          error.response.data.startsWith('Bad request: Invalid product code format:')
+        ) {
+          await alert(`"${values.productCode}"는 잘못된 코드 형식입니다.`);
+          return;
+        }
+      }
+
+      console.error('Failed to submit form:', error);
+      await alertError(isNew ? '제품 등록 중 오류가 발생했습니다.' : '제품 수정 중 오류가 발생했습니다.');
+    }
+  };
 
   const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
@@ -204,7 +204,7 @@ export default function MpAdminProductEdit() {
       const detail = await getProductDetails(productId);
       setDetail(detail);
 
-      formik.setValues({
+      form.reset({
         manufacturer: detail.manufacturer ?? '',
         productName: detail.productName ?? '',
         composition: detail.composition ?? '',
@@ -246,13 +246,10 @@ export default function MpAdminProductEdit() {
               <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
                 제약사
               </Typography>
-              <TextField
-                fullWidth
-                size='small'
-                name='manufacturer'
-                value={formik.values.manufacturer}
-                onChange={formik.handleChange}
-                disabled={!isNew}
+              <Controller
+                control={form.control}
+                name={'manufacturer'}
+                render={({ field }) => <TextField {...field} fullWidth size='small' disabled={!isNew} />}
               />
             </Stack>
 
@@ -260,13 +257,10 @@ export default function MpAdminProductEdit() {
               <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
                 제품명
               </Typography>
-              <TextField
-                fullWidth
-                size='small'
-                name='productName'
-                value={formik.values.productName}
-                onChange={formik.handleChange}
-                disabled={!isNew}
+              <Controller
+                control={form.control}
+                name={'productName'}
+                render={({ field }) => <TextField {...field} fullWidth size='small' disabled={!isNew} />}
               />
             </Stack>
 
@@ -274,13 +268,10 @@ export default function MpAdminProductEdit() {
               <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
                 성분명
               </Typography>
-              <TextField
-                fullWidth
-                size='small'
-                name='composition'
-                value={formik.values.composition}
-                onChange={formik.handleChange}
-                disabled={!isNew}
+              <Controller
+                control={form.control}
+                name={'composition'}
+                render={({ field }) => <TextField {...field} fullWidth size='small' disabled={!isNew} />}
               />
             </Stack>
 
@@ -288,13 +279,10 @@ export default function MpAdminProductEdit() {
               <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
                 제품코드
               </Typography>
-              <TextField
-                fullWidth
-                size='small'
-                name='productCode'
-                value={formik.values.productCode}
-                onChange={formik.handleChange}
-                disabled={!isNew}
+              <Controller
+                control={form.control}
+                name={'productCode'}
+                render={({ field }) => <TextField {...field} fullWidth size='small' disabled={!isNew} />}
               />
             </Stack>
 
@@ -302,15 +290,23 @@ export default function MpAdminProductEdit() {
               <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
                 약가
               </Typography>
-              <TextField
-                fullWidth
-                size='small'
-                value={formik.values.price}
-                onChange={handleLocaleNumberChange(formik, 'price')}
-                disabled={!isNew}
-                InputProps={{
-                  endAdornment: <Typography variant='body2'>원</Typography>,
-                }}
+              <Controller
+                control={form.control}
+                name={'price'}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    size='small'
+                    onChange={e => {
+                      field.onChange(normalizeLocaleNumber(e.target.value));
+                    }}
+                    disabled={!isNew}
+                    InputProps={{
+                      endAdornment: <Typography variant='body2'>원</Typography>,
+                    }}
+                  />
+                )}
               />
             </Stack>
 
@@ -318,20 +314,30 @@ export default function MpAdminProductEdit() {
               <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
                 기본수수료율
               </Typography>
-              <TextField
-                fullWidth
-                size='small'
-                placeholder='수수료율을 입력하세요'
-                required
-                value={formik.values.feeRate}
-                onChange={handleLocaleNumberChange(formik, 'feeRate', {
-                  maximumFractionDigits: 1,
-                  min: 0,
-                  max: 100,
-                })}
-                InputProps={{
-                  endAdornment: <Typography variant='body2'>%</Typography>,
-                }}
+              <Controller
+                control={form.control}
+                name={'feeRate'}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    size='small'
+                    placeholder='수수료율을 입력하세요'
+                    required
+                    onChange={e => {
+                      field.onChange(
+                        normalizeLocaleNumber(e.target.value, {
+                          maximumFractionDigits: 1,
+                          min: 0,
+                          max: 100,
+                        }),
+                      );
+                    }}
+                    InputProps={{
+                      endAdornment: <Typography variant='body2'>%</Typography>,
+                    }}
+                  />
+                )}
               />
             </Stack>
 
@@ -341,31 +347,46 @@ export default function MpAdminProductEdit() {
                   변경요율/변경월
                 </Typography>
                 <Stack direction='row' sx={{ gap: 2 }}>
-                  <TextField
-                    size='small'
-                    label='변경요율'
-                    value={formik.values.changedFeeRate}
-                    onChange={handleLocaleNumberChange(formik, 'changedFeeRate', {
-                      maximumFractionDigits: 1,
-                      min: 0,
-                      max: 100,
-                    })}
-                    InputProps={{
-                      endAdornment: <Typography variant='body2'>%</Typography>,
-                    }}
-                    sx={{ width: { xs: '100%', sm: '200px' } }}
+                  <Controller
+                    control={form.control}
+                    name={'changedFeeRate'}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        size='small'
+                        label='변경요율'
+                        onChange={e => {
+                          field.onChange(
+                            normalizeLocaleNumber(e.target.value, {
+                              maximumFractionDigits: 1,
+                              min: 0,
+                              max: 100,
+                            }),
+                          );
+                        }}
+                        InputProps={{
+                          endAdornment: <Typography variant='body2'>%</Typography>,
+                        }}
+                        sx={{ width: { xs: '100%', sm: '200px' } }}
+                      />
+                    )}
                   />
-                  <DatePicker
-                    value={formik.values.changedMonth}
-                    onChange={value => formik.setFieldValue('changedMonth', value)}
-                    format={DATEFORMAT_YYYY_MM}
-                    views={['month']}
-                    label='변경월'
-                    slotProps={{
-                      textField: {
-                        size: 'small',
-                      },
-                    }}
+                  <Controller
+                    control={form.control}
+                    name={'changedMonth'}
+                    render={({ field }) => (
+                      <DatePicker
+                        {...field}
+                        format={DATEFORMAT_YYYY_MM}
+                        views={['month']}
+                        label='변경월'
+                        slotProps={{
+                          textField: {
+                            size: 'small',
+                          },
+                        }}
+                      />
+                    )}
                   />
                 </Stack>
               </Stack>
@@ -377,19 +398,43 @@ export default function MpAdminProductEdit() {
               </Typography>
               <Stack direction='row'>
                 <FormControlLabel
-                  control={<Checkbox name='isAcquisition' checked={formik.values.isAcquisition} onChange={formik.handleChange} />}
+                  control={
+                    <Controller
+                      control={form.control}
+                      name={'isAcquisition'}
+                      render={({ field }) => <Checkbox {...field} checked={field.value} />}
+                    />
+                  }
                   label='취급품목'
                 />
                 <FormControlLabel
-                  control={<Checkbox name='isPromotion' checked={formik.values.isPromotion} onChange={formik.handleChange} />}
+                  control={
+                    <Controller
+                      control={form.control}
+                      name={'isPromotion'}
+                      render={({ field }) => <Checkbox {...field} checked={field.value} />}
+                    />
+                  }
                   label='프로모션'
                 />
                 <FormControlLabel
-                  control={<Checkbox name='isOutOfStock' checked={formik.values.isOutOfStock} onChange={formik.handleChange} />}
+                  control={
+                    <Controller
+                      control={form.control}
+                      name={'isOutOfStock'}
+                      render={({ field }) => <Checkbox {...field} checked={field.value} />}
+                    />
+                  }
                   label='품절'
                 />
                 <FormControlLabel
-                  control={<Checkbox name='isStopSelling' checked={formik.values.isStopSelling} onChange={formik.handleChange} />}
+                  control={
+                    <Controller
+                      control={form.control}
+                      name={'isStopSelling'}
+                      render={({ field }) => <Checkbox {...field} checked={field.value} />}
+                    />
+                  }
                   label='판매중단'
                 />
               </Stack>
@@ -399,15 +444,10 @@ export default function MpAdminProductEdit() {
               <Typography variant='subtitle2' color='text.secondary' sx={{ flex: '0 0 150px' }}>
                 비고
               </Typography>
-              <TextField
-                fullWidth
-                multiline
-                rows={4}
-                size='small'
-                name='note'
-                placeholder='비고를 입력하세요'
-                value={formik.values.note}
-                onChange={formik.handleChange}
+              <Controller
+                control={form.control}
+                name={'note'}
+                render={({ field }) => <TextField {...field} fullWidth multiline rows={4} size='small' placeholder='비고를 입력하세요' />}
               />
             </Stack>
 
@@ -517,19 +557,11 @@ export default function MpAdminProductEdit() {
             component={RouterLink}
             to={isNew ? '/admin/products' : `/admin/products/${productId}`}
             sx={{ minWidth: 120 }}
-            disabled={formik.isSubmitting}
           >
             취소
           </Button>
-          <Button
-            variant='contained'
-            size='large'
-            onClick={formik.submitForm}
-            sx={{ minWidth: 120 }}
-            disabled={formik.isSubmitting}
-            startIcon={formik.isSubmitting ? <CircularProgress size={20} /> : null}
-          >
-            {formik.isSubmitting ? '저장 중...' : '저장'}
+          <Button variant='contained' size='large' onClick={form.handleSubmit(submitHandler)} sx={{ minWidth: 120 }}>
+            저장
           </Button>
         </Stack>
       </Stack>

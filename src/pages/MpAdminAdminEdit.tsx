@@ -1,13 +1,14 @@
-import { handlePhoneNumberChange, normalizePhoneNumber } from '@/lib/utils/form';
+import { normalizePhoneNumber } from '@/lib/utils/form';
 import { useMpModal } from '@/hooks/useMpModal';
 import { Box, Button, Card, Checkbox, FormControlLabel, Stack, Switch, TextField, Typography } from '@mui/material';
 import { isAxiosError } from 'axios';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { AdminPermission, getMemberDetails, getPermissions, type MemberDetailsResponse, signupByAdmin, updateByAdmin } from '@/backend';
 import { isSuperAdmin, useSession } from '@/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function MpAdminAdminEdit() {
   const navigate = useNavigate();
@@ -30,8 +31,8 @@ export default function MpAdminAdminEdit() {
     })();
   }, [session, isNew, navigate]);
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       status: true,
       name: '',
       userId: '',
@@ -41,85 +42,87 @@ export default function MpAdminAdminEdit() {
       phoneNumber: '',
       permissions: [] as (keyof typeof AdminPermission)[],
     },
-    onSubmit: async values => {
-      if (values.name === '') {
-        await alert('관리자 명은 필수입니다');
-        return;
-      }
-
-      if (values.userId === '') {
-        await alert('아이디는 필수입니다');
-        return;
-      }
-
-      if (isNew && values.password === '') {
-        await alert('패스워드는 필수입니다');
-        return;
-      }
-
-      if (isNew && values.password.length < 8) {
-        await alert('패스워드는 최소 8자 이상이어야 합니다');
-        return;
-      }
-
-      if (isNew && values.password !== values.passwordConfirm) {
-        await alert('패스워드가 일치하지 않습니다');
-        return;
-      }
-
-      if (values.email === '') {
-        await alert('이메일은 필수입니다');
-        return;
-      }
-
-      if (values.phoneNumber !== detail?.phoneNumber && values.phoneNumber === '') {
-        await alert('연락처를 입력하세요.');
-        return;
-      }
-
-      if (values.permissions.length === 0) {
-        await alert('최소 하나 이상의 권한을 선택하세요');
-        return;
-      }
-
-      try {
-        if (isNew) {
-          await signupByAdmin({
-            status: values.status,
-            name: values.name,
-            userId: values.userId,
-            password: values.password,
-            email: values.email,
-            phoneNumber: values.phoneNumber.replace(/-/g, ''),
-            permissions: [...values.permissions, AdminPermission.PERMISSION_MANAGEMENT],
-          });
-          enqueueSnackbar('관리자가 등록되었습니다.', { variant: 'success' });
-          navigate('/admin/admins');
-        } else {
-          await updateByAdmin(userId, {
-            name: values.name,
-            userId: values.userId,
-            password: values.password !== '' ? values.password : null,
-            email: values.email,
-            phoneNumber: values.phoneNumber.replace(/-/g, ''),
-            permissions: [...values.permissions, AdminPermission.PERMISSION_MANAGEMENT],
-          });
-          enqueueSnackbar('관리자 권한이 수정되었습니다.', { variant: 'success' });
-          navigate('/admin/admins');
-        }
-      } catch (e) {
-        switch (true) {
-          case isAxiosError(e) && /Bad request: phone number \w+ already exists./.test(e.response?.data ?? ''):
-            await alert('이미 사용중인 연락처입니다.');
-            break;
-          default:
-            console.error('Failed to save admin:', e);
-            await alertError('저장 중 오류가 발생했습니다.');
-            break;
-        }
-      }
-    },
   });
+  const formPermissions = form.watch('permissions');
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.name === '') {
+      await alert('관리자 명은 필수입니다');
+      return;
+    }
+
+    if (values.userId === '') {
+      await alert('아이디는 필수입니다');
+      return;
+    }
+
+    if (isNew && values.password === '') {
+      await alert('패스워드는 필수입니다');
+      return;
+    }
+
+    if (isNew && values.password.length < 8) {
+      await alert('패스워드는 최소 8자 이상이어야 합니다');
+      return;
+    }
+
+    if (isNew && values.password !== values.passwordConfirm) {
+      await alert('패스워드가 일치하지 않습니다');
+      return;
+    }
+
+    if (values.email === '') {
+      await alert('이메일은 필수입니다');
+      return;
+    }
+
+    if (values.phoneNumber !== detail?.phoneNumber && values.phoneNumber === '') {
+      await alert('연락처를 입력하세요.');
+      return;
+    }
+
+    if (values.permissions.length === 0) {
+      await alert('최소 하나 이상의 권한을 선택하세요');
+      return;
+    }
+
+    try {
+      if (isNew) {
+        await signupByAdmin({
+          status: values.status,
+          name: values.name,
+          userId: values.userId,
+          password: values.password,
+          email: values.email,
+          phoneNumber: values.phoneNumber.replace(/-/g, ''),
+          permissions: [...values.permissions, AdminPermission.PERMISSION_MANAGEMENT],
+        });
+        enqueueSnackbar('관리자가 등록되었습니다.', { variant: 'success' });
+        navigate('/admin/admins');
+      } else {
+        await updateByAdmin(userId, {
+          name: values.name,
+          userId: values.userId,
+          password: values.password !== '' ? values.password : null,
+          email: values.email,
+          phoneNumber: values.phoneNumber.replace(/-/g, ''),
+          permissions: [...values.permissions, AdminPermission.PERMISSION_MANAGEMENT],
+        });
+        enqueueSnackbar('관리자 권한이 수정되었습니다.', { variant: 'success' });
+        navigate('/admin/admins');
+      }
+    } catch (e) {
+      switch (true) {
+        case isAxiosError(e) && /Bad request: phone number \w+ already exists./.test(e.response?.data ?? ''):
+          await alert('이미 사용중인 연락처입니다.');
+          break;
+        default:
+          console.error('Failed to save admin:', e);
+          await alertError('저장 중 오류가 발생했습니다.');
+          break;
+      }
+    }
+  };
 
   useEffect(() => {
     if (!isNew) {
@@ -133,8 +136,7 @@ export default function MpAdminAdminEdit() {
       const [detail, permissionData] = await Promise.all([getMemberDetails(userId), getPermissions(userId)]);
       setDetail(detail);
 
-      formik.setValues({
-        ...formik.values,
+      form.reset({
         userId: detail.userId,
         name: detail.name,
         email: detail.email,
@@ -150,7 +152,7 @@ export default function MpAdminAdminEdit() {
   };
 
   const handlePermissionChange = (permission: keyof typeof AdminPermission) => {
-    const currentPermissions = [...formik.values.permissions];
+    const currentPermissions = [...form.getValues('permissions')];
     const index = currentPermissions.indexOf(permission);
 
     if (index > -1) {
@@ -159,7 +161,7 @@ export default function MpAdminAdminEdit() {
       currentPermissions.push(permission);
     }
 
-    formik.setFieldValue('permissions', currentPermissions);
+    form.setValue('permissions', currentPermissions);
   };
 
   return (
@@ -168,67 +170,55 @@ export default function MpAdminAdminEdit() {
 
       <Card component={Stack} sx={{ padding: 3, gap: 3 }}>
         <FormControlLabel
-          control={
-            <Switch
-              name='status'
-              checked={formik.values.status}
-              onChange={e => formik.setFieldValue('status', e.target.checked)}
-              color='primary'
-            />
-          }
-          label={formik.values.status ? '활성' : '비활성'}
+          control={<Controller control={form.control} name='status' render={({ field }) => <Switch {...field} color='primary' />} />}
+          label={form.getValues('status') ? '활성' : '비활성'}
         />
 
         <Stack direction='row' sx={{ gap: 2 }}>
-          <TextField
+          <Controller
+            control={form.control}
             name='name'
-            label='관리자 명'
-            fullWidth
-            required
-            value={formik.values.name}
-            onChange={formik.handleChange}
-            sx={{ flex: '1 0' }}
+            render={({ field }) => <TextField {...field} label='관리자 명' fullWidth required sx={{ flex: '1 0' }} />}
           />
 
-          <TextField
+          <Controller
+            control={form.control}
             name='userId'
-            label='아이디'
-            fullWidth
-            required
-            disabled={!isNew}
-            value={formik.values.userId}
-            onChange={formik.handleChange}
-            sx={{ flex: '1 0' }}
+            render={({ field }) => <TextField {...field} label='아이디' fullWidth required disabled={!isNew} sx={{ flex: '1 0' }} />}
           />
         </Stack>
 
         <Stack direction='row' sx={{ gap: 2 }}>
-          <TextField
+          <Controller
+            control={form.control}
             name='password'
-            label='패스워드'
-            type='password'
-            fullWidth
-            required={isNew}
-            value={formik.values.password}
-            onChange={formik.handleChange}
-            sx={{ flex: '1 0' }}
+            render={({ field }) => (
+              <TextField {...field} label='패스워드' type='password' fullWidth required={isNew} sx={{ flex: '1 0' }} />
+            )}
           />
 
-          <TextField
+          <Controller
+            control={form.control}
             name='passwordConfirm'
-            label='패스워드 확인'
-            type='password'
-            fullWidth
-            required={isNew}
-            value={formik.values.passwordConfirm}
-            onChange={formik.handleChange}
-            sx={{ flex: '1 0' }}
+            render={({ field }) => (
+              <TextField {...field} label='패스워드 확인' type='password' fullWidth required={isNew} sx={{ flex: '1 0' }} />
+            )}
           />
         </Stack>
 
-        <TextField name='email' label='이메일' type='email' fullWidth required value={formik.values.email} onChange={formik.handleChange} />
+        <Controller
+          control={form.control}
+          name={'email'}
+          render={({ field }) => <TextField {...field} label='이메일' type='email' fullWidth required />}
+        />
 
-        <TextField fullWidth label='연락처' value={formik.values.phoneNumber} onChange={handlePhoneNumberChange(formik, 'phoneNumber')} />
+        <Controller
+          control={form.control}
+          name={'phoneNumber'}
+          render={({ field }) => (
+            <TextField {...field} fullWidth label='연락처' onChange={e => field.onChange(normalizePhoneNumber(e.target.value))} />
+          )}
+        />
 
         <Stack sx={{ gap: 1 }}>
           <Typography variant='subtitle2' color='text.secondary'>
@@ -238,7 +228,7 @@ export default function MpAdminAdminEdit() {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={formik.values.permissions.includes(AdminPermission.MEMBER_MANAGEMENT)}
+                  checked={formPermissions.includes(AdminPermission.MEMBER_MANAGEMENT)}
                   onChange={() => handlePermissionChange(AdminPermission.MEMBER_MANAGEMENT)}
                 />
               }
@@ -248,7 +238,7 @@ export default function MpAdminAdminEdit() {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={formik.values.permissions.includes(AdminPermission.PRODUCT_MANAGEMENT)}
+                  checked={formPermissions.includes(AdminPermission.PRODUCT_MANAGEMENT)}
                   onChange={() => handlePermissionChange(AdminPermission.PRODUCT_MANAGEMENT)}
                 />
               }
@@ -258,7 +248,7 @@ export default function MpAdminAdminEdit() {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={formik.values.permissions.includes(AdminPermission.TRANSACTION_MANAGEMENT)}
+                  checked={formPermissions.includes(AdminPermission.TRANSACTION_MANAGEMENT)}
                   onChange={() => handlePermissionChange(AdminPermission.TRANSACTION_MANAGEMENT)}
                 />
               }
@@ -268,7 +258,7 @@ export default function MpAdminAdminEdit() {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={formik.values.permissions.includes(AdminPermission.CONTRACT_MANAGEMENT)}
+                  checked={formPermissions.includes(AdminPermission.CONTRACT_MANAGEMENT)}
                   onChange={() => handlePermissionChange(AdminPermission.CONTRACT_MANAGEMENT)}
                 />
               }
@@ -280,7 +270,7 @@ export default function MpAdminAdminEdit() {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={formik.values.permissions.includes(AdminPermission.PRESCRIPTION_MANAGEMENT)}
+                  checked={formPermissions.includes(AdminPermission.PRESCRIPTION_MANAGEMENT)}
                   onChange={() => handlePermissionChange(AdminPermission.PRESCRIPTION_MANAGEMENT)}
                 />
               }
@@ -290,7 +280,7 @@ export default function MpAdminAdminEdit() {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={formik.values.permissions.includes(AdminPermission.SETTLEMENT_MANAGEMENT)}
+                  checked={formPermissions.includes(AdminPermission.SETTLEMENT_MANAGEMENT)}
                   onChange={() => handlePermissionChange(AdminPermission.SETTLEMENT_MANAGEMENT)}
                 />
               }
@@ -300,7 +290,7 @@ export default function MpAdminAdminEdit() {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={formik.values.permissions.includes(AdminPermission.EXPENSE_REPORT_MANAGEMENT)}
+                  checked={formPermissions.includes(AdminPermission.EXPENSE_REPORT_MANAGEMENT)}
                   onChange={() => handlePermissionChange(AdminPermission.EXPENSE_REPORT_MANAGEMENT)}
                 />
               }
@@ -310,7 +300,7 @@ export default function MpAdminAdminEdit() {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={formik.values.permissions.includes(AdminPermission.COMMUNITY_MANAGEMENT)}
+                  checked={formPermissions.includes(AdminPermission.COMMUNITY_MANAGEMENT)}
                   onChange={() => handlePermissionChange(AdminPermission.COMMUNITY_MANAGEMENT)}
                 />
               }
@@ -322,7 +312,7 @@ export default function MpAdminAdminEdit() {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={formik.values.permissions.includes(AdminPermission.CONTENT_MANAGEMENT)}
+                  checked={formPermissions.includes(AdminPermission.CONTENT_MANAGEMENT)}
                   onChange={() => handlePermissionChange(AdminPermission.CONTENT_MANAGEMENT)}
                 />
               }
@@ -332,7 +322,7 @@ export default function MpAdminAdminEdit() {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={formik.values.permissions.includes(AdminPermission.CUSTOMER_SERVICE)}
+                  checked={formPermissions.includes(AdminPermission.CUSTOMER_SERVICE)}
                   onChange={() => handlePermissionChange(AdminPermission.CUSTOMER_SERVICE)}
                 />
               }
@@ -342,7 +332,7 @@ export default function MpAdminAdminEdit() {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={formik.values.permissions.includes(AdminPermission.BANNER_MANAGEMENT)}
+                  checked={formPermissions.includes(AdminPermission.BANNER_MANAGEMENT)}
                   onChange={() => handlePermissionChange(AdminPermission.BANNER_MANAGEMENT)}
                 />
               }
@@ -357,7 +347,7 @@ export default function MpAdminAdminEdit() {
           <Button variant='outlined' size='large' component={RouterLink} to='/admin/admins'>
             취소
           </Button>
-          <Button variant='contained' size='large' onClick={formik.submitForm}>
+          <Button variant='contained' size='large' onClick={form.handleSubmit(submitHandler)}>
             저장
           </Button>
         </Stack>

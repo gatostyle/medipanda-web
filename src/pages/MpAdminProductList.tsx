@@ -27,7 +27,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { getDownloadProductSummariesExcel, getProductSummaries, type ProductSummaryResponse, softDelete } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
 import { useMpDeleteDialog } from '@/hooks/useMpDeleteDialog';
@@ -35,6 +35,7 @@ import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function MpAdminProductList() {
   const navigate = useNavigate();
@@ -76,35 +77,37 @@ export default function MpAdminProductList() {
 
   const deleteDialog = useMpDeleteDialog();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       ...initialSearchParams,
       isAcquisition: false,
       isPromotion: false,
       isOutOfStock: false,
       isStopSelling: false,
-      page: null,
-    },
-    onSubmit: async values => {
-      if (values.searchType === '' && values.searchKeyword !== '') {
-        await alert('검색유형을 선택하세요.');
-        return;
-      }
-
-      const url = setUrlParams(
-        {
-          ...values,
-          page: 1,
-        },
-        initialSearchParams,
-      );
-
-      navigate(url);
-    },
-    onReset: () => {
-      navigate('');
     },
   });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.searchType === '' && values.searchKeyword !== '') {
+      await alert('검색유형을 선택하세요.');
+      return;
+    }
+
+    const url = setUrlParams(
+      {
+        ...values,
+        page: 1,
+      },
+      initialSearchParams,
+    );
+
+    navigate(url);
+  };
+
+  const handleReset = () => {
+    navigate('');
+    form.reset();
+  };
 
   const fetchContents = async () => {
     setLoading(true);
@@ -138,15 +141,12 @@ export default function MpAdminProductList() {
   };
 
   useEffect(() => {
-    formik.setValues({
-      searchType,
-      searchKeyword,
-      isAcquisition,
-      isPromotion,
-      isOutOfStock,
-      isStopSelling,
-      page: null,
-    });
+    form.setValue('searchType', searchType);
+    form.setValue('searchKeyword', searchKeyword);
+    form.setValue('isAcquisition', isAcquisition);
+    form.setValue('isPromotion', isPromotion);
+    form.setValue('isOutOfStock', isOutOfStock);
+    form.setValue('isStopSelling', isStopSelling);
     fetchContents();
   }, [searchType, searchKeyword, isAcquisition, isPromotion, isOutOfStock, isStopSelling, page]);
 
@@ -190,67 +190,70 @@ export default function MpAdminProductList() {
       <Typography variant='h4'>제품관리</Typography>
 
       <Card sx={{ padding: 3 }}>
-        <MpSearchFilterBar component='form' onSubmit={formik.handleSubmit}>
+        <MpSearchFilterBar component='form' onSubmit={form.handleSubmit(submitHandler)}>
           <SearchFilterItem minWidth={140}>
             <FormControl fullWidth size='small'>
               <InputLabel>검색유형</InputLabel>
-              <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
-                <MenuItem value={'productName'}>제품명</MenuItem>
-                <MenuItem value={'productCode'}>제품코드</MenuItem>
-                <MenuItem value={'manufacturerName'}>제약사</MenuItem>
-                <MenuItem value={'composition'}>성분명</MenuItem>
-                <MenuItem value={'note'}>비고</MenuItem>
-              </Select>
+              <Controller
+                control={form.control}
+                name='searchType'
+                render={({ field }) => (
+                  <Select {...field}>
+                    <MenuItem value={'productName'}>제품명</MenuItem>
+                    <MenuItem value={'productCode'}>제품코드</MenuItem>
+                    <MenuItem value={'manufacturerName'}>제약사</MenuItem>
+                    <MenuItem value={'composition'}>성분명</MenuItem>
+                    <MenuItem value={'note'}>비고</MenuItem>
+                  </Select>
+                )}
+              />
             </FormControl>
           </SearchFilterItem>
           <SearchFilterItem flexGrow={1} minWidth={200}>
-            <TextField
+            <Controller
+              control={form.control}
               name='searchKeyword'
-              size='small'
-              placeholder='검색어를 입력하세요'
-              fullWidth
-              value={formik.values.searchKeyword}
-              onChange={formik.handleChange}
+              render={({ field }) => <TextField {...field} size='small' label='검색어' fullWidth />}
             />
           </SearchFilterItem>
           <SearchFilterItem minWidth={300}>
             <FormGroup row>
               <FormControlLabel
                 control={
-                  <Checkbox
-                    size='small'
-                    checked={formik.values.isAcquisition}
-                    onChange={e => formik.setFieldValue('isAcquisition', e.target.checked)}
+                  <Controller
+                    control={form.control}
+                    name={'isAcquisition'}
+                    render={({ field }) => <Checkbox {...field} checked={field.value} size='small' />}
                   />
                 }
                 label='취급품목'
               />
               <FormControlLabel
                 control={
-                  <Checkbox
-                    size='small'
-                    checked={formik.values.isPromotion}
-                    onChange={e => formik.setFieldValue('isPromotion', e.target.checked)}
+                  <Controller
+                    control={form.control}
+                    name={'isPromotion'}
+                    render={({ field }) => <Checkbox {...field} checked={field.value} size='small' />}
                   />
                 }
                 label='프로모션'
               />
               <FormControlLabel
                 control={
-                  <Checkbox
-                    size='small'
-                    checked={formik.values.isOutOfStock}
-                    onChange={e => formik.setFieldValue('isOutOfStock', e.target.checked)}
+                  <Controller
+                    control={form.control}
+                    name={'isOutOfStock'}
+                    render={({ field }) => <Checkbox {...field} checked={field.value} size='small' />}
                   />
                 }
                 label='품절'
               />
               <FormControlLabel
                 control={
-                  <Checkbox
-                    size='small'
-                    checked={formik.values.isStopSelling}
-                    onChange={e => formik.setFieldValue('isStopSelling', e.target.checked)}
+                  <Controller
+                    control={form.control}
+                    name={'isStopSelling'}
+                    render={({ field }) => <Checkbox {...field} checked={field.value} size='small' />}
                   />
                 }
                 label='판매중단'
@@ -261,7 +264,7 @@ export default function MpAdminProductList() {
             <Button variant='contained' size='small' type='submit'>
               검색
             </Button>
-            <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
+            <Button variant='outlined' size='small' onClick={handleReset}>
               초기화
             </Button>
           </SearchFilterActions>

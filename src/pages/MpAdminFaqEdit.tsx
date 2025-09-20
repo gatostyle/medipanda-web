@@ -17,7 +17,7 @@ import {
   Typography,
 } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import {
   type AttachmentResponse,
   type BoardDetailsResponse,
@@ -32,6 +32,7 @@ import { useSession } from '@/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function MpAdminFaqEdit() {
   const navigate = useNavigate();
@@ -47,65 +48,66 @@ export default function MpAdminFaqEdit() {
 
   const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       title: '',
       isExposed: true,
       attachedFiles: [] as AttachmentResponse[],
       newFiles: [] as File[],
     },
-    onSubmit: async (values, { setSubmitting }) => {
-      if (values.title === '') {
-        await alert('제목을 입력하세요.');
-        return;
-      }
-
-      try {
-        if (isNew) {
-          await createBoardPost({
-            request: {
-              boardType: BoardType.FAQ,
-              title: values.title,
-              content: editor.getHTML(),
-              userId: session!.userId,
-              nickname: session!.name,
-              hiddenNickname: false,
-              parentId: null,
-              isExposed: values.isExposed,
-              editorFileIds: editorAttachments.map(image => image.s3fileId),
-              exposureRange: BoardExposureRange.ALL,
-              noticeProperties: null,
-            },
-            files: values.newFiles && values.newFiles.length > 0 ? values.newFiles : undefined,
-          });
-          enqueueSnackbar('FAQ가 성공적으로 등록되었습니다.', { variant: 'success' });
-          navigate('/admin/faqs');
-        } else {
-          await updateBoardPost(boardId, {
-            updateRequest: {
-              title: values.title,
-              content: editor.getHTML(),
-              hiddenNickname: null,
-              isBlind: null,
-              isExposed: values.isExposed,
-              exposureRange: BoardExposureRange.ALL,
-              keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
-              editorFileIds: editorAttachments.map(attachment => attachment.s3fileId),
-              noticeProperties: null,
-            },
-            newFiles: values.newFiles ? values.newFiles : undefined,
-          });
-          enqueueSnackbar('FAQ가 성공적으로 수정되었습니다.', { variant: 'success' });
-          navigate(`/admin/faqs/${boardId}`);
-        }
-      } catch (error) {
-        console.error('Failed to submit form:', error);
-        await alertError(isNew ? 'FAQ 등록에 실패했습니다.' : 'FAQ 수정에 실패했습니다.');
-      } finally {
-        setSubmitting(false);
-      }
-    },
   });
+  const formAttachedFiles = form.watch('attachedFiles');
+  const formNewFiles = form.watch('newFiles');
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.title === '') {
+      await alert('제목을 입력하세요.');
+      return;
+    }
+
+    try {
+      if (isNew) {
+        await createBoardPost({
+          request: {
+            boardType: BoardType.FAQ,
+            title: values.title,
+            content: editor.getHTML(),
+            userId: session!.userId,
+            nickname: session!.name,
+            hiddenNickname: false,
+            parentId: null,
+            isExposed: values.isExposed,
+            editorFileIds: editorAttachments.map(image => image.s3fileId),
+            exposureRange: BoardExposureRange.ALL,
+            noticeProperties: null,
+          },
+          files: values.newFiles && values.newFiles.length > 0 ? values.newFiles : undefined,
+        });
+        enqueueSnackbar('FAQ가 성공적으로 등록되었습니다.', { variant: 'success' });
+        navigate('/admin/faqs');
+      } else {
+        await updateBoardPost(boardId, {
+          updateRequest: {
+            title: values.title,
+            content: editor.getHTML(),
+            hiddenNickname: null,
+            isBlind: null,
+            isExposed: values.isExposed,
+            exposureRange: BoardExposureRange.ALL,
+            keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
+            editorFileIds: editorAttachments.map(attachment => attachment.s3fileId),
+            noticeProperties: null,
+          },
+          newFiles: values.newFiles ? values.newFiles : undefined,
+        });
+        enqueueSnackbar('FAQ가 성공적으로 수정되었습니다.', { variant: 'success' });
+        navigate(`/admin/faqs/${boardId}`);
+      }
+    } catch (error) {
+      console.error('Failed to submit form:', error);
+      await alertError(isNew ? 'FAQ 등록에 실패했습니다.' : 'FAQ 수정에 실패했습니다.');
+    }
+  };
 
   useEffect(() => {
     if (!isNew) {
@@ -131,7 +133,7 @@ export default function MpAdminFaqEdit() {
       const detail = await getBoardDetails(boardId);
       setDetail(detail);
 
-      formik.setValues({
+      form.reset({
         title: detail.title,
         isExposed: detail.isExposed,
         attachedFiles: detail.attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT),
@@ -151,7 +153,7 @@ export default function MpAdminFaqEdit() {
     input.type = 'file';
     input.multiple = true;
     input.onchange = async () => {
-      formik.setFieldValue('newFiles', [...formik.values.newFiles, ...(Array.from(input.files ?? []) as File[])]);
+      form.setValue('newFiles', [...form.getValues('newFiles'), ...(Array.from(input.files ?? []) as File[])]);
     };
     input.click();
   };
@@ -173,7 +175,7 @@ export default function MpAdminFaqEdit() {
           <Typography variant='body2' color='text.secondary'>
             제목
           </Typography>
-          <TextField fullWidth name='title' placeholder='' value={formik.values.title} onChange={formik.handleChange} />
+          <Controller control={form.control} name={'title'} render={({ field }) => <TextField {...field} fullWidth placeholder='' />} />
         </Stack>
 
         <Stack>
@@ -202,9 +204,9 @@ export default function MpAdminFaqEdit() {
             </Button>
           </Box>
 
-          {(formik.values.attachedFiles.length > 0 || formik.values.newFiles.length > 0) && (
+          {(formAttachedFiles.length > 0 || formNewFiles.length > 0) && (
             <Stack sx={{ mt: 2 }}>
-              {formik.values.attachedFiles.map(file => (
+              {formAttachedFiles.map(file => (
                 <Stack key={file.s3fileId} direction='row' alignItems='center'>
                   <Link component={RouterLink} to={file.fileUrl} target='_blank'>
                     {file.originalFileName}
@@ -212,9 +214,9 @@ export default function MpAdminFaqEdit() {
                   <IconButton
                     size='small'
                     onClick={() => {
-                      formik.setFieldValue(
+                      form.setValue(
                         'attachedFiles',
-                        formik.values.attachedFiles.filter(a => a.s3fileId !== file.s3fileId),
+                        formAttachedFiles.filter(a => a.s3fileId !== file.s3fileId),
                       );
                     }}
                     sx={{
@@ -225,15 +227,15 @@ export default function MpAdminFaqEdit() {
                   </IconButton>
                 </Stack>
               ))}
-              {formik.values.newFiles.map((file, index) => (
+              {formNewFiles.map((file, index) => (
                 <Stack key={`${index}:${file.name}`} direction='row' alignItems='center'>
                   <Link underline='none'>{file.name}</Link>
                   <IconButton
                     size='small'
                     onClick={() => {
-                      formik.setFieldValue(
+                      form.setValue(
                         'newFiles',
-                        formik.values.newFiles.filter((_, i) => i !== index),
+                        formNewFiles.filter((_, i) => i !== index),
                       );
                     }}
                     sx={{
@@ -253,14 +255,21 @@ export default function MpAdminFaqEdit() {
             노출상태
           </Typography>
           <FormControl component='fieldset'>
-            <RadioGroup
-              row
-              value={formik.values.isExposed ? 'visible' : 'hidden'}
-              onChange={e => formik.setFieldValue('isExposed', e.target.value === 'visible')}
-            >
-              <FormControlLabel value='visible' control={<Radio />} label='노출' />
-              <FormControlLabel value='hidden' control={<Radio />} label='미노출' />
-            </RadioGroup>
+            <Controller
+              control={form.control}
+              name={'isExposed'}
+              render={({ field }) => (
+                <RadioGroup
+                  {...field}
+                  row
+                  value={String(field.value)}
+                  onChange={e => form.setValue('isExposed', e.target.value === 'true')}
+                >
+                  <FormControlLabel value='true' control={<Radio />} label='노출' />
+                  <FormControlLabel value='false' control={<Radio />} label='미노출' />
+                </RadioGroup>
+              )}
+            />
           </FormControl>
         </Stack>
 
@@ -272,20 +281,17 @@ export default function MpAdminFaqEdit() {
             sx={{
               minWidth: 120,
             }}
-            disabled={formik.isSubmitting}
           >
             취소
           </Button>
           <Button
             variant='contained'
-            onClick={formik.submitForm}
+            onClick={form.handleSubmit(submitHandler)}
             sx={{
               minWidth: 120,
             }}
-            disabled={formik.isSubmitting}
-            startIcon={formik.isSubmitting ? <CircularProgress size={20} /> : null}
           >
-            {formik.isSubmitting ? '저장 중...' : '저장'}
+            저장
           </Button>
         </Stack>
       </Card>

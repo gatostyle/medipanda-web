@@ -22,7 +22,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import {
   type CommentMemberResponse,
   CommentType,
@@ -39,6 +39,7 @@ import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function MpAdminCommunityCommentList() {
   const navigate = useNavigate();
@@ -74,35 +75,37 @@ export default function MpAdminCommunityCommentList() {
   const deleteDialog = useMpDeleteDialog();
   const { alert, alertError } = useMpModal();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       ...initialSearchParams,
       startAt: null as Date | null,
       endAt: null as Date | null,
-      page: null,
-    },
-    onSubmit: async values => {
-      if (values.searchType === '' && values.searchKeyword !== '') {
-        await alert('검색유형을 선택하세요.');
-        return;
-      }
-
-      const url = setUrlParams(
-        {
-          ...values,
-          startAt: values.startAt !== null ? formatYyyyMmDd(values.startAt) : undefined,
-          endAt: values.endAt !== null ? formatYyyyMmDd(values.endAt) : undefined,
-          page: 1,
-        },
-        initialSearchParams,
-      );
-
-      navigate(url);
-    },
-    onReset: () => {
-      navigate('');
     },
   });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.searchType === '' && values.searchKeyword !== '') {
+      await alert('검색유형을 선택하세요.');
+      return;
+    }
+
+    const url = setUrlParams(
+      {
+        ...values,
+        startAt: values.startAt !== null ? formatYyyyMmDd(values.startAt) : undefined,
+        endAt: values.endAt !== null ? formatYyyyMmDd(values.endAt) : undefined,
+        page: 1,
+      },
+      initialSearchParams,
+    );
+
+    navigate(url);
+  };
+
+  const handleReset = () => {
+    navigate('');
+    form.reset();
+  };
 
   const fetchContents = async () => {
     setLoading(true);
@@ -133,14 +136,11 @@ export default function MpAdminCommunityCommentList() {
   };
 
   useEffect(() => {
-    formik.setValues({
-      searchType,
-      searchKeyword,
-      commentType,
-      startAt,
-      endAt,
-      page: null,
-    });
+    form.setValue('searchType', searchType);
+    form.setValue('searchKeyword', searchKeyword);
+    form.setValue('commentType', commentType);
+    form.setValue('startAt', startAt);
+    form.setValue('endAt', endAt);
     fetchContents();
   }, [searchType, searchKeyword, commentType, startAt, endAt, page]);
 
@@ -173,72 +173,91 @@ export default function MpAdminCommunityCommentList() {
       <Typography variant='h4'>댓글 관리</Typography>
 
       <Card sx={{ padding: 3 }}>
-        <MpSearchFilterBar component='form' onSubmit={formik.handleSubmit}>
+        <MpSearchFilterBar component='form' onSubmit={form.handleSubmit(submitHandler)}>
           <SearchFilterItem minWidth={140}>
             <FormControl fullWidth size='small'>
               <InputLabel>글 유형</InputLabel>
-              <Select name='commentType' value={formik.values.commentType} onChange={formik.handleChange}>
-                {Object.keys(CommentType).map(commentType => (
-                  <MenuItem key={commentType} value={commentType}>
-                    {CommentTypeLabel[commentType]}
-                  </MenuItem>
-                ))}
-              </Select>
+              <Controller
+                control={form.control}
+                name={'commentType'}
+                render={({ field }) => (
+                  <Select {...field}>
+                    {Object.keys(CommentType).map(commentType => (
+                      <MenuItem key={commentType} value={commentType}>
+                        {CommentTypeLabel[commentType]}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
             </FormControl>
           </SearchFilterItem>
           <SearchFilterItem minWidth={140}>
             <FormControl fullWidth size='small'>
               <InputLabel>검색유형</InputLabel>
-              <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
-                <MenuItem value={'nickname'}>닉네임</MenuItem>
-                <MenuItem value={'userId'}>아이디</MenuItem>
-                <MenuItem value={'member'}>회원명</MenuItem>
-              </Select>
+              <Controller
+                control={form.control}
+                name='searchType'
+                render={({ field }) => (
+                  <Select {...field}>
+                    <MenuItem value={'nickname'}>닉네임</MenuItem>
+                    <MenuItem value={'userId'}>아이디</MenuItem>
+                    <MenuItem value={'member'}>회원명</MenuItem>
+                  </Select>
+                )}
+              />
             </FormControl>
           </SearchFilterItem>
           <SearchFilterItem minWidth={140}>
-            <DatePicker
-              value={formik.values.startAt}
-              onChange={value => formik.setFieldValue('startAt', value)}
-              format={DATEFORMAT_YYYY_MM_DD}
-              views={['year', 'month', 'day']}
-              label='시작일'
-              slotProps={{
-                textField: {
-                  size: 'small',
-                },
-              }}
+            <Controller
+              control={form.control}
+              name={'startAt'}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  format={DATEFORMAT_YYYY_MM_DD}
+                  views={['year', 'month', 'day']}
+                  label='시작일'
+                  slotProps={{
+                    textField: {
+                      size: 'small',
+                    },
+                  }}
+                />
+              )}
             />
           </SearchFilterItem>
           <SearchFilterItem minWidth={140}>
-            <DatePicker
-              value={formik.values.endAt}
-              onChange={value => formik.setFieldValue('endAt', value)}
-              format={DATEFORMAT_YYYY_MM_DD}
-              views={['year', 'month', 'day']}
-              label='종료일'
-              slotProps={{
-                textField: {
-                  size: 'small',
-                },
-              }}
+            <Controller
+              control={form.control}
+              name={'endAt'}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  format={DATEFORMAT_YYYY_MM_DD}
+                  views={['year', 'month', 'day']}
+                  label='종료일'
+                  slotProps={{
+                    textField: {
+                      size: 'small',
+                    },
+                  }}
+                />
+              )}
             />
           </SearchFilterItem>
           <SearchFilterItem flexGrow={1} minWidth={200}>
-            <TextField
+            <Controller
+              control={form.control}
               name='searchKeyword'
-              size='small'
-              placeholder='검색어를 입력하세요'
-              fullWidth
-              value={formik.values.searchKeyword}
-              onChange={formik.handleChange}
+              render={({ field }) => <TextField {...field} size='small' label='검색어' fullWidth />}
             />
           </SearchFilterItem>
           <SearchFilterActions>
             <Button variant='contained' size='small' type='submit'>
               검색
             </Button>
-            <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
+            <Button variant='outlined' size='small' onClick={handleReset}>
               초기화
             </Button>
           </SearchFilterActions>

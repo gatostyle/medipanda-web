@@ -21,7 +21,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { DocumentDownload } from 'iconsax-reactjs';
 import {
   DateTimeString,
@@ -39,6 +39,7 @@ import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function MpAdminExpenseReportList() {
   const navigate = useNavigate();
@@ -73,35 +74,37 @@ export default function MpAdminExpenseReportList() {
   const [totalPages, setTotalPages] = useState(0);
   const { alert, alertError } = useMpModal();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       ...initialSearchParams,
       eventDateFrom: null as Date | null,
       eventDateTo: null as Date | null,
-      page: null,
-    },
-    onSubmit: async values => {
-      if (values.searchType === '' && values.searchKeyword !== '') {
-        await alert('검색유형을 선택하세요.');
-        return;
-      }
-
-      const url = setUrlParams(
-        {
-          ...values,
-          eventDateFrom: values.eventDateFrom !== null ? formatYyyyMmDd(values.eventDateFrom) : undefined,
-          eventDateTo: values.eventDateTo !== null ? formatYyyyMmDd(values.eventDateTo) : undefined,
-          page: 1,
-        },
-        initialSearchParams,
-      );
-
-      navigate(url);
-    },
-    onReset: () => {
-      navigate('');
     },
   });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.searchType === '' && values.searchKeyword !== '') {
+      await alert('검색유형을 선택하세요.');
+      return;
+    }
+
+    const url = setUrlParams(
+      {
+        ...values,
+        eventDateFrom: values.eventDateFrom !== null ? formatYyyyMmDd(values.eventDateFrom) : undefined,
+        eventDateTo: values.eventDateTo !== null ? formatYyyyMmDd(values.eventDateTo) : undefined,
+        page: 1,
+      },
+      initialSearchParams,
+    );
+
+    navigate(url);
+  };
+
+  const handleReset = () => {
+    navigate('');
+    form.reset();
+  };
 
   const fetchContents = async () => {
     setLoading(true);
@@ -113,7 +116,7 @@ export default function MpAdminExpenseReportList() {
         reportType: reportType !== '' ? reportType : undefined,
         eventDateFrom: eventDateFrom ? new DateTimeString(eventDateFrom) : undefined,
         eventDateTo: eventDateTo ? new DateTimeString(eventDateTo) : undefined,
-        status: formik.values.status !== '' ? formik.values.status : undefined,
+        status: form.getValues('status') || undefined,
         page: page - 1,
         size: pageSize,
       });
@@ -133,15 +136,12 @@ export default function MpAdminExpenseReportList() {
   };
 
   useEffect(() => {
-    formik.setValues({
-      searchType,
-      searchKeyword,
-      eventDateFrom,
-      eventDateTo,
-      status,
-      reportType,
-      page: null,
-    });
+    form.setValue('searchType', searchType);
+    form.setValue('searchKeyword', searchKeyword);
+    form.setValue('eventDateFrom', eventDateFrom);
+    form.setValue('eventDateTo', eventDateTo);
+    form.setValue('status', status);
+    form.setValue('reportType', reportType);
     fetchContents();
   }, [searchType, searchKeyword, eventDateFrom, eventDateTo, status, reportType, page]);
 
@@ -150,84 +150,109 @@ export default function MpAdminExpenseReportList() {
       <Typography variant='h4'>지출보고관리</Typography>
 
       <Card sx={{ padding: 3 }}>
-        <MpSearchFilterBar component='form' onSubmit={formik.handleSubmit}>
+        <MpSearchFilterBar component='form' onSubmit={form.handleSubmit(submitHandler)}>
           <SearchFilterItem minWidth={140}>
             <FormControl fullWidth size='small'>
               <InputLabel>신고상태</InputLabel>
-              <Select name='status' value={formik.values.status} onChange={formik.handleChange}>
-                {Object.keys(ExpenseReportStatus).map(expenseReportStatus => (
-                  <MenuItem key={expenseReportStatus} value={expenseReportStatus}>
-                    {ExpenseReportStatusLabel[expenseReportStatus]}
-                  </MenuItem>
-                ))}
-              </Select>
+              <Controller
+                control={form.control}
+                name={'status'}
+                render={({ field }) => (
+                  <Select {...field}>
+                    {Object.keys(ExpenseReportStatus).map(expenseReportStatus => (
+                      <MenuItem key={expenseReportStatus} value={expenseReportStatus}>
+                        {ExpenseReportStatusLabel[expenseReportStatus]}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
             </FormControl>
           </SearchFilterItem>
           <SearchFilterItem minWidth={140}>
             <FormControl fullWidth size='small'>
               <InputLabel>검색유형</InputLabel>
-              <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
-                <MenuItem value={'companyName'}>회사명</MenuItem>
-                <MenuItem value={'userId'}>아이디</MenuItem>
-                <MenuItem value={'productName'}>제품명</MenuItem>
-              </Select>
+              <Controller
+                control={form.control}
+                name='searchType'
+                render={({ field }) => (
+                  <Select {...field}>
+                    <MenuItem value={'companyName'}>회사명</MenuItem>
+                    <MenuItem value={'userId'}>아이디</MenuItem>
+                    <MenuItem value={'productName'}>제품명</MenuItem>
+                  </Select>
+                )}
+              />
             </FormControl>
           </SearchFilterItem>
           <SearchFilterItem minWidth={140}>
             <FormControl fullWidth size='small'>
               <InputLabel>유형</InputLabel>
-              <Select name='reportType' value={formik.values.reportType} onChange={formik.handleChange}>
-                {Object.keys(ExpenseReportType).map(expenseReportType => (
-                  <MenuItem key={expenseReportType} value={expenseReportType}>
-                    {ExpenseReportTypeLabel[expenseReportType]}
-                  </MenuItem>
-                ))}
-              </Select>
+              <Controller
+                control={form.control}
+                name={'reportType'}
+                render={({ field }) => (
+                  <Select {...field}>
+                    {Object.keys(ExpenseReportType).map(expenseReportType => (
+                      <MenuItem key={expenseReportType} value={expenseReportType}>
+                        {ExpenseReportTypeLabel[expenseReportType]}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
             </FormControl>
           </SearchFilterItem>
           <SearchFilterItem minWidth={140}>
-            <DatePicker
-              value={formik.values.eventDateFrom}
-              onChange={value => formik.setFieldValue('eventDateFrom', value)}
-              format={DATEFORMAT_YYYY_MM_DD}
-              views={['year', 'month', 'day']}
-              label='시작일'
-              slotProps={{
-                textField: {
-                  size: 'small',
-                },
-              }}
+            <Controller
+              control={form.control}
+              name={'eventDateFrom'}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  format={DATEFORMAT_YYYY_MM_DD}
+                  views={['year', 'month', 'day']}
+                  label='시작일'
+                  slotProps={{
+                    textField: {
+                      size: 'small',
+                    },
+                  }}
+                />
+              )}
             />
           </SearchFilterItem>
           <SearchFilterItem minWidth={140}>
-            <DatePicker
-              value={formik.values.eventDateTo}
-              onChange={value => formik.setFieldValue('eventDateTo', value)}
-              format={DATEFORMAT_YYYY_MM_DD}
-              views={['year', 'month', 'day']}
-              label='종료일'
-              slotProps={{
-                textField: {
-                  size: 'small',
-                },
-              }}
+            <Controller
+              control={form.control}
+              name={'eventDateTo'}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  format={DATEFORMAT_YYYY_MM_DD}
+                  views={['year', 'month', 'day']}
+                  label='종료일'
+                  slotProps={{
+                    textField: {
+                      size: 'small',
+                    },
+                  }}
+                />
+              )}
             />
           </SearchFilterItem>
           <SearchFilterItem flexGrow={1} minWidth={200}>
-            <TextField
-              size='small'
-              fullWidth
+            <Controller
+              control={form.control}
               name='searchKeyword'
-              value={formik.values.searchKeyword}
-              onChange={formik.handleChange}
-              placeholder='검색어를 입력하세요'
+              render={({ field }) => <TextField {...field} size='small' label='검색어' fullWidth />}
             />
           </SearchFilterItem>
           <SearchFilterActions>
             <Button type='submit' variant='contained' size='small'>
               검색
             </Button>
-            <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
+            <Button variant='outlined' size='small' onClick={handleReset}>
               초기화
             </Button>
           </SearchFilterActions>
@@ -251,7 +276,7 @@ export default function MpAdminExpenseReportList() {
                 productName: searchType === 'productName' && searchKeyword !== '' ? searchKeyword : undefined,
                 eventDateFrom: eventDateFrom ? new DateTimeString(eventDateFrom) : undefined,
                 eventDateTo: eventDateTo ? new DateTimeString(eventDateTo) : undefined,
-                status: formik.values.status !== '' ? formik.values.status : undefined,
+                status: form.getValues('status') || undefined,
                 size: 2 ** 31 - 1,
               })}
               target='_blank'

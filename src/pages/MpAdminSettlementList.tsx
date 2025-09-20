@@ -35,11 +35,12 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { DocumentDownload } from 'iconsax-reactjs';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function MpAdminSettlementList() {
   const navigate = useNavigate();
@@ -73,38 +74,40 @@ export default function MpAdminSettlementList() {
 
   const { alert, alertError } = useMpModal();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       ...initialSearchParams,
       settlementMonth: null as Date | null,
-      page: null,
-    },
-    onSubmit: async values => {
-      if (values.searchType === '' && values.searchKeyword !== '') {
-        await alert('검색유형을 선택하세요.');
-        return;
-      }
-
-      if (values.searchType === 'dealerId' && values.searchKeyword !== '' && Number.isNaN(Number(values.searchKeyword))) {
-        await alert('딜러번호는 숫자만 입력할 수 있습니다.');
-        return;
-      }
-
-      const url = setUrlParams(
-        {
-          ...values,
-          settlementMonth: values.settlementMonth !== null ? formatYyyyMm(values.settlementMonth) : undefined,
-          page: 1,
-        },
-        initialSearchParams,
-      );
-
-      navigate(url);
-    },
-    onReset: () => {
-      navigate('');
     },
   });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.searchType === '' && values.searchKeyword !== '') {
+      await alert('검색유형을 선택하세요.');
+      return;
+    }
+
+    if (values.searchType === 'dealerId' && values.searchKeyword !== '' && Number.isNaN(Number(values.searchKeyword))) {
+      await alert('딜러번호는 숫자만 입력할 수 있습니다.');
+      return;
+    }
+
+    const url = setUrlParams(
+      {
+        ...values,
+        settlementMonth: values.settlementMonth !== null ? formatYyyyMm(values.settlementMonth) : undefined,
+        page: 1,
+      },
+      initialSearchParams,
+    );
+
+    navigate(url);
+  };
+
+  const handleReset = () => {
+    navigate('');
+    form.reset();
+  };
 
   const fetchContents = async () => {
     setLoading(true);
@@ -135,13 +138,10 @@ export default function MpAdminSettlementList() {
   };
 
   useEffect(() => {
-    formik.setValues({
-      status,
-      settlementMonth,
-      searchType,
-      searchKeyword,
-      page: null,
-    });
+    form.setValue('status', status);
+    form.setValue('settlementMonth', settlementMonth);
+    form.setValue('searchType', searchType);
+    form.setValue('searchKeyword', searchKeyword);
     fetchContents();
   }, [searchType, searchKeyword, settlementMonth, status, page]);
 
@@ -156,57 +156,71 @@ export default function MpAdminSettlementList() {
         <Typography variant='h4'>정산내역</Typography>
 
         <Card sx={{ padding: 3 }}>
-          <MpSearchFilterBar component='form' onSubmit={formik.handleSubmit}>
+          <MpSearchFilterBar component='form' onSubmit={form.handleSubmit(submitHandler)}>
             <SearchFilterItem minWidth={140}>
               <FormControl fullWidth size='small'>
                 <InputLabel>사용자확인</InputLabel>
-                <Select name='status' value={formik.values.status} onChange={formik.handleChange}>
-                  {Object.keys(SettlementStatus).map(settlementStatus => (
-                    <MenuItem key={settlementStatus} value={settlementStatus}>
-                      {SettlementStatusLabel[settlementStatus]}
-                    </MenuItem>
-                  ))}
-                </Select>
+                <Controller
+                  control={form.control}
+                  name={'status'}
+                  render={({ field }) => (
+                    <Select {...field}>
+                      {Object.keys(SettlementStatus).map(settlementStatus => (
+                        <MenuItem key={settlementStatus} value={settlementStatus}>
+                          {SettlementStatusLabel[settlementStatus]}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  )}
+                />
               </FormControl>
             </SearchFilterItem>
             <SearchFilterItem minWidth={140}>
               <FormControl fullWidth size='small'>
                 <InputLabel>검색유형</InputLabel>
-                <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
-                  <MenuItem value={'dealerId'}>딜러번호</MenuItem>
-                  <MenuItem value={'companyName'}>회사명</MenuItem>
-                </Select>
+                <Controller
+                  control={form.control}
+                  name='searchType'
+                  render={({ field }) => (
+                    <Select {...field}>
+                      <MenuItem value={'dealerId'}>딜러번호</MenuItem>
+                      <MenuItem value={'companyName'}>회사명</MenuItem>
+                    </Select>
+                  )}
+                />
               </FormControl>
             </SearchFilterItem>
             <SearchFilterItem minWidth={140}>
-              <DatePicker
-                value={formik.values.settlementMonth}
-                onChange={value => formik.setFieldValue('settlementMonth', value)}
-                format={DATEFORMAT_YYYY_MM}
-                views={['year', 'month']}
-                label='정산월'
-                slotProps={{
-                  textField: {
-                    size: 'small',
-                  },
-                }}
+              <Controller
+                control={form.control}
+                name={'settlementMonth'}
+                render={({ field }) => (
+                  <DatePicker
+                    {...field}
+                    format={DATEFORMAT_YYYY_MM}
+                    views={['year', 'month']}
+                    label='정산월'
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                      },
+                    }}
+                  />
+                )}
               />
             </SearchFilterItem>
             <SearchFilterItem flexGrow={1} minWidth={200}>
-              <TextField
+              <Controller
+                control={form.control}
                 name='searchKeyword'
-                size='small'
-                placeholder='검색어를 입력하세요'
-                fullWidth
-                value={formik.values.searchKeyword}
-                onChange={formik.handleChange}
+                render={({ field }) => <TextField {...field} size='small' label='검색어' fullWidth />}
               />
             </SearchFilterItem>
             <SearchFilterActions>
               <Button variant='contained' size='small' type='submit'>
                 검색
               </Button>
-              <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
+              <Button variant='outlined' size='small' onClick={handleReset}>
                 초기화
               </Button>
             </SearchFilterActions>

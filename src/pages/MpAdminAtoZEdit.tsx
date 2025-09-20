@@ -17,7 +17,7 @@ import {
   Typography,
 } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import {
   type AttachmentResponse,
   type BoardDetailsResponse,
@@ -32,6 +32,7 @@ import { useSession } from '@/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 
 export default function MpAdminAtoZEdit() {
@@ -47,64 +48,65 @@ export default function MpAdminAtoZEdit() {
 
   const { alert, alertError } = useMpModal();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       title: '',
       attachedFiles: [] as AttachmentResponse[],
       newFiles: [] as File[],
       isExposed: true,
     },
-    onSubmit: async (values, { setSubmitting }) => {
-      if (values.title === '') {
-        await alert('제목을 입력하세요.');
-        return;
-      }
-
-      try {
-        if (isNew) {
-          await createBoardPost({
-            request: {
-              boardType: BoardType.CSO_A_TO_Z,
-              title: values.title,
-              content: editor.getHTML(),
-              userId: session!.userId,
-              nickname: session!.name,
-              hiddenNickname: false,
-              parentId: null,
-              isExposed: values.isExposed,
-              editorFileIds: editorAttachments.map(image => image.s3fileId),
-              exposureRange: BoardExposureRange.ALL,
-              noticeProperties: null,
-            },
-            files: values.newFiles,
-          });
-          enqueueSnackbar('CSO A to Z가 성공적으로 등록되었습니다.', { variant: 'success' });
-        } else {
-          await updateBoardPost(boardId, {
-            updateRequest: {
-              title: values.title,
-              content: editor.getHTML(),
-              hiddenNickname: null,
-              isBlind: null,
-              isExposed: values.isExposed,
-              exposureRange: BoardExposureRange.ALL,
-              keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
-              editorFileIds: editorAttachments.map(image => image.s3fileId),
-              noticeProperties: null,
-            },
-            newFiles: values.newFiles,
-          });
-          enqueueSnackbar('CSO A to Z가 성공적으로 수정되었습니다.', { variant: 'success' });
-        }
-        navigate('/admin/atoz');
-      } catch (error) {
-        console.error('Failed to submit form:', error);
-        await alertError(isNew ? 'CSO A to Z 등록에 실패했습니다.' : 'CSO A to Z 수정에 실패했습니다.');
-      } finally {
-        setSubmitting(false);
-      }
-    },
   });
+  const formAttachedFiles = form.watch('attachedFiles');
+  const formNewFiles = form.watch('newFiles');
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.title === '') {
+      await alert('제목을 입력하세요.');
+      return;
+    }
+
+    try {
+      if (isNew) {
+        await createBoardPost({
+          request: {
+            boardType: BoardType.CSO_A_TO_Z,
+            title: values.title,
+            content: editor.getHTML(),
+            userId: session!.userId,
+            nickname: session!.name,
+            hiddenNickname: false,
+            parentId: null,
+            isExposed: values.isExposed,
+            editorFileIds: editorAttachments.map(image => image.s3fileId),
+            exposureRange: BoardExposureRange.ALL,
+            noticeProperties: null,
+          },
+          files: values.newFiles,
+        });
+        enqueueSnackbar('CSO A to Z가 성공적으로 등록되었습니다.', { variant: 'success' });
+      } else {
+        await updateBoardPost(boardId, {
+          updateRequest: {
+            title: values.title,
+            content: editor.getHTML(),
+            hiddenNickname: null,
+            isBlind: null,
+            isExposed: values.isExposed,
+            exposureRange: BoardExposureRange.ALL,
+            keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
+            editorFileIds: editorAttachments.map(image => image.s3fileId),
+            noticeProperties: null,
+          },
+          newFiles: values.newFiles,
+        });
+        enqueueSnackbar('CSO A to Z가 성공적으로 수정되었습니다.', { variant: 'success' });
+      }
+      navigate('/admin/atoz');
+    } catch (error) {
+      console.error('Failed to submit form:', error);
+      await alertError(isNew ? 'CSO A to Z 등록에 실패했습니다.' : 'CSO A to Z 수정에 실패했습니다.');
+    }
+  };
 
   const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
@@ -127,7 +129,7 @@ export default function MpAdminAtoZEdit() {
       const detail = await getBoardDetails(itemId);
       setDetail(detail);
 
-      formik.setValues({
+      form.reset({
         title: detail.title,
         isExposed: detail.isExposed,
         attachedFiles: detail.attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT),
@@ -147,7 +149,7 @@ export default function MpAdminAtoZEdit() {
     input.type = 'file';
     input.multiple = true;
     input.onchange = async () => {
-      formik.setFieldValue('newFiles', [...formik.values.newFiles, ...(Array.from(input.files ?? []) as File[])]);
+      form.setValue('newFiles', [...form.getValues('newFiles'), ...(Array.from(input.files ?? []) as File[])]);
     };
     input.click();
   };
@@ -165,7 +167,11 @@ export default function MpAdminAtoZEdit() {
       <Typography variant='h4'>CSO A TO Z {isNew ? '등록' : '상세'}</Typography>
 
       <Card component={Stack} sx={{ padding: 3, gap: 3 }}>
-        <TextField fullWidth name='title' label='제목' required value={formik.values.title} onChange={formik.handleChange} />
+        <Controller
+          control={form.control}
+          name={'title'}
+          render={({ field }) => <TextField {...field} fullWidth label='제목' required />}
+        />
 
         <Stack>
           <Typography variant='body2' sx={{ mb: 1 }}>
@@ -184,9 +190,9 @@ export default function MpAdminAtoZEdit() {
             </Button>
           </Box>
 
-          {(formik.values.attachedFiles.length > 0 || formik.values.newFiles.length > 0) && (
+          {(formAttachedFiles.length > 0 || formNewFiles.length > 0) && (
             <Stack sx={{ mt: 2 }}>
-              {formik.values.attachedFiles.map(file => (
+              {formAttachedFiles.map(file => (
                 <Stack key={file.s3fileId} direction='row' alignItems='center'>
                   <Link component={RouterLink} to={file.fileUrl} target='_blank'>
                     {file.originalFileName}
@@ -194,9 +200,9 @@ export default function MpAdminAtoZEdit() {
                   <IconButton
                     size='small'
                     onClick={() => {
-                      formik.setFieldValue(
+                      form.setValue(
                         'attachedFiles',
-                        formik.values.attachedFiles.filter(a => a.s3fileId !== file.s3fileId),
+                        formAttachedFiles.filter(a => a.s3fileId !== file.s3fileId),
                       );
                     }}
                     sx={{
@@ -207,15 +213,15 @@ export default function MpAdminAtoZEdit() {
                   </IconButton>
                 </Stack>
               ))}
-              {formik.values.newFiles.map((file, index) => (
+              {formNewFiles.map((file, index) => (
                 <Stack key={`${index}:${file.name}`} direction='row' alignItems='center'>
                   <Link underline='none'>{file.name}</Link>
                   <IconButton
                     size='small'
                     onClick={() => {
-                      formik.setFieldValue(
+                      form.setValue(
                         'newFiles',
-                        formik.values.newFiles.filter((_, i) => i !== index),
+                        formNewFiles.filter((_, i) => i !== index),
                       );
                     }}
                     sx={{
@@ -233,35 +239,30 @@ export default function MpAdminAtoZEdit() {
         <Stack>
           <FormControl component='fieldset'>
             <FormLabel component='legend'>노출상태</FormLabel>
-            <RadioGroup
-              row
-              value={formik.values.isExposed ? 'true' : 'false'}
-              onChange={e => formik.setFieldValue('isExposed', e.target.value === 'true')}
-            >
-              <FormControlLabel value='true' control={<Radio />} label='노출' />
-              <FormControlLabel value='false' control={<Radio />} label='미노출' />
-            </RadioGroup>
+            <Controller
+              control={form.control}
+              name={'isExposed'}
+              render={({ field }) => (
+                <RadioGroup
+                  {...field}
+                  row
+                  value={String(field.value)}
+                  onChange={e => form.setValue('isExposed', e.target.value === 'true')}
+                >
+                  <FormControlLabel value='true' control={<Radio />} label='노출' />
+                  <FormControlLabel value='false' control={<Radio />} label='미노출' />
+                </RadioGroup>
+              )}
+            />
           </FormControl>
         </Stack>
 
         <Stack direction='row' sx={{ justifyContent: 'center', gap: 2 }}>
-          <Button
-            variant='outlined'
-            component={RouterLink}
-            to={isNew ? '/admin/atoz' : `/admin/atoz/${boardId}`}
-            sx={{ minWidth: 120 }}
-            disabled={formik.isSubmitting}
-          >
+          <Button variant='outlined' component={RouterLink} to={isNew ? '/admin/atoz' : `/admin/atoz/${boardId}`} sx={{ minWidth: 120 }}>
             취소
           </Button>
-          <Button
-            variant='contained'
-            onClick={formik.submitForm}
-            sx={{ minWidth: 120 }}
-            disabled={formik.isSubmitting}
-            startIcon={formik.isSubmitting ? <CircularProgress size={20} /> : null}
-          >
-            {formik.isSubmitting ? '저장 중...' : '저장'}
+          <Button variant='contained' onClick={form.handleSubmit(submitHandler)} sx={{ minWidth: 120 }}>
+            저장
           </Button>
         </Stack>
       </Card>

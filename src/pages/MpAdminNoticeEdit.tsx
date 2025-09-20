@@ -22,7 +22,7 @@ import {
   Typography,
 } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import {
   type AttachmentResponse,
   type BoardDetailsResponse,
@@ -44,6 +44,7 @@ import { SearchNormal1 } from 'iconsax-reactjs';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function MpAdminNoticeEdit() {
   const navigate = useNavigate();
@@ -60,8 +61,8 @@ export default function MpAdminNoticeEdit() {
 
   const [drugCompanySelectModalOpen, setDrugCompanySelectModalOpen] = useState(false);
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       noticeType: NoticeType.GENERAL as keyof typeof NoticeType,
       drugCompany: '',
       isExposed: true,
@@ -70,71 +71,72 @@ export default function MpAdminNoticeEdit() {
       attachedFiles: [] as AttachmentResponse[],
       newFiles: [] as File[],
     },
-    onSubmit: async (values, { setSubmitting }) => {
-      if (isDrugCompanyNoticeType(values.noticeType) && values.drugCompany === '') {
-        await alert('제약사명을 선택하세요.');
-        return;
-      }
-
-      if (values.title === '') {
-        await alert('제목을 입력하세요.');
-        return;
-      }
-
-      try {
-        if (isNew) {
-          await createBoardPost({
-            request: {
-              boardType: BoardType.NOTICE,
-              title: values.title,
-              content: editor.getHTML(),
-              userId: session!.userId,
-              nickname: session!.name || session!.userId,
-              hiddenNickname: false,
-              parentId: null,
-              isExposed: values.isExposed,
-              editorFileIds: editorAttachments.map(image => image.s3fileId),
-              exposureRange: values.exposureRange,
-              noticeProperties: {
-                noticeType: values.noticeType,
-                drugCompany: isDrugCompanyNoticeType(values.noticeType) ? values.drugCompany : '',
-                fixedTop: isTopFixedNoticeType(values.noticeType),
-              },
-            },
-            files: values.newFiles,
-          });
-          enqueueSnackbar('공지사항이 성공적으로 등록되었습니다.', { variant: 'success' });
-          navigate('/admin/notices');
-        } else {
-          await updateBoardPost(boardId, {
-            updateRequest: {
-              title: values.title,
-              content: editor.getHTML(),
-              hiddenNickname: null,
-              isBlind: null,
-              isExposed: values.isExposed,
-              exposureRange: values.exposureRange,
-              keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
-              editorFileIds: editorAttachments.map(attachment => attachment.s3fileId),
-              noticeProperties: {
-                noticeType: values.noticeType,
-                drugCompany: isDrugCompanyNoticeType(values.noticeType) ? values.drugCompany : '',
-                fixedTop: isTopFixedNoticeType(values.noticeType),
-              },
-            },
-            newFiles: values.newFiles,
-          });
-          enqueueSnackbar('공지사항이 성공적으로 수정되었습니다.', { variant: 'success' });
-          navigate(`/admin/notices/${paramBoardId}`);
-        }
-      } catch (error) {
-        console.error('Failed to submit form:', error);
-        await alertError(isNew ? '공지사항 등록에 실패했습니다.' : '공지사항 수정에 실패했습니다.');
-      } finally {
-        setSubmitting(false);
-      }
-    },
   });
+  const formAttachedFiles = form.watch('attachedFiles');
+  const formNewFiles = form.watch('newFiles');
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (isDrugCompanyNoticeType(values.noticeType) && values.drugCompany === '') {
+      await alert('제약사명을 선택하세요.');
+      return;
+    }
+
+    if (values.title === '') {
+      await alert('제목을 입력하세요.');
+      return;
+    }
+
+    try {
+      if (isNew) {
+        await createBoardPost({
+          request: {
+            boardType: BoardType.NOTICE,
+            title: values.title,
+            content: editor.getHTML(),
+            userId: session!.userId,
+            nickname: session!.name || session!.userId,
+            hiddenNickname: false,
+            parentId: null,
+            isExposed: values.isExposed,
+            editorFileIds: editorAttachments.map(image => image.s3fileId),
+            exposureRange: values.exposureRange,
+            noticeProperties: {
+              noticeType: values.noticeType,
+              drugCompany: isDrugCompanyNoticeType(values.noticeType) ? values.drugCompany : '',
+              fixedTop: isTopFixedNoticeType(values.noticeType),
+            },
+          },
+          files: values.newFiles,
+        });
+        enqueueSnackbar('공지사항이 성공적으로 등록되었습니다.', { variant: 'success' });
+        navigate('/admin/notices');
+      } else {
+        await updateBoardPost(boardId, {
+          updateRequest: {
+            title: values.title,
+            content: editor.getHTML(),
+            hiddenNickname: null,
+            isBlind: null,
+            isExposed: values.isExposed,
+            exposureRange: values.exposureRange,
+            keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
+            editorFileIds: editorAttachments.map(attachment => attachment.s3fileId),
+            noticeProperties: {
+              noticeType: values.noticeType,
+              drugCompany: isDrugCompanyNoticeType(values.noticeType) ? values.drugCompany : '',
+              fixedTop: isTopFixedNoticeType(values.noticeType),
+            },
+          },
+          newFiles: values.newFiles,
+        });
+        enqueueSnackbar('공지사항이 성공적으로 수정되었습니다.', { variant: 'success' });
+        navigate(`/admin/notices/${paramBoardId}`);
+      }
+    } catch (error) {
+      console.error('Failed to submit form:', error);
+      await alertError(isNew ? '공지사항 등록에 실패했습니다.' : '공지사항 수정에 실패했습니다.');
+    }
+  };
 
   const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
@@ -162,7 +164,7 @@ export default function MpAdminNoticeEdit() {
       const detail = await getBoardDetails(boardId);
       setDetail(detail);
 
-      formik.setValues({
+      form.reset({
         noticeType: detail.noticeProperties!.noticeType,
         drugCompany: detail.noticeProperties!.drugCompany ?? '',
         isExposed: detail.isExposed,
@@ -185,13 +187,13 @@ export default function MpAdminNoticeEdit() {
     input.type = 'file';
     input.multiple = true;
     input.onchange = async () => {
-      formik.setFieldValue('newFiles', [...formik.values.newFiles, ...(Array.from(input.files ?? []) as File[])]);
+      form.setValue('newFiles', [...form.getValues('newFiles'), ...(Array.from(input.files ?? []) as File[])]);
     };
     input.click();
   };
 
   const handleDrugCompanySelect = (drugCompany: DrugCompanyResponse) => {
-    formik.setFieldValue('drugCompany', drugCompany.name);
+    form.setValue('drugCompany', drugCompany.name);
     setDrugCompanySelectModalOpen(false);
   };
 
@@ -212,20 +214,26 @@ export default function MpAdminNoticeEdit() {
           <Stack direction='row' sx={{ gap: 3 }}>
             <FormControl fullWidth sx={{ flex: '1 0' }}>
               <InputLabel>공지분류 *</InputLabel>
-              <Select name='noticeType' value={formik.values.noticeType} onChange={formik.handleChange}>
-                {Object.keys(NoticeType).map(noticeType => (
-                  <MenuItem key={noticeType} value={noticeType}>
-                    {NoticeTypeLabel[noticeType]}
-                  </MenuItem>
-                ))}
-              </Select>
+              <Controller
+                control={form.control}
+                name={'noticeType'}
+                render={({ field }) => (
+                  <Select {...field}>
+                    {Object.keys(NoticeType).map(noticeType => (
+                      <MenuItem key={noticeType} value={noticeType}>
+                        {NoticeTypeLabel[noticeType]}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
             </FormControl>
 
-            {isDrugCompanyNoticeType(formik.values.noticeType) ? (
+            {isDrugCompanyNoticeType(form.getValues('noticeType')) ? (
               <TextField
                 fullWidth
                 label='제약사명'
-                value={formik.values.drugCompany}
+                value={form.getValues('drugCompany')}
                 InputProps={{
                   readOnly: true,
                   endAdornment: (
@@ -248,43 +256,52 @@ export default function MpAdminNoticeEdit() {
               <Typography variant='body2' sx={{ mb: 1 }}>
                 노출상태 <span style={{ color: 'red' }}>*</span>
               </Typography>
-              <RadioGroup
-                row
-                name='isExposed'
-                value={formik.values.isExposed ? 'true' : 'false'}
-                onChange={e => formik.setFieldValue('isExposed', e.target.value === 'true')}
-              >
-                <FormControlLabel value='true' control={<Radio />} label='노출' />
-                <FormControlLabel value='false' control={<Radio />} label='미노출' />
-              </RadioGroup>
+              <Controller
+                control={form.control}
+                name={'isExposed'}
+                render={({ field }) => (
+                  <RadioGroup
+                    {...field}
+                    row
+                    value={String(field.value)}
+                    onChange={e => form.setValue('isExposed', e.target.value === 'true')}
+                  >
+                    <FormControlLabel value='true' control={<Radio />} label='노출' />
+                    <FormControlLabel value='false' control={<Radio />} label='미노출' />
+                  </RadioGroup>
+                )}
+              />
             </Stack>
 
             <Stack sx={{ flex: '1 0' }}>
               <Typography variant='body2' sx={{ mb: 1 }}>
                 노출범위 <span style={{ color: 'red' }}>*</span>
               </Typography>
-              <RadioGroup row name='exposureRange' value={formik.values.exposureRange} onChange={formik.handleChange}>
-                {Object.keys(BoardExposureRange).map(exposureRange => (
-                  <FormControlLabel
-                    key={exposureRange}
-                    value={exposureRange}
-                    control={<Radio />}
-                    label={BoardExposureRangeLabel[exposureRange]}
-                  />
-                ))}
-              </RadioGroup>
+              <Controller
+                control={form.control}
+                name={'exposureRange'}
+                render={({ field }) => (
+                  <RadioGroup {...field} row>
+                    {Object.keys(BoardExposureRange).map(exposureRange => (
+                      <FormControlLabel
+                        key={exposureRange}
+                        value={exposureRange}
+                        control={<Radio />}
+                        label={BoardExposureRangeLabel[exposureRange]}
+                      />
+                    ))}
+                  </RadioGroup>
+                )}
+              />
             </Stack>
           </Stack>
 
-          <TextField
-            fullWidth
-            name='title'
-            label='제목'
-            placeholder='제목을 입력하세요'
-            required
-            value={formik.values.title}
-            onChange={formik.handleChange}
-            inputProps={{ maxLength: 100 }}
+          <Controller
+            control={form.control}
+            name={'title'}
+            render={({ field }) => (
+              <TextField {...field} fullWidth label='제목' placeholder='제목을 입력하세요' required inputProps={{ maxLength: 100 }} />
+            )}
           />
 
           <Stack>
@@ -313,9 +330,9 @@ export default function MpAdminNoticeEdit() {
               </Button>
             </Box>
 
-            {(formik.values.attachedFiles.length > 0 || formik.values.newFiles.length > 0) && (
+            {(formAttachedFiles.length > 0 || formNewFiles.length > 0) && (
               <Stack sx={{ mt: 2 }}>
-                {formik.values.attachedFiles.map(file => (
+                {formAttachedFiles.map(file => (
                   <Stack key={file.s3fileId} direction='row' alignItems='center'>
                     <Link component={RouterLink} to={file.fileUrl} target='_blank'>
                       {file.originalFileName}
@@ -323,9 +340,9 @@ export default function MpAdminNoticeEdit() {
                     <IconButton
                       size='small'
                       onClick={() => {
-                        formik.setFieldValue(
+                        form.setValue(
                           'attachedFiles',
-                          formik.values.attachedFiles.filter(a => a.s3fileId !== file.s3fileId),
+                          formAttachedFiles.filter(a => a.s3fileId !== file.s3fileId),
                         );
                       }}
                       sx={{
@@ -336,15 +353,15 @@ export default function MpAdminNoticeEdit() {
                     </IconButton>
                   </Stack>
                 ))}
-                {formik.values.newFiles.map((file, index) => (
+                {formNewFiles.map((file, index) => (
                   <Stack key={`${index}:${file.name}`} direction='row' alignItems='center'>
                     <Link underline='none'>{file.name}</Link>
                     <IconButton
                       size='small'
                       onClick={() => {
-                        formik.setFieldValue(
+                        form.setValue(
                           'newFiles',
-                          formik.values.newFiles.filter((_, i) => i !== index),
+                          formNewFiles.filter((_, i) => i !== index),
                         );
                       }}
                       sx={{
@@ -365,18 +382,11 @@ export default function MpAdminNoticeEdit() {
               component={RouterLink}
               to={isNew ? '/admin/notices' : `/admin/notices/${boardId}`}
               sx={{ minWidth: 120 }}
-              disabled={formik.isSubmitting}
             >
               취소
             </Button>
-            <Button
-              variant='contained'
-              onClick={formik.submitForm}
-              sx={{ minWidth: 120 }}
-              disabled={formik.isSubmitting}
-              startIcon={formik.isSubmitting ? <CircularProgress size={20} /> : null}
-            >
-              {formik.isSubmitting ? '저장 중...' : '저장'}
+            <Button variant='contained' onClick={form.handleSubmit(submitHandler)} sx={{ minWidth: 120 }}>
+              저장
             </Button>
           </Stack>
         </Card>

@@ -19,10 +19,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { SearchNormal1 } from 'iconsax-reactjs';
 import { getProductSummaries, type ProductSummaryResponse } from '@/backend';
 import { useEffect, useState } from 'react';
+import type { RequiredDeep } from 'type-fest';
 
 export interface MpPartnerProductSelectModalProps {
   open: boolean;
@@ -36,26 +37,27 @@ function MpPartnerProductSelectModalInternal({ open, onClose, onSelect }: MpPart
 
   const { alertError } = useMpModal();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       searchKeyword: '',
     },
-    onSubmit: async values => {
-      try {
-        setLoading(true);
-        const response = await getProductSummaries({
-          productName: values.searchKeyword !== '' ? values.searchKeyword : undefined,
-        });
-
-        setProducts(response.content);
-      } catch (error) {
-        console.error('Failed to search partners:', error);
-        await alertError('제품 검색 중 오류가 발생했습니다.');
-      } finally {
-        setLoading(false);
-      }
-    },
   });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    try {
+      setLoading(true);
+      const response = await getProductSummaries({
+        productName: values.searchKeyword !== '' ? values.searchKeyword : undefined,
+      });
+
+      setProducts(response.content);
+    } catch (error) {
+      console.error('Failed to search partners:', error);
+      await alertError('제품 검색 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSelectProduct = (product: ProductSummaryResponse) => {
     onSelect?.(product);
@@ -63,7 +65,7 @@ function MpPartnerProductSelectModalInternal({ open, onClose, onSelect }: MpPart
   };
 
   useEffect(() => {
-    formik.submitForm();
+    form.handleSubmit(submitHandler)();
   }, []);
 
   return (
@@ -78,22 +80,27 @@ function MpPartnerProductSelectModalInternal({ open, onClose, onSelect }: MpPart
       </DialogTitle>
       <DialogContent>
         <Box sx={{ mb: 3 }}>
-          <Stack direction='row' spacing={1} alignItems='center' component='form' onSubmit={formik.handleSubmit}>
-            <TextField
-              size='small'
-              fullWidth
-              placeholder='제품명 검색'
-              name='searchKeyword'
-              onChange={formik.handleChange}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <IconButton edge='end' size='small' onClick={formik.submitForm} disabled={loading}>
-                      <SearchNormal1 size={16} />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
+          <Stack direction='row' spacing={1} alignItems='center' component='form' onSubmit={form.handleSubmit(submitHandler)}>
+            <Controller
+              control={form.control}
+              name={'searchKeyword'}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  size='small'
+                  fullWidth
+                  label='검색어'
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position='end'>
+                        <IconButton edge='end' size='small' onClick={form.handleSubmit(submitHandler)} disabled={loading}>
+                          <SearchNormal1 size={16} />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              )}
             />
             <Button variant='contained' color='primary' type='submit' disabled={loading} sx={{ minWidth: 80 }}>
               검색

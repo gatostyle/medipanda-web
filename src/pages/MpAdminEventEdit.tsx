@@ -3,7 +3,7 @@ import { useMpModal } from '@/hooks/useMpModal';
 import { Box, Button, Card, CircularProgress, FormControlLabel, Radio, RadioGroup, Stack, TextField, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { EditorContent } from '@tiptap/react';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import {
   type AttachmentResponse,
   BoardExposureRange,
@@ -18,6 +18,7 @@ import {
 import { useSnackbar } from 'notistack';
 import { type ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 import { useSession } from '@/hooks/useSession';
 import { DateFix, DATEFORMAT_YYYY_MM_DD, formatYyyyMmDd } from '@/lib/utils/dateFormat';
 
@@ -37,8 +38,8 @@ export default function MpAdminEventEdit() {
 
   const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       isExposed: true,
       exposureRange: BoardExposureRange.ALL as keyof typeof BoardExposureRange,
       startDate: new Date(),
@@ -50,82 +51,83 @@ export default function MpAdminEventEdit() {
       attachedFiles: [] as AttachmentResponse[],
       newFiles: [] as File[],
     },
-    onSubmit: async values => {
-      if (values.title === '') {
-        await alert('제목을 입력하세요');
-        return;
-      }
-
-      if (values.startDate === null) {
-        await alert('시작일을 선택하세요');
-        return;
-      }
-
-      if (values.endDate === null) {
-        await alert('종료일을 선택하세요');
-        return;
-      }
-
-      try {
-        if (isNew) {
-          await createEventBoard({
-            request: {
-              boardType: BoardType.EVENT,
-              userId: session!.userId,
-              nickname: session!.name,
-              hiddenNickname: false,
-              title: values.title,
-              content: editor.getHTML(),
-              parentId: null,
-              isExposed: values.isExposed,
-              editorFileIds: editorAttachments.map(image => image.s3fileId),
-              exposureRange: values.exposureRange,
-              noticeProperties: null,
-            },
-            eventRequest: {
-              startAt: formatYyyyMmDd(values.startDate),
-              endAt: formatYyyyMmDd(values.endDate),
-              description: values.description,
-              videoUrl: values.videoUrl,
-              note: values.note,
-            },
-            thumbnail: thumbnailFile!,
-            files: values.newFiles,
-          });
-          enqueueSnackbar('이벤트가 등록되었습니다.', { variant: 'success' });
-          navigate('/admin/events');
-        } else {
-          await updateEventBoard(eventId, {
-            request: {
-              title: values.title,
-              content: editor.getHTML(),
-              hiddenNickname: null,
-              isBlind: null,
-              isExposed: values.isExposed,
-              exposureRange: values.exposureRange,
-              keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
-              editorFileIds: editorAttachments.map(attachment => attachment.s3fileId),
-              noticeProperties: null,
-            },
-            eventRequest: {
-              startAt: formatYyyyMmDd(values.startDate),
-              endAt: formatYyyyMmDd(values.endDate),
-              description: values.description,
-              videoUrl: values.videoUrl,
-              note: values.note,
-            },
-            thumbnail: thumbnailFile ?? undefined,
-            newFiles: values.newFiles,
-          });
-          enqueueSnackbar('이벤트가 수정되었습니다.', { variant: 'success' });
-          navigate(`/admin/events/${eventId}`);
-        }
-      } catch (error) {
-        console.error('Failed to save event:', error);
-        await alertError('이벤트 저장에 실패했습니다.');
-      }
-    },
   });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.title === '') {
+      await alert('제목을 입력하세요');
+      return;
+    }
+
+    if (values.startDate === null) {
+      await alert('시작일을 선택하세요');
+      return;
+    }
+
+    if (values.endDate === null) {
+      await alert('종료일을 선택하세요');
+      return;
+    }
+
+    try {
+      if (isNew) {
+        await createEventBoard({
+          request: {
+            boardType: BoardType.EVENT,
+            userId: session!.userId,
+            nickname: session!.name,
+            hiddenNickname: false,
+            title: values.title,
+            content: editor.getHTML(),
+            parentId: null,
+            isExposed: values.isExposed,
+            editorFileIds: editorAttachments.map(image => image.s3fileId),
+            exposureRange: values.exposureRange,
+            noticeProperties: null,
+          },
+          eventRequest: {
+            startAt: formatYyyyMmDd(values.startDate),
+            endAt: formatYyyyMmDd(values.endDate),
+            description: values.description,
+            videoUrl: values.videoUrl,
+            note: values.note,
+          },
+          thumbnail: thumbnailFile!,
+          files: values.newFiles,
+        });
+        enqueueSnackbar('이벤트가 등록되었습니다.', { variant: 'success' });
+        navigate('/admin/events');
+      } else {
+        await updateEventBoard(eventId, {
+          request: {
+            title: values.title,
+            content: editor.getHTML(),
+            hiddenNickname: null,
+            isBlind: null,
+            isExposed: values.isExposed,
+            exposureRange: values.exposureRange,
+            keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
+            editorFileIds: editorAttachments.map(attachment => attachment.s3fileId),
+            noticeProperties: null,
+          },
+          eventRequest: {
+            startAt: formatYyyyMmDd(values.startDate),
+            endAt: formatYyyyMmDd(values.endDate),
+            description: values.description,
+            videoUrl: values.videoUrl,
+            note: values.note,
+          },
+          thumbnail: thumbnailFile ?? undefined,
+          newFiles: values.newFiles,
+        });
+        enqueueSnackbar('이벤트가 수정되었습니다.', { variant: 'success' });
+        navigate(`/admin/events/${eventId}`);
+      }
+    } catch (error) {
+      console.error('Failed to save event:', error);
+      await alertError('이벤트 저장에 실패했습니다.');
+    }
+  };
 
   useEffect(() => {
     if (!isNew) {
@@ -151,7 +153,7 @@ export default function MpAdminEventEdit() {
       const detail = await getEventBoardDetails(eventId);
       setDetail(detail);
 
-      formik.setValues({
+      form.reset({
         isExposed: detail.boardPostDetail.isExposed,
         exposureRange: detail.boardPostDetail.exposureRange,
         startDate: DateFix(detail.eventStartDate),
@@ -206,31 +208,43 @@ export default function MpAdminEventEdit() {
             <Typography variant='subtitle2' color='text.secondary'>
               노출상태 *
             </Typography>
-            <RadioGroup
-              row
-              name='isExposed'
-              value={formik.values.isExposed ? 'true' : 'false'}
-              onChange={e => formik.setFieldValue('isExposed', e.target.value === 'true')}
-            >
-              <FormControlLabel value={'true'} control={<Radio />} label='노출' />
-              <FormControlLabel value={'false'} control={<Radio />} label='미노출' />
-            </RadioGroup>
+            <Controller
+              control={form.control}
+              name={'isExposed'}
+              render={({ field }) => (
+                <RadioGroup
+                  {...field}
+                  row
+                  value={String(field.value)}
+                  onChange={e => form.setValue('isExposed', e.target.value === 'true')}
+                >
+                  <FormControlLabel value='true' control={<Radio />} label='노출' />
+                  <FormControlLabel value='false' control={<Radio />} label='미노출' />
+                </RadioGroup>
+              )}
+            />
           </Stack>
 
           <Stack sx={{ gap: 1 }}>
             <Typography variant='subtitle2' color='text.secondary'>
               노출범위 *
             </Typography>
-            <RadioGroup row name='exposureRange' value={formik.values.exposureRange} onChange={formik.handleChange}>
-              {Object.keys(BoardExposureRange).map(exposureRange => (
-                <FormControlLabel
-                  key={exposureRange}
-                  value={exposureRange}
-                  control={<Radio />}
-                  label={BoardExposureRangeLabel[exposureRange]}
-                />
-              ))}
-            </RadioGroup>
+            <Controller
+              control={form.control}
+              name={'exposureRange'}
+              render={({ field }) => (
+                <RadioGroup {...field} row>
+                  {Object.keys(BoardExposureRange).map(exposureRange => (
+                    <FormControlLabel
+                      key={exposureRange}
+                      value={exposureRange}
+                      control={<Radio />}
+                      label={BoardExposureRangeLabel[exposureRange]}
+                    />
+                  ))}
+                </RadioGroup>
+              )}
+            />
           </Stack>
 
           <Stack sx={{ gap: 1 }}>
@@ -238,37 +252,51 @@ export default function MpAdminEventEdit() {
               이벤트기간 *
             </Typography>
             <Stack direction='row' spacing={2} alignItems='center'>
-              <DatePicker
-                value={formik.values.startDate}
-                onChange={value => formik.setFieldValue('startDate', value)}
-                format={DATEFORMAT_YYYY_MM_DD}
-                views={['year', 'month', 'day']}
-                label='시작일'
-                slotProps={{
-                  textField: {
-                    size: 'small',
-                  },
-                }}
+              <Controller
+                control={form.control}
+                name={'startDate'}
+                render={({ field }) => (
+                  <DatePicker
+                    {...field}
+                    format={DATEFORMAT_YYYY_MM_DD}
+                    views={['year', 'month', 'day']}
+                    label='시작일'
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                      },
+                    }}
+                  />
+                )}
               />
               <Typography>~</Typography>
-              <DatePicker
-                value={formik.values.endDate}
-                onChange={value => formik.setFieldValue('endDate', value)}
-                format={DATEFORMAT_YYYY_MM_DD}
-                views={['year', 'month', 'day']}
-                label='종료일'
-                slotProps={{
-                  textField: {
-                    size: 'small',
-                  },
-                }}
+              <Controller
+                control={form.control}
+                name={'endDate'}
+                render={({ field }) => (
+                  <DatePicker
+                    {...field}
+                    format={DATEFORMAT_YYYY_MM_DD}
+                    views={['year', 'month', 'day']}
+                    label='종료일'
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                      },
+                    }}
+                  />
+                )}
               />
             </Stack>
           </Stack>
 
-          <TextField name='title' label='제목 *' fullWidth value={formik.values.title} onChange={formik.handleChange} />
+          <Controller control={form.control} name={'title'} render={({ field }) => <TextField {...field} label='제목 *' fullWidth />} />
 
-          <TextField name='description' label='이벤트 설명' fullWidth value={formik.values.description} onChange={formik.handleChange} />
+          <Controller
+            control={form.control}
+            name={'description'}
+            render={({ field }) => <TextField {...field} label='이벤트 설명' fullWidth />}
+          />
 
           <Stack sx={{ gap: 1 }}>
             <Typography variant='subtitle2' color='text.secondary'>
@@ -315,15 +343,19 @@ export default function MpAdminEventEdit() {
             </Stack>
           </Stack>
 
-          <TextField name='videoUrl' label='영상url' fullWidth value={formik.values.videoUrl} onChange={formik.handleChange} />
+          <Controller control={form.control} name={'videoUrl'} render={({ field }) => <TextField {...field} label='영상url' fullWidth />} />
 
-          <TextField name='note' label='비고' fullWidth multiline rows={3} value={formik.values.note} onChange={formik.handleChange} />
+          <Controller
+            control={form.control}
+            name={'note'}
+            render={({ field }) => <TextField {...field} label='비고' fullWidth multiline rows={3} />}
+          />
 
           <Stack direction='row' spacing={2} justifyContent='center'>
             <Button variant='outlined' size='large' component={RouterLink} to={isNew ? '/admin/events' : `/admin/events/${eventId}`}>
               취소
             </Button>
-            <Button variant='contained' size='large' onClick={formik.submitForm} disabled={formik.isSubmitting}>
+            <Button variant='contained' size='large' onClick={form.handleSubmit(submitHandler)}>
               저장
             </Button>
           </Stack>

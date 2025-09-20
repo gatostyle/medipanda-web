@@ -5,7 +5,7 @@ import { useSession } from '@/hooks/useSession';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Box, Button, Card, CircularProgress, Link, Stack, TextField, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
-import { useFormik } from 'formik';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import {
   type BoardDetailsResponse,
   BoardExposureRange,
@@ -23,6 +23,7 @@ import { formatYyyyMmDdHhMm } from '@/lib/utils/dateFormat';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function MpAdminInquiryDetail() {
   const navigate = useNavigate();
@@ -39,63 +40,64 @@ export default function MpAdminInquiryDetail() {
 
   const { alert, alertError } = useMpModal();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       newFiles: [] as File[],
     },
-    onSubmit: async values => {
-      if (isNew) return;
-
-      if (responseEditor.getHTML() === '<p></p>') {
-        await alert('답변 내용을 입력하세요.');
-        return;
-      }
-
-      try {
-        if (detail!.children.length === 0) {
-          await createBoardPost({
-            request: {
-              boardType: BoardType.INQUIRY,
-              title: '',
-              content: responseEditor.getHTML(),
-              userId: session!.userId,
-              nickname: session!.name,
-              hiddenNickname: false,
-              parentId: boardId,
-              isExposed: true,
-              editorFileIds: responseEditorAttachments.map(image => image.s3fileId),
-              exposureRange: BoardExposureRange.ALL,
-              noticeProperties: null,
-            },
-            files: values.newFiles,
-          });
-        } else {
-          await updateBoardPost(detail!.children[0].id, {
-            updateRequest: {
-              title: '',
-              content: responseEditor.getHTML(),
-              hiddenNickname: null,
-              isBlind: null,
-              isExposed: null,
-              exposureRange: BoardExposureRange.ALL,
-              keepFileIds: [
-                ...(detail!.children[0].attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT) ?? []),
-                ...responseEditorAttachments,
-              ].map(file => file.s3fileId),
-              editorFileIds: responseEditorAttachments.map(image => image.s3fileId),
-              noticeProperties: null,
-            },
-            newFiles: values.newFiles,
-          });
-        }
-        enqueueSnackbar('답변이 저장되었습니다.', { variant: 'success' });
-        navigate('/admin/inquiries');
-      } catch (error) {
-        console.error('Failed to save response:', error);
-        await alertError('답변 저장 중 오류가 발생했습니다.');
-      }
-    },
   });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (isNew) return;
+
+    if (responseEditor.getHTML() === '<p></p>') {
+      await alert('답변 내용을 입력하세요.');
+      return;
+    }
+
+    try {
+      if (detail!.children.length === 0) {
+        await createBoardPost({
+          request: {
+            boardType: BoardType.INQUIRY,
+            title: '',
+            content: responseEditor.getHTML(),
+            userId: session!.userId,
+            nickname: session!.name,
+            hiddenNickname: false,
+            parentId: boardId,
+            isExposed: true,
+            editorFileIds: responseEditorAttachments.map(image => image.s3fileId),
+            exposureRange: BoardExposureRange.ALL,
+            noticeProperties: null,
+          },
+          files: values.newFiles,
+        });
+      } else {
+        await updateBoardPost(detail!.children[0].id, {
+          updateRequest: {
+            title: '',
+            content: responseEditor.getHTML(),
+            hiddenNickname: null,
+            isBlind: null,
+            isExposed: null,
+            exposureRange: BoardExposureRange.ALL,
+            keepFileIds: [
+              ...(detail!.children[0].attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT) ?? []),
+              ...responseEditorAttachments,
+            ].map(file => file.s3fileId),
+            editorFileIds: responseEditorAttachments.map(image => image.s3fileId),
+            noticeProperties: null,
+          },
+          newFiles: values.newFiles,
+        });
+      }
+      enqueueSnackbar('답변이 저장되었습니다.', { variant: 'success' });
+      navigate('/admin/inquiries');
+    } catch (error) {
+      console.error('Failed to save response:', error);
+      await alertError('답변 저장 중 오류가 발생했습니다.');
+    }
+  };
 
   const { editor, setAttachments: setEditorAttachments } = useMedipandaEditor();
   const {
@@ -334,7 +336,7 @@ export default function MpAdminInquiryDetail() {
               <Button variant='outlined' size='large' component={RouterLink} to='/admin/inquiries'>
                 취소
               </Button>
-              <Button variant='contained' size='large' onClick={() => formik.handleSubmit()}>
+              <Button variant='contained' size='large' onClick={form.handleSubmit(submitHandler)}>
                 답변하기
               </Button>
             </>

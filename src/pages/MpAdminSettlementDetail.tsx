@@ -23,13 +23,14 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { ArrowLeft, DocumentDownload } from 'iconsax-reactjs';
 import { getDownloadSettlementPartnerSummaryExcel, getSettlementPartnerSummary, type SettlementPartnerResponse } from '@/backend';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function MpAdminSettlementDetail() {
   const navigate = useNavigate();
@@ -49,17 +50,18 @@ export default function MpAdminSettlementDetail() {
     pageSize: 20,
   });
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       searchType: 'institutionName' as 'institutionName' | 'businessNumber' | 'institutionCode',
       searchKeyword: '',
     },
-    onSubmit: () => {
-      if (!isNew) {
-        fetchSettlementData(settlementId);
-      }
-    },
   });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async () => {
+    if (!isNew) {
+      fetchSettlementData(settlementId);
+    }
+  };
 
   const [settlementSummaries, setSettlementSummaries] = useState<Sequenced<SettlementPartnerResponse>[]>([]);
 
@@ -79,12 +81,9 @@ export default function MpAdminSettlementDetail() {
     try {
       const response = await getSettlementPartnerSummary({
         settlementId: settlementId,
-        institutionName:
-          formik.values.searchType === 'institutionName' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        businessNumber:
-          formik.values.searchType === 'businessNumber' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
-        institutionCode:
-          formik.values.searchType === 'institutionCode' && formik.values.searchKeyword !== '' ? formik.values.searchKeyword : undefined,
+        institutionName: (form.getValues('searchType') === 'institutionName' && form.getValues('searchKeyword')) || undefined,
+        businessNumber: (form.getValues('searchType') === 'businessNumber' && form.getValues('searchKeyword')) || undefined,
+        institutionCode: (form.getValues('searchType') === 'institutionCode' && form.getValues('searchKeyword')) || undefined,
         page: pagination.pageIndex,
         size: pagination.pageSize,
       });
@@ -117,21 +116,24 @@ export default function MpAdminSettlementDetail() {
       </Stack>
 
       <Card sx={{ padding: 3 }}>
-        <Stack direction='row' component='form' onSubmit={formik.handleSubmit} sx={{ alignItems: 'center', gap: 2 }}>
+        <Stack direction='row' component='form' onSubmit={form.handleSubmit(submitHandler)} sx={{ alignItems: 'center', gap: 2 }}>
           <FormControl size='small' sx={{ width: '120px' }}>
-            <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange} displayEmpty>
-              <MenuItem value='institutionName'>거래처명</MenuItem>
-              <MenuItem value='businessNumber'>사업자등록번호</MenuItem>
-              <MenuItem value='institutionCode'>거래처코드</MenuItem>
-            </Select>
+            <Controller
+              control={form.control}
+              name='searchType'
+              render={({ field }) => (
+                <Select {...field}>
+                  <MenuItem value='institutionName'>거래처명</MenuItem>
+                  <MenuItem value='businessNumber'>사업자등록번호</MenuItem>
+                  <MenuItem value='institutionCode'>거래처코드</MenuItem>
+                </Select>
+              )}
+            />
           </FormControl>
-          <TextField
+          <Controller
+            control={form.control}
             name='searchKeyword'
-            size='small'
-            placeholder='검색어를 입력하세요'
-            value={formik.values.searchKeyword}
-            onChange={formik.handleChange}
-            sx={{ width: '300px' }}
+            render={({ field }) => <TextField {...field} size='small' label='검색어' sx={{ width: '300px' }} />}
           />
           <Button variant='contained' size='small' type='submit'>
             검색
@@ -146,18 +148,9 @@ export default function MpAdminSettlementDetail() {
             color='success'
             href={getDownloadSettlementPartnerSummaryExcel({
               settlementId: parseInt(paramSettlementId!),
-              institutionName:
-                formik.values.searchType === 'institutionName' && formik.values.searchKeyword !== ''
-                  ? formik.values.searchKeyword
-                  : undefined,
-              businessNumber:
-                formik.values.searchType === 'businessNumber' && formik.values.searchKeyword !== ''
-                  ? formik.values.searchKeyword
-                  : undefined,
-              institutionCode:
-                formik.values.searchType === 'institutionCode' && formik.values.searchKeyword !== ''
-                  ? formik.values.searchKeyword
-                  : undefined,
+              institutionName: (form.getValues('searchType') === 'institutionName' && form.getValues('searchKeyword')) || undefined,
+              businessNumber: (form.getValues('searchType') === 'businessNumber' && form.getValues('searchKeyword')) || undefined,
+              institutionCode: (form.getValues('searchType') === 'institutionCode' && form.getValues('searchKeyword')) || undefined,
               size: 2 ** 31 - 1,
             })}
             target='_blank'

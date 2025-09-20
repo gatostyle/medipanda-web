@@ -1,4 +1,4 @@
-import { handleBusinessNumberChange, normalizeBusinessNumber } from '@/lib/utils/form';
+import { normalizeBusinessNumber } from '@/lib/utils/form';
 import { MpDrugCompanySelectModal } from '@/components/MpDrugCompanySelectModal';
 import { MpMemberSelectModal } from '@/components/MpMemberSelectModal';
 import { useMpModal } from '@/hooks/useMpModal';
@@ -10,6 +10,7 @@ import {
   FormControl,
   IconButton,
   InputAdornment,
+  InputLabel,
   MenuItem,
   Select,
   Stack,
@@ -23,7 +24,7 @@ import {
   Typography,
 } from '@mui/material';
 import { AxiosError } from 'axios';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { SearchNormal1 } from 'iconsax-reactjs';
 import {
   ContractStatus,
@@ -38,6 +39,7 @@ import {
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function MpAdminPartnerEdit() {
   const navigate = useNavigate();
@@ -68,7 +70,7 @@ export default function MpAdminPartnerEdit() {
     try {
       const detail = await getPartnerDetails(partnerId);
 
-      formik.setValues({
+      form.reset({
         drugCompany: { id: -1, name: detail.drugCompanyName, code: '' },
         userId: '',
         memberName: detail.memberName,
@@ -92,8 +94,8 @@ export default function MpAdminPartnerEdit() {
     }
   };
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       drugCompany: null as DrugCompanyResponse | null,
       userId: '',
       memberName: '',
@@ -108,88 +110,89 @@ export default function MpAdminPartnerEdit() {
       pharmacyStatus: PharmacyStatus.NORMAL as keyof typeof PharmacyStatus | null,
       note: '',
     },
-    onSubmit: async values => {
-      if (values.drugCompany === null) {
-        await alert('제약사를 선택하세요.');
-        return;
-      }
-
-      if (values.memberName === '') {
-        await alert('사용자를 선택하세요.');
-        return;
-      }
-
-      if (values.institutionName === '') {
-        await alert('거래처명을 입력하세요.');
-        return;
-      }
-
-      if (values.businessNumber === '') {
-        await alert('사업자등록번호를 입력하세요.');
-        return;
-      }
-
-      try {
-        if (isNew) {
-          await createPartner({
-            drugCompanyId: values.drugCompany!.id,
-            userId: values.userId,
-            drugCompany: values.drugCompany!.name,
-            companyName: values.companyName,
-            contractType: values.contractType!,
-            institutionCode: values.institutionCode,
-            institutionName: values.institutionName,
-            businessNumber: values.businessNumber.replace(/-/g, ''),
-            medicalDepartment: values.medicalDepartment,
-            pharmacyName: values.pharmacyName,
-            pharmacyAddress: values.pharmacyAddress,
-            pharmacyStatus: values.pharmacyStatus!,
-            note: values.note,
-          });
-        } else {
-          await updatePartner(partnerId, {
-            drugCompanyId: null,
-            drugCompanyName: null,
-            companyName: values.companyName,
-            contractType: values.contractType,
-            institutionCode: values.institutionCode,
-            institutionName: values.institutionName,
-            businessNumber: values.businessNumber.replace(/-/g, ''),
-            medicalDepartment: values.medicalDepartment,
-            pharmacyName: values.pharmacyName,
-            pharmacyAddress: values.pharmacyAddress,
-            pharmacyStatus: values.pharmacyStatus,
-            note: values.note,
-          });
-        }
-
-        enqueueSnackbar('거래선 정보가 저장되었습니다.', { variant: 'success' });
-        navigate('/admin/partners');
-      } catch (e) {
-        if (e instanceof AxiosError && e.response?.status === 409) {
-          await alert('해당 제약사-거래처 조합이 이미 등록되어 있습니다.');
-          return;
-        }
-
-        console.error(e);
-        await alert('거래선 정보 저장에 실패했습니다.');
-      }
-    },
   });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.drugCompany === null) {
+      await alert('제약사를 선택하세요.');
+      return;
+    }
+
+    if (values.memberName === '') {
+      await alert('사용자를 선택하세요.');
+      return;
+    }
+
+    if (values.institutionName === '') {
+      await alert('거래처명을 입력하세요.');
+      return;
+    }
+
+    if (values.businessNumber === '') {
+      await alert('사업자등록번호를 입력하세요.');
+      return;
+    }
+
+    try {
+      if (isNew) {
+        await createPartner({
+          drugCompanyId: values.drugCompany.id,
+          userId: values.userId,
+          drugCompany: values.drugCompany.name,
+          companyName: values.companyName,
+          contractType: values.contractType,
+          institutionCode: values.institutionCode,
+          institutionName: values.institutionName,
+          businessNumber: values.businessNumber.replace(/-/g, ''),
+          medicalDepartment: values.medicalDepartment,
+          pharmacyName: values.pharmacyName,
+          pharmacyAddress: values.pharmacyAddress,
+          pharmacyStatus: values.pharmacyStatus!,
+          note: values.note,
+        });
+      } else {
+        await updatePartner(partnerId, {
+          drugCompanyId: null,
+          drugCompanyName: null,
+          companyName: values.companyName,
+          contractType: values.contractType,
+          institutionCode: values.institutionCode,
+          institutionName: values.institutionName,
+          businessNumber: values.businessNumber.replace(/-/g, ''),
+          medicalDepartment: values.medicalDepartment,
+          pharmacyName: values.pharmacyName,
+          pharmacyAddress: values.pharmacyAddress,
+          pharmacyStatus: values.pharmacyStatus,
+          note: values.note,
+        });
+      }
+
+      enqueueSnackbar('거래선 정보가 저장되었습니다.', { variant: 'success' });
+      navigate('/admin/partners');
+    } catch (e) {
+      if (e instanceof AxiosError && e.response?.status === 409) {
+        await alert('해당 제약사-거래처 조합이 이미 등록되어 있습니다.');
+        return;
+      }
+
+      console.error(e);
+      await alert('거래선 정보 저장에 실패했습니다.');
+    }
+  };
 
   const handlePharmaceuticalSearch = () => {
     setDrugCompanySelectModalOpen(true);
   };
 
   const handleDrugCompanySelect = (drugCompany: DrugCompanyResponse) => {
-    formik.setFieldValue('drugCompany', drugCompany);
+    form.setValue('drugCompany', drugCompany);
     setDrugCompanySelectModalOpen(false);
   };
 
   const handleMemberSelect = (member: MemberResponse) => {
-    formik.setFieldValue('userId', member.userId);
-    formik.setFieldValue('memberName', member.name);
-    formik.setFieldValue('companyName', member.companyName);
+    form.setValue('userId', member.userId);
+    form.setValue('memberName', member.name);
+    form.setValue('companyName', member.companyName ?? '');
 
     setMemberSelectModalOpen(false);
   };
@@ -210,10 +213,10 @@ export default function MpAdminPartnerEdit() {
         <Stack direction='row' sx={{ gap: 2 }}>
           <TextField
             fullWidth
-            label={(formik.values.drugCompany?.name ?? '') !== '' ? '제약사명' : ''}
-            placeholder={(formik.values.drugCompany?.name ?? '') === '' ? '제약사명' : ''}
+            label={(form.getValues('drugCompany')?.name ?? '') !== '' ? '제약사명' : ''}
+            placeholder={(form.getValues('drugCompany')?.name ?? '') === '' ? '제약사명' : ''}
             name='drugCompany'
-            value={formik.values.drugCompany?.name ?? ''}
+            value={form.getValues('drugCompany')?.name ?? ''}
             required
             InputProps={{
               readOnly: true,
@@ -230,9 +233,9 @@ export default function MpAdminPartnerEdit() {
 
           <TextField
             fullWidth
-            label={formik.values.memberName !== '' ? '사용자명' : ''}
-            placeholder={formik.values.memberName === '' ? '사용자명' : ''}
-            value={formik.values.memberName}
+            label={form.getValues('memberName') !== '' ? '사용자명' : ''}
+            placeholder={form.getValues('memberName') === '' ? '사용자명' : ''}
+            value={form.getValues('memberName')}
             required
             InputProps={{
               readOnly: true,
@@ -249,72 +252,70 @@ export default function MpAdminPartnerEdit() {
         </Stack>
 
         <Stack direction='row' sx={{ gap: 2 }}>
-          <TextField
-            fullWidth
-            label='거래처코드'
-            name='institutionCode'
-            value={formik.values.institutionCode}
-            onChange={formik.handleChange}
-            placeholder={isNew ? '' : formik.values.institutionCode}
-            sx={{ flex: '1 0' }}
+          <Controller
+            control={form.control}
+            name={'institutionCode'}
+            render={({ field }) => <TextField {...field} fullWidth label='거래처코드' sx={{ flex: '1 0' }} />}
           />
 
-          <TextField
-            fullWidth
-            label='거래처명'
-            name='institutionName'
-            value={formik.values.institutionName}
-            onChange={formik.handleChange}
-            required
-            sx={{ flex: '1 0' }}
+          <Controller
+            control={form.control}
+            name={'institutionName'}
+            render={({ field }) => <TextField {...field} fullWidth label='거래처명' required sx={{ flex: '1 0' }} />}
           />
         </Stack>
 
         <Stack direction='row' sx={{ gap: 2 }}>
-          <TextField
-            fullWidth
-            label='사업자등록번호'
-            name='businessNumber'
-            value={formik.values.businessNumber}
-            onChange={handleBusinessNumberChange(formik, 'businessNumber')}
-            required
-            sx={{ flex: '1 0' }}
+          <Controller
+            control={form.control}
+            name={'businessNumber'}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label='사업자등록번호'
+                onChange={e => field.onChange(normalizeBusinessNumber(e.target.value, field.value))}
+                required
+                sx={{ flex: '1 0' }}
+              />
+            )}
           />
 
-          <TextField
-            fullWidth
-            select
-            label='진료과'
-            name='medicalDepartment'
-            value={formik.values.medicalDepartment}
-            onChange={formik.handleChange}
-            sx={{ flex: '1 0' }}
-          >
-            <MenuItem value={'세미병원'}>세미병원</MenuItem>
-            <MenuItem value={'종합병원'}>종합병원</MenuItem>
-            <MenuItem value={'보건소'}>보건소</MenuItem>
-            <MenuItem value={'가정의학과'}>가정의학과</MenuItem>
-            <MenuItem value={'내과'}>내과</MenuItem>
-            <MenuItem value={'마취의학과'}>마취의학과</MenuItem>
-            <MenuItem value={'마취통증의학과'}>마취통증의학과</MenuItem>
-            <MenuItem value={'비뇨기과'}>비뇨기과</MenuItem>
-            <MenuItem value={'산부인과'}>산부인과</MenuItem>
-            <MenuItem value={'성형외과'}>성형외과</MenuItem>
-            <MenuItem value={'소아과'}>소아과</MenuItem>
-            <MenuItem value={'신경과'}>신경과</MenuItem>
-            <MenuItem value={'신경외과'}>신경외과</MenuItem>
-            <MenuItem value={'신경정신과'}>신경정신과</MenuItem>
-            <MenuItem value={'안과'}>안과</MenuItem>
-            <MenuItem value={'일반의원'}>일반의원</MenuItem>
-            <MenuItem value={'일반외과'}>일반외과</MenuItem>
-            <MenuItem value={'이비인후과'}>이비인후과</MenuItem>
-            <MenuItem value={'재활의학과'}>재활의학과</MenuItem>
-            <MenuItem value={'정신과'}>정신과</MenuItem>
-            <MenuItem value={'정형외과'}>정형외과</MenuItem>
-            <MenuItem value={'치과'}>치과</MenuItem>
-            <MenuItem value={'통증의학과'}>통증의학과</MenuItem>
-            <MenuItem value={'피부과'}>피부과</MenuItem>
-          </TextField>
+          <FormControl fullWidth sx={{ flex: '1 0' }}>
+            <InputLabel>진료과</InputLabel>
+            <Controller
+              control={form.control}
+              name={'medicalDepartment'}
+              render={({ field }) => (
+                <Select {...field}>
+                  <MenuItem value={'세미병원'}>세미병원</MenuItem>
+                  <MenuItem value={'종합병원'}>종합병원</MenuItem>
+                  <MenuItem value={'보건소'}>보건소</MenuItem>
+                  <MenuItem value={'가정의학과'}>가정의학과</MenuItem>
+                  <MenuItem value={'내과'}>내과</MenuItem>
+                  <MenuItem value={'마취의학과'}>마취의학과</MenuItem>
+                  <MenuItem value={'마취통증의학과'}>마취통증의학과</MenuItem>
+                  <MenuItem value={'비뇨기과'}>비뇨기과</MenuItem>
+                  <MenuItem value={'산부인과'}>산부인과</MenuItem>
+                  <MenuItem value={'성형외과'}>성형외과</MenuItem>
+                  <MenuItem value={'소아과'}>소아과</MenuItem>
+                  <MenuItem value={'신경과'}>신경과</MenuItem>
+                  <MenuItem value={'신경외과'}>신경외과</MenuItem>
+                  <MenuItem value={'신경정신과'}>신경정신과</MenuItem>
+                  <MenuItem value={'안과'}>안과</MenuItem>
+                  <MenuItem value={'일반의원'}>일반의원</MenuItem>
+                  <MenuItem value={'일반외과'}>일반외과</MenuItem>
+                  <MenuItem value={'이비인후과'}>이비인후과</MenuItem>
+                  <MenuItem value={'재활의학과'}>재활의학과</MenuItem>
+                  <MenuItem value={'정신과'}>정신과</MenuItem>
+                  <MenuItem value={'정형외과'}>정형외과</MenuItem>
+                  <MenuItem value={'치과'}>치과</MenuItem>
+                  <MenuItem value={'통증의학과'}>통증의학과</MenuItem>
+                  <MenuItem value={'피부과'}>피부과</MenuItem>
+                </Select>
+              )}
+            />
+          </FormControl>
         </Stack>
 
         <Stack sx={{ gap: 1 }}>
@@ -334,32 +335,34 @@ export default function MpAdminPartnerEdit() {
               <TableBody>
                 <TableRow>
                   <TableCell>
-                    <TextField
-                      fullWidth
-                      size='small'
-                      name='pharmacyName'
-                      value={formik.values.pharmacyName}
-                      onChange={formik.handleChange}
+                    <Controller
+                      control={form.control}
+                      name={'pharmacyName'}
+                      render={({ field }) => <TextField {...field} fullWidth size='small' />}
                     />
                   </TableCell>
                   <TableCell>
-                    <TextField
-                      fullWidth
-                      size='small'
-                      name='pharmacyAddress'
-                      value={formik.values.pharmacyAddress}
-                      onChange={formik.handleChange}
+                    <Controller
+                      control={form.control}
+                      name={'pharmacyAddress'}
+                      render={({ field }) => <TextField {...field} fullWidth size='small' />}
                     />
                   </TableCell>
                   <TableCell>
                     <FormControl fullWidth size='small'>
-                      <Select name='pharmacyStatus' value={formik.values.pharmacyStatus} onChange={formik.handleChange}>
-                        {[PharmacyStatus.NORMAL, PharmacyStatus.CLOSED].map(pharmacyStatus => (
-                          <MenuItem key={pharmacyStatus} value={pharmacyStatus}>
-                            {PharmacyStatusLabel[pharmacyStatus]}
-                          </MenuItem>
-                        ))}
-                      </Select>
+                      <Controller
+                        control={form.control}
+                        name={'pharmacyStatus'}
+                        render={({ field }) => (
+                          <Select {...field}>
+                            {[PharmacyStatus.NORMAL, PharmacyStatus.CLOSED].map(pharmacyStatus => (
+                              <MenuItem key={pharmacyStatus} value={pharmacyStatus}>
+                                {PharmacyStatusLabel[pharmacyStatus]}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        )}
+                      />
                     </FormControl>
                   </TableCell>
                 </TableRow>
@@ -368,13 +371,17 @@ export default function MpAdminPartnerEdit() {
           </TableContainer>
         </Stack>
 
-        <TextField fullWidth label='비고' name='note' value={formik.values.note} onChange={formik.handleChange} multiline rows={4} />
+        <Controller
+          control={form.control}
+          name={'note'}
+          render={({ field }) => <TextField {...field} fullWidth label='비고' multiline rows={4} />}
+        />
 
         <Stack direction='row' sx={{ justifyContent: 'center', gap: 2 }}>
           <Button variant='outlined' size='large' component={RouterLink} to='/admin/partners' sx={{ minWidth: 120 }}>
             취소
           </Button>
-          <Button variant='contained' size='large' onClick={formik.submitForm} sx={{ minWidth: 120 }}>
+          <Button variant='contained' size='large' onClick={form.handleSubmit(submitHandler)} sx={{ minWidth: 120 }}>
             저장
           </Button>
         </Stack>

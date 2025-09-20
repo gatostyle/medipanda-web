@@ -22,7 +22,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Add, Minus, SearchNormal1 } from 'iconsax-reactjs';
 import {
   type AttachmentResponse,
@@ -42,6 +42,7 @@ import { type Sequenced } from '@/lib/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 import { DateFix, DATEFORMAT_YYYY_MM } from '@/lib/utils/dateFormat';
 
 interface CustomPartnerProducts {
@@ -81,8 +82,8 @@ export default function MpAdminPrescriptionFormEdit() {
   const [sendOcrReport, setSendOcrReport] = useState(false);
   const [ocrReportContent, setOcrReportContent] = useState('');
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       drugCompany: '',
       drugCompanyCode: '',
       companyName: '',
@@ -94,32 +95,33 @@ export default function MpAdminPrescriptionFormEdit() {
       settlementMonth: null as Date | null,
       prescriptionAmount: '',
     },
-    onSubmit: async () => {
-      try {
-        await upsertPatchPartnerProducts(prescriptionPartnerId, {
-          items: partnerProducts.map(product => ({
-            id: product.id,
-            productCode: product.productCode,
-            unit: product.unit,
-            quantity: Number(product.quantity.replace(/,/g, '')),
-            unitPrice: Number(product.unitPrice.replace(/,/g, '')),
-            totalPrice: Number(product.totalPrice.replace(/,/g, '')),
-            baseFeeRate: PercentUtils.percentStringToDecimal(product.baseFeeRate),
-            feeAmount: Number(product.feeAmount.replace(/,/g, '')),
-            note: product.note,
-            ocrItem: product.ocrItem,
-          })),
-          deletedPrescriptionPartnerProductIds: deletePartnerProductIds,
-        });
-
-        enqueueSnackbar('거래처별 제품 목록이 저장되었습니다.', { variant: 'success' });
-        navigate('/admin/prescription-forms');
-      } catch (e) {
-        console.error('Failed to submit form:', e);
-        await alertError('거래처별 제품상세 저장에 실패했습니다.');
-      }
-    },
   });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async () => {
+    try {
+      await upsertPatchPartnerProducts(prescriptionPartnerId, {
+        items: partnerProducts.map(product => ({
+          id: product.id,
+          productCode: product.productCode,
+          unit: product.unit,
+          quantity: Number(product.quantity.replace(/,/g, '')),
+          unitPrice: Number(product.unitPrice.replace(/,/g, '')),
+          totalPrice: Number(product.totalPrice.replace(/,/g, '')),
+          baseFeeRate: PercentUtils.percentStringToDecimal(product.baseFeeRate),
+          feeAmount: Number(product.feeAmount.replace(/,/g, '')),
+          note: product.note,
+          ocrItem: product.ocrItem,
+        })),
+        deletedPrescriptionPartnerProductIds: deletePartnerProductIds,
+      });
+
+      enqueueSnackbar('거래처별 제품 목록이 저장되었습니다.', { variant: 'success' });
+      navigate('/admin/prescription-forms');
+    } catch (e) {
+      console.error('Failed to submit form:', e);
+      await alertError('거래처별 제품상세 저장에 실패했습니다.');
+    }
+  };
 
   const handleProductChange = useCallback(
     <K extends keyof CustomPartnerProducts, T extends CustomPartnerProducts[K]>(index: number, field: K, value: T) => {
@@ -172,10 +174,10 @@ export default function MpAdminPrescriptionFormEdit() {
   };
 
   const handlePartnerSelect = (partner: PartnerResponse) => {
-    formik.setFieldValue('institutionName', partner.institutionName);
-    formik.setFieldValue('institutionCode', partner.institutionCode);
-    formik.setFieldValue('drugCompany', partner.drugCompanyName);
-    formik.setFieldValue('companyName', partner.companyName);
+    form.setValue('institutionName', partner.institutionName);
+    form.setValue('institutionCode', partner.institutionCode);
+    form.setValue('drugCompany', partner.drugCompanyName);
+    form.setValue('companyName', partner.companyName);
   };
 
   const handleProductSelect = (product: ProductSummaryResponse) => {
@@ -261,7 +263,7 @@ export default function MpAdminPrescriptionFormEdit() {
         getAttachedEdiFiles(prescriptionPartnerId),
       ]);
 
-      formik.setValues({
+      form.reset({
         drugCompany: formDetail.drugCompany,
         drugCompanyCode: formDetail.drugCompanyCode,
         companyName: formDetail.companyName,
@@ -323,30 +325,35 @@ export default function MpAdminPrescriptionFormEdit() {
                   제약사명:
                 </Typography>
                 <Stack direction='row' spacing={1} alignItems='center' flex={1}>
-                  <Typography variant='body1'>{formik.values.drugCompany}</Typography>
+                  <Typography variant='body1'>{form.getValues('drugCompany')}</Typography>
                 </Stack>
               </Stack>
               <Stack direction='row' sx={{ flex: '1 0', alignItems: 'center' }}>
                 <Typography variant='body2' color='text.secondary' sx={{ minWidth: 140 }}>
                   거래처코드:
                 </Typography>
-                <Typography variant='body1'>{formik.values.institutionCode}</Typography>
+                <Typography variant='body1'>{form.getValues('institutionCode')}</Typography>
               </Stack>
               <Stack direction='row' sx={{ flex: '1 0', alignItems: 'center' }}>
                 <Typography variant='body2' color='text.secondary' sx={{ minWidth: 80 }}>
                   처방월:
                 </Typography>
-                <DatePicker
-                  value={formik.values.prescriptionMonth}
-                  onChange={value => formik.setFieldValue('prescriptionMonth', value)}
-                  format={DATEFORMAT_YYYY_MM}
-                  views={['year', 'month']}
-                  label='처방월'
-                  slotProps={{
-                    textField: {
-                      size: 'small',
-                    },
-                  }}
+                <Controller
+                  control={form.control}
+                  name={'prescriptionMonth'}
+                  render={({ field }) => (
+                    <DatePicker
+                      {...field}
+                      format={DATEFORMAT_YYYY_MM}
+                      views={['year', 'month']}
+                      label='처방월'
+                      slotProps={{
+                        textField: {
+                          size: 'small',
+                        },
+                      }}
+                    />
+                  )}
                 />
               </Stack>
             </Stack>
@@ -356,29 +363,34 @@ export default function MpAdminPrescriptionFormEdit() {
                 <Typography variant='body2' color='text.secondary' sx={{ minWidth: 100 }}>
                   회사명:
                 </Typography>
-                <Typography variant='body1'>{formik.values.companyName}</Typography>
+                <Typography variant='body1'>{form.getValues('companyName')}</Typography>
               </Stack>
               <Stack direction='row' sx={{ flex: '1 0', alignItems: 'center' }}>
                 <Typography variant='body2' color='text.secondary' sx={{ minWidth: 140 }}>
                   사업자등록번호:
                 </Typography>
-                <Typography variant='body1'>{formik.values.businessNumber}</Typography>
+                <Typography variant='body1'>{form.getValues('businessNumber')}</Typography>
               </Stack>
               <Stack direction='row' sx={{ flex: '1 0', alignItems: 'center' }}>
                 <Typography variant='body2' color='text.secondary' sx={{ minWidth: 80 }}>
                   정산월:
                 </Typography>
-                <DatePicker
-                  value={formik.values.settlementMonth}
-                  onChange={value => formik.setFieldValue('settlementMonth', value)}
-                  format={DATEFORMAT_YYYY_MM}
-                  views={['year', 'month']}
-                  label='정산월'
-                  slotProps={{
-                    textField: {
-                      size: 'small',
-                    },
-                  }}
+                <Controller
+                  control={form.control}
+                  name={'settlementMonth'}
+                  render={({ field }) => (
+                    <DatePicker
+                      {...field}
+                      format={DATEFORMAT_YYYY_MM}
+                      views={['year', 'month']}
+                      label='정산월'
+                      slotProps={{
+                        textField: {
+                          size: 'small',
+                        },
+                      }}
+                    />
+                  )}
                 />
               </Stack>
             </Stack>
@@ -388,35 +400,39 @@ export default function MpAdminPrescriptionFormEdit() {
                 <Typography variant='body2' color='text.secondary' sx={{ minWidth: 100 }}>
                   거래처명:
                 </Typography>
-                <TextField
-                  size='small'
-                  name='institutionName'
-                  value={formik.values.institutionName}
-                  onChange={formik.handleChange}
-                  fullWidth
-                  InputProps={{
-                    readOnly: true,
-                    endAdornment: (
-                      <InputAdornment position='end'>
-                        <IconButton size='small' onClick={handlePartnerSearch}>
-                          <SearchNormal1 size={16} />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
+                <Controller
+                  control={form.control}
+                  name={'institutionName'}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      size='small'
+                      fullWidth
+                      InputProps={{
+                        readOnly: true,
+                        endAdornment: (
+                          <InputAdornment position='end'>
+                            <IconButton size='small' onClick={handlePartnerSearch}>
+                              <SearchNormal1 size={16} />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  )}
                 />
               </Stack>
               <Stack direction='row' sx={{ flex: '1 0', alignItems: 'center' }}>
                 <Typography variant='body2' color='text.secondary' sx={{ minWidth: 140 }}>
                   딜러명:
                 </Typography>
-                <Typography variant='body1'>{formik.values.dealerName}</Typography>
+                <Typography variant='body1'>{form.getValues('dealerName')}</Typography>
               </Stack>
               <Stack direction='row' sx={{ flex: '1 0', alignItems: 'center' }}>
                 <Typography variant='body2' color='text.secondary' sx={{ minWidth: 80 }}>
                   처방금액:
                 </Typography>
-                <Typography variant='body1'>{formik.values.prescriptionAmount}</Typography>
+                <Typography variant='body1'>{form.getValues('prescriptionAmount')}</Typography>
               </Stack>
             </Stack>
           </Stack>
@@ -621,7 +637,7 @@ export default function MpAdminPrescriptionFormEdit() {
           <Button variant='outlined' size='large' component={RouterLink} to='/admin/prescription-forms' sx={{ minWidth: 120 }}>
             취소
           </Button>
-          <Button variant='contained' color='success' size='large' onClick={formik.submitForm} sx={{ minWidth: 120 }}>
+          <Button variant='contained' color='success' size='large' onClick={form.handleSubmit(submitHandler)} sx={{ minWidth: 120 }}>
             저장
           </Button>
         </Stack>
@@ -633,7 +649,7 @@ export default function MpAdminPrescriptionFormEdit() {
         prescriptionFormId={paramPrescriptionPartnerId ? prescriptionPartnerId : undefined}
       />
       <MpOcrRequestModal
-        drugCompanyCode={formik.values.drugCompanyCode}
+        drugCompanyCode={form.getValues('drugCompanyCode')}
         open={ocrRequestModalOpen}
         onClose={() => setOcrRequestModalOpen(false)}
         onSubmit={handleOcrSubmit}

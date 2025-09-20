@@ -1,5 +1,6 @@
 import { DateString, type MemberResponse, uploadEdiZip } from '@/backend';
 import { DATEFORMAT_YYYY_MM } from '@/lib/utils/dateFormat';
+import type { RequiredDeep } from 'type-fest';
 import { MpMemberSelectModal } from './MpMemberSelectModal';
 import { useMpModal } from '@/hooks/useMpModal';
 import { UploadFile } from '@mui/icons-material';
@@ -17,7 +18,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { SearchNormal1 } from 'iconsax-reactjs';
 import { useSnackbar } from 'notistack';
 import { useCallback, useState } from 'react';
@@ -33,79 +34,80 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
   const { alert, alertError } = useMpModal();
   const { enqueueSnackbar } = useSnackbar();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       prescriptionMonth: null as Date | null,
       settlementMonth: null as Date | null,
       partnerUser: null as MemberResponse | null,
       file: null as File | null,
     },
-    onSubmit: async values => {
-      if (values.prescriptionMonth === null) {
-        await alert('처방월을 선택하세요.');
-        return;
-      }
+  });
 
-      if (values.settlementMonth === null) {
-        await alert('정산월을 선택하세요.');
-        return;
-      }
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.prescriptionMonth === null) {
+      await alert('처방월을 선택하세요.');
+      return;
+    }
 
-      if (values.partnerUser === null) {
-        await alert('사용자를 선택하세요.');
-        return;
-      }
+    if (values.settlementMonth === null) {
+      await alert('정산월을 선택하세요.');
+      return;
+    }
 
-      if (values.file === null) {
-        await alert('파일을 선택하세요.');
-        return;
-      }
+    if (values.partnerUser === null) {
+      await alert('사용자를 선택하세요.');
+      return;
+    }
 
-      try {
-        const response = await uploadEdiZip({
-          prescriptionMonth: new DateString(values.prescriptionMonth).toString(),
-          settlementMonth: new DateString(values.settlementMonth).toString(),
-          partnerUserId: values.partnerUser.userId,
-          file: values.file,
-        });
+    if (values.file === null) {
+      await alert('파일을 선택하세요.');
+      return;
+    }
 
-        if (response.errors && response.errors.length > 0) {
-          const error = response.errors[0];
+    try {
+      const response = await uploadEdiZip({
+        prescriptionMonth: new DateString(values.prescriptionMonth).toString(),
+        settlementMonth: new DateString(values.settlementMonth).toString(),
+        partnerUserId: values.partnerUser.userId,
+        file: values.file,
+      });
 
-          switch (error.error) {
-            case 'INVALID_EXTENSION':
-              await alert('첨부하신 파일중에 jpg, jpeg, png, pdf파일이 아닌 형식이 있습니다.');
-              break;
-            case 'INVALID_FILENAME_FORMAT':
-              await alert('첨부하신 파일중에 딜러명_거래처명_처방월 (홍길동_메디판다_202504)으로 입력하지 않은 파일명이 있습니다.');
-              break;
-            case 'DEALER_NOT_FOUND':
-            case 'PARTNER_NOT_FOUND':
-            case 'DRUG_COMPANY_NOT_FOUND':
-              await alert(`파일중 거래선으로 등록되지 않은 거래처가 있습니다.`);
-              break;
-            case 'INVALID_MONTH_FORMAT':
-              await alertError(`EDI 등록 중 오류가 발생했습니다.\n${error.error}(${error.fileName}): ${error.message}\n`);
-              break;
-            case 'DUPLICATE_DEALER_PARTNER_DRUG_COMPANY':
-              await alertError(`EDI 등록 중 오류가 발생했습니다.\n${error.error}(${error.fileName}): ${error.message}\n`);
-              break;
-            case 'DRUG_COMPANY_MISMATCH':
-              await alertError(`EDI 등록 중 오류가 발생했습니다.\n${error.error}(${error.fileName}): ${error.message}\n`);
-              break;
-          }
+      if (response.errors && response.errors.length > 0) {
+        const error = response.errors[0];
 
-          return;
+        switch (error.error) {
+          case 'INVALID_EXTENSION':
+            await alert('첨부하신 파일중에 jpg, jpeg, png, pdf파일이 아닌 형식이 있습니다.');
+            break;
+          case 'INVALID_FILENAME_FORMAT':
+            await alert('첨부하신 파일중에 딜러명_거래처명_처방월 (홍길동_메디판다_202504)으로 입력하지 않은 파일명이 있습니다.');
+            break;
+          case 'DEALER_NOT_FOUND':
+          case 'PARTNER_NOT_FOUND':
+          case 'DRUG_COMPANY_NOT_FOUND':
+            await alert(`파일중 거래선으로 등록되지 않은 거래처가 있습니다.`);
+            break;
+          case 'INVALID_MONTH_FORMAT':
+            await alertError(`EDI 등록 중 오류가 발생했습니다.\n${error.error}(${error.fileName}): ${error.message}\n`);
+            break;
+          case 'DUPLICATE_DEALER_PARTNER_DRUG_COMPANY':
+            await alertError(`EDI 등록 중 오류가 발생했습니다.\n${error.error}(${error.fileName}): ${error.message}\n`);
+            break;
+          case 'DRUG_COMPANY_MISMATCH':
+            await alertError(`EDI 등록 중 오류가 발생했습니다.\n${error.error}(${error.fileName}): ${error.message}\n`);
+            break;
         }
 
-        enqueueSnackbar('업로드가 완료되었습니다.', { variant: 'success' });
-        onSuccess?.();
-      } catch (error) {
-        console.error('Failed to upload rate table:', error);
-        await alertError('업로드 중 오류가 발생했습니다.');
+        return;
       }
-    },
-  });
+
+      enqueueSnackbar('업로드가 완료되었습니다.', { variant: 'success' });
+      onSuccess?.();
+    } catch (error) {
+      console.error('Failed to upload rate table:', error);
+      await alertError('업로드 중 오류가 발생했습니다.');
+    }
+  };
 
   const [memberSearchDialogOpen, setMemberSearchDialogOpen] = useState(false);
 
@@ -117,13 +119,13 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
           return;
         }
 
-        await formik.setFieldValue('file', acceptedFiles[0]);
+        await form.setValue('file', acceptedFiles[0]);
       }
     }, []),
   });
 
   const handleMemberSelect = (member: MemberResponse) => {
-    formik.setFieldValue('partnerUser', member);
+    form.setValue('partnerUser', member);
 
     setMemberSearchDialogOpen(false);
   };
@@ -136,39 +138,49 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
           <Stack direction='row' spacing={2} justifyContent='center' alignItems='center' sx={{ mt: 1, mb: 3 }}>
             <Typography variant='body1'>처방월 선택</Typography>
             <Box>
-              <DatePicker
-                value={formik.values.prescriptionMonth}
-                onChange={value => formik.setFieldValue('prescriptionMonth', value?.setDate(1) ?? null)}
-                format={DATEFORMAT_YYYY_MM}
-                views={['year', 'month']}
-                label='처방월'
-                slotProps={{
-                  textField: {
-                    size: 'small',
-                  },
-                }}
+              <Controller
+                control={form.control}
+                name={'prescriptionMonth'}
+                render={({ field }) => (
+                  <DatePicker
+                    {...field}
+                    format={DATEFORMAT_YYYY_MM}
+                    views={['month']}
+                    label='처방월'
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                      },
+                    }}
+                  />
+                )}
               />
             </Box>
             <Typography variant='body1'>정산월 선택</Typography>
             <Box>
-              <DatePicker
-                value={formik.values.settlementMonth}
-                onChange={value => formik.setFieldValue('settlementMonth', value?.setDate(1) ?? null)}
-                format={DATEFORMAT_YYYY_MM}
-                views={['year', 'month']}
-                label='정산월'
-                slotProps={{
-                  textField: {
-                    size: 'small',
-                  },
-                }}
+              <Controller
+                control={form.control}
+                name={'settlementMonth'}
+                render={({ field }) => (
+                  <DatePicker
+                    {...field}
+                    format={DATEFORMAT_YYYY_MM}
+                    views={['month']}
+                    label='정산월'
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                      },
+                    }}
+                  />
+                )}
               />
             </Box>
             <Box>
               <TextField
-                label={(formik.values.partnerUser?.name ?? '') !== '' ? '사용자명' : ''}
-                placeholder={(formik.values.partnerUser?.name ?? '') === '' ? '사용자명' : ''}
-                value={formik.values.partnerUser?.name ?? ''}
+                label={(form.getValues('partnerUser')?.name ?? '') !== '' ? '사용자명' : ''}
+                placeholder={(form.getValues('partnerUser')?.name ?? '') === '' ? '사용자명' : ''}
+                value={form.getValues('partnerUser')?.name ?? ''}
                 size='small'
                 required
                 InputProps={{
@@ -203,9 +215,9 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
             <Typography variant='h6' color='text.secondary'>
               여기에 파일을 드래그하거나 클릭하여 업로드하세요.
             </Typography>
-            {formik.values.file && (
+            {form.getValues('file') && (
               <Typography variant='body2' sx={{ mt: 1 }}>
-                선택된 파일: {formik.values.file.name}
+                선택된 파일: {form.getValues('file')!.name}
               </Typography>
             )}
           </Box>
@@ -217,12 +229,9 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
           <Button
             variant='contained'
             color='success'
-            onClick={formik.submitForm}
+            onClick={form.handleSubmit(submitHandler)}
             disabled={
-              formik.values.prescriptionMonth === null ||
-              formik.values.settlementMonth === null ||
-              formik.values.file === null ||
-              formik.isSubmitting
+              form.getValues('prescriptionMonth') === null || form.getValues('settlementMonth') === null || form.getValues('file') === null
             }
             sx={{ minWidth: 100 }}
           >

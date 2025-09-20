@@ -24,7 +24,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { ContractStatus, ContractStatusLabel, deletePartner, getPartners, type PartnerResponse } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
 import { useMpDeleteDialog } from '@/hooks/useMpDeleteDialog';
@@ -33,6 +33,7 @@ import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function MpAdminPartnerList() {
   const navigate = useNavigate();
@@ -60,31 +61,33 @@ export default function MpAdminPartnerList() {
   const { alert, alertError } = useMpModal();
   const { enqueueSnackbar } = useSnackbar();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       ...initialSearchParams,
-      page: null,
-    },
-    onSubmit: async values => {
-      if (values.searchType === '' && values.searchKeyword !== '') {
-        await alert('검색유형을 선택하세요.');
-        return;
-      }
-
-      const url = setUrlParams(
-        {
-          ...values,
-          page: 1,
-        },
-        initialSearchParams,
-      );
-
-      navigate(url);
-    },
-    onReset: () => {
-      navigate('');
     },
   });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.searchType === '' && values.searchKeyword !== '') {
+      await alert('검색유형을 선택하세요.');
+      return;
+    }
+
+    const url = setUrlParams(
+      {
+        ...values,
+        page: 1,
+      },
+      initialSearchParams,
+    );
+
+    navigate(url);
+  };
+
+  const handleReset = () => {
+    navigate('');
+    form.reset();
+  };
 
   const fetchContents = async () => {
     setLoading(true);
@@ -114,12 +117,9 @@ export default function MpAdminPartnerList() {
   };
 
   useEffect(() => {
-    formik.setValues({
-      searchType,
-      searchKeyword,
-      contractType,
-      page: null,
-    });
+    form.setValue('searchType', searchType);
+    form.setValue('searchKeyword', searchKeyword);
+    form.setValue('contractType', contractType);
     fetchContents();
   }, [searchType, searchKeyword, contractType, page]);
 
@@ -158,44 +158,53 @@ export default function MpAdminPartnerList() {
       <Typography variant='h4'>거래선관리</Typography>
 
       <Card sx={{ padding: 3 }}>
-        <MpSearchFilterBar component='form' onSubmit={formik.handleSubmit}>
+        <MpSearchFilterBar component='form' onSubmit={form.handleSubmit(submitHandler)}>
           <SearchFilterItem minWidth={140}>
             <FormControl fullWidth size='small'>
               <InputLabel>계약유형</InputLabel>
-              <Select name='contractType' value={formik.values.contractType} onChange={formik.handleChange}>
-                {Object.keys(ContractStatus).map(contractStatus => (
-                  <MenuItem key={contractStatus} value={contractStatus}>
-                    {ContractStatusLabel[contractStatus]}
-                  </MenuItem>
-                ))}
-              </Select>
+              <Controller
+                control={form.control}
+                name={'contractType'}
+                render={({ field }) => (
+                  <Select {...field}>
+                    {Object.keys(ContractStatus).map(contractStatus => (
+                      <MenuItem key={contractStatus} value={contractStatus}>
+                        {ContractStatusLabel[contractStatus]}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
             </FormControl>
           </SearchFilterItem>
           <SearchFilterItem minWidth={140}>
             <FormControl fullWidth size='small'>
               <InputLabel>검색유형</InputLabel>
-              <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
-                <MenuItem value={'companyName'}>회사명</MenuItem>
-                <MenuItem value={'institutionName'}>거래처명</MenuItem>
-                <MenuItem value={'institutionCode'}>거래처코드</MenuItem>
-              </Select>
+              <Controller
+                control={form.control}
+                name='searchType'
+                render={({ field }) => (
+                  <Select {...field}>
+                    <MenuItem value={'companyName'}>회사명</MenuItem>
+                    <MenuItem value={'institutionName'}>거래처명</MenuItem>
+                    <MenuItem value={'institutionCode'}>거래처코드</MenuItem>
+                  </Select>
+                )}
+              />
             </FormControl>
           </SearchFilterItem>
           <SearchFilterItem flexGrow={1} minWidth={200}>
-            <TextField
+            <Controller
+              control={form.control}
               name='searchKeyword'
-              size='small'
-              placeholder='검색어를 입력하세요'
-              fullWidth
-              value={formik.values.searchKeyword}
-              onChange={formik.handleChange}
+              render={({ field }) => <TextField {...field} size='small' label='검색어' fullWidth />}
             />
           </SearchFilterItem>
           <SearchFilterActions>
             <Button variant='contained' size='small' type='submit'>
               검색
             </Button>
-            <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
+            <Button variant='outlined' size='small' onClick={handleReset}>
               초기화
             </Button>
           </SearchFilterActions>

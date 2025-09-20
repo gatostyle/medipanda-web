@@ -13,8 +13,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { DateTimePicker } from '@mui/x-date-pickers';
-import { useFormik } from 'formik';
+import { DatePicker } from '@mui/x-date-pickers';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import {
   BannerScope,
   BannerScopeLabel,
@@ -25,9 +25,10 @@ import {
   getBanner,
   updateBanner,
 } from '@/backend';
-import { DateFix, DATEFORMAT_YYYY_MM_DD_HH_MM } from '@/lib/utils/dateFormat';
+import { DateFix, DATEFORMAT_YYYY_MM_DD } from '@/lib/utils/dateFormat';
 import { type ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function MpAdminBannerEdit() {
   const navigate = useNavigate();
@@ -40,8 +41,8 @@ export default function MpAdminBannerEdit() {
   const [imagePreview, setImagePreview] = useState<string>('');
   const { alert, alertError } = useMpModal();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       position: 'ALL',
       status: BannerStatus.VISIBLE as keyof typeof BannerStatus,
       scope: BannerScope.ENTIRE as keyof typeof BannerScope,
@@ -51,71 +52,72 @@ export default function MpAdminBannerEdit() {
       endAt: null as Date | null,
       displayOrder: 1,
     },
-    onSubmit: async values => {
-      if (values.title === '') {
-        await alert('배너제목을 입력하세요');
-        return;
-      }
-
-      if (!imageFile && isNew) {
-        await alert('배너이미지를 선택하세요');
-        return;
-      }
-
-      if (values.linkUrl === '') {
-        await alert('배너링크를 입력하세요');
-        return;
-      }
-
-      if (values.startAt === null) {
-        await alert('시작일을 선택하세요');
-        return;
-      }
-
-      if (values.endAt === null) {
-        await alert('종료일을 선택하세요');
-        return;
-      }
-
-      try {
-        if (isNew) {
-          await createBanner({
-            request: {
-              title: values.title,
-              linkUrl: values.linkUrl,
-              status: values.status,
-              scope: values.scope,
-              position: values.position,
-              displayOrder: values.displayOrder,
-              startAt: new DateTimeString(values.startAt),
-              endAt: new DateTimeString(values.endAt),
-            },
-            imageFile: imageFile!,
-          });
-          await alert('배너가 등록되었습니다');
-        } else {
-          await updateBanner(bannerId, {
-            request: {
-              position: values.position,
-              status: values.status,
-              scope: values.scope,
-              title: values.title,
-              linkUrl: values.linkUrl,
-              startAt: new DateTimeString(values.startAt),
-              endAt: new DateTimeString(values.endAt),
-              displayOrder: values.displayOrder,
-            },
-            imageFile: imageFile ?? undefined,
-          });
-          await alert('배너가 수정되었습니다');
-        }
-        navigate('/admin/banners');
-      } catch (error) {
-        console.error('Failed to save banner:', error);
-        await alertError('배너 저장 중 오류가 발생했습니다');
-      }
-    },
   });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.title === '') {
+      await alert('배너제목을 입력하세요');
+      return;
+    }
+
+    if (!imageFile && isNew) {
+      await alert('배너이미지를 선택하세요');
+      return;
+    }
+
+    if (values.linkUrl === '') {
+      await alert('배너링크를 입력하세요');
+      return;
+    }
+
+    if (values.startAt === null) {
+      await alert('시작일을 선택하세요');
+      return;
+    }
+
+    if (values.endAt === null) {
+      await alert('종료일을 선택하세요');
+      return;
+    }
+
+    try {
+      if (isNew) {
+        await createBanner({
+          request: {
+            title: values.title,
+            linkUrl: values.linkUrl,
+            status: values.status,
+            scope: values.scope,
+            position: values.position,
+            displayOrder: values.displayOrder,
+            startAt: new DateTimeString(values.startAt),
+            endAt: new DateTimeString(values.endAt),
+          },
+          imageFile: imageFile!,
+        });
+        await alert('배너가 등록되었습니다');
+      } else {
+        await updateBanner(bannerId, {
+          request: {
+            position: values.position,
+            status: values.status,
+            scope: values.scope,
+            title: values.title,
+            linkUrl: values.linkUrl,
+            startAt: new DateTimeString(values.startAt),
+            endAt: new DateTimeString(values.endAt),
+            displayOrder: values.displayOrder,
+          },
+          imageFile: imageFile ?? undefined,
+        });
+        await alert('배너가 수정되었습니다');
+      }
+      navigate('/admin/banners');
+    } catch (error) {
+      console.error('Failed to save banner:', error);
+      await alertError('배너 저장 중 오류가 발생했습니다');
+    }
+  };
 
   useEffect(() => {
     if (!isNew) {
@@ -133,7 +135,7 @@ export default function MpAdminBannerEdit() {
     try {
       const detail = await getBanner(bannerId);
 
-      formik.setValues({
+      form.reset({
         position: detail.position,
         status: detail.status,
         scope: detail.scope,
@@ -178,13 +180,19 @@ export default function MpAdminBannerEdit() {
               배너위치 <span style={{ color: 'red' }}>*</span>
             </Typography>
             <FormControl fullWidth size='small'>
-              <Select name='position' value={formik.values.position} onChange={formik.handleChange} displayEmpty>
-                <MenuItem value='ALL'>전체</MenuItem>
-                <MenuItem value='POPUP'>팝업배너</MenuItem>
-                <MenuItem value='PC_MAIN'>PC 메인</MenuItem>
-                <MenuItem value='PC_COMMUNITY'>PC 커뮤니티</MenuItem>
-                <MenuItem value='MOB_MAIN'>모바일 메인</MenuItem>
-              </Select>
+              <Controller
+                control={form.control}
+                name={'position'}
+                render={({ field }) => (
+                  <Select {...field} displayEmpty>
+                    <MenuItem value='ALL'>전체</MenuItem>
+                    <MenuItem value='POPUP'>팝업배너</MenuItem>
+                    <MenuItem value='PC_MAIN'>PC 메인</MenuItem>
+                    <MenuItem value='PC_COMMUNITY'>PC 커뮤니티</MenuItem>
+                    <MenuItem value='MOB_MAIN'>모바일 메인</MenuItem>
+                  </Select>
+                )}
+              />
             </FormControl>
           </Stack>
 
@@ -193,13 +201,19 @@ export default function MpAdminBannerEdit() {
               노출순서 <span style={{ color: 'red' }}>*</span>
             </Typography>
             <FormControl fullWidth size='small'>
-              <Select name='displayOrder' value={formik.values.displayOrder} onChange={formik.handleChange} displayEmpty>
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <MenuItem key={i + 1} value={i + 1}>
-                    {i + 1}
-                  </MenuItem>
-                ))}
-              </Select>
+              <Controller
+                control={form.control}
+                name={'displayOrder'}
+                render={({ field }) => (
+                  <Select {...field} displayEmpty>
+                    {Array.from({ length: 10 }).map((_, i) => (
+                      <MenuItem key={i + 1} value={i + 1}>
+                        {i + 1}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
             </FormControl>
           </Stack>
 
@@ -207,34 +221,46 @@ export default function MpAdminBannerEdit() {
             <Typography variant='body2' component='label'>
               노출상태 <span style={{ color: 'red' }}>*</span>
             </Typography>
-            <RadioGroup row name='status' value={formik.values.status} onChange={formik.handleChange}>
-              {Object.keys(BannerStatus).map(BannerStatus => (
-                <FormControlLabel
-                  key={BannerStatus}
-                  value={BannerStatus}
-                  control={<Radio size='small' />}
-                  label={BannerStatusLabel[BannerStatus]}
-                />
-              ))}
-            </RadioGroup>
+            <Controller
+              control={form.control}
+              name={'status'}
+              render={({ field }) => (
+                <RadioGroup {...field} row>
+                  {Object.keys(BannerStatus).map(BannerStatus => (
+                    <FormControlLabel
+                      key={BannerStatus}
+                      value={BannerStatus}
+                      control={<Radio size='small' />}
+                      label={BannerStatusLabel[BannerStatus]}
+                    />
+                  ))}
+                </RadioGroup>
+              )}
+            />
           </Stack>
 
           <Stack spacing={0.5}>
             <Typography variant='body2' component='label'>
               노출범위 <span style={{ color: 'red' }}>*</span>
             </Typography>
-            <RadioGroup row name='scope' value={formik.values.scope} onChange={formik.handleChange}>
-              {Object.keys(BannerScope).map(scope => (
-                <FormControlLabel key={scope} value={scope} control={<Radio size='small' />} label={BannerScopeLabel[scope]} />
-              ))}
-            </RadioGroup>
+            <Controller
+              control={form.control}
+              name={'scope'}
+              render={({ field }) => (
+                <RadioGroup {...field} row>
+                  {Object.keys(BannerScope).map(scope => (
+                    <FormControlLabel key={scope} value={scope} control={<Radio size='small' />} label={BannerScopeLabel[scope]} />
+                  ))}
+                </RadioGroup>
+              )}
+            />
           </Stack>
 
           <Stack spacing={0.5}>
             <Typography variant='body2' component='label'>
               배너제목 <span style={{ color: 'red' }}>*</span>
             </Typography>
-            <TextField name='title' fullWidth size='small' value={formik.values.title} onChange={formik.handleChange} />
+            <Controller control={form.control} name={'title'} render={({ field }) => <TextField {...field} fullWidth size='small' />} />
           </Stack>
 
           <Stack spacing={0.5}>
@@ -258,7 +284,7 @@ export default function MpAdminBannerEdit() {
             <Typography variant='body2' component='label'>
               배너링크 <span style={{ color: 'red' }}>*</span>
             </Typography>
-            <TextField name='linkUrl' fullWidth size='small' value={formik.values.linkUrl} onChange={formik.handleChange} />
+            <Controller control={form.control} name={'linkUrl'} render={({ field }) => <TextField {...field} fullWidth size='small' />} />
           </Stack>
 
           <Stack spacing={0.5}>
@@ -267,32 +293,44 @@ export default function MpAdminBannerEdit() {
             </Typography>
             <Stack direction='row' spacing={1} alignItems='center' flexWrap='wrap'>
               <Box sx={{ width: 200 }}>
-                <DateTimePicker
-                  value={formik.values.startAt}
-                  onChange={value => formik.setFieldValue('startAt', value)}
-                  format={DATEFORMAT_YYYY_MM_DD_HH_MM}
-                  label='시작일'
-                  slotProps={{
-                    textField: {
-                      size: 'small',
-                    },
-                  }}
+                <Controller
+                  control={form.control}
+                  name={'startAt'}
+                  render={({ field }) => (
+                    <DatePicker
+                      {...field}
+                      format={DATEFORMAT_YYYY_MM_DD}
+                      views={['year', 'month', 'day']}
+                      label='시작일'
+                      slotProps={{
+                        textField: {
+                          size: 'small',
+                        },
+                      }}
+                    />
+                  )}
                 />
               </Box>
               <Typography variant='body1' sx={{ mx: 1 }}>
                 ~
               </Typography>
               <Box sx={{ width: 200 }}>
-                <DateTimePicker
-                  value={formik.values.endAt}
-                  onChange={value => formik.setFieldValue('endAt', value)}
-                  format={DATEFORMAT_YYYY_MM_DD_HH_MM}
-                  label='종료일'
-                  slotProps={{
-                    textField: {
-                      size: 'small',
-                    },
-                  }}
+                <Controller
+                  control={form.control}
+                  name={'endAt'}
+                  render={({ field }) => (
+                    <DatePicker
+                      {...field}
+                      format={DATEFORMAT_YYYY_MM_DD}
+                      views={['year', 'month', 'day']}
+                      label='종료일'
+                      slotProps={{
+                        textField: {
+                          size: 'small',
+                        },
+                      }}
+                    />
+                  )}
                 />
               </Box>
             </Stack>
@@ -313,7 +351,7 @@ export default function MpAdminBannerEdit() {
             <Button
               variant='contained'
               size='medium'
-              onClick={formik.submitForm}
+              onClick={form.handleSubmit(submitHandler)}
               sx={{
                 minWidth: 100,
               }}

@@ -23,7 +23,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import {
   DateTimeString,
   getAllSido,
@@ -41,6 +41,7 @@ import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function MpAdminHospitalList() {
   const navigate = useNavigate();
@@ -84,32 +85,35 @@ export default function MpAdminHospitalList() {
   const { enqueueSnackbar } = useSnackbar();
   const deleteDialog = useMpDeleteDialog();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       ...initialSearchParams,
       sido: -1,
       sigungu: -1,
       startDate: null as Date | null,
       endDate: null as Date | null,
-      page: null,
-    },
-    onSubmit: async values => {
-      const url = setUrlParams(
-        {
-          ...values,
-          startDate: values.startDate !== null ? formatYyyyMmDd(values.startDate) : undefined,
-          endDate: values.endDate !== null ? formatYyyyMmDd(values.endDate) : undefined,
-          page: 1,
-        },
-        initialSearchParams,
-      );
-
-      navigate(url);
-    },
-    onReset: () => {
-      navigate('');
     },
   });
+  const formSido = form.watch('sido');
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    const url = setUrlParams(
+      {
+        ...values,
+        startDate: values.startDate !== null ? formatYyyyMmDd(values.startDate) : undefined,
+        endDate: values.endDate !== null ? formatYyyyMmDd(values.endDate) : undefined,
+        page: 1,
+      },
+      initialSearchParams,
+    );
+
+    navigate(url);
+  };
+
+  const handleReset = () => {
+    navigate('');
+    form.reset();
+  };
 
   const fetchContents = async () => {
     setLoading(true);
@@ -137,14 +141,11 @@ export default function MpAdminHospitalList() {
   };
 
   useEffect(() => {
-    formik.setValues({
-      searchKeyword,
-      sido,
-      sigungu,
-      startDate,
-      endDate,
-      page: null,
-    });
+    form.setValue('searchKeyword', searchKeyword);
+    form.setValue('sido', sido);
+    form.setValue('sigungu', sigungu);
+    form.setValue('startDate', startDate);
+    form.setValue('endDate', endDate);
     fetchContents();
   }, [searchKeyword, sido, sigungu, startDate, endDate, page]);
 
@@ -200,81 +201,101 @@ export default function MpAdminHospitalList() {
       <Typography variant='h4'>개원병원페이지</Typography>
 
       <Card sx={{ padding: 3 }}>
-        <MpSearchFilterBar component='form' onSubmit={formik.handleSubmit}>
+        <MpSearchFilterBar component='form' onSubmit={form.handleSubmit(submitHandler)}>
           <SearchFilterItem minWidth={140}>
             <FormControl fullWidth size='small'>
               <InputLabel>시/도</InputLabel>
-              <Select
+              <Controller
+                control={form.control}
                 name='sido'
-                value={formik.values.sido === -1 ? '' : formik.values.sido}
-                onChange={event => {
-                  formik.handleChange(event);
-                  formik.setFieldValue('sigungu', -1);
-                }}
-              >
-                {sidoList.map(region => (
-                  <MenuItem key={region.id} value={region.id}>
-                    {region.name}
-                  </MenuItem>
-                ))}
-              </Select>
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    value={field.value === -1 ? '' : field.value}
+                    onChange={event => {
+                      // field.onChange(event);
+                      form.setValue('sido', event.target.value);
+                      form.setValue('sigungu', -1);
+                    }}
+                  >
+                    {sidoList.map(region => (
+                      <MenuItem key={region.id} value={region.id}>
+                        {region.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
             </FormControl>
           </SearchFilterItem>
           <SearchFilterItem minWidth={140}>
             <FormControl fullWidth size='small'>
               <InputLabel>시/군/구</InputLabel>
-              <Select name='sigungu' value={formik.values.sigungu === -1 ? '' : formik.values.sigungu} onChange={formik.handleChange}>
-                {(sigunguList[formik.values.sido] ?? []).map(region => (
-                  <MenuItem key={region.id} value={region.id}>
-                    {region.name}
-                  </MenuItem>
-                ))}
-              </Select>
+              <Controller
+                control={form.control}
+                name='sigungu'
+                render={({ field }) => (
+                  <Select {...field} value={field.value === -1 ? '' : field.value}>
+                    {(sigunguList[formSido] ?? []).map(region => (
+                      <MenuItem key={region.id} value={region.id}>
+                        {region.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
             </FormControl>
           </SearchFilterItem>
           <SearchFilterItem minWidth={140}>
-            <DatePicker
-              value={formik.values.startDate}
-              onChange={value => formik.setFieldValue('startDate', value)}
-              format={DATEFORMAT_YYYY_MM_DD}
-              views={['year', 'month', 'day']}
-              label='시작일'
-              slotProps={{
-                textField: {
-                  size: 'small',
-                },
-              }}
+            <Controller
+              control={form.control}
+              name={'startDate'}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  format={DATEFORMAT_YYYY_MM_DD}
+                  views={['year', 'month', 'day']}
+                  label='시작일'
+                  slotProps={{
+                    textField: {
+                      size: 'small',
+                    },
+                  }}
+                />
+              )}
             />
           </SearchFilterItem>
           <SearchFilterItem minWidth={140}>
-            <DatePicker
-              value={formik.values.endDate}
-              onChange={value => formik.setFieldValue('endDate', value)}
-              format={DATEFORMAT_YYYY_MM_DD}
-              views={['year', 'month', 'day']}
-              label='종료일'
-              slotProps={{
-                textField: {
-                  size: 'small',
-                },
-              }}
+            <Controller
+              control={form.control}
+              name={'endDate'}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  format={DATEFORMAT_YYYY_MM_DD}
+                  views={['year', 'month', 'day']}
+                  label='종료일'
+                  slotProps={{
+                    textField: {
+                      size: 'small',
+                    },
+                  }}
+                />
+              )}
             />
           </SearchFilterItem>
           <SearchFilterItem flexGrow={1} minWidth={200}>
-            <TextField
+            <Controller
+              control={form.control}
               name='searchKeyword'
-              size='small'
-              placeholder='검색어를 입력하세요'
-              fullWidth
-              value={formik.values.searchKeyword}
-              onChange={formik.handleChange}
+              render={({ field }) => <TextField {...field} size='small' label='검색어' fullWidth />}
             />
           </SearchFilterItem>
           <SearchFilterActions>
             <Button variant='contained' size='small' type='submit'>
               검색
             </Button>
-            <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
+            <Button variant='outlined' size='small' onClick={handleReset}>
               초기화
             </Button>
           </SearchFilterActions>

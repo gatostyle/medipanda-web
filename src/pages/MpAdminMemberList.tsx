@@ -22,7 +22,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { DocumentDownload } from 'iconsax-reactjs';
 import {
   ContractStatus,
@@ -40,6 +40,7 @@ import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function MpAdminMemberList() {
   const navigate = useNavigate();
@@ -73,40 +74,42 @@ export default function MpAdminMemberList() {
 
   const { alert, alertError } = useMpModal();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       ...initialSearchParams,
       startAt: null as Date | null,
       endAt: null as Date | null,
-      page: null,
-    },
-    onSubmit: async values => {
-      if (values.searchType === '' && values.searchKeyword !== '') {
-        await alert('검색유형을 선택하세요.');
-        return;
-      }
-
-      if (values.searchType === 'memberId' && values.searchKeyword !== '' && Number.isNaN(Number(values.searchKeyword))) {
-        await alert('회원번호는 숫자만 입력할 수 있습니다.');
-        return;
-      }
-
-      const url = setUrlParams(
-        {
-          ...values,
-          startAt: values.startAt !== null ? formatYyyyMmDd(values.startAt) : undefined,
-          endAt: values.endAt !== null ? formatYyyyMmDd(values.endAt) : undefined,
-          page: 1,
-        },
-        initialSearchParams,
-      );
-
-      navigate(url);
-    },
-    onReset: () => {
-      navigate('');
     },
   });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.searchType === '' && values.searchKeyword !== '') {
+      await alert('검색유형을 선택하세요.');
+      return;
+    }
+
+    if (values.searchType === 'memberId' && values.searchKeyword !== '' && Number.isNaN(Number(values.searchKeyword))) {
+      await alert('회원번호는 숫자만 입력할 수 있습니다.');
+      return;
+    }
+
+    const url = setUrlParams(
+      {
+        ...values,
+        startAt: values.startAt !== null ? formatYyyyMmDd(values.startAt) : undefined,
+        endAt: values.endAt !== null ? formatYyyyMmDd(values.endAt) : undefined,
+        page: 1,
+      },
+      initialSearchParams,
+    );
+
+    navigate(url);
+  };
+
+  const handleReset = () => {
+    navigate('');
+    form.reset();
+  };
 
   const fetchContents = async () => {
     setLoading(true);
@@ -140,14 +143,11 @@ export default function MpAdminMemberList() {
   };
 
   useEffect(() => {
-    formik.setValues({
-      searchType,
-      searchKeyword,
-      startAt,
-      endAt,
-      contractStatus,
-      page: null,
-    });
+    form.setValue('searchType', searchType);
+    form.setValue('searchKeyword', searchKeyword);
+    form.setValue('startAt', startAt);
+    form.setValue('endAt', endAt);
+    form.setValue('contractStatus', contractStatus);
     fetchContents();
   }, [searchType, searchKeyword, startAt, endAt, contractStatus, page]);
 
@@ -156,75 +156,94 @@ export default function MpAdminMemberList() {
       <Typography variant='h4'>회원관리</Typography>
 
       <Card sx={{ padding: 3 }}>
-        <MpSearchFilterBar component='form' onSubmit={formik.handleSubmit}>
+        <MpSearchFilterBar component='form' onSubmit={form.handleSubmit(submitHandler)}>
           <SearchFilterItem minWidth={140}>
             <FormControl fullWidth size='small'>
               <InputLabel>계약상태</InputLabel>
-              <Select name='contractStatus' value={formik.values.contractStatus} onChange={formik.handleChange}>
-                {Object.keys(ContractStatus).map(contractStatus => (
-                  <MenuItem key={contractStatus} value={contractStatus}>
-                    {ContractStatusLabel[contractStatus]}
-                  </MenuItem>
-                ))}
-              </Select>
+              <Controller
+                control={form.control}
+                name={'contractStatus'}
+                render={({ field }) => (
+                  <Select {...field}>
+                    {Object.keys(ContractStatus).map(contractStatus => (
+                      <MenuItem key={contractStatus} value={contractStatus}>
+                        {ContractStatusLabel[contractStatus]}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
             </FormControl>
           </SearchFilterItem>
           <SearchFilterItem minWidth={140}>
             <FormControl fullWidth size='small'>
               <InputLabel>검색유형</InputLabel>
-              <Select name='searchType' value={formik.values.searchType} onChange={formik.handleChange}>
-                <MenuItem value={'name'}>회원명</MenuItem>
-                <MenuItem value={'memberId'}>회원번호</MenuItem>
-                <MenuItem value={'userId'}>아이디</MenuItem>
-                <MenuItem value={'phoneNumber'}>연락처</MenuItem>
-                <MenuItem value={'email'}>이메일</MenuItem>
-                <MenuItem value={'companyName'}>회사명</MenuItem>
-              </Select>
+              <Controller
+                control={form.control}
+                name='searchType'
+                render={({ field }) => (
+                  <Select {...field}>
+                    <MenuItem value={'name'}>회원명</MenuItem>
+                    <MenuItem value={'memberId'}>회원번호</MenuItem>
+                    <MenuItem value={'userId'}>아이디</MenuItem>
+                    <MenuItem value={'phoneNumber'}>연락처</MenuItem>
+                    <MenuItem value={'email'}>이메일</MenuItem>
+                    <MenuItem value={'companyName'}>회사명</MenuItem>
+                  </Select>
+                )}
+              />
             </FormControl>
           </SearchFilterItem>
           <SearchFilterItem minWidth={140}>
-            <DatePicker
-              value={formik.values.startAt}
-              onChange={value => formik.setFieldValue('startAt', value)}
-              format={DATEFORMAT_YYYY_MM_DD}
-              views={['year', 'month', 'day']}
-              label='시작일'
-              slotProps={{
-                textField: {
-                  size: 'small',
-                },
-              }}
+            <Controller
+              control={form.control}
+              name={'startAt'}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  format={DATEFORMAT_YYYY_MM_DD}
+                  views={['year', 'month', 'day']}
+                  label='시작일'
+                  slotProps={{
+                    textField: {
+                      size: 'small',
+                    },
+                  }}
+                />
+              )}
             />
           </SearchFilterItem>
           <SearchFilterItem minWidth={140}>
-            <DatePicker
-              value={formik.values.endAt}
-              onChange={value => formik.setFieldValue('endAt', value)}
-              format={DATEFORMAT_YYYY_MM_DD}
-              views={['year', 'month', 'day']}
-              label='종료일'
-              slotProps={{
-                textField: {
-                  size: 'small',
-                },
-              }}
+            <Controller
+              control={form.control}
+              name={'endAt'}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  format={DATEFORMAT_YYYY_MM_DD}
+                  views={['year', 'month', 'day']}
+                  label='종료일'
+                  slotProps={{
+                    textField: {
+                      size: 'small',
+                    },
+                  }}
+                />
+              )}
             />
           </SearchFilterItem>
           <SearchFilterItem flexGrow={1} minWidth={200}>
-            <TextField
+            <Controller
+              control={form.control}
               name='searchKeyword'
-              size='small'
-              label='검색어를 입력하세요'
-              fullWidth
-              value={formik.values.searchKeyword}
-              onChange={formik.handleChange}
+              render={({ field }) => <TextField {...field} size='small' label='검색어' fullWidth />}
             />
           </SearchFilterItem>
           <SearchFilterActions>
             <Button variant='contained' size='small' type='submit'>
               검색
             </Button>
-            <Button variant='outlined' size='small' onClick={() => formik.resetForm()}>
+            <Button variant='outlined' size='small' onClick={handleReset}>
               초기화
             </Button>
           </SearchFilterActions>
