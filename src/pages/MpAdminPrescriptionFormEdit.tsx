@@ -265,7 +265,7 @@ export default function MpAdminPrescriptionFormEdit() {
         drugCompany: formDetail.drugCompany,
         drugCompanyCode: formDetail.drugCompanyCode,
         companyName: formDetail.companyName,
-        institutionName: formDetail.partnerName,
+        institutionName: formDetail.institutionName,
         institutionCode: formDetail.institutionCode,
         businessNumber: normalizeBusinessNumber(formDetail.businessNumber),
         dealerName: formDetail.dealerName,
