@@ -2,7 +2,7 @@
 
 set -e
 
-DEV_SERVER_HOST="3.36.74.90"
+DEV_SERVER_HOST="43.202.151.248"
 DEV_DEPLOY_HOST="admin.dev.medipanda.co.kr"
 PROD_SERVER_HOST="3.39.216.231"
 PROD_DEPLOY_HOST="admin.medipanda.co.kr"
