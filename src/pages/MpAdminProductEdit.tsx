@@ -163,13 +163,15 @@ export default function MpAdminProductEdit() {
       navigate('/admin/products');
     } catch (error) {
       if (isAxiosError(error)) {
-        if (
-          error.response !== undefined &&
-          typeof error.response.data === 'string' &&
-          error.response.data.startsWith('Bad request: Invalid product code format:')
-        ) {
-          await alert(`"${values.productCode}"는 잘못된 코드 형식입니다.`);
-          return;
+        switch (true) {
+          case typeof error.response?.data === 'string' && error.response.data.startsWith('Bad request: Invalid product code format:'):
+            await alert(`제품코드 "${values.productCode}"는 잘못된 코드 형식입니다.`);
+            return;
+          case typeof error.response?.data === 'string' && error.response.data.startsWith('Bad request: Product not found. code='):
+            await alert(`제품코드 "${values.productCode}"에 해당하는 제품을 찾을 수 없습니다.`);
+            return;
+          default:
+            break;
         }
       }
 
