@@ -225,6 +225,7 @@ export default function MpAdminMemberEdit() {
   const handleCsoUpload = async () => {
     const input = document.createElement('input');
     input.type = 'file';
+    input.accept = '.pdf';
     input.onchange = async event => {
       const file = (event.target as HTMLInputElement).files?.[0];
       if (!file) return;
