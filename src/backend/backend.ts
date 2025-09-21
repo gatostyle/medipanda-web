@@ -923,6 +923,7 @@ export interface PartnerResponse {
   institutionName: string;
   medicalDepartment: string | null;
   memberName: string;
+  memberType: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
   note: string | null;
   pharmacyAddress: string | null;
   pharmacyName: string | null;
@@ -2935,8 +2936,11 @@ export async function getContractDetails(userId: string): Promise<PartnerContrac
 export async function getPartners(options?: {
   companyName?: string;
   institutionName?: string;
+  drugCompanyName?: string;
+  memberName?: string;
   institutionCode?: string;
   contractType?: 'CONTRACT' | 'NON_CONTRACT';
+  memberType?: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
   page?: number;
   size?: number;
 }): Promise<PagePartnerResponse> {

@@ -25,7 +25,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
-import { ContractStatus, ContractStatusLabel, deletePartner, getPartners, type PartnerResponse } from '@/backend';
+import { deletePartner, getPartners, MemberType, MemberTypeLabel, type PartnerResponse } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
 import { useMpDeleteDialog } from '@/hooks/useMpDeleteDialog';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
@@ -39,13 +39,13 @@ export default function MpAdminPartnerList() {
   const navigate = useNavigate();
 
   const initialSearchParams = {
-    searchType: 'companyName' as 'companyName' | 'institutionName' | 'institutionCode' | '',
+    searchType: 'companyName' as 'companyName' | 'institutionName' | 'institutionCode' | 'drugCompanyName' | 'memberName' | '',
     searchKeyword: '',
-    contractType: '' as keyof typeof ContractStatus | '',
+    memberType: '' as keyof typeof MemberType | '',
     page: '1',
   };
 
-  const { searchType, searchKeyword, contractType, page: paramPage } = useSearchParamsOrDefault(initialSearchParams);
+  const { searchType, searchKeyword, memberType, page: paramPage } = useSearchParamsOrDefault(initialSearchParams);
   const page = Number(paramPage);
   const pageSize = 20;
 
@@ -97,7 +97,9 @@ export default function MpAdminPartnerList() {
         companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
         institutionName: searchType === 'institutionName' && searchKeyword !== '' ? searchKeyword : undefined,
         institutionCode: searchType === 'institutionCode' && searchKeyword !== '' ? searchKeyword : undefined,
-        contractType: contractType !== '' ? contractType : undefined,
+        drugCompanyName: searchType === 'drugCompanyName' && searchKeyword !== '' ? searchKeyword : undefined,
+        memberName: searchType === 'memberName' && searchKeyword !== '' ? searchKeyword : undefined,
+        memberType: memberType !== '' ? memberType : undefined,
         page: page - 1,
         size: pageSize,
       });
@@ -119,9 +121,9 @@ export default function MpAdminPartnerList() {
   useEffect(() => {
     form.setValue('searchType', searchType);
     form.setValue('searchKeyword', searchKeyword);
-    form.setValue('contractType', contractType);
+    form.setValue('memberType', memberType);
     fetchContents();
-  }, [searchType, searchKeyword, contractType, page]);
+  }, [searchType, searchKeyword, memberType, page]);
 
   const handleDelete = async () => {
     if (selectedIds.length === 0) {
@@ -164,12 +166,12 @@ export default function MpAdminPartnerList() {
               <InputLabel>계약유형</InputLabel>
               <Controller
                 control={form.control}
-                name={'contractType'}
+                name={'memberType'}
                 render={({ field }) => (
                   <Select {...field}>
-                    {Object.keys(ContractStatus).map(contractStatus => (
-                      <MenuItem key={contractStatus} value={contractStatus}>
-                        {ContractStatusLabel[contractStatus]}
+                    {[MemberType.INDIVIDUAL, MemberType.ORGANIZATION].map(memberType => (
+                      <MenuItem key={memberType} value={memberType}>
+                        {MemberTypeLabel[memberType]}
                       </MenuItem>
                     ))}
                   </Select>
@@ -188,6 +190,8 @@ export default function MpAdminPartnerList() {
                     <MenuItem value={'companyName'}>회사명</MenuItem>
                     <MenuItem value={'institutionName'}>거래처명</MenuItem>
                     <MenuItem value={'institutionCode'}>거래처코드</MenuItem>
+                    <MenuItem value={'drugCompanyName'}>제약사명</MenuItem>
+                    <MenuItem value={'memberName'}>회원명</MenuItem>
                   </Select>
                 )}
               />
@@ -291,7 +295,7 @@ export default function MpAdminPartnerList() {
                     <TableCell>{item.sequence}</TableCell>
                     <TableCell>{item.drugCompanyName}</TableCell>
                     <TableCell>{item.companyName}</TableCell>
-                    <TableCell>{ContractStatusLabel[item.contractType]}</TableCell>
+                    <TableCell>{MemberTypeLabel[item.memberType]}</TableCell>
                     <TableCell>{item.institutionCode}</TableCell>
                     <TableCell>
                       <Link component={RouterLink} to={`/admin/partners/${item.id}/edit`}>

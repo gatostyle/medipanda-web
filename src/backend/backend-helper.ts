@@ -157,6 +157,13 @@ export const MemberType = {
   ORGANIZATION: 'ORGANIZATION',
 } as const;
 
+export const MemberTypeLabel: Record<keyof typeof MemberType, string> = {
+  [MemberType.NONE]: '프리랜서',
+  [MemberType.CSO]: 'CSO',
+  [MemberType.INDIVIDUAL]: '개인',
+  [MemberType.ORGANIZATION]: '법인',
+};
+
 export function memberTypeToContractStatus(memberType: keyof typeof MemberType): keyof typeof ContractStatus {
   switch (memberType) {
     case MemberType.NONE:
