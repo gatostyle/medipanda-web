@@ -73,15 +73,29 @@ export default function MpAdminProductEdit() {
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
     const price = Number(values.price.replace(/,/g, ''));
-    const feeRate = Number(values.feeRate);
     const changedFeeRate = Number(values.changedFeeRate);
 
-    if (feeRate < 0 || feeRate > 100) {
-      await alert('기본수수료율은 0 이상 100 이하이어야 합니다.');
-      return;
-    }
+    if (isNew) {
+      if (values.manufacturer === '') {
+        await alert('제약사를 입력하세요.');
+        return;
+      }
 
-    if (!isNew) {
+      if (values.productName === '') {
+        await alert('제품명을 입력하세요.');
+        return;
+      }
+
+      if (values.composition === '') {
+        await alert('성분명을 입력하세요.');
+        return;
+      }
+
+      if (values.productCode === '') {
+        await alert('제품코드를 입력하세요.');
+        return;
+      }
+    } else {
       if (detail!.changedFeeRate === null ? changedFeeRate !== 0 : changedFeeRate !== detail!.changedFeeRate) {
         if (values.changedMonth === null) {
           await alert('변경월을 선택하세요.');
@@ -301,7 +315,7 @@ export default function MpAdminProductEdit() {
                     fullWidth
                     size='small'
                     onChange={e => {
-                      field.onChange(normalizeLocaleNumber(e.target.value));
+                      field.onChange(normalizeLocaleNumber(e.target.value, { min: 0 }));
                     }}
                     disabled={!isNew}
                     InputProps={{
