@@ -82,6 +82,8 @@ export default function MpAdminCommunityCommentList() {
       endAt: null as Date | null,
     },
   });
+  const formStartAt = form.watch('startAt');
+  const formEndAt = form.watch('endAt');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
     if (values.searchType === '' && values.searchKeyword !== '') {
@@ -217,6 +219,7 @@ export default function MpAdminCommunityCommentList() {
                   {...field}
                   format={DATEFORMAT_YYYY_MM_DD}
                   views={['year', 'month', 'day']}
+                  maxDate={formEndAt ?? undefined}
                   label='시작일'
                   slotProps={{
                     textField: {
@@ -236,6 +239,7 @@ export default function MpAdminCommunityCommentList() {
                   {...field}
                   format={DATEFORMAT_YYYY_MM_DD}
                   views={['year', 'month', 'day']}
+                  minDate={formStartAt ?? undefined}
                   label='종료일'
                   slotProps={{
                     textField: {

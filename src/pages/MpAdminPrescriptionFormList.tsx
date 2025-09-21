@@ -36,7 +36,7 @@ import {
 } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
 import { useMpDeleteDialog } from '@/hooks/useMpDeleteDialog';
-import { DATEFORMAT_YYYY_MM, formatYyyyMm, formatYyyyMmDd, SafeDate } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM, DAY_TO_MILLISECONDS, formatYyyyMm, formatYyyyMmDd, SafeDate } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
@@ -86,6 +86,8 @@ export default function MpAdminPrescriptionFormList() {
       prescriptionMonthEnd: null as Date | null,
     },
   });
+  const formPrescriptionMonthStart = form.watch('prescriptionMonthStart');
+  const formPrescriptionMonthEnd = form.watch('prescriptionMonthEnd');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
     if (values.searchType === '' && values.searchKeyword !== '') {
@@ -231,6 +233,9 @@ export default function MpAdminPrescriptionFormList() {
                   {...field}
                   format={DATEFORMAT_YYYY_MM}
                   views={['year', 'month']}
+                  maxDate={
+                    formPrescriptionMonthEnd !== null ? new Date(formPrescriptionMonthEnd.getTime() + DAY_TO_MILLISECONDS) : undefined
+                  }
                   label='처방 시작월'
                   slotProps={{
                     textField: {
@@ -250,6 +255,9 @@ export default function MpAdminPrescriptionFormList() {
                   {...field}
                   format={DATEFORMAT_YYYY_MM}
                   views={['year', 'month']}
+                  minDate={
+                    formPrescriptionMonthStart !== null ? new Date(formPrescriptionMonthStart.getTime() - DAY_TO_MILLISECONDS) : undefined
+                  }
                   label='처방 종료월'
                   slotProps={{
                     textField: {

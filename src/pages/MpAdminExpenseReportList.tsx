@@ -81,6 +81,8 @@ export default function MpAdminExpenseReportList() {
       eventDateTo: null as Date | null,
     },
   });
+  const formEventDateFrom = form.watch('eventDateFrom');
+  const formEventDateTo = form.watch('eventDateTo');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
     if (values.searchType === '' && values.searchKeyword !== '') {
@@ -212,6 +214,7 @@ export default function MpAdminExpenseReportList() {
                   {...field}
                   format={DATEFORMAT_YYYY_MM_DD}
                   views={['year', 'month', 'day']}
+                  maxDate={formEventDateTo ?? undefined}
                   label='시작일'
                   slotProps={{
                     textField: {
@@ -231,6 +234,7 @@ export default function MpAdminExpenseReportList() {
                   {...field}
                   format={DATEFORMAT_YYYY_MM_DD}
                   views={['year', 'month', 'day']}
+                  minDate={formEventDateFrom ?? undefined}
                   label='종료일'
                   slotProps={{
                     textField: {

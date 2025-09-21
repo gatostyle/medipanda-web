@@ -95,6 +95,8 @@ export default function MpAdminHospitalList() {
     },
   });
   const formSido = form.watch('sido');
+  const formStartDate = form.watch('startDate');
+  const formEndDate = form.watch('endDate');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
     const url = setUrlParams(
@@ -255,6 +257,7 @@ export default function MpAdminHospitalList() {
                   {...field}
                   format={DATEFORMAT_YYYY_MM_DD}
                   views={['year', 'month', 'day']}
+                  maxDate={formEndDate ?? undefined}
                   label='시작일'
                   slotProps={{
                     textField: {
@@ -274,6 +277,7 @@ export default function MpAdminHospitalList() {
                   {...field}
                   format={DATEFORMAT_YYYY_MM_DD}
                   views={['year', 'month', 'day']}
+                  minDate={formStartDate ?? undefined}
                   label='종료일'
                   slotProps={{
                     textField: {
