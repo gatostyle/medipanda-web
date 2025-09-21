@@ -39,7 +39,7 @@ export default function MpAdminPartnerList() {
   const navigate = useNavigate();
 
   const initialSearchParams = {
-    searchType: '' as 'companyName' | 'institutionName' | 'institutionCode' | '',
+    searchType: 'companyName' as 'companyName' | 'institutionName' | 'institutionCode' | '',
     searchKeyword: '',
     contractType: '' as keyof typeof ContractStatus | '',
     page: '1',
