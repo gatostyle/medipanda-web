@@ -189,7 +189,7 @@ export const PartnerContractStatusLabel: Record<keyof typeof PartnerContractStat
   [PartnerContractStatus.PENDING]: '미계약',
   [PartnerContractStatus.APPROVED]: '계약중',
   [PartnerContractStatus.REJECTED]: '반려',
-  [PartnerContractStatus.CANCELLED]: '계약 종료',
+  [PartnerContractStatus.CANCELLED]: '미계약',
 };
 
 export const SettlementStatus = {
