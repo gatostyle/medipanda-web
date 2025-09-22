@@ -144,6 +144,11 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
   const formEndDate = form.watch('endDate');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    const editorContent = editor
+      .getHTML()
+      .replace(/^<p><\/p>$/, '')
+      .trim();
+
     if (values.clientName === '') {
       await alert('위탁사명은 필수입니다');
       return;
@@ -186,7 +191,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
             nickname: session!.name,
             hiddenNickname: false,
             title: values.productName,
-            content: editor.getHTML(),
+            content: editorContent,
             parentId: null,
             isExposed: values.isExposed,
             exposureRange: values.exposureRange,
@@ -212,7 +217,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
         await updateSalesAgencyProductBoard(detail!.productId, {
           boardPostUpdateRequest: {
             title: values.productName,
-            content: editor.getHTML(),
+            content: editorContent,
             hiddenNickname: null,
             isBlind: null,
             isExposed: values.isExposed,

@@ -60,6 +60,11 @@ export default function MpAdminAtoZEdit() {
   const formNewFiles = form.watch('newFiles');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    const editorContent = editor
+      .getHTML()
+      .replace(/^<p><\/p>$/, '')
+      .trim();
+
     if (values.title === '') {
       await alert('제목을 입력하세요.');
       return;
@@ -71,7 +76,7 @@ export default function MpAdminAtoZEdit() {
           request: {
             boardType: BoardType.CSO_A_TO_Z,
             title: values.title,
-            content: editor.getHTML(),
+            content: editorContent,
             userId: session!.userId,
             nickname: session!.name,
             hiddenNickname: false,
@@ -88,7 +93,7 @@ export default function MpAdminAtoZEdit() {
         await updateBoardPost(boardId, {
           updateRequest: {
             title: values.title,
-            content: editor.getHTML(),
+            content: editorContent,
             hiddenNickname: null,
             isBlind: null,
             isExposed: values.isExposed,

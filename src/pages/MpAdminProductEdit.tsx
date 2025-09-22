@@ -74,6 +74,10 @@ export default function MpAdminProductEdit() {
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
     const price = Number(values.price.replace(/,/g, ''));
     const changedFeeRate = Number(values.changedFeeRate);
+    const editorContent = editor
+      .getHTML()
+      .replace(/^<p><\/p>$/, '')
+      .trim();
 
     if (isNew) {
       if (values.manufacturer === '') {
@@ -113,7 +117,7 @@ export default function MpAdminProductEdit() {
             nickname: session!.userId,
             hiddenNickname: false,
             title: values.productName,
-            content: editor.getHTML(),
+            content: editorContent,
             parentId: null,
             isExposed: true,
             editorFileIds: editorAttachments.map(image => image.s3fileId),
@@ -131,7 +135,7 @@ export default function MpAdminProductEdit() {
             feeRate: String(PercentUtils.percentStringToDecimal(values.feeRate)),
             price: price,
             note: values.note,
-            detailInfo: editor.getHTML(),
+            detailInfo: editorContent,
             isPromotion: values.isPromotion,
             isOutOfStock: values.isOutOfStock,
             isStopSelling: values.isStopSelling,
@@ -144,7 +148,7 @@ export default function MpAdminProductEdit() {
         await updateProductExtraInfo(productId, {
           boardPostUpdateRequest: {
             title: values.productName,
-            content: editor.getHTML(),
+            content: editorContent,
             hiddenNickname: null,
             isBlind: null,
             isExposed: null,
@@ -164,7 +168,7 @@ export default function MpAdminProductEdit() {
             feeRate: String(PercentUtils.percentStringToDecimal(values.feeRate)),
             price: price,
             note: values.note,
-            detailInfo: editor.getHTML(),
+            detailInfo: editorContent,
             isPromotion: values.isPromotion,
             isOutOfStock: values.isOutOfStock,
             isStopSelling: values.isStopSelling,

@@ -56,6 +56,11 @@ export default function MpAdminEventEdit() {
   const formEndDate = form.watch('endDate');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    const editorContent = editor
+      .getHTML()
+      .replace(/^<p><\/p>$/, '')
+      .trim();
+
     if (values.title === '') {
       await alert('제목을 입력하세요');
       return;
@@ -80,7 +85,7 @@ export default function MpAdminEventEdit() {
             nickname: session!.name,
             hiddenNickname: false,
             title: values.title,
-            content: editor.getHTML(),
+            content: editorContent,
             parentId: null,
             isExposed: values.isExposed,
             editorFileIds: editorAttachments.map(image => image.s3fileId),
@@ -103,7 +108,7 @@ export default function MpAdminEventEdit() {
         await updateEventBoard(eventId, {
           request: {
             title: values.title,
-            content: editor.getHTML(),
+            content: editorContent,
             hiddenNickname: null,
             isBlind: null,
             isExposed: values.isExposed,

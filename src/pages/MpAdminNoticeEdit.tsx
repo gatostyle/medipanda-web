@@ -76,6 +76,11 @@ export default function MpAdminNoticeEdit() {
   const formNewFiles = form.watch('newFiles');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    const editorContent = editor
+      .getHTML()
+      .replace(/^<p><\/p>$/, '')
+      .trim();
+
     if (isDrugCompanyNoticeType(values.noticeType) && values.drugCompany === '') {
       await alert('제약사명을 선택하세요.');
       return;
@@ -92,7 +97,7 @@ export default function MpAdminNoticeEdit() {
           request: {
             boardType: BoardType.NOTICE,
             title: values.title,
-            content: editor.getHTML(),
+            content: editorContent,
             userId: session!.userId,
             nickname: session!.name || session!.userId,
             hiddenNickname: false,
@@ -114,7 +119,7 @@ export default function MpAdminNoticeEdit() {
         await updateBoardPost(boardId, {
           updateRequest: {
             title: values.title,
-            content: editor.getHTML(),
+            content: editorContent,
             hiddenNickname: null,
             isBlind: null,
             isExposed: values.isExposed,

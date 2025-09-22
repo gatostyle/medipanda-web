@@ -49,7 +49,12 @@ export default function MpAdminInquiryDetail() {
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
     if (isNew) return;
 
-    if (responseEditor.getHTML() === '<p></p>') {
+    const responseEditorContent = responseEditor
+      .getHTML()
+      .replace(/^<p><\/p>$/, '')
+      .trim();
+
+    if (responseEditorContent === '') {
       await alert('답변 내용을 입력하세요.');
       return;
     }
@@ -60,7 +65,7 @@ export default function MpAdminInquiryDetail() {
           request: {
             boardType: BoardType.INQUIRY,
             title: '',
-            content: responseEditor.getHTML(),
+            content: responseEditorContent,
             userId: session!.userId,
             nickname: session!.name,
             hiddenNickname: false,
@@ -76,7 +81,7 @@ export default function MpAdminInquiryDetail() {
         await updateBoardPost(detail!.children[0].id, {
           updateRequest: {
             title: '',
-            content: responseEditor.getHTML(),
+            content: responseEditorContent,
             hiddenNickname: null,
             isBlind: null,
             isExposed: null,
