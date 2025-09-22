@@ -100,11 +100,9 @@ export default function MpAdminProductEdit() {
         return;
       }
     } else {
-      if (detail!.changedFeeRate === null ? changedFeeRate !== 0 : changedFeeRate !== detail!.changedFeeRate) {
-        if (values.changedMonth === null) {
-          await alert('변경월을 선택하세요.');
-          return;
-        }
+      if (changedFeeRate !== 0 && values.changedMonth === null) {
+        await alert('변경월을 선택하세요.');
+        return;
       }
     }
 
