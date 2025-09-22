@@ -2,7 +2,6 @@ import { setUrlParams } from '@/lib/utils/url';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
 import { useMpModal } from '@/hooks/useMpModal';
 import {
-  Box,
   Button,
   Card,
   Checkbox,
@@ -321,22 +320,26 @@ export default function MpAdminEventList() {
                       />
                     </TableCell>
                     <TableCell>
-                      {item.thumbnailUrl ? (
-                        <Box sx={{ width: 80, height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          <RouterLink to={item.thumbnailUrl} target='_blank'>
-                            <img
-                              src={item.thumbnailUrl}
-                              style={{
-                                maxWidth: '100%',
-                                maxHeight: '100%',
-                                objectFit: 'cover',
-                                borderRadius: '4px',
-                              }}
-                            />
-                          </RouterLink>
-                        </Box>
-                      ) : (
-                        <Box sx={{ width: 80, height: 60, bgcolor: 'grey.200', borderRadius: 1 }} />
+                      {item.thumbnailUrl && (
+                        <Stack
+                          component={RouterLink}
+                          to={item.thumbnailUrl}
+                          target='_blank'
+                          sx={{
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <img
+                            src={item.thumbnailUrl}
+                            style={{
+                              width: '100px',
+                              height: '100px',
+                              borderRadius: 4,
+                              objectFit: 'contain',
+                            }}
+                          />
+                        </Stack>
                       )}
                     </TableCell>
                     <TableCell>

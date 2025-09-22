@@ -4,7 +4,6 @@ import { useMpModal } from '@/hooks/useMpModal';
 import { DatePicker } from '@mui/x-date-pickers';
 import { DocumentDownload } from 'iconsax-reactjs';
 import {
-  Box,
   Button,
   Card,
   Checkbox,
@@ -295,7 +294,7 @@ export default function MpAdminSalesAgencyProductList() {
                   />
                 </TableCell>
                 <TableCell width={60}>No</TableCell>
-                <TableCell width={80}>썸네일</TableCell>
+                <TableCell width={100}>썸네일</TableCell>
                 <TableCell width={150}>위탁사</TableCell>
                 <TableCell width={300}>상품명</TableCell>
                 <TableCell width={100}>판매가</TableCell>
@@ -340,15 +339,26 @@ export default function MpAdminSalesAgencyProductList() {
                     </TableCell>
                     <TableCell>{item.sequence}</TableCell>
                     <TableCell>
-                      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                        <RouterLink to={item.thumbnailUrl ?? ''} target='_blank'>
-                          <img
-                            src={item.thumbnailUrl ?? ''}
-                            alt='썸네일'
-                            style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 4 }}
-                          />
-                        </RouterLink>
-                      </Box>
+                      <Stack
+                        component={RouterLink}
+                        to={item.thumbnailUrl ?? ''}
+                        target='_blank'
+                        sx={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <img
+                          src={item.thumbnailUrl ?? ''}
+                          alt='썸네일'
+                          style={{
+                            width: '100px',
+                            height: '100px',
+                            borderRadius: 4,
+                            objectFit: 'contain',
+                          }}
+                        />
+                      </Stack>
                     </TableCell>
                     <TableCell>{item.clientName}</TableCell>
                     <TableCell>
