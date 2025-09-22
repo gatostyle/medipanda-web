@@ -72,6 +72,7 @@ export default function MpAdminNoticeEdit() {
       newFiles: [] as File[],
     },
   });
+  const formNoticeType = form.watch('noticeType');
   const formAttachedFiles = form.watch('attachedFiles');
   const formNewFiles = form.watch('newFiles');
 
@@ -234,22 +235,28 @@ export default function MpAdminNoticeEdit() {
               />
             </FormControl>
 
-            {isDrugCompanyNoticeType(form.getValues('noticeType')) ? (
-              <TextField
-                fullWidth
-                label='제약사명'
-                value={form.getValues('drugCompany')}
-                InputProps={{
-                  readOnly: true,
-                  endAdornment: (
-                    <InputAdornment position='end'>
-                      <IconButton edge='end' onClick={() => setDrugCompanySelectModalOpen(true)}>
-                        <SearchNormal1 />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{ flex: '1 0' }}
+            {isDrugCompanyNoticeType(formNoticeType) ? (
+              <Controller
+                control={form.control}
+                name={'drugCompany'}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    label='제약사명'
+                    InputProps={{
+                      readOnly: true,
+                      endAdornment: (
+                        <InputAdornment position='end'>
+                          <IconButton edge='end' onClick={() => setDrugCompanySelectModalOpen(true)}>
+                            <SearchNormal1 />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{ flex: '1 0' }}
+                  />
+                )}
               />
             ) : (
               <Box sx={{ flex: '1 0' }} />

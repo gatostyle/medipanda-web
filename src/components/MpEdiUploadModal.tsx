@@ -42,6 +42,10 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
       file: null as File | null,
     },
   });
+  const formPrescriptionMonth = form.watch('prescriptionMonth');
+  const formSettlementMonth = form.watch('settlementMonth');
+  const formPartnerUser = form.watch('partnerUser');
+  const formFile = form.watch('file');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
     if (values.prescriptionMonth === null) {
@@ -178,9 +182,9 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
             </Box>
             <Box>
               <TextField
-                label={(form.getValues('partnerUser')?.name ?? '') !== '' ? '사용자명' : ''}
-                placeholder={(form.getValues('partnerUser')?.name ?? '') === '' ? '사용자명' : ''}
-                value={form.getValues('partnerUser')?.name ?? ''}
+                label={(formPartnerUser?.name ?? '') !== '' ? '사용자명' : ''}
+                placeholder={(formPartnerUser?.name ?? '') === '' ? '사용자명' : ''}
+                value={formPartnerUser?.name ?? ''}
                 size='small'
                 required
                 InputProps={{
@@ -215,9 +219,9 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
             <Typography variant='h6' color='text.secondary'>
               여기에 파일을 드래그하거나 클릭하여 업로드하세요.
             </Typography>
-            {form.getValues('file') && (
+            {formFile && (
               <Typography variant='body2' sx={{ mt: 1 }}>
-                선택된 파일: {form.getValues('file')!.name}
+                선택된 파일: {formFile.name}
               </Typography>
             )}
           </Box>
@@ -230,9 +234,7 @@ function MpEdiUploadModalInternal({ open, onClose, onSuccess }: MpEdiUploadModal
             variant='contained'
             color='success'
             onClick={form.handleSubmit(submitHandler)}
-            disabled={
-              form.getValues('prescriptionMonth') === null || form.getValues('settlementMonth') === null || form.getValues('file') === null
-            }
+            disabled={formPrescriptionMonth === null || formSettlementMonth === null || formFile === null}
             sx={{ minWidth: 100 }}
           >
             업로드

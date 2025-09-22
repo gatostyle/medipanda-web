@@ -23,6 +23,7 @@ function MpHospitalUploadModalInternal({ open, onClose, onSuccess }: MpHospitalU
       file: null as File | null,
     },
   });
+  const formFile = form.watch('file');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
     if (values.file === null) {
@@ -83,9 +84,9 @@ function MpHospitalUploadModalInternal({ open, onClose, onSuccess }: MpHospitalU
           <Typography variant='h6' color='text.secondary'>
             여기에 파일을 드래그하거나 클릭하여 업로드하세요.
           </Typography>
-          {form.getValues('file') && (
+          {formFile && (
             <Typography variant='body2' sx={{ mt: 1 }}>
-              선택된 파일: {form.getValues('file')!.name}
+              선택된 파일: {formFile.name}
             </Typography>
           )}
         </Box>
@@ -94,13 +95,7 @@ function MpHospitalUploadModalInternal({ open, onClose, onSuccess }: MpHospitalU
         <Button variant='outlined' onClick={onClose} sx={{ minWidth: 100 }}>
           취소
         </Button>
-        <Button
-          variant='contained'
-          color='success'
-          onClick={form.handleSubmit(submitHandler)}
-          disabled={!form.getValues('file')}
-          sx={{ minWidth: 100 }}
-        >
+        <Button variant='contained' color='success' onClick={form.handleSubmit(submitHandler)} disabled={!formFile} sx={{ minWidth: 100 }}>
           업로드
         </Button>
       </DialogActions>

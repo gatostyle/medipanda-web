@@ -96,6 +96,13 @@ export default function MpAdminPrescriptionFormEdit() {
       prescriptionAmount: '',
     },
   });
+  const formDrugCompany = form.watch('drugCompany');
+  const formDrugCompanyCode = form.watch('drugCompanyCode');
+  const formInstitutionCode = form.watch('institutionCode');
+  const formCompanyName = form.watch('companyName');
+  const formBusinessNumber = form.watch('businessNumber');
+  const formDealerName = form.watch('dealerName');
+  const formPrescriptionAmount = form.watch('prescriptionAmount');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async () => {
     try {
@@ -325,14 +332,14 @@ export default function MpAdminPrescriptionFormEdit() {
                   제약사명:
                 </Typography>
                 <Stack direction='row' spacing={1} alignItems='center' flex={1}>
-                  <Typography variant='body1'>{form.getValues('drugCompany')}</Typography>
+                  <Typography variant='body1'>{formDrugCompany}</Typography>
                 </Stack>
               </Stack>
               <Stack direction='row' sx={{ flex: '1 0', alignItems: 'center' }}>
                 <Typography variant='body2' color='text.secondary' sx={{ minWidth: 140 }}>
                   거래처코드:
                 </Typography>
-                <Typography variant='body1'>{form.getValues('institutionCode')}</Typography>
+                <Typography variant='body1'>{formInstitutionCode}</Typography>
               </Stack>
               <Stack direction='row' sx={{ flex: '1 0', alignItems: 'center' }}>
                 <Typography variant='body2' color='text.secondary' sx={{ minWidth: 80 }}>
@@ -363,13 +370,13 @@ export default function MpAdminPrescriptionFormEdit() {
                 <Typography variant='body2' color='text.secondary' sx={{ minWidth: 100 }}>
                   회사명:
                 </Typography>
-                <Typography variant='body1'>{form.getValues('companyName')}</Typography>
+                <Typography variant='body1'>{formCompanyName}</Typography>
               </Stack>
               <Stack direction='row' sx={{ flex: '1 0', alignItems: 'center' }}>
                 <Typography variant='body2' color='text.secondary' sx={{ minWidth: 140 }}>
                   사업자등록번호:
                 </Typography>
-                <Typography variant='body1'>{form.getValues('businessNumber')}</Typography>
+                <Typography variant='body1'>{formBusinessNumber}</Typography>
               </Stack>
               <Stack direction='row' sx={{ flex: '1 0', alignItems: 'center' }}>
                 <Typography variant='body2' color='text.secondary' sx={{ minWidth: 80 }}>
@@ -426,13 +433,13 @@ export default function MpAdminPrescriptionFormEdit() {
                 <Typography variant='body2' color='text.secondary' sx={{ minWidth: 140 }}>
                   딜러명:
                 </Typography>
-                <Typography variant='body1'>{form.getValues('dealerName')}</Typography>
+                <Typography variant='body1'>{formDealerName}</Typography>
               </Stack>
               <Stack direction='row' sx={{ flex: '1 0', alignItems: 'center' }}>
                 <Typography variant='body2' color='text.secondary' sx={{ minWidth: 80 }}>
                   처방금액:
                 </Typography>
-                <Typography variant='body1'>{form.getValues('prescriptionAmount')}</Typography>
+                <Typography variant='body1'>{formPrescriptionAmount}</Typography>
               </Stack>
             </Stack>
           </Stack>
@@ -649,7 +656,7 @@ export default function MpAdminPrescriptionFormEdit() {
         prescriptionFormId={paramPrescriptionPartnerId ? prescriptionPartnerId : undefined}
       />
       <MpOcrRequestModal
-        drugCompanyCode={form.getValues('drugCompanyCode')}
+        drugCompanyCode={formDrugCompanyCode}
         open={ocrRequestModalOpen}
         onClose={() => setOcrRequestModalOpen(false)}
         onSubmit={handleOcrSubmit}

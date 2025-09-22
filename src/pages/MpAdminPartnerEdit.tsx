@@ -111,6 +111,8 @@ export default function MpAdminPartnerEdit() {
       note: '',
     },
   });
+  const formDrugCompany = form.watch('drugCompany');
+  const formMemberName = form.watch('memberName');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
     if (values.drugCompany === null) {
@@ -213,10 +215,10 @@ export default function MpAdminPartnerEdit() {
         <Stack direction='row' sx={{ gap: 2 }}>
           <TextField
             fullWidth
-            label={(form.getValues('drugCompany')?.name ?? '') !== '' ? '제약사명' : ''}
-            placeholder={(form.getValues('drugCompany')?.name ?? '') === '' ? '제약사명' : ''}
+            label={(formDrugCompany?.name ?? '') !== '' ? '제약사명' : ''}
+            placeholder={(formDrugCompany?.name ?? '') === '' ? '제약사명' : ''}
             name='drugCompany'
-            value={form.getValues('drugCompany')?.name ?? ''}
+            value={formDrugCompany?.name ?? ''}
             required
             InputProps={{
               readOnly: true,
@@ -233,9 +235,9 @@ export default function MpAdminPartnerEdit() {
 
           <TextField
             fullWidth
-            label={form.getValues('memberName') !== '' ? '사용자명' : ''}
-            placeholder={form.getValues('memberName') === '' ? '사용자명' : ''}
-            value={form.getValues('memberName')}
+            label={formMemberName !== '' ? '사용자명' : ''}
+            placeholder={formMemberName === '' ? '사용자명' : ''}
+            value={formMemberName}
             required
             InputProps={{
               readOnly: true,

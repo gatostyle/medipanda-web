@@ -118,7 +118,7 @@ export default function MpAdminExpenseReportList() {
         reportType: reportType !== '' ? reportType : undefined,
         eventDateFrom: eventDateFrom ? new DateTimeString(eventDateFrom) : undefined,
         eventDateTo: eventDateTo ? new DateTimeString(eventDateTo) : undefined,
-        status: form.getValues('status') || undefined,
+        status: status || undefined,
         page: page - 1,
         size: pageSize,
       });
@@ -280,7 +280,7 @@ export default function MpAdminExpenseReportList() {
                 productName: searchType === 'productName' && searchKeyword !== '' ? searchKeyword : undefined,
                 eventDateFrom: eventDateFrom ? new DateTimeString(eventDateFrom) : undefined,
                 eventDateTo: eventDateTo ? new DateTimeString(eventDateTo) : undefined,
-                status: form.getValues('status') || undefined,
+                status: status || undefined,
                 size: 2 ** 31 - 1,
               })}
               target='_blank'

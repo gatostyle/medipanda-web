@@ -56,6 +56,8 @@ export default function MpAdminSettlementDetail() {
       searchKeyword: '',
     },
   });
+  const formSearchType = form.watch('searchType');
+  const formSearchKeyword = form.watch('searchKeyword');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async () => {
     if (!isNew) {
@@ -148,9 +150,9 @@ export default function MpAdminSettlementDetail() {
             color='success'
             href={getDownloadSettlementPartnerSummaryExcel({
               settlementId: parseInt(paramSettlementId!),
-              institutionName: (form.getValues('searchType') === 'institutionName' && form.getValues('searchKeyword')) || undefined,
-              businessNumber: (form.getValues('searchType') === 'businessNumber' && form.getValues('searchKeyword')) || undefined,
-              institutionCode: (form.getValues('searchType') === 'institutionCode' && form.getValues('searchKeyword')) || undefined,
+              institutionName: (formSearchType === 'institutionName' && formSearchKeyword) || undefined,
+              businessNumber: (formSearchType === 'businessNumber' && formSearchKeyword) || undefined,
+              institutionCode: (formSearchType === 'institutionCode' && formSearchKeyword) || undefined,
               size: 2 ** 31 - 1,
             })}
             target='_blank'

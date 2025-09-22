@@ -43,6 +43,7 @@ export default function MpAdminAdminEdit() {
       permissions: [] as (keyof typeof AdminPermission)[],
     },
   });
+  const formStatus = form.watch('status');
   const formPermissions = form.watch('permissions');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
@@ -170,8 +171,14 @@ export default function MpAdminAdminEdit() {
 
       <Card component={Stack} sx={{ padding: 3, gap: 3 }}>
         <FormControlLabel
-          control={<Controller control={form.control} name='status' render={({ field }) => <Switch {...field} color='primary' />} />}
-          label={form.getValues('status') ? '활성' : '비활성'}
+          control={
+            <Controller
+              control={form.control}
+              name='status'
+              render={({ field }) => <Switch {...field} checked={field.value} color='primary' />}
+            />
+          }
+          label={formStatus ? '활성' : '비활성'}
         />
 
         <Stack direction='row' sx={{ gap: 2 }}>

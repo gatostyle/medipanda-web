@@ -37,6 +37,8 @@ function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUpl
       file: null as File | null,
     },
   });
+  const formMember = form.watch('member');
+  const formFile = form.watch('file');
 
   const [memberSelectModalOpen, setMemberSelectModalOpen] = useState(false);
 
@@ -83,9 +85,9 @@ function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUpl
           <Stack direction='row' alignItems='center' sx={{ mt: 1, mb: 3 }}>
             <Box>
               <TextField
-                label={(form.getValues('member')?.name ?? '') !== '' ? '사용자명' : ''}
-                placeholder={(form.getValues('member')?.name ?? '') === '' ? '사용자명' : ''}
-                value={form.getValues('member')?.name ?? ''}
+                label={(formMember?.name ?? '') !== '' ? '사용자명' : ''}
+                placeholder={(formMember?.name ?? '') === '' ? '사용자명' : ''}
+                value={formMember?.name ?? ''}
                 size='small'
                 required
                 InputProps={{
@@ -134,9 +136,9 @@ function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUpl
             <Typography variant='h6' color='text.secondary'>
               여기에 파일을 드래그하거나 클릭하여 업로드하세요.
             </Typography>
-            {form.getValues('file') && (
+            {formFile && (
               <Typography variant='body2' sx={{ mt: 1 }}>
-                선택된 파일: {form.getValues('file')!.name}
+                선택된 파일: {formFile.name}
               </Typography>
             )}
           </Box>
@@ -145,13 +147,7 @@ function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUpl
           <Button variant='outlined' onClick={onClose} sx={{ minWidth: 100 }}>
             취소
           </Button>
-          <Button
-            variant='contained'
-            color='success'
-            onClick={handleFileUpload}
-            disabled={!form.getValues('member') || !form.getValues('file')}
-            sx={{ minWidth: 100 }}
-          >
+          <Button variant='contained' color='success' onClick={handleFileUpload} disabled={!formMember || !formFile} sx={{ minWidth: 100 }}>
             업로드
           </Button>
         </DialogActions>
