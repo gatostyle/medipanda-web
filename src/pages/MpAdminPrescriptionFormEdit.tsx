@@ -23,7 +23,7 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
-import { Add, Minus, SearchNormal1 } from 'iconsax-reactjs';
+import { Add, SearchNormal1 } from 'iconsax-reactjs';
 import {
   type AttachmentResponse,
   getAttachedEdiFiles,
@@ -81,6 +81,7 @@ export default function MpAdminPrescriptionFormEdit() {
 
   const [sendOcrReport, setSendOcrReport] = useState(false);
   const [ocrReportContent, setOcrReportContent] = useState('');
+  const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
 
   const form = useForm({
     defaultValues: {
@@ -166,14 +167,23 @@ export default function MpAdminPrescriptionFormEdit() {
     ]);
   };
 
-  const handleRemoveProduct = () => {
-    if (partnerProducts.length > 1) {
-      const lastPartnerProduct = partnerProducts[partnerProducts.length - 1];
-      setPartnerProducts(partnerProducts.slice(0, -1));
-      if (lastPartnerProduct.id !== null) {
-        setDeletePartnerProductIds(prev => [...prev, lastPartnerProduct.id!]);
-      }
+  const handleDelete = () => {
+    if (selectedIndexes.length === 0) {
+      return;
     }
+
+    const filteredProducts = partnerProducts.filter((_, index) => !selectedIndexes.includes(index));
+    setPartnerProducts(
+      filteredProducts.map((product, index) => ({
+        ...product,
+        sequence: index + 1,
+      })),
+    );
+
+    const productsToDelete = partnerProducts.filter((product, index) => selectedIndexes.includes(index) && product.id !== null);
+    setDeletePartnerProductIds(prev => [...prev, ...productsToDelete.map(p => p.id!)]);
+
+    setSelectedIndexes([]);
   };
 
   const handlePartnerSearch = () => {
@@ -454,10 +464,34 @@ export default function MpAdminPrescriptionFormEdit() {
           </Stack>
         </Box>
 
+        <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+          <Stack direction='row' spacing={2}></Stack>
+          <Stack direction='row' spacing={1}>
+            <Button variant='contained' color='error' size='small' disabled={selectedIndexes.length === 0} onClick={handleDelete}>
+              삭제
+            </Button>
+            <Button variant='contained' color='success' size='small' onClick={handleAddProduct} startIcon={<Add size={16} />}>
+              내역추가
+            </Button>
+          </Stack>
+        </Stack>
+
         <TableContainer>
           <Table size='small'>
             <TableHead>
               <TableRow>
+                <TableCell width={50}>
+                  <Checkbox
+                    checked={selectedIndexes.length === partnerProducts.length && partnerProducts.length > 0}
+                    onChange={e => {
+                      if (e.target.checked) {
+                        setSelectedIndexes(partnerProducts.map((_, index) => index));
+                      } else {
+                        setSelectedIndexes([]);
+                      }
+                    }}
+                  />
+                </TableCell>
                 <TableCell width={60}>No</TableCell>
                 <TableCell width={120}>보험코드</TableCell>
                 <TableCell width={200}>제품명</TableCell>
@@ -488,8 +522,20 @@ export default function MpAdminPrescriptionFormEdit() {
                   </TableCell>
                 </TableRow>
               ) : (
-                partnerProducts.map(item => (
-                  <TableRow key={item.sequence}>
+                partnerProducts.map((item, index) => (
+                  <TableRow key={index + item.productCode}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedIndexes.includes(index)}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            setSelectedIndexes(prev => [...prev, index]);
+                          } else {
+                            setSelectedIndexes(prev => prev.filter(id => id !== index));
+                          }
+                        }}
+                      />
+                    </TableCell>
                     <TableCell>{item.sequence}</TableCell>
                     <TableCell>{item.productCode}</TableCell>
                     <TableCell>
@@ -606,22 +652,6 @@ export default function MpAdminPrescriptionFormEdit() {
             </TableBody>
           </Table>
         </TableContainer>
-
-        <Stack direction='row' spacing={2} sx={{ mt: 2 }}>
-          <Button variant='contained' color='success' size='small' onClick={handleAddProduct} startIcon={<Add size={16} />}>
-            내역추가
-          </Button>
-          <Button
-            variant='outlined'
-            color='error'
-            size='small'
-            onClick={handleRemoveProduct}
-            disabled={partnerProducts.length <= 1}
-            startIcon={<Minus size={16} />}
-          >
-            내역삭제
-          </Button>
-        </Stack>
 
         <Box sx={{ mt: 3 }}>
           <FormControlLabel
