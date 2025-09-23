@@ -40,7 +40,7 @@ export default function MpAdminBannerList() {
     searchKeyword: '',
     startAt: '',
     endAt: '',
-    bannerStatus: '' as keyof typeof BannerStatus | '',
+    isExposed: '' as 'true' | 'false' | '',
     page: '1',
   };
 
@@ -48,7 +48,7 @@ export default function MpAdminBannerList() {
     searchKeyword,
     startAt: paramStartAt,
     endAt: paramEndAt,
-    bannerStatus,
+    isExposed,
     page: paramPage,
   } = useSearchParamsOrDefault(initialSearchParams);
   const startAt = useMemo(() => SafeDate(paramStartAt) ?? null, [paramStartAt]);
@@ -99,7 +99,7 @@ export default function MpAdminBannerList() {
         bannerTitle: searchKeyword !== '' ? searchKeyword : undefined,
         startAt: startAt ? new DateTimeString(startAt) : undefined,
         endAt: endAt ? new DateTimeString(endAt) : undefined,
-        bannerStatus: bannerStatus !== '' ? bannerStatus : undefined,
+        isExposed: isExposed !== '' ? isExposed === 'true' : undefined,
         page: page - 1,
         size: pageSize,
       });
@@ -122,9 +122,9 @@ export default function MpAdminBannerList() {
     form.setValue('searchKeyword', searchKeyword);
     form.setValue('startAt', startAt);
     form.setValue('endAt', endAt);
-    form.setValue('bannerStatus', bannerStatus);
+    form.setValue('isExposed', isExposed);
     fetchContent();
-  }, [searchKeyword, startAt, endAt, bannerStatus, page]);
+  }, [searchKeyword, startAt, endAt, isExposed, page]);
 
   return (
     <Stack sx={{ gap: 3 }}>
@@ -137,14 +137,11 @@ export default function MpAdminBannerList() {
               <InputLabel>상태</InputLabel>
               <Controller
                 control={form.control}
-                name={'bannerStatus'}
+                name={'isExposed'}
                 render={({ field }) => (
-                  <Select {...field}>
-                    {Object.keys(BannerStatus).map(bannerStatus => (
-                      <MenuItem key={bannerStatus} value={bannerStatus}>
-                        {BannerStatusLabel[bannerStatus]}
-                      </MenuItem>
-                    ))}
+                  <Select {...field} value={String(field.value)} onChange={e => field.onChange(e.target.value === 'true')}>
+                    <MenuItem value={'true'}>노출</MenuItem>
+                    <MenuItem value={'false'}>미노출</MenuItem>
                   </Select>
                 )}
               />

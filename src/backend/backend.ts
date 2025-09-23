@@ -1567,10 +1567,10 @@ export async function verifyCode(
 export async function getBanners(options?: {
   page?: number;
   size?: number;
+  isExposed?: boolean;
   startAt?: DateTimeString;
   endAt?: DateTimeString;
   bannerTitle?: string;
-  bannerStatus?: 'VISIBLE' | 'HIDDEN';
 }): Promise<PageBannerResponse> {
   const response = await axios.request<PageBannerResponse>({
     method: 'GET',
