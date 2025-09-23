@@ -294,20 +294,22 @@ export default function MpAdminPrescriptionFormEdit() {
       });
 
       setPartnerProducts(
-        products.map((product, index) => ({
-          sequence: index + 1,
-          id: product.id,
-          productCode: product.productCode,
-          productName: product.productName,
-          unit: product.unit,
-          quantity: normalizeLocaleNumber(String(product.quantity)),
-          unitPrice: normalizeLocaleNumber(String(product.unitPrice)),
-          totalPrice: normalizeLocaleNumber(String(product.totalPrice)),
-          baseFeeRate: PercentUtils.formatDecimal(product.baseFeeRate),
-          feeAmount: normalizeLocaleNumber(String(product.feeAmount)),
-          note: product.note,
-          ocrItem: null,
-        })),
+        products
+          .sort((a, b) => a.id - b.id)
+          .map((product, index) => ({
+            sequence: index + 1,
+            id: product.id,
+            productCode: product.productCode,
+            productName: product.productName,
+            unit: product.unit,
+            quantity: normalizeLocaleNumber(String(product.quantity)),
+            unitPrice: normalizeLocaleNumber(String(product.unitPrice)),
+            totalPrice: normalizeLocaleNumber(String(product.totalPrice)),
+            baseFeeRate: PercentUtils.formatDecimal(product.baseFeeRate),
+            feeAmount: normalizeLocaleNumber(String(product.feeAmount)),
+            note: product.note,
+            ocrItem: null,
+          })),
       );
       setDeletePartnerProductIds([]);
 
