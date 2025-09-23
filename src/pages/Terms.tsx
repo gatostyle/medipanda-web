@@ -1,10 +1,31 @@
+import { getLatestTerms } from '@/backend';
+import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
+import { colors } from '@/themes';
 import { Box, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 
 export default function Terms() {
+  const [detail, setDetail] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchDetail();
+  }, []);
+
+  const fetchDetail = async () => {
+    const data = await getLatestTerms();
+    setDetail(data);
+  };
+
+  if (detail === null) {
+    return <FixedLinearLoader />;
+  }
+
   return (
-    <Box sx={{ p: 4 }}>
-      <Typography sx={{ marginBottom: 4, fontWeight: 'bold' }}>이용약관</Typography>
-      <Typography sx={{ lineHeight: 1.6, color: '#666' }}>이용약관 내용이 여기에 표시됩니다.</Typography>
-    </Box>
+    <>
+      <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
+        이용약관
+      </Typography>
+      <Box dangerouslySetInnerHTML={{ __html: detail }} />
+    </>
   );
 }
