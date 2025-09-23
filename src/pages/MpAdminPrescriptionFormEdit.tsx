@@ -106,6 +106,16 @@ export default function MpAdminPrescriptionFormEdit() {
   const formPrescriptionAmount = form.watch('prescriptionAmount');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async () => {
+    if (partnerProducts.some(p => p.productName === '')) {
+      await alert('제품명이 입력되지 않은 항목이 있습니다.');
+      return;
+    }
+
+    if (partnerProducts.some(p => p.unit === '')) {
+      await alert('단위가 입력되지 않은 항목이 있습니다.');
+      return;
+    }
+
     try {
       await upsertPatchPartnerProducts(prescriptionPartnerId, {
         items: partnerProducts.map(product => ({
@@ -497,7 +507,7 @@ export default function MpAdminPrescriptionFormEdit() {
                 <TableCell width={60}>No</TableCell>
                 <TableCell width={120}>보험코드</TableCell>
                 <TableCell width={200}>제품명</TableCell>
-                <TableCell width={80}>단위</TableCell>
+                <TableCell width={150}>단위</TableCell>
                 <TableCell width={100}>수량</TableCell>
                 <TableCell width={100}>약가</TableCell>
                 <TableCell width={120}>총 금액</TableCell>
@@ -564,7 +574,14 @@ export default function MpAdminPrescriptionFormEdit() {
                         }}
                       />
                     </TableCell>
-                    <TableCell>{item.unit}</TableCell>
+                    <TableCell>
+                      <TextField
+                        size='small'
+                        fullWidth
+                        value={item.unit}
+                        onChange={event => handleProductChange(item.sequence - 1, 'unit', event.target.value)}
+                      />
+                    </TableCell>
                     <TableCell>
                       <TextField
                         size='small'
