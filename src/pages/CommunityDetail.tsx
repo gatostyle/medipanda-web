@@ -4,9 +4,9 @@ import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { useSession } from '@/hooks/useSession';
-import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
+import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
 import { colors } from '@/themes';
-import { formatRelativeTime, formatYyyyMmDdHhMm } from '@/lib/dateFormat';
+import { formatRelativeTime, formatYyyyMmDdHhMm } from '@/lib/utils/dateFormat';
 import { MoreHoriz } from '@mui/icons-material';
 import { IconButton, Popover, Stack, type StackProps, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
@@ -62,7 +62,7 @@ export default function CommunityDetail() {
   const [popupRelatedComment, setPopupRelatedComment] = useState<CommentResponse | null>(null);
 
   if (!detail) {
-    return <FixedLinearLoader />;
+    return <FixedLinearProgress />;
   }
 
   return (

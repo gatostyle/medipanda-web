@@ -1,6 +1,6 @@
 import { LoginGuard } from '@/guards/LoginGuard';
-import { Base64ErrorBoundary } from '@/lib/react/Base64ErrorBoundary';
-import { LazyComponent } from '@/lib/react/LazyComponent';
+import { Base64ErrorBoundary } from '@/lib/components/Base64ErrorBoundary';
+import { LazyComponent } from '@/lib/components/LazyComponent';
 import { lazy } from 'react';
 import { createBrowserRouter, Navigate, type RouteObject } from 'react-router-dom';
 

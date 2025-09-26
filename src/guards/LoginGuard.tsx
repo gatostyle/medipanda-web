@@ -1,5 +1,5 @@
 import { useSession } from '@/hooks/useSession';
-import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
+import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
 import { type ReactNode, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -15,7 +15,7 @@ export function LoginGuard({ children }: { children: ReactNode }) {
   }, [session, location, navigate]);
 
   if (session === null) {
-    return <FixedLinearLoader />;
+    return <FixedLinearProgress />;
   }
 
   return children;

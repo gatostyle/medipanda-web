@@ -1,9 +1,9 @@
 import { type BoardDetailsResponse, getBoardDetails } from '@/backend';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
-import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
-import { TiptapMenuBar } from '@/lib/react/Tiptap';
+import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
+import { TiptapMenuBar } from '@/lib/Tiptap';
 import { colors } from '@/themes';
-import { formatYyyyMmDd } from '@/lib/dateFormat';
+import { formatYyyyMmDd } from '@/lib/utils/dateFormat';
 import { Button, Link, Stack, Typography } from '@mui/material';
 import { EditorContent, useEditorState } from '@tiptap/react';
 import { useEffect, useState } from 'react';
@@ -50,7 +50,7 @@ export default function NoticeDetail() {
   }, [editor, detail]);
 
   if (!detail) {
-    return <FixedLinearLoader />;
+    return <FixedLinearProgress />;
   }
 
   return (

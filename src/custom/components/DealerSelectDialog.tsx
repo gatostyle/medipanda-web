@@ -1,5 +1,5 @@
 import { type DealerResponse, listDealers } from '@/backend';
-import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
+import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { Link as RouterLink } from 'react-router-dom';
 import { MedipandaButton } from './MedipandaButton';

@@ -3,9 +3,9 @@ import { InquiryStatusChip } from '@/components/InquiryStatusChip';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/components/MedipandaTab';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
-import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
+import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
 import { colors } from '@/themes';
-import { formatYyyyMmDdHhMm } from '@/lib/dateFormat';
+import { formatYyyyMmDdHhMm } from '@/lib/utils/dateFormat';
 import { Box, Button, Link, Stack, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import { useEffect, useState } from 'react';
@@ -67,7 +67,7 @@ export default function InquiryDetail() {
   };
 
   if (!detail) {
-    return <FixedLinearLoader />;
+    return <FixedLinearProgress />;
   }
 
   return (

@@ -1,5 +1,5 @@
 import { getPartners, type PartnerResponse } from '@/backend';
-import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
+import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
 import { Search } from '@mui/icons-material';
 import { InputAdornment, Stack, TextField } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';

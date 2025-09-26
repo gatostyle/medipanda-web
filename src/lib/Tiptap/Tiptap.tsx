@@ -15,8 +15,8 @@ import {
   Undo,
 } from '@mui/icons-material';
 import './Tiptap.scss';
-import { IconButton, Stack } from '@mui/material';
-import { type Editor, type UseEditorOptions, useEditorState } from '@tiptap/react';
+import { IconButton, Stack, type StackProps } from '@mui/material';
+import { type Editor, EditorContent, type UseEditorOptions, useEditorState } from '@tiptap/react';
 
 export interface ExtendedUseEditorOptions extends UseEditorOptions {
   imageMimeTypes: string[];
@@ -86,7 +86,7 @@ export function TiptapMenuBar({ editor }: { editor: Editor }) {
         .run();
     } catch (e) {
       console.error('Error uploading image:', e);
-      alert('잘못된 이미지 파일입니다. 다시 시도해주세요.');
+      alert('잘못된 이미지 파일입니다.');
     }
   };
 
@@ -200,6 +200,36 @@ export function TiptapMenuBar({ editor }: { editor: Editor }) {
           </IconButton>
         )}
       </Stack>
+    </Stack>
+  );
+}
+
+export function Tiptap({
+  editor,
+  sx,
+}: {
+  editor: Editor;
+} & Pick<StackProps, 'sx'>) {
+  const editorState = useEditorState({
+    editor,
+    selector: context => ({
+      isEditable: context.editor.isEditable,
+    }),
+  });
+
+  return (
+    <Stack
+      gap='10px'
+      sx={{
+        ...sx,
+        '.tiptap[contenteditable=true]': {
+          border: `1px solid #cccccc`,
+          padding: '12px 15px',
+        },
+      }}
+    >
+      {editorState.isEditable && <TiptapMenuBar editor={editor} />}
+      <EditorContent editor={editor} />
     </Stack>
   );
 }

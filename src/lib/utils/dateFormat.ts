@@ -1,5 +1,7 @@
 import { format } from 'date-fns';
 
+export const DAY_TO_MILLISECONDS = 24 * 60 * 60 * 1000;
+
 export const DATEFORMAT_YYYY_MM_DD_HH_MM = 'yyyy-MM-dd HH:mm';
 export const DATEFORMAT_YYYY_MM_DD = 'yyyy-MM-dd';
 export const DATEFORMAT_YYYY_MM = 'yyyy-MM';

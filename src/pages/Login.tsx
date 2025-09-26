@@ -1,7 +1,7 @@
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
 import { useSession } from '@/hooks/useSession';
-import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
+import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Box, Card, FormControl, FormHelperText, IconButton, InputAdornment, Stack, Typography } from '@mui/material';
 import { useFormik } from 'formik';
@@ -55,7 +55,7 @@ export default function Login() {
   }, [session, navigate, urlSearchParams]);
 
   if (session !== null) {
-    return <FixedLinearLoader />;
+    return <FixedLinearProgress />;
   }
 
   return (

@@ -1,6 +1,6 @@
 import { MedipandaTextLink } from '@/custom/components/MedipandaTextLink';
 import { useSession } from '@/hooks/useSession';
-import { formatYyyyMmDd } from '@/lib/dateFormat';
+import { formatYyyyMmDd } from '@/lib/utils/dateFormat';
 import { colors } from '@/themes';
 import { Close } from '@mui/icons-material';
 import { Box, Link, Popover, Stack, Typography } from '@mui/material';

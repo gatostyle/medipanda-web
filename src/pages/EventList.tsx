@@ -1,8 +1,8 @@
 import { getEventBoards } from '@/backend';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
-import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
+import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
 import { colors } from '@/themes';
-import { formatYyyyMmDd, isExpired } from '@/lib/dateFormat';
+import { formatYyyyMmDd, isExpired } from '@/lib/utils/dateFormat';
 import { Box, Stack, Typography } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 

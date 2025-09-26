@@ -1,5 +1,5 @@
 import { type DrugCompanyResponse, getDrugCompanies } from '@/backend';
-import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
+import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
 import { Stack } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useEffect } from 'react';

@@ -4,6 +4,4 @@ interface ObjectConstructor {
   entries<T extends object>(o: T): [keyof T, T[keyof T]][];
 }
 
-type StringKeysOnly<T> = {
-  [K in keyof T]: T[K] extends string | undefined ? K : never;
-}[keyof T];
+type ArrayElement<T> = T extends readonly unknown[] ? T[0] : never;

@@ -1,6 +1,6 @@
 import { LoaderProvider } from '@/hooks/useLoader';
 import { SessionProvider } from '@/hooks/useSession';
-import { BasicModalProvider } from '@/lib/react/useBasicModal';
+import { BasicModalProvider } from '@/lib/components/useBasicModal';
 import { MedipandaTheme } from '@/themes';
 import { ThemeProvider } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';

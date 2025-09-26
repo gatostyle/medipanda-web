@@ -10,10 +10,10 @@ import {
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { MedipandaTable, MedipandaTableCell, MedipandaTableRow } from '@/custom/components/MedipandaTable';
-import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
-import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
+import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
+import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
 import { colors } from '@/themes';
-import { formatYyyyMm, formatYyyy년Mm월 } from '@/lib/dateFormat';
+import { formatYyyyMm, formatYyyy년Mm월 } from '@/lib/utils/dateFormat';
 import { KeyboardArrowLeft, KeyboardArrowRight, Search } from '@mui/icons-material';
 import {
   Button,
@@ -361,7 +361,7 @@ function SettlementDetailForm({ settlementId }: { settlementId: number | null })
   }
 
   if (!detail) {
-    return <FixedLinearLoader />;
+    return <FixedLinearProgress />;
   }
 
   return (

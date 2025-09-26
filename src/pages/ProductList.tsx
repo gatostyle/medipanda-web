@@ -5,8 +5,8 @@ import { MedipandaDialog, MedipandaDialogTitle } from '@/custom/components/Medip
 import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { MedipandaTableCell, MedipandaTableRow } from '@/custom/components/MedipandaTable';
-import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
-import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
+import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
+import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
 import { colors, typography } from '@/themes';
 import { Search } from '@mui/icons-material';
 import {
@@ -617,7 +617,7 @@ function ReplaceableProductDialog({ open, onClose, productId }: { open?: boolean
   }
 
   if (!detail) {
-    return <FixedLinearLoader />;
+    return <FixedLinearProgress />;
   }
 
   return (

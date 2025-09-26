@@ -4,7 +4,7 @@ import { MedipandaCheckbox } from '@/custom/components/MedipandaCheckbox';
 import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { useSession } from '@/hooks/useSession';
-import { TiptapMenuBar } from '@/lib/react/Tiptap';
+import { TiptapMenuBar } from '@/lib/Tiptap';
 import { colors } from '@/themes';
 import { CheckCircle, CheckCircleOutline } from '@mui/icons-material';
 import { FormControlLabel, Stack, Typography } from '@mui/material';

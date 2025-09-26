@@ -3,11 +3,10 @@ import { DrugCompanySelectDialog } from '@/custom/components/DrugCompanySelectDi
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
 import { MedipandaTable } from '@/custom/components/MedipandaTable';
-import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
+import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
 import { colors } from '@/themes';
-import { formatYyyyMmDd } from '@/lib/dateFormat';
-import { mockString } from '@/lib/mock';
-import { withSequence } from '@/lib/withSequence';
+import { formatYyyyMmDd } from '@/lib/utils/dateFormat';
+import { withSequence } from '@/lib/utils/withSequence';
 import { Stack, TextField, Typography } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
@@ -40,7 +39,7 @@ export default function DealerList() {
       },
       {
         header: '거래제약사',
-        cell: () => mockString(),
+        cell: () => '-',
       },
       {
         header: '등록일',

@@ -1,9 +1,9 @@
 import { type BoardDetailsResponse, getBoardDetails, getBoards } from '@/backend';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
-import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
+import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
 import { colors } from '@/themes';
-import { formatYyyyMmDdHhMm } from '@/lib/dateFormat';
+import { formatYyyyMmDdHhMm } from '@/lib/utils/dateFormat';
 import { Add, Remove, Search } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Box, InputAdornment, Link, Stack, TextField, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';

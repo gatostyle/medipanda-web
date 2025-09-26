@@ -1,6 +1,6 @@
 import { getBanners } from '@/backend';
-import { LazyImage } from '@/lib/react/LazyImage';
-import { usePageFetchFormik } from '@/lib/react/usePageFetchFormik';
+import { LazyImage } from '@/lib/components/LazyImage';
+import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
 import { colors } from '@/themes';
 import { Link as RouterLink } from 'react-router-dom';
 

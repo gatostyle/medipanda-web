@@ -1,9 +1,9 @@
 import { applyProduct, getSalesAgencyProductDetails, type SalesAgencyProductDetailsResponse } from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
-import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
+import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
 import { colors } from '@/themes';
-import { formatYyyyMmDd, isExpired } from '@/lib/dateFormat';
+import { formatYyyyMmDd, isExpired } from '@/lib/utils/dateFormat';
 import { Box, Stack, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import { useEffect, useState } from 'react';
@@ -55,7 +55,7 @@ export default function SalesAgencyProductDetail() {
   };
 
   if (!detail) {
-    return <FixedLinearLoader />;
+    return <FixedLinearProgress />;
   }
 
   return (

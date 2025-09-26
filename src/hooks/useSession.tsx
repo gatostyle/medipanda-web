@@ -6,7 +6,7 @@ import {
   refreshToken as apiRefreshToken,
   whoAmI,
 } from '@/backend';
-import { encryptRSA } from '@/lib/rsa';
+import { encryptRSA } from '@/lib/utils/rsa';
 import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
 
 declare global {

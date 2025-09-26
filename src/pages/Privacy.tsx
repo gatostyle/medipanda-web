@@ -1,5 +1,5 @@
 import { getLatestPrivacyPolicy } from '@/backend';
-import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
+import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
 import { colors } from '@/themes';
 import { Box, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -17,7 +17,7 @@ export default function Privacy() {
   };
 
   if (detail === null) {
-    return <FixedLinearLoader />;
+    return <FixedLinearProgress />;
   }
 
   return (

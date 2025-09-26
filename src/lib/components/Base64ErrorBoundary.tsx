@@ -1,4 +1,4 @@
-import { FixedLinearLoader } from '@/lib/react/FixedLinearLoader';
+import { FixedLinearProgress } from './FixedLinearProgress';
 import { useEffect, useState } from 'react';
 import { useRouteError } from 'react-router-dom';
 
@@ -17,12 +17,12 @@ export function Base64ErrorBoundary() {
   }, [error]);
 
   if (displayError === null) {
-    return <FixedLinearLoader />;
+    return <FixedLinearProgress />;
   }
 
   return (
     <>
-      <p>페이지를 표시하는 중 오류가 발생했습니다. 문제가 계속되면 관리자에게 문의해주세요.</p>
+      <p>페이지를 표시하는 중 오류가 발생했습니다. 문제가 계속되면 관리자에게 문의하세요.</p>
       <p style={{ width: '500px', wordBreak: 'break-all' }}>오류: {displayError}</p>
     </>
   );
