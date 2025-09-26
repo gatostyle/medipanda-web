@@ -9,6 +9,7 @@
     "lint": "eslint --quiet .",
     "lint:fix": "eslint --quiet --fix .",
     "preview": "vite preview",
+    "generate-backend": "curl -sSL https://prod.api.medipanda.co.kr/api-docs >./api-docs.json && node ./generate-backend.cjs ./api-docs.json ./src/backend/backend.ts && eslint --fix ./src/backend/backend.ts; rm -f ./api-docs.json",
     "deploy:dev": "./deploy.sh --env dev",
     "deploy:prod": "./deploy.sh --env prod"
   },

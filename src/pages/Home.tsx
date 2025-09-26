@@ -1,4 +1,4 @@
-import { DateString, getBanners, getBoards, getRecentlyOpenedCount, monthlyCount, monthlyFee } from '@/backend';
+import { DateString, getBanners, getBoards, getRecentlyOpenedCount, monthlyCount, monthlyTotalAmount } from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaCarousel, type MedipandaCarouselHandle } from '@/custom/components/MedipandaCarousel';
 import { MedipandaTable } from '@/custom/components/MedipandaTable';
@@ -25,7 +25,7 @@ export default function Home() {
   const { content: banners } = usePageFetchFormik({
     fetcher: () => {
       return getBanners({
-        bannerStatus: 'VISIBLE',
+        isExposed: true,
       });
     },
     contentSelector: response => response.content,
@@ -41,7 +41,7 @@ export default function Home() {
 
   const fetchHomeBanner = async () => {
     const { count } = await monthlyCount({ referenceDate: Number(formatYyyyMmDd(new Date()).replace(/-/g, '')) });
-    const { feeAmount } = await monthlyFee({ referenceDate: Number(formatYyyyMmDd(new Date()).replace(/-/g, '')) });
+    const { feeAmount } = await monthlyTotalAmount({ referenceDate: Number(formatYyyyMmDd(new Date()).replace(/-/g, '')) });
     const recentlyOpenedCount = await getRecentlyOpenedCount({ referenceDate: new DateString(new Date()) });
 
     setMonthlyPrescriptionCount(count);

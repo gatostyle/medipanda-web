@@ -27,6 +27,7 @@ export default function MypageNotification() {
         await Promise.all([
           updateMember(session!.userId, {
             request: {
+              accountStatus: null,
               password: null,
               name: null,
               birthDate: null,
@@ -37,8 +38,11 @@ export default function MypageNotification() {
               note: null,
               marketingAgreement: {
                 sms: values.marketingSms,
+                smsAgreedAt: null,
                 email: values.marketingEmail,
+                emailAgreedAt: null,
                 push: values.marketingAppPush,
+                pushAgreedAt: null,
               },
             },
           }),

@@ -1,8 +1,6 @@
-import { getBoards, getFixedTopNotices } from '@/backend';
-import type { NoticeType } from '@/backend-types';
+import { getBoards, getFixedTopNotices, NoticeType, NoticeTypeLabel } from '@/backend';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { MedipandaTextLink } from '@/custom/components/MedipandaTextLink';
-import { NoticeLabels } from '@/labels';
 import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
 import { colors } from '@/themes';
 import { formatYyyyMmDd } from '@/lib/utils/dateFormat';
@@ -18,13 +16,13 @@ export default function NoticeList() {
   } = usePageFetchFormik({
     initialFormValues: {
       searchKeyword: '',
-      noticeType: '' as NoticeType | '',
+      noticeType: '' as keyof typeof NoticeType | '',
     },
     fetcher: values => {
       return getBoards({
         boardType: 'NOTICE',
         boardTitle: values.searchKeyword !== '' ? values.searchKeyword : undefined,
-        noticeType: values.noticeType !== '' ? values.noticeType : undefined,
+        noticeTypes: values.noticeType !== '' ? [values.noticeType] : undefined,
         page: values.pageIndex,
         size: values.pageSize,
       });
@@ -72,7 +70,7 @@ export default function NoticeList() {
                 cursor: 'pointer',
               }}
             >
-              {noticeType === '' ? '전체' : NoticeLabels[noticeType]}
+              {noticeType === '' ? '전체' : NoticeTypeLabel[noticeType]}
             </MedipandaTextLink>
           ))}
         </Stack>

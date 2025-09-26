@@ -64,6 +64,7 @@ export default function MypageInfo() {
       try {
         await updateMember(session!.userId, {
           request: {
+            accountStatus: null,
             password: null,
             name: values.name,
             birthDate: null,

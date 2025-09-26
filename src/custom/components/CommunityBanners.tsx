@@ -8,7 +8,7 @@ export function CommunityBanners() {
   const { content } = usePageFetchFormik({
     fetcher: () => {
       return getBanners({
-        bannerStatus: 'VISIBLE',
+        isExposed: true,
       });
     },
     contentSelector: response => response.content,

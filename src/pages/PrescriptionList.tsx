@@ -17,6 +17,7 @@ import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInp
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { MedipandaTable } from '@/custom/components/MedipandaTable';
 import { PartnerSelectDialog } from '@/custom/components/PartnerSelectDialog';
+import { useSession } from '@/hooks/useSession';
 import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
 import { colors } from '@/themes';
 import { DATEFORMAT_YYYY_MM, formatYyyyMm, formatYyyyMmDd, formatYyyy년Mm월 } from '@/lib/utils/dateFormat';
@@ -427,6 +428,7 @@ function EdiIndividualUploadForm() {
 }
 
 function EdiBatchUploadForm() {
+  const { session } = useSession();
   const [uploadErrors, setUploadErrors] = useState<FileValidationErrorDto[]>([]);
 
   const formik = useFormik({
@@ -453,6 +455,7 @@ function EdiBatchUploadForm() {
 
       try {
         const result = await uploadEdiZip({
+          partnerUserId: session!.userId,
           settlementMonth: formatYyyyMmDd(values.prescriptionMonth!),
           prescriptionMonth: formatYyyyMmDd(values.prescriptionMonth!),
           file: values.file!,

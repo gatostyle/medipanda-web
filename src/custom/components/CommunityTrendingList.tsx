@@ -1,12 +1,12 @@
-import { type BoardPostResponse, getBoards } from '@/backend';
-import type { BoardSortType, BoardType } from '@/backend-types';
+import { type BoardPostResponse, BoardType, getBoards } from '@/backend';
+import type { BoardSortType } from '@/backend-types';
 import { colors, typography } from '@/themes';
 import { Button, Link, Stack, Table, TableBody, TableCell, TableRow, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
-export function CommunityTrendingList({ boardType }: { boardType: BoardType }) {
+export function CommunityTrendingList({ boardType }: { boardType: keyof typeof BoardType }) {
   const [content, setContent] = useState<BoardPostResponse[] | null>(null);
 
   const formik = useFormik({
