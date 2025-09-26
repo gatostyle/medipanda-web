@@ -25,7 +25,6 @@ import { Dialog, DialogTitle, FormControl, InputAdornment, MenuItem, Select, Sta
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import { useState } from 'react';
-import * as Yup from 'yup';
 
 export default function PrescriptionList() {
   const [individualUpload, setIndividualUpload] = useState(true);
@@ -188,14 +187,32 @@ function EdiIndividualUploadForm() {
       drugCompanies: [] as DrugCompanyResponse[],
       files: [] as File[],
     },
-    validationSchema: Yup.object().shape({
-      dealer: Yup.object().required('딜러를 선택해 주세요.'),
-      prescriptionMonth: Yup.date().required('처방월을 선택해 주세요.'),
-      partner: Yup.object().required('거래처를 선택해 주세요.'),
-      drugCompanies: Yup.array().min(1, '거래제약사를 선택해 주세요.'),
-      files: Yup.array().min(1, 'EDI 파일을 선택해 주세요.'),
-    }),
     onSubmit: async values => {
+      if (values.dealer == null) {
+        alert('딜러를 선택해 주세요.');
+        return;
+      }
+
+      if (values.prescriptionMonth == null) {
+        alert('처방월을 선택해 주세요.');
+        return;
+      }
+
+      if (values.partner == null) {
+        alert('거래처를 선택해 주세요.');
+        return;
+      }
+
+      if (values.drugCompanies.length === 0) {
+        alert('거래제약사를 선택해 주세요.');
+        return;
+      }
+
+      if (values.files.length === 0) {
+        alert('EDI 파일을 선택해 주세요.');
+        return;
+      }
+
       try {
         await uploadPartnerEdiFiles({
           request: {
@@ -336,7 +353,7 @@ function EdiIndividualUploadForm() {
         <br />
         1. png, jpg, jpeg, png, pdf파일만 업로드 가능해요.
         <br />
-        2. 파일은 최대 5개까지 가능하니, 5개가 초과할 경우에는 &apos한번에 업로드&apos; 기능을 이용해주세요.
+        2. 파일은 최대 5개까지 가능하니, 5개가 초과할 경우에는 &apos;한번에 업로드&apos; 기능을 이용해주세요.
         <br />
         3. 파일명의 처방월이 선택한 처방월과 일치하게 해주세요.
       </Typography>
@@ -418,12 +435,22 @@ function EdiBatchUploadForm() {
       prescriptionMonth: null as Date | null,
       file: null as File | null,
     },
-    validationSchema: Yup.object().shape({
-      settlementMonth: Yup.date().required('정산월을 선택해 주세요.'),
-      prescriptionMonth: Yup.date().required('처방월을 선택해 주세요.'),
-      file: Yup.mixed().required('EDI 파일을 선택해 주세요.'),
-    }),
     onSubmit: async values => {
+      if (values.settlementMonth == null) {
+        alert('정산월을 선택해 주세요.');
+        return;
+      }
+
+      if (values.prescriptionMonth == null) {
+        alert('처방월을 선택해 주세요.');
+        return;
+      }
+
+      if (values.file == null) {
+        alert('EDI 파일을 선택해 주세요.');
+        return;
+      }
+
       try {
         const result = await uploadEdiZip({
           settlementMonth: formatYyyyMmDd(values.prescriptionMonth!),

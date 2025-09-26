@@ -4,6 +4,7 @@ import { useSession } from '@/hooks/useSession';
 import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Box, Card, FormControl, FormHelperText, IconButton, InputAdornment, Stack, Typography } from '@mui/material';
+import { isAxiosError } from 'axios';
 import { useFormik } from 'formik';
 import { type SyntheticEvent, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -26,12 +27,28 @@ export default function Login() {
       password: Yup.string().required('비밀번호를 입력해 주세요.'),
     }),
     onSubmit: async (values, { setErrors }) => {
+      if (values.userId === '') {
+        setErrors({ userId: '아이디를 입력해 주세요.' });
+        return;
+      }
+
+      if (values.password === '') {
+        setErrors({ password: '비밀번호를 입력해 주세요.' });
+        return;
+      }
+
       try {
         await login(values.userId, values.password);
 
         onLoginSuccess(urlSearchParams);
       } catch (e) {
-        setErrors({ submit: `오류: ${JSON.stringify(e)}` });
+        if (isAxiosError(e) && e.response?.status === 401) {
+          setErrors({ password: '아이디 또는 비밀번호가 올바르지 않습니다.' });
+        } else if (e instanceof Error) {
+          setErrors({ password: e.message });
+        } else {
+          setErrors({ password: `오류: ${JSON.stringify(e)}` });
+        }
       }
     },
   });

@@ -4,10 +4,13 @@ import {
   getSettlement,
   getSettlementPartnerSummary,
   getSettlements,
+  notifyAdminForObjections,
+  notifyAdminForSettlements,
   type SettlementPartnerResponse,
   type SettlementResponse,
 } from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
+import { MedipandaDialog, MedipandaDialogContent, MedipandaDialogTitle } from '@/custom/components/MedipandaDialog';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { MedipandaTable, MedipandaTableCell, MedipandaTableRow } from '@/custom/components/MedipandaTable';
 import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
@@ -25,7 +28,9 @@ import {
   Stack,
   Table,
   TableBody,
+  TableCell,
   TableHead,
+  TableRow,
   TextField,
   Typography,
 } from '@mui/material';
@@ -37,6 +42,8 @@ import { Link as RouterLink } from 'react-router-dom';
 export default function SettlementList() {
   const today = new Date();
   const [selectedId, setSelectedId] = useState<number | null>(null);
+
+  const [settlementRequestModalOpen, setSettlementRequestModalOpen] = useState(false);
 
   const {
     content: page,
@@ -62,6 +69,32 @@ export default function SettlementList() {
     pageCountSelector: response => response.totalPages,
     initialContent: [],
   });
+
+  const handleSettlement = () => {
+    if (selectedId === null) {
+      alert('정산신청할 딜러를 선택해주세요.');
+      return;
+    }
+
+    setSettlementRequestModalOpen(true);
+  };
+
+  const handleObjection = async () => {
+    if (selectedId === null) {
+      alert('이의신청할 딜러를 선택해주세요.');
+      return;
+    }
+
+    try {
+      await notifyAdminForObjections({
+        settlementIds: [selectedId],
+      });
+      alert('이의신청이 접수되었습니다.');
+    } catch (error) {
+      console.error('Failed to submit objection:', error);
+      alert('이의신청 중 오류가 발생했습니다.');
+    }
+  };
 
   return (
     <>
@@ -156,8 +189,7 @@ export default function SettlementList() {
                 dealerName: pageFormik.values.searchType === 'dealerName' ? pageFormik.values.searchKeyword : undefined,
                 startMonth: new DateString(pageFormik.values.settlementMonth),
                 endMonth: new DateString(pageFormik.values.settlementMonth),
-                page: pageFormik.values.pageIndex,
-                size: pageFormik.values.pageSize,
+                size: 2 ** 31 - 1,
               })}
               target='_blank'
               sx={{
@@ -242,6 +274,7 @@ export default function SettlementList() {
                 width: '120px',
                 marginLeft: 'auto',
               }}
+              onClick={handleSettlement}
             >
               정산신청
             </MedipandaButton>
@@ -252,6 +285,7 @@ export default function SettlementList() {
                 width: '120px',
                 borderRadius: '30px',
               }}
+              onClick={handleObjection}
             >
               이의신청
             </MedipandaButton>
@@ -268,6 +302,14 @@ export default function SettlementList() {
           </Stack>
         </Stack>
       </Stack>
+
+      {settlementRequestModalOpen && (
+        <SettlementRequestModal
+          open={true}
+          settlement={page.find(s => s.id === selectedId)!}
+          onClose={() => setSettlementRequestModalOpen(false)}
+        />
+      )}
     </>
   );
 }
@@ -439,5 +481,68 @@ function SettlementDetailForm({ settlementId }: { settlementId: number | null })
         }}
       />
     </>
+  );
+}
+
+function SettlementRequestModal({ open, onClose, settlement }: { open?: boolean; onClose?: () => void; settlement: SettlementResponse }) {
+  const handleSettlementRequest = async () => {
+    try {
+      await notifyAdminForSettlements({
+        settlementIds: [settlement.id],
+      });
+      alert('정산신청이 접수되었습니다.');
+      onClose?.();
+    } catch (error) {
+      console.error('Failed to submit settlement:', error);
+      alert('정산신청 중 오류가 발생했습니다.');
+    }
+  };
+
+  if (!open) {
+    return null;
+  }
+
+  return (
+    <MedipandaDialog open onClose={onClose} width='400px'>
+      <MedipandaDialogTitle title={'정산요청'} onClose={onClose} />
+      <MedipandaDialogContent>
+        <Stack>
+          <Typography variant='largeTextR' sx={{ color: colors.gray80 }}>
+            해당 승인금액으로 정산 하시겠습니까?
+          </Typography>
+          <Table sx={{ marginY: '20px' }}>
+            <TableBody>
+              <TableRow>
+                <TableCell sx={{ width: '110px' }}>처방금액:</TableCell>
+                <TableCell>{settlement.prescriptionAmount.toLocaleString()}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>공급가액:</TableCell>
+                <TableCell>{settlement.supplyAmount.toLocaleString()}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>세액:</TableCell>
+                <TableCell>{settlement.taxAmount.toLocaleString()}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>합계금액:</TableCell>
+                <TableCell>{settlement.totalAmount.toLocaleString()}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+          <Typography variant='largeTextR' sx={{ color: colors.red }}>
+            &apos;정산요청&apos; 미 선택 시 정산이 불가합니다.
+          </Typography>
+          <Stack direction='row' sx={{ gap: '10px', marginTop: '40px' }}>
+            <MedipandaButton variant='outlined' size='large' sx={{ flex: 1 }} onClick={onClose}>
+              닫기
+            </MedipandaButton>
+            <MedipandaButton variant='contained' size='large' sx={{ flex: 1 }} onClick={handleSettlementRequest}>
+              정산요청
+            </MedipandaButton>
+          </Stack>
+        </Stack>
+      </MedipandaDialogContent>
+    </MedipandaDialog>
   );
 }

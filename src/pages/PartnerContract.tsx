@@ -1,7 +1,9 @@
 import { applyContract, getContractDetails, type PartnerContractDetailsResponse } from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaCheckbox } from '@/custom/components/MedipandaCheckbox';
+import { MedipandaDialog, MedipandaDialogTitle } from '@/custom/components/MedipandaDialog';
 import { MedipandaFileUploadButton } from '@/custom/components/MedipandaFileUploadButton';
+import { MedipandaTab, MedipandaTabs } from '@/custom/components/MedipandaTab';
 import { useSession } from '@/hooks/useSession';
 import { colors, typography } from '@/themes';
 import { Box, Button, FormControlLabel, Link, OutlinedInput, Stack, Typography } from '@mui/material';
@@ -67,6 +69,8 @@ const PartnerContractFormButton = styled(Button)({
 export default function PartnerContract() {
   const { session } = useSession();
   const [contractDetails, setContractDetails] = useState<PartnerContractDetailsResponse | null>(null);
+
+  const [bankSelectDialogOpen, setBankSelectDialogOpen] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -136,6 +140,7 @@ export default function PartnerContract() {
           cso_certificate: values.subcontractAgreement,
           education_certificate: values.educationCertificate,
         });
+        alert('파트너사 계약 신청이 완료되었습니다.');
       } catch (e) {
         console.error(e);
         alert('파트너사 계약 신청 중 오류가 발생했습니다. 다시 시도해주세요.');
@@ -167,6 +172,11 @@ export default function PartnerContract() {
     } catch (e) {
       console.error(e);
     }
+  };
+
+  const handleBankSelect = (name: string) => {
+    formik.setFieldValue('bankName', name);
+    setBankSelectDialogOpen(false);
   };
 
   return (
@@ -292,7 +302,7 @@ export default function PartnerContract() {
               </PartnerContractFormInput>
             ) : (
               <PartnerContractFormInput>
-                <PartnerContractFormButton variant='outlined'>
+                <PartnerContractFormButton variant='outlined' onClick={() => setBankSelectDialogOpen(true)}>
                   <Typography variant='largeTextR'>
                     {formik.values.bankName !== '' ? formik.values.bankName : '은행을 선택해주세요'}
                   </Typography>
@@ -411,6 +421,143 @@ export default function PartnerContract() {
           )}
         </Stack>
       </Stack>
+
+      <BankSelectModal open={bankSelectDialogOpen} onClose={() => setBankSelectDialogOpen(false)} onSelect={handleBankSelect} />
     </>
+  );
+}
+
+const banks = [
+  '카카오뱅크',
+  '국민은행',
+  '기업은행',
+  '농협은행',
+  '신한은행',
+  'iM뱅크',
+  '산업은행',
+  '우리은행',
+  '한국씨티은행',
+  '하나은행',
+  'SC제일은행',
+  '경남은행',
+  '광주은행',
+  '도이치은행',
+  '뱅크오브아메리카',
+  '부산은행',
+  '산림조합중앙회',
+  '저축은행',
+  '새마을금고',
+  '수협은행',
+  '신협중앙회',
+  '우체국',
+  '전북은행',
+  '제주은행',
+  '중국건설은행',
+  '중국공상은행',
+  '중국은행',
+  'BNP파리바은행',
+  'HSBC은행',
+  'JP모간체이스은행',
+  '케이뱅크',
+  '토스뱅크',
+];
+
+const securities = [
+  '교보증권',
+  '대신증권',
+  'DB증권',
+  '메리츠증권',
+  '미래에셋증권',
+  '부국증권',
+  '삼성증권',
+  '신영증권',
+  '신한투자증권',
+  '에스케이증권',
+  '현대차증권',
+  '유안타증권',
+  '유진투자증권',
+  'LS증권',
+  '케이프투자증권',
+  '키움증권',
+  '우리투자증권',
+  '하나증권',
+  'iM증권',
+  '한국투자증권',
+  '상상인증권',
+  '한화투자증권',
+  'KB증권',
+  '다올투자증권',
+  'BNK투자증권',
+  'NH투자증권',
+  '카카오페이증권',
+  'IBK투자증권',
+  '토스증권',
+];
+
+function BankSelectModal({ open, onClose, onSelect }: { open?: boolean; onClose?: () => void; onSelect?: (name: string) => void }) {
+  const [tab, setTab] = useState(0);
+
+  if (!open) {
+    return null;
+  }
+
+  return (
+    <MedipandaDialog open onClose={onClose} width='660px'>
+      <MedipandaDialogTitle title='기관선택' onClose={onClose} />
+      <Stack
+        sx={{
+          padding: '40px 30px',
+        }}
+      >
+        <MedipandaTabs
+          value={tab}
+          sx={{
+            marginBottom: '30px',
+          }}
+        >
+          <MedipandaTab
+            label='은행'
+            onClick={() => setTab(0)}
+            sx={{
+              flex: 1,
+              maxWidth: 'unset',
+            }}
+          />
+          <MedipandaTab
+            label='증권사'
+            onClick={() => setTab(1)}
+            sx={{
+              flex: 1,
+              maxWidth: 'unset',
+            }}
+          />
+        </MedipandaTabs>
+
+        <Stack
+          direction='row'
+          sx={{
+            flexWrap: 'wrap',
+            gap: '25px 0px',
+
+            '& > div': {
+              display: 'inline-block',
+              width: '150px',
+              height: '24px',
+            },
+          }}
+        >
+          {(tab === 0 ? banks : securities).map(name => (
+            <Box key={name} onClick={() => onSelect?.(name)} sx={{ cursor: 'pointer' }}>
+              <Stack direction='row' sx={{ alignItems: 'center' }}>
+                <img src={`/assets/icons/financial/${name}.png`} style={{ width: '24px', height: '24px' }} />
+                <Typography variant='largeTextM' sx={{ color: colors.gray80, marginLeft: '8px', fontSize: '14px' }}>
+                  {name}
+                </Typography>
+              </Stack>
+            </Box>
+          ))}
+        </Stack>
+      </Stack>
+    </MedipandaDialog>
   );
 }
