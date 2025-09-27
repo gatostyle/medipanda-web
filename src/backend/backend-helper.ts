@@ -313,3 +313,11 @@ export const PriceUnit = {
   USD: 'USD',
   EUR: 'EUR',
 } as const;
+
+export const ReportType = {
+  SPAM: 'SPAM',
+  ILLEGAL_CONTENT: 'ILLEGAL_CONTENT',
+  ABUSE: 'ABUSE',
+  PERSONAL_INFORMATION: 'PERSONAL_INFORMATION',
+  OTHER: 'OTHER',
+} as const;
