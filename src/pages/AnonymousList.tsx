@@ -187,7 +187,7 @@ export default function AnonymousList() {
               fullWidth
               variant='contained'
               component={RouterLink}
-              to='/community/mr-cso-matching/new'
+              to='/community/anonymous/new'
               sx={{
                 height: '50px',
                 backgroundColor: colors.navy,
