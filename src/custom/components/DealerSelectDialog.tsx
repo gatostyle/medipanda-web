@@ -1,6 +1,6 @@
 import { type DealerResponse, listDealers } from '@/backend';
-import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { MedipandaButton } from './MedipandaButton';
 import { MedipandaDialog, MedipandaDialogContent, MedipandaDialogTitle } from './MedipandaDialog';
@@ -15,13 +15,20 @@ export function DealerSelectDialog({
   onClose?: () => void;
   onSelect?: (dealer: DealerResponse) => void;
 }) {
-  const { content: page } = usePageFetchFormik({
-    fetcher: () => listDealers(),
-    initialContent: [],
-  });
+  const [contents, setContents] = useState<DealerResponse[]>([]);
+
+  const fetchContents = async () => {
+    const response = await listDealers();
+
+    setContents(response);
+  };
+
+  useEffect(() => {
+    fetchContents();
+  }, []);
 
   const table = useReactTable({
-    data: page,
+    data: contents,
     columns: [
       {
         header: '딜러명',

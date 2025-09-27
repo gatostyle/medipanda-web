@@ -1,12 +1,19 @@
-import { getProductDetails, getProductSummaries, type ProductDetailsResponse } from '@/backend';
-import type { ProductSortType } from '@/backend-types';
+import {
+  getProductDetails,
+  getProductSummaries,
+  type ProductDetailsResponse,
+  ProductSortType,
+  type ProductSummaryResponse,
+} from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaDialog, MedipandaDialogTitle } from '@/custom/components/MedipandaDialog';
 import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { MedipandaTableCell, MedipandaTableRow } from '@/custom/components/MedipandaTable';
 import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
-import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
+import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
+import { setUrlParams } from '@/lib/utils/url';
+import { withSequence } from '@/lib/utils/withSequence';
 import { colors, typography } from '@/themes';
 import { Search } from '@mui/icons-material';
 import {
@@ -15,6 +22,7 @@ import {
   FormControl,
   InputAdornment,
   MenuItem,
+  PaginationItem,
   Select,
   Stack,
   Table,
@@ -25,6 +33,9 @@ import {
 } from '@mui/material';
 import { ArrowDown2, ArrowUp2 } from 'iconsax-reactjs';
 import { Fragment, useEffect, useState } from 'react';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 const searchTypeLabel = {
   composition: '성분명',
@@ -47,65 +58,147 @@ const statusLabel = {
 };
 
 export default function ProductList() {
-  const [searchTypeDropdownOpen, setSearchTypeDropdownOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const navigate = useNavigate();
+
+  const [contents, setContents] = useState<ProductSummaryResponse[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const initialSearchParams = {
+    searchType: 'composition' as 'productName' | 'composition' | 'manufacturerName',
+    searchKeyword: '',
+    compositionKeyword: '',
+    manufacturerNameKeyword: '',
+    productNameKeyword: '',
+    isAcquisition: '' as 'true' | 'false' | '',
+    isPromotion: '' as 'true' | 'false' | '',
+    isOutOfStock: '' as 'true' | 'false' | '',
+    sortType: ProductSortType.FEE_RATE_DESC,
+    page: '1',
+  };
 
   const {
-    content: page,
-    pageCount: totalPages,
-    formik: pageFormik,
-  } = usePageFetchFormik({
-    initialFormValues: {
-      searchType: 'composition' as 'composition' | 'productName' | 'manufacturerName',
-      searchKeyword: '',
-      sortType: 'FEE_RATE_DESC' as ProductSortType,
-      advancedSearchOpen: false,
-      composition: '',
-      manufacturerName: '',
-      productName: '',
-      isAcquisition: false,
-      isPromotion: false,
-      isOutOfStock: false,
+    searchType,
+    searchKeyword,
+    compositionKeyword,
+    manufacturerNameKeyword,
+    productNameKeyword,
+    isAcquisition: paramIsAcquisition,
+    isPromotion: paramIsPromotion,
+    isOutOfStock: paramIsOutOfStock,
+    sortType,
+    page: paramPage,
+  } = useSearchParamsOrDefault(initialSearchParams);
+  const isAcquisition = paramIsAcquisition === '' ? null : paramIsAcquisition === 'true';
+  const isPromotion = paramIsPromotion === '' ? null : paramIsPromotion === 'true';
+  const isOutOfStock = paramIsOutOfStock === '' ? null : paramIsOutOfStock === 'true';
+  const page = Number(paramPage);
+  const pageSize = 10;
+  const advancedSearch =
+    compositionKeyword !== '' ||
+    manufacturerNameKeyword !== '' ||
+    productNameKeyword !== '' ||
+    isAcquisition !== null ||
+    isPromotion !== null ||
+    isOutOfStock !== null;
+
+  const form = useForm({
+    defaultValues: {
+      ...initialSearchParams,
+      advancedSearch,
+      isAcquisition: null as boolean | null,
+      isPromotion: null as boolean | null,
+      isOutOfStock: null as boolean | null,
     },
-    fetcher: values => {
-      return getProductSummaries({
-        composition: values.advancedSearchOpen
-          ? values.composition !== ''
-            ? values.composition
-            : undefined
-          : values.searchType === 'composition'
-            ? values.searchKeyword
-            : undefined,
-        productName: values.advancedSearchOpen
-          ? values.productName !== ''
-            ? values.productName
-            : undefined
-          : values.searchType === 'productName'
-            ? values.searchKeyword
-            : undefined,
-        manufacturerName: values.advancedSearchOpen
-          ? values.manufacturerName !== ''
-            ? values.manufacturerName
-            : undefined
-          : values.searchType === 'manufacturerName'
-            ? values.searchKeyword
-            : undefined,
-        isAcquisition: values.advancedSearchOpen && values.isAcquisition ? values.isAcquisition : undefined,
-        isPromotion: values.advancedSearchOpen && values.isPromotion ? values.isPromotion : undefined,
-        isOutOfStock: values.advancedSearchOpen && values.isOutOfStock ? values.isOutOfStock : undefined,
-        sortType: values.sortType,
-        page: values.pageIndex,
-        size: values.pageSize,
-      });
-    },
-    contentSelector: response => response.content,
-    pageCountSelector: response => response.totalPages,
-    initialContent: [],
   });
+  const formSearchType = form.watch('searchType');
+  const formAdvancedSearch = form.watch('advancedSearch');
+  const formIsAcquisition = form.watch('isAcquisition');
+  const formIsPromotion = form.watch('isPromotion');
+  const formIsOutOfStock = form.watch('isOutOfStock');
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    const url = setUrlParams(
+      {
+        ...values,
+        searchType: values.advancedSearch ? 'composition' : values.searchType,
+        searchKeyword: values.advancedSearch ? '' : values.searchKeyword,
+        advancedSearch: undefined,
+        page: 1,
+      },
+      initialSearchParams,
+    );
+
+    navigate(url);
+  };
+
+  const fetchContents = async () => {
+    try {
+      const response = await getProductSummaries({
+        composition: advancedSearch
+          ? compositionKeyword !== ''
+            ? compositionKeyword
+            : undefined
+          : searchType === 'composition'
+            ? searchKeyword
+            : undefined,
+        productName: advancedSearch
+          ? productNameKeyword !== ''
+            ? productNameKeyword
+            : undefined
+          : searchType === 'productName'
+            ? searchKeyword
+            : undefined,
+        manufacturerName: advancedSearch
+          ? manufacturerNameKeyword !== ''
+            ? manufacturerNameKeyword
+            : undefined
+          : searchType === 'manufacturerName'
+            ? searchKeyword
+            : undefined,
+        isAcquisition: isAcquisition !== null ? isAcquisition : undefined,
+        isPromotion: isPromotion !== null ? isPromotion : undefined,
+        isOutOfStock: isOutOfStock !== null ? isOutOfStock : undefined,
+        sortType: sortType,
+        page: page - 1,
+        size: pageSize,
+      });
+
+      setContents(withSequence(response).content);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch product list:', error);
+      alert('의약품 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+      setTotalPages(0);
+    }
+  };
 
   useEffect(() => {
-    pageFormik.submitForm();
-  }, [pageFormik.values.sortType]);
+    form.setValue('searchType', searchType);
+    form.setValue('searchKeyword', searchKeyword);
+    form.setValue('compositionKeyword', compositionKeyword);
+    form.setValue('manufacturerNameKeyword', manufacturerNameKeyword);
+    form.setValue('productNameKeyword', productNameKeyword);
+    form.setValue('isAcquisition', isAcquisition);
+    form.setValue('isPromotion', isPromotion);
+    form.setValue('isOutOfStock', isOutOfStock);
+    form.setValue('sortType', sortType);
+    fetchContents();
+  }, [
+    searchType,
+    searchKeyword,
+    compositionKeyword,
+    manufacturerNameKeyword,
+    productNameKeyword,
+    isAcquisition,
+    isPromotion,
+    isOutOfStock,
+    sortType,
+    page,
+  ]);
+
+  const [searchTypeDropdownOpen, setSearchTypeDropdownOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   return (
     <>
@@ -113,139 +206,146 @@ export default function ProductList() {
         direction='row'
         gap='10px'
         component='form'
-        onSubmit={pageFormik.handleSubmit}
+        onSubmit={form.handleSubmit(submitHandler)}
         sx={{
           alignSelf: 'center',
         }}
       >
-        <Stack
-          sx={{
-            position: 'relative',
-            width: '200px',
-            height: '60px',
-          }}
-        >
-          <Button
-            variant='contained'
-            sx={{
-              ...typography.heading5R,
-              height: '60px',
-              backgroundColor: colors.vividViolet,
-              borderRadius: '30px',
-            }}
-            onClick={() => setSearchTypeDropdownOpen(!searchTypeDropdownOpen)}
-          >
-            <Typography>
-              {
-                {
-                  composition: '성분명',
-                  productName: '제품명',
-                  manufacturerName: '제약사명',
-                }[pageFormik.values.searchType]
-              }
-            </Typography>
-            <ArrowDown2 style={{ marginLeft: 'auto' }} />
-          </Button>
-          {searchTypeDropdownOpen && (
+        <Controller
+          control={form.control}
+          name={'searchType'}
+          render={({ field }) => (
             <Stack
               sx={{
-                zIndex: 1,
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                left: 0,
-                color: colors.white,
+                position: 'relative',
+                width: '200px',
+                height: '60px',
               }}
             >
-              {(['composition', 'productName', 'manufacturerName'] as const).map((type, index, arr) => (
-                <Button
-                  key={type}
-                  variant='contained'
+              <Button
+                variant='contained'
+                sx={{
+                  ...typography.heading5R,
+                  height: '60px',
+                  backgroundColor: colors.vividViolet,
+                  borderRadius: '30px',
+                }}
+                onClick={() => setSearchTypeDropdownOpen(!searchTypeDropdownOpen)}
+              >
+                <Typography>{searchTypeLabel[field.value]}</Typography>
+                <ArrowDown2 style={{ marginLeft: 'auto' }} />
+              </Button>
+              {searchTypeDropdownOpen && (
+                <Stack
                   sx={{
-                    ...typography.heading5R,
-                    height: '60px',
-                    backgroundColor: colors.vividViolet,
-                    ...(index === 0
-                      ? {
-                          borderTopLeftRadius: '30px',
-                          borderTopRightRadius: '30px',
-                        }
-                      : {
-                          borderTopLeftRadius: '0px',
-                          borderTopRightRadius: '0px',
-                        }),
-                    ...(index === arr.length - 1
-                      ? {
-                          borderBottomLeftRadius: '30px',
-                          borderBottomRightRadius: '30px',
-                        }
-                      : {
-                          borderBottomLeftRadius: '0px',
-                          borderBottomRightRadius: '0px',
-                        }),
-                  }}
-                  onClick={() => {
-                    pageFormik.setFieldValue('searchType', type);
-                    pageFormik.submitForm();
-                    setSearchTypeDropdownOpen(!searchTypeDropdownOpen);
+                    zIndex: 1,
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    left: 0,
+                    color: colors.white,
                   }}
                 >
-                  <Typography>{searchTypeLabel[type]}</Typography>
-                  <ArrowUp2
-                    style={{
-                      marginLeft: 'auto',
-                      ...(index === 0 ? {} : { opacity: 0 }),
-                    }}
-                  />
-                </Button>
-              ))}
+                  {(['composition', 'productName', 'manufacturerName'] as const).map((type, index, arr) => (
+                    <Button
+                      key={type}
+                      variant='contained'
+                      sx={{
+                        ...typography.heading5R,
+                        height: '60px',
+                        backgroundColor: colors.vividViolet,
+                        ...(index === 0
+                          ? {
+                              borderTopLeftRadius: '30px',
+                              borderTopRightRadius: '30px',
+                            }
+                          : {
+                              borderTopLeftRadius: '0px',
+                              borderTopRightRadius: '0px',
+                            }),
+                        ...(index === arr.length - 1
+                          ? {
+                              borderBottomLeftRadius: '30px',
+                              borderBottomRightRadius: '30px',
+                            }
+                          : {
+                              borderBottomLeftRadius: '0px',
+                              borderBottomRightRadius: '0px',
+                            }),
+                      }}
+                      onClick={() => {
+                        field.onChange(type);
+                        setSearchTypeDropdownOpen(!searchTypeDropdownOpen);
+                      }}
+                    >
+                      <Typography>{searchTypeLabel[type]}</Typography>
+                      <ArrowUp2
+                        style={{
+                          marginLeft: 'auto',
+                          ...(index === 0 ? {} : { opacity: 0 }),
+                        }}
+                      />
+                    </Button>
+                  ))}
+                </Stack>
+              )}
             </Stack>
           )}
-        </Stack>
-        <TextField
-          name='searchKeyword'
-          value={pageFormik.values.searchKeyword}
-          onChange={pageFormik.handleChange}
-          placeholder={`${searchTypeLabel[pageFormik.values.searchType]}을 검색하세요.`}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position='end'>
-                <Search sx={{ color: colors.white }} />
-              </InputAdornment>
-            ),
-          }}
-          sx={{
-            width: '550px',
-            backgroundColor: colors.vividViolet,
-            color: colors.white,
-            borderRadius: '50px',
-            '& input': {
-              ...typography.heading5R,
-              color: colors.white,
-            },
-            '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'transparent !important',
-            },
-          }}
         />
-        <Box
-          onClick={() => pageFormik.setFieldValue('advancedSearchOpen', !pageFormik.values.advancedSearchOpen)}
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            '&:hover': {
-              cursor: 'pointer',
-              opacity: 0.8,
-            },
-          }}
-        >
-          <img src='/assets/icons/icon-search-detail.svg' />
-        </Box>
+        <Controller
+          control={form.control}
+          name={'searchKeyword'}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              placeholder={`${searchTypeLabel[formSearchType]}을 검색하세요.`}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <Search sx={{ color: colors.white }} />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                width: '550px',
+                backgroundColor: colors.vividViolet,
+                color: colors.white,
+                borderRadius: '50px',
+                '& input': {
+                  ...typography.heading5R,
+                  color: colors.white,
+                },
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'transparent !important',
+                },
+              }}
+            />
+          )}
+        />
+        <Controller
+          control={form.control}
+          name={'advancedSearch'}
+          render={({ field }) => (
+            <Box
+              onClick={() => field.onChange(!field.value)}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                '&:hover': {
+                  cursor: 'pointer',
+                  opacity: 0.8,
+                },
+              }}
+            >
+              <img src='/assets/icons/icon-search-detail.svg' />
+            </Box>
+          )}
+        />
       </Stack>
-      {pageFormik.values.advancedSearchOpen && (
+      {formAdvancedSearch && (
         <Stack
           component='form'
-          onSubmit={pageFormik.handleSubmit}
+          onSubmit={form.handleSubmit(submitHandler)}
           sx={{
             padding: '30px',
             backgroundColor: colors.gray10,
@@ -262,18 +362,22 @@ export default function ProductList() {
               >
                 성분명
               </Typography>
-              <MedipandaOutlinedInput
-                name='composition'
-                value={pageFormik.values.composition}
-                onChange={pageFormik.handleChange}
-                placeholder='성분명을 입력하세요.'
-                sx={{
-                  width: '400px',
-                  height: '50px',
-                  border: `1px solid ${colors.vividViolet}`,
-                  borderRadius: '50px',
-                  backgroundColor: colors.white,
-                }}
+              <Controller
+                control={form.control}
+                name={'compositionKeyword'}
+                render={({ field }) => (
+                  <MedipandaOutlinedInput
+                    {...field}
+                    placeholder='성분명을 입력하세요.'
+                    sx={{
+                      width: '400px',
+                      height: '50px',
+                      border: `1px solid ${colors.vividViolet}`,
+                      borderRadius: '50px',
+                      backgroundColor: colors.white,
+                    }}
+                  />
+                )}
               />
             </Stack>
             <Stack direction='row' alignItems='center' gap='16px'>
@@ -286,18 +390,22 @@ export default function ProductList() {
               >
                 제약사
               </Typography>
-              <MedipandaOutlinedInput
-                name='manufacturerName'
-                value={pageFormik.values.manufacturerName}
-                onChange={pageFormik.handleChange}
-                placeholder='제약사를 입력하세요.'
-                sx={{
-                  width: '400px',
-                  height: '50px',
-                  border: `1px solid ${colors.vividViolet}`,
-                  borderRadius: '50px',
-                  backgroundColor: colors.white,
-                }}
+              <Controller
+                control={form.control}
+                name={'manufacturerNameKeyword'}
+                render={({ field }) => (
+                  <MedipandaOutlinedInput
+                    {...field}
+                    placeholder='제약사를 입력하세요.'
+                    sx={{
+                      width: '400px',
+                      height: '50px',
+                      border: `1px solid ${colors.vividViolet}`,
+                      borderRadius: '50px',
+                      backgroundColor: colors.white,
+                    }}
+                  />
+                )}
               />
             </Stack>
           </Stack>
@@ -320,18 +428,22 @@ export default function ProductList() {
               >
                 제품명
               </Typography>
-              <MedipandaOutlinedInput
-                name='productName'
-                value={pageFormik.values.productName}
-                onChange={pageFormik.handleChange}
-                placeholder='제품명을 입력하세요.'
-                sx={{
-                  width: '400px',
-                  height: '50px',
-                  border: `1px solid ${colors.vividViolet}`,
-                  borderRadius: '50px',
-                  backgroundColor: colors.white,
-                }}
+              <Controller
+                control={form.control}
+                name={'productNameKeyword'}
+                render={({ field }) => (
+                  <MedipandaOutlinedInput
+                    {...field}
+                    placeholder='제품명을 입력하세요.'
+                    sx={{
+                      width: '400px',
+                      height: '50px',
+                      border: `1px solid ${colors.vividViolet}`,
+                      borderRadius: '50px',
+                      backgroundColor: colors.white,
+                    }}
+                  />
+                )}
               />
             </Stack>
             <Stack direction='row' alignItems='center' gap='16px'>
@@ -347,72 +459,80 @@ export default function ProductList() {
               <Stack direction='row' alignItems='center' gap='8px'>
                 <MedipandaButton
                   onClick={() => {
-                    pageFormik.setValues({
-                      ...pageFormik.values,
-                      isAcquisition: false,
-                      isPromotion: false,
-                      isOutOfStock: false,
-                    });
+                    form.setValue('isAcquisition', null);
+                    form.setValue('isPromotion', null);
+                    form.setValue('isOutOfStock', null);
                   }}
-                  variant={
-                    !pageFormik.values.isAcquisition && !pageFormik.values.isPromotion && !pageFormik.values.isOutOfStock
-                      ? 'contained'
-                      : 'outlined'
-                  }
+                  variant={!(formIsAcquisition || formIsPromotion || formIsOutOfStock) ? 'contained' : 'outlined'}
                   color='secondary'
                   sx={{
                     width: '94px',
                     borderRadius: '50px',
-                    backgroundColor:
-                      !pageFormik.values.isAcquisition && !pageFormik.values.isPromotion && !pageFormik.values.isOutOfStock
-                        ? undefined
-                        : colors.white,
+                    backgroundColor: !(formIsAcquisition || formIsPromotion || formIsOutOfStock) ? undefined : colors.white,
                   }}
                 >
                   전체
                 </MedipandaButton>
-                <MedipandaButton
-                  onClick={() => {
-                    pageFormik.setFieldValue('isAcquisition', !pageFormik.values.isAcquisition);
-                  }}
-                  variant={pageFormik.values.isAcquisition ? 'contained' : 'outlined'}
-                  color='secondary'
-                  sx={{
-                    width: '94px',
-                    borderRadius: '50px',
-                    backgroundColor: pageFormik.values.isAcquisition ? undefined : colors.white,
-                  }}
-                >
-                  취급품목
-                </MedipandaButton>
-                <MedipandaButton
-                  onClick={() => {
-                    pageFormik.setFieldValue('isPromotion', !pageFormik.values.isPromotion);
-                  }}
-                  variant={pageFormik.values.isPromotion ? 'contained' : 'outlined'}
-                  color='secondary'
-                  sx={{
-                    width: '94px',
-                    borderRadius: '50px',
-                    backgroundColor: pageFormik.values.isPromotion ? undefined : colors.white,
-                  }}
-                >
-                  프로모션
-                </MedipandaButton>
-                <MedipandaButton
-                  onClick={() => {
-                    pageFormik.setFieldValue('isOutOfStock', !pageFormik.values.isOutOfStock);
-                  }}
-                  variant={pageFormik.values.isOutOfStock ? 'contained' : 'outlined'}
-                  color='secondary'
-                  sx={{
-                    width: '94px',
-                    borderRadius: '50px',
-                    backgroundColor: pageFormik.values.isOutOfStock ? undefined : colors.white,
-                  }}
-                >
-                  품절
-                </MedipandaButton>
+                <Controller
+                  control={form.control}
+                  name={'isAcquisition'}
+                  render={({ field }) => (
+                    <MedipandaButton
+                      onClick={() => {
+                        field.onChange(!field.value);
+                      }}
+                      variant={field.value ? 'contained' : 'outlined'}
+                      color='secondary'
+                      sx={{
+                        width: '94px',
+                        borderRadius: '50px',
+                        backgroundColor: field.value ? undefined : colors.white,
+                      }}
+                    >
+                      취급품목
+                    </MedipandaButton>
+                  )}
+                />
+                <Controller
+                  control={form.control}
+                  name={'isPromotion'}
+                  render={({ field }) => (
+                    <MedipandaButton
+                      onClick={() => {
+                        field.onChange(!field.value);
+                      }}
+                      variant={field.value ? 'contained' : 'outlined'}
+                      color='secondary'
+                      sx={{
+                        width: '94px',
+                        borderRadius: '50px',
+                        backgroundColor: field.value ? undefined : colors.white,
+                      }}
+                    >
+                      프로모션
+                    </MedipandaButton>
+                  )}
+                />
+                <Controller
+                  control={form.control}
+                  name={'isOutOfStock'}
+                  render={({ field }) => (
+                    <MedipandaButton
+                      onClick={() => {
+                        field.onChange(!field.value);
+                      }}
+                      variant={field.value ? 'contained' : 'outlined'}
+                      color='secondary'
+                      sx={{
+                        width: '94px',
+                        borderRadius: '50px',
+                        backgroundColor: field.value ? undefined : colors.white,
+                      }}
+                    >
+                      품절
+                    </MedipandaButton>
+                  )}
+                />
               </Stack>
             </Stack>
           </Stack>
@@ -426,19 +546,10 @@ export default function ProductList() {
             }}
           >
             <MedipandaButton
-              onClick={() => {
-                pageFormik.setValues({
-                  ...pageFormik.values,
-                  composition: '',
-                  manufacturerName: '',
-                  productName: '',
-                  isAcquisition: false,
-                  isPromotion: false,
-                  isOutOfStock: false,
-                });
-              }}
               variant='contained'
               size='large'
+              component={RouterLink}
+              to={''}
               sx={{
                 width: '160px',
                 backgroundColor: colors.gray50,
@@ -473,33 +584,34 @@ export default function ProductList() {
               width: '350px',
             }}
           >
-            <Select
-              name='sortType'
-              value={pageFormik.values.sortType}
-              onChange={async e => {
-                await pageFormik.setFieldValue('sortType', e.target.value);
-                await pageFormik.submitForm();
-              }}
-              size='small'
-              sx={{
-                ...typography.mediumTextR,
-                color: colors.vividViolet,
-              }}
-            >
-              {Object.keys(sortTypeLabel).map(key => {
-                return (
-                  <MenuItem
-                    key={key}
-                    value={key}
-                    sx={{
-                      '&.Mui-selected': { color: colors.vividViolet },
-                    }}
-                  >
-                    {sortTypeLabel[key]}
-                  </MenuItem>
-                );
-              })}
-            </Select>
+            <Controller
+              control={form.control}
+              name={'sortType'}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  size='small'
+                  sx={{
+                    ...typography.mediumTextR,
+                    color: colors.vividViolet,
+                  }}
+                >
+                  {Object.keys(sortTypeLabel).map(key => {
+                    return (
+                      <MenuItem
+                        key={key}
+                        value={key}
+                        sx={{
+                          '&.Mui-selected': { color: colors.vividViolet },
+                        }}
+                      >
+                        {sortTypeLabel[key]}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              )}
+            />
           </FormControl>
         </Stack>
       </Stack>
@@ -521,7 +633,7 @@ export default function ProductList() {
           </MedipandaTableRow>
         </TableHead>
         <TableBody>
-          {page.map(product => (
+          {contents.map(product => (
             <Fragment key={product.id}>
               <MedipandaTableRow
                 onClick={() => setSelectedId(product.id)}
@@ -578,12 +690,10 @@ export default function ProductList() {
 
       <MedipandaPagination
         count={totalPages}
-        page={pageFormik.values.pageIndex + 1}
+        page={page}
         showFirstButton
         showLastButton
-        onChange={(_, page) => {
-          pageFormik.setFieldValue('pageIndex', page - 1);
-        }}
+        renderItem={item => <PaginationItem {...item} component={RouterLink} to={setUrlParams({ page: item.page }, initialSearchParams)} />}
         sx={{
           alignSelf: 'center',
           marginTop: '40px',

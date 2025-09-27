@@ -4,32 +4,38 @@ import {
   getPerformanceByDrugCompanyMonthly,
   getPerformanceByInstitution,
   type PerformanceStatsByDrugCompany,
+  type PerformanceStatsByInstitution,
 } from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaCheckbox } from '@/custom/components/MedipandaCheckbox';
 import { MedipandaDatePicker } from '@/custom/components/MedipandaDatePicker';
 import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
 import { MedipandaTable } from '@/custom/components/MedipandaTable';
-import { DATEFORMAT_YYYY_MM, formatYyyyMmDd, formatYyyy년Mm월, getMonthRange } from '@/lib/utils/dateFormat';
-import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
+import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
+import { DATEFORMAT_YYYY_MM, formatYyyyMm, formatYyyyMmDd, formatYyyy년Mm월, getMonthRange, SafeDate } from '@/lib/utils/dateFormat';
+import { setUrlParams } from '@/lib/utils/url';
 import { colors } from '@/themes';
 import { Search } from '@mui/icons-material';
 import { IconButton, InputAdornment, Stack, Typography } from '@mui/material';
 import { LineChart } from '@mui/x-charts';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function SalesStatistic() {
-  const [currentTab, setCurrentTab] = useState<'ALL' | 'INDIVIDUAL'>('ALL');
+  const { tab } = useSearchParamsOrDefault({ tab: 'ALL' as 'ALL' | 'INDIVIDUAL' });
 
   return (
     <>
       <Stack gap='40px'>
         <Stack direction='row' justifyContent='center'>
           <MedipandaButton
-            variant={currentTab === 'ALL' ? 'contained' : 'outlined'}
+            variant={tab === 'ALL' ? 'contained' : 'outlined'}
             rounded
-            onClick={() => setCurrentTab('ALL')}
+            component={RouterLink}
+            to={''}
             sx={{
               width: '140px',
               borderTopRightRadius: '0px',
@@ -39,9 +45,10 @@ export default function SalesStatistic() {
             전체매출
           </MedipandaButton>
           <MedipandaButton
-            variant={currentTab === 'INDIVIDUAL' ? 'contained' : 'outlined'}
+            variant={tab === 'INDIVIDUAL' ? 'contained' : 'outlined'}
             rounded
-            onClick={() => setCurrentTab('INDIVIDUAL')}
+            component={RouterLink}
+            to={'?tab=INDIVIDUAL'}
             sx={{
               width: '140px',
               borderBottomLeftRadius: '0px',
@@ -52,87 +59,141 @@ export default function SalesStatistic() {
           </MedipandaButton>
         </Stack>
 
-        {currentTab === 'ALL' ? <TotalSalesStatistic /> : <PartnerSalesStatistic />}
+        {tab === 'ALL' ? <TotalSalesStatistic /> : <PartnerSalesStatistic />}
       </Stack>
     </>
   );
 }
 
 function TotalSalesStatistic() {
-  const {
-    content: page,
-    formik: pageFormik,
-    refresh,
-  } = usePageFetchFormik({
-    initialFormValues: {
+  const navigate = useNavigate();
+
+  const [contents, setContents] = useState<PerformanceStatsByDrugCompany[]>([]);
+
+  const initialSearchParams = {
+    startMonth: '',
+    endMonth: '',
+    searchKeyword: '',
+  };
+
+  const { startMonth: paramStartMonth, endMonth: paramEndMonth, searchKeyword } = useSearchParamsOrDefault(initialSearchParams);
+  const startMonth = useMemo(() => SafeDate(paramStartMonth), [paramStartMonth]);
+  const endMonth = useMemo(() => SafeDate(paramEndMonth), [paramEndMonth]);
+
+  const form = useForm({
+    defaultValues: {
+      ...initialSearchParams,
       startMonth: null as Date | null,
       endMonth: null as Date | null,
-      searchKeyword: '',
     },
-    fetcher: async values => {
-      const response = await getPerformanceByDrugCompany({
-        startMonth: values.startMonth !== null ? new DateString(values.startMonth) : undefined,
-        endMonth: values.endMonth !== null ? new DateString(values.endMonth) : undefined,
-      });
-
-      return response.filter(item => values.searchKeyword === '' || item.drugCompany?.includes(values.searchKeyword));
-    },
-    initialContent: [],
   });
 
-  useEffect(() => {
-    if (pageFormik.values.startMonth !== null && pageFormik.values.endMonth !== null) {
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.startMonth === null || values.endMonth === null) {
+      alert('시작월과 종료월을 모두 입력해주세요.');
       return;
     }
 
-    refresh();
-  }, [pageFormik.values.startMonth, pageFormik.values.endMonth, refresh]);
+    const url = setUrlParams(
+      {
+        ...values,
+        startMonth: values.startMonth !== null ? formatYyyyMm(values.startMonth) : undefined,
+        endMonth: values.endMonth !== null ? formatYyyyMm(values.endMonth) : undefined,
+      },
+      initialSearchParams,
+    );
+
+    navigate(url);
+  };
+
+  const fetchContents = async () => {
+    try {
+      const response = await getPerformanceByDrugCompany({
+        startMonth: startMonth !== null ? new DateString(startMonth) : undefined,
+        endMonth: endMonth !== null ? new DateString(endMonth) : undefined,
+      });
+
+      setContents(response.filter(item => searchKeyword === '' || item.drugCompany?.includes(searchKeyword)));
+    } catch (error) {
+      console.error('Failed to fetch performance', error);
+      alert('전체 매출 통계 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+    }
+  };
+
+  useEffect(() => {
+    form.setValue('startMonth', startMonth);
+    form.setValue('endMonth', endMonth);
+    form.setValue('searchKeyword', searchKeyword);
+    fetchContents();
+  }, [startMonth, endMonth, searchKeyword]);
 
   return (
     <>
-      <Stack direction='row' justifyContent='center' alignItems='center' gap='10px' component='form' onSubmit={pageFormik.handleSubmit}>
-        <MedipandaDatePicker
-          value={pageFormik.values.startMonth}
-          onChange={date => pageFormik.setFieldValue('startMonth', date)}
-          label='시작월'
-          format={DATEFORMAT_YYYY_MM}
-          views={['year', 'month']}
-          sx={{
-            width: '180px',
-          }}
+      <Stack
+        direction='row'
+        justifyContent='center'
+        alignItems='center'
+        gap='10px'
+        component='form'
+        onSubmit={form.handleSubmit(submitHandler)}
+      >
+        <Controller
+          control={form.control}
+          name={'startMonth'}
+          render={({ field }) => (
+            <MedipandaDatePicker
+              {...field}
+              label='시작월'
+              format={DATEFORMAT_YYYY_MM}
+              views={['year', 'month']}
+              sx={{
+                width: '180px',
+              }}
+            />
+          )}
         />
         ~
-        <MedipandaDatePicker
-          value={pageFormik.values.endMonth}
-          onChange={date => pageFormik.setFieldValue('endMonth', date)}
-          label='종료월'
-          format={DATEFORMAT_YYYY_MM}
-          views={['year', 'month']}
-          sx={{
-            width: '180px',
-          }}
+        <Controller
+          control={form.control}
+          name={'endMonth'}
+          render={({ field }) => (
+            <MedipandaDatePicker
+              {...field}
+              label='종료월'
+              format={DATEFORMAT_YYYY_MM}
+              views={['year', 'month']}
+              sx={{
+                width: '180px',
+              }}
+            />
+          )}
         />
-        <MedipandaOutlinedInput
-          name='searchKeyword'
-          value={pageFormik.values.searchKeyword ?? ''}
-          onChange={pageFormik.handleChange}
-          placeholder='검색'
-          endAdornment={
-            <InputAdornment position='end'>
-              <IconButton edge='end' onClick={pageFormik.submitForm}>
-                <Search />
-              </IconButton>
-            </InputAdornment>
-          }
-          sx={{
-            width: '400px',
-            height: '50px',
-          }}
+        <Controller
+          control={form.control}
+          name={'searchKeyword'}
+          render={({ field }) => (
+            <MedipandaOutlinedInput
+              {...field}
+              placeholder='검색'
+              endAdornment={
+                <InputAdornment position='end'>
+                  <IconButton edge='end' type='submit'>
+                    <Search />
+                  </IconButton>
+                </InputAdornment>
+              }
+              sx={{
+                width: '400px',
+                height: '50px',
+              }}
+            />
+          )}
         />
         <button type='submit' hidden />
       </Stack>
 
-      {pageFormik.values.startMonth === null || pageFormik.values.endMonth === null ? (
+      {startMonth === null || endMonth === null ? (
         <Typography
           variant='largeTextM'
           sx={{
@@ -141,8 +202,8 @@ function TotalSalesStatistic() {
         >
           조회하고 싶은 기간을 입력해주세요.
         </Typography>
-      ) : page.length > 0 ? (
-        <ChartView data={page} startMonth={pageFormik.values.startMonth} endMonth={pageFormik.values.endMonth} />
+      ) : contents.length > 0 ? (
+        <ChartView data={contents} startMonth={startMonth} endMonth={endMonth} />
       ) : (
         <Stack alignItems='center'>
           <Typography variant='largeTextM' sx={{ color: colors.gray80 }}>
@@ -155,40 +216,73 @@ function TotalSalesStatistic() {
 }
 
 function PartnerSalesStatistic() {
-  const [institutionCode, setInstitutionCode] = useState<string | null>(null);
-  const [performanceData, setPerformanceData] = useState<PerformanceStatsByDrugCompany[] | null>(null);
+  const navigate = useNavigate();
 
-  const {
-    content: page,
-    formik: pageFormik,
-    refresh,
-  } = usePageFetchFormik({
-    initialFormValues: {
+  const [contents, setContents] = useState<PerformanceStatsByInstitution[]>([]);
+
+  const initialSearchParams = {
+    startMonth: '',
+    endMonth: '',
+    searchKeyword: '',
+  };
+
+  const { startMonth: paramStartMonth, endMonth: paramEndMonth, searchKeyword } = useSearchParamsOrDefault(initialSearchParams);
+  const startMonth = useMemo(() => SafeDate(paramStartMonth), [paramStartMonth]);
+  const endMonth = useMemo(() => SafeDate(paramEndMonth), [paramEndMonth]);
+
+  const form = useForm({
+    defaultValues: {
+      ...initialSearchParams,
       startMonth: null as Date | null,
       endMonth: null as Date | null,
-      searchKeyword: '',
     },
-    fetcher: async values => {
-      const response = await getPerformanceByInstitution({
-        startMonth: values.startMonth !== null ? new DateString(values.startMonth) : undefined,
-        endMonth: values.endMonth !== null ? new DateString(values.endMonth) : undefined,
-      });
-      return response.filter(item => values.searchKeyword === '' || item.institutionName?.includes(values.searchKeyword));
-    },
-    initialContent: [],
-    onFetch: () => setPerformanceData(null),
   });
 
-  useEffect(() => {
-    if (pageFormik.values.startMonth !== null && pageFormik.values.endMonth !== null) {
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.startMonth === null || values.endMonth === null) {
+      alert('시작월과 종료월을 모두 입력해주세요.');
       return;
     }
 
-    refresh();
-  }, [pageFormik.values.startMonth, pageFormik.values.endMonth, refresh]);
+    const url = setUrlParams(
+      {
+        ...values,
+        startMonth: values.startMonth !== null ? formatYyyyMm(values.startMonth) : undefined,
+        endMonth: values.endMonth !== null ? formatYyyyMm(values.endMonth) : undefined,
+      },
+      initialSearchParams,
+    );
+
+    navigate(url);
+  };
+
+  const fetchContents = async () => {
+    try {
+      const response = await getPerformanceByInstitution({
+        startMonth: startMonth !== null ? new DateString(startMonth) : undefined,
+        endMonth: endMonth !== null ? new DateString(endMonth) : undefined,
+      });
+
+      setContents(response.filter(item => searchKeyword === '' || item.institutionName?.includes(searchKeyword)));
+    } catch (error) {
+      console.error('Failed to fetch performance by institution:', error);
+      alert('거래처별 매출 통계 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+    }
+  };
+
+  useEffect(() => {
+    form.setValue('startMonth', startMonth);
+    form.setValue('endMonth', endMonth);
+    form.setValue('searchKeyword', searchKeyword);
+    fetchContents();
+  }, [startMonth, endMonth, searchKeyword]);
+
+  const [institutionCode, setInstitutionCode] = useState<string | null>(null);
+  const [performanceData, setPerformanceData] = useState<PerformanceStatsByDrugCompany[] | null>(null);
 
   const table = useReactTable({
-    data: page,
+    data: contents,
     columns: [
       {
         header: '거래처명',
@@ -225,8 +319,8 @@ function PartnerSalesStatistic() {
 
     const response = await getPerformanceByDrugCompany({
       institutionCode: institutionCode ?? undefined,
-      startMonth: pageFormik.values.startMonth !== null ? new DateString(pageFormik.values.startMonth) : undefined,
-      endMonth: pageFormik.values.endMonth !== null ? new DateString(pageFormik.values.endMonth) : undefined,
+      startMonth: startMonth !== null ? new DateString(startMonth) : undefined,
+      endMonth: endMonth !== null ? new DateString(endMonth) : undefined,
     });
 
     setPerformanceData(response);
@@ -234,49 +328,70 @@ function PartnerSalesStatistic() {
 
   return (
     <>
-      <Stack direction='row' justifyContent='center' alignItems='center' gap='10px' component='form' onSubmit={pageFormik.handleSubmit}>
-        <MedipandaDatePicker
-          value={pageFormik.values.startMonth}
-          onChange={date => pageFormik.setFieldValue('startMonth', date)}
-          label='시작월'
-          format={DATEFORMAT_YYYY_MM}
-          views={['year', 'month']}
-          sx={{
-            width: '180px',
-          }}
+      <Stack
+        direction='row'
+        justifyContent='center'
+        alignItems='center'
+        gap='10px'
+        component='form'
+        onSubmit={form.handleSubmit(submitHandler)}
+      >
+        <Controller
+          control={form.control}
+          name={'startMonth'}
+          render={({ field }) => (
+            <MedipandaDatePicker
+              {...field}
+              label='시작월'
+              format={DATEFORMAT_YYYY_MM}
+              views={['year', 'month']}
+              sx={{
+                width: '180px',
+              }}
+            />
+          )}
         />
         ~
-        <MedipandaDatePicker
-          value={pageFormik.values.endMonth}
-          onChange={date => pageFormik.setFieldValue('endMonth', date)}
-          label='종료월'
-          format={DATEFORMAT_YYYY_MM}
-          views={['year', 'month']}
-          sx={{
-            width: '180px',
-          }}
+        <Controller
+          control={form.control}
+          name={'endMonth'}
+          render={({ field }) => (
+            <MedipandaDatePicker
+              {...field}
+              label='종료월'
+              format={DATEFORMAT_YYYY_MM}
+              views={['year', 'month']}
+              sx={{
+                width: '180px',
+              }}
+            />
+          )}
         />
-        <MedipandaOutlinedInput
-          name='searchKeyword'
-          value={pageFormik.values.searchKeyword ?? ''}
-          onChange={pageFormik.handleChange}
-          placeholder='거래처명을 입력해주세요.'
-          endAdornment={
-            <InputAdornment position='end'>
-              <IconButton edge='end'>
-                <Search />
-              </IconButton>
-            </InputAdornment>
-          }
-          sx={{
-            width: '400px',
-            height: '50px',
-          }}
+        <Controller
+          control={form.control}
+          name={'searchKeyword'}
+          render={({ field }) => (
+            <MedipandaOutlinedInput
+              {...field}
+              placeholder='거래처명을 입력해주세요.'
+              endAdornment={
+                <InputAdornment position='end'>
+                  <IconButton edge='end' type='submit'>
+                    <Search />
+                  </IconButton>
+                </InputAdornment>
+              }
+              sx={{
+                width: '400px',
+                height: '50px',
+              }}
+            />
+          )}
         />
         <button type='submit' hidden />
       </Stack>
 
-      {pageFormik.values.startMonth === null || pageFormik.values.endMonth === null ? (
+      {startMonth === null || endMonth === null ? (
         <Typography
           variant='largeTextM'
           sx={{
@@ -285,14 +400,9 @@ function PartnerSalesStatistic() {
         >
           조회하고 싶은 기간을 입력해주세요.
         </Typography>
-      ) : page.length > 0 ? (
+      ) : contents.length > 0 ? (
         performanceData !== null ? (
-          <ChartView
-            institutionCode={institutionCode ?? undefined}
-            data={performanceData}
-            startMonth={pageFormik.values.startMonth}
-            endMonth={pageFormik.values.endMonth}
-          />
+          <ChartView institutionCode={institutionCode ?? undefined} data={performanceData} startMonth={startMonth} endMonth={endMonth} />
         ) : (
           <MedipandaTable table={table} />
         )

@@ -1,24 +1,25 @@
-import { getBanners } from '@/backend';
+import { type BannerResponse, getBanners } from '@/backend';
 import { LazyImage } from '@/lib/components/LazyImage';
-import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
 import { colors } from '@/themes';
+import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
 export function CommunityBanners() {
-  const { content } = usePageFetchFormik({
-    fetcher: () => {
-      return getBanners({
-        isExposed: true,
-      });
-    },
-    contentSelector: response => response.content,
-    pageCountSelector: response => response.totalPages,
-    initialContent: [],
-  });
+  const [contents, setContents] = useState<BannerResponse[]>([]);
+
+  const fetchContents = async () => {
+    const response = await getBanners({ isExposed: true });
+
+    setContents(response.content);
+  };
+
+  useEffect(() => {
+    fetchContents();
+  }, []);
 
   return (
     <>
-      {content.map(banner => {
+      {contents.map(banner => {
         return (
           <RouterLink key={banner.id} to={banner.linkUrl}>
             <LazyImage

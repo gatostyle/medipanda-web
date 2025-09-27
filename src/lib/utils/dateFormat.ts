@@ -33,6 +33,11 @@ export function formatYyyy년Mm월(dateOrString: Date | string): string {
   return format(typeof dateOrString === 'string' ? parseUtcDateString(dateOrString) : dateOrString, DATEFORMAT_YYYY년_MM월);
 }
 
+export function SafeDate(dateString: string): Date | null {
+  const date = new Date(dateString);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
 export function formatRelativeTime(dateOrString: Date | string): string {
   const date = typeof dateOrString === 'string' ? parseUtcDateString(dateOrString) : dateOrString;
   const now = new Date();

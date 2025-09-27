@@ -1,8 +1,6 @@
-import { Bold } from '@tiptap/extension-bold';
 import { Document } from '@tiptap/extension-document';
 import { FileHandler } from '@tiptap/extension-file-handler';
 import { Image as ImageExtension } from '@tiptap/extension-image';
-import { BulletList, ListItem } from '@tiptap/extension-list';
 import { Paragraph } from '@tiptap/extension-paragraph';
 import { Text } from '@tiptap/extension-text';
 import { Dropcursor, Placeholder } from '@tiptap/extensions';
@@ -33,9 +31,6 @@ export function useTiptap(props: UseTiptapOptions): {
       Placeholder.configure({
         placeholder: placeholder.current,
       }),
-      Bold,
-      ListItem,
-      BulletList,
       ImageExtension,
       Dropcursor,
       FileHandler.configure({

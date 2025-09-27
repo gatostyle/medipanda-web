@@ -82,12 +82,14 @@ export default function CommunityEdit() {
       hiddenNickname: true,
     },
     onSubmit: async values => {
+      const title = values.title.trim();
       const editorContent = editor
         .getHTML()
-        .replace(/^<p><\/p>$/, '')
+        .replace(/^(<p>\s*<\/p>)*/, '')
+        .replace(/(<p>\s*<\/p>)*$/, '')
         .trim();
 
-      if (values.title === '') {
+      if (title === '') {
         alert('제목을 입력해주세요.');
         return;
       }
@@ -101,7 +103,7 @@ export default function CommunityEdit() {
         if (!isNew) {
           await updateBoardPost(boardPostId, {
             updateRequest: {
-              title: values.title,
+              title: title,
               content: editorContent,
               hiddenNickname: values.hiddenNickname,
               isBlind: null,
@@ -122,7 +124,7 @@ export default function CommunityEdit() {
               userId: session!.userId,
               nickname: '익명',
               hiddenNickname: values.hiddenNickname,
-              title: values.title,
+              title: title,
               content: editorContent,
               parentId: null,
               isExposed: true,
@@ -186,7 +188,7 @@ export default function CommunityEdit() {
           </Stack>
           <Stack direction='row' gap='10px'>
             <Typography variant='largeTextM' sx={{ width: '100px', color: colors.gray80, lineHeight: '50px' }}>
-              문의내용 *
+              작성내용 *
             </Typography>
             <Stack
               sx={{
@@ -234,7 +236,7 @@ export default function CommunityEdit() {
           }}
         >
           {/*{loading ? <CircularProgress size={20} color='inherit' sx={{ mr: 1 }} /> : null}*/}
-          문의하기
+          작성하기
         </MedipandaButton>
       </Stack>
     </>

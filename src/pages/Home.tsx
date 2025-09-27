@@ -1,13 +1,21 @@
-import { DateString, getBanners, getBoards, getRecentlyOpenedCount, monthlyCount, monthlyTotalAmount } from '@/backend';
+import {
+  type BannerResponse,
+  type BoardPostResponse,
+  DateString,
+  getBanners,
+  getBoards,
+  getRecentlyOpenedCount,
+  monthlyCount,
+  monthlyTotalAmount,
+} from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaCarousel, type MedipandaCarouselHandle } from '@/custom/components/MedipandaCarousel';
 import { MedipandaTable } from '@/custom/components/MedipandaTable';
 import { useSession } from '@/hooks/useSession';
 import { LazyImage } from '@/lib/components/LazyImage';
-import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
 import { colors, typography } from '@/themes';
 import { formatYyyyMmDd } from '@/lib/utils/dateFormat';
-import { withSequence } from '@/lib/utils/withSequence';
+import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { KeyboardArrowRight } from '@mui/icons-material';
 import { Box, Button, Link, Stack, type TableProps, Typography } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
@@ -22,16 +30,17 @@ export default function Home() {
   const [monthlyFeeAmount, setMonthlyFeeAmount] = useState<number | null>(null);
   const [recentlyOpenedCount, setRecentlyOpenedCount] = useState<number | null>(null);
 
-  const { content: banners } = usePageFetchFormik({
-    fetcher: () => {
-      return getBanners({
-        isExposed: true,
-      });
-    },
-    contentSelector: response => response.content,
-    pageCountSelector: response => response.totalPages,
-    initialContent: [],
-  });
+  const [banners, setBanners] = useState<BannerResponse[]>([]);
+
+  const fetchBanners = async () => {
+    const response = await getBanners({ isExposed: true });
+
+    setBanners(response.content);
+  };
+
+  useEffect(() => {
+    fetchBanners();
+  }, []);
 
   const carouselRef = useRef<MedipandaCarouselHandle>(null);
 
@@ -249,23 +258,24 @@ export default function Home() {
 }
 
 function RecentBoardTable({ boardType, ...props }: TableProps & { boardType: 'ANONYMOUS' | 'MR_CSO_MATCHING' }) {
-  const { content: page } = usePageFetchFormik({
-    fetcher: async values => {
-      const response = await getBoards({
-        boardType: boardType,
-        page: values.pageIndex,
-        size: values.pageSize,
-      });
+  const [contents, setContents] = useState<Sequenced<BoardPostResponse>[]>([]);
 
-      return withSequence(response);
-    },
-    contentSelector: response => response.content,
-    pageCountSelector: response => response.totalPages,
-    initialContent: [],
-  });
+  const fetchContents = async () => {
+    const response = await getBoards({
+      boardType: boardType,
+      page: 0,
+      size: 10,
+    });
+
+    setContents(withSequence(response.content));
+  };
+
+  useEffect(() => {
+    fetchContents();
+  }, []);
 
   const table = useReactTable({
-    data: page,
+    data: contents,
     columns: [
       {
         header: 'No',

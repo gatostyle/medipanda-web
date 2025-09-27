@@ -6,6 +6,8 @@ import {
   getSettlements,
   notifyAdminForObjections,
   notifyAdminForSettlements,
+  SettlementPartnerOrder,
+  SettlementPartnerOrderLabel,
   type SettlementPartnerResponse,
   type SettlementResponse,
 } from '@/backend';
@@ -14,9 +16,11 @@ import { MedipandaDialog, MedipandaDialogContent, MedipandaDialogTitle } from '@
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { MedipandaTable, MedipandaTableCell, MedipandaTableRow } from '@/custom/components/MedipandaTable';
 import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
-import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
+import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
+import { setUrlParams } from '@/lib/utils/url';
+import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { colors } from '@/themes';
-import { formatYyyyMm, formatYyyy년Mm월 } from '@/lib/utils/dateFormat';
+import { formatYyyyMm, formatYyyy년Mm월, SafeDate } from '@/lib/utils/dateFormat';
 import { KeyboardArrowLeft, KeyboardArrowRight, Search } from '@mui/icons-material';
 import {
   Button,
@@ -24,6 +28,7 @@ import {
   IconButton,
   InputAdornment,
   MenuItem,
+  PaginationItem,
   Select,
   Stack,
   Table,
@@ -35,40 +40,89 @@ import {
   Typography,
 } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { useFormik } from 'formik';
-import { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function SettlementList() {
-  const today = new Date();
+  const navigate = useNavigate();
+
+  const [contents, setContents] = useState<Sequenced<SettlementResponse>[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const initialSearchParams = {
+    searchType: 'companyName' as 'dealerName' | 'dealerId' | 'drugCompanyName' | 'companyName',
+    searchKeyword: '',
+    settlementMonth: formatYyyyMm(new Date()),
+    page: '1',
+  };
+
+  const {
+    searchType,
+    searchKeyword,
+    settlementMonth: paramSettlementMonth,
+    page: paramPage,
+  } = useSearchParamsOrDefault(initialSearchParams);
+  const settlementMonth = useMemo(() => SafeDate(paramSettlementMonth) ?? new Date(formatYyyyMm(new Date())), [paramSettlementMonth]);
+  const page = Number(paramPage);
+  const pageSize = 10;
+
+  const form = useForm({
+    defaultValues: {
+      ...initialSearchParams,
+      settlementMonth: null as Date | null,
+    },
+  });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.searchType === 'dealerId' && values.searchKeyword !== '' && Number.isNaN(Number(values.searchKeyword))) {
+      await alert('딜러번호는 숫자만 입력할 수 있습니다.');
+      return;
+    }
+
+    const url = setUrlParams(
+      {
+        ...values,
+        settlementMonth: values.settlementMonth !== null ? formatYyyyMm(values.settlementMonth) : undefined,
+        page: 1,
+      },
+      initialSearchParams,
+    );
+
+    navigate(url);
+  };
+
+  const fetchContents = async () => {
+    try {
+      const response = await getSettlements({
+        [searchType]: searchKeyword,
+        startMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
+        endMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
+        page: page - 1,
+        size: pageSize,
+      });
+
+      setContents(withSequence(response).content);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch settlement list:', error);
+      alert('정산내역 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+      setTotalPages(0);
+    }
+  };
+
+  useEffect(() => {
+    form.setValue('searchType', searchType);
+    form.setValue('searchKeyword', searchKeyword);
+    form.setValue('settlementMonth', settlementMonth);
+    fetchContents();
+  }, [searchType, searchKeyword, settlementMonth, page]);
+
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const [settlementRequestModalOpen, setSettlementRequestModalOpen] = useState(false);
-
-  const {
-    content: page,
-    pageCount: totalPages,
-    formik: pageFormik,
-  } = usePageFetchFormik({
-    initialFormValues: {
-      searchType: 'companyName' as 'companyName' | 'dealerName',
-      searchKeyword: '',
-      settlementMonth: new Date(formatYyyyMm(today)),
-    },
-    fetcher: values => {
-      return getSettlements({
-        companyName: values.searchType === 'companyName' ? values.searchKeyword : undefined,
-        dealerName: values.searchType === 'dealerName' ? values.searchKeyword : undefined,
-        startMonth: new DateString(values.settlementMonth),
-        endMonth: new DateString(values.settlementMonth),
-        page: values.pageIndex,
-        size: values.pageSize,
-      });
-    },
-    contentSelector: response => response.content,
-    pageCountSelector: response => response.totalPages,
-    initialContent: [],
-  });
 
   const handleSettlement = () => {
     if (selectedId === null) {
@@ -107,24 +161,24 @@ export default function SettlementList() {
         }}
       >
         <IconButton
-          onClick={async () => {
-            const prevMonth = new Date(pageFormik.values.settlementMonth);
+          onClick={() => {
+            const prevMonth = new Date(settlementMonth);
             prevMonth.setMonth(prevMonth.getMonth() - 1);
-            await pageFormik.setFieldValue('settlementMonth', new Date(formatYyyyMm(prevMonth)));
-            pageFormik.submitForm();
+            form.setValue('settlementMonth', new Date(formatYyyyMm(prevMonth)));
+            form.handleSubmit(submitHandler)();
           }}
         >
           <KeyboardArrowLeft />
         </IconButton>
         <Typography variant='heading4B' sx={{ color: colors.gray80 }}>
-          {formatYyyy년Mm월(pageFormik.values.settlementMonth)}
+          {formatYyyy년Mm월(settlementMonth)}
         </Typography>
         <IconButton
-          onClick={async () => {
-            const nextMonth = new Date(pageFormik.values.settlementMonth);
+          onClick={() => {
+            const nextMonth = new Date(settlementMonth);
             nextMonth.setMonth(nextMonth.getMonth() + 1);
-            await pageFormik.setFieldValue('settlementMonth', new Date(formatYyyyMm(nextMonth)));
-            pageFormik.submitForm();
+            form.setValue('settlementMonth', new Date(formatYyyyMm(nextMonth)));
+            form.handleSubmit(submitHandler)();
           }}
         >
           <KeyboardArrowRight />
@@ -136,33 +190,43 @@ export default function SettlementList() {
         alignItems='center'
         gap='10px'
         component='form'
-        onSubmit={pageFormik.handleSubmit}
+        onSubmit={form.handleSubmit(submitHandler)}
         sx={{
           alignSelf: 'center',
           marginTop: '40px',
         }}
       >
         <FormControl sx={{ width: '320px' }}>
-          <Select value={pageFormik.values.searchType} onChange={pageFormik.handleChange}>
-            <MenuItem value='companyName'>제약사명</MenuItem>
-            <MenuItem value='dealerName'>딜러명</MenuItem>
-          </Select>
+          <Controller
+            control={form.control}
+            name='searchType'
+            render={({ field }) => (
+              <Select {...field}>
+                <MenuItem value='companyName'>제약사명</MenuItem>
+                <MenuItem value='dealerName'>딜러명</MenuItem>
+              </Select>
+            )}
+          />
         </FormControl>
-        <TextField
+        <Controller
+          control={form.control}
           name='searchKeyword'
-          value={pageFormik.values.searchKeyword}
-          onChange={pageFormik.handleChange}
-          placeholder='제약사명을 검색하세요.'
-          sx={{
-            width: '478px',
-          }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position='end'>
-                <Search />
-              </InputAdornment>
-            ),
-          }}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              placeholder='제약사명을 검색하세요.'
+              sx={{
+                width: '478px',
+              }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <Search />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          )}
         />
         <button type='submit' hidden />
       </Stack>
@@ -177,7 +241,7 @@ export default function SettlementList() {
             }}
           >
             <Typography variant='mediumTextR' sx={{ color: colors.navy }}>
-              합계금액 : {page.reduce((acc, v) => acc + v.totalAmount, 0).toLocaleString()}
+              합계금액 : {contents.reduce((acc, v) => acc + v.totalAmount, 0).toLocaleString()}
             </Typography>
             <MedipandaButton
               variant='contained'
@@ -185,10 +249,10 @@ export default function SettlementList() {
               color='secondary'
               component={RouterLink}
               to={getDownloadSettlementListExcel({
-                companyName: pageFormik.values.searchType === 'companyName' ? pageFormik.values.searchKeyword : undefined,
-                dealerName: pageFormik.values.searchType === 'dealerName' ? pageFormik.values.searchKeyword : undefined,
-                startMonth: new DateString(pageFormik.values.settlementMonth),
-                endMonth: new DateString(pageFormik.values.settlementMonth),
+                companyName: searchType === 'companyName' ? searchKeyword : undefined,
+                dealerName: searchType === 'dealerName' ? searchKeyword : undefined,
+                startMonth: new DateString(settlementMonth),
+                endMonth: new DateString(settlementMonth),
                 size: 2 ** 31 - 1,
               })}
               target='_blank'
@@ -210,7 +274,7 @@ export default function SettlementList() {
               </MedipandaTableRow>
             </TableHead>
             <TableBody>
-              {page.map(settlement => (
+              {contents.map(settlement => (
                 <MedipandaTableRow
                   key={settlement.id}
                   onClick={() => setSelectedId(settlement.id)}
@@ -242,12 +306,12 @@ export default function SettlementList() {
           </Table>
           <MedipandaPagination
             count={totalPages}
-            page={pageFormik.values.pageIndex + 1}
+            page={page}
             showFirstButton
             showLastButton
-            onChange={(_, page) => {
-              pageFormik.setFieldValue('pageIndex', page - 1);
-            }}
+            renderItem={item => (
+              <PaginationItem {...item} component={RouterLink} to={setUrlParams({ page: item.page }, initialSearchParams)} />
+            )}
             sx={{
               alignSelf: 'center',
               marginTop: '40px',
@@ -306,7 +370,7 @@ export default function SettlementList() {
       {settlementRequestModalOpen && (
         <SettlementRequestModal
           open={true}
-          settlement={page.find(s => s.id === selectedId)!}
+          settlement={contents.find(s => s.id === selectedId)!}
           onClose={() => setSettlementRequestModalOpen(false)}
         />
       )}
@@ -317,31 +381,41 @@ export default function SettlementList() {
 function SettlementDetailForm({ settlementId }: { settlementId: number | null }) {
   const [detail, setDetail] = useState<SettlementResponse | null>(null);
 
-  const [page, setPage] = useState<SettlementPartnerResponse[]>([]);
+  const [contents, setContents] = useState<SettlementPartnerResponse[]>([]);
   const [totalPages, setTotalPages] = useState(0);
 
-  const pageFormik = useFormik({
-    initialValues: {
-      searchKeyword: '',
-      pageIndex: 0,
-      pageSize: 10,
-      totalPages: 1,
-    },
-    onSubmit: async () => {
-      if (pageFormik.values.pageIndex !== 0) {
-        await pageFormik.setFieldValue('pageIndex', 0);
-      } else if (settlementId !== null) {
-        const response = await getSettlementPartnerSummary({
-          settlementId: settlementId,
-          page: pageFormik.values.pageIndex,
-          size: pageFormik.values.pageSize,
-        });
-
-        setPage(response.content);
-        setTotalPages(response.totalPages);
-      }
-    },
+  const [submitFormValues, setSubmitFormValues] = useState({
+    sortOrder: SettlementPartnerOrder.TOTAL_AMOUNT_DESC as keyof typeof SettlementPartnerOrder,
+    page: 1,
   });
+  const pageSize = 10;
+
+  const fetchContents = async (settlementId: number) => {
+    try {
+      const response = await getSettlementPartnerSummary({
+        settlementId: settlementId,
+        settlementPartnerOrder: submitFormValues.sortOrder,
+        page: submitFormValues.page - 1,
+        size: pageSize,
+      });
+
+      setContents(response.content);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch settlement partner summary:', error);
+      alert('정산내역 상세 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+      setTotalPages(0);
+    }
+  };
+
+  useEffect(() => {
+    if (settlementId === null) {
+      return;
+    }
+
+    fetchContents(settlementId);
+  }, [submitFormValues.sortOrder, submitFormValues.page]);
 
   useEffect(() => {
     if (settlementId === null) {
@@ -355,11 +429,19 @@ function SettlementDetailForm({ settlementId }: { settlementId: number | null })
     const response = await getSettlement(id);
 
     setDetail(response);
-    await pageFormik.submitForm();
+
+    if (submitFormValues.sortOrder === SettlementPartnerOrder.TOTAL_AMOUNT_DESC && submitFormValues.page === 1) {
+      fetchContents(id);
+    } else {
+      setSubmitFormValues({
+        sortOrder: SettlementPartnerOrder.TOTAL_AMOUNT_DESC,
+        page: 1,
+      });
+    }
   };
 
   const table = useReactTable({
-    data: page,
+    data: contents,
     columns: [
       {
         header: '거래처명',
@@ -459,9 +541,16 @@ function SettlementDetailForm({ settlementId }: { settlementId: number | null })
           정렬기준:
         </Typography>
         <FormControl sx={{ marginLeft: '10px' }}>
-          <Select size='small' value={'정산금액 높은순'}>
-            <MenuItem value={'정산금액 높은순'}>정산금액 높은순</MenuItem>
-            <MenuItem value={'정산금액 낮은순'}>정산금액 낮은순</MenuItem>
+          <Select
+            size='small'
+            value={submitFormValues.sortOrder}
+            onChange={e => setSubmitFormValues(v => ({ ...v, sortOrder: e.target.value as keyof typeof SettlementPartnerOrder, page: 1 }))}
+          >
+            {Object.keys(SettlementPartnerOrderLabel).map(key => (
+              <MenuItem key={key} value={key}>
+                {SettlementPartnerOrderLabel[key]}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       </Stack>
@@ -469,12 +558,10 @@ function SettlementDetailForm({ settlementId }: { settlementId: number | null })
 
       <MedipandaPagination
         count={totalPages}
-        page={pageFormik.values.pageIndex + 1}
+        page={submitFormValues.page}
         showFirstButton
         showLastButton
-        onChange={(_, page) => {
-          pageFormik.setFieldValue('pageIndex', page - 1);
-        }}
+        onChange={(_, page) => setSubmitFormValues(v => ({ ...v, page }))}
         sx={{
           alignSelf: 'center',
           marginTop: '40px',

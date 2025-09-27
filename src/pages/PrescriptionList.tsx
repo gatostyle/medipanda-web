@@ -4,6 +4,7 @@ import {
   type DrugCompanyResponse,
   type FileValidationErrorDto,
   type PartnerResponse,
+  type PrescriptionResponse,
   searchPrescriptions,
   uploadEdiZip,
   uploadPartnerEdiFiles,
@@ -18,42 +19,92 @@ import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { MedipandaTable } from '@/custom/components/MedipandaTable';
 import { PartnerSelectDialog } from '@/custom/components/PartnerSelectDialog';
 import { useSession } from '@/hooks/useSession';
-import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
+import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
+import { setUrlParams } from '@/lib/utils/url';
 import { colors } from '@/themes';
 import { DATEFORMAT_YYYY_MM, formatYyyyMm, formatYyyyMmDd, formatYyyy년Mm월 } from '@/lib/utils/dateFormat';
 import { Search } from '@mui/icons-material';
-import { Dialog, DialogTitle, FormControl, InputAdornment, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import {
+  Dialog,
+  DialogTitle,
+  FormControl,
+  InputAdornment,
+  MenuItem,
+  PaginationItem,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function PrescriptionList() {
-  const [individualUpload, setIndividualUpload] = useState(true);
+  const navigate = useNavigate();
 
-  const {
-    content: page,
-    pageCount: totalPages,
-    formik: pageFormik,
-  } = usePageFetchFormik({
-    initialFormValues: {
-      searchType: 'companyName' as 'companyName' | 'dealerName',
-      searchKeyword: '',
+  const [contents, setContents] = useState<PrescriptionResponse[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const initialSearchParams = {
+    searchType: 'companyName' as 'companyName' | 'userId' | 'dealerName' | 'drugCompanyName',
+    searchKeyword: '',
+    page: '1',
+  };
+
+  const { searchType, searchKeyword, page: paramPage } = useSearchParamsOrDefault(initialSearchParams);
+  const page = Number(paramPage);
+  const pageSize = 10;
+
+  const form = useForm({
+    defaultValues: {
+      ...initialSearchParams,
     },
-    fetcher: async values => {
-      return searchPrescriptions({
-        companyName: values.searchType === 'companyName' ? values.searchKeyword : undefined,
-        dealerName: values.searchType === 'dealerName' ? values.searchKeyword : undefined,
-        page: values.pageIndex,
-        size: values.pageSize,
-      });
-    },
-    contentSelector: response => response.content,
-    pageCountSelector: response => response.totalPages,
-    initialContent: [],
   });
 
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    const url = setUrlParams(
+      {
+        ...values,
+        page: 1,
+      },
+      initialSearchParams,
+    );
+
+    navigate(url);
+  };
+
+  const fetchContents = async () => {
+    try {
+      const response = await searchPrescriptions({
+        [searchType]: searchKeyword,
+        page: page - 1,
+        size: pageSize,
+      });
+
+      setContents(response.content);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch prescription list:', error);
+      alert('처방내역 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+      setTotalPages(0);
+    }
+  };
+
+  useEffect(() => {
+    form.setValue('searchType', searchType);
+    form.setValue('searchKeyword', searchKeyword);
+    fetchContents();
+  }, [searchType, searchKeyword, page]);
+
+  const [individualUpload, setIndividualUpload] = useState(true);
+
   const table = useReactTable({
-    data: page,
+    data: contents,
     columns: [
       {
         header: '구분',
@@ -89,33 +140,43 @@ export default function PrescriptionList() {
         alignItems='center'
         gap='10px'
         component='form'
-        onSubmit={pageFormik.handleSubmit}
+        onSubmit={form.handleSubmit(submitHandler)}
         sx={{
           alignSelf: 'center',
           marginTop: '40px',
         }}
       >
         <FormControl sx={{ width: '320px' }}>
-          <Select value={pageFormik.values.searchType} onChange={pageFormik.handleChange}>
-            <MenuItem value='companyName'>거래처명</MenuItem>
-            <MenuItem value='dealerName'>딜러명</MenuItem>
-          </Select>
+          <Controller
+            control={form.control}
+            name={'searchType'}
+            render={({ field }) => (
+              <Select {...field}>
+                <MenuItem value='companyName'>거래처명</MenuItem>
+                <MenuItem value='dealerName'>딜러명</MenuItem>
+              </Select>
+            )}
+          />
         </FormControl>
-        <TextField
+        <Controller
+          control={form.control}
           name='searchKeyword'
-          value={pageFormik.values.searchKeyword}
-          onChange={pageFormik.handleChange}
-          placeholder='거래처명을 검색하세요.'
-          sx={{
-            width: '478px',
-          }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position='end'>
-                <Search />
-              </InputAdornment>
-            ),
-          }}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              placeholder='거래처명을 검색하세요.'
+              sx={{
+                width: '478px',
+              }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <Search />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          )}
         />
         <button type='submit' hidden />
       </Stack>
@@ -147,12 +208,12 @@ export default function PrescriptionList() {
           <MedipandaTable table={table} />
           <MedipandaPagination
             count={totalPages}
-            page={pageFormik.values.pageIndex + 1}
+            page={page}
             showFirstButton
             showLastButton
-            onChange={(_, page) => {
-              pageFormik.setFieldValue('pageIndex', page - 1);
-            }}
+            renderItem={item => (
+              <PaginationItem {...item} component={RouterLink} to={setUrlParams({ page: item.page }, initialSearchParams)} />
+            )}
             sx={{
               alignSelf: 'center',
               marginTop: '40px',

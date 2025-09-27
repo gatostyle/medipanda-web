@@ -1,29 +1,31 @@
-import { createDealer, type DrugCompanyResponse, listDealers } from '@/backend';
+import { createDealer, type DealerResponse, type DrugCompanyResponse, listDealers } from '@/backend';
 import { DrugCompanySelectDialog } from '@/custom/components/DrugCompanySelectDialog';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
 import { MedipandaTable } from '@/custom/components/MedipandaTable';
-import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
 import { colors } from '@/themes';
 import { formatYyyyMmDd } from '@/lib/utils/dateFormat';
-import { withSequence } from '@/lib/utils/withSequence';
+import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { Stack, TextField, Typography } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useFormik } from 'formik';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function DealerList() {
-  const { content: page } = usePageFetchFormik({
-    fetcher: async () => {
-      const response = await listDealers();
+  const [contents, setContents] = useState<Sequenced<DealerResponse>[]>([]);
 
-      return withSequence(response);
-    },
-    initialContent: [],
-  });
+  const fetchContents = async () => {
+    const response = await listDealers();
+
+    setContents(withSequence(response));
+  };
+
+  useEffect(() => {
+    fetchContents();
+  }, []);
 
   const table = useReactTable({
-    data: page,
+    data: contents,
     columns: [
       {
         header: 'No',

@@ -1,8 +1,7 @@
 import { type DrugCompanyResponse, getDrugCompanies } from '@/backend';
-import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
 import { Stack } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { MedipandaButton } from './MedipandaButton';
 import { MedipandaDialog, MedipandaDialogContent, MedipandaDialogTitle } from './MedipandaDialog';
 import { MedipandaTable } from './MedipandaTable';
@@ -18,24 +17,21 @@ export function DrugCompanySelectDialog({
   onSelect?: (drugCompany: DrugCompanyResponse) => void;
   excludedIds?: number[];
 }) {
-  const { content, formik: pageFormik } = usePageFetchFormik({
-    fetcher: async () => {
-      return (await getDrugCompanies()).filter(drugCompany => !(excludedIds ?? []).includes(drugCompany.id));
-    },
-    initialContent: [],
-  });
+  const [contents, setContents] = useState<DrugCompanyResponse[]>([]);
+
+  const fetchContents = async () => {
+    const response = await getDrugCompanies();
+    setContents(response.filter(drugCompany => !(excludedIds ?? []).includes(drugCompany.id)));
+  };
 
   useEffect(() => {
     if (open) {
-      (async () => {
-        await pageFormik.setFieldValue('searchKeyword', '');
-        await pageFormik.submitForm();
-      })();
+      fetchContents();
     }
   }, [open]);
 
   const table = useReactTable({
-    data: content,
+    data: contents,
     columns: [
       {
         header: '제약사명',

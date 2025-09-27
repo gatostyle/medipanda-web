@@ -1,36 +1,88 @@
-import { type BoardDetailsResponse, getBoardDetails, getBoards } from '@/backend';
+import { type BoardDetailsResponse, type BoardPostResponse, getBoardDetails, getBoards } from '@/backend';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
-import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
+import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
+import { setUrlParams } from '@/lib/utils/url';
 import { colors } from '@/themes';
 import { formatYyyyMmDdHhMm } from '@/lib/utils/dateFormat';
 import { Add, Remove, Search } from '@mui/icons-material';
-import { Accordion, AccordionDetails, AccordionSummary, Box, InputAdornment, Link, Stack, TextField, Typography } from '@mui/material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  InputAdornment,
+  Link,
+  PaginationItem,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function FaqList() {
-  const {
-    content: page,
-    pageCount: totalPages,
-    formik: pageFormik,
-  } = usePageFetchFormik({
-    initialFormValues: {
-      searchKeyword: '',
+  const navigate = useNavigate();
+
+  const [contents, setContents] = useState<BoardPostResponse[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const initialSearchParams = {
+    searchType: 'boardTitle' as 'userId' | 'name' | 'nickname' | 'boardTitle' | 'drugCompany' | 'myUserId',
+    searchKeyword: '',
+    page: '1',
+  };
+
+  const { searchType, searchKeyword, page: paramPage } = useSearchParamsOrDefault(initialSearchParams);
+  const page = Number(paramPage);
+  const pageSize = 10;
+
+  const form = useForm({
+    defaultValues: {
+      ...initialSearchParams,
     },
-    fetcher: values => {
-      return getBoards({
-        boardType: 'FAQ',
-        boardTitle: values.searchKeyword !== '' ? values.searchKeyword : undefined,
-        page: values.pageIndex,
-        size: values.pageSize,
-      });
-    },
-    contentSelector: response => response.content,
-    pageCountSelector: response => response.totalPages,
-    initialContent: [],
   });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    console.log({ values });
+    const url = setUrlParams(
+      {
+        ...values,
+        page: 1,
+      },
+      initialSearchParams,
+    );
+
+    navigate(url);
+  };
+
+  const fetchContents = async () => {
+    try {
+      const response = await getBoards({
+        boardType: 'FAQ',
+        [searchType]: searchKeyword,
+        page: page - 1,
+        size: pageSize,
+      });
+
+      setContents(response.content);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch FAQ list:', error);
+      alert('FAQ 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+      setTotalPages(0);
+    }
+  };
+
+  useEffect(() => {
+    form.setValue('searchType', searchType);
+    form.setValue('searchKeyword', searchKeyword);
+    fetchContents();
+  }, [searchType, searchKeyword, page]);
 
   const [expandedId, setExpandedId] = useState<number>(-1);
 
@@ -76,29 +128,33 @@ export default function FaqList() {
       <Stack
         direction='row'
         component='form'
-        onSubmit={pageFormik.handleSubmit}
+        onSubmit={form.handleSubmit(submitHandler)}
         sx={{
           marginTop: '30px',
         }}
       >
-        <TextField
-          size='small'
-          name='searchKeyword'
-          value={pageFormik.values.searchKeyword}
-          onChange={pageFormik.handleChange}
-          placeholder='궁금한 점을 검색해 보세요.'
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position='end'>
-                <Search />
-              </InputAdornment>
-            ),
-          }}
-          sx={{ width: '300px', marginLeft: 'auto' }}
+        <Controller
+          control={form.control}
+          name={'searchKeyword'}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              size='small'
+              placeholder='궁금한 점을 검색해 보세요.'
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <Search />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ width: '300px', marginLeft: 'auto' }}
+            />
+          )}
         />
       </Stack>
       <Box sx={{ marginTop: '10px', borderTop: `1px solid ${colors.gray50}` }}>
-        {page.map(faq => (
+        {contents.map(faq => (
           <Accordion
             key={faq.id}
             expanded={expandedId === faq.id && expandedDetail !== null}
@@ -172,12 +228,10 @@ export default function FaqList() {
       </Box>
       <MedipandaPagination
         count={totalPages}
-        page={pageFormik.values.pageIndex + 1}
+        page={page}
         showFirstButton
         showLastButton
-        onChange={(_, page) => {
-          pageFormik.setFieldValue('pageIndex', page - 1);
-        }}
+        renderItem={item => <PaginationItem {...item} component={RouterLink} to={setUrlParams({ page: item.page }, initialSearchParams)} />}
         sx={{
           alignSelf: 'center',
           marginTop: '40px',

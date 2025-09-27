@@ -321,3 +321,25 @@ export const ReportType = {
   PERSONAL_INFORMATION: 'PERSONAL_INFORMATION',
   OTHER: 'OTHER',
 } as const;
+
+export const ProductSortType = {
+  LATEST: 'LATEST',
+  PRICE_ASC: 'PRICE_ASC',
+  PRICE_DESC: 'PRICE_DESC',
+  FEE_RATE_ASC: 'FEE_RATE_ASC',
+  FEE_RATE_DESC: 'FEE_RATE_DESC',
+} as const;
+
+export const SettlementPartnerOrder = {
+  INSTITUTION_NAME_ASC: 'INSTITUTION_NAME_ASC',
+  INSTITUTION_NAME_DESC: 'INSTITUTION_NAME_DESC',
+  TOTAL_AMOUNT_ASC: 'TOTAL_AMOUNT_ASC',
+  TOTAL_AMOUNT_DESC: 'TOTAL_AMOUNT_DESC',
+} as const;
+
+export const SettlementPartnerOrderLabel: Record<keyof typeof SettlementPartnerOrder, string> = {
+  [SettlementPartnerOrder.INSTITUTION_NAME_ASC]: '거래처명 오름차순',
+  [SettlementPartnerOrder.INSTITUTION_NAME_DESC]: '거래처명 내림차순',
+  [SettlementPartnerOrder.TOTAL_AMOUNT_ASC]: '정산금액 오름차순',
+  [SettlementPartnerOrder.TOTAL_AMOUNT_DESC]: '정산금액 내림차순',
+};

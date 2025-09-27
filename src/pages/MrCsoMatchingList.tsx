@@ -1,44 +1,103 @@
-import { getBoards, getFixedTopNotices } from '@/backend';
+import { type BoardPostResponse, getBoards, getFixedTopNotices } from '@/backend';
 import { CommunityBanners } from '@/custom/components/CommunityBanners';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { MedipandaTableCell, MedipandaTableRow } from '@/custom/components/MedipandaTable';
-import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
+import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
+import { setUrlParams } from '@/lib/utils/url';
 import { colors } from '@/themes';
 import { formatYyyyMmDdHhMm } from '@/lib/utils/dateFormat';
 import { Search } from '@mui/icons-material';
-import { Box, Button, InputAdornment, Link, Stack, Table, TableBody, TableHead, TextField, Typography } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import {
+  Box,
+  Button,
+  InputAdornment,
+  Link,
+  PaginationItem,
+  Stack,
+  Table,
+  TableBody,
+  TableHead,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function MrCsoMatchingList() {
-  const {
-    content: page,
-    pageCount: totalPages,
-    formik: pageFormik,
-  } = usePageFetchFormik({
-    initialFormValues: {
-      searchKeyword: '',
+  const navigate = useNavigate();
+
+  const [contents, setContents] = useState<BoardPostResponse[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const initialSearchParams = {
+    searchType: 'boardTitle' as 'userId' | 'name' | 'nickname' | 'boardTitle' | 'drugCompany' | 'myUserId',
+    searchKeyword: '',
+    page: '1',
+  };
+
+  const { searchType, searchKeyword, page: paramPage } = useSearchParamsOrDefault(initialSearchParams);
+  const page = Number(paramPage);
+  const pageSize = 10;
+
+  const form = useForm({
+    defaultValues: {
+      ...initialSearchParams,
     },
-    fetcher: values => {
-      return getBoards({
-        boardType: 'MR_CSO_MATCHING',
-        boardTitle: values.searchKeyword !== '' ? values.searchKeyword : undefined,
-        page: values.pageIndex,
-        size: values.pageSize,
-      });
-    },
-    contentSelector: response => response.content,
-    pageCountSelector: response => response.totalPages,
-    initialContent: [],
   });
 
-  const { content: noticePage } = usePageFetchFormik({
-    fetcher: () => {
-      return getFixedTopNotices({
-        boardType: 'MR_CSO_MATCHING',
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    console.log({ values });
+    const url = setUrlParams(
+      {
+        ...values,
+        page: 1,
+      },
+      initialSearchParams,
+    );
+
+    navigate(url);
+  };
+
+  const fetchContents = async () => {
+    try {
+      const response = await getBoards({
+        boardType: 'ANONYMOUS',
+        [searchType]: searchKeyword,
+        page: page - 1,
+        size: pageSize,
       });
-    },
-    initialContent: [],
-  });
+
+      setContents(response.content);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch mr-cso-matching list:', error);
+      alert('신규처 매칭 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+      setTotalPages(0);
+    }
+  };
+
+  useEffect(() => {
+    form.setValue('searchType', searchType);
+    form.setValue('searchKeyword', searchKeyword);
+    fetchContents();
+  }, [searchType, searchKeyword, page]);
+
+  const [fixedNotices, setFixedNotices] = useState<BoardPostResponse[]>([]);
+
+  const fetchFixedNotices = async () => {
+    const response = await getFixedTopNotices({
+      boardType: 'MR_CSO_MATCHING',
+    });
+
+    setFixedNotices(response);
+  };
+
+  useEffect(() => {
+    fetchFixedNotices();
+  }, []);
 
   return (
     <>
@@ -62,18 +121,18 @@ export default function MrCsoMatchingList() {
               </MedipandaTableRow>
             </TableHead>
             <TableBody>
-              {[...noticePage, ...page].map(post => (
+              {[...fixedNotices, ...contents].map(post => (
                 <MedipandaTableRow
                   key={post.id}
                   sx={{
-                    ...(noticePage.includes(post) && {
+                    ...(fixedNotices.includes(post) && {
                       backgroundColor: colors.gray10,
                     }),
                   }}
                 >
                   <MedipandaTableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      {noticePage.includes(post) && (
+                      {fixedNotices.includes(post) && (
                         <img
                           src='/assets/icons/icon-pin.svg'
                           style={{
@@ -84,10 +143,10 @@ export default function MrCsoMatchingList() {
                       )}
                       <Link
                         component={RouterLink}
-                        to={noticePage.includes(post) ? `/customer-service/notice/${post.id}` : `/community/mr-cso-matching/${post.id}`}
+                        to={fixedNotices.includes(post) ? `/customer-service/notice/${post.id}` : `/community/mr-cso-matching/${post.id}`}
                         underline='hover'
                         sx={{
-                          color: noticePage.includes(post) ? colors.gray80 : colors.gray70,
+                          color: fixedNotices.includes(post) ? colors.gray80 : colors.gray70,
                           '&:hover': {
                             color: colors.vividViolet,
                           },
@@ -117,39 +176,45 @@ export default function MrCsoMatchingList() {
           </Table>
 
           <Box
+            component='form'
+            onSubmit={form.handleSubmit(submitHandler)}
             sx={{
               alignSelf: 'center',
               marginTop: '40px',
             }}
           >
-            <TextField
-              name='searchKeyword'
-              value={pageFormik.values.searchKeyword}
-              onChange={pageFormik.handleChange}
-              placeholder='제목을 입력해주세요.'
-              fullWidth
-              size='small'
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <Search />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                width: '480px',
-              }}
+            <Controller
+              control={form.control}
+              name={'searchKeyword'}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  placeholder='제목을 입력해주세요.'
+                  fullWidth
+                  size='small'
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position='end'>
+                        <Search />
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{
+                    width: '480px',
+                  }}
+                />
+              )}
             />
           </Box>
 
           <MedipandaPagination
             count={totalPages}
-            page={pageFormik.values.pageIndex + 1}
+            page={page}
             showFirstButton
             showLastButton
-            onChange={(_, page) => {
-              pageFormik.setFieldValue('pageIndex', page - 1);
-            }}
+            renderItem={item => (
+              <PaginationItem {...item} component={RouterLink} to={setUrlParams({ page: item.page }, initialSearchParams)} />
+            )}
             sx={{
               alignSelf: 'center',
               marginTop: '40px',

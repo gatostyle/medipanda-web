@@ -1,27 +1,45 @@
-import { getEventBoards } from '@/backend';
+import { type EventBoardSummaryResponse, getEventBoards } from '@/backend';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
-import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
+import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
+import { setUrlParams } from '@/lib/utils/url';
 import { colors } from '@/themes';
 import { formatYyyyMmDd, isExpired } from '@/lib/utils/dateFormat';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, PaginationItem, Stack, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
 export default function EventList() {
-  const {
-    content: page,
-    pageCount: totalPages,
-    formik: pageFormik,
-  } = usePageFetchFormik({
-    fetcher: values => {
-      return getEventBoards({
-        page: values.pageIndex,
-        size: values.pageSize,
+  const [contents, setContents] = useState<EventBoardSummaryResponse[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const initialSearchParams = {
+    page: '1',
+  };
+
+  const { page: paramPage } = useSearchParamsOrDefault(initialSearchParams);
+  const page = Number(paramPage);
+  const pageSize = 10;
+
+  const fetchContents = async () => {
+    try {
+      const response = await getEventBoards({
+        page: page - 1,
+        size: pageSize,
       });
-    },
-    contentSelector: response => response.content,
-    pageCountSelector: response => response.totalPages,
-    initialContent: [],
-  });
+
+      setContents(response.content);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch event list:', error);
+      alert('이벤트 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+      setTotalPages(0);
+    }
+  };
+
+  useEffect(() => {
+    fetchContents();
+  }, [page]);
 
   return (
     <>
@@ -34,7 +52,7 @@ export default function EventList() {
           marginTop: '30px',
         }}
       >
-        {page.map(event => (
+        {contents.map(event => (
           <Stack
             key={event.id}
             direction='row'
@@ -104,12 +122,10 @@ export default function EventList() {
 
       <MedipandaPagination
         count={totalPages}
-        page={pageFormik.values.pageIndex + 1}
+        page={page}
         showFirstButton
         showLastButton
-        onChange={(_, page) => {
-          pageFormik.setFieldValue('pageIndex', page - 1);
-        }}
+        renderItem={item => <PaginationItem {...item} component={RouterLink} to={setUrlParams({ page: item.page }, initialSearchParams)} />}
         sx={{
           alignSelf: 'center',
           marginTop: '30px',

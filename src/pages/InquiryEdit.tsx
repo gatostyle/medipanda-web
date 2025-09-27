@@ -28,7 +28,14 @@ export default function InquiryEdit() {
       newFiles: [] as File[],
     },
     onSubmit: async values => {
-      if (!values.title.trim()) {
+      const title = values.title.trim();
+      const editorContent = editor
+        .getHTML()
+        .replace(/^(<p>\s*<\/p>)*/, '')
+        .replace(/(<p>\s*<\/p>)*$/, '')
+        .trim();
+
+      if (title === '') {
         alert('제목을 입력해주세요.');
         return;
       }
@@ -37,8 +44,8 @@ export default function InquiryEdit() {
         if (!isNew) {
           await updateBoardPost(inquiryId, {
             updateRequest: {
-              title: values.title,
-              content: editor.getHTML(),
+              title: title,
+              content: editorContent,
               hiddenNickname: false,
               isBlind: null,
               isExposed: null,
@@ -58,8 +65,8 @@ export default function InquiryEdit() {
               userId: session!.userId,
               nickname: session!.userId,
               hiddenNickname: session!.nicknameHidden,
-              title: values.title,
-              content: editor.getHTML(),
+              title: title,
+              content: editorContent,
               parentId: null,
               isExposed: true,
               editorFileIds: editorAttachments.map(image => image.s3fileId),

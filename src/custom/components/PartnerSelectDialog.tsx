@@ -1,9 +1,14 @@
 import { getPartners, type PartnerResponse } from '@/backend';
-import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
+import { formatYyyyMm } from '@/lib/utils/dateFormat';
+import { setUrlParams } from '@/lib/utils/url';
+import { withSequence } from '@/lib/utils/withSequence';
 import { Search } from '@mui/icons-material';
-import { InputAdornment, Stack, TextField } from '@mui/material';
+import { InputAdornment, PaginationItem, Stack, TextField } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
+import { Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 import { MedipandaButton } from './MedipandaButton';
 import { MedipandaDialog, MedipandaDialogContent, MedipandaDialogTitle } from './MedipandaDialog';
 import { MedipandaPagination } from './MedipandaPagination';
@@ -18,37 +23,68 @@ export function PartnerSelectDialog({
   onClose?: () => void;
   onSelect?: (partner: PartnerResponse) => void;
 }) {
-  const {
-    content: page,
-    pageCount: totalPages,
-    formik: pageFormik,
-  } = usePageFetchFormik({
-    initialFormValues: {
-      searchKeyword: '',
-    },
-    fetcher: values => {
-      return getPartners({
-        institutionName: values.searchKeyword === '' ? undefined : values.searchKeyword,
-        page: values.pageIndex,
-        size: values.pageSize,
-      });
-    },
-    contentSelector: response => response.content,
-    pageCountSelector: response => response.totalPages,
-    initialContent: [],
+  const [contents, setContents] = useState<PartnerResponse[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const [submitFormValues, setSubmitFormValues] = useState({
+    searchType: 'institutionName' as 'companyName' | 'institutionName' | 'drugCompanyName' | 'memberName' | 'institutionCode',
+    searchKeyword: '',
+    page: 1,
   });
+  const pageSize = 10;
+
+  const form = useForm({
+    defaultValues: {
+      ...submitFormValues,
+    },
+  });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    setSubmitFormValues({
+      ...values,
+      page: 1,
+    });
+  };
+
+  const fetchContents = async () => {
+    try {
+      const response = await getPartners({
+        [submitFormValues.searchType]: submitFormValues.searchKeyword,
+        page: submitFormValues.page - 1,
+        size: pageSize,
+      });
+
+      setContents(withSequence(response).content);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch settlement list:', error);
+      alert('정산내역 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+      setTotalPages(0);
+    }
+  };
+
+  useEffect(() => {
+    form.setValue('searchKeyword', submitFormValues.searchKeyword);
+    fetchContents();
+  }, [submitFormValues.searchKeyword, submitFormValues.page]);
+
+  const initialSearchParams = {
+    searchType: 'companyName' as 'dealerName' | 'dealerId' | 'drugCompanyName' | 'companyName',
+    searchKeyword: '',
+    settlementMonth: formatYyyyMm(new Date()),
+    page: '1',
+  };
 
   useEffect(() => {
     if (open) {
-      (async () => {
-        await pageFormik.setFieldValue('searchKeyword', '');
-        await pageFormik.submitForm();
-      })();
+      form.setValue('searchKeyword', '');
+      form.handleSubmit(submitHandler)();
     }
   }, [open]);
 
   const table = useReactTable({
-    data: page,
+    data: contents,
     columns: [
       {
         header: '거래처명',
@@ -84,22 +120,26 @@ export function PartnerSelectDialog({
     <MedipandaDialog open onClose={onClose}>
       <MedipandaDialogTitle title='거래처 선택' onClose={onClose} />
       <MedipandaDialogContent>
-        <form onSubmit={pageFormik.handleSubmit}>
-          <TextField
-            name='searchKeyword'
-            value={pageFormik.values.searchKeyword}
-            onChange={pageFormik.handleChange}
-            placeholder='거래처명을 입력해주세요.'
-            fullWidth
-            size='small'
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position='end'>
-                  <Search />
-                </InputAdornment>
-              ),
-            }}
-            sx={{}}
+        <form onSubmit={form.handleSubmit(submitHandler)}>
+          <Controller
+            control={form.control}
+            name={'searchKeyword'}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                placeholder='거래처명을 입력해주세요.'
+                fullWidth
+                size='small'
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <Search />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{}}
+              />
+            )}
           />
         </form>
 
@@ -108,12 +148,12 @@ export function PartnerSelectDialog({
         <Stack alignItems='center'>
           <MedipandaPagination
             count={totalPages}
-            page={pageFormik.values.pageIndex + 1}
+            // page={page}
             showFirstButton
             showLastButton
-            onChange={(_, page) => {
-              pageFormik.setFieldValue('pageIndex', page - 1);
-            }}
+            renderItem={item => (
+              <PaginationItem {...item} component={RouterLink} to={setUrlParams({ page: item.page }, initialSearchParams)} />
+            )}
             sx={{ marginTop: '40px' }}
           />
         </Stack>

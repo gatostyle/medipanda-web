@@ -1,28 +1,46 @@
-import { getSalesAgencyProducts } from '@/backend';
+import { getSalesAgencyProducts, type SalesAgencyProductSummaryResponse } from '@/backend';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { LazyImage } from '@/lib/components/LazyImage';
-import { usePageFetchFormik } from '@/lib/components/usePageFetchFormik';
+import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
+import { setUrlParams } from '@/lib/utils/url';
 import { colors } from '@/themes';
 import { formatYyyyMmDd, isExpired } from '@/lib/utils/dateFormat';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, PaginationItem, Stack, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
 export default function SalesAgencyProductList() {
-  const {
-    content: page,
-    pageCount: totalPages,
-    formik: pageFormik,
-  } = usePageFetchFormik({
-    fetcher: values => {
-      return getSalesAgencyProducts({
-        page: values.pageIndex,
-        size: values.pageSize,
+  const [contents, setContents] = useState<SalesAgencyProductSummaryResponse[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const initialSearchParams = {
+    page: '1',
+  };
+
+  const { page: paramPage } = useSearchParamsOrDefault(initialSearchParams);
+  const page = Number(paramPage);
+  const pageSize = 10;
+
+  const fetchContents = async () => {
+    try {
+      const response = await getSalesAgencyProducts({
+        page: page - 1,
+        size: pageSize,
       });
-    },
-    contentSelector: response => response.content,
-    pageCountSelector: response => response.totalPages,
-    initialContent: [],
-  });
+
+      setContents(response.content);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch sales agency product list:', error);
+      alert('영업대행상품 목록을 불러오는 중 오류가 발생했습니다.');
+      setContents([]);
+      setTotalPages(0);
+    }
+  };
+
+  useEffect(() => {
+    fetchContents();
+  }, [page]);
 
   return (
     <>
@@ -35,7 +53,7 @@ export default function SalesAgencyProductList() {
           marginTop: '30px',
         }}
       >
-        {page.map(salesAgencyProduct => (
+        {contents.map(salesAgencyProduct => (
           <Stack
             key={salesAgencyProduct.id}
             direction='row'
@@ -107,12 +125,10 @@ export default function SalesAgencyProductList() {
 
       <MedipandaPagination
         count={totalPages}
-        page={pageFormik.values.pageIndex + 1}
+        page={page}
         showFirstButton
         showLastButton
-        onChange={(_, page) => {
-          pageFormik.setFieldValue('pageIndex', page - 1);
-        }}
+        renderItem={item => <PaginationItem {...item} component={RouterLink} to={setUrlParams({ page: item.page }, initialSearchParams)} />}
         sx={{
           alignSelf: 'center',
           marginTop: '40px',
