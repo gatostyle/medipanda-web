@@ -82,12 +82,27 @@ export default function CommunityEdit() {
       hiddenNickname: true,
     },
     onSubmit: async values => {
+      const editorContent = editor
+        .getHTML()
+        .replace(/^<p><\/p>$/, '')
+        .trim();
+
+      if (values.title === '') {
+        alert('제목을 입력해주세요.');
+        return;
+      }
+
+      if (editorContent === '') {
+        alert('내용을 입력해주세요.');
+        return;
+      }
+
       try {
         if (!isNew) {
           await updateBoardPost(boardPostId, {
             updateRequest: {
               title: values.title,
-              content: editor.getHTML(),
+              content: editorContent,
               hiddenNickname: values.hiddenNickname,
               isBlind: null,
               isExposed: null,
@@ -98,6 +113,8 @@ export default function CommunityEdit() {
             },
             newFiles: newFiles,
           });
+          alert('글이 수정되었습니다.');
+          navigate(-1);
         } else {
           await createBoardPost({
             request: {
@@ -106,7 +123,7 @@ export default function CommunityEdit() {
               nickname: '익명',
               hiddenNickname: values.hiddenNickname,
               title: values.title,
-              content: editor.getHTML(),
+              content: editorContent,
               parentId: null,
               isExposed: true,
               editorFileIds: editorAttachments.map(image => image.s3fileId),
@@ -115,6 +132,8 @@ export default function CommunityEdit() {
             },
             files: newFiles,
           });
+          alert('글이 작성되었습니다.');
+          navigate(`/community/${paramCommunityType}`);
         }
       } catch (e) {
         console.error('Error saving post:', e);
