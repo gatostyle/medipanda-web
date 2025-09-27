@@ -215,7 +215,7 @@ export default function Home() {
                 marginLeft: '30px',
               }}
             >
-              MR-CSO매칭
+              신규처 매칭
             </Button>
             <MedipandaButton
               variant='contained'

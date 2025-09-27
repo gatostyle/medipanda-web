@@ -203,7 +203,7 @@ const route: RouteObject[] = [
                   to: '/community/anonymous',
                 },
                 {
-                  label: 'MR-CSO 매칭',
+                  label: '신규처 매칭',
                   to: '/community/mr-cso-matching',
                 },
               ]}
