@@ -154,7 +154,7 @@ export default function Home() {
           >
             <MedipandaCarousel ref={carouselRef} interval={5000} width={602}>
               {banners.map(banner => (
-                <RouterLink key={banner.id} to={banner.linkUrl}>
+                <RouterLink key={banner.id} to={banner.linkUrl} target='_blank'>
                   <LazyImage
                     src={banner.imageUrl}
                     style={{

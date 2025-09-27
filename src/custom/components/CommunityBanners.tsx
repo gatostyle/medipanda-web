@@ -21,7 +21,7 @@ export function CommunityBanners() {
     <>
       {contents.map(banner => {
         return (
-          <RouterLink key={banner.id} to={banner.linkUrl}>
+          <RouterLink key={banner.id} to={banner.linkUrl} target='_blank'>
             <LazyImage
               src={banner.imageUrl}
               width='392px'
