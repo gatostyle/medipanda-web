@@ -272,7 +272,7 @@ function RecentBoardTable({ boardType, ...props }: TableProps & { boardType: 'AN
 
   useEffect(() => {
     fetchContents();
-  }, []);
+  }, [boardType]);
 
   const table = useReactTable({
     data: contents,
