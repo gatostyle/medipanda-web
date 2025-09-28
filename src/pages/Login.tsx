@@ -26,6 +26,8 @@ export default function Login() {
       autoLogin: false,
     },
   });
+  const formUserId = form.watch('userId');
+  const formPassword = form.watch('password');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
     setFormError(' ');
@@ -225,6 +227,7 @@ export default function Login() {
               <Stack sx={{ width: '100%' }}>
                 <MedipandaButton
                   type='submit'
+                  disabled={formUserId === '' || formPassword === ''}
                   fullWidth
                   size='large'
                   variant='contained'
