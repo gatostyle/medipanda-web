@@ -4,7 +4,7 @@ import { MedipandaCheckbox } from '@/custom/components/MedipandaCheckbox';
 import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { useSession } from '@/hooks/useSession';
-import { TiptapMenuBar } from '@/lib/Tiptap';
+import { TiptapMenuBar, trimTiptapContent } from '@/lib/Tiptap';
 import { colors } from '@/themes';
 import { CheckCircle, CheckCircleOutline } from '@mui/icons-material';
 import { FormControlLabel, Stack, Typography } from '@mui/material';
@@ -83,11 +83,7 @@ export default function CommunityEdit() {
     },
     onSubmit: async values => {
       const title = values.title.trim();
-      const editorContent = editor
-        .getHTML()
-        .replace(/^(<p>\s*<\/p>)*/, '')
-        .replace(/(<p>\s*<\/p>)*$/, '')
-        .trim();
+      const editorContent = trimTiptapContent(editor.getHTML());
 
       if (title === '') {
         alert('제목을 입력해주세요.');

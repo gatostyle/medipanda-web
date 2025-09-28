@@ -4,6 +4,7 @@ import { MedipandaFileUploadButton } from '@/custom/components/MedipandaFileUplo
 import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/components/MedipandaTab';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { useSession } from '@/hooks/useSession';
+import { trimTiptapContent } from '@/lib/Tiptap';
 import { colors } from '@/themes';
 import { Stack, TextField, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
@@ -29,11 +30,7 @@ export default function InquiryEdit() {
     },
     onSubmit: async values => {
       const title = values.title.trim();
-      const editorContent = editor
-        .getHTML()
-        .replace(/^(<p>\s*<\/p>)*/, '')
-        .replace(/(<p>\s*<\/p>)*$/, '')
-        .trim();
+      const editorContent = trimTiptapContent(editor.getHTML());
 
       if (title === '') {
         alert('제목을 입력해주세요.');
