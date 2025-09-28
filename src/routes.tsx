@@ -4,6 +4,7 @@ import { LazyComponent } from '@/lib/components/LazyComponent';
 import { lazy } from 'react';
 import { createBrowserRouter, Navigate, type RouteObject } from 'react-router-dom';
 
+const FooterLayout = LazyComponent(lazy(() => import('layouts/FooterLayout')));
 const GlobalLayout = LazyComponent(lazy(() => import('layouts/GlobalLayout')));
 const TabbedLayout = LazyComponent(lazy(() => import('layouts/TabbedLayout')));
 const SidebarLayout = LazyComponent(lazy(() => import('layouts/SidebarLayout')));
@@ -57,7 +58,11 @@ const Error404 = LazyComponent(lazy(() => import('pages/404')));
 const route: RouteObject[] = [
   {
     path: '/login',
-    element: <Login />,
+    element: (
+      <FooterLayout>
+        <Login />
+      </FooterLayout>
+    ),
   },
   {
     path: '/logout',

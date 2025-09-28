@@ -11,6 +11,7 @@ export default function Logout() {
 
   const doLogout = async () => {
     try {
+      localStorage.removeItem('autoLogin');
       await logout();
     } catch (error) {
       console.error('Logout error:', error);

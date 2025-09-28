@@ -1,9 +1,11 @@
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
+import { MedipandaCheckbox } from '@/custom/components/MedipandaCheckbox';
 import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
 import { useSession } from '@/hooks/useSession';
 import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Box, Card, FormControl, FormHelperText, IconButton, InputAdornment, Stack, Typography } from '@mui/material';
+import { colors } from '@/themes';
+import { CheckCircle, CheckCircleOutline, Visibility, VisibilityOff } from '@mui/icons-material';
+import { Box, FormControl, FormControlLabel, FormHelperText, IconButton, InputAdornment, Stack } from '@mui/material';
 import { isAxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
@@ -21,6 +23,7 @@ export default function Login() {
     defaultValues: {
       userId: '',
       password: '',
+      autoLogin: false,
     },
   });
 
@@ -28,17 +31,21 @@ export default function Login() {
     setFormError(' ');
 
     if (values.userId === '') {
-      form.setError('userId', { message: '아이디를 입력해 주세요.' });
+      setFormError('아이디를 입력해 주세요.');
       return;
     }
 
     if (values.password === '') {
-      form.setError('password', { message: '비밀번호를 입력해 주세요.' });
+      setFormError('비밀번호를 입력해 주세요.');
       return;
     }
 
     try {
       await login(values.userId, values.password);
+
+      if (values.autoLogin) {
+        localStorage.setItem('autoLogin', JSON.stringify({ userId: btoa(values.userId), password: btoa(values.password) }));
+      }
 
       onLoginSuccess(urlSearchParams);
     } catch (e) {
@@ -62,12 +69,31 @@ export default function Login() {
     }
   }, [session, navigate, urlSearchParams]);
 
+  useEffect(() => {
+    try {
+      const { userId: base64UserId, password: base64Password } = JSON.parse(localStorage.getItem('autoLogin')!);
+
+      const userId = atob(base64UserId);
+      const password = atob(base64Password);
+
+      form.setValue('userId', userId);
+      form.setValue('password', password);
+      form.setValue('autoLogin', true);
+
+      if (userId !== '' && password !== '') {
+        form.handleSubmit(submitHandler)();
+      }
+    } catch {
+      localStorage.removeItem('autoLogin');
+    }
+  }, []);
+
   if (session !== null) {
     return <FixedLinearProgress />;
   }
 
   return (
-    <Box sx={{ minHeight: '100vh' }}>
+    <Stack justifyContent='center' alignItems='center' sx={{ flex: '1 0' }}>
       <Box
         sx={{
           position: 'absolute',
@@ -116,17 +142,11 @@ export default function Login() {
           }}
         />
       </Box>
-      <Stack
-        justifyContent='center'
-        alignItems='center'
-        sx={{
-          minHeight: '100vh',
-        }}
-      >
-        <Card
+      <Stack justifyContent='center' alignItems='center'>
+        <Box
           sx={{
-            maxWidth: { xs: 400, md: 480 },
-            margin: { xs: 2.5, md: 3 },
+            padding: '60px 265px 60px 297px',
+            border: `1px solid ${colors.gray80}`,
             '& > *': {
               flexGrow: 1,
               flexBasis: '50%',
@@ -140,39 +160,33 @@ export default function Login() {
               noValidate
               onSubmit={form.handleSubmit(submitHandler)}
               sx={{
-                width: '400px',
+                alignItems: 'center',
+                width: '350px',
               }}
             >
-              <Typography variant='heading4B' sx={{ alignSelf: 'center' }}>
-                로그인
-              </Typography>
-              <Controller
-                control={form.control}
-                name={'userId'}
-                render={({ field, fieldState }) => (
-                  <FormControl>
+              <img src='/assets/logo.svg' alt='medipanda' width='230' height='43' />
+              <FormControl fullWidth>
+                <Controller
+                  control={form.control}
+                  name={'userId'}
+                  render={({ field }) => (
                     <MedipandaOutlinedInput
                       {...field}
-                      placeholder='이메일'
-                      fullWidth
-                      error={fieldState.error !== undefined}
+                      placeholder='ID'
                       sx={{
                         height: '50px',
                       }}
                     />
-                    <FormHelperText error>{fieldState.error?.message || ' '}</FormHelperText>
-                  </FormControl>
-                )}
-              />
-              <Controller
-                control={form.control}
-                name={'password'}
-                render={({ field, fieldState }) => (
-                  <FormControl>
+                  )}
+                />
+              </FormControl>
+              <FormControl fullWidth>
+                <Controller
+                  control={form.control}
+                  name={'password'}
+                  render={({ field }) => (
                     <MedipandaOutlinedInput
                       {...field}
-                      fullWidth
-                      error={fieldState.error !== undefined}
                       type={showPassword ? 'text' : 'password'}
                       name='password'
                       endAdornment={
@@ -182,25 +196,45 @@ export default function Login() {
                           </IconButton>
                         </InputAdornment>
                       }
-                      placeholder='비밀번호'
+                      placeholder='Password'
                       sx={{
                         height: '50px',
                       }}
                     />
-                    <FormHelperText error>{fieldState.error?.message || ' '}</FormHelperText>
-                  </FormControl>
+                  )}
+                />
+              </FormControl>
+              <Controller
+                control={form.control}
+                name={'autoLogin'}
+                render={({ field }) => (
+                  <FormControlLabel
+                    {...field}
+                    control={<MedipandaCheckbox defaultChecked icon={<CheckCircleOutline />} checkedIcon={<CheckCircle />} />}
+                    label='로그인 상태 유지 (자동 로그인)'
+                    checked={field.value}
+                  />
                 )}
               />
-              <Stack>
-                <MedipandaButton type='submit' fullWidth size='large' variant='contained' color='secondary'>
-                  로그인
+              <Stack sx={{ width: '100%' }}>
+                <MedipandaButton
+                  type='submit'
+                  fullWidth
+                  size='large'
+                  variant='contained'
+                  color='secondary'
+                  sx={{
+                    borderRadius: '20px',
+                  }}
+                >
+                  Login
                 </MedipandaButton>
                 <FormHelperText error>{formError}</FormHelperText>
               </Stack>
             </Stack>
           </Box>
-        </Card>
+        </Box>
       </Stack>
-    </Box>
+    </Stack>
   );
 }
