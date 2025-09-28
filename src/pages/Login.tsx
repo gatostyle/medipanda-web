@@ -173,6 +173,9 @@ export default function Login() {
                     <MedipandaOutlinedInput
                       {...field}
                       placeholder='ID'
+                      inputProps={{
+                        maxLength: 20,
+                      }}
                       sx={{
                         height: '50px',
                       }}
@@ -189,6 +192,9 @@ export default function Login() {
                       {...field}
                       type={showPassword ? 'text' : 'password'}
                       name='password'
+                      inputProps={{
+                        maxLength: 30,
+                      }}
                       endAdornment={
                         <InputAdornment position='end'>
                           <IconButton onClick={() => setShowPassword(!showPassword)} edge='end'>
