@@ -25,7 +25,7 @@ import { Link as RouterLink } from 'react-router-dom';
 export default function Home() {
   const { session } = useSession();
 
-  const [recentBoardType, setRecentBoardType] = useState<'ANONYMOUS' | 'MR_CSO_MATCHING'>('ANONYMOUS');
+  const [recentBoardType, setRecentBoardType] = useState<'ANONYMOUS' | 'MR_CSO_MATCHING'>('MR_CSO_MATCHING');
   const [monthlyPrescriptionCount, setMonthlyPrescriptionCount] = useState<number | null>(null);
   const [monthlyFeeAmount, setMonthlyFeeAmount] = useState<number | null>(null);
   const [recentlyOpenedCount, setRecentlyOpenedCount] = useState<number | null>(null);
@@ -207,16 +207,6 @@ export default function Home() {
           >
             <Button
               variant='text'
-              onClick={() => setRecentBoardType('ANONYMOUS')}
-              sx={{
-                ...typography.heading4B,
-                color: recentBoardType === 'ANONYMOUS' ? colors.gray80 : colors.gray40,
-              }}
-            >
-              익명게시판
-            </Button>
-            <Button
-              variant='text'
               onClick={() => setRecentBoardType('MR_CSO_MATCHING')}
               sx={{
                 ...typography.heading4B,
@@ -225,6 +215,16 @@ export default function Home() {
               }}
             >
               신규처 매칭
+            </Button>
+            <Button
+              variant='text'
+              onClick={() => setRecentBoardType('ANONYMOUS')}
+              sx={{
+                ...typography.heading4B,
+                color: recentBoardType === 'ANONYMOUS' ? colors.gray80 : colors.gray40,
+              }}
+            >
+              익명게시판
             </Button>
             <MedipandaButton
               variant='contained'

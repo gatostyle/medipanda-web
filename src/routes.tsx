@@ -199,12 +199,12 @@ const route: RouteObject[] = [
               title='커뮤니티'
               tabConfig={[
                 {
-                  label: '익명게시판',
-                  to: '/community/anonymous',
-                },
-                {
                   label: '신규처 매칭',
                   to: '/community/mr-cso-matching',
+                },
+                {
+                  label: '익명게시판',
+                  to: '/community/anonymous',
                 },
               ]}
             />
@@ -213,7 +213,7 @@ const route: RouteObject[] = [
         children: [
           {
             index: true,
-            element: <Navigate to={'anonymous'} />,
+            element: <Navigate to={'/community/mr-cso-matching'} />,
           },
           {
             path: ':communityType/:id',
