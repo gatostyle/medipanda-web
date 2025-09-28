@@ -1,4 +1,4 @@
-import { changePassword_1, createAuthRequest, result as getAuthResult, updateMember } from '@/backend';
+import { changePassword_1, createAuthRequest, isAvailableNickname, result as getAuthResult, updateMember, updateNickname } from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaFileUploadButton } from '@/custom/components/MedipandaFileUploadButton';
 import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/components/MedipandaTab';
@@ -44,6 +44,7 @@ export default function MypageInfo() {
       phoneNumber: session?.phoneNumber || '',
       emailId: session?.email ? session.email.split('@')[0] : '',
       emailDomain: session?.email ? session.email.split('@')[1] : '',
+      nickname: session?.nickname || '',
       csoRegistrationFile: null as File | null,
     },
   });
@@ -63,6 +64,35 @@ export default function MypageInfo() {
     if (values.emailId === '' || values.emailDomain === '') {
       alert('이메일 정보를 입력해주세요.');
       return;
+    }
+
+    if (values.nickname === '') {
+      alert('닉네임을 입력해주세요.');
+      return;
+    }
+
+    if (values.nickname !== session!.nickname) {
+      try {
+        const nicknameCheckResponse = await isAvailableNickname({
+          nickname: values.nickname,
+        });
+
+        if (nicknameCheckResponse.recentlyChanged) {
+          alert('닉네임은 1달에 1회만 변경할 수 있습니다.');
+          return;
+        }
+
+        if (nicknameCheckResponse.duplicated) {
+          alert('이미 사용 중인 닉네임입니다.');
+          return;
+        }
+        await updateNickname({
+          nickname: values.nickname,
+        });
+      } catch (error) {
+        console.error(error);
+        return;
+      }
     }
 
     try {
@@ -301,13 +331,17 @@ export default function MypageInfo() {
           }}
         >
           <Stack sx={{ width: '544px' }}>
-            {/*<MypageFormRow direction='row'>*/}
-            {/*  <MypageFormLabel>닉네임</MypageFormLabel>*/}
-            {/*  <MypageFormInput>*/}
-            {/*    <TextField value={formData.nickname} onChange={handleInputChange('nickname')} fullWidth sx={{ marginBottom: 1 }} />*/}
-            {/*    <Typography sx={{ color: '#f44336', fontSize: '12px' }}>닉네임 변경은 1달에 1회 가능합니다.</Typography>*/}
-            {/*  </MypageFormInput>*/}
-            {/*</MypageFormRow>*/}
+            <MypageFormRow direction='row'>
+              <MypageFormLabel>닉네임</MypageFormLabel>
+              <MypageFormInput>
+                <Controller
+                  control={form.control}
+                  name={'nickname'}
+                  render={({ field }) => <TextField {...field} fullWidth sx={{ marginBottom: 1 }} />}
+                />
+                <Typography sx={{ color: '#f44336', fontSize: '12px' }}>닉네임 변경은 1달에 1회 가능합니다.</Typography>
+              </MypageFormInput>
+            </MypageFormRow>
 
             <MypageFormRow direction='row'>
               <MypageFormLabel>CSO 등록증</MypageFormLabel>
