@@ -8,9 +8,10 @@ import { trimTiptapContent } from '@/lib/Tiptap';
 import { colors } from '@/themes';
 import { Stack, TextField, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
-import { useFormik } from 'formik';
 import { useEffect } from 'react';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function InquiryEdit() {
   const { id: paramId } = useParams();
@@ -22,74 +23,78 @@ export default function InquiryEdit() {
 
   const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       title: '',
       attachedFiles: [] as AttachmentResponse[],
       newFiles: [] as File[],
     },
-    onSubmit: async values => {
-      const title = values.title.trim();
-      const editorContent = trimTiptapContent(editor.getHTML());
-
-      if (title === '') {
-        alert('제목을 입력해주세요.');
-        return;
-      }
-
-      try {
-        if (!isNew) {
-          await updateBoardPost(inquiryId, {
-            updateRequest: {
-              title: title,
-              content: editorContent,
-              hiddenNickname: false,
-              isBlind: null,
-              isExposed: null,
-              exposureRange: null,
-              keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
-              editorFileIds: editorAttachments.map(attachment => attachment.s3fileId),
-              noticeProperties: null,
-            },
-            newFiles: values.newFiles,
-          });
-
-          navigate(`/customer-service/inquiry/${inquiryId}`);
-        } else {
-          await createBoardPost({
-            request: {
-              boardType: 'INQUIRY',
-              userId: session!.userId,
-              nickname: session!.userId,
-              hiddenNickname: session!.nicknameHidden,
-              title: title,
-              content: editorContent,
-              parentId: null,
-              isExposed: true,
-              editorFileIds: editorAttachments.map(image => image.s3fileId),
-              exposureRange: 'ALL',
-              noticeProperties: null,
-            },
-            files: values.newFiles,
-          });
-
-          navigate('/customer-service/inquiry');
-        }
-      } catch (e) {
-        console.error('Error saving post:', e);
-        alert('글 작성 중 오류가 발생했습니다. 다시 시도해주세요.');
-      }
-    },
   });
+  const formAttachedFiles = form.watch('attachedFiles');
+  const formNewFiles = form.watch('newFiles');
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    const title = values.title.trim();
+    const editorContent = trimTiptapContent(editor.getHTML());
+
+    if (title === '') {
+      alert('제목을 입력해주세요.');
+      return;
+    }
+
+    try {
+      if (!isNew) {
+        await updateBoardPost(inquiryId, {
+          updateRequest: {
+            title: title,
+            content: editorContent,
+            hiddenNickname: false,
+            isBlind: null,
+            isExposed: null,
+            exposureRange: null,
+            keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
+            editorFileIds: editorAttachments.map(attachment => attachment.s3fileId),
+            noticeProperties: null,
+          },
+          newFiles: values.newFiles,
+        });
+
+        navigate(`/customer-service/inquiry/${inquiryId}`);
+      } else {
+        await createBoardPost({
+          request: {
+            boardType: 'INQUIRY',
+            userId: session!.userId,
+            nickname: session!.userId,
+            hiddenNickname: session!.nicknameHidden,
+            title: title,
+            content: editorContent,
+            parentId: null,
+            isExposed: true,
+            editorFileIds: editorAttachments.map(image => image.s3fileId),
+            exposureRange: 'ALL',
+            noticeProperties: null,
+          },
+          files: values.newFiles,
+        });
+
+        navigate('/customer-service/inquiry');
+      }
+    } catch (e) {
+      console.error('Error saving post:', e);
+      alert('글 작성 중 오류가 발생했습니다. 다시 시도해주세요.');
+    }
+  };
 
   const fetchDetail = async (id: number) => {
     const response = await getBoardDetails(id);
 
-    formik.setValues({
-      title: response.title,
-      attachedFiles: response.attachments.filter(a => a.type === 'ATTACHMENT'),
-      newFiles: [],
-    });
+    form.setValue('title', response.title);
+    form.setValue(
+      'attachedFiles',
+      response.attachments.filter(a => a.type === 'ATTACHMENT'),
+    );
+    form.setValue('newFiles', []);
     editor.commands.setContent(response.content);
     setEditorAttachments(response.attachments.filter(a => a.type === 'EDITOR'));
   };
@@ -116,7 +121,7 @@ export default function InquiryEdit() {
       <Stack
         gap='20px'
         component='form'
-        onSubmit={formik.handleSubmit}
+        onSubmit={form.handleSubmit(submitHandler)}
         sx={{
           alignSelf: 'center',
           width: '600px',
@@ -127,16 +132,20 @@ export default function InquiryEdit() {
           <Typography variant='largeTextM' sx={{ color: colors.gray80, lineHeight: '56px' }}>
             제목*
           </Typography>
-          <TextField
-            fullWidth
-            name='title'
-            value={formik.values.title}
-            onChange={formik.handleChange}
-            placeholder='제목을 입력해주세요'
-            sx={{
-              width: '500px',
-              marginLeft: 'auto',
-            }}
+          <Controller
+            control={form.control}
+            name={'title'}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                placeholder='제목을 입력해주세요'
+                sx={{
+                  width: '500px',
+                  marginLeft: 'auto',
+                }}
+              />
+            )}
           />
         </Stack>
 
@@ -175,13 +184,12 @@ export default function InquiryEdit() {
               marginLeft: 'auto',
             }}
           >
-            <MedipandaFileUploadButton
-              onChange={files => {
-                formik.setFieldValue('newFiles', [...formik.values.newFiles, ...files]);
-              }}
+            <Controller
+              control={form.control}
+              name={'newFiles'}
+              render={({ field }) => <MedipandaFileUploadButton onChange={files => field.onChange([...field.value, ...files])} />}
             />
-            {[...formik.values.attachedFiles, ...formik.values.newFiles].length > 0 &&
-              `${[...formik.values.attachedFiles, ...formik.values.newFiles].length}개 파일 선택됨`}
+            {[...formAttachedFiles, ...formNewFiles].length > 0 && `${[...formAttachedFiles, ...formNewFiles].length}개 파일 선택됨`}
           </Stack>
         </Stack>
       </Stack>
@@ -190,7 +198,7 @@ export default function InquiryEdit() {
         direction='row'
         gap='10px'
         component='form'
-        onSubmit={formik.handleSubmit}
+        onSubmit={form.handleSubmit(submitHandler)}
         sx={{
           alignSelf: 'center',
           marginTop: '60px',

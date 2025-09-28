@@ -9,9 +9,10 @@ import { colors } from '@/themes';
 import { CheckCircle, CheckCircleOutline } from '@mui/icons-material';
 import { FormControlLabel, Stack, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
-import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function CommunityEdit() {
   const { session } = useSession();
@@ -59,86 +60,87 @@ export default function CommunityEdit() {
   } = useMedipandaEditor({
     placeholder: '내용을 입력해주세요',
   });
-  const [attachedFiles, setAttachedFiles] = useState<AttachmentResponse[]>([]);
-  const [newFiles] = useState<File[]>([]);
+
+  const form = useForm({
+    defaultValues: {
+      title: '',
+      hiddenNickname: true,
+      attachedFiles: [] as AttachmentResponse[],
+      newFiles: [] as File[],
+    },
+  });
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    const title = values.title.trim();
+    const editorContent = trimTiptapContent(editor.getHTML());
+
+    if (title === '') {
+      alert('제목을 입력해주세요.');
+      return;
+    }
+
+    if (editorContent === '') {
+      alert('내용을 입력해주세요.');
+      return;
+    }
+
+    try {
+      if (!isNew) {
+        await updateBoardPost(boardPostId, {
+          updateRequest: {
+            title: title,
+            content: editorContent,
+            hiddenNickname: values.hiddenNickname,
+            isBlind: null,
+            isExposed: null,
+            exposureRange: null,
+            keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
+            editorFileIds: editorAttachments.map(attachment => attachment.s3fileId),
+            noticeProperties: null,
+          },
+          newFiles: values.newFiles,
+        });
+        alert('글이 수정되었습니다.');
+        navigate(-1);
+      } else {
+        await createBoardPost({
+          request: {
+            boardType: communityType,
+            userId: session!.userId,
+            nickname: '익명',
+            hiddenNickname: values.hiddenNickname,
+            title: title,
+            content: editorContent,
+            parentId: null,
+            isExposed: true,
+            editorFileIds: editorAttachments.map(image => image.s3fileId),
+            exposureRange: 'ALL',
+            noticeProperties: null,
+          },
+          files: values.newFiles,
+        });
+        alert('글이 작성되었습니다.');
+        navigate(`/community/${paramCommunityType}`);
+      }
+    } catch (e) {
+      console.error('Error saving post:', e);
+      alert('글 작성 중 오류가 발생했습니다. 다시 시도해주세요.');
+    }
+  };
 
   useEffect(() => {
     if (detail === null) {
       return;
     }
 
-    formik.setValues({
-      title: detail.title,
-      hiddenNickname: session!.nicknameHidden,
-    });
+    form.setValue('title', detail.title);
+    form.setValue(
+      'attachedFiles',
+      detail.attachments.filter(a => a.type === 'ATTACHMENT'),
+    );
+    form.setValue('newFiles', []);
     editor.commands.setContent(detail.content);
     setEditorAttachments(detail.attachments.filter(a => a.type === 'EDITOR'));
-    setAttachedFiles(detail.attachments.filter(a => a.type === 'ATTACHMENT'));
   }, [detail, editor, setEditorAttachments]);
-
-  const formik = useFormik({
-    initialValues: {
-      title: '',
-      hiddenNickname: true,
-    },
-    onSubmit: async values => {
-      const title = values.title.trim();
-      const editorContent = trimTiptapContent(editor.getHTML());
-
-      if (title === '') {
-        alert('제목을 입력해주세요.');
-        return;
-      }
-
-      if (editorContent === '') {
-        alert('내용을 입력해주세요.');
-        return;
-      }
-
-      try {
-        if (!isNew) {
-          await updateBoardPost(boardPostId, {
-            updateRequest: {
-              title: title,
-              content: editorContent,
-              hiddenNickname: values.hiddenNickname,
-              isBlind: null,
-              isExposed: null,
-              exposureRange: null,
-              keepFileIds: [...attachedFiles, ...editorAttachments].map(file => file.s3fileId),
-              editorFileIds: editorAttachments.map(attachment => attachment.s3fileId),
-              noticeProperties: null,
-            },
-            newFiles: newFiles,
-          });
-          alert('글이 수정되었습니다.');
-          navigate(-1);
-        } else {
-          await createBoardPost({
-            request: {
-              boardType: communityType,
-              userId: session!.userId,
-              nickname: '익명',
-              hiddenNickname: values.hiddenNickname,
-              title: title,
-              content: editorContent,
-              parentId: null,
-              isExposed: true,
-              editorFileIds: editorAttachments.map(image => image.s3fileId),
-              exposureRange: 'ALL',
-              noticeProperties: null,
-            },
-            files: newFiles,
-          });
-          alert('글이 작성되었습니다.');
-          navigate(`/community/${paramCommunityType}`);
-        }
-      } catch (e) {
-        console.error('Error saving post:', e);
-        alert('글 작성 중 오류가 발생했습니다. 다시 시도해주세요.');
-      }
-    },
-  });
 
   return (
     <>
@@ -160,26 +162,36 @@ export default function CommunityEdit() {
             <Typography variant='largeTextM' sx={{ width: '100px', color: colors.gray80, lineHeight: '50px' }}>
               익명
             </Typography>
-            <FormControlLabel
-              control={<MedipandaCheckbox defaultChecked icon={<CheckCircleOutline />} checkedIcon={<CheckCircle />} />}
-              label='닉네임 숨기기'
-              checked={formik.values.hiddenNickname}
-              onChange={(_, checked) => formik.setFieldValue('hiddenNickname', checked)}
+            <Controller
+              control={form.control}
+              name={'hiddenNickname'}
+              render={({ field }) => (
+                <FormControlLabel
+                  {...field}
+                  control={<MedipandaCheckbox defaultChecked icon={<CheckCircleOutline />} checkedIcon={<CheckCircle />} />}
+                  label='닉네임 숨기기'
+                  checked={field.value}
+                />
+              )}
             />
           </Stack>
           <Stack direction='row' gap='10px'>
             <Typography variant='largeTextM' sx={{ width: '100px', color: colors.gray80, lineHeight: '50px' }}>
               제목 *
             </Typography>
-            <MedipandaOutlinedInput
-              name='title'
-              value={formik.values.title}
-              onChange={formik.handleChange}
-              placeholder='제목을 입력해주세요'
-              sx={{
-                flexGrow: 1,
-                height: '50px',
-              }}
+            <Controller
+              control={form.control}
+              name={'title'}
+              render={({ field }) => (
+                <MedipandaOutlinedInput
+                  {...field}
+                  placeholder='제목을 입력해주세요'
+                  sx={{
+                    flexGrow: 1,
+                    height: '50px',
+                  }}
+                />
+              )}
             />
           </Stack>
           <Stack direction='row' gap='10px'>
@@ -223,7 +235,7 @@ export default function CommunityEdit() {
           취소
         </MedipandaButton>
         <MedipandaButton
-          onClick={formik.submitForm}
+          onClick={form.handleSubmit(submitHandler)}
           // disabled={!title.trim() || !content.trim() || loading}
           variant='contained'
           size='large'

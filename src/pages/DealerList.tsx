@@ -8,8 +8,9 @@ import { formatYyyyMmDd } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { Stack, TextField, Typography } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
+import type { RequiredDeep } from 'type-fest';
 
 export default function DealerList() {
   const [contents, setContents] = useState<Sequenced<DealerResponse>[]>([]);
@@ -76,25 +77,27 @@ export default function DealerList() {
 function DealerCreateForm() {
   const [drugCompanySearchDialogOpen, setDrugCompanySearchDialogOpen] = useState(false);
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       dealerName: '',
       drugCompanies: [] as DrugCompanyResponse[],
     },
-    onSubmit: async values => {
-      try {
-        await createDealer({
-          dealerName: values.dealerName,
-          bankName: null,
-          accountNumber: null,
-          drugCompanyIds: values.drugCompanies.map(company => company.id),
-        });
-      } catch (error) {
-        console.error('Error creating dealer:', error);
-        alert('딜러를 등록하는 중 오류가 발생했습니다. 다시 시도해주세요.');
-      }
-    },
   });
+  const formDrugCompanies = form.watch('drugCompanies');
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    try {
+      await createDealer({
+        dealerName: values.dealerName,
+        bankName: null,
+        accountNumber: null,
+        drugCompanyIds: values.drugCompanies.map(company => company.id),
+      });
+    } catch (error) {
+      console.error('Error creating dealer:', error);
+      alert('딜러를 등록하는 중 오류가 발생했습니다. 다시 시도해주세요.');
+    }
+  };
 
   return (
     <>
@@ -102,21 +105,25 @@ function DealerCreateForm() {
         <Typography variant='largeTextM' sx={{ color: colors.gray80, width: '120px' }}>
           딜러명
         </Typography>
-        <TextField
-          name='dealerName'
-          value={formik.values.dealerName}
-          onChange={formik.handleChange}
-          size='small'
-          sx={{
-            flexGrow: 1,
-            '& .MuiInputBase-input': {
-              height: '50px',
-              boxSizing: 'border-box',
-            },
-          }}
+        <Controller
+          control={form.control}
+          name={'dealerName'}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              size='small'
+              sx={{
+                flexGrow: 1,
+                '& .MuiInputBase-input': {
+                  height: '50px',
+                  boxSizing: 'border-box',
+                },
+              }}
+            />
+          )}
         />
       </Stack>
-      {(formik.values.drugCompanies as (DrugCompanyResponse | null)[]).concat(null).map((drugCompany, index) => (
+      {(formDrugCompanies as (DrugCompanyResponse | null)[]).concat(null).map((drugCompany, index) => (
         <Stack key={drugCompany?.id ?? ''} direction='row' alignItems='center'>
           <Typography variant='largeTextM' sx={{ color: colors.gray80, width: '120px' }}>
             {index === 0 ? '거래제약사' : ''}
@@ -149,8 +156,7 @@ function DealerCreateForm() {
         }}
       >
         <MedipandaButton
-          onClick={() => formik.resetForm()}
-          disabled={formik.isSubmitting}
+          onClick={() => form.reset()}
           variant='outlined'
           size='large'
           color='secondary'
@@ -161,8 +167,7 @@ function DealerCreateForm() {
           취소
         </MedipandaButton>
         <MedipandaButton
-          onClick={() => formik.submitForm()}
-          disabled={formik.isSubmitting}
+          onClick={form.handleSubmit(submitHandler)}
           variant='contained'
           size='large'
           color='secondary'
@@ -174,14 +179,20 @@ function DealerCreateForm() {
         </MedipandaButton>
       </Stack>
 
-      <DrugCompanySelectDialog
-        open={drugCompanySearchDialogOpen}
-        onClose={() => setDrugCompanySearchDialogOpen(false)}
-        onSelect={drugCompany => {
-          formik.setFieldValue('drugCompanies', [...formik.values.drugCompanies, drugCompany]);
-          setDrugCompanySearchDialogOpen(false);
-        }}
-        excludedIds={formik.values.drugCompanies.map(company => company.id)}
+      <Controller
+        control={form.control}
+        name={'drugCompanies'}
+        render={({ field }) => (
+          <DrugCompanySelectDialog
+            open={drugCompanySearchDialogOpen}
+            onClose={() => setDrugCompanySearchDialogOpen(false)}
+            onSelect={drugCompany => {
+              field.onChange([...field.value, drugCompany]);
+              setDrugCompanySearchDialogOpen(false);
+            }}
+            excludedIds={field.value.map(company => company.id)}
+          />
+        )}
       />
     </>
   );

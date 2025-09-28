@@ -343,3 +343,10 @@ export const SettlementPartnerOrderLabel: Record<keyof typeof SettlementPartnerO
   [SettlementPartnerOrder.TOTAL_AMOUNT_ASC]: '정산금액 오름차순',
   [SettlementPartnerOrder.TOTAL_AMOUNT_DESC]: '정산금액 내림차순',
 };
+
+export const BoardSortType = {
+  LATEST: 'LATEST',
+  VIEWS: 'VIEWS',
+  LIKES: 'LIKES',
+  COMMENTS: 'COMMENTS',
+} as const;

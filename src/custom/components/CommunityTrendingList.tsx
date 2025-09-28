@@ -1,43 +1,28 @@
-import { type BoardPostResponse, BoardType, getBoards } from '@/backend';
-import type { BoardSortType } from '@/backend-types';
+import { type BoardPostResponse, BoardSortType, BoardType, getBoards } from '@/backend';
 import { colors, typography } from '@/themes';
 import { Button, Link, Stack, Table, TableBody, TableCell, TableRow, Typography } from '@mui/material';
-import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
 export function CommunityTrendingList({ boardType }: { boardType: keyof typeof BoardType }) {
-  const [content, setContent] = useState<BoardPostResponse[] | null>(null);
+  const [sortType, setSortType] = useState<keyof typeof BoardSortType>(BoardSortType.LIKES);
+  const pageSize = 10;
 
-  const formik = useFormik({
-    initialValues: {
-      boardType: boardType,
-      sortType: 'LIKES' as BoardSortType,
-      page: 0,
-      size: 10,
-    },
-    onSubmit: async (values, { setFieldValue }) => {
-      if (values.page !== 0) {
-        await setFieldValue('page', 0);
-      } else {
-        await fetchData();
-      }
-    },
-  });
+  const [contents, setContents] = useState<BoardPostResponse[] | null>(null);
 
-  const fetchData = async () => {
-    const response = await getBoards(formik.values);
+  const fetchContents = async () => {
+    const response = await getBoards({
+      boardType,
+      sortType,
+      size: pageSize,
+    });
 
-    setContent(response.content);
+    setContents(response.content);
   };
 
   useEffect(() => {
-    fetchData();
-  }, [formik.values.page, formik.values.size]);
-
-  useEffect(() => {
-    fetchData();
-  }, [formik.values.sortType]);
+    fetchContents();
+  }, [sortType]);
 
   return (
     <Stack
@@ -51,7 +36,7 @@ export function CommunityTrendingList({ boardType }: { boardType: keyof typeof B
         <Button
           variant='outlined'
           startIcon={<img src='/assets/icons/icon-fire.svg' />}
-          onClick={() => formik.setFieldValue('sortType', 'LIKES')}
+          onClick={() => setSortType(BoardSortType.LIKES)}
           sx={{
             ...typography.smallTextM,
             color: colors.vividViolet,
@@ -66,7 +51,7 @@ export function CommunityTrendingList({ boardType }: { boardType: keyof typeof B
         <Button
           variant='outlined'
           startIcon={<img src='/assets/icons/icon-chat-light.svg' />}
-          onClick={() => formik.setFieldValue('sortType', 'COMMENTS')}
+          onClick={() => setSortType(BoardSortType.COMMENTS)}
           sx={{
             ...typography.smallTextM,
             color: colors.vividViolet,
@@ -81,7 +66,7 @@ export function CommunityTrendingList({ boardType }: { boardType: keyof typeof B
       </Stack>
       <Table sx={{ marginTop: '20px' }}>
         <TableBody>
-          {content?.map((item, index) => (
+          {contents?.map((item, index) => (
             <TableRow
               key={item.id}
               sx={{

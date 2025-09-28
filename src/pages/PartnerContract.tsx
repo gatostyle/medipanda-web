@@ -8,10 +8,11 @@ import { useSession } from '@/hooks/useSession';
 import { colors, typography } from '@/themes';
 import { Box, Button, FormControlLabel, Link, OutlinedInput, Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useFormik } from 'formik';
 import { ArrowDown2 } from 'iconsax-reactjs';
 import { useEffect, useState } from 'react';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 const PartnerContractFormRow = styled(Stack)({
   flexDirection: 'row',
@@ -72,8 +73,8 @@ export default function PartnerContract() {
 
   const [bankSelectDialogOpen, setBankSelectDialogOpen] = useState(false);
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       contractType: '' as 'INDIVIDUAL' | 'ORGANIZATION',
       companyName: '',
       businessNumber: '',
@@ -85,68 +86,68 @@ export default function PartnerContract() {
       educationCertificate: null as File | null,
       agreement: false,
     },
-    onSubmit: async values => {
-      if (values.companyName.trim() === '') {
-        alert('회사명을 입력해주세요.');
-        return;
-      }
-
-      if (values.businessNumber.trim() === '') {
-        alert('사업자등록번호를 입력해주세요.');
-        return;
-      }
-
-      if (values.businessRegistration === null) {
-        alert('사업자등록증을 첨부해주세요.');
-        return;
-      }
-
-      if (values.bankName.trim() === '') {
-        alert('정산은행을 선택해주세요.');
-        return;
-      }
-
-      if (values.accountNumber.trim() === '') {
-        alert('계좌번호를 입력해주세요.');
-        return;
-      }
-
-      if (values.csoCertificate === null) {
-        alert('CSO 신고증을 첨부해주세요.');
-        return;
-      }
-
-      if (values.subcontractAgreement === null) {
-        alert('재위탁계약서를 첨부해주세요.');
-        return;
-      }
-
-      if (values.educationCertificate === null) {
-        alert('판매위수탁 교육이수증을 첨부해주세요.');
-        return;
-      }
-
-      try {
-        await applyContract({
-          request: {
-            contractType: values.contractType,
-            companyName: values.companyName,
-            businessNumber: values.businessNumber,
-            bankName: values.bankName,
-            accountNumber: values.accountNumber,
-          },
-          business_registration: values.businessRegistration,
-          subcontract_agreement: values.csoCertificate,
-          cso_certificate: values.subcontractAgreement,
-          education_certificate: values.educationCertificate,
-        });
-        alert('파트너사 계약 신청이 완료되었습니다.');
-      } catch (e) {
-        console.error(e);
-        alert('파트너사 계약 신청 중 오류가 발생했습니다. 다시 시도해주세요.');
-      }
-    },
   });
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.companyName.trim() === '') {
+      alert('회사명을 입력해주세요.');
+      return;
+    }
+
+    if (values.businessNumber.trim() === '') {
+      alert('사업자등록번호를 입력해주세요.');
+      return;
+    }
+
+    if (values.businessRegistration === null) {
+      alert('사업자등록증을 첨부해주세요.');
+      return;
+    }
+
+    if (values.bankName.trim() === '') {
+      alert('정산은행을 선택해주세요.');
+      return;
+    }
+
+    if (values.accountNumber.trim() === '') {
+      alert('계좌번호를 입력해주세요.');
+      return;
+    }
+
+    if (values.csoCertificate === null) {
+      alert('CSO 신고증을 첨부해주세요.');
+      return;
+    }
+
+    if (values.subcontractAgreement === null) {
+      alert('재위탁계약서를 첨부해주세요.');
+      return;
+    }
+
+    if (values.educationCertificate === null) {
+      alert('판매위수탁 교육이수증을 첨부해주세요.');
+      return;
+    }
+
+    try {
+      await applyContract({
+        request: {
+          contractType: values.contractType,
+          companyName: values.companyName,
+          businessNumber: values.businessNumber,
+          bankName: values.bankName,
+          accountNumber: values.accountNumber,
+        },
+        business_registration: values.businessRegistration,
+        subcontract_agreement: values.csoCertificate,
+        cso_certificate: values.subcontractAgreement,
+        education_certificate: values.educationCertificate,
+      });
+      alert('파트너사 계약 신청이 완료되었습니다.');
+    } catch (e) {
+      console.error(e);
+      alert('파트너사 계약 신청 중 오류가 발생했습니다. 다시 시도해주세요.');
+    }
+  };
 
   useEffect(() => {
     fetchContractDetails();
@@ -157,25 +158,23 @@ export default function PartnerContract() {
       const detail = await getContractDetails(session!.userId);
       setContractDetails(detail);
 
-      formik.setValues({
-        contractType: detail.contractType,
-        companyName: detail.companyName,
-        businessNumber: detail.businessNumber,
-        businessRegistration: null,
-        bankName: detail.bankName,
-        accountNumber: detail.accountNumber,
-        csoCertificate: null,
-        subcontractAgreement: null,
-        educationCertificate: null,
-        agreement: false,
-      });
+      form.setValue('contractType', detail.contractType);
+      form.setValue('companyName', detail.companyName);
+      form.setValue('businessNumber', detail.businessNumber);
+      form.setValue('businessRegistration', null);
+      form.setValue('bankName', detail.bankName);
+      form.setValue('accountNumber', detail.accountNumber);
+      form.setValue('csoCertificate', null);
+      form.setValue('subcontractAgreement', null);
+      form.setValue('educationCertificate', null);
+      form.setValue('agreement', false);
     } catch (e) {
       console.error(e);
     }
   };
 
   const handleBankSelect = (name: string) => {
-    formik.setFieldValue('bankName', name);
+    form.setValue('bankName', name);
     setBankSelectDialogOpen(false);
   };
 
@@ -184,7 +183,7 @@ export default function PartnerContract() {
       <Stack
         alignItems='center'
         component='form'
-        onSubmit={formik.handleSubmit}
+        onSubmit={form.handleSubmit(submitHandler)}
         sx={{
           padding: '60px 180px',
         }}
@@ -208,52 +207,62 @@ export default function PartnerContract() {
         <Stack gap={'20px'} sx={{ marginTop: '40px' }}>
           <PartnerContractFormRow>
             <PartnerContractFormLabel>계약유형</PartnerContractFormLabel>
-            <PartnerContractFormInput direction='row' gap='10px'>
-              {contractDetails?.contractType !== 'ORGANIZATION' && (
-                <PartnerContractFormButton
-                  fullWidth
-                  variant='outlined'
-                  onClick={() => formik.setFieldValue('contractType', 'ORGANIZATION')}
-                  disabled={contractDetails !== null}
-                  sx={{
-                    borderWidth: '1px',
-                    borderStyle: 'solid',
-                    borderColor: formik.values.contractType === 'ORGANIZATION' ? colors.vividViolet : colors.gray40,
-                    color: formik.values.contractType === 'ORGANIZATION' ? colors.vividViolet : colors.gray50,
-                  }}
-                >
-                  법인
-                </PartnerContractFormButton>
+            <Controller
+              control={form.control}
+              name={'contractType'}
+              render={({ field }) => (
+                <PartnerContractFormInput direction='row' gap='10px'>
+                  {contractDetails?.contractType !== 'ORGANIZATION' && (
+                    <PartnerContractFormButton
+                      fullWidth
+                      variant='outlined'
+                      onClick={() => field.onChange('ORGANIZATION')}
+                      disabled={contractDetails !== null}
+                      sx={{
+                        borderWidth: '1px',
+                        borderStyle: 'solid',
+                        borderColor: field.value === 'ORGANIZATION' ? colors.vividViolet : colors.gray40,
+                        color: field.value === 'ORGANIZATION' ? colors.vividViolet : colors.gray50,
+                      }}
+                    >
+                      법인
+                    </PartnerContractFormButton>
+                  )}
+                  {contractDetails?.contractType !== 'INDIVIDUAL' && (
+                    <PartnerContractFormButton
+                      fullWidth
+                      variant='outlined'
+                      onClick={() => field.onChange('INDIVIDUAL')}
+                      disabled={contractDetails !== null}
+                      sx={{
+                        borderWidth: '1px',
+                        borderStyle: 'solid',
+                        borderColor: field.value === 'INDIVIDUAL' ? colors.vividViolet : colors.gray40,
+                        color: field.value === 'INDIVIDUAL' ? colors.vividViolet : colors.gray50,
+                      }}
+                    >
+                      개인
+                    </PartnerContractFormButton>
+                  )}
+                </PartnerContractFormInput>
               )}
-              {contractDetails?.contractType !== 'INDIVIDUAL' && (
-                <PartnerContractFormButton
-                  fullWidth
-                  variant='outlined'
-                  onClick={() => formik.setFieldValue('contractType', 'INDIVIDUAL')}
-                  disabled={contractDetails !== null}
-                  sx={{
-                    borderWidth: '1px',
-                    borderStyle: 'solid',
-                    borderColor: formik.values.contractType === 'INDIVIDUAL' ? colors.vividViolet : colors.gray40,
-                    color: formik.values.contractType === 'INDIVIDUAL' ? colors.vividViolet : colors.gray50,
-                  }}
-                >
-                  개인
-                </PartnerContractFormButton>
-              )}
-            </PartnerContractFormInput>
+            />
           </PartnerContractFormRow>
 
           <PartnerContractFormRow>
             <PartnerContractFormLabel>회사명</PartnerContractFormLabel>
             <PartnerContractFormInput>
-              <PartnerContractOutlinedInput
-                name='companyName'
-                value={formik.values.companyName}
-                onChange={formik.handleChange}
-                disabled={contractDetails !== null}
-                placeholder='회사명을 입력해주세요.'
-                sx={{ flex: 1 }}
+              <Controller
+                control={form.control}
+                name={'companyName'}
+                render={({ field }) => (
+                  <PartnerContractOutlinedInput
+                    {...field}
+                    disabled={contractDetails !== null}
+                    placeholder='회사명을 입력해주세요.'
+                    sx={{ flex: 1 }}
+                  />
+                )}
               />
             </PartnerContractFormInput>
           </PartnerContractFormRow>
@@ -261,13 +270,17 @@ export default function PartnerContract() {
           <PartnerContractFormRow>
             <PartnerContractFormLabel>사업자등록번호</PartnerContractFormLabel>
             <PartnerContractFormInput>
-              <PartnerContractOutlinedInput
-                name='businessNumber'
-                value={formik.values.businessNumber}
-                onChange={formik.handleChange}
-                disabled={contractDetails !== null}
-                placeholder="'-'없이 입력해주세요."
-                sx={{ flex: 1 }}
+              <Controller
+                control={form.control}
+                name={'businessNumber'}
+                render={({ field }) => (
+                  <PartnerContractOutlinedInput
+                    {...field}
+                    disabled={contractDetails !== null}
+                    placeholder="'-'없이 입력해주세요."
+                    sx={{ flex: 1 }}
+                  />
+                )}
               />
             </PartnerContractFormInput>
           </PartnerContractFormRow>
@@ -281,47 +294,55 @@ export default function PartnerContract() {
                 </Link>
               </PartnerContractFormInput>
             ) : (
-              <PartnerContractFormInput>
-                <MedipandaFileUploadButton
-                  onChange={files => {
-                    formik.setFieldValue('businessRegistration', files[0]);
-                  }}
-                />
-                {formik.values.businessRegistration && (
-                  <Typography sx={{ color: colors.gray80 }}>{formik.values.businessRegistration.name}</Typography>
+              <Controller
+                control={form.control}
+                name={'businessRegistration'}
+                render={({ field }) => (
+                  <PartnerContractFormInput>
+                    <MedipandaFileUploadButton onChange={files => field.onChange(files[0])} />
+                    {field.value && <Typography sx={{ color: colors.gray80 }}>{field.value.name}</Typography>}
+                  </PartnerContractFormInput>
                 )}
-              </PartnerContractFormInput>
+              />
             )}
           </PartnerContractFormRow>
 
           <PartnerContractFormRow>
             <PartnerContractFormLabel>정산은행</PartnerContractFormLabel>
-            {contractDetails !== null ? (
-              <PartnerContractFormInput>
-                <Typography variant='largeTextR'>{formik.values.bankName}</Typography>
-              </PartnerContractFormInput>
-            ) : (
-              <PartnerContractFormInput>
-                <PartnerContractFormButton variant='outlined' onClick={() => setBankSelectDialogOpen(true)}>
-                  <Typography variant='largeTextR'>
-                    {formik.values.bankName !== '' ? formik.values.bankName : '은행을 선택해주세요'}
-                  </Typography>
-                  <ArrowDown2 style={{ marginLeft: 'auto' }} />
-                </PartnerContractFormButton>
-              </PartnerContractFormInput>
-            )}
+            <Controller
+              control={form.control}
+              name={'bankName'}
+              render={({ field }) =>
+                contractDetails !== null ? (
+                  <PartnerContractFormInput>
+                    <Typography variant='largeTextR'>{field.value}</Typography>
+                  </PartnerContractFormInput>
+                ) : (
+                  <PartnerContractFormInput>
+                    <PartnerContractFormButton variant='outlined' onClick={() => setBankSelectDialogOpen(true)}>
+                      <Typography variant='largeTextR'>{field.value !== '' ? field.value : '은행을 선택해주세요'}</Typography>
+                      <ArrowDown2 style={{ marginLeft: 'auto' }} />
+                    </PartnerContractFormButton>
+                  </PartnerContractFormInput>
+                )
+              }
+            />
           </PartnerContractFormRow>
 
           <PartnerContractFormRow>
             <PartnerContractFormLabel>계좌번호</PartnerContractFormLabel>
             <PartnerContractFormInput>
-              <PartnerContractOutlinedInput
-                name='accountNumber'
-                value={formik.values.accountNumber}
-                onChange={formik.handleChange}
-                disabled={contractDetails !== null}
-                placeholder="'-'없이 입력해주세요."
-                sx={{ flex: 1 }}
+              <Controller
+                control={form.control}
+                name={'accountNumber'}
+                render={({ field }) => (
+                  <PartnerContractOutlinedInput
+                    {...field}
+                    disabled={contractDetails !== null}
+                    placeholder="'-'없이 입력해주세요."
+                    sx={{ flex: 1 }}
+                  />
+                )}
               />
             </PartnerContractFormInput>
           </PartnerContractFormRow>
@@ -335,37 +356,39 @@ export default function PartnerContract() {
                 </Link>
               </PartnerContractFormInput>
             ) : (
-              <PartnerContractFormInput>
-                <MedipandaFileUploadButton
-                  onChange={files => {
-                    formik.setFieldValue('csoCertificate', files[0]);
-                  }}
-                />
-                {formik.values.csoCertificate && <Typography sx={{ color: colors.gray80 }}>{formik.values.csoCertificate.name}</Typography>}
-              </PartnerContractFormInput>
+              <Controller
+                control={form.control}
+                name={'csoCertificate'}
+                render={({ field }) => (
+                  <PartnerContractFormInput>
+                    <MedipandaFileUploadButton onChange={files => field.onChange(files[0])} />
+                    {field.value && <Typography sx={{ color: colors.gray80 }}>{field.value.name}</Typography>}
+                  </PartnerContractFormInput>
+                )}
+              />
             )}
           </PartnerContractFormRow>
 
           <PartnerContractFormRow>
             <PartnerContractFormLabel>재위탁계약서</PartnerContractFormLabel>
-            {contractDetails !== null ? (
-              <PartnerContractFormInput>
-                <Link component={RouterLink} to={contractDetails.fileUrls.SUBCONTRACT_AGREEMENT} target='_blank'>
-                  {new URL(contractDetails.fileUrls.SUBCONTRACT_AGREEMENT).pathname.split('/').pop()}
-                </Link>
-              </PartnerContractFormInput>
-            ) : (
-              <PartnerContractFormInput>
-                <MedipandaFileUploadButton
-                  onChange={files => {
-                    formik.setFieldValue('subcontractAgreement', files[0]);
-                  }}
-                />
-                {formik.values.subcontractAgreement && (
-                  <Typography sx={{ color: colors.gray80 }}>{formik.values.subcontractAgreement.name}</Typography>
-                )}
-              </PartnerContractFormInput>
-            )}
+            <Controller
+              control={form.control}
+              name={'subcontractAgreement'}
+              render={({ field }) =>
+                contractDetails !== null ? (
+                  <PartnerContractFormInput>
+                    <Link component={RouterLink} to={contractDetails.fileUrls.SUBCONTRACT_AGREEMENT} target='_blank'>
+                      {new URL(contractDetails.fileUrls.SUBCONTRACT_AGREEMENT).pathname.split('/').pop()}
+                    </Link>
+                  </PartnerContractFormInput>
+                ) : (
+                  <PartnerContractFormInput>
+                    <MedipandaFileUploadButton onChange={files => field.onChange(files[0])} />
+                    {field.value && <Typography sx={{ color: colors.gray80 }}>{field.value.name}</Typography>}
+                  </PartnerContractFormInput>
+                )
+              }
+            />
           </PartnerContractFormRow>
 
           <PartnerContractFormRow>
@@ -381,44 +404,51 @@ export default function PartnerContract() {
                 </Link>
               </PartnerContractFormInput>
             ) : (
-              <PartnerContractFormInput>
-                <MedipandaFileUploadButton
-                  onChange={files => {
-                    formik.setFieldValue('educationCertificate', files[0]);
-                  }}
-                />
-                {formik.values.educationCertificate && (
-                  <Typography sx={{ color: colors.gray80 }}>{formik.values.educationCertificate.name}</Typography>
+              <Controller
+                control={form.control}
+                name={'educationCertificate'}
+                render={({ field }) => (
+                  <PartnerContractFormInput>
+                    <MedipandaFileUploadButton onChange={files => field.onChange(files[0])} />
+                    {field.value && <Typography sx={{ color: colors.gray80 }}>{field.value.name}</Typography>}
+                  </PartnerContractFormInput>
                 )}
-              </PartnerContractFormInput>
+              />
             )}
           </PartnerContractFormRow>
 
-          {contractDetails === null && (
-            <Box sx={{ textAlign: 'center', mt: 4, marginBottom: 3 }}>
-              <FormControlLabel
-                control={<MedipandaCheckbox name='agreement' checked={formik.values.agreement} onChange={formik.handleChange} />}
-                label='파트너사 계약을 신청합니다.'
-                sx={{ color: colors.gray700 }}
-              />
-            </Box>
-          )}
-
-          {contractDetails === null && (
-            <Box sx={{ textAlign: 'center' }}>
-              <MedipandaButton
-                type='submit'
-                disabled={!formik.values.agreement}
-                variant='contained'
-                size='large'
-                sx={{
-                  width: '327px',
-                }}
-              >
-                계약신청완료
-              </MedipandaButton>
-            </Box>
-          )}
+          <Controller
+            control={form.control}
+            name={'agreement'}
+            render={({ field }) =>
+              contractDetails === null ? (
+                <>
+                  <Box sx={{ textAlign: 'center', mt: 4, marginBottom: 3 }}>
+                    <FormControlLabel
+                      control={<MedipandaCheckbox {...field} />}
+                      label='파트너사 계약을 신청합니다.'
+                      sx={{ color: colors.gray700 }}
+                    />
+                  </Box>
+                  <Box sx={{ textAlign: 'center' }}>
+                    <MedipandaButton
+                      type='submit'
+                      disabled={!field.value}
+                      variant='contained'
+                      size='large'
+                      sx={{
+                        width: '327px',
+                      }}
+                    >
+                      계약신청완료
+                    </MedipandaButton>
+                  </Box>
+                </>
+              ) : (
+                <></>
+              )
+            }
+          />
         </Stack>
       </Stack>
 

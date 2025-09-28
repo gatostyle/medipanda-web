@@ -4,32 +4,34 @@ import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInp
 import { colors } from '@/themes';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Box, IconButton, InputAdornment, Stack, Typography } from '@mui/material';
-import { useFormik } from 'formik';
 import { type ReactNode, useState } from 'react';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
+import type { RequiredDeep } from 'type-fest';
 
 export default function MypageGuard({ children }: { children: ReactNode }) {
   const [passwordChecked, setPasswordChecked] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       password: '',
-      showPassword: false,
-    },
-    onSubmit: async values => {
-      try {
-        const result = await checkPassword({ password: values.password });
-
-        if (result) {
-          setPasswordChecked(true);
-        } else {
-          alert('비밀번호가 일치하지 않습니다.');
-        }
-      } catch (e) {
-        console.error(e);
-        alert('비밀번호를 확인하는 중 오류가 발생했습니다.');
-      }
     },
   });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    try {
+      const result = await checkPassword({ password: values.password });
+
+      if (result) {
+        setPasswordChecked(true);
+      } else {
+        alert('비밀번호가 일치하지 않습니다.');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('비밀번호를 확인하는 중 오류가 발생했습니다.');
+    }
+  };
 
   return (
     <>
@@ -57,53 +59,51 @@ export default function MypageGuard({ children }: { children: ReactNode }) {
               <Stack
                 direction='row'
                 component='form'
-                onSubmit={formik.handleSubmit}
+                onSubmit={form.handleSubmit(submitHandler)}
                 sx={{
                   width: '440px',
                   marginTop: '20px',
                 }}
               >
-                <MedipandaOutlinedInput
-                  name='password'
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  fullWidth
-                  type={formik.values.showPassword ? 'text' : 'password'}
-                  placeholder='비밀번호를 입력해주세요.'
-                  endAdornment={
-                    <InputAdornment position='end'>
-                      <IconButton
-                        onClick={() => {
-                          formik.setFieldValue('showPassword', !formik.values.showPassword);
-                        }}
-                        edge='end'
-                        sx={{ color: colors.gray400 }}
-                      >
-                        {formik.values.showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                  sx={
-                    {
-                      // '& .MuiOutlinedInput-root': {
-                      //   backgroundColor: colors.white,
-                      //   borderRadius: '8px',
-                      //   fontSize: '14px',
-                      //   height: '48px',
-                      //   '& fieldset': {
-                      //     borderColor: colors.gray300,
-                      //     borderWidth: '1px',
-                      //   },
-                      //   '&:hover fieldset': {
-                      //     borderColor: colors.gray400,
-                      //   },
-                      //   '&.Mui-focused fieldset': {
-                      //     borderColor: colors.vividViolet,
-                      //     borderWidth: '2px',
-                      //   },
-                      // },
-                    }
-                  }
+                <Controller
+                  control={form.control}
+                  name={'password'}
+                  render={({ field }) => (
+                    <MedipandaOutlinedInput
+                      {...field}
+                      fullWidth
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder='비밀번호를 입력해주세요.'
+                      endAdornment={
+                        <InputAdornment position='end'>
+                          <IconButton onClick={() => setShowPassword(!showPassword)} edge='end' sx={{ color: colors.gray400 }}>
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                      sx={
+                        {
+                          // '& .MuiOutlinedInput-root': {
+                          //   backgroundColor: colors.white,
+                          //   borderRadius: '8px',
+                          //   fontSize: '14px',
+                          //   height: '48px',
+                          //   '& fieldset': {
+                          //     borderColor: colors.gray300,
+                          //     borderWidth: '1px',
+                          //   },
+                          //   '&:hover fieldset': {
+                          //     borderColor: colors.gray400,
+                          //   },
+                          //   '&.Mui-focused fieldset': {
+                          //     borderColor: colors.vividViolet,
+                          //     borderWidth: '2px',
+                          //   },
+                          // },
+                        }
+                      }
+                    />
+                  )}
                 />
 
                 <MedipandaButton

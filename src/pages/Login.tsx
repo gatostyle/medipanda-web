@@ -5,60 +5,51 @@ import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Box, Card, FormControl, FormHelperText, IconButton, InputAdornment, Stack, Typography } from '@mui/material';
 import { isAxiosError } from 'axios';
-import { useFormik } from 'formik';
-import { type SyntheticEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import * as Yup from 'yup';
+import type { RequiredDeep } from 'type-fest';
 
 export default function Login() {
   const { session, login } = useSession();
   const navigate = useNavigate();
   const [urlSearchParams] = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
+  const [formError, setFormError] = useState(' ');
 
-  const { values, touched, errors, isSubmitting, handleChange, handleBlur, handleSubmit } = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       userId: '',
       password: '',
-      submit: null,
-    },
-    validationSchema: Yup.object().shape({
-      userId: Yup.string().required('아이디를 입력해 주세요.'),
-      password: Yup.string().required('비밀번호를 입력해 주세요.'),
-    }),
-    onSubmit: async (values, { setErrors }) => {
-      if (values.userId === '') {
-        setErrors({ userId: '아이디를 입력해 주세요.' });
-        return;
-      }
-
-      if (values.password === '') {
-        setErrors({ password: '비밀번호를 입력해 주세요.' });
-        return;
-      }
-
-      try {
-        await login(values.userId, values.password);
-
-        onLoginSuccess(urlSearchParams);
-      } catch (e) {
-        if (isAxiosError(e) && e.response?.status === 401) {
-          setErrors({ password: '아이디 또는 비밀번호가 올바르지 않습니다.' });
-        } else if (e instanceof Error) {
-          setErrors({ password: e.message });
-        } else {
-          setErrors({ password: `오류: ${JSON.stringify(e)}` });
-        }
-      }
     },
   });
 
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    setFormError(' ');
 
-  const handleMouseDownPassword = (event: SyntheticEvent) => {
-    event.preventDefault();
+    if (values.userId === '') {
+      form.setError('userId', { message: '아이디를 입력해 주세요.' });
+      return;
+    }
+
+    if (values.password === '') {
+      form.setError('password', { message: '비밀번호를 입력해 주세요.' });
+      return;
+    }
+
+    try {
+      await login(values.userId, values.password);
+
+      onLoginSuccess(urlSearchParams);
+    } catch (e) {
+      if (isAxiosError(e) && e.response?.status === 401) {
+        setFormError('아이디 또는 비밀번호가 올바르지 않습니다.');
+      } else if (e instanceof Error) {
+        setFormError(e.message);
+      } else {
+        setFormError(`오류: ${JSON.stringify(e)}`);
+      }
+    }
   };
 
   const onLoginSuccess = (urlSearchParams: URLSearchParams) => {
@@ -147,7 +138,7 @@ export default function Login() {
               gap='20px'
               component='form'
               noValidate
-              onSubmit={handleSubmit}
+              onSubmit={form.handleSubmit(submitHandler)}
               sx={{
                 width: '400px',
               }}
@@ -155,55 +146,56 @@ export default function Login() {
               <Typography variant='heading4B' sx={{ alignSelf: 'center' }}>
                 로그인
               </Typography>
-              <FormControl>
-                <MedipandaOutlinedInput
-                  type='userId'
-                  value={values.userId}
-                  name='userId'
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  placeholder='이메일'
-                  fullWidth
-                  error={Boolean(touched.userId && errors.userId)}
-                  sx={{
-                    height: '50px',
-                  }}
-                />
-                <FormHelperText error>{(touched.userId && errors.userId && errors.userId) || ' '}</FormHelperText>
-              </FormControl>
-              <FormControl>
-                <MedipandaOutlinedInput
-                  fullWidth
-                  error={Boolean(touched.password && errors.password)}
-                  type={showPassword ? 'text' : 'password'}
-                  value={values.password}
-                  name='password'
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  endAdornment={
-                    <InputAdornment position='end'>
-                      <IconButton
-                        aria-label='toggle password visibility'
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        edge='end'
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                  placeholder='비밀번호'
-                  sx={{
-                    height: '50px',
-                  }}
-                />
-                <FormHelperText error>{(touched.password && errors.password && errors.password) || ' '}</FormHelperText>
-              </FormControl>
-              <Stack sx={{ pointerEvents: isSubmitting ? 'none' : undefined }}>
-                <MedipandaButton type='submit' disabled={isSubmitting} fullWidth size='large' variant='contained' color='secondary'>
+              <Controller
+                control={form.control}
+                name={'userId'}
+                render={({ field, fieldState }) => (
+                  <FormControl>
+                    <MedipandaOutlinedInput
+                      {...field}
+                      placeholder='이메일'
+                      fullWidth
+                      error={fieldState.error !== undefined}
+                      sx={{
+                        height: '50px',
+                      }}
+                    />
+                    <FormHelperText error>{fieldState.error?.message || ' '}</FormHelperText>
+                  </FormControl>
+                )}
+              />
+              <Controller
+                control={form.control}
+                name={'password'}
+                render={({ field, fieldState }) => (
+                  <FormControl>
+                    <MedipandaOutlinedInput
+                      {...field}
+                      fullWidth
+                      error={fieldState.error !== undefined}
+                      type={showPassword ? 'text' : 'password'}
+                      name='password'
+                      endAdornment={
+                        <InputAdornment position='end'>
+                          <IconButton onClick={() => setShowPassword(!showPassword)} edge='end'>
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                      placeholder='비밀번호'
+                      sx={{
+                        height: '50px',
+                      }}
+                    />
+                    <FormHelperText error>{fieldState.error?.message || ' '}</FormHelperText>
+                  </FormControl>
+                )}
+              />
+              <Stack>
+                <MedipandaButton type='submit' fullWidth size='large' variant='contained' color='secondary'>
                   로그인
                 </MedipandaButton>
-                <FormHelperText error>{errors.submit}</FormHelperText>
+                <FormHelperText error>{formError}</FormHelperText>
               </Stack>
             </Stack>
           </Box>

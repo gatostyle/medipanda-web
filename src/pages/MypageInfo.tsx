@@ -1,4 +1,4 @@
-import { changePassword, createAuthRequest, result as getAuthResult, updateMember } from '@/backend';
+import { changePassword_1, createAuthRequest, result as getAuthResult, updateMember } from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaFileUploadButton } from '@/custom/components/MedipandaFileUploadButton';
 import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/components/MedipandaTab';
@@ -7,8 +7,9 @@ import { colors, typography } from '@/themes';
 import { Box, FormControl, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { AxiosError } from 'axios';
-import { useFormik } from 'formik';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 const MypageFormRow = styled(Stack)({
   alignItems: 'center',
@@ -34,8 +35,8 @@ const MypageFormExtra = styled(Box)({
 export default function MypageInfo() {
   const { session } = useSession();
 
-  const formik = useFormik({
-    initialValues: {
+  const form = useForm({
+    defaultValues: {
       userId: session?.userId || '',
       password: '',
       passwordConfirm: '',
@@ -45,46 +46,48 @@ export default function MypageInfo() {
       emailDomain: session?.email ? session.email.split('@')[1] : '',
       csoRegistrationFile: null as File | null,
     },
-    onSubmit: async values => {
-      if (values.name === '') {
-        alert('이름을 입력해주세요.');
-        return;
-      }
-
-      if (values.phoneNumber === '') {
-        alert('휴대폰 번호를 입력해주세요.');
-        return;
-      }
-
-      if (values.emailId === '' || values.emailDomain === '') {
-        alert('이메일 정보를 입력해주세요.');
-        return;
-      }
-
-      try {
-        await updateMember(session!.userId, {
-          request: {
-            accountStatus: null,
-            password: null,
-            name: values.name,
-            birthDate: null,
-            phoneNumber: null,
-            email: `${values.emailId}@${values.emailDomain}`,
-            nickname: null,
-            referralCode: null,
-            note: null,
-            marketingAgreement: null,
-          },
-          file: values.csoRegistrationFile ?? undefined,
-        });
-
-        alert('정보가 수정되었습니다.');
-      } catch (e) {
-        console.error(e);
-        alert('정보 수정 중 오류가 발생했습니다.');
-      }
-    },
   });
+  const formCsoRegistrationFile = form.watch('csoRegistrationFile');
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    if (values.name === '') {
+      alert('이름을 입력해주세요.');
+      return;
+    }
+
+    if (values.phoneNumber === '') {
+      alert('휴대폰 번호를 입력해주세요.');
+      return;
+    }
+
+    if (values.emailId === '' || values.emailDomain === '') {
+      alert('이메일 정보를 입력해주세요.');
+      return;
+    }
+
+    try {
+      await updateMember(session!.userId, {
+        request: {
+          accountStatus: null,
+          password: null,
+          name: values.name,
+          birthDate: null,
+          phoneNumber: null,
+          email: `${values.emailId}@${values.emailDomain}`,
+          nickname: null,
+          referralCode: null,
+          note: null,
+          marketingAgreement: null,
+        },
+        file: values.csoRegistrationFile ?? undefined,
+      });
+
+      alert('정보가 수정되었습니다.');
+    } catch (e) {
+      console.error(e);
+      alert('정보 수정 중 오류가 발생했습니다.');
+    }
+  };
 
   const handlePhoneChange = async () => {
     const { certNum } = await createAuthRequest({
@@ -112,30 +115,32 @@ export default function MypageInfo() {
       }, 500);
     });
 
-    formik.setFieldValue('phoneNumber', authResult.phone);
+    form.setValue('phoneNumber', authResult.phone as string);
   };
 
   const handlePasswordChange = async () => {
-    if (formik.values.password === '' || formik.values.passwordConfirm === '') {
+    const password = form.getValues('password');
+    const passwordConfirm = form.getValues('passwordConfirm');
+
+    if (password === '' || passwordConfirm === '') {
       alert('비밀번호를 입력해주세요.');
       return;
     }
 
-    if (formik.values.password !== formik.values.passwordConfirm) {
+    if (password !== passwordConfirm) {
       alert('비밀번호가 일치하지 않습니다.');
       return;
     }
 
     try {
-      await changePassword(session!.userId, {
+      await changePassword_1(session!.userId, {
         userId: session!.userId,
-        currentPassword: formik.values.password,
-        newPassword: formik.values.passwordConfirm,
+        newPassword: password,
       });
 
       alert('비밀번호가 변경되었습니다.');
-      formik.setFieldValue('password', '');
-      formik.setFieldValue('passwordConfirm', '');
+      form.setValue('password', '');
+      form.setValue('passwordConfirm', '');
     } catch (e) {
       if (e instanceof AxiosError && e.response?.status === 400) {
         alert('현재 비밀번호가 일치하지 않습니다.');
@@ -169,15 +174,21 @@ export default function MypageInfo() {
             <MypageFormRow direction='row'>
               <MypageFormLabel>ID*</MypageFormLabel>
               <MypageFormInput>
-                <TextField
-                  value={formik.values.userId}
-                  disabled
-                  sx={{
-                    flex: 1,
-                    '& .MuiOutlinedInput-root': {
-                      backgroundColor: '#f8f9fa',
-                    },
-                  }}
+                <Controller
+                  control={form.control}
+                  name={'userId'}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      disabled
+                      sx={{
+                        flex: 1,
+                        '& .MuiOutlinedInput-root': {
+                          backgroundColor: '#f8f9fa',
+                        },
+                      }}
+                    />
+                  )}
                 />
               </MypageFormInput>
             </MypageFormRow>
@@ -185,12 +196,10 @@ export default function MypageInfo() {
             <MypageFormRow direction='row'>
               <MypageFormLabel>Password*</MypageFormLabel>
               <MypageFormInput gap={'5px'}>
-                <TextField
-                  type='password'
-                  name='password'
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  placeholder='비밀번호를 입력해주세요'
+                <Controller
+                  control={form.control}
+                  name={'password'}
+                  render={({ field }) => <TextField {...field} type='password' placeholder='비밀번호를 입력해주세요' />}
                 />
               </MypageFormInput>
               <MypageFormExtra>
@@ -208,15 +217,19 @@ export default function MypageInfo() {
             >
               <MypageFormLabel />
               <MypageFormInput>
-                <TextField
-                  type='password'
-                  name='passwordConfirm'
-                  value={formik.values.passwordConfirm}
-                  onChange={formik.handleChange}
-                  placeholder='새 비밀번호를 입력해주세요'
-                  sx={{
-                    '& .MuiOutlinedInput-root': {},
-                  }}
+                <Controller
+                  control={form.control}
+                  name={'passwordConfirm'}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      type='password'
+                      placeholder='새 비밀번호를 입력해주세요'
+                      sx={{
+                        '& .MuiOutlinedInput-root': {},
+                      }}
+                    />
+                  )}
                 />
               </MypageFormInput>
               <MypageFormExtra />
@@ -225,14 +238,18 @@ export default function MypageInfo() {
             <MypageFormRow direction='row'>
               <MypageFormLabel>이름*</MypageFormLabel>
               <MypageFormInput>
-                <TextField name='name' value={formik.values.name} onChange={formik.handleChange} sx={{ flex: 1 }} />
+                <Controller control={form.control} name={'name'} render={({ field }) => <TextField {...field} sx={{ flex: 1 }} />} />
               </MypageFormInput>
             </MypageFormRow>
 
             <MypageFormRow direction='row'>
               <MypageFormLabel>휴대폰 번호</MypageFormLabel>
               <MypageFormInput>
-                <TextField name='phoneNumber' value={formik.values.phoneNumber} disabled sx={{ flex: 1 }} />
+                <Controller
+                  control={form.control}
+                  name={'phoneNumber'}
+                  render={({ field }) => <TextField {...field} disabled sx={{ flex: 1 }} />}
+                />
               </MypageFormInput>
               <MypageFormExtra>
                 <MedipandaButton fullWidth variant='contained' size='large' onClick={handlePhoneChange}>
@@ -250,16 +267,22 @@ export default function MypageInfo() {
                   alignItems: 'center',
                 }}
               >
-                <TextField name='emailId' value={formik.values.emailId} onChange={formik.handleChange} sx={{ flex: 1 }} />
+                <Controller control={form.control} name={'emailId'} render={({ field }) => <TextField {...field} sx={{ flex: 1 }} />} />
                 <Typography sx={{ color: '#666' }}>@</Typography>
-                <FormControl sx={{ minWidth: 140 }}>
-                  <Select name='emailDomain' value={formik.values.emailDomain} onChange={formik.handleChange}>
-                    <MenuItem value='naver.com'>naver.com</MenuItem>
-                    <MenuItem value='gmail.com'>gmail.com</MenuItem>
-                    <MenuItem value='daum.net'>daum.net</MenuItem>
-                    <MenuItem value='hanmail.net'>hanmail.net</MenuItem>
-                  </Select>
-                </FormControl>
+                <Controller
+                  control={form.control}
+                  name={'emailDomain'}
+                  render={({ field }) => (
+                    <FormControl sx={{ minWidth: 140 }}>
+                      <Select {...field}>
+                        <MenuItem value='naver.com'>naver.com</MenuItem>
+                        <MenuItem value='gmail.com'>gmail.com</MenuItem>
+                        <MenuItem value='daum.net'>daum.net</MenuItem>
+                        <MenuItem value='hanmail.net'>hanmail.net</MenuItem>
+                      </Select>
+                    </FormControl>
+                  )}
+                />
               </MypageFormInput>
             </MypageFormRow>
           </Stack>
@@ -290,14 +313,8 @@ export default function MypageInfo() {
               <MypageFormLabel>CSO 등록증</MypageFormLabel>
               <MypageFormInput>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: 1 }}>
-                  <MedipandaFileUploadButton
-                    onChange={files => {
-                      formik.setFieldValue('csoRegistrationFile', files[0] ?? null);
-                    }}
-                  />
-                  {formik.values.csoRegistrationFile !== null && (
-                    <Typography sx={{ color: '#666' }}>{formik.values.csoRegistrationFile.name}</Typography>
-                  )}
+                  <MedipandaFileUploadButton onChange={files => form.setValue('csoRegistrationFile', files[0] ?? null)} />
+                  {formCsoRegistrationFile !== null && <Typography sx={{ color: '#666' }}>{formCsoRegistrationFile.name}</Typography>}
                 </Box>
                 <Typography sx={{ color: '#f44336', fontSize: '12px', display: 'block' }}>
                   jpg, jpeg, pdf, png 파일만 업로드 가능합니다
@@ -318,7 +335,7 @@ export default function MypageInfo() {
           direction='row'
           gap='10px'
           component='form'
-          onSubmit={formik.handleSubmit}
+          onSubmit={form.handleSubmit(submitHandler)}
           sx={{
             alignSelf: 'center',
             width: '330px',
