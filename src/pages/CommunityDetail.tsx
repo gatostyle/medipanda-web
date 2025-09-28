@@ -37,7 +37,7 @@ export default function CommunityDetail() {
   useEffect(() => {
     if (Number.isNaN(boardPostId)) {
       alert('잘못된 접근입니다.');
-      navigate('/community/anonymous', { replace: true });
+      navigate(`/community/${communityType}`, { replace: true });
       return;
     }
 
