@@ -1,4 +1,11 @@
-import { type AttachmentResponse, type BoardDetailsResponse, createBoardPost, getBoardDetails, updateBoardPost } from '@/backend';
+import {
+  type AttachmentResponse,
+  type BoardDetailsResponse,
+  BoardType,
+  createBoardPost,
+  getBoardDetails,
+  updateBoardPost,
+} from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaCheckbox } from '@/custom/components/MedipandaCheckbox';
 import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
@@ -14,19 +21,21 @@ import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
 
-export default function CommunityEdit() {
+export default function CommunityEdit({ communityType }: { communityType: keyof typeof BoardType }) {
   const { session } = useSession();
 
-  const { communityType: paramCommunityType, id: paramId } = useParams();
-  const communityType = (() => {
-    if (paramCommunityType === 'anonymous') {
-      return 'ANONYMOUS';
-    } else if (paramCommunityType === 'mr-cso-matching') {
-      return 'MR_CSO_MATCHING';
-    } else {
-      throw new Error('Invalid community type');
+  const paramCommunityType = ((boardType: keyof typeof BoardType) => {
+    switch (boardType) {
+      case 'ANONYMOUS':
+        return 'anonymous';
+      case 'MR_CSO_MATCHING':
+        return 'mr-cso-matching';
+      default:
+        throw new Error('Invalid community type');
     }
-  })();
+  })(communityType);
+
+  const { id: paramId } = useParams();
   const isNew = paramId === undefined;
   const boardPostId = Number(paramId);
 

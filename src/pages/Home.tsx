@@ -11,7 +11,7 @@ import {
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaCarousel, type MedipandaCarouselHandle } from '@/custom/components/MedipandaCarousel';
 import { MedipandaTable } from '@/custom/components/MedipandaTable';
-import { useSession } from '@/hooks/useSession';
+import { hasCsoMemberPermission, useSession } from '@/hooks/useSession';
 import { LazyImage } from '@/lib/components/LazyImage';
 import { colors, typography } from '@/themes';
 import { formatYyyyMmDd } from '@/lib/utils/dateFormat';
@@ -196,7 +196,7 @@ export default function Home() {
         )}
       </Stack>
 
-      {session && (
+      {session && hasCsoMemberPermission(session) && (
         <>
           <Stack
             direction='row'

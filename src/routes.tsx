@@ -1,4 +1,7 @@
-import { LoginGuard } from '@/guards/LoginGuard';
+import { BoardType } from '@/backend';
+import { ContractMemberGuard } from '@/guards/ContractMemberGuard';
+import { CsoMemberGuard } from '@/guards/CsoMemberGuard';
+import { LoginMemberGuard } from '@/guards/LoginMemberGuard';
 import { Base64ErrorBoundary } from '@/lib/components/Base64ErrorBoundary';
 import { LazyComponent } from '@/lib/components/LazyComponent';
 import { lazy } from 'react';
@@ -83,7 +86,7 @@ const route: RouteObject[] = [
       {
         path: 'mypage',
         element: (
-          <LoginGuard>
+          <LoginMemberGuard>
             <MypageGuard>
               <SidebarLayout
                 title='마이페이지'
@@ -103,7 +106,7 @@ const route: RouteObject[] = [
                 ]}
               />
             </MypageGuard>
-          </LoginGuard>
+          </LoginMemberGuard>
         ),
         children: [
           {
@@ -123,37 +126,39 @@ const route: RouteObject[] = [
       {
         path: 'partner-contract',
         element: (
-          <LoginGuard>
+          <LoginMemberGuard>
             <PartnerContract />
-          </LoginGuard>
+          </LoginMemberGuard>
         ),
       },
       {
         path: 'products',
         element: (
-          <LoginGuard>
+          <LoginMemberGuard>
             <ProductList />
-          </LoginGuard>
+          </LoginMemberGuard>
         ),
       },
       {
         path: '',
         element: (
-          <LoginGuard>
-            <TabbedLayout
-              title='실적관리'
-              tabConfig={[
-                {
-                  label: '실적입력(EDI)',
-                  to: '/prescriptions',
-                },
-                {
-                  label: '소속딜러 관리',
-                  to: '/dealers',
-                },
-              ]}
-            />
-          </LoginGuard>
+          <LoginMemberGuard>
+            <ContractMemberGuard>
+              <TabbedLayout
+                title='실적관리'
+                tabConfig={[
+                  {
+                    label: '실적입력(EDI)',
+                    to: '/prescriptions',
+                  },
+                  {
+                    label: '소속딜러 관리',
+                    to: '/dealers',
+                  },
+                ]}
+              />
+            </ContractMemberGuard>
+          </LoginMemberGuard>
         ),
         children: [
           {
@@ -169,21 +174,23 @@ const route: RouteObject[] = [
       {
         path: '',
         element: (
-          <LoginGuard>
-            <TabbedLayout
-              title='정산'
-              tabConfig={[
-                {
-                  label: '정산내역',
-                  to: '/settlement-list',
-                },
-                {
-                  label: '매출통계',
-                  to: '/sales-statistic',
-                },
-              ]}
-            />
-          </LoginGuard>
+          <LoginMemberGuard>
+            <ContractMemberGuard>
+              <TabbedLayout
+                title='정산'
+                tabConfig={[
+                  {
+                    label: '정산내역',
+                    to: '/settlement-list',
+                  },
+                  {
+                    label: '매출통계',
+                    to: '/sales-statistic',
+                  },
+                ]}
+              />
+            </ContractMemberGuard>
+          </LoginMemberGuard>
         ),
         children: [
           {
@@ -199,7 +206,7 @@ const route: RouteObject[] = [
       {
         path: 'community',
         element: (
-          <LoginGuard>
+          <LoginMemberGuard>
             <TabbedLayout
               title='커뮤니티'
               tabConfig={[
@@ -213,71 +220,87 @@ const route: RouteObject[] = [
                 },
               ]}
             />
-          </LoginGuard>
+          </LoginMemberGuard>
         ),
         children: [
           {
             index: true,
-            element: <Navigate to={'/community/mr-cso-matching'} />,
-          },
-          {
-            path: ':communityType/:id',
-            element: <CommunityDetail />,
-          },
-          {
-            path: ':communityType/:id/edit',
-            element: <CommunityEdit />,
-          },
-          {
-            path: ':communityType/new',
-            element: <CommunityEdit />,
+            element: <Navigate to={'/community/mr-cso-matching'} replace />,
           },
           {
             path: 'anonymous',
-            element: <AnonymousList />,
+            element: (
+              <CsoMemberGuard>
+                <AnonymousList />
+              </CsoMemberGuard>
+            ),
+          },
+          {
+            path: 'anonymous/:id',
+            element: <CommunityDetail communityType={BoardType.ANONYMOUS} />,
+          },
+          {
+            path: 'anonymous/:id/edit',
+            element: <CommunityEdit communityType={BoardType.ANONYMOUS} />,
+          },
+          {
+            path: 'anonymous/new',
+            element: <CommunityEdit communityType={BoardType.ANONYMOUS} />,
           },
           {
             path: 'mr-cso-matching',
             element: <MrCsoMatchingList />,
+          },
+          {
+            path: 'mr-cso-matching/:id',
+            element: <CommunityDetail communityType={BoardType.MR_CSO_MATCHING} />,
+          },
+          {
+            path: 'communityType={BoardType.ANONYMOUS} />/:id/edit',
+            element: <CommunityEdit communityType={BoardType.MR_CSO_MATCHING} />,
+          },
+          {
+            path: 'communityType={BoardType.ANONYMOUS} />/new',
+            element: <CommunityEdit communityType={BoardType.MR_CSO_MATCHING} />,
           },
         ],
       },
       {
         path: 'sales-agency-products',
         element: (
-          <LoginGuard>
+          <LoginMemberGuard>
             <SalesAgencyProductList />
-          </LoginGuard>
+          </LoginMemberGuard>
         ),
       },
       {
         path: 'sales-agency-products/:id',
         element: (
-          <LoginGuard>
+          <LoginMemberGuard>
             <SalesAgencyProductDetail />
-          </LoginGuard>
+          </LoginMemberGuard>
         ),
       },
       {
         path: 'events',
         element: (
-          <LoginGuard>
+          <LoginMemberGuard>
             <EventList />
-          </LoginGuard>
+          </LoginMemberGuard>
         ),
       },
       {
         path: 'events/:id',
         element: (
-          <LoginGuard>
+          <LoginMemberGuard>
             <EventDetail />
-          </LoginGuard>
+          </LoginMemberGuard>
         ),
       },
       {
         path: 'customer-service',
         element: (
-          <LoginGuard>
+          <LoginMemberGuard>
             <SidebarLayout
               title='고객센터'
               tabConfig={[
@@ -295,7 +318,7 @@ const route: RouteObject[] = [
                 },
               ]}
             />
-          </LoginGuard>
+          </LoginMemberGuard>
         ),
         children: [
           {

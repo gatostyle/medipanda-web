@@ -1,5 +1,6 @@
 import {
   type BoardDetailsResponse,
+  BoardType,
   type CommentResponse,
   createComment,
   createReport,
@@ -25,10 +26,20 @@ import { EditorContent } from '@tiptap/react';
 import { type FormEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 
-export default function CommunityDetail() {
+export default function CommunityDetail({ communityType }: { communityType: keyof typeof BoardType }) {
   const { session } = useSession();
 
-  const { id: paramId, communityType } = useParams();
+  const paramCommunityType = ((boardType: keyof typeof BoardType) => {
+    switch (boardType) {
+      case 'ANONYMOUS':
+        return 'anonymous';
+      case 'MR_CSO_MATCHING':
+        return 'mr-cso-matching';
+      default:
+        throw new Error('Invalid community type');
+    }
+  })(communityType);
+  const { id: paramId } = useParams();
   const boardPostId = Number(paramId);
 
   const navigate = useNavigate();
@@ -37,7 +48,7 @@ export default function CommunityDetail() {
   useEffect(() => {
     if (Number.isNaN(boardPostId)) {
       alert('잘못된 접근입니다.');
-      navigate(`/community/${communityType}`, { replace: true });
+      navigate(-1);
       return;
     }
 
@@ -85,7 +96,7 @@ export default function CommunityDetail() {
     try {
       await deleteBoardPost(boardPostId);
       alert('게시글이 삭제되었습니다.');
-      navigate(`/community/${communityType}`, { replace: true });
+      navigate(`/community/${paramCommunityType}`, { replace: true });
     } catch (e) {
       console.error('Error deleting post: ', e);
       alert('게시글 삭제 중 오류가 발생했습니다. 다시 시도해주세요.');
@@ -234,7 +245,7 @@ export default function CommunityDetail() {
                 <MedipandaButton variant='outlined' color='error' onClick={handleDelete}>
                   삭제하기
                 </MedipandaButton>
-                <MedipandaButton variant='outlined' component={RouterLink} to={`/community/${communityType}/${boardPostId}/edit`}>
+                <MedipandaButton variant='outlined' component={RouterLink} to={`/community/${paramCommunityType}/${boardPostId}/edit`}>
                   수정하기
                 </MedipandaButton>
               </>

@@ -110,3 +110,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 export function useSession() {
   return useContext(SessionContext);
 }
+
+export function hasContractMemberPermission(member: MemberDetailsResponse) {
+  return member.partnerContractStatus === 'INDIVIDUAL' || member.partnerContractStatus === 'ORGANIZATION';
+}
+
+export function hasCsoMemberPermission(member: MemberDetailsResponse) {
+  return member.partnerContractStatus === 'CSO' || hasContractMemberPermission(member);
+}
