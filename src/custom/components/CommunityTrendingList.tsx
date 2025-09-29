@@ -35,14 +35,15 @@ export function CommunityTrendingList({ boardType }: { boardType: keyof typeof B
       <Stack direction='row' gap='5px'>
         <Button
           variant='outlined'
-          startIcon={<img src='/assets/icons/icon-fire.svg' />}
+          startIcon={<img src={sortType === BoardSortType.LIKES ? '/assets/icons/icon-fire-white.svg' : '/assets/icons/icon-fire.svg'} />}
           onClick={() => setSortType(BoardSortType.LIKES)}
           sx={{
             ...typography.smallTextM,
-            color: colors.vividViolet,
+            color: sortType === BoardSortType.LIKES ? colors.white : colors.vividViolet,
             width: '60px',
             height: '24px',
             padding: '3px 5px',
+            backgroundColor: sortType === BoardSortType.LIKES ? colors.vividViolet : colors.white,
             borderColor: colors.vividViolet,
           }}
         >
@@ -50,14 +51,17 @@ export function CommunityTrendingList({ boardType }: { boardType: keyof typeof B
         </Button>
         <Button
           variant='outlined'
-          startIcon={<img src='/assets/icons/icon-chat-light.svg' />}
+          startIcon={
+            <img src={sortType === BoardSortType.COMMENTS ? '/assets/icons/icon-chat-white.svg' : '/assets/icons/icon-chat.svg'} />
+          }
           onClick={() => setSortType(BoardSortType.COMMENTS)}
           sx={{
             ...typography.smallTextM,
-            color: colors.vividViolet,
+            color: sortType === BoardSortType.COMMENTS ? colors.white : colors.vividViolet,
             width: '60px',
             height: '24px',
             padding: '3px 5px',
+            backgroundColor: sortType === BoardSortType.COMMENTS ? colors.vividViolet : colors.white,
             borderColor: colors.vividViolet,
           }}
         >
