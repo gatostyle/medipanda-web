@@ -126,6 +126,11 @@ export const EventStatusLabel: Record<keyof typeof EventStatus, string> = {
   [EventStatus.FINISHED]: '종료',
 };
 
+export const PrescriptionTypeLabel: Record<string, string> = {
+  INDIVIDUAL: '개별',
+  BUNDLE: '묶음',
+};
+
 export const PrescriptionStatus = {
   PENDING: 'PENDING',
   IN_PROGRESS: 'IN_PROGRESS',

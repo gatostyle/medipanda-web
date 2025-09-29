@@ -5,6 +5,8 @@ import {
   type FileValidationErrorDto,
   type PartnerResponse,
   type PrescriptionResponse,
+  PrescriptionStatusLabel,
+  PrescriptionTypeLabel,
   searchPrescriptions,
   uploadEdiZip,
   uploadPartnerEdiFiles,
@@ -107,7 +109,7 @@ export default function PrescriptionList() {
     columns: [
       {
         header: '구분',
-        cell: ({ row }) => row.original.type,
+        cell: ({ row }) => PrescriptionTypeLabel[row.original.type],
       },
       {
         header: '딜러명',
@@ -123,7 +125,7 @@ export default function PrescriptionList() {
       },
       {
         header: '등록처리',
-        cell: ({ row }) => row.original.status,
+        cell: ({ row }) => PrescriptionStatusLabel[row.original.status],
       },
     ],
     getCoreRowModel: getCoreRowModel(),
