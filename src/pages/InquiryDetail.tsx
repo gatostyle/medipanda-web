@@ -1,4 +1,4 @@
-import { type AttachmentResponse, type BoardDetailsResponse, getBoardDetails } from '@/backend';
+import { type AttachmentResponse, type BoardDetailsResponse, deleteBoardPost, getBoardDetails } from '@/backend';
 import { InquiryStatusChip } from '@/components/InquiryStatusChip';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/components/MedipandaTab';
@@ -64,6 +64,21 @@ export default function InquiryDetail() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleDelete = async () => {
+    if (!confirm('정말로 삭제하시겠습니까?')) {
+      return;
+    }
+
+    try {
+      await deleteBoardPost(inquiryId);
+      alert('1:1 문의내역이 삭제되었습니다.');
+      navigate('/customer-service/inquiry');
+    } catch (error) {
+      console.error('Failed to delete inquiry:', error);
+      alert('1:1 문의내역 삭제 중 오류가 발생했습니다.');
+    }
   };
 
   if (!detail) {
@@ -192,34 +207,49 @@ export default function InquiryDetail() {
           marginTop: '40px',
         }}
       >
-        <Button
-          fullWidth
-          component={RouterLink}
-          to='/customer-service/inquiry'
-          variant='outlined'
-          sx={{
-            width: '160px',
-            height: '50px',
-            borderColor: colors.navy,
-            color: colors.navy,
-          }}
-        >
-          목록
-        </Button>
-        {detail.children.length === 0 && (
-          <MedipandaButton
+        {detail.children.length === 0 ? (
+          <>
+            <MedipandaButton
+              fullWidth
+              variant='contained'
+              color='primary'
+              onClick={handleDelete}
+              sx={{
+                width: '160px',
+                height: '50px',
+              }}
+            >
+              삭제
+            </MedipandaButton>
+            <MedipandaButton
+              fullWidth
+              component={RouterLink}
+              to={`/customer-service/inquiry/${inquiryId}/edit`}
+              variant='outlined'
+              color='primary'
+              sx={{
+                width: '160px',
+                height: '50px',
+              }}
+            >
+              수정
+            </MedipandaButton>
+          </>
+        ) : (
+          <Button
             fullWidth
             component={RouterLink}
-            to={`/customer-service/inquiry/${inquiryId}/edit`}
-            variant='contained'
-            color='primary'
+            to='/customer-service/inquiry'
+            variant='outlined'
             sx={{
               width: '160px',
               height: '50px',
+              borderColor: colors.navy,
+              color: colors.navy,
             }}
           >
-            수정
-          </MedipandaButton>
+            목록
+          </Button>
         )}
       </Stack>
     </>

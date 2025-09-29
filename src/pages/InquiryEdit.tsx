@@ -161,8 +161,17 @@ export default function InquiryEdit() {
           direction='row'
           alignItems='flex-start'
           sx={{
-            '& .tiptap': {
-              padding: '20px',
+            overflowX: 'hidden',
+
+            '& > div:has(.tiptap)': {
+              border: `1px solid ${colors.gray30}`,
+
+              '.tiptap': {
+                minHeight: '300px',
+                padding: '12px 15px',
+
+                overflow: 'auto',
+              },
             },
           }}
         >

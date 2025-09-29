@@ -3,6 +3,7 @@ import { InquiryStatusChip } from '@/components/InquiryStatusChip';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/components/MedipandaTab';
 import { MedipandaTableCell, MedipandaTableRow } from '@/custom/components/MedipandaTable';
+import { useSession } from '@/hooks/useSession';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
 import { setUrlParams } from '@/lib/utils/url';
 import { colors } from '@/themes';
@@ -16,6 +17,8 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
 
 export default function InquiryList() {
+  const { session } = useSession();
+
   const navigate = useNavigate();
 
   const [contents, setContents] = useState<Sequenced<BoardPostResponse>[]>([]);
@@ -55,6 +58,8 @@ export default function InquiryList() {
       const response = await getBoards({
         boardType: BoardType.INQUIRY,
         [searchType]: searchKeyword,
+        myUserId: session!.userId,
+        filterDeleted: true,
         page: page - 1,
         size: pageSize,
       });
@@ -118,30 +123,40 @@ export default function InquiryList() {
           </MedipandaTableRow>
         </TableHead>
         <TableBody>
-          {contents.map(inquiry => (
-            <MedipandaTableRow key={inquiry.id}>
-              <MedipandaTableCell>{`${inquiry.sequence}`}</MedipandaTableCell>
-              <MedipandaTableCell sx={{ textAlign: 'left' }}>
-                <Link
-                  underline='hover'
-                  component={RouterLink}
-                  to={`/customer-service/inquiry/${inquiry.id}`}
-                  sx={{
-                    color: colors.gray80,
-                    '&:hover': {
-                      color: colors.vividViolet,
-                    },
-                  }}
-                >
-                  {inquiry.title}
-                </Link>
-              </MedipandaTableCell>
-              <MedipandaTableCell>{formatYyyyMmDdHhMm(inquiry.createdAt)}</MedipandaTableCell>
-              <MedipandaTableCell>
-                <InquiryStatusChip status={inquiry.hasChildren} />
+          {contents.length === 0 ? (
+            <MedipandaTableRow>
+              <MedipandaTableCell colSpan={4} align='center' sx={{ py: 3 }}>
+                <Typography variant='body2' color='text.secondary'>
+                  검색 결과가 없습니다.
+                </Typography>
               </MedipandaTableCell>
             </MedipandaTableRow>
-          ))}
+          ) : (
+            contents.map(inquiry => (
+              <MedipandaTableRow key={inquiry.id}>
+                <MedipandaTableCell>{`${inquiry.sequence}`}</MedipandaTableCell>
+                <MedipandaTableCell sx={{ textAlign: 'left' }}>
+                  <Link
+                    underline='hover'
+                    component={RouterLink}
+                    to={`/customer-service/inquiry/${inquiry.id}`}
+                    sx={{
+                      color: colors.gray80,
+                      '&:hover': {
+                        color: colors.vividViolet,
+                      },
+                    }}
+                  >
+                    {inquiry.title}
+                  </Link>
+                </MedipandaTableCell>
+                <MedipandaTableCell>{formatYyyyMmDdHhMm(inquiry.createdAt)}</MedipandaTableCell>
+                <MedipandaTableCell>
+                  <InquiryStatusChip status={inquiry.hasChildren} />
+                </MedipandaTableCell>
+              </MedipandaTableRow>
+            ))
+          )}
         </TableBody>
       </Table>
 
