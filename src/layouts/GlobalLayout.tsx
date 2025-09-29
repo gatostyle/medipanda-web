@@ -250,7 +250,7 @@ function GlobalLayout() {
                   </Typography>
                 </Stack>
                 <Typography variant='heading5B' sx={{ color: colors.gray80 }}>
-                  {session.name}
+                  {session.nickname}
                 </Typography>
               </Stack>
               <Typography
@@ -270,7 +270,7 @@ function GlobalLayout() {
                     color: colors.gray60,
                   }}
                 >
-                  계약일: {formatYyyyMmDd(session.birthDate)}
+                  계약일: {formatYyyyMmDd(session.contractDate!)}
                 </Typography>
               ) : (
                 <Link
