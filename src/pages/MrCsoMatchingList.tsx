@@ -239,7 +239,7 @@ export default function MrCsoMatchingList() {
               fullWidth
               variant='contained'
               component={RouterLink}
-              to='/community/anonymous/new'
+              to='/community/mr-cso-matching/new'
               sx={{
                 height: '50px',
                 backgroundColor: colors.navy,

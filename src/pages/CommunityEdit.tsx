@@ -69,13 +69,18 @@ export default function CommunityEdit({ boardType }: { boardType: keyof typeof B
     attachments: editorAttachments,
     setAttachments: setEditorAttachments,
   } = useMedipandaEditor({
-    placeholder: '내용을 입력해주세요',
+    placeholder:
+      '<p>※ 작성 시 주의사항 ※</p>' +
+      '<p>1. 익명성 유지를 위해 신상 관련 정보 공유 X</p>' +
+      '<p>2. 거래 당사자나 물품을 특정할 수 있는 자세한 정보 X</p>' +
+      '<p>3. 지역 특정이나 개인 식별이 가능한 단어 언급 X</p>' +
+      '<p>4. 모든 게시글에 대한 책임은 작성자에게 있습니다.</p>',
   });
 
   const form = useForm({
     defaultValues: {
       title: '',
-      hiddenNickname: true,
+      hiddenNickname: false,
       attachedFiles: [] as AttachmentResponse[],
       newFiles: [] as File[],
     },
@@ -170,7 +175,7 @@ export default function CommunityEdit({ boardType }: { boardType: keyof typeof B
           }}
         >
           <Stack direction='row' gap='10px'>
-            <Typography variant='largeTextM' sx={{ width: '100px', color: colors.gray80, lineHeight: '50px' }}>
+            <Typography variant='largeTextM' sx={{ flex: '0 0 100px', color: colors.gray80, lineHeight: '50px' }}>
               익명
             </Typography>
             <Controller
@@ -182,12 +187,15 @@ export default function CommunityEdit({ boardType }: { boardType: keyof typeof B
                   control={<MedipandaCheckbox defaultChecked icon={<CheckCircleOutline />} checkedIcon={<CheckCircle />} />}
                   label='닉네임 숨기기'
                   checked={field.value}
+                  sx={{
+                    flex: '0 0 490px',
+                  }}
                 />
               )}
             />
           </Stack>
           <Stack direction='row' gap='10px'>
-            <Typography variant='largeTextM' sx={{ width: '100px', color: colors.gray80, lineHeight: '50px' }}>
+            <Typography variant='largeTextM' sx={{ flex: '0 0 100px', color: colors.gray80, lineHeight: '50px' }}>
               제목 *
             </Typography>
             <Controller
@@ -198,7 +206,7 @@ export default function CommunityEdit({ boardType }: { boardType: keyof typeof B
                   {...field}
                   placeholder='제목을 입력해주세요'
                   sx={{
-                    flexGrow: 1,
+                    flex: '0 0 490px',
                     height: '50px',
                   }}
                 />
@@ -206,16 +214,23 @@ export default function CommunityEdit({ boardType }: { boardType: keyof typeof B
             />
           </Stack>
           <Stack direction='row' gap='10px'>
-            <Typography variant='largeTextM' sx={{ width: '100px', color: colors.gray80, lineHeight: '50px' }}>
+            <Typography variant='largeTextM' sx={{ flex: '0 0 100px', color: colors.gray80, lineHeight: '50px' }}>
               작성내용 *
             </Typography>
             <Stack
               sx={{
-                flexGrow: 1,
-                '.tiptap': {
-                  minHeight: '300px',
-                  padding: '12px 15px',
+                flex: '0 0 490px',
+                overflowX: 'hidden',
+
+                '& > div:has(.tiptap)': {
                   border: `1px solid ${colors.gray30}`,
+
+                  '.tiptap': {
+                    minHeight: '300px',
+                    padding: '12px 15px',
+
+                    overflow: 'auto',
+                  },
                 },
               }}
             >
