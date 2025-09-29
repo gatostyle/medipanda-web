@@ -554,17 +554,19 @@ export default function MpAdminProductEdit() {
         <Card component={Stack} sx={{ p: 3, gap: 3 }}>
           <Typography variant='h6'>Detail Info</Typography>
 
-          <Stack
-            gap='10px'
-            sx={{
-              '.tiptap[contenteditable=true]': {
-                border: `1px solid #cccccc`,
-                padding: '12px 15px',
-              },
-            }}
-          >
+          <Stack gap='10px'>
             <TiptapMenuBar editor={editor} />
-            <EditorContent editor={editor} placeholder='제품 상세 정보를 입력하세요' />
+            <Box
+              component={EditorContent}
+              editor={editor}
+              sx={{
+                border: `1px solid #CCCCCC`,
+                '& .tiptap': {
+                  minHeight: '300px',
+                  padding: '10px',
+                },
+              }}
+            />
           </Stack>
         </Card>
 

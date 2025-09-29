@@ -187,16 +187,17 @@ export default function MpAdminFaqEdit() {
           <Typography variant='body2' color='text.secondary'>
             내용
           </Typography>
-          <Stack
+          <Box
+            component={EditorContent}
+            editor={editor}
             sx={{
-              '.tiptap': {
-                border: `1px solid #cccccc`,
-                padding: '20px 10px',
+              border: `1px solid #CCCCCC`,
+              '& .tiptap': {
+                minHeight: '300px',
+                padding: '10px',
               },
             }}
-          >
-            <EditorContent editor={editor} placeholder='내용을 입력하세요' />
-          </Stack>
+          />
         </Stack>
 
         <Stack>

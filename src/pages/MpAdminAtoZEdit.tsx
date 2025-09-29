@@ -183,7 +183,17 @@ export default function MpAdminAtoZEdit() {
           <Typography variant='body2' sx={{ mb: 1 }}>
             내용 <span style={{ color: 'red' }}>*</span>
           </Typography>
-          <EditorContent editor={editor} />
+          <Box
+            component={EditorContent}
+            editor={editor}
+            sx={{
+              border: `1px solid #CCCCCC`,
+              '& .tiptap': {
+                minHeight: '300px',
+                padding: '10px',
+              },
+            }}
+          />
         </Stack>
 
         <Stack>
