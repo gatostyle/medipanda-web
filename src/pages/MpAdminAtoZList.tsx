@@ -25,7 +25,7 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
-import { type BoardPostResponse, BoardType, DateString, deleteBoardPost, getBoards } from '@/backend';
+import { BoardExposureRangeLabel, type BoardPostResponse, BoardType, DateString, deleteBoardPost, getBoards } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
 import { useMpDeleteDialog } from '@/hooks/useMpDeleteDialog';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
@@ -294,9 +294,10 @@ export default function MpAdminAtoZList() {
                   />
                 </TableCell>
                 <TableCell width={80}>No</TableCell>
-                <TableCell width={150}>제목</TableCell>
-                <TableCell width={100}>상태</TableCell>
-                <TableCell width={100}>조회 수</TableCell>
+                <TableCell>제목</TableCell>
+                <TableCell width={80}>노출상태</TableCell>
+                <TableCell width={80}>노츌범위</TableCell>
+                <TableCell width={100}>조회수</TableCell>
                 <TableCell width={120}>작성일</TableCell>
               </TableRow>
             </TableHead>
@@ -346,6 +347,7 @@ export default function MpAdminAtoZList() {
                         size='small'
                       />
                     </TableCell>
+                    <TableCell>{BoardExposureRangeLabel[item.exposureRange]}</TableCell>
                     <TableCell>{item.viewsCount.toLocaleString()}</TableCell>
                     <TableCell>{formatYyyyMmDd(item.createdAt)}</TableCell>
                   </TableRow>

@@ -16,7 +16,7 @@ import {
   Typography,
 } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
-import { type BoardDetailsResponse, getBoardDetails, PostAttachmentType } from '@/backend';
+import { type BoardDetailsResponse, BoardExposureRangeLabel, getBoardDetails, PostAttachmentType } from '@/backend';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
@@ -134,6 +134,12 @@ export default function MpAdminAtoZDetail() {
                     size='small'
                   />
                 </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
+                  노출범위
+                </TableCell>
+                <TableCell>{BoardExposureRangeLabel[detail.exposureRange]}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>

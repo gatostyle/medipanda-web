@@ -339,6 +339,16 @@ export interface DeviceRequest {
   platform: 'android' | 'ios' | 'other';
 }
 
+export interface DiffDouble {
+  after: number;
+  before: number;
+}
+
+export interface DiffInteger {
+  after: number;
+  before: number;
+}
+
 export interface DrugCompanyResponse {
   code: string;
   id: number;
@@ -559,13 +569,13 @@ export interface MemberUpdateRequest {
   referralCode: string | null;
 }
 
-export interface MonthlyFeeAmountResponse {
-  feeAmount: number;
+export interface MonthlyPrescriptionCountResponse {
+  count: number;
   month: number;
 }
 
-export interface MonthlyPrescriptionCountResponse {
-  count: number;
+export interface MonthlyTotalAmountResponse {
+  feeAmount: number;
   month: number;
 }
 
@@ -593,6 +603,16 @@ export interface NoticeProperties {
   drugCompany: string | null;
   fixedTop: boolean;
   noticeType: 'PRODUCT_STATUS' | 'MANUFACTURING_SUSPENSION' | 'NEW_PRODUCT' | 'POLICY' | 'GENERAL' | 'ANONYMOUS_BOARD' | 'MR_CSO_MATCHING';
+}
+
+export interface OcrOriginalDiffRowResponse {
+  baseFeeRate: DiffDouble;
+  feeAmount: DiffInteger;
+  productCode: string;
+  productName: string;
+  quantity: DiffInteger;
+  settlementMonth: string;
+  totalAmount: DiffInteger;
 }
 
 export interface OcrOriginalItem {
@@ -1128,7 +1148,7 @@ export interface ProductBriefingSingleCreateRequest {
   institutionName: string;
   isJoint: boolean;
   location: string;
-  medicalPersons: MedicalPersonInfo[];
+  medicalPersons: MedicalPersonInfo[] | null;
   productId: number;
   supportAmount: number;
 }
@@ -1640,8 +1660,8 @@ export async function getBlindPosts(options?: {
   memberName?: string;
   userId?: string;
   nickname?: string;
-  startAt?: DateTimeString;
-  endAt?: DateTimeString;
+  startAt?: DateString;
+  endAt?: DateString;
   page?: number;
   size?: number;
 }): Promise<PageBlindPostResponse> {
@@ -1683,7 +1703,6 @@ export async function getBoards(options?: {
   filterBlind?: boolean;
   boardTitle?: string;
   filterDeleted?: boolean;
-  exposureRanges?: ('ALL' | 'CONTRACTED' | 'UNCONTRACTED')[];
   isExposed?: boolean;
   drugCompany?: string;
   myUserId?: string;
@@ -1703,7 +1722,6 @@ export async function getBoards(options?: {
     url: '/v1/boards',
     params: {
       ...options,
-      exposureRanges: options?.exposureRanges?.join(','),
       noticeTypes: options?.noticeTypes?.join(','),
     },
   });
@@ -1763,6 +1781,7 @@ export async function getFixedTopNotices(options?: {
   boardType?: 'ANONYMOUS' | 'MR_CSO_MATCHING' | 'NOTICE' | 'INQUIRY' | 'FAQ' | 'CSO_A_TO_Z' | 'EVENT' | 'SALES_AGENCY' | 'PRODUCT';
   filterBlind?: boolean;
   filterDeleted?: boolean;
+  isExposed?: boolean;
   noticeTypes?: (
     | 'PRODUCT_STATUS'
     | 'MANUFACTURING_SUSPENSION'
@@ -3092,12 +3111,12 @@ export async function monthlyCount(options?: { referenceDate?: number }): Promis
 
 /**
  * 요청 날짜가 속한 월의 수수료 합계 (submittedDate 기준)
- * GET /v1/prescriptions/monthly-fee
+ * GET /v1/prescriptions/monthly-total-amount
  */
-export async function monthlyFee(options?: { referenceDate?: number }): Promise<MonthlyFeeAmountResponse> {
-  const response = await axios.request<MonthlyFeeAmountResponse>({
+export async function monthlyTotalAmount(options?: { referenceDate?: number }): Promise<MonthlyTotalAmountResponse> {
+  const response = await axios.request<MonthlyTotalAmountResponse>({
     method: 'GET',
-    url: '/v1/prescriptions/monthly-fee',
+    url: '/v1/prescriptions/monthly-total-amount',
     params: options,
   });
   return response.data;
@@ -3258,6 +3277,18 @@ export async function upsertPatchPartnerProducts(
     url: `/v1/prescriptions/partners/${prescriptionPartnerId}/products`,
     data,
   });
+}
+
+/**
+ * Original OCR vs Current diff (quantity/totalAmount/baseFeeRate/feeAmount)
+ * GET /v1/prescriptions/partners/{prescriptionPartnerId}/products/ocr-original-diff
+ */
+export async function getOriginalOcrDiff(prescriptionPartnerId: number): Promise<OcrOriginalDiffRowResponse[]> {
+  const response = await axios.request<OcrOriginalDiffRowResponse[]>({
+    method: 'GET',
+    url: `/v1/prescriptions/partners/${prescriptionPartnerId}/products/ocr-original-diff`,
+  });
+  return response.data;
 }
 
 /**
@@ -3786,6 +3817,7 @@ export async function getSettlementPartnerSummary(options?: {
   institutionName?: string;
   businessNumber?: string;
   institutionCode?: string;
+  settlementPartnerOrder?: 'INSTITUTION_NAME_ASC' | 'INSTITUTION_NAME_DESC' | 'TOTAL_AMOUNT_ASC' | 'TOTAL_AMOUNT_DESC';
   page?: number;
   size?: number;
 }): Promise<PageSettlementPartnerResponse> {

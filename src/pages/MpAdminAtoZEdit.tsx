@@ -54,6 +54,7 @@ export default function MpAdminAtoZEdit() {
       attachedFiles: [] as AttachmentResponse[],
       newFiles: [] as File[],
       isExposed: true,
+      exposureRange: BoardExposureRange.ALL as keyof typeof BoardExposureRange,
     },
   });
   const formAttachedFiles = form.watch('attachedFiles');
@@ -83,7 +84,7 @@ export default function MpAdminAtoZEdit() {
             parentId: null,
             isExposed: values.isExposed,
             editorFileIds: editorAttachments.map(image => image.s3fileId),
-            exposureRange: BoardExposureRange.ALL,
+            exposureRange: values.exposureRange,
             noticeProperties: null,
           },
           files: values.newFiles,
@@ -97,7 +98,7 @@ export default function MpAdminAtoZEdit() {
             hiddenNickname: null,
             isBlind: null,
             isExposed: values.isExposed,
-            exposureRange: BoardExposureRange.ALL,
+            exposureRange: values.exposureRange,
             keepFileIds: [...values.attachedFiles, ...editorAttachments].map(file => file.s3fileId),
             editorFileIds: editorAttachments.map(image => image.s3fileId),
             noticeProperties: null,
@@ -256,6 +257,28 @@ export default function MpAdminAtoZEdit() {
                 >
                   <FormControlLabel value='true' control={<Radio />} label='노출' />
                   <FormControlLabel value='false' control={<Radio />} label='미노출' />
+                </RadioGroup>
+              )}
+            />
+          </FormControl>
+        </Stack>
+
+        <Stack>
+          <FormControl component='fieldset'>
+            <FormLabel component='legend'>노출범위</FormLabel>
+            <Controller
+              control={form.control}
+              name={'exposureRange'}
+              render={({ field }) => (
+                <RadioGroup
+                  {...field}
+                  row
+                  value={String(field.value)}
+                  onChange={e => form.setValue('isExposed', e.target.value === 'true')}
+                >
+                  <FormControlLabel value={BoardExposureRange.ALL} control={<Radio />} label='전체' />
+                  <FormControlLabel value={BoardExposureRange.CONTRACTED} control={<Radio />} label='계약' />
+                  <FormControlLabel value={BoardExposureRange.UNCONTRACTED} control={<Radio />} label='미계약' />
                 </RadioGroup>
               )}
             />
