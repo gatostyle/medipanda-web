@@ -36,7 +36,11 @@ export default function Home() {
   const fetchBanners = async () => {
     const response = await getBanners({ isExposed: true });
 
-    setBanners(response.content);
+    setBanners(
+      response.content.filter(banner => {
+        return new Date(banner.startAt) <= new Date() && new Date(banner.endAt) >= new Date();
+      }),
+    );
   };
 
   useEffect(() => {

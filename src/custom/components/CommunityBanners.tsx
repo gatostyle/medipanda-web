@@ -10,7 +10,11 @@ export function CommunityBanners() {
   const fetchContents = async () => {
     const response = await getBanners({ isExposed: true });
 
-    setContents(response.content);
+    setContents(
+      response.content.filter(banner => {
+        return new Date(banner.startAt) <= new Date() && new Date(banner.endAt) >= new Date();
+      }),
+    );
   };
 
   useEffect(() => {
