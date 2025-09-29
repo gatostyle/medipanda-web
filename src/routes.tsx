@@ -240,11 +240,11 @@ const route: RouteObject[] = [
             element: <CommunityDetail communityType={BoardType.ANONYMOUS} />,
           },
           {
-            path: 'anonymous/:id/edit',
+            path: 'anonymous/new',
             element: <CommunityEdit communityType={BoardType.ANONYMOUS} />,
           },
           {
-            path: 'anonymous/new',
+            path: 'anonymous/:id/edit',
             element: <CommunityEdit communityType={BoardType.ANONYMOUS} />,
           },
           {
@@ -256,11 +256,11 @@ const route: RouteObject[] = [
             element: <CommunityDetail communityType={BoardType.MR_CSO_MATCHING} />,
           },
           {
-            path: 'communityType={BoardType.ANONYMOUS} />/:id/edit',
+            path: 'mr-cso-matching/new',
             element: <CommunityEdit communityType={BoardType.MR_CSO_MATCHING} />,
           },
           {
-            path: 'communityType={BoardType.ANONYMOUS} />/new',
+            path: 'mr-cso-matching/:id/edit',
             element: <CommunityEdit communityType={BoardType.MR_CSO_MATCHING} />,
           },
         ],
