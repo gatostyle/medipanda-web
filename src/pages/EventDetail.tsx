@@ -55,7 +55,7 @@ export default function EventDetail() {
       <Stack
         gap='5px'
         sx={{
-          width: '912px',
+          width: '100%',
           padding: '20px',
           marginTop: '30px',
           borderTop: `1px solid ${colors.gray50}`,
