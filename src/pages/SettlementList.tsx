@@ -1,13 +1,16 @@
 import {
   DateString,
   getDownloadSettlementListExcel,
-  getSettlement,
+  getSettlementPartnerProducts,
   getSettlementPartnerSummary,
   getSettlements,
   notifyAdminForObjections,
   notifyAdminForSettlements,
   SettlementPartnerOrder,
   SettlementPartnerOrderLabel,
+  SettlementPartnerProductOrder,
+  SettlementPartnerProductOrderLabel,
+  type SettlementPartnerProductResponse,
   type SettlementPartnerResponse,
   type SettlementResponse,
 } from '@/backend';
@@ -21,6 +24,7 @@ import { setUrlParams } from '@/lib/utils/url';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { colors } from '@/themes';
 import { formatYyyyMm, formatYyyy년Mm월, SafeDate } from '@/lib/utils/dateFormat';
+import { PercentUtils } from '@/utils/PercentUtils';
 import { KeyboardArrowLeft, KeyboardArrowRight, Search } from '@mui/icons-material';
 import {
   Button,
@@ -40,7 +44,7 @@ import {
   Typography,
 } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
@@ -362,7 +366,7 @@ export default function SettlementList() {
               boxSizing: 'border-box',
             }}
           >
-            <SettlementDetailForm settlementId={selectedId} />
+            <SettlementDetailForm settlement={contents.find(s => s.id === selectedId) ?? null} />
           </Stack>
         </Stack>
       </Stack>
@@ -378,11 +382,11 @@ export default function SettlementList() {
   );
 }
 
-function SettlementDetailForm({ settlementId }: { settlementId: number | null }) {
-  const [detail, setDetail] = useState<SettlementResponse | null>(null);
-
+function SettlementDetailForm({ settlement }: { settlement: SettlementResponse | null }) {
   const [contents, setContents] = useState<SettlementPartnerResponse[]>([]);
   const [totalPages, setTotalPages] = useState(0);
+
+  const [selectedSettlementPartnerResponse, setSelectedSettlementPartnerResponse] = useState<SettlementPartnerResponse | null>(null);
 
   const [submitFormValues, setSubmitFormValues] = useState({
     sortOrder: SettlementPartnerOrder.TOTAL_AMOUNT_DESC as keyof typeof SettlementPartnerOrder,
@@ -410,35 +414,12 @@ function SettlementDetailForm({ settlementId }: { settlementId: number | null })
   };
 
   useEffect(() => {
-    if (settlementId === null) {
+    if (settlement === null) {
       return;
     }
 
-    fetchContents(settlementId);
-  }, [submitFormValues.sortOrder, submitFormValues.page]);
-
-  useEffect(() => {
-    if (settlementId === null) {
-      return;
-    }
-
-    fetchDetail(settlementId);
-  }, [settlementId]);
-
-  const fetchDetail = async (id: number) => {
-    const response = await getSettlement(id);
-
-    setDetail(response);
-
-    if (submitFormValues.sortOrder === SettlementPartnerOrder.TOTAL_AMOUNT_DESC && submitFormValues.page === 1) {
-      fetchContents(id);
-    } else {
-      setSubmitFormValues({
-        sortOrder: SettlementPartnerOrder.TOTAL_AMOUNT_DESC,
-        page: 1,
-      });
-    }
-  };
+    fetchContents(settlement.id);
+  }, [settlement, submitFormValues.sortOrder, submitFormValues.page]);
 
   const table = useReactTable({
     data: contents,
@@ -448,6 +429,7 @@ function SettlementDetailForm({ settlementId }: { settlementId: number | null })
         cell: ({ row }) => (
           <Button
             variant='text'
+            onClick={() => setSelectedSettlementPartnerResponse(row.original)}
             sx={{
               textDecoration: 'underline',
               color: colors.vividViolet,
@@ -476,7 +458,7 @@ function SettlementDetailForm({ settlementId }: { settlementId: number | null })
     getCoreRowModel: getCoreRowModel(),
   });
 
-  if (settlementId === null) {
+  if (settlement === null) {
     return (
       <Typography variant='largeTextM' sx={{ alignSelf: 'center', color: colors.gray80 }}>
         내역을 확인하실 딜러를 선택해주세요.
@@ -484,7 +466,7 @@ function SettlementDetailForm({ settlementId }: { settlementId: number | null })
     );
   }
 
-  if (!detail) {
+  if (!settlement) {
     return <FixedLinearProgress />;
   }
 
@@ -501,13 +483,13 @@ function SettlementDetailForm({ settlementId }: { settlementId: number | null })
         }}
       >
         <Typography variant='mediumTextB' sx={{ color: colors.gray80, width: '160px' }}>
-          제약사명: {detail.drugCompanyName}
+          제약사명: {settlement.drugCompanyName}
         </Typography>
         <Typography variant='mediumTextB' sx={{ color: colors.gray80, width: '160px' }}>
-          딜러명: {detail.dealerName}
+          딜러명: {settlement.dealerName}
         </Typography>
         <Typography variant='mediumTextB' sx={{ color: colors.gray80, width: '160px' }}>
-          처방금액 : {detail.prescriptionAmount.toLocaleString()}
+          처방금액 : {settlement.prescriptionAmount.toLocaleString()}
         </Typography>
       </Stack>
       <Stack
@@ -517,13 +499,13 @@ function SettlementDetailForm({ settlementId }: { settlementId: number | null })
         }}
       >
         <Typography variant='mediumTextB' sx={{ color: colors.gray80, width: '160px' }}>
-          공급가액 : {detail.supplyAmount.toLocaleString()}
+          공급가액 : {settlement.supplyAmount.toLocaleString()}
         </Typography>
         <Typography variant='mediumTextB' sx={{ color: colors.gray80, width: '160px' }}>
-          세액 : {detail.taxAmount.toLocaleString()}
+          세액 : {settlement.taxAmount.toLocaleString()}
         </Typography>
         <Typography variant='mediumTextB' sx={{ color: colors.gray80, width: '160px' }}>
-          합계금액 : {detail.totalAmount.toLocaleString()}
+          합계금액 : {settlement.totalAmount.toLocaleString()}
         </Typography>
       </Stack>
       <Stack
@@ -535,7 +517,7 @@ function SettlementDetailForm({ settlementId }: { settlementId: number | null })
         }}
       >
         <Typography variant='mediumTextR' sx={{ color: colors.navy }}>
-          합계금액 : {detail.totalAmount.toLocaleString()}
+          합계금액 : {settlement.totalAmount.toLocaleString()}
         </Typography>
         <Typography variant='mediumTextR' sx={{ color: colors.navy, marginLeft: 'auto' }}>
           정렬기준:
@@ -567,6 +549,15 @@ function SettlementDetailForm({ settlementId }: { settlementId: number | null })
           marginTop: '40px',
         }}
       />
+
+      {selectedSettlementPartnerResponse !== null && (
+        <SettlementDetailDialog
+          open={true}
+          onClose={() => setSelectedSettlementPartnerResponse(null)}
+          settlement={settlement}
+          settlementPartnerResponse={selectedSettlementPartnerResponse}
+        />
+      )}
     </>
   );
 }
@@ -631,5 +622,193 @@ function SettlementRequestModal({ open, onClose, settlement }: { open?: boolean;
         </Stack>
       </MedipandaDialogContent>
     </MedipandaDialog>
+  );
+}
+
+function SettlementDetailDialog({
+  open,
+  onClose,
+  settlement,
+  settlementPartnerResponse: detail,
+}: {
+  open?: boolean;
+  onClose?: () => void;
+  settlement: SettlementResponse;
+  settlementPartnerResponse: SettlementPartnerResponse;
+}) {
+  const [products, setProducts] = useState<SettlementPartnerProductResponse[]>([]);
+
+  useEffect(() => {
+    if (detail.settlementPartnerId === null) {
+      return;
+    }
+
+    fetchProducts(detail.settlementPartnerId);
+  }, [detail.settlementPartnerId]);
+
+  const fetchProducts = async (settlementPartnerId: number) => {
+    const products = await getSettlementPartnerProducts(settlementPartnerId);
+
+    setProducts(products);
+  };
+
+  const form = useForm({
+    defaultValues: {
+      sortOrder: SettlementPartnerProductOrder.PRESCRIPTION_AMOUNT_ASC as keyof typeof SettlementPartnerProductOrder,
+    },
+  });
+  const formSortOrder = form.watch('sortOrder');
+
+  if (!open) {
+    return null;
+  }
+
+  if (!detail) {
+    return <FixedLinearProgress />;
+  }
+
+  return (
+    <>
+      <MedipandaDialog open onClose={onClose} width='1000px'>
+        <MedipandaDialogTitle title='정산승인내역 상세(거래처별 제품)' onClose={onClose} />
+        <Stack>
+          <table style={{ margin: '40px 30px' }}>
+            <tr style={{ height: '39px' }}>
+              <td style={{ width: '100px' }}>제약사명:</td>
+              <td style={{ width: '320px' }}>{settlement.drugCompanyName}</td>
+              <td style={{ width: '100px' }}>딜러명:</td>
+              <td style={{ width: '320px' }}>{settlement.dealerName}</td>
+              <td style={{ width: '100px' }} />
+              <td style={{ width: '320px' }} />
+            </tr>
+            <tr style={{ height: '39px' }}>
+              <td>거래처명:</td>
+              <td>{detail.institutionName}</td>
+              <td>처방처코드:</td>
+              <td>{detail.institutionCode}</td>
+              <td>사업자등록번호</td>
+              <td>{detail.businessNumber}</td>
+            </tr>
+            <tr style={{ height: '39px' }}>
+              <td>정산월:</td>
+              <td>{formatYyyyMm(settlement.settlementMonth)}</td>
+              <td>처방금액:</td>
+              <td>{settlement.prescriptionAmount.toLocaleString()}</td>
+              <td>정산(합계)금액:</td>
+              <td>{settlement.totalAmount.toLocaleString()}</td>
+            </tr>
+          </table>
+          <Stack direction='row' sx={{ alignItems: 'center' }}>
+            <Typography
+              variant='mediumTextR'
+              sx={{
+                color: colors.navy,
+                marginLeft: 'auto',
+              }}
+            >
+              정렬기준:
+            </Typography>
+            <FormControl
+              sx={{
+                marginLeft: '10px',
+                marginRight: '30px',
+              }}
+            >
+              <Controller
+                control={form.control}
+                name={'sortOrder'}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    size='small'
+                    sx={{
+                      width: '200px',
+                    }}
+                  >
+                    {Object.keys(SettlementPartnerProductOrderLabel).map(key => (
+                      <MenuItem key={key} value={key}>
+                        {SettlementPartnerProductOrderLabel[key]}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
+            </FormControl>
+          </Stack>
+          <Table
+            sx={{
+              marginTop: '10px',
+              marginBottom: '40px',
+            }}
+          >
+            <TableHead>
+              <MedipandaTableRow>
+                <MedipandaTableCell>제품명</MedipandaTableCell>
+                <MedipandaTableCell sx={{ width: '80px' }}>수량</MedipandaTableCell>
+                <MedipandaTableCell sx={{ width: '80px' }}>약가</MedipandaTableCell>
+                <MedipandaTableCell sx={{ width: '150px' }}>처방금액</MedipandaTableCell>
+                <MedipandaTableCell sx={{ width: '90px' }}>기본수수료율</MedipandaTableCell>
+                <MedipandaTableCell sx={{ width: '150px' }}>수수료금액</MedipandaTableCell>
+                <MedipandaTableCell sx={{ width: '90px' }}>기타수수료율</MedipandaTableCell>
+                <MedipandaTableCell sx={{ width: '150px' }}>기타수수료금액</MedipandaTableCell>
+                <MedipandaTableCell sx={{ width: '150px' }}>비고</MedipandaTableCell>
+              </MedipandaTableRow>
+            </TableHead>
+            <TableBody>
+              {products
+                .sort((a, b) => {
+                  switch (formSortOrder) {
+                    case SettlementPartnerProductOrder.PRESCRIPTION_AMOUNT_ASC:
+                      return (a.prescriptionAmount ?? 0) - (b.prescriptionAmount ?? 0);
+                    case SettlementPartnerProductOrder.PRESCRIPTION_AMOUNT_DESC:
+                      return (b.prescriptionAmount ?? 0) - (a.prescriptionAmount ?? 0);
+                    case SettlementPartnerProductOrder.FEE_AMOUNT_ASC:
+                      return (a.feeAmount ?? 0) - (b.feeAmount ?? 0);
+                    case SettlementPartnerProductOrder.PRODUCT_NAME_ASC:
+                      return (a.productName ?? '').localeCompare(b.productName ?? '');
+                  }
+                })
+                .map(product => (
+                  <Fragment key={product.id}>
+                    <MedipandaTableRow sx={{ borderBottomWidth: '0 !important' }}>
+                      <MedipandaTableCell align='center'>
+                        <Typography sx={{ fontWeight: 500 }}>{product.productName}</Typography>
+                      </MedipandaTableCell>
+                      <MedipandaTableCell align='center'>
+                        <Typography sx={{ fontWeight: 500 }}>{product.quantity?.toLocaleString() ?? '-'}</Typography>
+                      </MedipandaTableCell>
+                      <MedipandaTableCell align='center'>
+                        <Typography sx={{ fontWeight: 500 }}>{product.unitPrice?.toLocaleString() ?? '-'}</Typography>
+                      </MedipandaTableCell>
+                      <MedipandaTableCell align='center'>
+                        <Typography sx={{ fontWeight: 500 }}>{product.prescriptionAmount?.toLocaleString() ?? '-'}</Typography>
+                      </MedipandaTableCell>
+                      <MedipandaTableCell align='center'>
+                        <Typography sx={{ fontWeight: 500 }}>
+                          {product.feeRate !== null ? `${PercentUtils.decimalToPercent(product.feeRate)}%` : '-'}
+                        </Typography>
+                      </MedipandaTableCell>
+                      <MedipandaTableCell align='center'>
+                        <Typography sx={{ fontWeight: 500 }}>{product.feeAmount?.toLocaleString() ?? '-'}</Typography>
+                      </MedipandaTableCell>
+                      <MedipandaTableCell align='center'>
+                        <Typography sx={{ fontWeight: 500 }}>
+                          {product.extraFeeRate !== null ? `${PercentUtils.decimalToPercent(product.extraFeeRate)}%` : '-'}
+                        </Typography>
+                      </MedipandaTableCell>
+                      <MedipandaTableCell align='center'>
+                        <Typography sx={{ fontWeight: 500 }}>{product.extraFeeAmount?.toLocaleString() ?? '-'}</Typography>
+                      </MedipandaTableCell>
+                      <MedipandaTableCell align='center'>
+                        <Typography sx={{ fontWeight: 500 }}>{product.note ?? '-'}</Typography>
+                      </MedipandaTableCell>
+                    </MedipandaTableRow>
+                  </Fragment>
+                ))}
+            </TableBody>
+          </Table>
+        </Stack>
+      </MedipandaDialog>
+    </>
   );
 }

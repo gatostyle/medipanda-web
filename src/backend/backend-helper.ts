@@ -357,6 +357,20 @@ export const SettlementPartnerOrderLabel: Record<keyof typeof SettlementPartnerO
   [SettlementPartnerOrder.TOTAL_AMOUNT_DESC]: '정산금액 내림차순',
 };
 
+export const SettlementPartnerProductOrder = {
+  PRESCRIPTION_AMOUNT_ASC: 'PRESCRIPTION_AMOUNT_ASC',
+  PRESCRIPTION_AMOUNT_DESC: 'PRESCRIPTION_AMOUNT_DESC',
+  FEE_AMOUNT_ASC: 'FEE_AMOUNT_ASC',
+  PRODUCT_NAME_ASC: 'PRODUCT_NAME_ASC',
+} as const;
+
+export const SettlementPartnerProductOrderLabel: Record<keyof typeof SettlementPartnerProductOrder, string> = {
+  [SettlementPartnerProductOrder.PRESCRIPTION_AMOUNT_ASC]: '처방금액 높은순',
+  [SettlementPartnerProductOrder.PRESCRIPTION_AMOUNT_DESC]: '처방금액 낮은순',
+  [SettlementPartnerProductOrder.FEE_AMOUNT_ASC]: '수수료금액 높은순',
+  [SettlementPartnerProductOrder.PRODUCT_NAME_ASC]: '제품명순',
+};
+
 export const BoardSortType = {
   LATEST: 'LATEST',
   VIEWS: 'VIEWS',
