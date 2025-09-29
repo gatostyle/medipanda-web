@@ -81,6 +81,11 @@ export default function MpAdminEventEdit() {
       return;
     }
 
+    if (thumbnailFile === null && isNew) {
+      await alert('썸네일을 선택하세요');
+      return;
+    }
+
     try {
       if (isNew) {
         await createEventBoard({
