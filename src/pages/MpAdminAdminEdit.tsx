@@ -233,7 +233,7 @@ export default function MpAdminAdminEdit() {
           control={form.control}
           name={'phoneNumber'}
           render={({ field }) => (
-            <TextField {...field} fullWidth label='연락처' onChange={e => field.onChange(normalizePhoneNumber(e.target.value))} />
+            <TextField {...field} fullWidth label='연락처*' onChange={e => field.onChange(normalizePhoneNumber(e.target.value))} />
           )}
         />
 
