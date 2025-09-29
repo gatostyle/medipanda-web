@@ -33,13 +33,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
-import { DATEFORMAT_YYYY_MM_DD, formatYyyyMmDd, SafeDate } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, formatYyyyMmDd, formatYyyyMmDdHhMmSs, SafeDate } from '@/lib/utils/dateFormat';
 
 export default function MpAdminAtoZList() {
   const navigate = useNavigate();
 
   const initialSearchParams = {
-    searchType: '' as 'title' | 'userId' | 'name' | 'nickname' | '',
+    searchType: 'title' as 'title' | 'userId' | 'name' | 'nickname',
     searchKeyword: '',
     startAt: '',
     endAt: '',
@@ -67,7 +67,7 @@ export default function MpAdminAtoZList() {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   const deleteDialog = useMpDeleteDialog();
-  const { alert, alertError } = useMpModal();
+  const { alertError } = useMpModal();
 
   const form = useForm({
     defaultValues: {
@@ -80,11 +80,6 @@ export default function MpAdminAtoZList() {
   const formEndAt = form.watch('endAt');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
-    if (values.searchType === '' && values.searchKeyword !== '') {
-      await alert('검색유형을 선택하세요.');
-      return;
-    }
-
     const url = setUrlParams(
       {
         ...values,
@@ -227,23 +222,6 @@ export default function MpAdminAtoZList() {
               )}
             />
           </SearchFilterItem>
-          <SearchFilterItem minWidth={140}>
-            <FormControl fullWidth size='small'>
-              <InputLabel>검색유형</InputLabel>
-              <Controller
-                control={form.control}
-                name='searchType'
-                render={({ field }) => (
-                  <Select {...field}>
-                    <MenuItem value={'title'}>제목</MenuItem>
-                    <MenuItem value={'userId'}>아이디</MenuItem>
-                    <MenuItem value={'name'}>회원명</MenuItem>
-                    <MenuItem value={'nickname'}>닉네임</MenuItem>
-                  </Select>
-                )}
-              />
-            </FormControl>
-          </SearchFilterItem>
           <SearchFilterItem flexGrow={1} minWidth={200}>
             <Controller
               control={form.control}
@@ -298,7 +276,7 @@ export default function MpAdminAtoZList() {
                 <TableCell width={80}>노출상태</TableCell>
                 <TableCell width={80}>노츌범위</TableCell>
                 <TableCell width={100}>조회수</TableCell>
-                <TableCell width={120}>작성일</TableCell>
+                <TableCell width={200}>작성일</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -349,7 +327,7 @@ export default function MpAdminAtoZList() {
                     </TableCell>
                     <TableCell>{BoardExposureRangeLabel[item.exposureRange]}</TableCell>
                     <TableCell>{item.viewsCount.toLocaleString()}</TableCell>
-                    <TableCell>{formatYyyyMmDd(item.createdAt)}</TableCell>
+                    <TableCell>{formatYyyyMmDdHhMmSs(item.createdAt)}</TableCell>
                   </TableRow>
                 ))
               )}

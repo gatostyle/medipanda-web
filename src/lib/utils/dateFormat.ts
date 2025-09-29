@@ -2,9 +2,17 @@ import { format } from 'date-fns';
 
 export const DAY_TO_MILLISECONDS = 24 * 60 * 60 * 1000;
 
+export const DATEFORMAT_YYYY_MM_DD_HH_MM_SS = 'yyyy-MM-dd HH:mm:ss';
 export const DATEFORMAT_YYYY_MM_DD_HH_MM = 'yyyy-MM-dd HH:mm';
 export const DATEFORMAT_YYYY_MM_DD = 'yyyy-MM-dd';
 export const DATEFORMAT_YYYY_MM = 'yyyy-MM';
+
+export function formatYyyyMmDdHhMmSs(dateOrString: Date | string): string {
+  return format(
+    typeof dateOrString === 'string' ? KoreanDateFix(new Date(DateFix(dateOrString))) : dateOrString,
+    DATEFORMAT_YYYY_MM_DD_HH_MM_SS,
+  );
+}
 
 export function formatYyyyMmDdHhMm(dateOrString: Date | string): string {
   return format(
