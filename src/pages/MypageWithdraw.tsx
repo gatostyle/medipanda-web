@@ -18,6 +18,7 @@ export default function MypageWithdraw() {
     try {
       await deleteMember(session!.userId);
       alert('회원 탈퇴가 완료되었습니다. 그동안 메디판다를 이용해주셔서 감사합니다.');
+      localStorage.clear();
       window.location.href = '/logout';
     } catch (e) {
       console.error(e);
