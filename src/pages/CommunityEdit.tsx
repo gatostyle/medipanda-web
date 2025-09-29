@@ -26,17 +26,6 @@ import type { RequiredDeep } from 'type-fest';
 export default function CommunityEdit({ boardType }: { boardType: keyof typeof BoardType }) {
   const { session } = useSession();
 
-  const paramBoardType = ((boardType: keyof typeof BoardType) => {
-    switch (boardType) {
-      case BoardType.ANONYMOUS:
-        return 'anonymous';
-      case BoardType.MR_CSO_MATCHING:
-        return 'mr-cso-matching';
-      default:
-        throw new Error('Invalid community type');
-    }
-  })(boardType);
-
   const { id: paramId } = useParams();
   const isNew = paramId === undefined;
   const boardPostId = Number(paramId);
@@ -51,12 +40,12 @@ export default function CommunityEdit({ boardType }: { boardType: keyof typeof B
 
     if (Number.isNaN(boardPostId)) {
       alert('잘못된 접근입니다.');
-      navigate(`/community/${paramBoardType}`, { replace: true });
+      navigate(`/community/${boardType.toLowerCase()}`, { replace: true });
       return;
     }
 
     fetchDetail(boardPostId);
-  }, [isNew, boardPostId, paramBoardType, navigate]);
+  }, [isNew, boardType, boardPostId, navigate]);
 
   const fetchDetail = async (id: number) => {
     const response = await getBoardDetails(id);
@@ -135,7 +124,7 @@ export default function CommunityEdit({ boardType }: { boardType: keyof typeof B
           files: values.newFiles,
         });
         alert('글이 작성되었습니다.');
-        navigate(`/community/${paramBoardType}`);
+        navigate(`/community/${boardType.toLowerCase()}`);
       }
     } catch (e) {
       console.error('Error saving post:', e);
@@ -250,7 +239,7 @@ export default function CommunityEdit({ boardType }: { boardType: keyof typeof B
       >
         <MedipandaButton
           component={RouterLink}
-          to={`/community/${paramBoardType}`}
+          to={`/community/${boardType.toLowerCase()}`}
           variant='outlined'
           size='large'
           color='secondary'

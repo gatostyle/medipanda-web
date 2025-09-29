@@ -79,7 +79,7 @@ export default function MrCsoMatchingList() {
       setContents(response.content);
       setTotalPages(response.totalPages);
     } catch (error) {
-      console.error('Failed to fetch mr-cso-matching list:', error);
+      console.error('Failed to fetch mr cso matching list:', error);
       alert('신규처 매칭 목록을 불러오는 중 오류가 발생했습니다.');
       setContents([]);
       setTotalPages(0);
@@ -150,7 +150,7 @@ export default function MrCsoMatchingList() {
                       )}
                       <Link
                         component={RouterLink}
-                        to={fixedNotices.includes(post) ? `/customer-service/notice/${post.id}` : `/community/mr-cso-matching/${post.id}`}
+                        to={fixedNotices.includes(post) ? `/customer-service/notice/${post.id}` : `/community/mr_cso_matching/${post.id}`}
                         underline='hover'
                         sx={{
                           color: fixedNotices.includes(post) ? colors.gray80 : colors.gray70,
@@ -239,7 +239,7 @@ export default function MrCsoMatchingList() {
               fullWidth
               variant='contained'
               component={RouterLink}
-              to='/community/mr-cso-matching/new'
+              to='/community/mr_cso_matching/new'
               sx={{
                 height: '50px',
                 backgroundColor: colors.navy,

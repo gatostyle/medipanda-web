@@ -95,7 +95,7 @@ export function CommunityTrendingList({ boardType }: { boardType: keyof typeof B
                 <Link
                   underline='hover'
                   component={RouterLink}
-                  to={boardType === BoardType.ANONYMOUS ? `/community/anonymous/${item.id}` : `/community/mr-cso-matching/${item.id}`}
+                  to={`/community/${boardType.toLowerCase()}/${item.id}`}
                   sx={{
                     color: colors.gray80,
                     '&:hover': {

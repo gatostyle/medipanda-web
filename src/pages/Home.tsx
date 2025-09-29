@@ -235,7 +235,7 @@ export default function Home() {
               variant='contained'
               startIcon={<img src='/assets/icons/icon-pen.svg' />}
               component={RouterLink}
-              to={recentBoardType === BoardType.ANONYMOUS ? '/community/anonymous/new' : '/community/mr-cso-matching/new'}
+              to={`/community/${recentBoardType.toLowerCase()}/new`}
               sx={{
                 marginLeft: 'auto',
               }}
@@ -246,7 +246,7 @@ export default function Home() {
               variant='outlined'
               endIcon={<KeyboardArrowRight />}
               component={RouterLink}
-              to={recentBoardType === BoardType.ANONYMOUS ? '/community/anonymous' : '/community/mr-cso-matching'}
+              to={`/community/${recentBoardType.toLowerCase()}`}
               sx={{
                 marginLeft: '10px',
               }}

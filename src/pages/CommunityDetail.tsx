@@ -29,16 +29,6 @@ import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 export default function CommunityDetail({ boardType }: { boardType: keyof typeof BoardType }) {
   const { session } = useSession();
 
-  const paramBoardType = ((boardType: keyof typeof BoardType) => {
-    switch (boardType) {
-      case BoardType.ANONYMOUS:
-        return 'anonymous';
-      case BoardType.MR_CSO_MATCHING:
-        return 'mr-cso-matching';
-      default:
-        throw new Error('Invalid community type');
-    }
-  })(boardType);
   const { id: paramId } = useParams();
   const boardPostId = Number(paramId);
 
@@ -96,7 +86,7 @@ export default function CommunityDetail({ boardType }: { boardType: keyof typeof
     try {
       await deleteBoardPost(boardPostId);
       alert('게시글이 삭제되었습니다.');
-      navigate(`/community/${paramBoardType}`, { replace: true });
+      navigate(`/community/${boardType.toLowerCase()}`, { replace: true });
     } catch (e) {
       console.error('Error deleting post: ', e);
       alert('게시글 삭제 중 오류가 발생했습니다. 다시 시도해주세요.');
@@ -245,7 +235,7 @@ export default function CommunityDetail({ boardType }: { boardType: keyof typeof
                 <MedipandaButton variant='outlined' color='error' onClick={handleDelete}>
                   삭제하기
                 </MedipandaButton>
-                <MedipandaButton variant='outlined' component={RouterLink} to={`/community/${paramBoardType}/${boardPostId}/edit`}>
+                <MedipandaButton variant='outlined' component={RouterLink} to={`/community/${boardType.toLowerCase()}/${boardPostId}/edit`}>
                   수정하기
                 </MedipandaButton>
               </>
