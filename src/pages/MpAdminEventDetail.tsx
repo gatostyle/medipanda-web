@@ -112,7 +112,7 @@ export default function MpAdminEventDetail() {
 
           <Stack spacing={1}>
             <Typography variant='subtitle2' color='text.secondary'>
-              이벤트 썸네일
+              설명
             </Typography>
             <Typography variant='body1'>{detail.description}</Typography>
           </Stack>
