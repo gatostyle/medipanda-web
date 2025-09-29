@@ -329,7 +329,7 @@ export default function MpAdminProductList() {
                 <TableCell width={60}>No</TableCell>
                 <TableCell width={150}>제약사</TableCell>
                 <TableCell width={300}>제품명</TableCell>
-                <TableCell width={250}>성분명</TableCell>
+                <TableCell>성분명</TableCell>
                 <TableCell width={120}>제품코드</TableCell>
                 <TableCell width={100}>약가</TableCell>
                 <TableCell width={120}>기본수수료율</TableCell>
@@ -378,7 +378,16 @@ export default function MpAdminProductList() {
                       </Link>
                     </TableCell>
                     <TableCell>
-                      <p dangerouslySetInnerHTML={{ __html: item.composition ?? '-' }} style={{ margin: 0 }} />
+                      <p
+                        dangerouslySetInnerHTML={{ __html: item.composition ?? '-' }}
+                        style={{
+                          margin: 0,
+                          width: '250px',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      />
                     </TableCell>
                     <TableCell>{item.productCode}</TableCell>
                     <TableCell>{item.price !== null ? `${item.price.toLocaleString()}` : '-'}</TableCell>
