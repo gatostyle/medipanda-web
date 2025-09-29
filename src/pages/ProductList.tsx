@@ -1,4 +1,5 @@
 import {
+  type BoardDetailsResponse,
   getProductDetails,
   getProductSummaries,
   type ProductDetailsResponse,
@@ -10,11 +11,14 @@ import { MedipandaDialog, MedipandaDialogTitle } from '@/custom/components/Medip
 import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { MedipandaTableCell, MedipandaTableRow } from '@/custom/components/MedipandaTable';
+import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
+import { trimTiptapContent } from '@/lib/Tiptap';
 import { setUrlParams } from '@/lib/utils/url';
 import { withSequence } from '@/lib/utils/withSequence';
 import { colors, typography } from '@/themes';
+import { PercentUtils } from '@/utils/PercentUtils';
 import { Search } from '@mui/icons-material';
 import {
   Box,
@@ -31,6 +35,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { EditorContent } from '@tiptap/react';
 import { ArrowDown2, ArrowUp2 } from 'iconsax-reactjs';
 import { Fragment, useEffect, useState } from 'react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
@@ -581,7 +586,7 @@ export default function ProductList() {
           </Typography>
           <FormControl
             sx={{
-              width: '350px',
+              width: '200px',
             }}
           >
             <Controller
@@ -643,35 +648,50 @@ export default function ProductList() {
                 }}
               >
                 <MedipandaTableCell rowSpan={2}>
-                  <Typography variant='smallTextR' sx={{ whiteSpace: 'pre-line' }}>
-                    {product.manufacturerName}
-                  </Typography>
+                  <Typography variant='smallTextR'>{product.manufacturerName}</Typography>
                 </MedipandaTableCell>
                 <MedipandaTableCell sx={{ textAlign: 'left' }}>
                   <Stack gap='5px' sx={{ width: '450px' }}>
-                    <Typography variant='largeTextB' sx={{ color: colors.gray70 }}>
+                    <Typography variant='largeTextB' sx={{ color: colors.gray70, whiteSpace: 'pre-line' }}>
                       {product.productName}
                     </Typography>
-                    <Typography
-                      variant='mediumTextR'
-                      sx={{ color: colors.gray50, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
-                    >
+                    <Typography variant='mediumTextR' sx={{ color: colors.gray50, whiteSpace: 'pre-line' }}>
                       {product.composition}
                     </Typography>
                   </Stack>
                 </MedipandaTableCell>
-                <MedipandaTableCell align='center'>{product.price?.toLocaleString() ?? '-'}</MedipandaTableCell>
-                <MedipandaTableCell align='center'>{product.note ?? '-'}</MedipandaTableCell>
                 <MedipandaTableCell align='center'>
-                  <Typography sx={{ fontWeight: 500 }}>{product.feeRate ?? '-'}</Typography>
+                  <Typography sx={{ fontWeight: 500 }}>{product.price?.toLocaleString() ?? '-'}</Typography>
                 </MedipandaTableCell>
                 <MedipandaTableCell align='center'>
-                  {Object.keys(statusLabel)
-                    .map(key => (product[key] ? statusLabel[key] : ''))
-                    .filter(Boolean)
-                    .join(', ') || '-'}
+                  <Typography sx={{ fontWeight: 500 }}>{product.note ?? '-'}</Typography>
                 </MedipandaTableCell>
-                <MedipandaTableCell align='center'>{product.changedFeeRate ?? '-'}</MedipandaTableCell>
+                <MedipandaTableCell align='center'>
+                  <Typography sx={{ fontWeight: 500 }}>
+                    {product.feeRate !== null ? `${PercentUtils.decimalToPercent(product.feeRate)}%` : '-'}
+                  </Typography>
+                </MedipandaTableCell>
+                <MedipandaTableCell align='center'>
+                  <Typography sx={{ fontWeight: 500 }}>
+                    {Object.keys(statusLabel)
+                      .map(key => (product[key] ? statusLabel[key] : ''))
+                      .filter(Boolean)
+                      .join(', ') || '-'}
+                  </Typography>
+                </MedipandaTableCell>
+                <MedipandaTableCell align='center'>
+                  <Typography sx={{ fontWeight: 500 }}>
+                    {product.changedMonth !== null ? (
+                      <>
+                        {`${PercentUtils.decimalToPercent(product.changedFeeRate ?? 0)}%`}
+                        <br />
+                        {`(${new Date(product.changedMonth).getMonth() + 1}월)`}
+                      </>
+                    ) : (
+                      '-'
+                    )}
+                  </Typography>
+                </MedipandaTableCell>
               </MedipandaTableRow>
               <MedipandaTableRow>
                 <MedipandaTableCell colSpan={6} sx={{ textAlign: 'left' }}>
@@ -722,6 +742,8 @@ function ReplaceableProductDialog({ open, onClose, productId }: { open?: boolean
     setDetail(response);
   };
 
+  const [detailInfoDialogOpen, setDetailInfoDialogOpen] = useState(false);
+
   if (!open) {
     return null;
   }
@@ -731,107 +753,178 @@ function ReplaceableProductDialog({ open, onClose, productId }: { open?: boolean
   }
 
   return (
-    <MedipandaDialog open onClose={onClose} width='1000px'>
-      <MedipandaDialogTitle title='대체가능 의약품 보기' onClose={onClose} />
-      <Stack>
-        <table style={{ margin: '40px 30px' }}>
-          <tr style={{ height: '39px' }}>
-            <td style={{ width: '100px' }}>제약사명:</td>
-            <td style={{ width: '320px' }}>{detail.manufacturer}</td>
-            <td style={{ width: '100px' }}>약가:</td>
-            <td style={{ width: '320px' }}>{detail.price}</td>
-          </tr>
-          <tr style={{ height: '39px' }}>
-            <td>제품명:</td>
-            <td>{detail.productName}</td>
-            <td>기본: 수수료율</td>
-            <td>{detail.feeRate}</td>
-          </tr>
-          <tr style={{ height: '39px' }}>
-            <td>성분명:</td>
-            <td>{detail.composition}</td>
-            <td>상태:</td>
-            <td>
-              {Object.keys(statusLabel)
-                .map(key => (detail[key] ? statusLabel[key] : ''))
-                .filter(Boolean)
-                .join(', ') || '-'}
-            </td>
-          </tr>
-          <tr style={{ height: '39px' }}>
-            <td>제품코드:</td>
-            <td>{detail.productCode}</td>
-            <td>비고:</td>
-            <td>{detail.note}</td>
-          </tr>
-        </table>
-        <Table
-          sx={{
-            marginTop: '10px',
-            marginBottom: '40px',
+    <>
+      <MedipandaDialog
+        open
+        onClose={() => {
+          setDetail(null);
+          onClose?.();
+        }}
+        width='1000px'
+      >
+        <MedipandaDialogTitle
+          title='대체가능 의약품 보기'
+          onClose={() => {
+            setDetail(null);
+            onClose?.();
           }}
-        >
-          <TableHead>
-            <MedipandaTableRow>
-              <MedipandaTableCell sx={{ width: '120px' }}>대체</MedipandaTableCell>
-              <MedipandaTableCell sx={{ width: '120px' }}>제약사명</MedipandaTableCell>
-              <MedipandaTableCell sx={{ width: '450px' }}>제품정보</MedipandaTableCell>
-              <MedipandaTableCell sx={{ width: '80px' }}>약가</MedipandaTableCell>
-              <MedipandaTableCell sx={{ width: '65px' }}>급여정보</MedipandaTableCell>
-              <MedipandaTableCell sx={{ width: '90px' }}>기본 수수료율</MedipandaTableCell>
-              <MedipandaTableCell sx={{ width: '80px' }}>상태</MedipandaTableCell>
-              <MedipandaTableCell sx={{ width: '60px' }}>변경</MedipandaTableCell>
-            </MedipandaTableRow>
-          </TableHead>
-          <TableBody>
-            {detail?.alternativeProducts.map(product => (
-              <Fragment key={product.kdCode}>
-                <MedipandaTableRow sx={{ borderBottomWidth: '0 !important' }}>
-                  <MedipandaTableCell rowSpan={2}>
-                    <Typography variant='smallTextR' sx={{ whiteSpace: 'pre-line' }}>
-                      {product.substituent ?? '-'}
-                    </Typography>
-                  </MedipandaTableCell>
-                  <MedipandaTableCell rowSpan={2}>
-                    <Typography variant='smallTextR' sx={{ whiteSpace: 'pre-line' }}>
-                      {product.manufacturer ?? '-'}
-                    </Typography>
-                  </MedipandaTableCell>
-                  <MedipandaTableCell sx={{ textAlign: 'left' }}>
-                    <Stack gap='5px' sx={{ width: '450px' }}>
-                      <Typography variant='largeTextB' sx={{ color: colors.gray70 }}>
-                        {product.productName}
+        />
+        <Stack>
+          <table style={{ margin: '40px 30px' }}>
+            <tr style={{ height: '39px' }}>
+              <td style={{ width: '100px' }}>제약사명:</td>
+              <td style={{ width: '320px' }}>{detail.manufacturer}</td>
+              <td style={{ width: '100px' }}>약가:</td>
+              <td style={{ width: '320px' }}>{detail.price}</td>
+            </tr>
+            <tr style={{ height: '39px' }}>
+              <td>제품명:</td>
+              <td>
+                {detail.productName}
+                {trimTiptapContent(detail.boardDetailsResponse.content) !== '' && (
+                  <MedipandaButton
+                    variant='contained'
+                    size='small'
+                    onClick={() => setDetailInfoDialogOpen(true)}
+                    sx={{
+                      marginLeft: '10px',
+                      paddingX: '20px',
+                      borderRadius: '50px',
+                    }}
+                  >
+                    <Typography variant='smallTextM'>Detail Info</Typography>
+                  </MedipandaButton>
+                )}
+              </td>
+              <td>기본:</td>
+              <td>{detail.feeRate !== null ? `${PercentUtils.decimalToPercent(detail.feeRate)}%` : '-'}</td>
+            </tr>
+            <tr style={{ height: '39px' }}>
+              <td>성분명:</td>
+              <td>{detail.composition}</td>
+              <td>상태:</td>
+              <td>
+                {Object.keys(statusLabel)
+                  .map(key => (detail[key] ? statusLabel[key] : ''))
+                  .filter(Boolean)
+                  .join(', ') || '-'}
+              </td>
+            </tr>
+            <tr style={{ height: '39px' }}>
+              <td>제품코드:</td>
+              <td>{detail.productCode}</td>
+              <td>비고:</td>
+              <td>{detail.note}</td>
+            </tr>
+          </table>
+          <Table
+            sx={{
+              marginTop: '10px',
+              marginBottom: '40px',
+            }}
+          >
+            <TableHead>
+              <MedipandaTableRow>
+                <MedipandaTableCell sx={{ width: '120px' }}>대체</MedipandaTableCell>
+                <MedipandaTableCell sx={{ width: '300px' }}>제약사명</MedipandaTableCell>
+                <MedipandaTableCell>제품정보</MedipandaTableCell>
+                <MedipandaTableCell sx={{ width: '80px' }}>약가</MedipandaTableCell>
+                <MedipandaTableCell sx={{ width: '65px' }}>급여정보</MedipandaTableCell>
+                <MedipandaTableCell sx={{ width: '90px' }}>기본 수수료율</MedipandaTableCell>
+                <MedipandaTableCell sx={{ width: '80px' }}>상태</MedipandaTableCell>
+              </MedipandaTableRow>
+            </TableHead>
+            <TableBody>
+              {detail?.alternativeProducts.map(product => (
+                <Fragment key={product.kdCode}>
+                  <MedipandaTableRow sx={{ borderBottomWidth: '0 !important' }}>
+                    <MedipandaTableCell rowSpan={2}>
+                      <Typography variant='smallTextR' sx={{ fontSize: '15px' }}>
+                        {product.substituent ?? '-'}
                       </Typography>
+                    </MedipandaTableCell>
+                    <MedipandaTableCell rowSpan={2}>
+                      <Typography variant='smallTextR' sx={{ fontSize: '15px' }}>
+                        {product.manufacturer ?? '-'}
+                      </Typography>
+                    </MedipandaTableCell>
+                    <MedipandaTableCell sx={{ textAlign: 'left' }}>
+                      <Stack gap='5px' sx={{ width: '450px' }}>
+                        <Typography variant='largeTextB' sx={{ color: colors.gray70 }}>
+                          {product.productName}
+                        </Typography>
+                        <Typography
+                          variant='mediumTextR'
+                          sx={{ color: colors.gray50, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                        >
+                          {product.composition}
+                        </Typography>
+                      </Stack>
+                    </MedipandaTableCell>
+                    <MedipandaTableCell align='center'>
+                      <Typography sx={{ fontWeight: 500 }}>{product.price?.toLocaleString() ?? '-'}</Typography>
+                    </MedipandaTableCell>
+                    <MedipandaTableCell align='center'>
+                      <Typography sx={{ fontWeight: 500 }}>{product.note ?? '-'}</Typography>
+                    </MedipandaTableCell>
+                    <MedipandaTableCell align='center'>
+                      <Typography sx={{ fontWeight: 500 }}>{product.feeRate ?? '-'}</Typography>
+                    </MedipandaTableCell>
+                    <MedipandaTableCell align='center'>
+                      <Typography sx={{ fontWeight: 500 }}>{product.note ?? '-'}</Typography>
+                    </MedipandaTableCell>
+                  </MedipandaTableRow>
+                  <MedipandaTableRow>
+                    <MedipandaTableCell colSpan={6} sx={{ textAlign: 'left' }}>
                       <Typography
                         variant='mediumTextR'
-                        sx={{ color: colors.gray50, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                        sx={{ color: colors.vividViolet, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                       >
-                        {product.composition}
+                        {product.note}
                       </Typography>
-                    </Stack>
-                  </MedipandaTableCell>
-                  <MedipandaTableCell align='center'>{product.price?.toLocaleString() ?? '-'}</MedipandaTableCell>
-                  <MedipandaTableCell align='center'>{product.note ?? '-'}</MedipandaTableCell>
-                  <MedipandaTableCell align='center'>
-                    <Typography sx={{ fontWeight: 500 }}>{product.feeRate ?? '-'}</Typography>
-                  </MedipandaTableCell>
-                  <MedipandaTableCell align='center'>{product.note ?? '-'}</MedipandaTableCell>
-                  <MedipandaTableCell align='center'>{product.feeRate ?? '-'}</MedipandaTableCell>
-                </MedipandaTableRow>
-                <MedipandaTableRow>
-                  <MedipandaTableCell colSpan={6} sx={{ textAlign: 'left' }}>
-                    <Typography
-                      variant='mediumTextR'
-                      sx={{ color: colors.vividViolet, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
-                    >
-                      {product.note}
-                    </Typography>
-                  </MedipandaTableCell>
-                </MedipandaTableRow>
-              </Fragment>
-            ))}
-          </TableBody>
-        </Table>
+                    </MedipandaTableCell>
+                  </MedipandaTableRow>
+                </Fragment>
+              ))}
+            </TableBody>
+          </Table>
+        </Stack>
+      </MedipandaDialog>
+
+      <ProductDetailInfoDialog
+        open={detailInfoDialogOpen}
+        boardDetailsResponse={detail.boardDetailsResponse}
+        onClose={() => setDetailInfoDialogOpen(false)}
+      />
+    </>
+  );
+}
+
+function ProductDetailInfoDialog({
+  open,
+  onClose,
+  boardDetailsResponse,
+}: {
+  open?: boolean;
+  onClose?: () => void;
+  boardDetailsResponse: BoardDetailsResponse;
+}) {
+  const { editor } = useMedipandaEditor();
+
+  useEffect(() => {
+    editor.setEditable(false);
+    editor.commands.setContent(boardDetailsResponse.content);
+  }, [boardDetailsResponse, editor]);
+
+  if (!open) {
+    return null;
+  }
+
+  return (
+    <MedipandaDialog fullScreen open onClose={onClose}>
+      <MedipandaDialogTitle title='Detail Info' onClose={onClose} />
+      <Stack sx={{ margin: '40px 30px', overflow: 'auto' }}>
+        <EditorContent editor={editor} />
       </Stack>
     </MedipandaDialog>
   );
