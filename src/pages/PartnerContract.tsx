@@ -1,10 +1,18 @@
-import { applyContract, getContractDetails, type PartnerContractDetailsResponse, PartnerContractType } from '@/backend';
+import {
+  applyContract,
+  getContractDetails,
+  type PartnerContractDetailsResponse,
+  PartnerContractStatus,
+  PartnerContractType,
+} from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaCheckbox } from '@/custom/components/MedipandaCheckbox';
 import { MedipandaDialog, MedipandaDialogTitle } from '@/custom/components/MedipandaDialog';
 import { MedipandaFileUploadButton } from '@/custom/components/MedipandaFileUploadButton';
 import { MedipandaTab, MedipandaTabs } from '@/custom/components/MedipandaTab';
 import { useSession } from '@/hooks/useSession';
+import { formatYyyy년Mm월dd일 } from '@/lib/utils/dateFormat';
+import { normalizeBusinessNumber } from '@/lib/utils/form';
 import { colors, typography } from '@/themes';
 import { Box, Button, FormControlLabel, Link, OutlinedInput, Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -37,8 +45,12 @@ const PartnerContractOutlinedInput = styled(OutlinedInput)({
 
   '&.Mui-disabled': {
     borderColor: colors.navy,
-    backgroundColor: colors.gray40,
-    color: colors.navy,
+    backgroundColor: colors.gray10,
+
+    '& .MuiOutlinedInput-input': {
+      color: colors.navy,
+      '-webkit-text-fill-color': colors.navy,
+    },
   },
 
   '& .MuiOutlinedInput-input': {
@@ -62,10 +74,26 @@ const PartnerContractFormButton = styled(Button)({
 
   '&.Mui-disabled': {
     borderColor: colors.navy,
-    backgroundColor: colors.gray40,
+    backgroundColor: colors.gray10,
     color: colors.navy,
   },
 });
+
+const PartnerContractFileLink = styled(Stack)({
+  alignItems: 'center',
+
+  height: '50px',
+  paddingLeft: '15px',
+  border: `1px solid ${colors.gray40}`,
+  borderRadius: '5px',
+  boxSizing: 'border-box',
+});
+
+function extractFileName(url: string) {
+  const lastPath = new URL(url).pathname.split('/').pop();
+  const uuidRemoved = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}_(.+)$/.exec(lastPath || '');
+  return decodeURIComponent(uuidRemoved?.[1] ?? '');
+}
 
 export default function PartnerContract() {
   const { session } = useSession();
@@ -156,6 +184,10 @@ export default function PartnerContract() {
   const fetchContractDetails = async () => {
     try {
       const detail = await getContractDetails(session!.userId);
+      if (detail.status === PartnerContractStatus.REJECTED || detail.status === PartnerContractStatus.CANCELLED) {
+        return;
+      }
+
       setContractDetails(detail);
 
       form.setValue('contractType', detail.contractType);
@@ -276,6 +308,7 @@ export default function PartnerContract() {
                 render={({ field }) => (
                   <PartnerContractOutlinedInput
                     {...field}
+                    onChange={e => field.onChange(normalizeBusinessNumber(e.target.value, field.value))}
                     disabled={contractDetails !== null}
                     placeholder="'-'없이 입력해주세요."
                     sx={{ flex: 1 }}
@@ -287,13 +320,7 @@ export default function PartnerContract() {
 
           <PartnerContractFormRow>
             <PartnerContractFormLabel />
-            {contractDetails !== null ? (
-              <PartnerContractFormInput>
-                <Link component={RouterLink} to={contractDetails.fileUrls.BUSINESS_REGISTRATION} target='_blank'>
-                  {new URL(contractDetails.fileUrls.BUSINESS_REGISTRATION).pathname.split('/').pop()}
-                </Link>
-              </PartnerContractFormInput>
-            ) : (
+            {contractDetails === null ? (
               <Controller
                 control={form.control}
                 name={'businessRegistration'}
@@ -304,6 +331,14 @@ export default function PartnerContract() {
                   </PartnerContractFormInput>
                 )}
               />
+            ) : (
+              <PartnerContractFormInput>
+                <PartnerContractFileLink direction='row'>
+                  <Link component={RouterLink} to={contractDetails.fileUrls.BUSINESS_REGISTRATION} target='_blank'>
+                    {extractFileName(contractDetails.fileUrls.BUSINESS_REGISTRATION)}
+                  </Link>
+                </PartnerContractFileLink>
+              </PartnerContractFormInput>
             )}
           </PartnerContractFormRow>
 
@@ -313,16 +348,16 @@ export default function PartnerContract() {
               control={form.control}
               name={'bankName'}
               render={({ field }) =>
-                contractDetails !== null ? (
-                  <PartnerContractFormInput>
-                    <Typography variant='largeTextR'>{field.value}</Typography>
-                  </PartnerContractFormInput>
-                ) : (
+                contractDetails === null ? (
                   <PartnerContractFormInput>
                     <PartnerContractFormButton variant='outlined' onClick={() => setBankSelectDialogOpen(true)}>
                       <Typography variant='largeTextR'>{field.value !== '' ? field.value : '은행을 선택해주세요'}</Typography>
                       <ArrowDown2 style={{ marginLeft: 'auto' }} />
                     </PartnerContractFormButton>
+                  </PartnerContractFormInput>
+                ) : (
+                  <PartnerContractFormInput>
+                    <Typography variant='largeTextR'>{field.value}</Typography>
                   </PartnerContractFormInput>
                 )
               }
@@ -349,13 +384,7 @@ export default function PartnerContract() {
 
           <PartnerContractFormRow>
             <PartnerContractFormLabel>CSO 신고증</PartnerContractFormLabel>
-            {contractDetails !== null ? (
-              <PartnerContractFormInput>
-                <Link component={RouterLink} to={contractDetails.fileUrls.CSO_CERTIFICATE} target='_blank'>
-                  {new URL(contractDetails.fileUrls.CSO_CERTIFICATE).pathname.split('/').pop()}
-                </Link>
-              </PartnerContractFormInput>
-            ) : (
+            {contractDetails === null ? (
               <Controller
                 control={form.control}
                 name={'csoCertificate'}
@@ -366,29 +395,15 @@ export default function PartnerContract() {
                   </PartnerContractFormInput>
                 )}
               />
+            ) : (
+              <PartnerContractFormInput>
+                <PartnerContractFileLink direction='row'>
+                  <Link component={RouterLink} to={contractDetails.fileUrls.CSO_CERTIFICATE} target='_blank'>
+                    {extractFileName(contractDetails.fileUrls.CSO_CERTIFICATE)}
+                  </Link>
+                </PartnerContractFileLink>
+              </PartnerContractFormInput>
             )}
-          </PartnerContractFormRow>
-
-          <PartnerContractFormRow>
-            <PartnerContractFormLabel>재위탁계약서</PartnerContractFormLabel>
-            <Controller
-              control={form.control}
-              name={'subcontractAgreement'}
-              render={({ field }) =>
-                contractDetails !== null ? (
-                  <PartnerContractFormInput>
-                    <Link component={RouterLink} to={contractDetails.fileUrls.SUBCONTRACT_AGREEMENT} target='_blank'>
-                      {new URL(contractDetails.fileUrls.SUBCONTRACT_AGREEMENT).pathname.split('/').pop()}
-                    </Link>
-                  </PartnerContractFormInput>
-                ) : (
-                  <PartnerContractFormInput>
-                    <MedipandaFileUploadButton onChange={files => field.onChange(files[0])} />
-                    {field.value && <Typography sx={{ color: colors.gray80 }}>{field.value.name}</Typography>}
-                  </PartnerContractFormInput>
-                )
-              }
-            />
           </PartnerContractFormRow>
 
           <PartnerContractFormRow>
@@ -397,13 +412,7 @@ export default function PartnerContract() {
               <br />
               교육이수증
             </PartnerContractFormLabel>
-            {contractDetails !== null ? (
-              <PartnerContractFormInput>
-                <Link component={RouterLink} to={contractDetails.fileUrls.SALES_EDUCATION_CERT} target='_blank'>
-                  {new URL(contractDetails.fileUrls.SALES_EDUCATION_CERT).pathname.split('/').pop()}
-                </Link>
-              </PartnerContractFormInput>
-            ) : (
+            {contractDetails === null ? (
               <Controller
                 control={form.control}
                 name={'educationCertificate'}
@@ -414,14 +423,49 @@ export default function PartnerContract() {
                   </PartnerContractFormInput>
                 )}
               />
+            ) : (
+              <PartnerContractFormInput>
+                <PartnerContractFileLink direction='row'>
+                  <Link component={RouterLink} to={contractDetails.fileUrls.SALES_EDUCATION_CERT} target='_blank'>
+                    {extractFileName(contractDetails.fileUrls.SALES_EDUCATION_CERT)}
+                  </Link>
+                </PartnerContractFileLink>
+              </PartnerContractFormInput>
             )}
           </PartnerContractFormRow>
 
-          <Controller
-            control={form.control}
-            name={'agreement'}
-            render={({ field }) =>
-              contractDetails === null ? (
+          {contractDetails !== null && (
+            <PartnerContractFormRow>
+              <PartnerContractFormLabel>계약일</PartnerContractFormLabel>
+              <PartnerContractFormInput>
+                <PartnerContractOutlinedInput
+                  value={
+                    contractDetails.status === PartnerContractStatus.PENDING
+                      ? '계약서 검토중'
+                      : formatYyyy년Mm월dd일(contractDetails.contractDate)
+                  }
+                  disabled
+                  placeholder="'-'없이 입력해주세요."
+                  sx={{
+                    flex: 1,
+                    ...(contractDetails.status === PartnerContractStatus.PENDING && {
+                      '& input': {
+                        color: `${colors.red} !important`,
+                        '-webkit-text-fill-color': `${colors.red} !important`,
+                        textAlign: 'center',
+                      },
+                    }),
+                  }}
+                />
+              </PartnerContractFormInput>
+            </PartnerContractFormRow>
+          )}
+
+          {contractDetails === null ? (
+            <Controller
+              control={form.control}
+              name={'agreement'}
+              render={({ field }) => (
                 <>
                   <Box sx={{ textAlign: 'center', mt: 4, marginBottom: 3 }}>
                     <FormControlLabel
@@ -444,11 +488,19 @@ export default function PartnerContract() {
                     </MedipandaButton>
                   </Box>
                 </>
-              ) : (
-                <></>
-              )
-            }
-          />
+              )}
+            />
+          ) : (
+            <img
+              src='/assets/logos/logo-kmedicine.png'
+              style={{
+                alignSelf: 'center',
+                width: '237px',
+                height: '64px',
+                marginTop: '20px',
+              }}
+            />
+          )}
         </Stack>
       </Stack>
 

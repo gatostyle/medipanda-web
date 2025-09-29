@@ -6,6 +6,7 @@ export const DATEFORMAT_YYYY_MM_DD_HH_MM = 'yyyy-MM-dd HH:mm';
 export const DATEFORMAT_YYYY_MM_DD = 'yyyy-MM-dd';
 export const DATEFORMAT_YYYY_MM = 'yyyy-MM';
 export const DATEFORMAT_YYYY년_MM월 = 'yyyy년 MM월';
+export const DATEFORMAT_YYYY년_MM월_DD일 = 'yyyy년 MM월 dd일';
 
 export function parseUtcDateString(dateString: string): Date {
   if (dateString.endsWith('Z')) {
@@ -31,6 +32,10 @@ export function formatYyyyMm(dateOrString: Date | string): string {
 
 export function formatYyyy년Mm월(dateOrString: Date | string): string {
   return format(typeof dateOrString === 'string' ? parseUtcDateString(dateOrString) : dateOrString, DATEFORMAT_YYYY년_MM월);
+}
+
+export function formatYyyy년Mm월dd일(dateOrString: Date | string): string {
+  return format(typeof dateOrString === 'string' ? parseUtcDateString(dateOrString) : dateOrString, DATEFORMAT_YYYY년_MM월_DD일);
 }
 
 export function SafeDate(dateString: string): Date | null {
