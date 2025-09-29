@@ -4,6 +4,7 @@ import {
   getProductSummaries,
   type ProductDetailsResponse,
   ProductSortType,
+  ProductSortTypeLabel,
   type ProductSummaryResponse,
 } from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
@@ -46,13 +47,6 @@ const searchTypeLabel = {
   composition: '성분명',
   productName: '제품명',
   manufacturerName: '제약사명',
-};
-
-const sortTypeLabel = {
-  PRICE_ASC: '약가 낮은순',
-  PRICE_DESC: '약가 높은순',
-  FEE_RATE_ASC: '기본수수료율 낮은순',
-  FEE_RATE_DESC: '기본수수료율 높은순',
 };
 
 const statusLabel = {
@@ -601,19 +595,21 @@ export default function ProductList() {
                     color: colors.vividViolet,
                   }}
                 >
-                  {Object.keys(sortTypeLabel).map(key => {
-                    return (
-                      <MenuItem
-                        key={key}
-                        value={key}
-                        sx={{
-                          '&.Mui-selected': { color: colors.vividViolet },
-                        }}
-                      >
-                        {sortTypeLabel[key]}
-                      </MenuItem>
-                    );
-                  })}
+                  {[ProductSortType.FEE_RATE_DESC, ProductSortType.FEE_RATE_ASC, ProductSortType.PRICE_DESC, ProductSortType.PRICE_ASC].map(
+                    key => {
+                      return (
+                        <MenuItem
+                          key={key}
+                          value={key}
+                          sx={{
+                            '&.Mui-selected': { color: colors.vividViolet },
+                          }}
+                        >
+                          {ProductSortTypeLabel[key]}
+                        </MenuItem>
+                      );
+                    },
+                  )}
                 </Select>
               )}
             />
