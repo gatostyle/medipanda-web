@@ -235,19 +235,28 @@ function GlobalLayout() {
                     border: `1px solid ${hasPartnerContract ? colors.vividViolet : colors.red}`,
                     borderRadius: '30px',
                     boxSizing: 'border-box',
-                    ...(hasPartnerContract
-                      ? {
-                          backgroundColor: colors.vividViolet,
-                          color: colors.white,
-                        }
-                      : {
-                          color: colors.red,
-                        }),
+
+                    ...(hasPartnerContract && { backgroundColor: colors.vividViolet }),
                   }}
                 >
-                  <Typography variant='mediumTextB' sx={{ lineHeight: '1' }}>
-                    {hasPartnerContract ? '계약중' : '미계약'}
-                  </Typography>
+                  <Link
+                    component={RouterLink}
+                    to={'/partner-contract'}
+                    onClick={() => setPostPopupAnchor(null)}
+                    underline='hover'
+                    sx={{
+                      color: hasPartnerContract ? colors.white : colors.red,
+                    }}
+                  >
+                    <Typography
+                      variant='mediumTextB'
+                      sx={{
+                        lineHeight: '1',
+                      }}
+                    >
+                      {hasPartnerContract ? '계약중' : '미계약'}
+                    </Typography>
+                  </Link>
                 </Stack>
                 <Typography variant='heading5B' sx={{ color: colors.gray80 }}>
                   {session.nickname}
@@ -277,6 +286,7 @@ function GlobalLayout() {
                   underline='hover'
                   component={RouterLink}
                   to='/partner-contract'
+                  onClick={() => setPostPopupAnchor(null)}
                   sx={{
                     alignSelf: 'center',
                     color: colors.red,
