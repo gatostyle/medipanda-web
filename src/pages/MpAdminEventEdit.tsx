@@ -66,6 +66,11 @@ export default function MpAdminEventEdit() {
       return;
     }
 
+    if (editorContent === '') {
+      await alert('내용을 입력하세요');
+      return;
+    }
+
     if (values.startDate === null) {
       await alert('시작일을 선택하세요');
       return;

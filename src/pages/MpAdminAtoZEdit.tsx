@@ -71,6 +71,11 @@ export default function MpAdminAtoZEdit() {
       return;
     }
 
+    if (editorContent === '') {
+      await alert('내용을 입력하세요.');
+      return;
+    }
+
     try {
       if (isNew) {
         await createBoardPost({
