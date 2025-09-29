@@ -46,7 +46,11 @@ export function SafeDate(dateString: string): Date | null {
 export function formatRelativeTime(dateOrString: Date | string): string {
   const date = typeof dateOrString === 'string' ? parseUtcDateString(dateOrString) : dateOrString;
   const now = new Date();
-  const diff = now.getTime() - date.getTime();
+  const diff = Math.max(now.getTime() - date.getTime(), 0);
+
+  if (diff === 0) {
+    return '방금 전';
+  }
 
   const seconds = Math.floor(diff / 1000);
   if (seconds < 60) {

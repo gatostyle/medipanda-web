@@ -312,7 +312,7 @@ function CommentSection({
       {comments
         .filter(comment => comment.parentId === null)
         .map(comment => {
-          const replies = comments.filter(comment => comment.parentId === comment.id);
+          const replies = (comment as unknown as { replies: CommentResponse[] }).replies;
 
           return (
             <Stack key={comment.id} gap='10px'>
