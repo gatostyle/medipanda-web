@@ -1,4 +1,4 @@
-import { type BoardPostResponse, getBoards, getFixedTopNotices } from '@/backend';
+import { type BoardPostResponse, BoardType, getBoards, getFixedTopNotices } from '@/backend';
 import { CommunityBanners } from '@/custom/components/CommunityBanners';
 import { CommunityTrendingList } from '@/custom/components/CommunityTrendingList';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
@@ -70,7 +70,7 @@ export default function AnonymousList() {
   const fetchContents = async () => {
     try {
       const response = await getBoards({
-        boardType: 'ANONYMOUS',
+        boardType: BoardType.ANONYMOUS,
         [searchType]: searchKeyword,
         page: page - 1,
         size: pageSize,

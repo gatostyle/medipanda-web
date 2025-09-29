@@ -1,7 +1,8 @@
-import { type BoardPostResponse, getBoards, getFixedTopNotices } from '@/backend';
+import { type BoardPostResponse, BoardType, getBoards, getFixedTopNotices } from '@/backend';
 import { CommunityBanners } from '@/custom/components/CommunityBanners';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { MedipandaTableCell, MedipandaTableRow } from '@/custom/components/MedipandaTable';
+import { useSession } from '@/hooks/useSession';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
 import { setUrlParams } from '@/lib/utils/url';
 import { colors } from '@/themes';
@@ -26,6 +27,8 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
 
 export default function MrCsoMatchingList() {
+  const { session } = useSession();
+
   const navigate = useNavigate();
 
   const [contents, setContents] = useState<BoardPostResponse[]>([]);
@@ -35,15 +38,18 @@ export default function MrCsoMatchingList() {
     searchType: 'boardTitle' as 'userId' | 'name' | 'nickname' | 'boardTitle' | 'drugCompany' | 'myUserId',
     searchKeyword: '',
     page: '1',
+    filterMine: 'false',
   };
 
-  const { searchType, searchKeyword, page: paramPage } = useSearchParamsOrDefault(initialSearchParams);
+  const { searchType, searchKeyword, page: paramPage, filterMine: paramFilterMine } = useSearchParamsOrDefault(initialSearchParams);
   const page = Number(paramPage);
   const pageSize = 10;
+  const filterMine = paramFilterMine === 'true';
 
   const form = useForm({
     defaultValues: {
       ...initialSearchParams,
+      filterMine: null,
     },
   });
 
@@ -63,10 +69,11 @@ export default function MrCsoMatchingList() {
   const fetchContents = async () => {
     try {
       const response = await getBoards({
-        boardType: 'ANONYMOUS',
+        boardType: BoardType.MR_CSO_MATCHING,
         [searchType]: searchKeyword,
         page: page - 1,
         size: pageSize,
+        myUserId: filterMine ? session!.userId : undefined,
       });
 
       setContents(response.content);
@@ -83,7 +90,7 @@ export default function MrCsoMatchingList() {
     form.setValue('searchType', searchType);
     form.setValue('searchKeyword', searchKeyword);
     fetchContents();
-  }, [searchType, searchKeyword, page]);
+  }, [searchType, searchKeyword, page, filterMine]);
 
   const [fixedNotices, setFixedNotices] = useState<BoardPostResponse[]>([]);
 
@@ -232,7 +239,7 @@ export default function MrCsoMatchingList() {
               fullWidth
               variant='contained'
               component={RouterLink}
-              to='/community/mr-cso-matching/new'
+              to='/community/anonymous/new'
               sx={{
                 height: '50px',
                 backgroundColor: colors.navy,
@@ -245,10 +252,16 @@ export default function MrCsoMatchingList() {
             <Button
               fullWidth
               variant='contained'
+              component={RouterLink}
+              to={filterMine ? '?' : '?filterMine=true'}
               sx={{
                 height: '50px',
                 backgroundColor: colors.gray20,
                 color: colors.gray80,
+
+                ...(filterMine && {
+                  border: `1px solid ${colors.blue}`,
+                }),
               }}
             >
               <Box
