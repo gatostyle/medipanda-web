@@ -146,6 +146,16 @@ export default function MpAdminAdminEdit() {
         permissions: permissionData.permissions as (keyof typeof AdminPermission)[],
       });
     } catch (error) {
+      if (isAxiosError(error)) {
+        switch (true) {
+          case typeof error.response?.data === 'string' && error.response.data.startsWith('Bad request: user id already exists.'):
+            await alert(`아이디 ${userId}는 이미 존재하는 계정입니다.`);
+            return;
+          default:
+            break;
+        }
+      }
+
       console.error('Failed to fetch admin data:', error);
     } finally {
       setLoading(false);
