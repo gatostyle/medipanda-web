@@ -1,3 +1,4 @@
+import { MemberType } from '@/backend';
 import { MedipandaTextLink } from '@/custom/components/MedipandaTextLink';
 import { useSession } from '@/hooks/useSession';
 import { formatYyyyMmDd } from '@/lib/utils/dateFormat';
@@ -31,7 +32,8 @@ function GlobalLayout() {
   const location = useLocation();
   const currentPath = location.pathname;
   const { session } = useSession();
-  const hasPartnerContract = session?.partnerContractStatus === 'ORGANIZATION' || session?.partnerContractStatus === 'INDIVIDUAL';
+  const hasPartnerContract =
+    session?.partnerContractStatus === MemberType.ORGANIZATION || session?.partnerContractStatus === MemberType.INDIVIDUAL;
   const [postPopupAnchor, setPostPopupAnchor] = useState<HTMLElement | null>(null);
 
   return (

@@ -3,6 +3,7 @@ import {
   login as apiLogin,
   logout as apiLogout,
   type MemberDetailsResponse,
+  MemberType,
   refreshToken as apiRefreshToken,
   whoAmI,
 } from '@/backend';
@@ -112,9 +113,9 @@ export function useSession() {
 }
 
 export function hasContractMemberPermission(member: MemberDetailsResponse) {
-  return member.partnerContractStatus === 'INDIVIDUAL' || member.partnerContractStatus === 'ORGANIZATION';
+  return member.partnerContractStatus === MemberType.INDIVIDUAL || member.partnerContractStatus === MemberType.ORGANIZATION;
 }
 
 export function hasCsoMemberPermission(member: MemberDetailsResponse) {
-  return member.partnerContractStatus === 'CSO' || hasContractMemberPermission(member);
+  return member.partnerContractStatus === MemberType.CSO || hasContractMemberPermission(member);
 }

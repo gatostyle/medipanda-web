@@ -1,4 +1,12 @@
-import { type AttachmentResponse, createBoardPost, getBoardDetails, updateBoardPost } from '@/backend';
+import {
+  type AttachmentResponse,
+  BoardExposureRange,
+  BoardType,
+  createBoardPost,
+  getBoardDetails,
+  PostAttachmentType,
+  updateBoardPost,
+} from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaFileUploadButton } from '@/custom/components/MedipandaFileUploadButton';
 import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/components/MedipandaTab';
@@ -63,7 +71,7 @@ export default function InquiryEdit() {
       } else {
         await createBoardPost({
           request: {
-            boardType: 'INQUIRY',
+            boardType: BoardType.INQUIRY,
             userId: session!.userId,
             nickname: session!.userId,
             hiddenNickname: session!.nicknameHidden,
@@ -72,7 +80,7 @@ export default function InquiryEdit() {
             parentId: null,
             isExposed: true,
             editorFileIds: editorAttachments.map(image => image.s3fileId),
-            exposureRange: 'ALL',
+            exposureRange: BoardExposureRange.ALL,
             noticeProperties: null,
           },
           files: values.newFiles,
@@ -92,11 +100,11 @@ export default function InquiryEdit() {
     form.setValue('title', response.title);
     form.setValue(
       'attachedFiles',
-      response.attachments.filter(a => a.type === 'ATTACHMENT'),
+      response.attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT),
     );
     form.setValue('newFiles', []);
     editor.commands.setContent(response.content);
-    setEditorAttachments(response.attachments.filter(a => a.type === 'EDITOR'));
+    setEditorAttachments(response.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
   };
 
   useEffect(() => {

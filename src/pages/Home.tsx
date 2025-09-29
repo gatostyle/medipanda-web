@@ -1,6 +1,7 @@
 import {
   type BannerResponse,
   type BoardPostResponse,
+  BoardType,
   DateString,
   getBanners,
   getBoards,
@@ -25,7 +26,7 @@ import { Link as RouterLink } from 'react-router-dom';
 export default function Home() {
   const { session } = useSession();
 
-  const [recentBoardType, setRecentBoardType] = useState<'ANONYMOUS' | 'MR_CSO_MATCHING'>('MR_CSO_MATCHING');
+  const [recentBoardType, setRecentBoardType] = useState<keyof typeof BoardType>(BoardType.MR_CSO_MATCHING);
   const [monthlyPrescriptionCount, setMonthlyPrescriptionCount] = useState<number | null>(null);
   const [monthlyFeeAmount, setMonthlyFeeAmount] = useState<number | null>(null);
   const [recentlyOpenedCount, setRecentlyOpenedCount] = useState<number | null>(null);
@@ -207,10 +208,10 @@ export default function Home() {
           >
             <Button
               variant='text'
-              onClick={() => setRecentBoardType('MR_CSO_MATCHING')}
+              onClick={() => setRecentBoardType(BoardType.MR_CSO_MATCHING)}
               sx={{
                 ...typography.heading4B,
-                color: recentBoardType === 'MR_CSO_MATCHING' ? colors.gray80 : colors.gray40,
+                color: recentBoardType === BoardType.MR_CSO_MATCHING ? colors.gray80 : colors.gray40,
                 marginLeft: '30px',
               }}
             >
@@ -218,10 +219,10 @@ export default function Home() {
             </Button>
             <Button
               variant='text'
-              onClick={() => setRecentBoardType('ANONYMOUS')}
+              onClick={() => setRecentBoardType(BoardType.ANONYMOUS)}
               sx={{
                 ...typography.heading4B,
-                color: recentBoardType === 'ANONYMOUS' ? colors.gray80 : colors.gray40,
+                color: recentBoardType === BoardType.ANONYMOUS ? colors.gray80 : colors.gray40,
               }}
             >
               익명게시판
@@ -230,7 +231,7 @@ export default function Home() {
               variant='contained'
               startIcon={<img src='/assets/icons/icon-pen.svg' />}
               component={RouterLink}
-              to={recentBoardType === 'ANONYMOUS' ? '/community/anonymous/new' : '/community/mr-cso-matching/new'}
+              to={recentBoardType === BoardType.ANONYMOUS ? '/community/anonymous/new' : '/community/mr-cso-matching/new'}
               sx={{
                 marginLeft: 'auto',
               }}
@@ -241,7 +242,7 @@ export default function Home() {
               variant='outlined'
               endIcon={<KeyboardArrowRight />}
               component={RouterLink}
-              to={recentBoardType === 'ANONYMOUS' ? '/community/anonymous' : '/community/mr-cso-matching'}
+              to={recentBoardType === BoardType.ANONYMOUS ? '/community/anonymous' : '/community/mr-cso-matching'}
               sx={{
                 marginLeft: '10px',
               }}
@@ -257,7 +258,7 @@ export default function Home() {
   );
 }
 
-function RecentBoardTable({ boardType, ...props }: TableProps & { boardType: 'ANONYMOUS' | 'MR_CSO_MATCHING' }) {
+function RecentBoardTable({ boardType, ...props }: TableProps & { boardType: keyof typeof BoardType }) {
   const [contents, setContents] = useState<Sequenced<BoardPostResponse>[]>([]);
 
   const fetchContents = async () => {

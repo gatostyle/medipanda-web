@@ -96,7 +96,7 @@ export default function MrCsoMatchingList() {
 
   const fetchFixedNotices = async () => {
     const response = await getFixedTopNotices({
-      boardType: 'MR_CSO_MATCHING',
+      boardType: BoardType.MR_CSO_MATCHING,
     });
 
     setFixedNotices(response);

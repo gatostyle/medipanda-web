@@ -1,4 +1,4 @@
-import { type BoardPostResponse, getBoards } from '@/backend';
+import { type BoardPostResponse, BoardType, getBoards } from '@/backend';
 import { InquiryStatusChip } from '@/components/InquiryStatusChip';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/components/MedipandaTab';
@@ -53,7 +53,7 @@ export default function InquiryList() {
   const fetchContents = async () => {
     try {
       const response = await getBoards({
-        boardType: 'INQUIRY',
+        boardType: BoardType.INQUIRY,
         [searchType]: searchKeyword,
         page: page - 1,
         size: pageSize,

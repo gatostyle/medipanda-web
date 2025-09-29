@@ -97,7 +97,7 @@ export default function AnonymousList() {
 
   const fetchFixedNotices = async () => {
     const response = await getFixedTopNotices({
-      boardType: 'ANONYMOUS',
+      boardType: BoardType.ANONYMOUS,
     });
 
     setFixedNotices(response);
@@ -283,7 +283,7 @@ export default function AnonymousList() {
             </Button>
           </Stack>
 
-          <CommunityTrendingList boardType={'ANONYMOUS'} />
+          <CommunityTrendingList boardType={BoardType.ANONYMOUS} />
 
           <CommunityBanners />
         </Stack>

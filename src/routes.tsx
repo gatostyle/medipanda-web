@@ -237,15 +237,15 @@ const route: RouteObject[] = [
           },
           {
             path: 'anonymous/:id',
-            element: <CommunityDetail communityType={BoardType.ANONYMOUS} />,
+            element: <CommunityDetail boardType={BoardType.ANONYMOUS} />,
           },
           {
             path: 'anonymous/new',
-            element: <CommunityEdit communityType={BoardType.ANONYMOUS} />,
+            element: <CommunityEdit boardType={BoardType.ANONYMOUS} />,
           },
           {
             path: 'anonymous/:id/edit',
-            element: <CommunityEdit communityType={BoardType.ANONYMOUS} />,
+            element: <CommunityEdit boardType={BoardType.ANONYMOUS} />,
           },
           {
             path: 'mr-cso-matching',
@@ -253,15 +253,15 @@ const route: RouteObject[] = [
           },
           {
             path: 'mr-cso-matching/:id',
-            element: <CommunityDetail communityType={BoardType.MR_CSO_MATCHING} />,
+            element: <CommunityDetail boardType={BoardType.MR_CSO_MATCHING} />,
           },
           {
             path: 'mr-cso-matching/new',
-            element: <CommunityEdit communityType={BoardType.MR_CSO_MATCHING} />,
+            element: <CommunityEdit boardType={BoardType.MR_CSO_MATCHING} />,
           },
           {
             path: 'mr-cso-matching/:id/edit',
-            element: <CommunityEdit communityType={BoardType.MR_CSO_MATCHING} />,
+            element: <CommunityEdit boardType={BoardType.MR_CSO_MATCHING} />,
           },
         ],
       },

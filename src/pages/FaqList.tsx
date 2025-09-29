@@ -1,4 +1,4 @@
-import { type BoardDetailsResponse, type BoardPostResponse, getBoardDetails, getBoards } from '@/backend';
+import { type BoardDetailsResponse, type BoardPostResponse, BoardType, getBoardDetails, getBoards } from '@/backend';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
@@ -62,7 +62,7 @@ export default function FaqList() {
   const fetchContents = async () => {
     try {
       const response = await getBoards({
-        boardType: 'FAQ',
+        boardType: BoardType.FAQ,
         [searchType]: searchKeyword,
         page: page - 1,
         size: pageSize,

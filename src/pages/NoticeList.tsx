@@ -1,4 +1,4 @@
-import { type BoardPostResponse, getBoards, getFixedTopNotices, NoticeType, NoticeTypeLabel } from '@/backend';
+import { type BoardPostResponse, BoardType, getBoards, getFixedTopNotices, NoticeType, NoticeTypeLabel } from '@/backend';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { MedipandaTextLink } from '@/custom/components/MedipandaTextLink';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
@@ -51,7 +51,7 @@ export default function NoticeList() {
   const fetchContents = async () => {
     try {
       const response = await getBoards({
-        boardType: 'NOTICE',
+        boardType: BoardType.NOTICE,
         [searchType]: searchKeyword,
         noticeTypes: noticeType !== '' ? [noticeType] : undefined,
         page: page - 1,
@@ -79,7 +79,7 @@ export default function NoticeList() {
 
   const fetchFixedNotices = async () => {
     const response = await getFixedTopNotices({
-      boardType: 'NOTICE',
+      boardType: BoardType.NOTICE,
     });
 
     setFixedNotices(response);
@@ -105,7 +105,16 @@ export default function NoticeList() {
         }}
       >
         <Stack direction='row' alignItems='center' gap='20px'>
-          {(['', 'PRODUCT_STATUS', 'MANUFACTURING_SUSPENSION', 'NEW_PRODUCT', 'POLICY', 'GENERAL'] as const).map(noticeTypeItem => (
+          {(
+            [
+              '',
+              NoticeType.PRODUCT_STATUS,
+              NoticeType.MANUFACTURING_SUSPENSION,
+              NoticeType.NEW_PRODUCT,
+              NoticeType.POLICY,
+              NoticeType.GENERAL,
+            ] as const
+          ).map(noticeTypeItem => (
             <MedipandaTextLink
               key={noticeTypeItem}
               underline='hover'

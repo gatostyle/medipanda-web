@@ -1,4 +1,4 @@
-import { applyContract, getContractDetails, type PartnerContractDetailsResponse } from '@/backend';
+import { applyContract, getContractDetails, type PartnerContractDetailsResponse, PartnerContractType } from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaCheckbox } from '@/custom/components/MedipandaCheckbox';
 import { MedipandaDialog, MedipandaDialogTitle } from '@/custom/components/MedipandaDialog';
@@ -75,7 +75,7 @@ export default function PartnerContract() {
 
   const form = useForm({
     defaultValues: {
-      contractType: '' as 'INDIVIDUAL' | 'ORGANIZATION',
+      contractType: '' as keyof typeof PartnerContractType,
       companyName: '',
       businessNumber: '',
       businessRegistration: null as File | null,
@@ -212,33 +212,33 @@ export default function PartnerContract() {
               name={'contractType'}
               render={({ field }) => (
                 <PartnerContractFormInput direction='row' gap='10px'>
-                  {contractDetails?.contractType !== 'ORGANIZATION' && (
+                  {contractDetails?.contractType !== PartnerContractType.ORGANIZATION && (
                     <PartnerContractFormButton
                       fullWidth
                       variant='outlined'
-                      onClick={() => field.onChange('ORGANIZATION')}
+                      onClick={() => field.onChange(PartnerContractType.ORGANIZATION)}
                       disabled={contractDetails !== null}
                       sx={{
                         borderWidth: '1px',
                         borderStyle: 'solid',
-                        borderColor: field.value === 'ORGANIZATION' ? colors.vividViolet : colors.gray40,
-                        color: field.value === 'ORGANIZATION' ? colors.vividViolet : colors.gray50,
+                        borderColor: field.value === PartnerContractType.ORGANIZATION ? colors.vividViolet : colors.gray40,
+                        color: field.value === PartnerContractType.ORGANIZATION ? colors.vividViolet : colors.gray50,
                       }}
                     >
                       법인
                     </PartnerContractFormButton>
                   )}
-                  {contractDetails?.contractType !== 'INDIVIDUAL' && (
+                  {contractDetails?.contractType !== PartnerContractType.INDIVIDUAL && (
                     <PartnerContractFormButton
                       fullWidth
                       variant='outlined'
-                      onClick={() => field.onChange('INDIVIDUAL')}
+                      onClick={() => field.onChange(PartnerContractType.INDIVIDUAL)}
                       disabled={contractDetails !== null}
                       sx={{
                         borderWidth: '1px',
                         borderStyle: 'solid',
-                        borderColor: field.value === 'INDIVIDUAL' ? colors.vividViolet : colors.gray40,
-                        color: field.value === 'INDIVIDUAL' ? colors.vividViolet : colors.gray50,
+                        borderColor: field.value === PartnerContractType.INDIVIDUAL ? colors.vividViolet : colors.gray40,
+                        color: field.value === PartnerContractType.INDIVIDUAL ? colors.vividViolet : colors.gray50,
                       }}
                     >
                       개인

@@ -1,9 +1,11 @@
 import {
   type AttachmentResponse,
   type BoardDetailsResponse,
+  BoardExposureRange,
   BoardType,
   createBoardPost,
   getBoardDetails,
+  PostAttachmentType,
   updateBoardPost,
 } from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
@@ -21,19 +23,19 @@ import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
 
-export default function CommunityEdit({ communityType }: { communityType: keyof typeof BoardType }) {
+export default function CommunityEdit({ boardType }: { boardType: keyof typeof BoardType }) {
   const { session } = useSession();
 
-  const paramCommunityType = ((boardType: keyof typeof BoardType) => {
+  const paramBoardType = ((boardType: keyof typeof BoardType) => {
     switch (boardType) {
-      case 'ANONYMOUS':
+      case BoardType.ANONYMOUS:
         return 'anonymous';
-      case 'MR_CSO_MATCHING':
+      case BoardType.MR_CSO_MATCHING:
         return 'mr-cso-matching';
       default:
         throw new Error('Invalid community type');
     }
-  })(communityType);
+  })(boardType);
 
   const { id: paramId } = useParams();
   const isNew = paramId === undefined;
@@ -49,12 +51,12 @@ export default function CommunityEdit({ communityType }: { communityType: keyof 
 
     if (Number.isNaN(boardPostId)) {
       alert('잘못된 접근입니다.');
-      navigate(`/community/${paramCommunityType}`, { replace: true });
+      navigate(`/community/${paramBoardType}`, { replace: true });
       return;
     }
 
     fetchDetail(boardPostId);
-  }, [isNew, boardPostId, paramCommunityType, navigate]);
+  }, [isNew, boardPostId, paramBoardType, navigate]);
 
   const fetchDetail = async (id: number) => {
     const response = await getBoardDetails(id);
@@ -113,7 +115,7 @@ export default function CommunityEdit({ communityType }: { communityType: keyof 
       } else {
         await createBoardPost({
           request: {
-            boardType: communityType,
+            boardType: boardType,
             userId: session!.userId,
             nickname: '익명',
             hiddenNickname: values.hiddenNickname,
@@ -122,13 +124,13 @@ export default function CommunityEdit({ communityType }: { communityType: keyof 
             parentId: null,
             isExposed: true,
             editorFileIds: editorAttachments.map(image => image.s3fileId),
-            exposureRange: 'ALL',
+            exposureRange: BoardExposureRange.ALL,
             noticeProperties: null,
           },
           files: values.newFiles,
         });
         alert('글이 작성되었습니다.');
-        navigate(`/community/${paramCommunityType}`);
+        navigate(`/community/${paramBoardType}`);
       }
     } catch (e) {
       console.error('Error saving post:', e);
@@ -144,11 +146,11 @@ export default function CommunityEdit({ communityType }: { communityType: keyof 
     form.setValue('title', detail.title);
     form.setValue(
       'attachedFiles',
-      detail.attachments.filter(a => a.type === 'ATTACHMENT'),
+      detail.attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT),
     );
     form.setValue('newFiles', []);
     editor.commands.setContent(detail.content);
-    setEditorAttachments(detail.attachments.filter(a => a.type === 'EDITOR'));
+    setEditorAttachments(detail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
   }, [detail, editor, setEditorAttachments]);
 
   return (
@@ -233,7 +235,7 @@ export default function CommunityEdit({ communityType }: { communityType: keyof 
       >
         <MedipandaButton
           component={RouterLink}
-          to={`/community/${paramCommunityType}`}
+          to={`/community/${paramBoardType}`}
           variant='outlined'
           size='large'
           color='secondary'
