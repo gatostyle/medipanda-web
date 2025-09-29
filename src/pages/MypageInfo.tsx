@@ -4,7 +4,7 @@ import { MedipandaFileUploadButton } from '@/custom/components/MedipandaFileUplo
 import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/components/MedipandaTab';
 import { useSession } from '@/hooks/useSession';
 import { colors, typography } from '@/themes';
-import { Box, FormControl, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import { Box, FormControl, IconButton, InputAdornment, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { AxiosError } from 'axios';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
@@ -46,6 +46,7 @@ export default function MypageInfo() {
       emailDomain: session?.email ? session.email.split('@')[1] : '',
       nickname: session?.nickname || '',
       csoRegistrationFile: null as File | null,
+      referralCode: session?.referralCode || '',
     },
   });
   const formCsoRegistrationFile = form.watch('csoRegistrationFile');
@@ -179,6 +180,11 @@ export default function MypageInfo() {
         alert('비밀번호 변경 중 오류가 발생했습니다.');
       }
     }
+  };
+
+  const handleCopyReferralCode = () => {
+    navigator.clipboard.writeText(form.getValues('referralCode'));
+    alert('추천인 코드가 복사되었습니다.');
   };
 
   return (
@@ -356,12 +362,34 @@ export default function MypageInfo() {
               </MypageFormInput>
             </MypageFormRow>
 
-            {/*<MypageFormRow direction='row'>*/}
-            {/*  <MypageFormLabel>추천인 코드</MypageFormLabel>*/}
-            {/*  <MypageFormInput>*/}
-            {/*    <TextField value={formData.referralCode} onChange={handleInputChange('referralCode')} sx={{ flex: 1 }} />*/}
-            {/*  </MypageFormInput>*/}
-            {/*</MypageFormRow>*/}
+            <MypageFormRow direction='row'>
+              <MypageFormLabel>추천인 코드</MypageFormLabel>
+              <MypageFormInput>
+                <Controller
+                  control={form.control}
+                  name={'referralCode'}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      disabled
+                      InputProps={{
+                        readOnly: true,
+                        endAdornment: (
+                          <InputAdornment position='end'>
+                            <IconButton onClick={handleCopyReferralCode}>
+                              <img src='/assets/icons/icon-send.svg' />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                      sx={{
+                        flex: 1,
+                      }}
+                    />
+                  )}
+                />
+              </MypageFormInput>
+            </MypageFormRow>
           </Stack>
         </Stack>
 
