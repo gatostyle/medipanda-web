@@ -80,6 +80,13 @@ export default function NoticeList() {
   const fetchFixedNotices = async () => {
     const response = await getFixedTopNotices({
       boardType: BoardType.NOTICE,
+      noticeTypes: [
+        NoticeType.PRODUCT_STATUS,
+        NoticeType.MANUFACTURING_SUSPENSION,
+        NoticeType.NEW_PRODUCT,
+        NoticeType.POLICY,
+        NoticeType.GENERAL,
+      ],
     });
 
     setFixedNotices(response);

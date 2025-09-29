@@ -1,4 +1,4 @@
-import { type BoardPostResponse, BoardType, getBoards, getFixedTopNotices } from '@/backend';
+import { type BoardPostResponse, BoardType, getBoards, getFixedTopNotices, NoticeType } from '@/backend';
 import { CommunityBanners } from '@/custom/components/CommunityBanners';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { MedipandaTableCell, MedipandaTableRow } from '@/custom/components/MedipandaTable';
@@ -96,7 +96,8 @@ export default function MrCsoMatchingList() {
 
   const fetchFixedNotices = async () => {
     const response = await getFixedTopNotices({
-      boardType: BoardType.MR_CSO_MATCHING,
+      boardType: BoardType.NOTICE,
+      noticeTypes: [NoticeType.MR_CSO_MATCHING],
     });
 
     setFixedNotices(response);

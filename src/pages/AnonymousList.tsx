@@ -1,4 +1,4 @@
-import { type BoardPostResponse, BoardType, getBoards, getFixedTopNotices } from '@/backend';
+import { type BoardPostResponse, BoardType, getBoards, getFixedTopNotices, NoticeType } from '@/backend';
 import { CommunityBanners } from '@/custom/components/CommunityBanners';
 import { CommunityTrendingList } from '@/custom/components/CommunityTrendingList';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
@@ -97,7 +97,8 @@ export default function AnonymousList() {
 
   const fetchFixedNotices = async () => {
     const response = await getFixedTopNotices({
-      boardType: BoardType.ANONYMOUS,
+      boardType: BoardType.NOTICE,
+      noticeTypes: [NoticeType.ANONYMOUS_BOARD],
     });
 
     setFixedNotices(response);
