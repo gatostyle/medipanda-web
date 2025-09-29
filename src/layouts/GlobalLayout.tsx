@@ -199,6 +199,11 @@ function GlobalLayout() {
           horizontal: 'left',
         }}
         elevation={0}
+        sx={{
+          '& .MuiPaper-root': {
+            borderRadius: '20px',
+          },
+        }}
       >
         {session !== null && (
           <Stack
@@ -233,7 +238,7 @@ function GlobalLayout() {
                     width: '70px',
                     height: '30px',
                     border: `1px solid ${hasPartnerContract ? colors.vividViolet : colors.red}`,
-                    borderRadius: '30px',
+                    borderRadius: '20px',
                     boxSizing: 'border-box',
 
                     ...(hasPartnerContract && { backgroundColor: colors.vividViolet }),
@@ -302,8 +307,6 @@ function GlobalLayout() {
                 width: '288px',
                 height: '40px',
                 boxSizing: 'border-box',
-                borderBottomLeftRadius: '20px',
-                borderBottomRightRadius: '20px',
               }}
             >
               <Stack
