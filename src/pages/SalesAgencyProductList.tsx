@@ -4,7 +4,7 @@ import { LazyImage } from '@/lib/components/LazyImage';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
 import { setUrlParams } from '@/lib/utils/url';
 import { colors } from '@/themes';
-import { formatYyyyMmDd, isExpired } from '@/lib/utils/dateFormat';
+import { DateUtils, DATEFORMAT_YYYY_MM_DD } from '@/lib/utils/dateFormat';
 import { Box, PaginationItem, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
@@ -77,7 +77,7 @@ export default function SalesAgencyProductList() {
                   borderRadius: '10px',
                 }}
               />
-              {isExpired(salesAgencyProduct.endAt) && (
+              {DateUtils.isExpired(DateUtils.utcToKst(new Date(salesAgencyProduct.endAt))) && (
                 <Box
                   sx={{
                     position: 'absolute',
@@ -116,7 +116,8 @@ export default function SalesAgencyProductList() {
                 {salesAgencyProduct.productName}
               </Typography>
               <Typography variant='smallTextR' sx={{ color: colors.gray50, marginTop: 'auto' }}>
-                {formatYyyyMmDd(salesAgencyProduct.startAt)} ~ {formatYyyyMmDd(salesAgencyProduct.endAt)}
+                {DateUtils.parseUtcAndFormatKst(salesAgencyProduct.startAt, DATEFORMAT_YYYY_MM_DD)} ~{' '}
+                {DateUtils.parseUtcAndFormatKst(salesAgencyProduct.endAt, DATEFORMAT_YYYY_MM_DD)}
               </Typography>
             </Stack>
           </Stack>

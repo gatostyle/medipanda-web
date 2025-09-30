@@ -8,94 +8,71 @@ export const DATEFORMAT_YYYY_MM = 'yyyy-MM';
 export const DATEFORMAT_YYYY년_MM월 = 'yyyy년 MM월';
 export const DATEFORMAT_YYYY년_MM월_DD일 = 'yyyy년 MM월 dd일';
 
-export function parseUtcDateString(dateString: string): Date {
-  if (dateString.endsWith('Z')) {
-    return new Date(dateString);
-  } else {
+export const DateUtils = {
+  tryParseDate(dateString: string): Date | null {
     const date = new Date(dateString);
-    const userTimezoneOffset = date.getTimezoneOffset() * 60000;
-    return new Date(date.getTime() - userTimezoneOffset);
-  }
-}
+    return Number.isNaN(date.getTime()) ? null : date;
+  },
+  utcToKst(date: Date): Date {
+    const kstDate = new Date(date);
+    kstDate.setHours(kstDate.getHours() + 9);
+    return kstDate;
+  },
+  kstToUtc(date: Date): Date {
+    const utcDate = new Date(date);
+    utcDate.setHours(utcDate.getHours() - 9);
+    return utcDate;
+  },
+  parseUtcAndFormatKst(dateString: string, formatStr: string): string {
+    return format(this.utcToKst(new Date(dateString)), formatStr);
+  },
+  formatRelativeTime(date: Date): string {
+    const now = new Date();
+    const diff = Math.max(now.getTime() - date.getTime(), 0);
 
-export function formatYyyyMmDdHhMm(dateOrString: Date | string): string {
-  return format(typeof dateOrString === 'string' ? parseUtcDateString(dateOrString) : dateOrString, DATEFORMAT_YYYY_MM_DD_HH_MM);
-}
+    if (diff === 0) {
+      return '방금 전';
+    }
 
-export function formatYyyyMmDd(dateOrString: Date | string): string {
-  return format(typeof dateOrString === 'string' ? parseUtcDateString(dateOrString) : dateOrString, DATEFORMAT_YYYY_MM_DD);
-}
+    const seconds = Math.floor(diff / 1000);
+    if (seconds < 60) {
+      return `${seconds}초 전`;
+    }
 
-export function formatYyyyMm(dateOrString: Date | string): string {
-  return format(typeof dateOrString === 'string' ? parseUtcDateString(dateOrString) : dateOrString, DATEFORMAT_YYYY_MM);
-}
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) {
+      return `${minutes}분 전`;
+    }
 
-export function formatYyyy년Mm월(dateOrString: Date | string): string {
-  return format(typeof dateOrString === 'string' ? parseUtcDateString(dateOrString) : dateOrString, DATEFORMAT_YYYY년_MM월);
-}
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) {
+      return `${hours}시간 전`;
+    }
 
-export function formatYyyy년Mm월dd일(dateOrString: Date | string): string {
-  return format(typeof dateOrString === 'string' ? parseUtcDateString(dateOrString) : dateOrString, DATEFORMAT_YYYY년_MM월_DD일);
-}
+    const days = Math.floor(hours / 24);
+    if (days < 7) {
+      return `${days}일 전`;
+    }
 
-export function SafeDate(dateString: string): Date | null {
-  const date = new Date(dateString);
-  return Number.isNaN(date.getTime()) ? null : date;
-}
+    return format(date, DATEFORMAT_YYYY_MM_DD);
+  },
+  getMonthRange(startDate: Date, endDate: Date): Date[] {
+    const result = [];
 
-export function formatRelativeTime(dateOrString: Date | string): string {
-  const date = typeof dateOrString === 'string' ? parseUtcDateString(dateOrString) : dateOrString;
-  const now = new Date();
-  const diff = Math.max(now.getTime() - date.getTime(), 0);
+    const start = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+    const end = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
 
-  if (diff === 0) {
-    return '방금 전';
-  }
+    const current = new Date(start);
 
-  const seconds = Math.floor(diff / 1000);
-  if (seconds < 60) {
-    return `${seconds}초 전`;
-  }
+    while (current <= end) {
+      result.push(new Date(current)); // clone
+      current.setMonth(current.getMonth() + 1);
+    }
 
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) {
-    return `${minutes}분 전`;
-  }
-
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) {
-    return `${hours}시간 전`;
-  }
-
-  const days = Math.floor(hours / 24);
-  if (days < 7) {
-    return `${days}일 전`;
-  }
-
-  return formatYyyyMmDd(date);
-}
-
-export function isExpired(dateOrString: Date | string): boolean {
-  const date = typeof dateOrString === 'string' ? parseUtcDateString(dateOrString) : dateOrString;
-  const now = new Date();
-  return date < now;
-}
-
-export function getMonthRange(startDateOrString: Date | string, endDateOrString: Date | string): Date[] {
-  const startDate = typeof startDateOrString === 'string' ? parseUtcDateString(startDateOrString) : startDateOrString;
-  const endDate = typeof endDateOrString === 'string' ? parseUtcDateString(endDateOrString) : endDateOrString;
-
-  const result = [];
-
-  const start = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
-  const end = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
-
-  const current = new Date(start);
-
-  while (current <= end) {
-    result.push(new Date(current)); // clone
-    current.setMonth(current.getMonth() + 1);
-  }
-
-  return result;
-}
+    return result;
+  },
+  isExpired(date: Date): boolean {
+    const now = new Date();
+    return date < now;
+  },
+};

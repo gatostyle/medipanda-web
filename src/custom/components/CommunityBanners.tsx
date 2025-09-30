@@ -1,5 +1,6 @@
 import { type BannerResponse, getBanners } from '@/backend';
 import { LazyImage } from '@/lib/components/LazyImage';
+import { DateUtils } from '@/lib/utils/dateFormat';
 import { colors } from '@/themes';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
@@ -12,7 +13,7 @@ export function CommunityBanners() {
 
     setContents(
       response.content.filter(banner => {
-        return new Date(banner.startAt) <= new Date() && new Date(banner.endAt) >= new Date();
+        return DateUtils.utcToKst(new Date(banner.startAt)) <= new Date() && DateUtils.utcToKst(new Date(banner.endAt)) >= new Date();
       }),
     );
   };

@@ -3,7 +3,7 @@ import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
 import { setUrlParams } from '@/lib/utils/url';
 import { colors } from '@/themes';
-import { formatYyyyMmDd, isExpired } from '@/lib/utils/dateFormat';
+import { DateUtils, DATEFORMAT_YYYY_MM_DD } from '@/lib/utils/dateFormat';
 import { Box, PaginationItem, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
@@ -76,7 +76,7 @@ export default function EventList() {
                   borderRadius: '10px',
                 }}
               />
-              {isExpired(event.eventEndAt) && (
+              {DateUtils.isExpired(DateUtils.utcToKst(new Date(event.eventEndAt))) && (
                 <Box
                   sx={{
                     position: 'absolute',
@@ -113,7 +113,8 @@ export default function EventList() {
               </Typography>
               {/*<Typography variant='largeTextM' sx={{ color: colors.gray80 }}>{event.description}</Typography>*/}
               <Typography variant='smallTextR' sx={{ color: colors.gray50, marginTop: 'auto' }}>
-                {formatYyyyMmDd(event.eventStartAt)} ~ {formatYyyyMmDd(event.eventEndAt)}
+                {DateUtils.parseUtcAndFormatKst(event.eventStartAt, DATEFORMAT_YYYY_MM_DD)} ~{' '}
+                {DateUtils.parseUtcAndFormatKst(event.eventEndAt, DATEFORMAT_YYYY_MM_DD)}
               </Typography>
             </Stack>
           </Stack>

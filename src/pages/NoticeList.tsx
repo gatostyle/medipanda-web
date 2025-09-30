@@ -4,7 +4,7 @@ import { MedipandaTextLink } from '@/custom/components/MedipandaTextLink';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
 import { setUrlParams } from '@/lib/utils/url';
 import { colors } from '@/themes';
-import { formatYyyyMmDd } from '@/lib/utils/dateFormat';
+import { DateUtils, DATEFORMAT_YYYY_MM_DD } from '@/lib/utils/dateFormat';
 import { Search } from '@mui/icons-material';
 import { Box, InputAdornment, PaginationItem, Stack, Table, TableBody, TableCell, TableRow, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -217,7 +217,7 @@ export default function NoticeList() {
               </TableCell>
               <TableCell align='center'>
                 <Typography variant='smallTextR' sx={{ color: colors.gray70 }}>
-                  {formatYyyyMmDd(notice.createdAt)}
+                  {DateUtils.parseUtcAndFormatKst(notice.createdAt, DATEFORMAT_YYYY_MM_DD)}
                 </Typography>
               </TableCell>
             </TableRow>

@@ -1,7 +1,7 @@
 import { MemberType } from '@/backend';
 import { MedipandaTextLink } from '@/custom/components/MedipandaTextLink';
 import { useSession } from '@/hooks/useSession';
-import { formatYyyyMmDd } from '@/lib/utils/dateFormat';
+import { DateUtils, DATEFORMAT_YYYY_MM_DD } from '@/lib/utils/dateFormat';
 import { colors } from '@/themes';
 import { Close } from '@mui/icons-material';
 import { Box, Link, Popover, Stack, Typography } from '@mui/material';
@@ -284,7 +284,7 @@ function GlobalLayout() {
                     color: colors.gray60,
                   }}
                 >
-                  계약일: {formatYyyyMmDd(session.contractDate!)}
+                  계약일: {DateUtils.parseUtcAndFormatKst(session.contractDate!, DATEFORMAT_YYYY_MM_DD)}
                 </Typography>
               ) : (
                 <Link

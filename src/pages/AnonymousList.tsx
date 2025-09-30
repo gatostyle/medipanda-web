@@ -5,7 +5,7 @@ import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { MedipandaTableCell, MedipandaTableRow } from '@/custom/components/MedipandaTable';
 import { useSession } from '@/hooks/useSession';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
-import { formatYyyyMmDdHhMm } from '@/lib/utils/dateFormat';
+import { DateUtils, DATEFORMAT_YYYY_MM_DD_HH_MM } from '@/lib/utils/dateFormat';
 import { setUrlParams } from '@/lib/utils/url';
 import { colors } from '@/themes';
 import { Search } from '@mui/icons-material';
@@ -176,7 +176,7 @@ export default function AnonymousList() {
                     </Box>
                   </MedipandaTableCell>
                   <MedipandaTableCell>{post.nickname}</MedipandaTableCell>
-                  <MedipandaTableCell>{formatYyyyMmDdHhMm(post.createdAt)}</MedipandaTableCell>
+                  <MedipandaTableCell>{DateUtils.parseUtcAndFormatKst(post.createdAt, DATEFORMAT_YYYY_MM_DD_HH_MM)}</MedipandaTableCell>
                   <MedipandaTableCell>{post.viewsCount.toLocaleString()}</MedipandaTableCell>
                   <MedipandaTableCell>{post.likesCount.toLocaleString()}</MedipandaTableCell>
                 </MedipandaTableRow>

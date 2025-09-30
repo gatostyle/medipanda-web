@@ -2,7 +2,7 @@ import { type EventBoardDetailsResponse, getEventBoardDetails } from '@/backend'
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
 import { colors } from '@/themes';
-import { formatYyyyMmDd } from '@/lib/utils/dateFormat';
+import { DateUtils, DATEFORMAT_YYYY_MM_DD } from '@/lib/utils/dateFormat';
 import { Stack, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import { useEffect, useState } from 'react';
@@ -68,7 +68,8 @@ export default function EventDetail() {
           {detail.description}
         </Typography>
         <Typography variant='smallTextR' sx={{ color: colors.gray50 }}>
-          {formatYyyyMmDd(detail.eventStartDate)} ~ {formatYyyyMmDd(detail.eventEndDate)} | 조회수{' '}
+          {DateUtils.parseUtcAndFormatKst(detail.eventStartDate, DATEFORMAT_YYYY_MM_DD)} ~{' '}
+          {DateUtils.parseUtcAndFormatKst(detail.eventEndDate, DATEFORMAT_YYYY_MM_DD)} | 조회수{' '}
           {detail.boardPostDetail.viewsCount.toLocaleString()}
         </Typography>
       </Stack>

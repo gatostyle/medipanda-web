@@ -23,7 +23,7 @@ import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
 import { setUrlParams } from '@/lib/utils/url';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { colors } from '@/themes';
-import { formatYyyyMm, formatYyyy년Mm월, SafeDate } from '@/lib/utils/dateFormat';
+import { DateUtils, DATEFORMAT_YYYY년_MM월, DATEFORMAT_YYYY_MM } from '@/lib/utils/dateFormat';
 import { PercentUtils } from '@/utils/PercentUtils';
 import { KeyboardArrowLeft, KeyboardArrowRight, Search } from '@mui/icons-material';
 import {
@@ -44,6 +44,7 @@ import {
   Typography,
 } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { format } from 'date-fns';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
@@ -58,7 +59,7 @@ export default function SettlementList() {
   const initialSearchParams = {
     searchType: 'companyName' as 'dealerName' | 'dealerId' | 'drugCompanyName' | 'companyName',
     searchKeyword: '',
-    settlementMonth: formatYyyyMm(new Date()),
+    settlementMonth: format(new Date(), DATEFORMAT_YYYY_MM),
     page: '1',
   };
 
@@ -68,7 +69,10 @@ export default function SettlementList() {
     settlementMonth: paramSettlementMonth,
     page: paramPage,
   } = useSearchParamsOrDefault(initialSearchParams);
-  const settlementMonth = useMemo(() => SafeDate(paramSettlementMonth) ?? new Date(formatYyyyMm(new Date())), [paramSettlementMonth]);
+  const settlementMonth = useMemo(
+    () => DateUtils.tryParseDate(paramSettlementMonth) ?? new Date(format(new Date(), DATEFORMAT_YYYY_MM)),
+    [paramSettlementMonth],
+  );
   const page = Number(paramPage);
   const pageSize = 10;
 
@@ -88,7 +92,7 @@ export default function SettlementList() {
     const url = setUrlParams(
       {
         ...values,
-        settlementMonth: values.settlementMonth !== null ? formatYyyyMm(values.settlementMonth) : undefined,
+        settlementMonth: values.settlementMonth !== null ? format(values.settlementMonth, DATEFORMAT_YYYY_MM) : undefined,
         page: 1,
       },
       initialSearchParams,
@@ -168,20 +172,20 @@ export default function SettlementList() {
           onClick={() => {
             const prevMonth = new Date(settlementMonth);
             prevMonth.setMonth(prevMonth.getMonth() - 1);
-            form.setValue('settlementMonth', new Date(formatYyyyMm(prevMonth)));
+            form.setValue('settlementMonth', new Date(format(prevMonth, DATEFORMAT_YYYY_MM)));
             form.handleSubmit(submitHandler)();
           }}
         >
           <KeyboardArrowLeft />
         </IconButton>
         <Typography variant='heading4B' sx={{ color: colors.gray80 }}>
-          {formatYyyy년Mm월(settlementMonth)}
+          {format(settlementMonth, DATEFORMAT_YYYY년_MM월)}
         </Typography>
         <IconButton
           onClick={() => {
             const nextMonth = new Date(settlementMonth);
             nextMonth.setMonth(nextMonth.getMonth() + 1);
-            form.setValue('settlementMonth', new Date(formatYyyyMm(nextMonth)));
+            form.setValue('settlementMonth', new Date(format(nextMonth, DATEFORMAT_YYYY_MM)));
             form.handleSubmit(submitHandler)();
           }}
         >
@@ -691,7 +695,7 @@ function SettlementDetailDialog({
             </tr>
             <tr style={{ height: '39px' }}>
               <td>정산월:</td>
-              <td>{formatYyyyMm(settlement.settlementMonth)}</td>
+              <td>{DateUtils.parseUtcAndFormatKst(settlement.settlementMonth, DATEFORMAT_YYYY_MM)}</td>
               <td>처방금액:</td>
               <td>{settlement.prescriptionAmount.toLocaleString()}</td>
               <td>정산(합계)금액:</td>

@@ -15,11 +15,12 @@ import { MedipandaTable } from '@/custom/components/MedipandaTable';
 import { hasCsoMemberPermission, useSession } from '@/hooks/useSession';
 import { LazyImage } from '@/lib/components/LazyImage';
 import { colors, typography } from '@/themes';
-import { formatYyyyMmDd } from '@/lib/utils/dateFormat';
+import { DateUtils, DATEFORMAT_YYYY_MM_DD } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { KeyboardArrowRight } from '@mui/icons-material';
 import { Box, Button, Link, Stack, type TableProps, Typography } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { format } from 'date-fns';
 import { useEffect, useRef, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -38,7 +39,7 @@ export default function Home() {
 
     setBanners(
       response.content.filter(banner => {
-        return new Date(banner.startAt) <= new Date() && new Date(banner.endAt) >= new Date();
+        return DateUtils.utcToKst(new Date(banner.startAt)) <= new Date() && DateUtils.utcToKst(new Date(banner.endAt)) >= new Date();
       }),
     );
   };
@@ -54,8 +55,8 @@ export default function Home() {
   }, []);
 
   const fetchHomeBanner = async () => {
-    const { count } = await monthlyCount({ referenceDate: Number(formatYyyyMmDd(new Date()).replace(/-/g, '')) });
-    const { feeAmount } = await monthlyTotalAmount({ referenceDate: Number(formatYyyyMmDd(new Date()).replace(/-/g, '')) });
+    const { count } = await monthlyCount({ referenceDate: Number(format(new Date(), 'yyyyMMdd')) });
+    const { feeAmount } = await monthlyTotalAmount({ referenceDate: Number(format(new Date(), 'yyyyMMdd')) });
     const recentlyOpenedCount = await getRecentlyOpenedCount({ referenceDate: new DateString(new Date()) });
 
     setMonthlyPrescriptionCount(count);
@@ -319,7 +320,7 @@ function RecentBoardTable({ boardType, ...props }: TableProps & { boardType: key
       },
       {
         header: '등록일',
-        cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
+        cell: ({ row }) => DateUtils.parseUtcAndFormatKst(row.original.createdAt, DATEFORMAT_YYYY_MM_DD),
       },
       {
         header: '조회수',

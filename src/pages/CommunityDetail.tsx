@@ -19,7 +19,7 @@ import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { useSession } from '@/hooks/useSession';
 import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
 import { colors } from '@/themes';
-import { formatRelativeTime, formatYyyyMmDdHhMm } from '@/lib/utils/dateFormat';
+import { DateUtils, DATEFORMAT_YYYY_MM_DD_HH_MM } from '@/lib/utils/dateFormat';
 import { MoreHoriz } from '@mui/icons-material';
 import { FormControlLabel, IconButton, Popover, Radio, RadioGroup, Stack, type StackProps, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
@@ -145,7 +145,7 @@ export default function CommunityDetail({ boardType }: { boardType: keyof typeof
               {detail.nickname}
             </Typography>
             <Typography variant='normalTextB' sx={{ color: colors.gray50 }}>
-              {formatYyyyMmDdHhMm(detail.createdAt)}
+              {DateUtils.parseUtcAndFormatKst(detail.createdAt, DATEFORMAT_YYYY_MM_DD_HH_MM)}
             </Typography>
           </Stack>
           <Stack
@@ -456,7 +456,7 @@ function Comment({
         </Stack>
         <Stack direction='row' alignItems='center' gap='30px'>
           <Typography variant='smallTextR' sx={{ color: colors.gray60, marginTop: '2px', lineHeight: '16px' }}>
-            {formatRelativeTime(comment.createdAt)}
+            {DateUtils.formatRelativeTime(DateUtils.utcToKst(new Date(comment.createdAt)))}
           </Typography>
           <Stack
             direction='row'

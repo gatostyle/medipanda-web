@@ -4,7 +4,7 @@ import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
 import { setUrlParams } from '@/lib/utils/url';
 import { colors } from '@/themes';
-import { formatYyyyMmDdHhMm } from '@/lib/utils/dateFormat';
+import { DateUtils, DATEFORMAT_YYYY_MM_DD_HH_MM } from '@/lib/utils/dateFormat';
 import { Add, Remove, Search } from '@mui/icons-material';
 import {
   Accordion,
@@ -185,7 +185,7 @@ export default function FaqList() {
                   {faq.title}
                 </Typography>
                 <Typography variant='largeTextR' sx={{ color: colors.gray50, marginLeft: '20px' }}>
-                  {formatYyyyMmDdHhMm(faq.createdAt)}
+                  {DateUtils.parseUtcAndFormatKst(faq.createdAt, DATEFORMAT_YYYY_MM_DD_HH_MM)}
                 </Typography>
                 {expandedId === faq.id ? <Remove sx={{ marginLeft: '20px' }} /> : <Add sx={{ marginLeft: '20px' }} />}
               </Stack>

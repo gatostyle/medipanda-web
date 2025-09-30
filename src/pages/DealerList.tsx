@@ -4,7 +4,7 @@ import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
 import { MedipandaTable } from '@/custom/components/MedipandaTable';
 import { colors } from '@/themes';
-import { formatYyyyMmDd } from '@/lib/utils/dateFormat';
+import { DateUtils, DATEFORMAT_YYYY_MM_DD } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { Stack, TextField, Typography } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
@@ -46,7 +46,7 @@ export default function DealerList() {
       },
       {
         header: '등록일',
-        cell: ({ row }) => formatYyyyMmDd(row.original.createdAt),
+        cell: ({ row }) => DateUtils.parseUtcAndFormatKst(row.original.createdAt, DATEFORMAT_YYYY_MM_DD),
       },
     ],
     getCoreRowModel: getCoreRowModel(),

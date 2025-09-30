@@ -5,7 +5,7 @@ import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/componen
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
 import { colors } from '@/themes';
-import { formatYyyyMmDdHhMm } from '@/lib/utils/dateFormat';
+import { DateUtils, DATEFORMAT_YYYY_MM_DD_HH_MM } from '@/lib/utils/dateFormat';
 import { Box, Button, Link, Stack, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import { useEffect, useState } from 'react';
@@ -112,7 +112,7 @@ export default function InquiryDetail() {
         </Typography>
         <InquiryStatusChip status={detail.children.length > 0} />
         <Typography variant='smallTextR' sx={{ color: colors.gray50, marginLeft: 'auto' }}>
-          {formatYyyyMmDdHhMm(detail.createdAt)}
+          {DateUtils.parseUtcAndFormatKst(detail.createdAt, DATEFORMAT_YYYY_MM_DD_HH_MM)}
         </Typography>
       </Stack>
 
@@ -169,7 +169,7 @@ export default function InquiryDetail() {
               관리자
             </Typography>
             <Typography variant='smallTextR' sx={{ color: colors.gray50, marginLeft: '10px' }}>
-              {formatYyyyMmDdHhMm(answer.createdAt)}
+              {DateUtils.parseUtcAndFormatKst(answer.createdAt, DATEFORMAT_YYYY_MM_DD_HH_MM)}
             </Typography>
           </Stack>
           <Box

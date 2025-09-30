@@ -3,7 +3,7 @@ import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
 import { colors } from '@/themes';
-import { formatYyyyMmDd, isExpired } from '@/lib/utils/dateFormat';
+import { DateUtils, DATEFORMAT_YYYY_MM_DD } from '@/lib/utils/dateFormat';
 import { Box, Stack, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import { useEffect, useState } from 'react';
@@ -80,7 +80,8 @@ export default function SalesAgencyProductDetail() {
           {detail.productName}
         </Typography>
         <Typography variant='smallTextR' sx={{ color: colors.gray50 }}>
-          {formatYyyyMmDd(detail.startDate)} ~ {formatYyyyMmDd(detail.endDate)} | 조회수{' '}
+          {DateUtils.parseUtcAndFormatKst(detail.startDate, DATEFORMAT_YYYY_MM_DD)} ~{' '}
+          {DateUtils.parseUtcAndFormatKst(detail.endDate, DATEFORMAT_YYYY_MM_DD)} | 조회수{' '}
           {detail.boardPostDetail.viewsCount.toLocaleString()}
         </Typography>
       </Stack>
@@ -95,14 +96,18 @@ export default function SalesAgencyProductDetail() {
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
         <MedipandaButton
           onClick={handleApply}
-          disabled={detail.applied || isExpired(detail.endDate)}
+          disabled={detail.applied || DateUtils.isExpired(DateUtils.utcToKst(new Date(detail.endDate)))}
           variant='contained'
           size='large'
           sx={{
             width: '287px',
           }}
         >
-          {detail.applied ? '영업대행 신청완료' : isExpired(detail.endDate) ? '종료된 상품입니다' : '영업대행 신청하기'}
+          {detail.applied
+            ? '영업대행 신청완료'
+            : DateUtils.isExpired(DateUtils.utcToKst(new Date(detail.endDate)))
+              ? '종료된 상품입니다'
+              : '영업대행 신청하기'}
         </MedipandaButton>
       </Box>
     </>

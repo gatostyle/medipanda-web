@@ -12,13 +12,14 @@ import { MedipandaDatePicker } from '@/custom/components/MedipandaDatePicker';
 import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
 import { MedipandaTable } from '@/custom/components/MedipandaTable';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
-import { DATEFORMAT_YYYY_MM, formatYyyyMm, formatYyyyMmDd, formatYyyy년Mm월, getMonthRange, SafeDate } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM, DateUtils, DATEFORMAT_YYYY년_MM월, DATEFORMAT_YYYY_MM_DD } from '@/lib/utils/dateFormat';
 import { setUrlParams } from '@/lib/utils/url';
 import { colors } from '@/themes';
 import { Search } from '@mui/icons-material';
 import { IconButton, InputAdornment, Stack, Typography } from '@mui/material';
 import { LineChart } from '@mui/x-charts';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { format } from 'date-fns';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
@@ -77,8 +78,8 @@ function TotalSalesStatistic() {
   };
 
   const { startMonth: paramStartMonth, endMonth: paramEndMonth, searchKeyword } = useSearchParamsOrDefault(initialSearchParams);
-  const startMonth = useMemo(() => SafeDate(paramStartMonth), [paramStartMonth]);
-  const endMonth = useMemo(() => SafeDate(paramEndMonth), [paramEndMonth]);
+  const startMonth = useMemo(() => DateUtils.tryParseDate(paramStartMonth), [paramStartMonth]);
+  const endMonth = useMemo(() => DateUtils.tryParseDate(paramEndMonth), [paramEndMonth]);
 
   const form = useForm({
     defaultValues: {
@@ -97,8 +98,8 @@ function TotalSalesStatistic() {
     const url = setUrlParams(
       {
         ...values,
-        startMonth: values.startMonth !== null ? formatYyyyMm(values.startMonth) : undefined,
-        endMonth: values.endMonth !== null ? formatYyyyMm(values.endMonth) : undefined,
+        startMonth: values.startMonth !== null ? format(values.startMonth, DATEFORMAT_YYYY_MM) : undefined,
+        endMonth: values.endMonth !== null ? format(values.endMonth, DATEFORMAT_YYYY_MM) : undefined,
       },
       initialSearchParams,
     );
@@ -227,8 +228,8 @@ function PartnerSalesStatistic() {
   };
 
   const { startMonth: paramStartMonth, endMonth: paramEndMonth, searchKeyword } = useSearchParamsOrDefault(initialSearchParams);
-  const startMonth = useMemo(() => SafeDate(paramStartMonth), [paramStartMonth]);
-  const endMonth = useMemo(() => SafeDate(paramEndMonth), [paramEndMonth]);
+  const startMonth = useMemo(() => DateUtils.tryParseDate(paramStartMonth), [paramStartMonth]);
+  const endMonth = useMemo(() => DateUtils.tryParseDate(paramEndMonth), [paramEndMonth]);
 
   const form = useForm({
     defaultValues: {
@@ -247,8 +248,8 @@ function PartnerSalesStatistic() {
     const url = setUrlParams(
       {
         ...values,
-        startMonth: values.startMonth !== null ? formatYyyyMm(values.startMonth) : undefined,
-        endMonth: values.endMonth !== null ? formatYyyyMm(values.endMonth) : undefined,
+        startMonth: values.startMonth !== null ? format(values.startMonth, DATEFORMAT_YYYY_MM) : undefined,
+        endMonth: values.endMonth !== null ? format(values.endMonth, DATEFORMAT_YYYY_MM) : undefined,
       },
       initialSearchParams,
     );
@@ -429,7 +430,7 @@ function ChartView({
   endMonth: Date;
 }) {
   console.log(institutionCode);
-  const dateRange = useMemo(() => getMonthRange(startMonth, endMonth), [startMonth, endMonth]);
+  const dateRange = useMemo(() => DateUtils.getMonthRange(startMonth, endMonth), [startMonth, endMonth]);
 
   const [checkedIndexes, setCheckedIndexes] = useState<number[]>([]);
   const [chartSeries, setChartSeries] = useState<{ label: string; data: number[] }[]>([]);
@@ -457,7 +458,7 @@ function ChartView({
 
       Object.entries(aggregated).forEach(([, months]) => {
         dateRange.forEach(date => {
-          const monthKey = formatYyyyMmDd(date);
+          const monthKey = format(date, DATEFORMAT_YYYY_MM_DD);
 
           if (!months[monthKey]) {
             months[monthKey] = {
@@ -543,7 +544,7 @@ function ChartView({
           xAxis={[
             {
               scaleType: 'point',
-              data: getMonthRange(startMonth, endMonth).map(date => formatYyyy년Mm월(date)),
+              data: DateUtils.getMonthRange(startMonth, endMonth).map(date => format(date, DATEFORMAT_YYYY년_MM월)),
             },
           ]}
           series={filteredChartSeries}

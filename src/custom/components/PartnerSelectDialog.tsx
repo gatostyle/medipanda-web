@@ -1,10 +1,11 @@
 import { getPartners, type PartnerResponse } from '@/backend';
-import { formatYyyyMm } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM } from '@/lib/utils/dateFormat';
 import { setUrlParams } from '@/lib/utils/url';
 import { withSequence } from '@/lib/utils/withSequence';
 import { Search } from '@mui/icons-material';
 import { InputAdornment, PaginationItem, Stack, TextField } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Link as RouterLink } from 'react-router-dom';
@@ -72,7 +73,7 @@ export function PartnerSelectDialog({
   const initialSearchParams = {
     searchType: 'companyName' as 'dealerName' | 'dealerId' | 'drugCompanyName' | 'companyName',
     searchKeyword: '',
-    settlementMonth: formatYyyyMm(new Date()),
+    settlementMonth: format(new Date(), DATEFORMAT_YYYY_MM),
     page: '1',
   };
 

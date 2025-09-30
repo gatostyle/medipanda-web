@@ -24,7 +24,7 @@ import { useSession } from '@/hooks/useSession';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
 import { setUrlParams } from '@/lib/utils/url';
 import { colors } from '@/themes';
-import { DATEFORMAT_YYYY_MM, formatYyyyMm, formatYyyyMmDd, formatYyyy년Mm월 } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM, DATEFORMAT_YYYY년_MM월 } from '@/lib/utils/dateFormat';
 import { Search } from '@mui/icons-material';
 import {
   Dialog,
@@ -39,6 +39,7 @@ import {
   Typography,
 } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
@@ -121,7 +122,7 @@ export default function PrescriptionList() {
       },
       {
         header: '처방월',
-        cell: ({ row }) => formatYyyyMmDd(row.original.prescriptionMonth),
+        cell: ({ row }) => format(row.original.prescriptionMonth, DATEFORMAT_YYYY_MM),
       },
       {
         header: '등록처리',
@@ -134,7 +135,7 @@ export default function PrescriptionList() {
   return (
     <>
       <Typography variant='heading4B' sx={{ alignSelf: 'center', color: colors.gray80 }}>
-        {formatYyyy년Mm월(new Date())}
+        {format(new Date(), DATEFORMAT_YYYY년_MM월)}
       </Typography>
       <Stack
         direction='row'
@@ -333,7 +334,7 @@ function EdiIndividualUploadForm() {
           정산월
         </Typography>
         <Typography variant='largeTextM' sx={{ color: colors.gray80, width: '330px' }}>
-          {formatYyyyMm(new Date())}
+          {format(new Date(), DATEFORMAT_YYYY_MM)}
         </Typography>
       </Stack>
       <Stack direction='row' alignItems='center'>
@@ -570,8 +571,8 @@ function EdiBatchUploadForm() {
     try {
       const result = await uploadEdiZip({
         partnerUserId: session!.userId,
-        settlementMonth: formatYyyyMmDd(values.prescriptionMonth!),
-        prescriptionMonth: formatYyyyMmDd(values.prescriptionMonth!),
+        settlementMonth: format(values.prescriptionMonth!, DATEFORMAT_YYYY_MM),
+        prescriptionMonth: format(values.prescriptionMonth!, DATEFORMAT_YYYY_MM),
         file: values.file!,
       });
 

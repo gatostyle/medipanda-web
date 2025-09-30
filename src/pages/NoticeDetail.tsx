@@ -3,7 +3,7 @@ import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
 import { TiptapMenuBar } from '@/lib/Tiptap';
 import { colors } from '@/themes';
-import { formatYyyyMmDd } from '@/lib/utils/dateFormat';
+import { DateUtils, DATEFORMAT_YYYY_MM_DD } from '@/lib/utils/dateFormat';
 import { Button, Link, Stack, Typography } from '@mui/material';
 import { EditorContent, useEditorState } from '@tiptap/react';
 import { useEffect, useState } from 'react';
@@ -86,7 +86,7 @@ export default function NoticeDetail() {
           {detail.title}
         </Typography>
         <Typography variant='smallTextR' sx={{ color: colors.gray50 }}>
-          {formatYyyyMmDd(detail.createdAt)} | 조회수 {detail.viewsCount.toLocaleString()}
+          {DateUtils.parseUtcAndFormatKst(detail.createdAt, DATEFORMAT_YYYY_MM_DD)} | 조회수 {detail.viewsCount.toLocaleString()}
         </Typography>
       </Stack>
 

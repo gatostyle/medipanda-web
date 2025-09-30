@@ -7,7 +7,7 @@ import { useSession } from '@/hooks/useSession';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
 import { setUrlParams } from '@/lib/utils/url';
 import { colors } from '@/themes';
-import { formatYyyyMmDdHhMm } from '@/lib/utils/dateFormat';
+import { DateUtils, DATEFORMAT_YYYY_MM_DD_HH_MM } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { Search } from '@mui/icons-material';
 import { Fab, InputAdornment, Link, PaginationItem, Stack, Table, TableBody, TableHead, TextField, Typography } from '@mui/material';
@@ -150,7 +150,7 @@ export default function InquiryList() {
                     {inquiry.title}
                   </Link>
                 </MedipandaTableCell>
-                <MedipandaTableCell>{formatYyyyMmDdHhMm(inquiry.createdAt)}</MedipandaTableCell>
+                <MedipandaTableCell>{DateUtils.parseUtcAndFormatKst(inquiry.createdAt, DATEFORMAT_YYYY_MM_DD_HH_MM)}</MedipandaTableCell>
                 <MedipandaTableCell>
                   <InquiryStatusChip status={inquiry.hasChildren} />
                 </MedipandaTableCell>

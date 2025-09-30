@@ -11,7 +11,7 @@ import { MedipandaDialog, MedipandaDialogTitle } from '@/custom/components/Medip
 import { MedipandaFileUploadButton } from '@/custom/components/MedipandaFileUploadButton';
 import { MedipandaTab, MedipandaTabs } from '@/custom/components/MedipandaTab';
 import { useSession } from '@/hooks/useSession';
-import { formatYyyy년Mm월dd일 } from '@/lib/utils/dateFormat';
+import { DateUtils, DATEFORMAT_YYYY년_MM월_DD일 } from '@/lib/utils/dateFormat';
 import { normalizeBusinessNumber } from '@/lib/utils/form';
 import { colors, typography } from '@/themes';
 import { Box, Button, FormControlLabel, Link, OutlinedInput, Stack, Typography } from '@mui/material';
@@ -442,7 +442,7 @@ export default function PartnerContract() {
                   value={
                     contractDetails.status === PartnerContractStatus.PENDING
                       ? '계약서 검토중'
-                      : formatYyyy년Mm월dd일(contractDetails.contractDate)
+                      : DateUtils.parseUtcAndFormatKst(contractDetails.contractDate, DATEFORMAT_YYYY년_MM월_DD일)
                   }
                   disabled
                   placeholder="'-'없이 입력해주세요."
