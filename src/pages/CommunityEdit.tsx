@@ -59,11 +59,11 @@ export default function CommunityEdit({ boardType }: { boardType: keyof typeof B
     setAttachments: setEditorAttachments,
   } = useMedipandaEditor({
     placeholder:
-      '<p>※ 작성 시 주의사항 ※</p>' +
-      '<p>1. 익명성 유지를 위해 신상 관련 정보 공유 X</p>' +
-      '<p>2. 거래 당사자나 물품을 특정할 수 있는 자세한 정보 X</p>' +
-      '<p>3. 지역 특정이나 개인 식별이 가능한 단어 언급 X</p>' +
-      '<p>4. 모든 게시글에 대한 책임은 작성자에게 있습니다.</p>',
+      '※ 작성 시 주의사항 ※\n' +
+      '1. 익명성 유지를 위해 신상 관련 정보 공유 X\n' +
+      '2. 거래 당사자나 물품을 특정할 수 있는 자세한 정보 X\n' +
+      '3. 지역 특정이나 개인 식별이 가능한 단어 언급 X\n' +
+      '4. 모든 게시글에 대한 책임은 작성자에게 있습니다\n',
   });
 
   const form = useForm({
@@ -219,6 +219,12 @@ export default function CommunityEdit({ boardType }: { boardType: keyof typeof B
                     padding: '12px 15px',
 
                     overflow: 'auto',
+                  },
+
+                  '.ProseMirror': {
+                    'p.is-editor-empty:first-child::before': {
+                      whiteSpace: 'pre-line',
+                    },
                   },
                 },
               }}
