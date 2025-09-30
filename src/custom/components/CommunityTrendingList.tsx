@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
 export function CommunityTrendingList({ boardType }: { boardType: keyof typeof BoardType }) {
-  const [sortType, setSortType] = useState<keyof typeof BoardSortType>(BoardSortType.LIKES);
+  const [sortType, setSortType] = useState<keyof typeof BoardSortType>(BoardSortType.VIEWS);
   const pageSize = 10;
 
   const [contents, setContents] = useState<BoardPostResponse[] | null>(null);
@@ -35,15 +35,15 @@ export function CommunityTrendingList({ boardType }: { boardType: keyof typeof B
       <Stack direction='row' gap='5px'>
         <Button
           variant='outlined'
-          startIcon={<img src={sortType === BoardSortType.LIKES ? '/assets/icons/icon-fire-white.svg' : '/assets/icons/icon-fire.svg'} />}
-          onClick={() => setSortType(BoardSortType.LIKES)}
+          startIcon={<img src={sortType === BoardSortType.VIEWS ? '/assets/icons/icon-fire-white.svg' : '/assets/icons/icon-fire.svg'} />}
+          onClick={() => setSortType(BoardSortType.VIEWS)}
           sx={{
             ...typography.smallTextM,
-            color: sortType === BoardSortType.LIKES ? colors.white : colors.vividViolet,
+            color: sortType === BoardSortType.VIEWS ? colors.white : colors.vividViolet,
             width: '60px',
             height: '24px',
             padding: '3px 5px',
-            backgroundColor: sortType === BoardSortType.LIKES ? colors.vividViolet : colors.white,
+            backgroundColor: sortType === BoardSortType.VIEWS ? colors.vividViolet : colors.white,
             borderColor: colors.vividViolet,
           }}
         >
