@@ -52,6 +52,10 @@ export default function DealerList() {
     getCoreRowModel: getCoreRowModel(),
   });
 
+  const handleDealerUpdate = () => {
+    fetchContents();
+  };
+
   return (
     <>
       <Stack direction='row' alignItems='flex-start' gap='24px' sx={{ marginTop: '10px' }}>
@@ -67,14 +71,14 @@ export default function DealerList() {
             boxSizing: 'border-box',
           }}
         >
-          <DealerCreateForm />
+          <DealerCreateForm onUpdate={handleDealerUpdate} />
         </Stack>
       </Stack>
     </>
   );
 }
 
-function DealerCreateForm() {
+function DealerCreateForm({ onUpdate }: { onUpdate?: () => void }) {
   const [drugCompanySearchDialogOpen, setDrugCompanySearchDialogOpen] = useState(false);
 
   const form = useForm({
@@ -93,6 +97,9 @@ function DealerCreateForm() {
         accountNumber: null,
         drugCompanyIds: values.drugCompanies.map(company => company.id),
       });
+      alert('딜러가 성공적으로 등록되었습니다.');
+      form.reset();
+      onUpdate?.();
     } catch (error) {
       console.error('Error creating dealer:', error);
       alert('딜러를 등록하는 중 오류가 발생했습니다. 다시 시도해주세요.');
