@@ -285,12 +285,7 @@ export default function MpAdminAtoZEdit() {
               control={form.control}
               name={'exposureRange'}
               render={({ field }) => (
-                <RadioGroup
-                  {...field}
-                  row
-                  value={String(field.value)}
-                  onChange={e => form.setValue('isExposed', e.target.value === 'true')}
-                >
+                <RadioGroup {...field} row>
                   <FormControlLabel value={BoardExposureRange.ALL} control={<Radio />} label='전체' />
                   <FormControlLabel value={BoardExposureRange.CONTRACTED} control={<Radio />} label='계약' />
                   <FormControlLabel value={BoardExposureRange.UNCONTRACTED} control={<Radio />} label='미계약' />
