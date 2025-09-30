@@ -22,10 +22,11 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
+import { format } from 'date-fns';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { type BoardPostResponse, BoardType, DateString, getBoards } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
-import { DATEFORMAT_YYYY_MM_DD, formatYyyyMmDd, SafeDate } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, DateUtils } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -52,8 +53,8 @@ export default function MpAdminInquiryList() {
     includeChild,
     page: paramPage,
   } = useSearchParamsOrDefault(initialSearchParams);
-  const startAt = useMemo(() => SafeDate(paramStartAt) ?? null, [paramStartAt]);
-  const endAt = useMemo(() => SafeDate(paramEndAt) ?? null, [paramEndAt]);
+  const startAt = useMemo(() => DateUtils.tryParseDate(paramStartAt) ?? null, [paramStartAt]);
+  const endAt = useMemo(() => DateUtils.tryParseDate(paramEndAt) ?? null, [paramEndAt]);
   const page = Number(paramPage);
   const pageSize = 20;
 
@@ -83,8 +84,8 @@ export default function MpAdminInquiryList() {
     const url = setUrlParams(
       {
         ...values,
-        startAt: values.startAt !== null ? formatYyyyMmDd(values.startAt) : undefined,
-        endAt: values.endAt !== null ? formatYyyyMmDd(values.endAt) : undefined,
+        startAt: values.startAt !== null ? format(values.startAt, DATEFORMAT_YYYY_MM_DD) : undefined,
+        endAt: values.endAt !== null ? format(values.endAt, DATEFORMAT_YYYY_MM_DD) : undefined,
         page: 1,
       },
       initialSearchParams,
@@ -284,8 +285,8 @@ export default function MpAdminInquiryList() {
                         {item.title}
                       </Link>
                     </TableCell>
-                    <TableCell>{formatYyyyMmDd(item.createdAt)}</TableCell>
-                    <TableCell>{item.hasChildren ? formatYyyyMmDd(item.createdAt) : '-'}</TableCell>
+                    <TableCell>{DateUtils.parseUtcAndFormatKst(item.createdAt, DATEFORMAT_YYYY_MM_DD)}</TableCell>
+                    <TableCell>{item.hasChildren ? DateUtils.parseUtcAndFormatKst(item.createdAt, DATEFORMAT_YYYY_MM_DD) : '-'}</TableCell>
                     <TableCell>{item.hasChildren ? '처리완료' : '처리중'}</TableCell>
                   </TableRow>
                 ))

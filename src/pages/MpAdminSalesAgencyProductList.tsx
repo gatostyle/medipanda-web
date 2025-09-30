@@ -2,6 +2,7 @@ import { setUrlParams } from '@/lib/utils/url';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
 import { useMpModal } from '@/hooks/useMpModal';
 import { DatePicker } from '@mui/x-date-pickers';
+import { format } from 'date-fns';
 import { DocumentDownload } from 'iconsax-reactjs';
 import {
   Button,
@@ -35,7 +36,7 @@ import {
 } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
 import { useMpDeleteDialog } from '@/hooks/useMpDeleteDialog';
-import { DATEFORMAT_YYYY_MM_DD, formatYyyyMmDd, SafeDate } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, DateUtils } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
@@ -61,8 +62,8 @@ export default function MpAdminSalesAgencyProductList() {
     endAt: paramEndAt,
     page: paramPage,
   } = useSearchParamsOrDefault(initialSearchParams);
-  const startAt = useMemo(() => SafeDate(paramStartAt) ?? null, [paramStartAt]);
-  const endAt = useMemo(() => SafeDate(paramEndAt) ?? null, [paramEndAt]);
+  const startAt = useMemo(() => DateUtils.tryParseDate(paramStartAt) ?? null, [paramStartAt]);
+  const endAt = useMemo(() => DateUtils.tryParseDate(paramEndAt) ?? null, [paramEndAt]);
   const page = Number(paramPage);
   const pageSize = 20;
 
@@ -95,8 +96,8 @@ export default function MpAdminSalesAgencyProductList() {
     const url = setUrlParams(
       {
         ...values,
-        startAt: values.startAt !== null ? formatYyyyMmDd(values.startAt) : undefined,
-        endAt: values.endAt !== null ? formatYyyyMmDd(values.endAt) : undefined,
+        startAt: values.startAt !== null ? format(values.startAt, DATEFORMAT_YYYY_MM_DD) : undefined,
+        endAt: values.endAt !== null ? format(values.endAt, DATEFORMAT_YYYY_MM_DD) : undefined,
         page: 1,
       },
       initialSearchParams,
@@ -367,11 +368,11 @@ export default function MpAdminSalesAgencyProductList() {
                       </Link>
                     </TableCell>
                     <TableCell>{item.price.toLocaleString()}</TableCell>
-                    <TableCell>{formatYyyyMmDd(item.contractDate)}</TableCell>
+                    <TableCell>{DateUtils.parseUtcAndFormatKst(item.contractDate, DATEFORMAT_YYYY_MM_DD)}</TableCell>
                     <TableCell>
                       <Chip label={item.isExposed ? '노출' : '미노출'} size='small' color={item.isExposed ? 'success' : 'default'} />
                     </TableCell>
-                    <TableCell>{`${formatYyyyMmDd(item.startAt)} ~ ${formatYyyyMmDd(item.endAt)}`}</TableCell>
+                    <TableCell>{`${DateUtils.parseUtcAndFormatKst(item.startAt, DATEFORMAT_YYYY_MM_DD)} ~ ${DateUtils.parseUtcAndFormatKst(item.endAt, DATEFORMAT_YYYY_MM_DD)}`}</TableCell>
                     <TableCell>{`${item.appliedCount}명`}</TableCell>
                     <TableCell>{item.quantity.toLocaleString()}</TableCell>
                   </TableRow>

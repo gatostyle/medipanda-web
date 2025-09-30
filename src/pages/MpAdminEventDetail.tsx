@@ -3,7 +3,7 @@ import { useMpModal } from '@/hooks/useMpModal';
 import { Box, Button, Card, Chip, CircularProgress, Divider, Stack, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import { BoardExposureRangeLabel, type EventBoardDetailsResponse, getEventBoardDetails, PostAttachmentType } from '@/backend';
-import { formatYyyyMmDd } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, DateUtils } from '@/lib/utils/dateFormat';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
@@ -99,7 +99,8 @@ export default function MpAdminEventDetail() {
               이벤트기간
             </Typography>
             <Typography variant='body1'>
-              {formatYyyyMmDd(detail.eventStartDate)} ~ {formatYyyyMmDd(detail.eventEndDate)}
+              {DateUtils.parseUtcAndFormatKst(detail.eventStartDate, DATEFORMAT_YYYY_MM_DD)} ~{' '}
+              {DateUtils.parseUtcAndFormatKst(detail.eventEndDate, DATEFORMAT_YYYY_MM_DD)}
             </Typography>
           </Stack>
 

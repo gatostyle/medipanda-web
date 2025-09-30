@@ -24,11 +24,12 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
+import { format } from 'date-fns';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { DateString, type EventBoardSummaryResponse, EventStatus, EventStatusLabel, getEventBoards, softDeleteEventBoard } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
 import { useMpDeleteDialog } from '@/hooks/useMpDeleteDialog';
-import { DATEFORMAT_YYYY_MM_DD, formatYyyyMmDd, SafeDate } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, DateUtils } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
@@ -54,8 +55,8 @@ export default function MpAdminEventList() {
     status,
     page: paramPage,
   } = useSearchParamsOrDefault(initialSearchParams);
-  const startAt = useMemo(() => SafeDate(paramStartAt) ?? null, [paramStartAt]);
-  const endAt = useMemo(() => SafeDate(paramEndAt) ?? null, [paramEndAt]);
+  const startAt = useMemo(() => DateUtils.tryParseDate(paramStartAt) ?? null, [paramStartAt]);
+  const endAt = useMemo(() => DateUtils.tryParseDate(paramEndAt) ?? null, [paramEndAt]);
   const page = Number(paramPage);
   const pageSize = 20;
 
@@ -83,8 +84,8 @@ export default function MpAdminEventList() {
     const url = setUrlParams(
       {
         ...values,
-        startAt: values.startAt !== null ? formatYyyyMmDd(values.startAt) : undefined,
-        endAt: values.endAt !== null ? formatYyyyMmDd(values.endAt) : undefined,
+        startAt: values.startAt !== null ? format(values.startAt, DATEFORMAT_YYYY_MM_DD) : undefined,
+        endAt: values.endAt !== null ? format(values.endAt, DATEFORMAT_YYYY_MM_DD) : undefined,
         page: 1,
       },
       initialSearchParams,
@@ -348,7 +349,7 @@ export default function MpAdminEventList() {
                       </Link>
                     </TableCell>
                     <TableCell>{item.viewCount.toLocaleString()}</TableCell>
-                    <TableCell>{formatYyyyMmDd(item.createdDate)}</TableCell>
+                    <TableCell>{DateUtils.parseUtcAndFormatKst(item.createdDate, DATEFORMAT_YYYY_MM_DD)}</TableCell>
                     <TableCell>
                       <Chip
                         label={item.isExposed ? '노출' : '미노출'}
@@ -357,7 +358,7 @@ export default function MpAdminEventList() {
                         size='small'
                       />
                     </TableCell>
-                    <TableCell>{`${formatYyyyMmDd(item.eventStartAt)} ~ ${formatYyyyMmDd(item.eventEndAt)}`}</TableCell>
+                    <TableCell>{`${DateUtils.parseUtcAndFormatKst(item.eventStartAt, DATEFORMAT_YYYY_MM_DD)} ~ ${DateUtils.parseUtcAndFormatKst(item.eventEndAt, DATEFORMAT_YYYY_MM_DD)}`}</TableCell>
                   </TableRow>
                 ))
               )}

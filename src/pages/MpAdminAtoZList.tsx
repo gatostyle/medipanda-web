@@ -24,6 +24,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
+import { format } from 'date-fns';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { BoardExposureRangeLabel, type BoardPostResponse, BoardType, DateString, deleteBoardPost, getBoards } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
@@ -33,7 +34,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
-import { DATEFORMAT_YYYY_MM_DD, formatYyyyMmDd, formatYyyyMmDdHhMmSs, SafeDate } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, DATEFORMAT_YYYY_MM_DD_HH_MM_SS, DateUtils } from '@/lib/utils/dateFormat';
 
 export default function MpAdminAtoZList() {
   const navigate = useNavigate();
@@ -55,8 +56,8 @@ export default function MpAdminAtoZList() {
     isExposed,
     page: paramPage,
   } = useSearchParamsOrDefault(initialSearchParams);
-  const startAt = useMemo(() => SafeDate(paramStartAt) ?? null, [paramStartAt]);
-  const endAt = useMemo(() => SafeDate(paramEndAt) ?? null, [paramEndAt]);
+  const startAt = useMemo(() => DateUtils.tryParseDate(paramStartAt) ?? null, [paramStartAt]);
+  const endAt = useMemo(() => DateUtils.tryParseDate(paramEndAt) ?? null, [paramEndAt]);
   const page = Number(paramPage);
   const pageSize = 20;
 
@@ -83,8 +84,8 @@ export default function MpAdminAtoZList() {
     const url = setUrlParams(
       {
         ...values,
-        startAt: values.startAt !== null ? formatYyyyMmDd(values.startAt) : undefined,
-        endAt: values.endAt !== null ? formatYyyyMmDd(values.endAt) : undefined,
+        startAt: values.startAt !== null ? format(values.startAt, DATEFORMAT_YYYY_MM_DD) : undefined,
+        endAt: values.endAt !== null ? format(values.endAt, DATEFORMAT_YYYY_MM_DD) : undefined,
         page: 1,
       },
       initialSearchParams,
@@ -327,7 +328,7 @@ export default function MpAdminAtoZList() {
                     </TableCell>
                     <TableCell>{BoardExposureRangeLabel[item.exposureRange]}</TableCell>
                     <TableCell>{item.viewsCount.toLocaleString()}</TableCell>
-                    <TableCell>{formatYyyyMmDdHhMmSs(item.createdAt)}</TableCell>
+                    <TableCell>{DateUtils.parseUtcAndFormatKst(item.createdAt, DATEFORMAT_YYYY_MM_DD_HH_MM_SS)}</TableCell>
                   </TableRow>
                 ))
               )}

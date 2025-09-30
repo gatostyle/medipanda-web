@@ -43,7 +43,7 @@ import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
-import { formatYyyyMmDd, formatYyyyMmDdHhMm } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, DATEFORMAT_YYYY_MM_DD_HH_MM, DateUtils } from '@/lib/utils/dateFormat';
 
 export default function MpAdminMemberEdit() {
   const navigate = useNavigate();
@@ -368,7 +368,7 @@ export default function MpAdminMemberEdit() {
                     생년월일
                   </Typography>
                   <Typography variant='body1'>
-                    {formatYyyyMmDd(detail.birthDate)} {detail.gender}
+                    {DateUtils.parseUtcAndFormatKst(detail.birthDate, DATEFORMAT_YYYY_MM_DD)} {detail.gender}
                   </Typography>
                 </Stack>
 
@@ -393,7 +393,7 @@ export default function MpAdminMemberEdit() {
                   <Typography variant='subtitle2' color='text.secondary'>
                     가입일
                   </Typography>
-                  <Typography variant='body1'>{formatYyyyMmDd(detail.registrationDate)}</Typography>
+                  <Typography variant='body1'>{DateUtils.parseUtcAndFormatKst(detail.registrationDate, DATEFORMAT_YYYY_MM_DD)}</Typography>
                 </Stack>
               </Stack>
 
@@ -402,7 +402,7 @@ export default function MpAdminMemberEdit() {
                   <Typography variant='subtitle2' color='text.secondary'>
                     최종접속일
                   </Typography>
-                  <Typography variant='body1'>{formatYyyyMmDd(detail.lastLoginDate)}</Typography>
+                  <Typography variant='body1'>{DateUtils.parseUtcAndFormatKst(detail.lastLoginDate, DATEFORMAT_YYYY_MM_DD)}</Typography>
                 </Stack>
 
                 <Stack sx={{ flex: '1 0' }}>
@@ -550,7 +550,9 @@ export default function MpAdminMemberEdit() {
                   <Typography variant='subtitle2' color='text.secondary'>
                     계약일
                   </Typography>
-                  <Typography variant='body1'>{formatYyyyMmDd(contractDetail.contractDate)}</Typography>
+                  <Typography variant='body1'>
+                    {DateUtils.parseUtcAndFormatKst(contractDetail.contractDate, DATEFORMAT_YYYY_MM_DD)}
+                  </Typography>
                 </Stack>
               </Card>
             )}
@@ -582,7 +584,7 @@ export default function MpAdminMemberEdit() {
               label={
                 'SMS' +
                 (detail.marketingAgreements.sms && detail.marketingAgreements.smsAgreedAt !== null
-                  ? ` (${formatYyyyMmDdHhMm(detail.marketingAgreements.smsAgreedAt)})`
+                  ? ` (${DateUtils.parseUtcAndFormatKst(detail.marketingAgreements.smsAgreedAt, DATEFORMAT_YYYY_MM_DD_HH_MM)})`
                   : '')
               }
             />
@@ -597,7 +599,7 @@ export default function MpAdminMemberEdit() {
               label={
                 '이메일' +
                 (detail.marketingAgreements.email && detail.marketingAgreements.emailAgreedAt !== null
-                  ? ` (${formatYyyyMmDdHhMm(detail.marketingAgreements.emailAgreedAt)})`
+                  ? ` (${DateUtils.parseUtcAndFormatKst(detail.marketingAgreements.emailAgreedAt, DATEFORMAT_YYYY_MM_DD_HH_MM)})`
                   : '')
               }
             />
@@ -612,7 +614,7 @@ export default function MpAdminMemberEdit() {
               label={
                 `App Push` +
                 (detail.marketingAgreements.push && detail.marketingAgreements.pushAgreedAt !== null
-                  ? ` (${formatYyyyMmDdHhMm(detail.marketingAgreements.pushAgreedAt)})`
+                  ? ` (${DateUtils.parseUtcAndFormatKst(detail.marketingAgreements.pushAgreedAt, DATEFORMAT_YYYY_MM_DD_HH_MM)})`
                   : '')
               }
             />

@@ -7,39 +7,22 @@ export const DATEFORMAT_YYYY_MM_DD_HH_MM = 'yyyy-MM-dd HH:mm';
 export const DATEFORMAT_YYYY_MM_DD = 'yyyy-MM-dd';
 export const DATEFORMAT_YYYY_MM = 'yyyy-MM';
 
-export function formatYyyyMmDdHhMmSs(dateOrString: Date | string): string {
-  return format(
-    typeof dateOrString === 'string' ? KoreanDateFix(new Date(DateFix(dateOrString))) : dateOrString,
-    DATEFORMAT_YYYY_MM_DD_HH_MM_SS,
-  );
-}
-
-export function formatYyyyMmDdHhMm(dateOrString: Date | string): string {
-  return format(
-    typeof dateOrString === 'string' ? KoreanDateFix(new Date(DateFix(dateOrString))) : dateOrString,
-    DATEFORMAT_YYYY_MM_DD_HH_MM,
-  );
-}
-
-export function formatYyyyMmDd(dateOrString: Date | string): string {
-  return format(typeof dateOrString === 'string' ? KoreanDateFix(new Date(DateFix(dateOrString))) : dateOrString, DATEFORMAT_YYYY_MM_DD);
-}
-
-export function formatYyyyMm(dateOrString: Date | string): string {
-  return format(typeof dateOrString === 'string' ? KoreanDateFix(new Date(DateFix(dateOrString))) : dateOrString, DATEFORMAT_YYYY_MM);
-}
-
-export function DateFix(str: string): Date {
-  return new Date(str.replace(/"/g, ''));
-}
-
-export function SafeDate(dateString: string): Date | null {
-  const date = new Date(dateString);
-  return Number.isNaN(date.getTime()) ? null : date;
-}
-
-export function KoreanDateFix(dateOrString: Date | string): Date {
-  const fixedDate = typeof dateOrString === 'string' ? new Date(dateOrString) : dateOrString;
-  fixedDate.setHours(fixedDate.getHours() + 9);
-  return fixedDate;
-}
+export const DateUtils = {
+  tryParseDate(dateString: string): Date | null {
+    const date = new Date(dateString);
+    return Number.isNaN(date.getTime()) ? null : date;
+  },
+  utcToKst(date: Date): Date {
+    const kstDate = new Date(date);
+    kstDate.setHours(kstDate.getHours() + 9);
+    return kstDate;
+  },
+  kstToUtc(date: Date): Date {
+    const utcDate = new Date(date);
+    utcDate.setHours(utcDate.getHours() - 9);
+    return utcDate;
+  },
+  parseUtcAndFormatKst(dateString: string, formatStr: string): string {
+    return format(this.utcToKst(new Date(dateString)), formatStr);
+  },
+};

@@ -23,10 +23,11 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
+import { format } from 'date-fns';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { type BannerResponse, BannerScopeLabel, BannerStatus, BannerStatusLabel, DateTimeString, getBanners } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
-import { DATEFORMAT_YYYY_MM_DD, formatYyyyMmDd, formatYyyyMmDdHhMm, SafeDate } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, DATEFORMAT_YYYY_MM_DD_HH_MM, DateUtils } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -51,8 +52,8 @@ export default function MpAdminBannerList() {
     isExposed,
     page: paramPage,
   } = useSearchParamsOrDefault(initialSearchParams);
-  const startAt = useMemo(() => SafeDate(paramStartAt) ?? null, [paramStartAt]);
-  const endAt = useMemo(() => SafeDate(paramEndAt) ?? null, [paramEndAt]);
+  const startAt = useMemo(() => DateUtils.tryParseDate(paramStartAt) ?? null, [paramStartAt]);
+  const endAt = useMemo(() => DateUtils.tryParseDate(paramEndAt) ?? null, [paramEndAt]);
   const page = Number(paramPage);
   const pageSize = 20;
 
@@ -77,8 +78,8 @@ export default function MpAdminBannerList() {
     const url = setUrlParams(
       {
         ...values,
-        startAt: values.startAt !== null ? formatYyyyMmDd(values.startAt) : undefined,
-        endAt: values.endAt !== null ? formatYyyyMmDd(values.endAt) : undefined,
+        startAt: values.startAt !== null ? format(values.startAt, DATEFORMAT_YYYY_MM_DD) : undefined,
+        endAt: values.endAt !== null ? format(values.endAt, DATEFORMAT_YYYY_MM_DD) : undefined,
         page: 1,
       },
       initialSearchParams,
@@ -277,8 +278,8 @@ export default function MpAdminBannerList() {
                       />
                     </TableCell>
                     <TableCell>{BannerScopeLabel[item.scope]}</TableCell>
-                    <TableCell>{`${formatYyyyMmDdHhMm(item.startAt)} ~ ${formatYyyyMmDdHhMm(item.endAt)}`}</TableCell>
-                    <TableCell>{formatYyyyMmDd(item.startAt)}</TableCell>
+                    <TableCell>{`${DateUtils.parseUtcAndFormatKst(item.startAt, DATEFORMAT_YYYY_MM_DD_HH_MM)} ~ ${DateUtils.parseUtcAndFormatKst(item.endAt, DATEFORMAT_YYYY_MM_DD_HH_MM)}`}</TableCell>
+                    <TableCell>{DateUtils.parseUtcAndFormatKst(item.startAt, DATEFORMAT_YYYY_MM_DD)}</TableCell>
                     <TableCell>{item.displayOrder}</TableCell>
                     <TableCell>{item.viewCount.toLocaleString()}</TableCell>
                     <TableCell>{item.clickCount.toLocaleString()}</TableCell>

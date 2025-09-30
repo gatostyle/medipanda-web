@@ -24,6 +24,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
+import { format } from 'date-fns';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import {
   completePrescriptionPartner,
@@ -36,7 +37,7 @@ import {
 } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
 import { useMpDeleteDialog } from '@/hooks/useMpDeleteDialog';
-import { DATEFORMAT_YYYY_MM, DAY_TO_MILLISECONDS, formatYyyyMm, formatYyyyMmDd, SafeDate } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM, DATEFORMAT_YYYY_MM_DD, DateUtils, DAY_TO_MILLISECONDS } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
@@ -64,8 +65,8 @@ export default function MpAdminPrescriptionFormList() {
     status,
     page: paramPage,
   } = useSearchParamsOrDefault(initialSearchParams);
-  const prescriptionMonthStart = useMemo(() => SafeDate(paramPrescriptionMonthStart) ?? null, [paramPrescriptionMonthStart]);
-  const prescriptionMonthEnd = useMemo(() => SafeDate(paramPrescriptionMonthEnd) ?? null, [paramPrescriptionMonthEnd]);
+  const prescriptionMonthStart = useMemo(() => DateUtils.tryParseDate(paramPrescriptionMonthStart) ?? null, [paramPrescriptionMonthStart]);
+  const prescriptionMonthEnd = useMemo(() => DateUtils.tryParseDate(paramPrescriptionMonthEnd) ?? null, [paramPrescriptionMonthEnd]);
   const page = Number(paramPage);
   const pageSize = 20;
 
@@ -98,8 +99,9 @@ export default function MpAdminPrescriptionFormList() {
     const url = setUrlParams(
       {
         ...values,
-        prescriptionMonthStart: values.prescriptionMonthStart !== null ? formatYyyyMm(values.prescriptionMonthStart) : undefined,
-        prescriptionMonthEnd: values.prescriptionMonthEnd !== null ? formatYyyyMm(values.prescriptionMonthEnd) : undefined,
+        prescriptionMonthStart:
+          values.prescriptionMonthStart !== null ? format(values.prescriptionMonthStart, DATEFORMAT_YYYY_MM) : undefined,
+        prescriptionMonthEnd: values.prescriptionMonthEnd !== null ? format(values.prescriptionMonthEnd, DATEFORMAT_YYYY_MM) : undefined,
         page: 1,
       },
       initialSearchParams,
@@ -377,9 +379,9 @@ export default function MpAdminPrescriptionFormList() {
                     </TableCell>
                     <TableCell>{item.dealerName}</TableCell>
                     <TableCell>{normalizeBusinessNumber(item.businessNumber)}</TableCell>
-                    <TableCell>{formatYyyyMm(item.prescriptionMonth)}</TableCell>
-                    <TableCell>{formatYyyyMm(item.settlementMonth)}</TableCell>
-                    <TableCell>{formatYyyyMmDd(item.inputDate)}</TableCell>
+                    <TableCell>{DateUtils.parseUtcAndFormatKst(item.prescriptionMonth, DATEFORMAT_YYYY_MM)}</TableCell>
+                    <TableCell>{DateUtils.parseUtcAndFormatKst(item.settlementMonth, DATEFORMAT_YYYY_MM)}</TableCell>
+                    <TableCell>{DateUtils.parseUtcAndFormatKst(item.inputDate, DATEFORMAT_YYYY_MM_DD)}</TableCell>
                     <TableCell>{item.amount.toLocaleString()}</TableCell>
                     <TableCell>{PrescriptionPartnerStatusLabel[item.status]}</TableCell>
                   </TableRow>

@@ -23,6 +23,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
+import { format } from 'date-fns';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import {
   DateTimeString,
@@ -35,7 +36,7 @@ import {
 } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
 import { useMpDeleteDialog } from '@/hooks/useMpDeleteDialog';
-import { DATEFORMAT_YYYY_MM_DD, formatYyyyMmDd, SafeDate } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, DateUtils } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
@@ -65,8 +66,8 @@ export default function MpAdminHospitalList() {
   } = useSearchParamsOrDefault(initialSearchParams);
   const sido = Number(paramSido);
   const sigungu = Number(paramSigungu);
-  const startDate = useMemo(() => SafeDate(paramStartDate) ?? null, [paramStartDate]);
-  const endDate = useMemo(() => SafeDate(paramEndDate) ?? null, [paramEndDate]);
+  const startDate = useMemo(() => DateUtils.tryParseDate(paramStartDate) ?? null, [paramStartDate]);
+  const endDate = useMemo(() => DateUtils.tryParseDate(paramEndDate) ?? null, [paramEndDate]);
   const page = Number(paramPage);
   const pageSize = 20;
 
@@ -102,8 +103,8 @@ export default function MpAdminHospitalList() {
     const url = setUrlParams(
       {
         ...values,
-        startDate: values.startDate !== null ? formatYyyyMmDd(values.startDate) : undefined,
-        endDate: values.endDate !== null ? formatYyyyMmDd(values.endDate) : undefined,
+        startDate: values.startDate !== null ? format(values.startDate, DATEFORMAT_YYYY_MM_DD) : undefined,
+        endDate: values.endDate !== null ? format(values.endDate, DATEFORMAT_YYYY_MM_DD) : undefined,
         page: 1,
       },
       initialSearchParams,
@@ -381,7 +382,9 @@ export default function MpAdminHospitalList() {
                     <TableCell>{item.sido}</TableCell>
                     <TableCell>{item.name}</TableCell>
                     <TableCell>{item.address}</TableCell>
-                    <TableCell>{item.scheduledOpenDate ? formatYyyyMmDd(item.scheduledOpenDate) : '-'}</TableCell>
+                    <TableCell>
+                      {item.scheduledOpenDate ? DateUtils.parseUtcAndFormatKst(item.scheduledOpenDate, DATEFORMAT_YYYY_MM_DD) : '-'}
+                    </TableCell>
                     <TableCell>{item.source}</TableCell>
                   </TableRow>
                 ))

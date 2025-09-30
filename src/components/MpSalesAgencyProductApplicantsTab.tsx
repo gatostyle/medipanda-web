@@ -11,7 +11,7 @@ import { setUrlParams } from '@/lib/utils/url';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
 import { useMpDeleteDialog } from '@/hooks/useMpDeleteDialog';
 import { useMpModal } from '@/hooks/useMpModal';
-import { formatYyyyMmDd } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, DateUtils } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import {
   Box,
@@ -279,7 +279,7 @@ export function MpSalesAgencyProductApplicantsTab({ detail }: { detail: SalesAge
                     <TableCell>{item.userId}</TableCell>
                     <TableCell>{item.memberName}</TableCell>
                     <TableCell>{item.phoneNumber}</TableCell>
-                    <TableCell>{formatYyyyMmDd(item.appliedDate)}</TableCell>
+                    <TableCell>{DateUtils.parseUtcAndFormatKst(item.appliedDate, DATEFORMAT_YYYY_MM_DD)}</TableCell>
                     <TableCell>{item.contractStatus === ContractStatus.CONTRACT ? 'Y' : 'N'}</TableCell>
                     <TableCell>
                       <TextField

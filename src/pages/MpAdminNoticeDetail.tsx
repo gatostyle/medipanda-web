@@ -28,7 +28,7 @@ import {
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
-import { formatYyyyMmDd } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, DateUtils } from '@/lib/utils/dateFormat';
 
 export default function MpAdminNoticeDetail() {
   const navigate = useNavigate();
@@ -178,7 +178,7 @@ export default function MpAdminNoticeDetail() {
           조회수: {detail.viewsCount.toLocaleString()}
         </Typography>
         <Typography variant='body2' color='text.secondary'>
-          작성일: {formatYyyyMmDd(detail.createdAt)}
+          작성일: {DateUtils.parseUtcAndFormatKst(detail.createdAt, DATEFORMAT_YYYY_MM_DD)}
         </Typography>
 
         <Stack direction='row' sx={{ justifyContent: 'center', gap: 2 }}>

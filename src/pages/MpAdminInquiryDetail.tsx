@@ -19,7 +19,7 @@ import {
   PostAttachmentType,
   updateBoardPost,
 } from '@/backend';
-import { formatYyyyMmDdHhMm } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD_HH_MM, DateUtils } from '@/lib/utils/dateFormat';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
@@ -268,7 +268,7 @@ export default function MpAdminInquiryDetail() {
           <TextField
             fullWidth
             size='small'
-            value={formatYyyyMmDdHhMm(detail.createdAt)}
+            value={DateUtils.parseUtcAndFormatKst(detail.createdAt, DATEFORMAT_YYYY_MM_DD_HH_MM)}
             InputProps={{ readOnly: true }}
             sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
           />
@@ -323,7 +323,7 @@ export default function MpAdminInquiryDetail() {
               <TextField
                 fullWidth
                 size='small'
-                value={formatYyyyMmDdHhMm(detail.children[0].createdAt)}
+                value={DateUtils.parseUtcAndFormatKst(detail.children[0].createdAt, DATEFORMAT_YYYY_MM_DD_HH_MM)}
                 InputProps={{ readOnly: true }}
                 sx={{ '& .MuiInputBase-input': { backgroundColor: '#f5f5f5' } }}
               />

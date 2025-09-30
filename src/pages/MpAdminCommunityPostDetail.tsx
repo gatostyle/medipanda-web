@@ -21,7 +21,7 @@ import {
 } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import { type BoardDetailsResponse, type BoardReportResponse, type CommentResponse, getBoardDetails, PostAttachmentType } from '@/backend';
-import { formatYyyyMmDd, formatYyyyMmDdHhMm } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, DATEFORMAT_YYYY_MM_DD_HH_MM, DateUtils } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { type SyntheticEvent, useEffect, useState } from 'react';
@@ -184,7 +184,7 @@ function PostTab({ detail }: { detail: BoardDetailsResponse }) {
             <Typography variant='body2' color='text.secondary'>
               등록일
             </Typography>
-            <Typography variant='body1'>{formatYyyyMmDd(detail.createdAt)}</Typography>
+            <Typography variant='body1'>{DateUtils.parseUtcAndFormatKst(detail.createdAt, DATEFORMAT_YYYY_MM_DD)}</Typography>
           </Box>
         </Stack>
 
@@ -230,7 +230,7 @@ function CommentsTab({ comments }: { comments: Sequenced<CommentResponse>[] }) {
                   <TableCell>{item.name}</TableCell>
                   <TableCell>{item.nickname}</TableCell>
                   <TableCell>{item.content}</TableCell>
-                  <TableCell>{formatYyyyMmDdHhMm(item.createdAt)}</TableCell>
+                  <TableCell>{DateUtils.parseUtcAndFormatKst(item.createdAt, DATEFORMAT_YYYY_MM_DD_HH_MM)}</TableCell>
                 </TableRow>
               ))
             )}
@@ -277,7 +277,7 @@ function ReportsTab({ reports }: { reports: Sequenced<BoardReportResponse>[] }) 
                   <TableCell>{item.memberName}</TableCell>
                   <TableCell>{item.nickname}</TableCell>
                   <TableCell>{item.reportType}</TableCell>
-                  <TableCell>{formatYyyyMmDdHhMm(item.reportDateTime)}</TableCell>
+                  <TableCell>{DateUtils.parseUtcAndFormatKst(item.reportDateTime, DATEFORMAT_YYYY_MM_DD_HH_MM)}</TableCell>
                 </TableRow>
               ))
             )}

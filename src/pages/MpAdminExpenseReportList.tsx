@@ -21,6 +21,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
+import { format } from 'date-fns';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { DocumentDownload } from 'iconsax-reactjs';
 import {
@@ -34,7 +35,7 @@ import {
   getExpenseReportList,
 } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
-import { DATEFORMAT_YYYY_MM_DD, formatYyyyMmDd, SafeDate } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, DateUtils } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -63,8 +64,8 @@ export default function MpAdminExpenseReportList() {
     reportType,
     page: paramPage,
   } = useSearchParamsOrDefault(initialSearchParams);
-  const eventDateFrom = useMemo(() => SafeDate(paramEventDateFrom) ?? null, [paramEventDateFrom]);
-  const eventDateTo = useMemo(() => SafeDate(paramEventDateTo) ?? null, [paramEventDateTo]);
+  const eventDateFrom = useMemo(() => DateUtils.tryParseDate(paramEventDateFrom) ?? null, [paramEventDateFrom]);
+  const eventDateTo = useMemo(() => DateUtils.tryParseDate(paramEventDateTo) ?? null, [paramEventDateTo]);
   const page = Number(paramPage);
   const pageSize = 20;
 
@@ -93,8 +94,8 @@ export default function MpAdminExpenseReportList() {
     const url = setUrlParams(
       {
         ...values,
-        eventDateFrom: values.eventDateFrom !== null ? formatYyyyMmDd(values.eventDateFrom) : undefined,
-        eventDateTo: values.eventDateTo !== null ? formatYyyyMmDd(values.eventDateTo) : undefined,
+        eventDateFrom: values.eventDateFrom !== null ? format(values.eventDateFrom, DATEFORMAT_YYYY_MM_DD) : undefined,
+        eventDateTo: values.eventDateTo !== null ? format(values.eventDateTo, DATEFORMAT_YYYY_MM_DD) : undefined,
         page: 1,
       },
       initialSearchParams,
@@ -329,7 +330,7 @@ export default function MpAdminExpenseReportList() {
                     <TableCell>{item.companyName}</TableCell>
                     <TableCell>{item.productName}</TableCell>
                     <TableCell>{ExpenseReportTypeLabel[item.reportType]}</TableCell>
-                    <TableCell>{`${item.eventStartAt !== null ? formatYyyyMmDd(item.eventStartAt) : '-'} ~ ${item.eventEndAt !== null ? formatYyyyMmDd(item.eventEndAt) : '-'}`}</TableCell>
+                    <TableCell>{`${item.eventStartAt !== null ? DateUtils.parseUtcAndFormatKst(item.eventStartAt, DATEFORMAT_YYYY_MM_DD) : '-'} ~ ${item.eventEndAt !== null ? DateUtils.parseUtcAndFormatKst(item.eventEndAt, DATEFORMAT_YYYY_MM_DD) : '-'}`}</TableCell>
                     <TableCell>{`${item.supportAmount.toLocaleString()}원`}</TableCell>
                     <TableCell>{ExpenseReportStatusLabel[item.status]}</TableCell>
                   </TableRow>

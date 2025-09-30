@@ -43,7 +43,7 @@ import { useSnackbar } from 'notistack';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
-import { DateFix, DATEFORMAT_YYYY_MM } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM, DateUtils } from '@/lib/utils/dateFormat';
 
 interface CustomPartnerProducts {
   id: number | null;
@@ -298,8 +298,8 @@ export default function MpAdminPrescriptionFormEdit() {
         institutionCode: formDetail.institutionCode,
         businessNumber: normalizeBusinessNumber(formDetail.businessNumber),
         dealerName: formDetail.dealerName,
-        prescriptionMonth: DateFix(formDetail.prescriptionMonth),
-        settlementMonth: DateFix(formDetail.settlementMonth),
+        prescriptionMonth: DateUtils.utcToKst(new Date(formDetail.prescriptionMonth)),
+        settlementMonth: DateUtils.utcToKst(new Date(formDetail.settlementMonth)),
         prescriptionAmount: formDetail.amount.toLocaleString(),
       });
 

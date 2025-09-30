@@ -3,6 +3,7 @@ import { useMpModal } from '@/hooks/useMpModal';
 import { Box, Button, Card, CircularProgress, FormControlLabel, Radio, RadioGroup, Stack, TextField, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { EditorContent } from '@tiptap/react';
+import { format } from 'date-fns';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import {
   type AttachmentResponse,
@@ -20,7 +21,7 @@ import { type ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
 import { useSession } from '@/hooks/useSession';
-import { DateFix, DATEFORMAT_YYYY_MM_DD, formatYyyyMmDd } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, DateUtils } from '@/lib/utils/dateFormat';
 
 export default function MpAdminEventEdit() {
   const navigate = useNavigate();
@@ -103,8 +104,8 @@ export default function MpAdminEventEdit() {
             noticeProperties: null,
           },
           eventRequest: {
-            startAt: formatYyyyMmDd(values.startDate),
-            endAt: formatYyyyMmDd(values.endDate),
+            startAt: format(values.startDate, DATEFORMAT_YYYY_MM_DD),
+            endAt: format(values.endDate, DATEFORMAT_YYYY_MM_DD),
             description: values.description,
             videoUrl: values.videoUrl,
             note: values.note,
@@ -128,8 +129,8 @@ export default function MpAdminEventEdit() {
             noticeProperties: null,
           },
           eventRequest: {
-            startAt: formatYyyyMmDd(values.startDate),
-            endAt: formatYyyyMmDd(values.endDate),
+            startAt: format(values.startDate, DATEFORMAT_YYYY_MM_DD),
+            endAt: format(values.endDate, DATEFORMAT_YYYY_MM_DD),
             description: values.description,
             videoUrl: values.videoUrl,
             note: values.note,
@@ -173,8 +174,8 @@ export default function MpAdminEventEdit() {
       form.reset({
         isExposed: detail.boardPostDetail.isExposed,
         exposureRange: detail.boardPostDetail.exposureRange,
-        startDate: DateFix(detail.eventStartDate),
-        endDate: DateFix(detail.eventEndDate),
+        startDate: DateUtils.utcToKst(new Date(detail.eventStartDate)),
+        endDate: DateUtils.utcToKst(new Date(detail.eventEndDate)),
         title: detail.boardPostDetail.title,
         description: detail.description,
         videoUrl: detail.videoUrl ?? '',

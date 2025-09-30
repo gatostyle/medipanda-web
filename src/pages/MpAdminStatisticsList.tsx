@@ -21,11 +21,12 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
+import { format } from 'date-fns';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { DocumentDownload } from 'iconsax-reactjs';
 import { DateString, getDownloadPerformanceExcel, getPerformanceStats, type PerformanceStatsResponse, SettlementStatus } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
-import { DATEFORMAT_YYYY_MM, formatYyyyMm, SafeDate } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM, DateUtils } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -50,7 +51,7 @@ export default function MpAdminStatisticsList() {
     status,
     page: paramPage,
   } = useSearchParamsOrDefault(initialSearchParams);
-  const settlementMonth = useMemo(() => SafeDate(paramSettlementMonth) ?? null, [paramSettlementMonth]);
+  const settlementMonth = useMemo(() => DateUtils.tryParseDate(paramSettlementMonth) ?? null, [paramSettlementMonth]);
   const page = Number(paramPage);
   const pageSize = 20;
 
@@ -78,7 +79,7 @@ export default function MpAdminStatisticsList() {
     const url = setUrlParams(
       {
         ...values,
-        settlementMonth: values.settlementMonth !== null ? formatYyyyMm(values.settlementMonth) : undefined,
+        settlementMonth: values.settlementMonth !== null ? format(values.settlementMonth, DATEFORMAT_YYYY_MM) : undefined,
         page: 1,
       },
       initialSearchParams,
@@ -260,7 +261,7 @@ export default function MpAdminStatisticsList() {
                     <TableCell>{item.dealerName}</TableCell>
                     <TableCell>{item.institutionCode}</TableCell>
                     <TableCell>{item.institutionName}</TableCell>
-                    <TableCell>{formatYyyyMm(item.settlementMonth)}</TableCell>
+                    <TableCell>{DateUtils.parseUtcAndFormatKst(item.settlementMonth, DATEFORMAT_YYYY_MM)}</TableCell>
                     <TableCell>{item.prescriptionAmount.toLocaleString()}</TableCell>
                     <TableCell>{item.totalAmount.toLocaleString()}</TableCell>
                     <TableCell>{item.feeAmount.toLocaleString()}</TableCell>

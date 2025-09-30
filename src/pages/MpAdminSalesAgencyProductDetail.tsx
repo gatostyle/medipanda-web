@@ -11,7 +11,7 @@ import {
   PostAttachmentType,
   type SalesAgencyProductDetailsResponse,
 } from '@/backend';
-import { formatYyyyMmDd } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, DateUtils } from '@/lib/utils/dateFormat';
 import { useSnackbar } from 'notistack';
 import { type SyntheticEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
@@ -158,7 +158,9 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse }) {
                 <Typography variant='subtitle2' color='text.secondary'>
                   계약일
                 </Typography>
-                <Typography variant='body1'>{detail ? formatYyyyMmDd(detail.contractDate) : '-'}</Typography>
+                <Typography variant='body1'>
+                  {detail ? DateUtils.parseUtcAndFormatKst(detail.contractDate, DATEFORMAT_YYYY_MM_DD) : '-'}
+                </Typography>
               </Stack>
 
               <Stack sx={{ gap: 1 }}>
@@ -173,7 +175,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse }) {
                   <Typography variant='subtitle2' color='text.secondary'>
                     게시기간
                   </Typography>
-                  <Typography variant='body1'>{`${formatYyyyMmDd(detail.startDate)} ~ ${formatYyyyMmDd(detail.endDate)}`}</Typography>
+                  <Typography variant='body1'>{`${DateUtils.parseUtcAndFormatKst(detail.startDate, DATEFORMAT_YYYY_MM_DD)} ~ ${DateUtils.parseUtcAndFormatKst(detail.endDate, DATEFORMAT_YYYY_MM_DD)}`}</Typography>
                 </Stack>
                 <Stack sx={{ gap: 1 }}>
                   <Typography variant='subtitle2' color='text.secondary'>

@@ -25,7 +25,7 @@ import {
 } from '@mui/material';
 import { AccountStatusLabel, getUserMembers, type MemberResponse, Role, RoleLabel } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
-import { formatYyyyMmDdHhMm } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD_HH_MM, DateUtils } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { useEffect, useState } from 'react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
@@ -214,7 +214,7 @@ export default function MpAdminAdminList() {
                     <TableCell>
                       <Chip label={AccountStatusLabel[row.accountStatus]} color='success' variant='light' size='small' />
                     </TableCell>
-                    <TableCell>{formatYyyyMmDdHhMm(row.registrationDate)}</TableCell>
+                    <TableCell>{DateUtils.parseUtcAndFormatKst(row.registrationDate, DATEFORMAT_YYYY_MM_DD_HH_MM)}</TableCell>
                   </TableRow>
                 ))
               )}

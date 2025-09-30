@@ -20,6 +20,7 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { EditorContent } from '@tiptap/react';
+import { format } from 'date-fns';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import {
   type AttachmentResponse,
@@ -37,7 +38,7 @@ import { useSnackbar } from 'notistack';
 import { type SyntheticEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
-import { DateFix, DATEFORMAT_YYYY_MM_DD, formatYyyyMmDd } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, DateUtils } from '@/lib/utils/dateFormat';
 
 export default function MpAdminSalesAgencyProductEdit() {
   const navigate = useNavigate();
@@ -206,11 +207,11 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
           salesAgencyProductCreateRequest: {
             clientName: values.clientName,
             productName: values.productName,
-            contractDate: formatYyyyMmDd(values.contractDate),
+            contractDate: format(values.contractDate, DATEFORMAT_YYYY_MM_DD),
             videoUrl: values.videoUrl,
             note: values.note,
-            startAt: formatYyyyMmDd(values.startDate),
-            endAt: formatYyyyMmDd(values.endDate),
+            startAt: format(values.startDate, DATEFORMAT_YYYY_MM_DD),
+            endAt: format(values.endDate, DATEFORMAT_YYYY_MM_DD),
             quantity: 1,
           },
           thumbnail: values.thumbnail!,
@@ -234,11 +235,11 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
           salesAgencyProductUpdateRequest: {
             clientName: values.clientName,
             productName: values.productName,
-            contractDate: formatYyyyMmDd(values.contractDate),
+            contractDate: format(values.contractDate, DATEFORMAT_YYYY_MM_DD),
             videoUrl: values.videoUrl,
             note: values.note,
-            startAt: formatYyyyMmDd(values.startDate),
-            endAt: formatYyyyMmDd(values.endDate),
+            startAt: format(values.startDate, DATEFORMAT_YYYY_MM_DD),
+            endAt: format(values.endDate, DATEFORMAT_YYYY_MM_DD),
             quantity: null,
           },
           thumbnail: values.thumbnail ?? undefined,
@@ -270,10 +271,10 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
         thumbnail: null,
         thumbnailUrl: detail.thumbnailUrl,
         videoUrl: detail.videoUrl ?? '',
-        contractDate: DateFix(detail.contractDate),
+        contractDate: DateUtils.utcToKst(new Date(detail.contractDate)),
         note: detail.note ?? '',
-        startDate: DateFix(detail.startDate),
-        endDate: DateFix(detail.endDate),
+        startDate: DateUtils.utcToKst(new Date(detail.startDate)),
+        endDate: DateUtils.utcToKst(new Date(detail.endDate)),
         attachedFiles: detail.boardPostDetail.attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT),
         newFiles: [],
       });

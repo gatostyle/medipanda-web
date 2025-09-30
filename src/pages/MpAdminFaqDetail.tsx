@@ -7,7 +7,7 @@ import { type BoardDetailsResponse, getBoardDetails, PostAttachmentType } from '
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
-import { formatYyyyMmDd } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, DateUtils } from '@/lib/utils/dateFormat';
 
 export default function MpAdminCustomerCenterFaqDetail() {
   const navigate = useNavigate();
@@ -130,7 +130,7 @@ export default function MpAdminCustomerCenterFaqDetail() {
           <Typography variant='body2' color='text.secondary'>
             작성일
           </Typography>
-          <Typography variant='body1'>{formatYyyyMmDd(detail.createdAt)}</Typography>
+          <Typography variant='body1'>{DateUtils.parseUtcAndFormatKst(detail.createdAt, DATEFORMAT_YYYY_MM_DD)}</Typography>
         </Stack>
 
         <Stack direction='row' sx={{ justifyContent: 'center', gap: 2 }}>

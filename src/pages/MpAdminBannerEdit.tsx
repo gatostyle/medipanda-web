@@ -25,7 +25,7 @@ import {
   getBanner,
   updateBanner,
 } from '@/backend';
-import { DateFix, DATEFORMAT_YYYY_MM_DD } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, DateUtils } from '@/lib/utils/dateFormat';
 import { type ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
@@ -143,8 +143,8 @@ export default function MpAdminBannerEdit() {
         scope: detail.scope,
         title: detail.title,
         linkUrl: detail.linkUrl,
-        startAt: DateFix(detail.startAt),
-        endAt: DateFix(detail.endAt),
+        startAt: DateUtils.utcToKst(new Date(detail.startAt)),
+        endAt: DateUtils.utcToKst(new Date(detail.endAt)),
         displayOrder: detail.displayOrder,
       });
 

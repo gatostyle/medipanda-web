@@ -21,7 +21,7 @@ import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
-import { formatYyyyMmDd } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM_DD, DateUtils } from '@/lib/utils/dateFormat';
 
 export default function MpAdminAtoZDetail() {
   const navigate = useNavigate();
@@ -151,7 +151,7 @@ export default function MpAdminAtoZDetail() {
                 <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
                   작성일
                 </TableCell>
-                <TableCell>{formatYyyyMmDd(detail.createdAt)}</TableCell>
+                <TableCell>{DateUtils.parseUtcAndFormatKst(detail.createdAt, DATEFORMAT_YYYY_MM_DD)}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
