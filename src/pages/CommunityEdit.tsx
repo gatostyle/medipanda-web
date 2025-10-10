@@ -40,7 +40,7 @@ export default function CommunityEdit({ boardType }: { boardType: keyof typeof B
 
     if (Number.isNaN(boardPostId)) {
       alert('잘못된 접근입니다.');
-      navigate(`/community/${boardType.toLowerCase()}`, { replace: true });
+      navigate(`/community/${boardType.toLowerCase().replace(/_/g, '-')}`, { replace: true });
       return;
     }
 
@@ -124,7 +124,7 @@ export default function CommunityEdit({ boardType }: { boardType: keyof typeof B
           files: values.newFiles,
         });
         alert('글이 작성되었습니다.');
-        navigate(`/community/${boardType.toLowerCase()}`);
+        navigate(`/community/${boardType.toLowerCase().replace(/_/g, '-')}`);
       }
     } catch (e) {
       console.error('Error saving post:', e);
@@ -245,7 +245,7 @@ export default function CommunityEdit({ boardType }: { boardType: keyof typeof B
       >
         <MedipandaButton
           component={RouterLink}
-          to={`/community/${boardType.toLowerCase()}`}
+          to={`/community/${boardType.toLowerCase().replace(/_/g, '-')}`}
           variant='outlined'
           size='large'
           color='secondary'

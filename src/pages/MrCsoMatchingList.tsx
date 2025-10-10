@@ -151,7 +151,7 @@ export default function MrCsoMatchingList() {
                       )}
                       <Link
                         component={RouterLink}
-                        to={fixedNotices.includes(post) ? `/customer-service/notice/${post.id}` : `/community/mr_cso_matching/${post.id}`}
+                        to={fixedNotices.includes(post) ? `/customer-service/notice/${post.id}` : `/community/mr-cso-matching/${post.id}`}
                         underline='hover'
                         sx={{
                           color: fixedNotices.includes(post) ? colors.gray80 : colors.gray70,
@@ -240,7 +240,7 @@ export default function MrCsoMatchingList() {
               fullWidth
               variant='contained'
               component={RouterLink}
-              to='/community/mr_cso_matching/new'
+              to='/community/mr-cso-matching/new'
               sx={{
                 height: '50px',
                 backgroundColor: colors.navy,

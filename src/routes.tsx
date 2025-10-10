@@ -212,7 +212,7 @@ const route: RouteObject[] = [
               tabConfig={[
                 {
                   label: '신규처 매칭',
-                  to: '/community/mr_cso_matching',
+                  to: '/community/mr-cso-matching',
                 },
                 {
                   label: '익명게시판',
@@ -225,7 +225,7 @@ const route: RouteObject[] = [
         children: [
           {
             index: true,
-            element: <Navigate to={'/community/mr_cso_matching'} replace />,
+            element: <Navigate to={'/community/mr-cso-matching'} replace />,
           },
           {
             path: 'anonymous',
@@ -248,19 +248,19 @@ const route: RouteObject[] = [
             element: <CommunityEdit boardType={BoardType.ANONYMOUS} />,
           },
           {
-            path: 'mr_cso_matching',
+            path: 'mr-cso-matching',
             element: <MrCsoMatchingList />,
           },
           {
-            path: 'mr_cso_matching/:id',
+            path: 'mr-cso-matching/:id',
             element: <CommunityDetail boardType={BoardType.MR_CSO_MATCHING} />,
           },
           {
-            path: 'mr_cso_matching/new',
+            path: 'mr-cso-matching/new',
             element: <CommunityEdit boardType={BoardType.MR_CSO_MATCHING} />,
           },
           {
-            path: 'mr_cso_matching/:id/edit',
+            path: 'mr-cso-matching/:id/edit',
             element: <CommunityEdit boardType={BoardType.MR_CSO_MATCHING} />,
           },
         ],

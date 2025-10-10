@@ -86,7 +86,7 @@ export default function CommunityDetail({ boardType }: { boardType: keyof typeof
     try {
       await deleteBoardPost(boardPostId);
       alert('게시글이 삭제되었습니다.');
-      navigate(`/community/${boardType.toLowerCase()}`, { replace: true });
+      navigate(`/community/${boardType.toLowerCase().replace(/_/g, '-')}`, { replace: true });
     } catch (e) {
       console.error('Error deleting post: ', e);
       alert('게시글 삭제 중 오류가 발생했습니다. 다시 시도해주세요.');
@@ -235,7 +235,11 @@ export default function CommunityDetail({ boardType }: { boardType: keyof typeof
                 <MedipandaButton variant='outlined' color='error' onClick={handleDelete}>
                   삭제하기
                 </MedipandaButton>
-                <MedipandaButton variant='outlined' component={RouterLink} to={`/community/${boardType.toLowerCase()}/${boardPostId}/edit`}>
+                <MedipandaButton
+                  variant='outlined'
+                  component={RouterLink}
+                  to={`/community/${boardType.toLowerCase().replace(/_/g, '-')}/${boardPostId}/edit`}
+                >
                   수정하기
                 </MedipandaButton>
               </>

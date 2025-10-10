@@ -99,7 +99,7 @@ export function CommunityTrendingList({ boardType }: { boardType: keyof typeof B
                 <Link
                   underline='hover'
                   component={RouterLink}
-                  to={`/community/${boardType.toLowerCase()}/${item.id}`}
+                  to={`/community/${boardType.toLowerCase().replace(/_/g, '-')}/${item.id}`}
                   sx={{
                     color: colors.gray80,
                     '&:hover': {

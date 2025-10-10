@@ -236,7 +236,7 @@ export default function Home() {
               variant='contained'
               startIcon={<img src='/assets/icons/icon-pen.svg' />}
               component={RouterLink}
-              to={`/community/${recentBoardType.toLowerCase()}/new`}
+              to={`/community/${recentBoardType.toLowerCase().replace(/_/g, '-')}/new`}
               sx={{
                 marginLeft: 'auto',
               }}
@@ -247,7 +247,7 @@ export default function Home() {
               variant='outlined'
               endIcon={<KeyboardArrowRight />}
               component={RouterLink}
-              to={`/community/${recentBoardType.toLowerCase()}`}
+              to={`/community/${recentBoardType.toLowerCase().replace(/_/g, '-')}`}
               sx={{
                 marginLeft: '10px',
               }}
@@ -293,7 +293,7 @@ function RecentBoardTable({ boardType, ...props }: TableProps & { boardType: key
           <Link
             variant='smallTextR'
             component={RouterLink}
-            to={`/community/${boardType.toLowerCase()}/${row.original.id}`}
+            to={`/community/${boardType.toLowerCase().replace(/_/g, '-')}/${row.original.id}`}
             underline='hover'
             sx={{
               color: colors.gray70,
