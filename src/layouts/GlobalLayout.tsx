@@ -202,6 +202,7 @@ function GlobalLayout() {
         sx={{
           '& .MuiPaper-root': {
             borderRadius: '20px',
+            outline: `2px solid ${colors.vividViolet}`,
           },
         }}
       >
@@ -210,7 +211,6 @@ function GlobalLayout() {
             sx={{
               width: '288px',
               position: 'relative',
-              border: `2px solid ${colors.vividViolet}`,
               borderRadius: '20px',
               boxSizing: 'border-box',
             }}
@@ -307,6 +307,7 @@ function GlobalLayout() {
                 width: '288px',
                 height: '40px',
                 boxSizing: 'border-box',
+                backgroundColor: colors.vividViolet,
               }}
             >
               <Stack
@@ -318,7 +319,6 @@ function GlobalLayout() {
                 sx={{
                   flexGrow: 1,
                   borderRight: `1px solid ${colors.white}`,
-                  borderBottomLeftRadius: '20px',
                   cursor: 'pointer',
                   backgroundColor: colors.vividViolet,
                   color: colors.white,
@@ -334,7 +334,6 @@ function GlobalLayout() {
                 sx={{
                   flexGrow: 1,
                   borderLeft: `1px solid ${colors.white}`,
-                  borderBottomRightRadius: '20px',
                   cursor: 'pointer',
                   backgroundColor: colors.vividViolet,
                   color: colors.white,
