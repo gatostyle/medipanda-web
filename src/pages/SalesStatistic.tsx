@@ -291,11 +291,11 @@ function PartnerSalesStatistic() {
       },
       {
         header: '처방금액',
-        cell: ({ row }) => row.original.prescriptionAmount,
+        cell: ({ row }) => row.original.prescriptionAmount.toLocaleString(),
       },
       {
         header: '정산(합계)금액(VAT포함)',
-        cell: ({ row }) => row.original.totalAmount,
+        cell: ({ row }) => row.original.totalAmount.toLocaleString(),
       },
       {
         header: '관리',
@@ -527,11 +527,11 @@ function ChartView({
       },
       {
         header: '처방금액',
-        cell: ({ row }) => row.original.prescriptionAmount,
+        cell: ({ row }) => row.original.prescriptionAmount.toLocaleString(),
       },
       {
         header: '정산(합계)금액(VAT포함)',
-        cell: ({ row }) => row.original.totalAmount,
+        cell: ({ row }) => row.original.totalAmount.toLocaleString(),
       },
     ],
     getCoreRowModel: getCoreRowModel(),
