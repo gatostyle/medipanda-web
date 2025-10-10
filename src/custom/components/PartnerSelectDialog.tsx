@@ -3,7 +3,7 @@ import { DATEFORMAT_YYYY_MM } from '@/lib/utils/dateFormat';
 import { setUrlParams } from '@/lib/utils/url';
 import { withSequence } from '@/lib/utils/withSequence';
 import { Search } from '@mui/icons-material';
-import { InputAdornment, PaginationItem, Stack, TextField } from '@mui/material';
+import { IconButton, InputAdornment, PaginationItem, Stack, TextField } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
@@ -134,7 +134,9 @@ export function PartnerSelectDialog({
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position='end'>
-                      <Search />
+                      <IconButton edge='end' type='submit'>
+                        <Search />
+                      </IconButton>
                     </InputAdornment>
                   ),
                 }}

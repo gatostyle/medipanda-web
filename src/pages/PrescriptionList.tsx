@@ -30,6 +30,7 @@ import {
   Dialog,
   DialogTitle,
   FormControl,
+  IconButton,
   InputAdornment,
   MenuItem,
   PaginationItem,
@@ -173,7 +174,9 @@ export default function PrescriptionList() {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position='end'>
-                    <Search />
+                    <IconButton edge='end' type='submit'>
+                      <Search />
+                    </IconButton>
                   </InputAdornment>
                 ),
               }}

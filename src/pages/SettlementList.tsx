@@ -229,7 +229,9 @@ export default function SettlementList() {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position='end'>
-                    <Search />
+                    <IconButton edge='end' type='submit'>
+                      <Search />
+                    </IconButton>
                   </InputAdornment>
                 ),
               }}

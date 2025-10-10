@@ -11,6 +11,7 @@ import { Search } from '@mui/icons-material';
 import {
   Box,
   Button,
+  IconButton,
   InputAdornment,
   Link,
   PaginationItem,
@@ -203,7 +204,9 @@ export default function MrCsoMatchingList() {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position='end'>
-                        <Search />
+                        <IconButton edge='end' type='submit'>
+                          <Search />
+                        </IconButton>
                       </InputAdornment>
                     ),
                   }}
