@@ -88,6 +88,8 @@ function TotalSalesStatistic() {
       endMonth: null as Date | null,
     },
   });
+  const formStartMonth = form.watch('startMonth');
+  const formEndMonth = form.watch('endMonth');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
     if (values.startMonth === null || values.endMonth === null) {
@@ -148,6 +150,7 @@ function TotalSalesStatistic() {
               label='시작월'
               format={DATEFORMAT_YYYY_MM}
               views={['year', 'month']}
+              maxDate={formEndMonth || undefined}
               sx={{
                 width: '180px',
               }}
@@ -164,6 +167,7 @@ function TotalSalesStatistic() {
               label='종료월'
               format={DATEFORMAT_YYYY_MM}
               views={['year', 'month']}
+              minDate={formStartMonth || undefined}
               sx={{
                 width: '180px',
               }}
@@ -238,6 +242,8 @@ function PartnerSalesStatistic() {
       endMonth: null as Date | null,
     },
   });
+  const formStartMonth = form.watch('startMonth');
+  const formEndMonth = form.watch('endMonth');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
     if (values.startMonth === null || values.endMonth === null) {
@@ -346,6 +352,7 @@ function PartnerSalesStatistic() {
               label='시작월'
               format={DATEFORMAT_YYYY_MM}
               views={['year', 'month']}
+              maxDate={formEndMonth || undefined}
               sx={{
                 width: '180px',
               }}
@@ -362,6 +369,7 @@ function PartnerSalesStatistic() {
               label='종료월'
               format={DATEFORMAT_YYYY_MM}
               views={['year', 'month']}
+              minDate={formStartMonth || undefined}
               sx={{
                 width: '180px',
               }}
