@@ -572,7 +572,7 @@ export default function ProductList() {
 
       <Stack direction='row' sx={{ alignItems: 'center', marginTop: '40px' }}>
         <Typography variant='mediumTextR' sx={{ color: colors.navy }}>
-          전체 : {totalPages}건
+          전체 : {totalPages.toLocaleString()}건
         </Typography>
         <Stack direction='row' alignItems='center' gap='10px' sx={{ marginLeft: 'auto' }}>
           <Typography variant='mediumTextR' sx={{ color: colors.navy }}>
