@@ -1200,6 +1200,8 @@ export interface ProductDetailsResponse {
   priceUnit: 'KRW' | 'USD' | 'EUR';
   productCode: string | null;
   productName: string | null;
+  roundedChangedFeeRate: number | null;
+  roundedFeeRate: number | null;
 }
 
 export interface ProductExtraInfoRequest {
@@ -1235,6 +1237,8 @@ export interface ProductSummaryResponse {
   price: number | null;
   productCode: string;
   productName: string | null;
+  roundedChangedFeeRate: number | null;
+  roundedFeeRate: number | null;
 }
 
 export interface PushPreferenceResponse {
@@ -1709,6 +1713,7 @@ export async function getBoards(options?: {
   drugCompany?: string;
   myUserId?: string;
   includeChild?: boolean;
+  hasChildren?: boolean;
   noticeTypes?: (
     | 'PRODUCT_STATUS'
     | 'MANUFACTURING_SUSPENSION'
@@ -2414,6 +2419,16 @@ export async function deleteExpenseReport(
     method: 'DELETE',
     url: `/v1/expense-reports/${id}`,
     params: options,
+  });
+}
+
+/**
+ * GET /v1/expense-reports/{id}/download
+ */
+export async function downloadExpenseReport(id: number): Promise<void> {
+  await axios.request({
+    method: 'GET',
+    url: `/v1/expense-reports/${id}/download`,
   });
 }
 
