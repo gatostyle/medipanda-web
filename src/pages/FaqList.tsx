@@ -11,6 +11,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
+  IconButton,
   InputAdornment,
   Link,
   PaginationItem,
@@ -144,7 +145,9 @@ export default function FaqList() {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position='end'>
-                    <Search />
+                    <IconButton edge='end' type='submit'>
+                      <Search />
+                    </IconButton>
                   </InputAdornment>
                 ),
               }}

@@ -10,7 +10,19 @@ import { colors } from '@/themes';
 import { DateUtils, DATEFORMAT_YYYY_MM_DD_HH_MM } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { Search } from '@mui/icons-material';
-import { Fab, InputAdornment, Link, PaginationItem, Stack, Table, TableBody, TableHead, TextField, Typography } from '@mui/material';
+import {
+  Fab,
+  IconButton,
+  InputAdornment,
+  Link,
+  PaginationItem,
+  Stack,
+  Table,
+  TableBody,
+  TableHead,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
@@ -104,7 +116,9 @@ export default function InquiryList() {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position='end'>
-                    <Search sx={{ color: '#999' }} />
+                    <IconButton edge='end' type='submit'>
+                      <Search />
+                    </IconButton>
                   </InputAdornment>
                 ),
               }}

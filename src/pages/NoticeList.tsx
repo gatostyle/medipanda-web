@@ -6,7 +6,19 @@ import { setUrlParams } from '@/lib/utils/url';
 import { colors } from '@/themes';
 import { DateUtils, DATEFORMAT_YYYY_MM_DD } from '@/lib/utils/dateFormat';
 import { Search } from '@mui/icons-material';
-import { Box, InputAdornment, PaginationItem, Stack, Table, TableBody, TableCell, TableRow, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  IconButton,
+  InputAdornment,
+  PaginationItem,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
@@ -147,7 +159,9 @@ export default function NoticeList() {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position='end'>
-                    <Search />
+                    <IconButton edge='end' type='submit'>
+                      <Search />
+                    </IconButton>
                   </InputAdornment>
                 ),
               }}
