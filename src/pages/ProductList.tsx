@@ -353,6 +353,7 @@ export default function ProductList() {
           onSubmit={form.handleSubmit(submitHandler)}
           sx={{
             padding: '30px',
+            marginTop: '40px',
             backgroundColor: colors.gray10,
           }}
         >
