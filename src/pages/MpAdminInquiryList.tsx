@@ -24,7 +24,7 @@ import {
 import { DatePicker } from '@mui/x-date-pickers';
 import { format } from 'date-fns';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
-import { type BoardPostResponse, BoardType, DateString, getBoards } from '@/backend';
+import { type BoardDetailsResponse, type BoardPostResponse, BoardType, DateString, getBoardDetails, getBoards } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
 import { DATEFORMAT_YYYY_MM_DD, DateUtils } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
@@ -59,7 +59,7 @@ export default function MpAdminInquiryList() {
   const pageSize = 20;
 
   const [loading, setLoading] = useState(false);
-  const [contents, setContents] = useState<Sequenced<BoardPostResponse>[]>([]);
+  const [contents, setContents] = useState<Sequenced<BoardPostResponse & { children: BoardDetailsResponse[] }>[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
@@ -114,7 +114,22 @@ export default function MpAdminInquiryList() {
         page: page - 1,
         size: pageSize,
       });
-      setContents(withSequence(response).content);
+
+      const childrenFetched = await Promise.all(
+        response.content.map<Promise<BoardPostResponse & { children: BoardDetailsResponse[] }>>(async c =>
+          c.hasChildren
+            ? {
+                ...c,
+                children: (await getBoardDetails(c.id)).children,
+              }
+            : Promise.resolve({
+                ...c,
+                children: [],
+              }),
+        ),
+      );
+
+      setContents(withSequence(childrenFetched));
       setTotalElements(response.totalElements);
       setTotalPages(response.totalPages);
     } catch (error) {
@@ -286,7 +301,9 @@ export default function MpAdminInquiryList() {
                       </Link>
                     </TableCell>
                     <TableCell>{DateUtils.parseUtcAndFormatKst(item.createdAt, DATEFORMAT_YYYY_MM_DD)}</TableCell>
-                    <TableCell>{item.hasChildren ? DateUtils.parseUtcAndFormatKst(item.createdAt, DATEFORMAT_YYYY_MM_DD) : '-'}</TableCell>
+                    <TableCell>
+                      {item.hasChildren ? DateUtils.parseUtcAndFormatKst(item.children[0].createdAt, DATEFORMAT_YYYY_MM_DD) : '-'}
+                    </TableCell>
                     <TableCell>{item.hasChildren ? '답변완료' : '답변대기중'}</TableCell>
                   </TableRow>
                 ))
