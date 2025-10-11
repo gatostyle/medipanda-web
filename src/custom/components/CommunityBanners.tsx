@@ -1,6 +1,7 @@
 import { type BannerResponse, getBanners } from '@/backend';
 import { LazyImage } from '@/lib/components/LazyImage';
 import { DateUtils } from '@/lib/utils/dateFormat';
+import { setSchema } from '@/lib/utils/url';
 import { colors } from '@/themes';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
@@ -26,7 +27,7 @@ export function CommunityBanners() {
     <>
       {contents.map(banner => {
         return (
-          <RouterLink key={banner.id} to={banner.linkUrl} target='_blank'>
+          <RouterLink key={banner.id} to={setSchema(banner.linkUrl)} target='_blank'>
             <LazyImage
               src={banner.imageUrl}
               width='392px'

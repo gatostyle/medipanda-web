@@ -16,3 +16,11 @@ export function setUrlParams<T extends Record<string, string | number | boolean 
 
   return url.replace(/[?&]$/, '');
 }
+
+export function setSchema(url: string, schema = 'http://'): string {
+  if (url === '' || /^[^:]+:\/\//.test(url)) {
+    return url;
+  }
+
+  return schema + url;
+}

@@ -14,6 +14,7 @@ import { MedipandaCarousel, type MedipandaCarouselHandle } from '@/custom/compon
 import { MedipandaTable } from '@/custom/components/MedipandaTable';
 import { hasCsoMemberPermission, useSession } from '@/hooks/useSession';
 import { LazyImage } from '@/lib/components/LazyImage';
+import { setSchema } from '@/lib/utils/url';
 import { colors, typography } from '@/themes';
 import { DateUtils, DATEFORMAT_YYYY_MM_DD } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
@@ -160,7 +161,7 @@ export default function Home() {
           >
             <MedipandaCarousel ref={carouselRef} interval={5000} width={602}>
               {banners.map(banner => (
-                <RouterLink key={banner.id} to={banner.linkUrl} target='_blank'>
+                <RouterLink key={banner.id} to={setSchema(banner.linkUrl)} target='_blank'>
                   <LazyImage
                     src={banner.imageUrl}
                     style={{
