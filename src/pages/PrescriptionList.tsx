@@ -293,7 +293,7 @@ function EdiIndividualUploadForm() {
     }
   };
 
-  const handleUploadedFiles = (files: File[]) => {
+  const handleFileUpload = (files: File[]) => {
     if (files && files.length > 0) {
       const validFiles = files.filter(file =>
         AVAILABLE_FILE_EXTENSIONS.map(ext => `.${ext}`).some(extension => file.name.toLowerCase().endsWith(extension)),
@@ -448,7 +448,7 @@ function EdiIndividualUploadForm() {
                     }}
                   />
                 ) : (
-                  <MedipandaFileUploadButton onChange={handleUploadedFiles} sx={{ width: '330px' }} />
+                  <MedipandaFileUploadButton onChange={handleFileUpload} sx={{ width: '330px' }} />
                 )}
               </Stack>
             ))}
@@ -597,7 +597,7 @@ function EdiBatchUploadForm() {
     }
   };
 
-  const handleUploadedFiles = (files: File[]) => {
+  const handleFileUpload = (files: File[]) => {
     if (files && files.length > 0) {
       const file = files[0];
 
@@ -678,7 +678,7 @@ function EdiBatchUploadForm() {
                 }}
               />
             ) : (
-              <MedipandaFileUploadButton onChange={handleUploadedFiles} sx={{ width: '330px' }} />
+              <MedipandaFileUploadButton onChange={handleFileUpload} sx={{ width: '330px' }} />
             )
           }
         />

@@ -33,6 +33,8 @@ const MypageFormExtra = styled(Box)({
 });
 
 export default function MypageInfo() {
+  const AVAILABLE_FILE_EXTENSIONS = ['jpg', 'jpeg', 'pdf', 'png'];
+
   const { session } = useSession();
 
   const form = useForm({
@@ -185,6 +187,17 @@ export default function MypageInfo() {
   const handleCopyReferralCode = () => {
     navigator.clipboard.writeText(form.getValues('referralCode'));
     alert('추천인 코드가 복사되었습니다.');
+  };
+
+  const handleFileUpload = (files: File[]) => {
+    const file = files[0];
+
+    if (AVAILABLE_FILE_EXTENSIONS.map(ext => `.${ext}`).includes(file.name.slice(file.name.lastIndexOf('.')).toLowerCase()) === false) {
+      alert(`${AVAILABLE_FILE_EXTENSIONS.join(', ')} 파일만 업로드 가능합니다.`);
+      return;
+    }
+
+    form.setValue('csoRegistrationFile', file);
   };
 
   return (
@@ -353,11 +366,11 @@ export default function MypageInfo() {
               <MypageFormLabel>CSO 등록증</MypageFormLabel>
               <MypageFormInput>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: 1 }}>
-                  <MedipandaFileUploadButton onChange={files => form.setValue('csoRegistrationFile', files[0] ?? null)} />
+                  <MedipandaFileUploadButton onChange={handleFileUpload} />
                   {formCsoRegistrationFile !== null && <Typography sx={{ color: '#666' }}>{formCsoRegistrationFile.name}</Typography>}
                 </Box>
                 <Typography sx={{ color: '#f44336', fontSize: '12px', display: 'block' }}>
-                  jpg, jpeg, pdf, png 파일만 업로드 가능합니다
+                  {AVAILABLE_FILE_EXTENSIONS.join(', ')} 파일만 업로드 가능합니다.
                 </Typography>
               </MypageFormInput>
             </MypageFormRow>
