@@ -671,7 +671,7 @@ export default function ProductList() {
                 </MedipandaTableCell>
                 <MedipandaTableCell align='center'>
                   <Typography sx={{ fontWeight: 500 }}>
-                    {product.roundedFeeRate !== null ? `${PercentUtils.decimalToPercent(product.roundedFeeRate)}%` : '-'}
+                    {product.roundedFeeRate !== null ? `${PercentUtils.formatDecimal(product.roundedFeeRate)}%` : '-'}
                   </Typography>
                 </MedipandaTableCell>
                 <MedipandaTableCell align='center'>
@@ -686,7 +686,7 @@ export default function ProductList() {
                   <Typography sx={{ fontWeight: 500 }}>
                     {product.changedMonth !== null ? (
                       <>
-                        {`${PercentUtils.decimalToPercent(product.roundedChangedFeeRate ?? 0)}%`}
+                        {`${PercentUtils.formatDecimal(product.roundedChangedFeeRate ?? 0)}%`}
                         <br />
                         {`(${new Date(product.changedMonth).getMonth() + 1}월)`}
                       </>
@@ -799,7 +799,7 @@ function ReplaceableProductDialog({ open, onClose, productId }: { open?: boolean
                 )}
               </td>
               <td>기본:</td>
-              <td>{detail.roundedFeeRate !== null ? `${PercentUtils.decimalToPercent(detail.roundedFeeRate)}%` : '-'}</td>
+              <td>{detail.roundedFeeRate !== null ? `${PercentUtils.formatDecimal(detail.roundedFeeRate)}%` : '-'}</td>
             </tr>
             <tr style={{ height: '39px' }}>
               <td>성분명:</td>

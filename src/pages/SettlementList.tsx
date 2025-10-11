@@ -791,7 +791,7 @@ function SettlementDetailDialog({
                       </MedipandaTableCell>
                       <MedipandaTableCell align='center'>
                         <Typography sx={{ fontWeight: 500 }}>
-                          {product.feeRate !== null ? `${PercentUtils.decimalToPercent(product.feeRate)}%` : '-'}
+                          {product.feeRate !== null ? `${PercentUtils.formatDecimal(product.feeRate)}%` : '-'}
                         </Typography>
                       </MedipandaTableCell>
                       <MedipandaTableCell align='center'>
@@ -799,7 +799,7 @@ function SettlementDetailDialog({
                       </MedipandaTableCell>
                       <MedipandaTableCell align='center'>
                         <Typography sx={{ fontWeight: 500 }}>
-                          {product.extraFeeRate !== null ? `${PercentUtils.decimalToPercent(product.extraFeeRate)}%` : '-'}
+                          {product.extraFeeRate !== null ? `${PercentUtils.formatDecimal(product.extraFeeRate)}%` : '-'}
                         </Typography>
                       </MedipandaTableCell>
                       <MedipandaTableCell align='center'>
