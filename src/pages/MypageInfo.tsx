@@ -1,4 +1,12 @@
-import { changePassword_1, createAuthRequest, isAvailableNickname, result as getAuthResult, updateMember, updateNickname } from '@/backend';
+import {
+  changePassword_1,
+  createAuthRequest,
+  isAvailableNickname,
+  MemberType,
+  result as getAuthResult,
+  updateMember,
+  updateNickname,
+} from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaFileUploadButton } from '@/custom/components/MedipandaFileUploadButton';
 import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/components/MedipandaTab';
@@ -366,13 +374,31 @@ export default function MypageInfo() {
             <MypageFormRow direction='row'>
               <MypageFormLabel>CSO 등록증</MypageFormLabel>
               <MypageFormInput>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: 1 }}>
-                  <MedipandaFileUploadButton onChange={handleFileUpload} />
-                  {formCsoRegistrationFile !== null && <Typography sx={{ color: '#666' }}>{formCsoRegistrationFile.name}</Typography>}
-                </Box>
-                <Typography sx={{ color: '#f44336', fontSize: '12px', display: 'block' }}>
-                  {AVAILABLE_FILE_EXTENSIONS.join(', ')} 파일만 업로드 가능합니다.
-                </Typography>
+                {session!.partnerContractStatus !== MemberType.NONE ? (
+                  <Stack
+                    sx={{
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      height: '50px',
+                      border: `1px solid ${colors.gray40}`,
+                      backgroundColor: colors.gray10,
+                    }}
+                  >
+                    <Typography variant={'largeTextR'} sx={{ color: colors.navy }}>
+                      ✓ 승인 완료되었습니다.
+                    </Typography>
+                  </Stack>
+                ) : (
+                  <>
+                    <Stack sx={{ marginBottom: 1 }}>
+                      <MedipandaFileUploadButton onChange={handleFileUpload} />
+                      {formCsoRegistrationFile !== null && <Typography sx={{ color: '#666' }}>{formCsoRegistrationFile.name}</Typography>}
+                    </Stack>
+                    <Typography sx={{ color: '#f44336', fontSize: '12px', display: 'block' }}>
+                      {AVAILABLE_FILE_EXTENSIONS.join(', ')} 파일만 업로드 가능합니다.
+                    </Typography>
+                  </>
+                )}
               </MypageFormInput>
             </MypageFormRow>
 
