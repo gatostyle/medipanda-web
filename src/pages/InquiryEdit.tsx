@@ -7,6 +7,7 @@ import {
   PostAttachmentType,
   updateBoardPost,
 } from '@/backend';
+import { MedipandaEditorContent } from '@/components/MedipandaTiptapContainer';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaFileUploadButton } from '@/custom/components/MedipandaFileUploadButton';
 import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/components/MedipandaTab';
@@ -15,7 +16,6 @@ import { useSession } from '@/hooks/useSession';
 import { trimTiptapContent } from '@/lib/Tiptap';
 import { colors } from '@/themes';
 import { Stack, TextField, Typography } from '@mui/material';
-import { EditorContent } from '@tiptap/react';
 import { useEffect } from 'react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
@@ -157,35 +157,16 @@ export default function InquiryEdit() {
           />
         </Stack>
 
-        <Stack
-          direction='row'
-          alignItems='flex-start'
-          sx={{
-            overflowX: 'hidden',
-
-            '& > div:has(.tiptap)': {
-              border: `1px solid ${colors.gray30}`,
-
-              '.tiptap': {
-                minHeight: '300px',
-                padding: '12px 15px',
-
-                overflow: 'auto',
-              },
-            },
-          }}
-        >
+        <Stack direction='row' alignItems='flex-start'>
           <Typography variant='largeTextM' sx={{ color: colors.gray80, lineHeight: '56px' }}>
             문의내용*
           </Typography>
 
-          <EditorContent
+          <MedipandaEditorContent
             editor={editor}
-            style={{
+            sx={{
               width: '500px',
               marginLeft: 'auto',
-              border: `1px solid ${colors.gray30}`,
-              boxSizing: 'border-box',
             }}
           />
         </Stack>

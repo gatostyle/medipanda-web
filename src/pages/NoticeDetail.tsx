@@ -1,11 +1,10 @@
 import { type BoardDetailsResponse, getBoardDetails } from '@/backend';
+import { MedipandaEditorContent } from '@/components/MedipandaTiptapContainer';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
-import { TiptapMenuBar } from '@/lib/Tiptap';
 import { colors } from '@/themes';
 import { DateUtils, DATEFORMAT_YYYY_MM_DD } from '@/lib/utils/dateFormat';
 import { Button, Link, Stack, Typography } from '@mui/material';
-import { EditorContent, useEditorState } from '@tiptap/react';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 
@@ -33,12 +32,6 @@ export default function NoticeDetail() {
   };
 
   const { editor } = useMedipandaEditor();
-  const editorState = useEditorState({
-    editor,
-    selector: context => ({
-      isEditable: context.editor.isEditable,
-    }),
-  });
 
   useEffect(() => {
     if (detail === null) {
@@ -118,20 +111,14 @@ export default function NoticeDetail() {
         </Stack>
       )}
 
-      <Stack
-        gap='10px'
+      <MedipandaEditorContent
+        editor={editor}
         sx={{
-          padding: '50px 20px',
-          boxSizing: 'border-box',
-          '.tiptap[contenteditable=true]': {
-            border: `1px solid #cccccc`,
-            padding: '12px 15px',
+          '.tiptap': {
+            padding: '50px 20px',
           },
         }}
-      >
-        {editorState.isEditable && <TiptapMenuBar editor={editor} />}
-        <EditorContent editor={editor} />
-      </Stack>
+      />
 
       <Button
         variant='outlined'

@@ -57,6 +57,7 @@ function SidebarLayout({ title, tabConfig }: SidebarLayoutProps) {
         sx={{
           flexGrow: 1,
           marginLeft: '60px',
+          overflowX: 'hidden',
         }}
       >
         <Outlet />

@@ -15,7 +15,7 @@ const MaxWidthContainerWrapper = styled(Stack)({
 }) as typeof Stack;
 
 const MaxWidthContainer = styled(Stack)({
-  minWidth: '1224px',
+  width: '1224px',
 });
 
 const navItems = [

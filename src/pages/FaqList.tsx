@@ -1,4 +1,5 @@
 import { type BoardDetailsResponse, type BoardPostResponse, BoardType, getBoardDetails, getBoards } from '@/backend';
+import { MedipandaEditorContent } from '@/components/MedipandaTiptapContainer';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
@@ -19,7 +20,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { EditorContent } from '@tiptap/react';
 import { useEffect, useState } from 'react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
@@ -222,7 +222,7 @@ export default function FaqList() {
                       ))}
                     </Box>
                   )}
-                  <EditorContent editor={editor} />
+                  <MedipandaEditorContent editor={editor} />
                 </>
               )}
             </AccordionDetails>

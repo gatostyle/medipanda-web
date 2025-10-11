@@ -1,5 +1,6 @@
 import { type AttachmentResponse, type BoardDetailsResponse, deleteBoardPost, getBoardDetails } from '@/backend';
 import { InquiryStatusChip } from '@/components/InquiryStatusChip';
+import { MedipandaEditorContent } from '@/components/MedipandaTiptapContainer';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/components/MedipandaTab';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
@@ -7,7 +8,6 @@ import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
 import { colors } from '@/themes';
 import { DateUtils, DATEFORMAT_YYYY_MM_DD_HH_MM } from '@/lib/utils/dateFormat';
 import { Box, Button, Link, Stack, Typography } from '@mui/material';
-import { EditorContent } from '@tiptap/react';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 
@@ -144,11 +144,14 @@ export default function InquiryDetail() {
         </Stack>
       )}
 
-      <EditorContent
+      <MedipandaEditorContent
         editor={editor}
-        style={{
-          padding: '50px 20px',
+        sx={{
           borderBottom: `1px solid ${colors.gray30}`,
+
+          '.tiptap': {
+            padding: '50px 20px',
+          },
         }}
       />
 
@@ -172,14 +175,12 @@ export default function InquiryDetail() {
               {DateUtils.parseUtcAndFormatKst(answer.createdAt, DATEFORMAT_YYYY_MM_DD_HH_MM)}
             </Typography>
           </Stack>
-          <Box
+          <MedipandaEditorContent
+            editor={childEditor}
             sx={{
-              padding: '15px 20px',
               backgroundColor: colors.gray10,
             }}
-          >
-            <EditorContent editor={childEditor} />
-          </Box>
+          />
           {answer.attachments.length > 0 && (
             <Box>
               <Button

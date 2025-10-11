@@ -11,6 +11,7 @@ import {
   toggleLike,
   toggleLike_1,
 } from '@/backend';
+import { MedipandaEditorContent } from '@/components/MedipandaTiptapContainer';
 import { CommunityTrendingList } from '@/custom/components/CommunityTrendingList';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaDialog, MedipandaDialogContent, MedipandaDialogTitle } from '@/custom/components/MedipandaDialog';
@@ -22,7 +23,6 @@ import { colors } from '@/themes';
 import { DateUtils, DATEFORMAT_YYYY_MM_DD_HH_MM } from '@/lib/utils/dateFormat';
 import { MoreHoriz } from '@mui/icons-material';
 import { FormControlLabel, IconButton, Popover, Radio, RadioGroup, Stack, type StackProps, Typography } from '@mui/material';
-import { EditorContent } from '@tiptap/react';
 import { type FormEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 
@@ -115,6 +115,7 @@ export default function CommunityDetail({ boardType }: { boardType: keyof typeof
         <Stack
           sx={{
             flexGrow: 1,
+            overflowX: 'hidden',
           }}
         >
           <Stack
@@ -156,7 +157,7 @@ export default function CommunityDetail({ boardType }: { boardType: keyof typeof
               borderBottom: `1px solid ${colors.gray30}`,
             }}
           >
-            <EditorContent editor={editor} />
+            <MedipandaEditorContent editor={editor} />
 
             <Stack direction='row' alignItems='center' gap='30px'>
               <Stack

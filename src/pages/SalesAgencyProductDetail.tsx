@@ -1,11 +1,11 @@
 import { applyProduct, getSalesAgencyProductDetails, type SalesAgencyProductDetailsResponse } from '@/backend';
+import { MedipandaEditorContent } from '@/components/MedipandaTiptapContainer';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
 import { colors } from '@/themes';
 import { DateUtils, DATEFORMAT_YYYY_MM_DD } from '@/lib/utils/dateFormat';
 import { Box, Stack, Typography } from '@mui/material';
-import { EditorContent } from '@tiptap/react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -71,6 +71,7 @@ export default function SalesAgencyProductDetail() {
           padding: '20px',
           marginTop: '30px',
           borderTop: `1px solid ${colors.gray50}`,
+          boxSizing: 'border-box',
         }}
       >
         <Typography variant='normalTextB' sx={{ color: colors.gray80 }}>
@@ -86,12 +87,7 @@ export default function SalesAgencyProductDetail() {
         </Typography>
       </Stack>
 
-      <EditorContent
-        editor={editor}
-        style={{
-          padding: '50px 20px',
-        }}
-      />
+      <MedipandaEditorContent editor={editor} />
 
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
         <MedipandaButton

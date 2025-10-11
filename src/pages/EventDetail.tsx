@@ -1,10 +1,10 @@
 import { type EventBoardDetailsResponse, getEventBoardDetails } from '@/backend';
+import { MedipandaEditorContent } from '@/components/MedipandaTiptapContainer';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
 import { colors } from '@/themes';
 import { DateUtils, DATEFORMAT_YYYY_MM_DD } from '@/lib/utils/dateFormat';
 import { Stack, Typography } from '@mui/material';
-import { EditorContent } from '@tiptap/react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -74,12 +74,7 @@ export default function EventDetail() {
         </Typography>
       </Stack>
 
-      <EditorContent
-        editor={editor}
-        style={{
-          padding: '50px 20px',
-        }}
-      />
+      <MedipandaEditorContent editor={editor} />
     </>
   );
 }

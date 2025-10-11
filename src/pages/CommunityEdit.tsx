@@ -8,6 +8,7 @@ import {
   PostAttachmentType,
   updateBoardPost,
 } from '@/backend';
+import { MedipandaEditorContent } from '@/components/MedipandaTiptapContainer';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaCheckbox } from '@/custom/components/MedipandaCheckbox';
 import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
@@ -17,7 +18,6 @@ import { TiptapMenuBar, trimTiptapContent } from '@/lib/Tiptap';
 import { colors } from '@/themes';
 import { CheckCircle, CheckCircleOutline } from '@mui/icons-material';
 import { FormControlLabel, Stack, Typography } from '@mui/material';
-import { EditorContent } from '@tiptap/react';
 import { useEffect, useState } from 'react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
@@ -210,26 +210,9 @@ export default function CommunityEdit({ boardType }: { boardType: keyof typeof B
               sx={{
                 flex: '0 0 490px',
                 overflowX: 'hidden',
-
-                '& > div:has(.tiptap)': {
-                  border: `1px solid ${colors.gray30}`,
-
-                  '.tiptap': {
-                    minHeight: '300px',
-                    padding: '12px 15px',
-
-                    overflow: 'auto',
-                  },
-
-                  '.ProseMirror': {
-                    'p.is-editor-empty:first-child::before': {
-                      whiteSpace: 'pre-line',
-                    },
-                  },
-                },
               }}
             >
-              <EditorContent editor={editor} />
+              <MedipandaEditorContent editor={editor} />
               <TiptapMenuBar editor={editor} />
             </Stack>
           </Stack>

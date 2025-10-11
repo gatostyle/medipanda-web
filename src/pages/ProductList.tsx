@@ -7,6 +7,7 @@ import {
   ProductSortTypeLabel,
   type ProductSummaryResponse,
 } from '@/backend';
+import { MedipandaEditorContent } from '@/components/MedipandaTiptapContainer';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaDialog, MedipandaDialogTitle } from '@/custom/components/MedipandaDialog';
 import { MedipandaOutlinedInput } from '@/custom/components/MedipandaOutlinedInput';
@@ -36,7 +37,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { EditorContent } from '@tiptap/react';
 import { ArrowDown2, ArrowUp2 } from 'iconsax-reactjs';
 import { Fragment, useEffect, useState } from 'react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
@@ -757,7 +757,6 @@ function ReplaceableProductDialog({ open, onClose, productId }: { open?: boolean
           setDetail(null);
           onClose?.();
         }}
-        width='1000px'
       >
         <MedipandaDialogTitle
           title='대체가능 의약품 보기'
@@ -920,9 +919,7 @@ function ProductDetailInfoDialog({
   return (
     <MedipandaDialog fullScreen open onClose={onClose}>
       <MedipandaDialogTitle title='Detail Info' onClose={onClose} />
-      <Stack sx={{ margin: '40px 30px', overflow: 'auto' }}>
-        <EditorContent editor={editor} />
-      </Stack>
+      <MedipandaEditorContent editor={editor} />
     </MedipandaDialog>
   );
 }
