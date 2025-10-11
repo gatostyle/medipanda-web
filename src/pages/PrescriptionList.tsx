@@ -232,6 +232,8 @@ export default function PrescriptionList() {
 }
 
 function EdiIndividualUploadForm() {
+  const AVAILABLE_FILE_EXTENSIONS = ['png', 'jpg', 'jpeg'];
+
   const [dealerSelectDialogOpen, setDealerSelectDialogOpen] = useState(false);
   const [partnerSelectDialogOpen, setPartnerSelectDialogOpen] = useState(false);
   const [drugCompanySearchDialogOpen, setDrugCompanySearchDialogOpen] = useState(false);
@@ -288,6 +290,20 @@ function EdiIndividualUploadForm() {
     } catch (error) {
       console.error('Error uploading EDI files:', error);
       alert('EDI 파일 업로드 중 오류가 발생했습니다. 다시 시도해주세요.');
+    }
+  };
+
+  const handleUploadedFiles = (files: File[]) => {
+    if (files && files.length > 0) {
+      const validFiles = files.filter(file =>
+        AVAILABLE_FILE_EXTENSIONS.map(ext => `.${ext}`).some(extension => file.name.toLowerCase().endsWith(extension)),
+      );
+
+      if (validFiles.length !== files.length) {
+        alert(`${AVAILABLE_FILE_EXTENSIONS.join(', ')} 파일만 업로드 가능합니다.`);
+      }
+
+      form.setValue('files', [...(form.getValues('files') ?? []), ...validFiles]);
     }
   };
 
@@ -432,7 +448,7 @@ function EdiIndividualUploadForm() {
                     }}
                   />
                 ) : (
-                  <MedipandaFileUploadButton onChange={files => field.onChange([...field.value, ...files])} sx={{ width: '330px' }} />
+                  <MedipandaFileUploadButton onChange={handleUploadedFiles} sx={{ width: '330px' }} />
                 )}
               </Stack>
             ))}
@@ -442,7 +458,7 @@ function EdiIndividualUploadForm() {
       <Typography variant='smallTextR' sx={{ color: 'red', whiteSpace: 'pre-wrap' }}>
         파일 업로드시 주의사항
         <br />
-        1. png, jpg, jpeg, png, pdf파일만 업로드 가능해요.
+        1. {AVAILABLE_FILE_EXTENSIONS.join(', ')}파일만 업로드 가능해요.
         <br />
         2. 파일은 최대 5개까지 가능하니, 5개가 초과할 경우에는 &apos;한번에 업로드&apos; 기능을 이용해주세요.
         <br />
@@ -581,6 +597,19 @@ function EdiBatchUploadForm() {
     }
   };
 
+  const handleUploadedFiles = (files: File[]) => {
+    if (files && files.length > 0) {
+      const file = files[0];
+
+      if (!file.name.toLowerCase().endsWith('.zip')) {
+        alert('zip 파일만 업로드 가능합니다.');
+        return;
+      }
+
+      form.setValue('file', files[0]);
+    }
+  };
+
   return (
     <>
       <Stack alignItems='center'>
@@ -649,7 +678,7 @@ function EdiBatchUploadForm() {
                 }}
               />
             ) : (
-              <MedipandaFileUploadButton onChange={files => field.onChange(files[0] ?? null)} sx={{ width: '330px' }} />
+              <MedipandaFileUploadButton onChange={handleUploadedFiles} sx={{ width: '330px' }} />
             )
           }
         />
@@ -661,7 +690,7 @@ function EdiBatchUploadForm() {
         <br />
         2. zip 파일 내 각 파일명: 딜러명_거래처명_처방월 (ex. 홍길동_메디판다_202504)으로 저장해주세요
         <br />
-        3. png, jpg, jpeg, png, pdf파일만 업로드 가능해요
+        3. png, jpg, jpeg, pdf파일만 업로드 가능해요
         <br />
         4. 파일명내에 처방월이 선택한 처방월과 일치하게 해주세요
         <br />
