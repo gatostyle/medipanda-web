@@ -364,6 +364,7 @@ export default function ProductList() {
                 sx={{
                   width: '42px',
                   color: colors.gray70,
+                  whiteSpace: 'nowrap',
                 }}
               >
                 성분명
@@ -392,6 +393,7 @@ export default function ProductList() {
                 sx={{
                   width: '42px',
                   color: colors.gray70,
+                  whiteSpace: 'nowrap',
                 }}
               >
                 제약사
@@ -430,6 +432,7 @@ export default function ProductList() {
                 sx={{
                   width: '42px',
                   color: colors.gray70,
+                  whiteSpace: 'nowrap',
                 }}
               >
                 제품명
@@ -458,6 +461,7 @@ export default function ProductList() {
                 sx={{
                   width: '42px',
                   color: colors.gray70,
+                  whiteSpace: 'nowrap',
                 }}
               >
                 상태
