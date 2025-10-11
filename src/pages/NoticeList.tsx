@@ -192,9 +192,9 @@ export default function NoticeList() {
               <TableCell>
                 <Typography
                   variant='smallTextR'
-                  sx={{ color: notice.noticeProperties?.drugCompany === '메디판다' ? colors.vividViolet : colors.gray70 }}
+                  sx={{ color: notice.noticeProperties!.drugCompany === '' ? colors.vividViolet : colors.gray70 }}
                 >
-                  {notice.noticeProperties?.drugCompany}
+                  {notice.noticeProperties!.drugCompany || '메디판다'}
                 </Typography>
               </TableCell>
               <TableCell>
