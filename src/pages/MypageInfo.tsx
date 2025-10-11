@@ -1,18 +1,11 @@
-import {
-  changePassword,
-  createAuthRequest,
-  isAvailableNickname,
-  MemberType,
-  result as getAuthResult,
-  updateMember,
-  updateNickname,
-} from '@/backend';
+import { changePassword, isAvailableNickname, MemberType, updateMember, updateNickname } from '@/backend';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaFileUploadButton } from '@/custom/components/MedipandaFileUploadButton';
 import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/components/MedipandaTab';
 import { useSession } from '@/hooks/useSession';
 import { colors, typography } from '@/themes';
-import { isValidPassword } from '@/utils/password';
+import { requestKmcAuth } from '@/utils/kmc';
+import { isValidPassword } from '@/utils/form';
 import { Box, FormControl, IconButton, InputAdornment, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { AxiosError } from 'axios';
@@ -134,32 +127,10 @@ export default function MypageInfo() {
   };
 
   const handlePhoneChange = async () => {
-    const { certNum } = await createAuthRequest({
-      cpId: 'XQWT1001',
-      urlCode: '001001',
-      certMet: 'M',
-      plusInfo: 'WEB',
-    });
+    const authResult = await requestKmcAuth();
 
-    const certUrl = `https://prod.api.medipanda.co.kr/v1/kmc/auth/launch?certNum=${certNum}`;
-
-    const popup = window.open(certUrl, '_blank', 'width=500,height=700');
-
-    const authResult = await new Promise<Record<string, unknown>>(resolve => {
-      const interval = setInterval(async () => {
-        getAuthResult({ certNum })
-          .then(result => {
-            if (result.status == 'SUCCESS' || result.status == 'FAIL' || result.status == 'NOT_FOUND') {
-              clearInterval(interval);
-              popup?.close();
-              resolve(result);
-            }
-          })
-          .catch();
-      }, 500);
-    });
-
-    form.setValue('phoneNumber', authResult.phone as string);
+    form.setValue('name', authResult.name);
+    form.setValue('phoneNumber', authResult.phone);
   };
 
   const handlePasswordChange = async () => {
@@ -339,7 +310,22 @@ export default function MypageInfo() {
             <MypageFormRow direction='row'>
               <MypageFormLabel>이름*</MypageFormLabel>
               <MypageFormInput>
-                <Controller control={form.control} name={'name'} render={({ field }) => <TextField {...field} sx={{ flex: 1 }} />} />
+                <Controller
+                  control={form.control}
+                  name={'name'}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      disabled
+                      sx={{
+                        flex: 1,
+                        '& .MuiOutlinedInput-root': {
+                          backgroundColor: '#f8f9fa',
+                        },
+                      }}
+                    />
+                  )}
+                />
               </MypageFormInput>
             </MypageFormRow>
 

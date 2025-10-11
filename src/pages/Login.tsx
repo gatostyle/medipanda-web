@@ -5,11 +5,11 @@ import { useSession } from '@/hooks/useSession';
 import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
 import { colors } from '@/themes';
 import { CheckCircle, CheckCircleOutline, Visibility, VisibilityOff } from '@mui/icons-material';
-import { Box, FormControl, FormControlLabel, FormHelperText, IconButton, InputAdornment, Stack } from '@mui/material';
+import { FormControl, FormControlLabel, FormHelperText, IconButton, InputAdornment, Link, Stack, Typography } from '@mui/material';
 import { isAxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link as RouterLink } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
 
 export default function Login() {
@@ -95,154 +95,133 @@ export default function Login() {
   }
 
   return (
-    <Stack justifyContent='center' alignItems='center' sx={{ flex: '1 0' }}>
-      <Box
+    <Stack
+      justifyContent='center'
+      alignItems='center'
+      sx={{
+        flex: '1 0',
+        gap: '30px',
+      }}
+    >
+      <Stack
         sx={{
-          position: 'absolute',
-          filter: 'blur(140px)',
-          zIndex: -1,
-          bottom: 0,
-          left: 0,
-          top: 0,
-          right: 0,
-          overflow: 'hidden',
-          '&:before': {
-            content: `" "`,
-            width: 300,
-            height: 300,
-            borderRadius: '50%',
-            bgcolor: 'warning.lighter',
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            opacity: 1,
+          alignItems: 'center',
+          width: '912px',
+          padding: '60px',
+          border: `1px solid ${colors.gray80}`,
+          boxSizing: 'border-box',
+          '& > *': {
+            flexGrow: 1,
+            flexBasis: '50%',
           },
         }}
       >
-        <Box
+        <Stack
+          component='form'
+          onSubmit={form.handleSubmit(submitHandler)}
           sx={{
-            width: 250,
-            height: 250,
-            borderRadius: '50%',
-            bgcolor: 'success.lighter',
-            ml: 20,
-            position: 'absolute',
-            bottom: 180,
-            opacity: 1,
-          }}
-        />
-        <Box
-          sx={{
-            width: 200,
-            height: 200,
-            borderRadius: '50%',
-            bgcolor: 'error.light',
-            position: 'absolute',
-            bottom: 0,
-            left: -50,
-            opacity: 1,
-          }}
-        />
-      </Box>
-      <Stack justifyContent='center' alignItems='center'>
-        <Box
-          sx={{
-            padding: '60px 265px 60px 297px',
-            border: `1px solid ${colors.gray80}`,
-            '& > *': {
-              flexGrow: 1,
-              flexBasis: '50%',
-            },
+            alignItems: 'center',
+            width: '350px',
+            gap: '20px',
           }}
         >
-          <Box sx={{ p: { xs: 2, sm: 3, md: 4, xl: 5 } }}>
-            <Stack
-              gap='20px'
-              component='form'
-              noValidate
-              onSubmit={form.handleSubmit(submitHandler)}
+          <img src='/assets/logo.svg' alt='medipanda' width='230' height='43' />
+          <FormControl fullWidth>
+            <Controller
+              control={form.control}
+              name={'userId'}
+              render={({ field }) => (
+                <MedipandaOutlinedInput
+                  {...field}
+                  placeholder='ID'
+                  inputProps={{
+                    maxLength: 20,
+                  }}
+                  sx={{
+                    height: '50px',
+                  }}
+                />
+              )}
+            />
+          </FormControl>
+          <FormControl fullWidth>
+            <Controller
+              control={form.control}
+              name={'password'}
+              render={({ field }) => (
+                <MedipandaOutlinedInput
+                  {...field}
+                  type={showPassword ? 'text' : 'password'}
+                  name='password'
+                  inputProps={{
+                    maxLength: 30,
+                  }}
+                  endAdornment={
+                    <InputAdornment position='end'>
+                      <IconButton onClick={() => setShowPassword(!showPassword)} edge='end'>
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  placeholder='Password'
+                  sx={{
+                    height: '50px',
+                  }}
+                />
+              )}
+            />
+          </FormControl>
+          <Controller
+            control={form.control}
+            name={'autoLogin'}
+            render={({ field }) => (
+              <FormControlLabel
+                {...field}
+                control={<MedipandaCheckbox defaultChecked icon={<CheckCircleOutline />} checkedIcon={<CheckCircle />} />}
+                label='로그인 상태 유지 (자동 로그인)'
+                checked={field.value}
+              />
+            )}
+          />
+          <Stack sx={{ width: '100%' }}>
+            <MedipandaButton
+              type='submit'
+              disabled={formUserId === '' || formPassword === ''}
+              fullWidth
+              size='large'
+              variant='contained'
+              color='secondary'
               sx={{
-                alignItems: 'center',
-                width: '350px',
+                borderRadius: '20px',
               }}
             >
-              <img src='/assets/logo.svg' alt='medipanda' width='230' height='43' />
-              <FormControl fullWidth>
-                <Controller
-                  control={form.control}
-                  name={'userId'}
-                  render={({ field }) => (
-                    <MedipandaOutlinedInput
-                      {...field}
-                      placeholder='ID'
-                      inputProps={{
-                        maxLength: 20,
-                      }}
-                      sx={{
-                        height: '50px',
-                      }}
-                    />
-                  )}
-                />
-              </FormControl>
-              <FormControl fullWidth>
-                <Controller
-                  control={form.control}
-                  name={'password'}
-                  render={({ field }) => (
-                    <MedipandaOutlinedInput
-                      {...field}
-                      type={showPassword ? 'text' : 'password'}
-                      name='password'
-                      inputProps={{
-                        maxLength: 30,
-                      }}
-                      endAdornment={
-                        <InputAdornment position='end'>
-                          <IconButton onClick={() => setShowPassword(!showPassword)} edge='end'>
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      }
-                      placeholder='Password'
-                      sx={{
-                        height: '50px',
-                      }}
-                    />
-                  )}
-                />
-              </FormControl>
-              <Controller
-                control={form.control}
-                name={'autoLogin'}
-                render={({ field }) => (
-                  <FormControlLabel
-                    {...field}
-                    control={<MedipandaCheckbox defaultChecked icon={<CheckCircleOutline />} checkedIcon={<CheckCircle />} />}
-                    label='로그인 상태 유지 (자동 로그인)'
-                    checked={field.value}
-                  />
-                )}
-              />
-              <Stack sx={{ width: '100%' }}>
-                <MedipandaButton
-                  type='submit'
-                  disabled={formUserId === '' || formPassword === ''}
-                  fullWidth
-                  size='large'
-                  variant='contained'
-                  color='secondary'
-                  sx={{
-                    borderRadius: '20px',
-                  }}
-                >
-                  Login
-                </MedipandaButton>
-                <FormHelperText error>{formError}</FormHelperText>
-              </Stack>
-            </Stack>
-          </Box>
-        </Box>
+              Login
+            </MedipandaButton>
+            <FormHelperText error>{formError}</FormHelperText>
+          </Stack>
+        </Stack>
+      </Stack>
+      <Stack
+        direction='row'
+        sx={{
+          gap: '10px',
+        }}
+      >
+        <Link underline={'hover'} component={RouterLink} to={'/find-account'} sx={{ color: colors.gray80 }}>
+          <Typography variant={'largeTextR'}>아이디 찾기</Typography>
+        </Link>
+        <Typography variant={'mediumTextL'} sx={{ color: colors.gray40 }}>
+          |
+        </Typography>
+        <Link underline={'hover'} component={RouterLink} to={'/find-password'} sx={{ color: colors.gray80 }}>
+          <Typography variant={'largeTextR'}>비밀번호 찾기</Typography>
+        </Link>
+        <Typography variant={'mediumTextL'} sx={{ color: colors.gray40 }}>
+          |
+        </Typography>
+        <Link underline={'hover'} component={RouterLink} to={'/signup'} sx={{ color: colors.gray80 }}>
+          <Typography variant={'largeTextEB'}>회원가입</Typography>
+        </Link>
       </Stack>
     </Stack>
   );

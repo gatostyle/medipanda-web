@@ -14,6 +14,9 @@ const SidebarLayout = LazyComponent(lazy(() => import('layouts/SidebarLayout')))
 
 const Login = LazyComponent(lazy(() => import('pages/Login')));
 const Logout = LazyComponent(lazy(() => import('pages/Logout')));
+const Signup = LazyComponent(lazy(() => import('@/pages/Signup')));
+const FindAccount = LazyComponent(lazy(() => import('@/pages/FindAccount')));
+const FindPassword = LazyComponent(lazy(() => import('pages/FindPassword')));
 
 const Home = LazyComponent(lazy(() => import('pages/Home')));
 
@@ -78,6 +81,18 @@ const route: RouteObject[] = [
       {
         path: '',
         element: <Home />,
+      },
+      {
+        path: '/signup',
+        element: <Signup />,
+      },
+      {
+        path: '/find-account',
+        element: <FindAccount />,
+      },
+      {
+        path: '/find-password',
+        element: <FindPassword />,
       },
       {
         path: 'mypage/guard',

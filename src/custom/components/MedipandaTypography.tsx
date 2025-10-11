@@ -17,12 +17,14 @@ type MedipandaTypographyKeys =
   | 'normalTextB'
   | 'normalTextM'
   | 'normalTextR'
+  | 'largeTextEB'
   | 'largeTextB'
   | 'largeTextM'
   | 'largeTextR'
   | 'mediumTextB'
   | 'mediumTextM'
   | 'mediumTextR'
+  | 'mediumTextL'
   | 'smallTextB'
   | 'smallTextM'
   | 'smallTextR';
@@ -116,6 +118,11 @@ export const medipandaTypographyTheme = createTheme({
       fontWeight: 400,
       lineHeight: 1.5,
     },
+    largeTextEB: {
+      fontSize: '16px',
+      fontWeight: 800,
+      lineHeight: 1.5,
+    },
     largeTextB: {
       fontSize: '16px',
       fontWeight: 700,
@@ -144,6 +151,11 @@ export const medipandaTypographyTheme = createTheme({
     mediumTextR: {
       fontSize: '14px',
       fontWeight: 400,
+      lineHeight: 1.5,
+    },
+    mediumTextL: {
+      fontSize: '14px',
+      fontWeight: 300,
       lineHeight: 1.5,
     },
     smallTextB: {
