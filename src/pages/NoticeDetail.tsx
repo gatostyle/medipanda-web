@@ -60,7 +60,7 @@ export default function NoticeDetail() {
           marginTop: '30px',
         }}
       >
-        {detail.noticeProperties?.noticeType} 공지
+        {detail.noticeProperties!.drugCompany || '메디판다'} 공지
       </Typography>
 
       <Stack
@@ -73,7 +73,7 @@ export default function NoticeDetail() {
         }}
       >
         <Typography variant='normalTextB' sx={{ color: colors.gray80 }}>
-          {detail.noticeProperties?.noticeType}
+          {detail.noticeProperties!.drugCompany || '메디판다'}
         </Typography>
         <Typography variant='heading4B' sx={{ color: colors.gray80 }}>
           {detail.title}
