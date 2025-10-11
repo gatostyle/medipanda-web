@@ -111,7 +111,7 @@ export default function CommunityEdit({ boardType }: { boardType: keyof typeof B
           request: {
             boardType: boardType,
             userId: session!.userId,
-            nickname: '익명',
+            nickname: session!.nickname,
             hiddenNickname: values.hiddenNickname,
             title: title,
             content: editorContent,
