@@ -197,16 +197,6 @@ export default function PrescriptionList() {
         >
           거래처별 업로드
         </MedipandaButton>
-        <MedipandaButton
-          variant={!individualUpload ? 'contained' : 'outlined'}
-          rounded
-          onClick={() => setIndividualUpload(false)}
-          sx={{
-            width: '140px',
-          }}
-        >
-          한번에 업로드
-        </MedipandaButton>
       </Stack>
       <Stack direction='row' alignItems='flex-start' gap='24px' sx={{ marginTop: '10px' }}>
         <Stack sx={{ width: '600px' }}>
