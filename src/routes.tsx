@@ -57,7 +57,6 @@ const PartnerContract = LazyComponent(lazy(() => import('pages/PartnerContract')
 
 const Terms = LazyComponent(lazy(() => import('pages/Terms')));
 const Privacy = LazyComponent(lazy(() => import('pages/Privacy')));
-const Partnership = LazyComponent(lazy(() => import('pages/Partnership')));
 
 const Error404 = LazyComponent(lazy(() => import('pages/404')));
 
@@ -373,10 +372,6 @@ const route: RouteObject[] = [
       {
         path: 'privacy',
         element: <Privacy />,
-      },
-      {
-        path: 'partnership',
-        element: <Partnership />,
       },
     ],
   },

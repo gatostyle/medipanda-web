@@ -57,18 +57,6 @@ export function Footer() {
               >
                 개인정보처리방침
               </Link>
-              <span style={{ color: colors.white, margin: '0 8px' }}>|</span>
-              <Link
-                variant='mediumTextB'
-                underline='hover'
-                component={RouterLink}
-                to='/partnership'
-                sx={{
-                  color: colors.white,
-                }}
-              >
-                제휴문의
-              </Link>
             </Stack>
             <Typography variant='smallTextR' sx={{ color: colors.white }}>
               법인명 : (주)케이앤메디슨 | 서울시 강남구 논현로 416, 4층 운기빌딩(역삼동) | 대표 : 황혁진 | 사업자등록번호 : 338-81-00767
