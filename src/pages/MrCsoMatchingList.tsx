@@ -152,7 +152,7 @@ export default function MrCsoMatchingList() {
                       )}
                       <Link
                         component={RouterLink}
-                        to={fixedNotices.includes(post) ? `/customer-service/notice/${post.id}` : `/community/mr-cso-matching/${post.id}`}
+                        to={`/community/mr-cso-matching/${post.id}`}
                         underline='hover'
                         sx={{
                           color: fixedNotices.includes(post) ? colors.gray80 : colors.gray70,

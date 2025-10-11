@@ -153,7 +153,7 @@ export default function AnonymousList() {
                       )}
                       <Link
                         component={RouterLink}
-                        to={fixedNotices.includes(post) ? `/customer-service/notice/${post.id}` : `/community/anonymous/${post.id}`}
+                        to={`/community/anonymous/${post.id}`}
                         underline='hover'
                         sx={{
                           color: fixedNotices.includes(post) ? colors.gray80 : colors.gray70,
