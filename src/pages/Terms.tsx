@@ -22,7 +22,7 @@ export default function Terms() {
 
   return (
     <>
-      <Typography variant='heading3M' sx={{ alignSelf: 'center', color: colors.gray80 }}>
+      <Typography variant='headingPc3M' sx={{ alignSelf: 'center', color: colors.gray80 }}>
         이용약관
       </Typography>
       <iframe

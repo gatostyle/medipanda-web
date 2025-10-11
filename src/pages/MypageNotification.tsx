@@ -89,7 +89,7 @@ export default function MypageNotification() {
 
   return (
     <>
-      <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
+      <Typography variant='headingPc3M' sx={{ color: colors.gray80 }}>
         수신정보
       </Typography>
 

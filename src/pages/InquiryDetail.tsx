@@ -87,7 +87,7 @@ export default function InquiryDetail() {
 
   return (
     <>
-      <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
+      <Typography variant='headingPc3M' sx={{ color: colors.gray80 }}>
         1:1 문의내역
       </Typography>
 
@@ -107,11 +107,11 @@ export default function InquiryDetail() {
           boxSizing: 'border-box',
         }}
       >
-        <Typography variant='heading4B' sx={{ color: colors.gray80 }}>
+        <Typography variant='headingPc4B' sx={{ color: colors.gray80 }}>
           {detail.title}
         </Typography>
         <InquiryStatusChip status={detail.children.length > 0} />
-        <Typography variant='smallTextR' sx={{ color: colors.gray50, marginLeft: 'auto' }}>
+        <Typography variant='smallPcR' sx={{ color: colors.gray50, marginLeft: 'auto' }}>
           {DateUtils.parseUtcAndFormatKst(detail.createdAt, DATEFORMAT_YYYY_MM_DD_HH_MM)}
         </Typography>
       </Stack>
@@ -171,7 +171,7 @@ export default function InquiryDetail() {
             <Typography variant='heading5B' sx={{ color: colors.gray80, marginLeft: 'auto' }}>
               관리자
             </Typography>
-            <Typography variant='smallTextR' sx={{ color: colors.gray50, marginLeft: '10px' }}>
+            <Typography variant='normalTextR' sx={{ color: colors.gray50, marginLeft: '10px' }}>
               {DateUtils.parseUtcAndFormatKst(answer.createdAt, DATEFORMAT_YYYY_MM_DD_HH_MM)}
             </Typography>
           </Stack>

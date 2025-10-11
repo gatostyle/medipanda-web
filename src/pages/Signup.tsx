@@ -218,7 +218,9 @@ export default function Signup() {
   return (
     <>
       <Stack sx={{ alignSelf: 'center' }}>
-        <Typography sx={{ fontSize: '40px', fontWeight: 700, lineHeight: 1.5, color: colors.black }}>회원가입</Typography>
+        <Typography variant='headingPc3M' sx={{ color: colors.black, textAlign: 'center', marginBottom: '40px' }}>
+          회원가입
+        </Typography>
         <Stack sx={{ gap: '30px', width: '421px' }}>
           <Stack sx={{ gap: '8px' }}>
             <Stack direction='row'>

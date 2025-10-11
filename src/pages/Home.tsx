@@ -90,12 +90,7 @@ export default function Home() {
             color: colors.white,
           }}
         >
-          <Typography
-            variant='heading2B'
-            sx={{
-              fontSize: '50px',
-            }}
-          >
+          <Typography variant='headingPc2B'>
             {monthlyPrescriptionCount !== null ? monthlyPrescriptionCount.toLocaleString() : '-'}
           </Typography>
           <Typography variant='heading2R'>건</Typography>
@@ -126,14 +121,7 @@ export default function Home() {
             color: colors.white,
           }}
         >
-          <Typography
-            variant='heading2B'
-            sx={{
-              fontSize: '50px',
-            }}
-          >
-            {recentlyOpenedCount !== null ? recentlyOpenedCount.toLocaleString() : '-'}
-          </Typography>
+          <Typography variant='headingPc2B'>{recentlyOpenedCount !== null ? recentlyOpenedCount.toLocaleString() : '-'}</Typography>
           <Typography variant='heading2R'>개사</Typography>
         </span>
       </Box>
@@ -216,9 +204,8 @@ export default function Home() {
               variant='text'
               onClick={() => setRecentBoardType(BoardType.MR_CSO_MATCHING)}
               sx={{
-                ...typography.heading4B,
+                ...typography.headingPc4B,
                 color: recentBoardType === BoardType.MR_CSO_MATCHING ? colors.gray80 : colors.gray40,
-                marginLeft: '30px',
               }}
             >
               신규처 매칭
@@ -227,7 +214,7 @@ export default function Home() {
               variant='text'
               onClick={() => setRecentBoardType(BoardType.ANONYMOUS)}
               sx={{
-                ...typography.heading4B,
+                ...typography.headingPc4B,
                 color: recentBoardType === BoardType.ANONYMOUS ? colors.gray80 : colors.gray40,
               }}
             >
@@ -292,7 +279,7 @@ function RecentBoardTable({ boardType, ...props }: TableProps & { boardType: key
         header: '제목',
         cell: ({ row }) => (
           <Link
-            variant='smallTextR'
+            variant='smallPcR'
             component={RouterLink}
             to={`/community/${boardType.toLowerCase().replace(/_/g, '-')}/${row.original.id}`}
             underline='hover'

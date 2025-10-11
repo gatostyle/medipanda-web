@@ -48,7 +48,7 @@ export default function NoticeDetail() {
 
   return (
     <>
-      <Typography variant='heading3M' sx={{ alignSelf: 'flex-start', color: colors.gray80 }}>
+      <Typography variant='headingPc3M' sx={{ alignSelf: 'flex-start', color: colors.gray80 }}>
         공지사항
       </Typography>
 
@@ -72,13 +72,13 @@ export default function NoticeDetail() {
           boxSizing: 'border-box',
         }}
       >
-        <Typography variant='normalTextB' sx={{ color: colors.gray80 }}>
+        <Typography variant='normalPcB' sx={{ color: colors.gray80 }}>
           {detail.noticeProperties!.drugCompany || '메디판다'}
         </Typography>
-        <Typography variant='heading4B' sx={{ color: colors.gray80 }}>
+        <Typography variant='headingPc4B' sx={{ color: colors.gray80 }}>
           {detail.title}
         </Typography>
-        <Typography variant='smallTextR' sx={{ color: colors.gray50 }}>
+        <Typography variant='smallPcR' sx={{ color: colors.gray50 }}>
           {DateUtils.parseUtcAndFormatKst(detail.createdAt, DATEFORMAT_YYYY_MM_DD)} | 조회수 {detail.viewsCount.toLocaleString()}
         </Typography>
       </Stack>

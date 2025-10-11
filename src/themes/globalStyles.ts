@@ -23,9 +23,19 @@ export const colors = {
 };
 
 export const typography = {
+  'heading1.7B': {
+    fontSize: '28px',
+    fontWeight: 700,
+    lineHeight: 1.2,
+  },
   heading2B: {
     fontSize: '24px',
     fontWeight: 700,
+    lineHeight: 1.5,
+  },
+  heading2R: {
+    fontSize: '24px',
+    fontWeight: 400,
     lineHeight: 1.5,
   },
   heading3B: {
@@ -73,19 +83,64 @@ export const typography = {
     fontWeight: 400,
     lineHeight: 1.5,
   },
+  headingPc1T: {
+    fontSize: '90px',
+    fontWeight: 100,
+    lineHeight: 1.5,
+  },
+  headingPc2B: {
+    fontSize: '50px',
+    fontWeight: 700,
+    lineHeight: 1.5,
+  },
+  headingPc3B: {
+    fontSize: '36px',
+    fontWeight: 700,
+    lineHeight: 1.3,
+  },
+  headingPc3M: {
+    fontSize: '36px',
+    fontWeight: 500,
+    lineHeight: 1.3,
+  },
+  headingPc4B: {
+    fontSize: '30px',
+    fontWeight: 700,
+    lineHeight: 1.5,
+  },
+  headingPc4R: {
+    fontSize: '30px',
+    fontWeight: 400,
+    lineHeight: 1.5,
+  },
   normalTextB: {
-    fontSize: '17px',
+    fontSize: '13px',
     fontWeight: 700,
     lineHeight: 1.5,
   },
   normalTextM: {
-    fontSize: '17px',
+    fontSize: '13px',
     fontWeight: 500,
     lineHeight: 1.5,
   },
   normalTextR: {
+    fontSize: '13px',
+    fontWeight: 400,
+    lineHeight: 1.5,
+  },
+  normalPcB: {
+    fontSize: '17px',
+    fontWeight: 700,
+    lineHeight: 1.5,
+  },
+  normalPcR: {
     fontSize: '17px',
     fontWeight: 400,
+    lineHeight: 1.5,
+  },
+  largeTextEB: {
+    fontSize: '16px',
+    fontWeight: 800,
     lineHeight: 1.5,
   },
   largeTextB: {
@@ -118,6 +173,11 @@ export const typography = {
     fontWeight: 400,
     lineHeight: 1.5,
   },
+  mediumTextL: {
+    fontSize: '14px',
+    fontWeight: 300,
+    lineHeight: 1.5,
+  },
   smallTextB: {
     fontSize: '12px',
     fontWeight: 700,
@@ -130,6 +190,11 @@ export const typography = {
   },
   smallTextR: {
     fontSize: '12px',
+    fontWeight: 400,
+    lineHeight: 1.5,
+  },
+  smallPcR: {
+    fontSize: '15px',
     fontWeight: 400,
     lineHeight: 1.5,
   },

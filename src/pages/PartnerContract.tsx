@@ -220,7 +220,7 @@ export default function PartnerContract() {
           padding: '60px 180px',
         }}
       >
-        <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
+        <Typography variant='headingPc3M' sx={{ color: colors.gray80 }}>
           {contractDetails !== null ? '파트너사 계약현황' : '파트너사 계약신청'}
         </Typography>
         {contractDetails === null && (
@@ -632,7 +632,7 @@ function BankSelectModal({ open, onClose, onSelect }: { open?: boolean; onClose?
             <Box key={name} onClick={() => onSelect?.(name)} sx={{ cursor: 'pointer' }}>
               <Stack direction='row' sx={{ alignItems: 'center' }}>
                 <img src={`/assets/icons/financial/${name}.png`} style={{ width: '24px', height: '24px' }} />
-                <Typography variant='largeTextM' sx={{ color: colors.gray80, marginLeft: '8px', fontSize: '14px' }}>
+                <Typography variant='mediumTextM' sx={{ color: colors.gray80, marginLeft: '8px' }}>
                   {name}
                 </Typography>
               </Stack>

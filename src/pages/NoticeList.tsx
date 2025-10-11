@@ -110,7 +110,7 @@ export default function NoticeList() {
 
   return (
     <>
-      <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
+      <Typography variant='headingPc3M' sx={{ color: colors.gray80 }}>
         공지사항
       </Typography>
 
@@ -191,7 +191,7 @@ export default function NoticeList() {
             >
               <TableCell>
                 <Typography
-                  variant='smallTextR'
+                  variant='smallPcR'
                   sx={{ color: notice.noticeProperties!.drugCompany === '' ? colors.vividViolet : colors.gray70 }}
                 >
                   {notice.noticeProperties!.drugCompany || '메디판다'}
@@ -202,7 +202,7 @@ export default function NoticeList() {
                   <Typography
                     component={RouterLink}
                     to={`/customer-service/notice/${notice.id}`}
-                    variant='smallTextR'
+                    variant='smallPcR'
                     sx={{
                       color: colors.gray70,
                       textDecoration: 'none',
@@ -230,7 +230,7 @@ export default function NoticeList() {
                 </Box>
               </TableCell>
               <TableCell align='center'>
-                <Typography variant='smallTextR' sx={{ color: colors.gray70 }}>
+                <Typography variant='smallPcR' sx={{ color: colors.gray70 }}>
                   {DateUtils.parseUtcAndFormatKst(notice.createdAt, DATEFORMAT_YYYY_MM_DD)}
                 </Typography>
               </TableCell>

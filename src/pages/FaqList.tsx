@@ -122,7 +122,7 @@ export default function FaqList() {
   return (
     <>
       <Box>
-        <Typography variant='heading3M' sx={{ color: colors.gray80, marginBottom: '30px' }}>
+        <Typography variant='headingPc3M' sx={{ color: colors.gray80, marginBottom: '30px' }}>
           FAQ
         </Typography>
       </Box>
@@ -205,6 +205,7 @@ export default function FaqList() {
                           component={RouterLink}
                           to={file.fileUrl}
                           target='_blank'
+                          variant='largeTextR'
                           sx={{
                             display: 'inline-flex',
                             alignItems: 'center',
@@ -213,7 +214,6 @@ export default function FaqList() {
                             '&:hover': {
                               color: colors.vividViolet,
                             },
-                            fontSize: '14px',
                             marginBottom: 1,
                           }}
                         >

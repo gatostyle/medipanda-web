@@ -655,7 +655,7 @@ export default function ProductList() {
                 }}
               >
                 <MedipandaTableCell rowSpan={2}>
-                  <Typography variant='smallTextR'>{product.manufacturerName}</Typography>
+                  <Typography variant='smallPcR'>{product.manufacturerName}</Typography>
                 </MedipandaTableCell>
                 <MedipandaTableCell sx={{ textAlign: 'left' }}>
                   <Stack gap='5px' sx={{ width: '450px' }}>
@@ -668,18 +668,18 @@ export default function ProductList() {
                   </Stack>
                 </MedipandaTableCell>
                 <MedipandaTableCell align='center'>
-                  <Typography sx={{ fontWeight: 500 }}>{product.price?.toLocaleString() ?? '-'}</Typography>
+                  <Typography variant='smallPcR'>{product.price?.toLocaleString() ?? '-'}</Typography>
                 </MedipandaTableCell>
                 <MedipandaTableCell align='center'>
-                  <Typography sx={{ fontWeight: 500 }}>{product.note ?? '-'}</Typography>
+                  <Typography variant='smallPcR'>{product.note ?? '-'}</Typography>
                 </MedipandaTableCell>
                 <MedipandaTableCell align='center'>
-                  <Typography sx={{ fontWeight: 500 }}>
+                  <Typography variant='smallPcR'>
                     {product.roundedFeeRate !== null ? `${PercentUtils.formatDecimal(product.roundedFeeRate)}%` : '-'}
                   </Typography>
                 </MedipandaTableCell>
                 <MedipandaTableCell align='center'>
-                  <Typography sx={{ fontWeight: 500 }}>
+                  <Typography variant='smallPcR'>
                     {Object.keys(statusLabel)
                       .map(key => (product[key] ? statusLabel[key] : ''))
                       .filter(Boolean)
@@ -687,7 +687,7 @@ export default function ProductList() {
                   </Typography>
                 </MedipandaTableCell>
                 <MedipandaTableCell align='center'>
-                  <Typography sx={{ fontWeight: 500 }}>
+                  <Typography variant='smallPcR'>
                     {product.changedMonth !== null ? (
                       <>
                         {`${PercentUtils.formatDecimal(product.roundedChangedFeeRate ?? 0)}%`}
@@ -845,14 +845,10 @@ function ReplaceableProductDialog({ open, onClose, productId }: { open?: boolean
                 <Fragment key={product.kdCode}>
                   <MedipandaTableRow sx={{ borderBottomWidth: '0 !important' }}>
                     <MedipandaTableCell rowSpan={2}>
-                      <Typography variant='smallTextR' sx={{ fontSize: '15px' }}>
-                        {product.substituent ?? '-'}
-                      </Typography>
+                      <Typography variant='smallPcR'>{product.substituent ?? '-'}</Typography>
                     </MedipandaTableCell>
                     <MedipandaTableCell rowSpan={2}>
-                      <Typography variant='smallTextR' sx={{ fontSize: '15px' }}>
-                        {product.manufacturer ?? '-'}
-                      </Typography>
+                      <Typography variant='smallPcR'>{product.manufacturer ?? '-'}</Typography>
                     </MedipandaTableCell>
                     <MedipandaTableCell sx={{ textAlign: 'left' }}>
                       <Stack gap='5px' sx={{ width: '450px' }}>
@@ -868,16 +864,16 @@ function ReplaceableProductDialog({ open, onClose, productId }: { open?: boolean
                       </Stack>
                     </MedipandaTableCell>
                     <MedipandaTableCell align='center'>
-                      <Typography sx={{ fontWeight: 500 }}>{product.price?.toLocaleString() ?? '-'}</Typography>
+                      <Typography variant='smallPcR'>{product.price?.toLocaleString() ?? '-'}</Typography>
                     </MedipandaTableCell>
                     <MedipandaTableCell align='center'>
-                      <Typography sx={{ fontWeight: 500 }}>{product.note ?? '-'}</Typography>
+                      <Typography variant='smallPcR'>{product.note ?? '-'}</Typography>
                     </MedipandaTableCell>
                     <MedipandaTableCell align='center'>
-                      <Typography sx={{ fontWeight: 500 }}>{product.feeRate ?? '-'}</Typography>
+                      <Typography variant='smallPcR'>{product.feeRate ?? '-'}</Typography>
                     </MedipandaTableCell>
                     <MedipandaTableCell align='center'>
-                      <Typography sx={{ fontWeight: 500 }}>{product.note ?? '-'}</Typography>
+                      <Typography variant='smallPcR'>{product.note ?? '-'}</Typography>
                     </MedipandaTableCell>
                   </MedipandaTableRow>
                   <MedipandaTableRow>

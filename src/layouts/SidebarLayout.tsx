@@ -32,7 +32,7 @@ function SidebarLayout({ title, tabConfig }: SidebarLayoutProps) {
   return (
     <Stack direction='row'>
       <Stack>
-        <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
+        <Typography variant='headingPc3B' sx={{ color: colors.gray80 }}>
           {title}
         </Typography>
         <List

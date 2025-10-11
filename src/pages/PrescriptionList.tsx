@@ -135,7 +135,7 @@ export default function PrescriptionList() {
 
   return (
     <>
-      <Typography variant='heading4B' sx={{ alignSelf: 'center', color: colors.gray80 }}>
+      <Typography variant='heading1.7B' sx={{ alignSelf: 'center', color: colors.gray80 }}>
         {format(new Date(), DATEFORMAT_YYYY년_MM월)}
       </Typography>
       <Stack

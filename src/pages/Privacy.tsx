@@ -22,7 +22,7 @@ export default function Privacy() {
 
   return (
     <>
-      <Typography variant='heading3M' sx={{ alignSelf: 'center', color: colors.gray80 }}>
+      <Typography variant='headingPc3M' sx={{ alignSelf: 'center', color: colors.gray80 }}>
         개인정보처리방침
       </Typography>
       <iframe

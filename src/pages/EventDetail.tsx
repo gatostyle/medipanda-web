@@ -48,7 +48,7 @@ export default function EventDetail() {
 
   return (
     <>
-      <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
+      <Typography variant='headingPc3M' sx={{ color: colors.gray80 }}>
         이벤트
       </Typography>
 
@@ -61,13 +61,13 @@ export default function EventDetail() {
           borderTop: `1px solid ${colors.gray50}`,
         }}
       >
-        <Typography variant='heading4B' sx={{ color: colors.gray80 }}>
+        <Typography variant='headingPc4B' sx={{ color: colors.gray80 }}>
           {detail.boardPostDetail.title}
         </Typography>
-        <Typography variant='normalTextR' sx={{ color: colors.gray80 }}>
+        <Typography variant='normalPcR' sx={{ color: colors.gray80 }}>
           {detail.description}
         </Typography>
-        <Typography variant='smallTextR' sx={{ color: colors.gray50 }}>
+        <Typography variant='smallPcR' sx={{ color: colors.gray50 }}>
           {DateUtils.parseUtcAndFormatKst(detail.eventStartDate, DATEFORMAT_YYYY_MM_DD)} ~{' '}
           {DateUtils.parseUtcAndFormatKst(detail.eventEndDate, DATEFORMAT_YYYY_MM_DD)} | 조회수{' '}
           {detail.boardPostDetail.viewsCount.toLocaleString()}

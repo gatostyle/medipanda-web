@@ -44,7 +44,7 @@ export default function SalesAgencyProductList() {
 
   return (
     <>
-      <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
+      <Typography variant='headingPc3M' sx={{ color: colors.gray80 }}>
         영업대행상품
       </Typography>
 

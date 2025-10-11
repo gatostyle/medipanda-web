@@ -22,7 +22,7 @@ export const MedipandaTableCell = styled(TableCell)({
     color: colors.gray80,
   },
   '.MuiTableBody-root &': {
-    ...typography.smallTextR,
+    ...typography.smallPcR,
     color: colors.gray70,
   },
 }) as typeof TableCell;

@@ -39,20 +39,12 @@ export default function MypageGuard({ children }: { children: ReactNode }) {
         children
       ) : (
         <Stack>
-          <Typography variant='heading3B' sx={{ color: colors.gray80 }}>
+          <Typography variant='headingPc3B' sx={{ color: colors.gray80 }}>
             마이페이지
           </Typography>
           <Box sx={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center', display: 'flex', my: '100px' }}>
             <Stack>
-              <Typography
-                variant='largeTextM'
-                sx={{
-                  color: colors.gray80,
-                  fontWeight: 400,
-                  fontSize: '16px',
-                  lineHeight: 1.5,
-                }}
-              >
+              <Typography variant='largeTextM' sx={{ color: colors.gray80 }}>
                 회원님의 정보를 보호하기 위해 비밀번호를 다시 확인합니다.
               </Typography>
 

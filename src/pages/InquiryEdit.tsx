@@ -117,7 +117,7 @@ export default function InquiryEdit() {
 
   return (
     <>
-      <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
+      <Typography variant='headingPc3M' sx={{ color: colors.gray80 }}>
         1:1 문의내역
       </Typography>
 

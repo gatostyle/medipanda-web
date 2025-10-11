@@ -60,7 +60,7 @@ export default function SalesAgencyProductDetail() {
 
   return (
     <>
-      <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
+      <Typography variant='headingPc3M' sx={{ color: colors.gray80 }}>
         영업대행상품
       </Typography>
 
@@ -74,13 +74,13 @@ export default function SalesAgencyProductDetail() {
           boxSizing: 'border-box',
         }}
       >
-        <Typography variant='normalTextB' sx={{ color: colors.gray80 }}>
+        <Typography variant='normalPcB' sx={{ color: colors.gray80 }}>
           {detail.clientName}
         </Typography>
-        <Typography variant='heading4B' sx={{ color: colors.gray80 }}>
+        <Typography variant='headingPc4B' sx={{ color: colors.gray80 }}>
           {detail.productName}
         </Typography>
-        <Typography variant='smallTextR' sx={{ color: colors.gray50 }}>
+        <Typography variant='smallPcR' sx={{ color: colors.gray50 }}>
           {DateUtils.parseUtcAndFormatKst(detail.startDate, DATEFORMAT_YYYY_MM_DD)} ~{' '}
           {DateUtils.parseUtcAndFormatKst(detail.endDate, DATEFORMAT_YYYY_MM_DD)} | 조회수{' '}
           {detail.boardPostDetail.viewsCount.toLocaleString()}

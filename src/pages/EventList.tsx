@@ -43,7 +43,7 @@ export default function EventList() {
 
   return (
     <>
-      <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
+      <Typography variant='headingPc3M' sx={{ color: colors.gray80 }}>
         이벤트
       </Typography>
 

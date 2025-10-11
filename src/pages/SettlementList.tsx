@@ -178,7 +178,7 @@ export default function SettlementList() {
         >
           <KeyboardArrowLeft />
         </IconButton>
-        <Typography variant='heading4B' sx={{ color: colors.gray80 }}>
+        <Typography variant='heading1.7B' sx={{ color: colors.gray80 }}>
           {format(settlementMonth, DATEFORMAT_YYYY년_MM월)}
         </Typography>
         <IconButton
@@ -778,35 +778,35 @@ function SettlementDetailDialog({
                   <Fragment key={product.id}>
                     <MedipandaTableRow sx={{ borderBottomWidth: '0 !important' }}>
                       <MedipandaTableCell align='center'>
-                        <Typography sx={{ fontWeight: 500 }}>{product.productName}</Typography>
+                        <Typography variant='smallPcR'>{product.productName}</Typography>
                       </MedipandaTableCell>
                       <MedipandaTableCell align='center'>
-                        <Typography sx={{ fontWeight: 500 }}>{product.quantity?.toLocaleString() ?? '-'}</Typography>
+                        <Typography variant='smallPcR'>{product.quantity?.toLocaleString() ?? '-'}</Typography>
                       </MedipandaTableCell>
                       <MedipandaTableCell align='center'>
-                        <Typography sx={{ fontWeight: 500 }}>{product.unitPrice?.toLocaleString() ?? '-'}</Typography>
+                        <Typography variant='smallPcR'>{product.unitPrice?.toLocaleString() ?? '-'}</Typography>
                       </MedipandaTableCell>
                       <MedipandaTableCell align='center'>
-                        <Typography sx={{ fontWeight: 500 }}>{product.prescriptionAmount?.toLocaleString() ?? '-'}</Typography>
+                        <Typography variant='smallPcR'>{product.prescriptionAmount?.toLocaleString() ?? '-'}</Typography>
                       </MedipandaTableCell>
                       <MedipandaTableCell align='center'>
-                        <Typography sx={{ fontWeight: 500 }}>
+                        <Typography variant='smallPcR'>
                           {product.feeRate !== null ? `${PercentUtils.formatDecimal(product.feeRate)}%` : '-'}
                         </Typography>
                       </MedipandaTableCell>
                       <MedipandaTableCell align='center'>
-                        <Typography sx={{ fontWeight: 500 }}>{product.feeAmount?.toLocaleString() ?? '-'}</Typography>
+                        <Typography variant='smallPcR'>{product.feeAmount?.toLocaleString() ?? '-'}</Typography>
                       </MedipandaTableCell>
                       <MedipandaTableCell align='center'>
-                        <Typography sx={{ fontWeight: 500 }}>
+                        <Typography variant='smallPcR'>
                           {product.extraFeeRate !== null ? `${PercentUtils.formatDecimal(product.extraFeeRate)}%` : '-'}
                         </Typography>
                       </MedipandaTableCell>
                       <MedipandaTableCell align='center'>
-                        <Typography sx={{ fontWeight: 500 }}>{product.extraFeeAmount?.toLocaleString() ?? '-'}</Typography>
+                        <Typography variant='smallPcR'>{product.extraFeeAmount?.toLocaleString() ?? '-'}</Typography>
                       </MedipandaTableCell>
                       <MedipandaTableCell align='center'>
-                        <Typography sx={{ fontWeight: 500 }}>{product.note ?? '-'}</Typography>
+                        <Typography variant='smallPcR'>{product.note ?? '-'}</Typography>
                       </MedipandaTableCell>
                     </MedipandaTableRow>
                   </Fragment>

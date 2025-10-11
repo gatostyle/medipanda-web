@@ -200,7 +200,7 @@ export default function MypageInfo() {
   return (
     <>
       <>
-        <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
+        <Typography variant='headingPc3M' sx={{ color: colors.gray80 }}>
           내정보관리
         </Typography>
 
@@ -396,7 +396,7 @@ export default function MypageInfo() {
                   name={'nickname'}
                   render={({ field }) => <TextField {...field} fullWidth sx={{ marginBottom: 1 }} />}
                 />
-                <Typography sx={{ color: '#f44336', fontSize: '12px' }}>닉네임 변경은 1달에 1회 가능합니다.</Typography>
+                <Typography sx={{ color: colors.red }}>닉네임 변경은 1달에 1회 가능합니다.</Typography>
               </MypageFormInput>
             </MypageFormRow>
 
@@ -423,7 +423,7 @@ export default function MypageInfo() {
                       <MedipandaFileUploadButton onChange={handleFileUpload} />
                       {formCsoRegistrationFile !== null && <Typography sx={{ color: '#666' }}>{formCsoRegistrationFile.name}</Typography>}
                     </Stack>
-                    <Typography sx={{ color: '#f44336', fontSize: '12px', display: 'block' }}>
+                    <Typography variant='smallTextR' sx={{ color: colors.red, display: 'block' }}>
                       {AVAILABLE_FILE_EXTENSIONS.join(', ')} 파일만 업로드 가능합니다.
                     </Typography>
                   </>

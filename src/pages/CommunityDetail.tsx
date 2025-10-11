@@ -128,7 +128,7 @@ export default function CommunityDetail({ boardType }: { boardType: keyof typeof
             }}
           >
             <Stack direction='row' alignItems='center'>
-              <Typography variant='heading4B' sx={{ color: colors.gray80 }}>
+              <Typography variant='headingPc4B' sx={{ color: colors.gray80 }}>
                 {detail.title}
               </Typography>
               <IconButton
@@ -141,10 +141,10 @@ export default function CommunityDetail({ boardType }: { boardType: keyof typeof
                 <MoreHoriz />
               </IconButton>
             </Stack>
-            <Typography variant='normalTextB' sx={{ color: colors.gray80 }}>
+            <Typography variant='normalPcB' sx={{ color: colors.gray80 }}>
               {detail.nickname}
             </Typography>
-            <Typography variant='normalTextB' sx={{ color: colors.gray50 }}>
+            <Typography variant='smallPcR' sx={{ color: colors.gray50 }}>
               {DateUtils.parseUtcAndFormatKst(detail.createdAt, DATEFORMAT_YYYY_MM_DD_HH_MM)}
             </Typography>
           </Stack>
