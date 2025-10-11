@@ -590,6 +590,7 @@ export default function ProductList() {
                 <Select
                   {...field}
                   size='small'
+                  onChange={e => navigate(setUrlParams({ sortType: e.target.value }, initialSearchParams))}
                   sx={{
                     ...typography.mediumTextR,
                     color: colors.vividViolet,
