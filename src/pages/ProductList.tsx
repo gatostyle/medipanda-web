@@ -199,6 +199,12 @@ export default function ProductList() {
   const [searchTypeDropdownOpen, setSearchTypeDropdownOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
+  const handleReset = () => {
+    navigate('');
+    form.reset();
+    form.setValue('advancedSearch', true);
+  };
+
   return (
     <>
       <Stack
@@ -547,8 +553,7 @@ export default function ProductList() {
             <MedipandaButton
               variant='contained'
               size='large'
-              component={RouterLink}
-              to={''}
+              onClick={handleReset}
               sx={{
                 width: '160px',
                 backgroundColor: colors.gray50,
