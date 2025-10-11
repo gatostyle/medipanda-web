@@ -1,7 +1,7 @@
 import { getLatestTerms } from '@/backend';
 import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
 import { colors } from '@/themes';
-import { Box, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 export default function Terms() {
@@ -22,10 +22,21 @@ export default function Terms() {
 
   return (
     <>
-      <Typography variant='heading3M' sx={{ color: colors.gray80 }}>
+      <Typography variant='heading3M' sx={{ alignSelf: 'center', color: colors.gray80 }}>
         이용약관
       </Typography>
-      <Box dangerouslySetInnerHTML={{ __html: detail }} />
+      <iframe
+        srcDoc={detail + '<style>html { padding: 20px }</style>'}
+        style={{
+          alignSelf: 'center',
+          width: '912px',
+          height: '912px',
+          border: `1px solid ${colors.gray40}`,
+          marginTop: '20px',
+          boxSizing: 'border-box',
+          overflow: 'auto',
+        }}
+      />
     </>
   );
 }
