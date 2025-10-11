@@ -10,7 +10,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
 
 export default function MypageNotification() {
-  const { session } = useSession();
+  const { session, refresh } = useSession();
 
   const form = useForm({
     defaultValues: {
@@ -64,7 +64,7 @@ export default function MypageNotification() {
       ]);
 
       alert('수신 정보가 수정되었습니다.');
-      fetchPushReferences();
+      refresh();
     } catch (e) {
       console.error(e);
       alert('수신 정보 수정 중 오류가 발생했습니다.');
@@ -72,7 +72,7 @@ export default function MypageNotification() {
   };
   useEffect(() => {
     fetchPushReferences();
-  }, []);
+  }, [session]);
 
   const fetchPushReferences = async () => {
     const { allowNotice, allowSalesAgency, allowPrescription, allowSettlement, allowCommunity } = await getPushPreferences();
@@ -82,9 +82,9 @@ export default function MypageNotification() {
     form.setValue('allowPrescription', allowPrescription);
     form.setValue('allowSettlement', allowSettlement);
     form.setValue('allowCommunity', allowCommunity);
-    form.setValue('marketingEmail', session!.marketingAgreements.sms);
-    form.setValue('marketingPush', session!.marketingAgreements.email);
-    form.setValue('marketingSms', session!.marketingAgreements.push);
+    form.setValue('marketingSms', session!.marketingAgreements.sms);
+    form.setValue('marketingEmail', session!.marketingAgreements.email);
+    form.setValue('marketingPush', session!.marketingAgreements.push);
   };
 
   return (

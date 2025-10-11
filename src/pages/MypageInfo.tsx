@@ -35,7 +35,7 @@ const MypageFormExtra = styled(Box)({
 export default function MypageInfo() {
   const AVAILABLE_FILE_EXTENSIONS = ['jpg', 'jpeg', 'pdf', 'png'];
 
-  const { session } = useSession();
+  const { session, refresh } = useSession();
 
   const form = useForm({
     defaultValues: {
@@ -116,6 +116,7 @@ export default function MypageInfo() {
       });
 
       alert('정보가 수정되었습니다.');
+      refresh();
     } catch (e) {
       console.error(e);
       alert('정보 수정 중 오류가 발생했습니다.');

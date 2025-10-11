@@ -21,6 +21,7 @@ const initialState = {
   isLoading: true,
   login: Promise.resolve as (userId: string, password: string) => Promise<void>,
   logout: Promise.resolve as () => Promise<void>,
+  refresh: Promise.resolve as () => Promise<void>,
 };
 
 const SessionContext = createContext(initialState);
@@ -32,6 +33,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const getSession = async () => {
     const member = await whoAmI();
 
+    clearInterval(window.refreshTokenRotateInterval);
     window.refreshTokenRotateInterval = setInterval(
       async () => {
         const savedRefreshToken = localStorage.getItem('refreshToken');
@@ -80,10 +82,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    refreshSession();
+    refresh();
   }, []);
 
-  const refreshSession = async () => {
+  const refresh = async () => {
     try {
       setSession(await getSession());
     } catch (error) {
@@ -101,6 +103,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         isLoading,
         login,
         logout,
+        refresh,
       }}
     >
       {children}
