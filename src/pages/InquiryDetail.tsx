@@ -178,7 +178,7 @@ export default function InquiryDetail() {
               backgroundColor: colors.gray10,
             }}
           >
-            {answer.content}
+            <EditorContent editor={childEditor} />
           </Box>
           {answer.attachments.length > 0 && (
             <Box>
