@@ -1,5 +1,5 @@
 import {
-  changePassword_1,
+  changePassword,
   createAuthRequest,
   isAvailableNickname,
   MemberType,
@@ -12,6 +12,7 @@ import { MedipandaFileUploadButton } from '@/custom/components/MedipandaFileUplo
 import { MedipandaTab, MedipandaTabElse, MedipandaTabs } from '@/custom/components/MedipandaTab';
 import { useSession } from '@/hooks/useSession';
 import { colors, typography } from '@/themes';
+import { isValidPassword } from '@/utils/password';
 import { Box, FormControl, IconButton, InputAdornment, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { AxiosError } from 'axios';
@@ -48,6 +49,7 @@ export default function MypageInfo() {
   const form = useForm({
     defaultValues: {
       userId: session?.userId || '',
+      currentPassword: '',
       password: '',
       passwordConfirm: '',
       name: session?.name || '',
@@ -161,26 +163,41 @@ export default function MypageInfo() {
   };
 
   const handlePasswordChange = async () => {
+    const currentPassword = form.getValues('currentPassword');
     const password = form.getValues('password');
     const passwordConfirm = form.getValues('passwordConfirm');
 
-    if (password === '' || passwordConfirm === '') {
-      alert('비밀번호를 입력해주세요.');
+    if (currentPassword === '') {
+      alert('기존 비밀번호를 입력해주세요.');
+      return;
+    }
+
+    if (password === '') {
+      alert('새 비밀번호를 입력해주세요.');
+      return;
+    }
+
+    const passwordValidation = isValidPassword(password);
+
+    if (passwordValidation !== true) {
+      alert(passwordValidation);
       return;
     }
 
     if (password !== passwordConfirm) {
-      alert('비밀번호가 일치하지 않습니다.');
+      alert('새 비밀번호가 일치하지 않습니다.');
       return;
     }
 
     try {
-      await changePassword_1(session!.userId, {
+      await changePassword(session!.userId, {
         userId: session!.userId,
+        currentPassword: currentPassword,
         newPassword: password,
       });
 
       alert('비밀번호가 변경되었습니다.');
+      form.setValue('currentPassword', '');
       form.setValue('password', '');
       form.setValue('passwordConfirm', '');
     } catch (e) {
@@ -256,8 +273,8 @@ export default function MypageInfo() {
               <MypageFormInput gap={'5px'}>
                 <Controller
                   control={form.control}
-                  name={'password'}
-                  render={({ field }) => <TextField {...field} type='password' placeholder='비밀번호를 입력해주세요' />}
+                  name={'currentPassword'}
+                  render={({ field }) => <TextField {...field} type='password' placeholder='기존 비밀번호를 입력해주세요' />}
                 />
               </MypageFormInput>
               <MypageFormExtra>
@@ -277,12 +294,38 @@ export default function MypageInfo() {
               <MypageFormInput>
                 <Controller
                   control={form.control}
-                  name={'passwordConfirm'}
+                  name={'password'}
                   render={({ field }) => (
                     <TextField
                       {...field}
                       type='password'
                       placeholder='새 비밀번호를 입력해주세요'
+                      sx={{
+                        '& .MuiOutlinedInput-root': {},
+                      }}
+                    />
+                  )}
+                />
+              </MypageFormInput>
+              <MypageFormExtra />
+            </MypageFormRow>
+
+            <MypageFormRow
+              direction='row'
+              sx={{
+                marginTop: '5px',
+              }}
+            >
+              <MypageFormLabel />
+              <MypageFormInput>
+                <Controller
+                  control={form.control}
+                  name={'passwordConfirm'}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      type='password'
+                      placeholder='새 비밀번호를 다시 입력해주세요'
                       sx={{
                         '& .MuiOutlinedInput-root': {},
                       }}
