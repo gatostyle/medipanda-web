@@ -10,6 +10,7 @@ import {
   ReportType,
   toggleLike,
   toggleLike_1,
+  updateComment,
 } from '@/backend';
 import { MedipandaEditorContent } from '@/components/MedipandaTiptapContainer';
 import { CommunityTrendingList } from '@/custom/components/CommunityTrendingList';
@@ -24,7 +25,9 @@ import { DateUtils, DATEFORMAT_YYYY_MM_DD_HH_MM } from '@/lib/utils/dateFormat';
 import { MoreHoriz } from '@mui/icons-material';
 import { FormControlLabel, IconButton, Popover, Radio, RadioGroup, Stack, type StackProps, Typography } from '@mui/material';
 import { type FormEvent, useEffect, useState } from 'react';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
+import type { RequiredDeep } from 'type-fest';
 
 export default function CommunityDetail({ boardType }: { boardType: keyof typeof BoardType }) {
   const { session } = useSession();
@@ -72,7 +75,6 @@ export default function CommunityDetail({ boardType }: { boardType: keyof typeof
   };
 
   const [postPopupAnchor, setPostPopupAnchor] = useState<HTMLElement | null>(null);
-  const [popupRelatedComment, setPopupRelatedComment] = useState<CommentResponse | null>(null);
 
   const [reportModalOpen, setReportModalOpen] = useState(false);
 
@@ -131,10 +133,7 @@ export default function CommunityDetail({ boardType }: { boardType: keyof typeof
               </Typography>
               <IconButton
                 size='small'
-                onClick={event => {
-                  setPopupRelatedComment(null);
-                  setPostPopupAnchor(event.currentTarget);
-                }}
+                onClick={event => setPostPopupAnchor(event.currentTarget)}
                 sx={{
                   marginLeft: 'auto',
                 }}
@@ -230,38 +229,24 @@ export default function CommunityDetail({ boardType }: { boardType: keyof typeof
         elevation={0}
       >
         <Stack>
-          {popupRelatedComment === null &&
-            (detail.userId === session?.userId ? (
-              <>
-                <MedipandaButton variant='outlined' color='error' onClick={handleDelete}>
-                  삭제하기
-                </MedipandaButton>
-                <MedipandaButton
-                  variant='outlined'
-                  component={RouterLink}
-                  to={`/community/${boardType.toLowerCase().replace(/_/g, '-')}/${boardPostId}/edit`}
-                >
-                  수정하기
-                </MedipandaButton>
-              </>
-            ) : (
-              <MedipandaButton variant='outlined' color='error' onClick={handleReport}>
-                신고하기
+          {detail.userId === session?.userId ? (
+            <>
+              <MedipandaButton variant='outlined' color='error' onClick={handleDelete}>
+                삭제하기
               </MedipandaButton>
-            ))}
-          {popupRelatedComment !== null &&
-            (popupRelatedComment.userId === session?.userId ? (
-              <>
-                <MedipandaButton variant='outlined' color='error'>
-                  삭제하기
-                </MedipandaButton>
-                <MedipandaButton variant='outlined'>수정하기</MedipandaButton>
-              </>
-            ) : (
-              <MedipandaButton variant='outlined' color='error'>
-                신고하기
+              <MedipandaButton
+                variant='outlined'
+                component={RouterLink}
+                to={`/community/${boardType.toLowerCase().replace(/_/g, '-')}/${boardPostId}/edit`}
+              >
+                수정하기
               </MedipandaButton>
-            ))}
+            </>
+          ) : (
+            <MedipandaButton variant='outlined' color='error' onClick={handleReport}>
+              신고하기
+            </MedipandaButton>
+          )}
         </Stack>
       </Popover>
       <CommunityReportModal open={reportModalOpen} onClose={() => setReportModalOpen(false)} postId={boardPostId} />
@@ -401,6 +386,36 @@ function Comment({
 } & Omit<StackProps, 'onClick'>): ReturnType<typeof Stack> {
   const { session } = useSession();
 
+  const [editMode, setEditMode] = useState(false);
+
+  const form = useForm({
+    defaultValues: {
+      content: comment.content,
+    },
+  });
+
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
+    try {
+      const content = values.content.trim();
+
+      if (content === '') {
+        alert('댓글 내용을 입력해주세요.');
+        return;
+      }
+
+      await updateComment({
+        id: comment.id,
+        content: content,
+      });
+      setEditMode(false);
+      await onUpdate?.();
+    } catch (e) {
+      console.error('Error updating comment: ', e);
+      alert('댓글 수정 중 오류가 발생했습니다. 다시 시도해주세요.');
+      return;
+    }
+  };
+
   const [postPopupAnchor, setPostPopupAnchor] = useState<HTMLElement | null>(null);
 
   const handleLike = async () => {
@@ -409,6 +424,11 @@ function Comment({
   };
 
   const [reportModalOpen, setReportModalOpen] = useState(false);
+
+  const handleEdit = async () => {
+    setPostPopupAnchor(null);
+    setEditMode(true);
+  };
 
   const handleDelete = async () => {
     setPostPopupAnchor(null);
@@ -437,17 +457,12 @@ function Comment({
   return (
     <>
       <Stack {...props}>
-        <Stack direction='row' alignItems='flex-start'>
-          <Stack>
-            <Stack direction='row' alignItems='center' gap='5px'>
-              <Typography variant='normalTextB' sx={{ color: colors.gray80 }}>
-                {comment.nickname}
-              </Typography>
-              <img src='/assets/tags/tag-my.svg' />
-            </Stack>
-            <Typography variant='largeTextR' sx={{ color: colors.gray70 }}>
-              {comment.content}
+        <Stack direction='row' alignItems='center'>
+          <Stack direction='row' alignItems='center' gap='5px'>
+            <Typography variant='normalTextB' sx={{ color: colors.gray80 }}>
+              {comment.nickname}
             </Typography>
+            <img src='/assets/tags/tag-my.svg' />
           </Stack>
           <IconButton
             onClick={event => setPostPopupAnchor(event.currentTarget)}
@@ -459,6 +474,45 @@ function Comment({
             <MoreHoriz />
           </IconButton>
         </Stack>
+        {editMode ? (
+          <form onSubmit={form.handleSubmit(submitHandler)} style={{ width: '100%' }}>
+            <Controller
+              control={form.control}
+              name={'content'}
+              render={({ field }) => (
+                <MedipandaOutlinedInput
+                  {...field}
+                  placeholder='댓글을 남겨주세요'
+                  fullWidth
+                  endAdornment={
+                    <MedipandaButton
+                      type='submit'
+                      variant='contained'
+                      size='small'
+                      color='secondary'
+                      sx={{
+                        paddingX: '22px',
+                        borderRadius: '20px',
+                      }}
+                    >
+                      수정하기
+                    </MedipandaButton>
+                  }
+                  sx={{
+                    height: '43px',
+                    marginY: '5px',
+                    backgroundColor: colors.white,
+                    border: `1px solid ${colors.gray50}`,
+                  }}
+                />
+              )}
+            />
+          </form>
+        ) : (
+          <Typography variant='largeTextR' sx={{ color: colors.gray70 }}>
+            {comment.content}
+          </Typography>
+        )}
         <Stack direction='row' alignItems='center' gap='30px'>
           <Typography variant='smallTextR' sx={{ color: colors.gray60, marginTop: '2px', lineHeight: '16px' }}>
             {DateUtils.formatRelativeTime(DateUtils.utcToKst(new Date(comment.createdAt)))}
@@ -516,7 +570,9 @@ function Comment({
               <MedipandaButton variant='outlined' color='error' onClick={handleDelete}>
                 삭제하기
               </MedipandaButton>
-              <MedipandaButton variant='outlined'>수정하기</MedipandaButton>
+              <MedipandaButton variant='outlined' onClick={handleEdit}>
+                수정하기
+              </MedipandaButton>
             </>
           ) : (
             <MedipandaButton variant='outlined' color='error' onClick={handleReport}>
