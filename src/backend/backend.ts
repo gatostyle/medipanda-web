@@ -165,6 +165,11 @@ export interface BlindUpdateRequest {
   postId: number | null;
 }
 
+export interface BlockResponse {
+  blockedAt: string;
+  blockedUserId: string;
+}
+
 export interface BoardDetailsResponse {
   attachments: AttachmentResponse[];
   boardType: string;
@@ -309,6 +314,7 @@ export interface CommentResponse {
   parentId: number | null;
   reportedByMe: boolean;
   userId: string;
+  visible: boolean;
 }
 
 export interface CommentUpdateRequest {
@@ -435,8 +441,8 @@ export interface HospitalResponse {
   id: number;
   name: string;
   scheduledOpenDate: string | null;
-  sido: string;
-  sigungu: string;
+  sido: string | null;
+  sigungu: string | null;
   source: string | null;
 }
 
@@ -1199,6 +1205,8 @@ export interface ProductDetailsResponse {
   priceUnit: 'KRW' | 'USD' | 'EUR';
   productCode: string | null;
   productName: string | null;
+  roundedChangedFeeRate: number | null;
+  roundedFeeRate: number | null;
 }
 
 export interface ProductExtraInfoRequest {
@@ -1234,6 +1242,8 @@ export interface ProductSummaryResponse {
   price: number | null;
   productCode: string;
   productName: string | null;
+  roundedChangedFeeRate: number | null;
+  roundedFeeRate: number | null;
 }
 
 export interface PushPreferenceResponse {
@@ -1458,10 +1468,11 @@ export async function login(data: LoginRequest): Promise<LoginResponse> {
  * 로그아웃
  * GET /v1/auth/logout
  */
-export async function logout(): Promise<void> {
+export async function logout(options?: { deviceUuid?: string }): Promise<void> {
   await axios.request({
     method: 'GET',
     url: '/v1/auth/logout',
+    params: options,
   });
 }
 
@@ -1686,6 +1697,40 @@ export async function unblindPost(data: BlindUpdateRequest): Promise<void> {
 }
 
 /**
+ * 내가 차단한 사용자 목록 조회
+ * GET /v1/blocks
+ */
+export async function list(): Promise<BlockResponse[]> {
+  const response = await axios.request<BlockResponse[]>({
+    method: 'GET',
+    url: '/v1/blocks',
+  });
+  return response.data;
+}
+
+/**
+ * 사용자 차단
+ * PUT /v1/blocks/{targetUserId}
+ */
+export async function block(targetUserId: string): Promise<void> {
+  await axios.request({
+    method: 'PUT',
+    url: `/v1/blocks/${targetUserId}`,
+  });
+}
+
+/**
+ * 차단 해제
+ * DELETE /v1/blocks/{targetUserId}
+ */
+export async function unblock(targetUserId: number): Promise<void> {
+  await axios.request({
+    method: 'DELETE',
+    url: `/v1/blocks/${targetUserId}`,
+  });
+}
+
+/**
  * 게시판 목록 조회
  * GET /v1/boards
  */
@@ -1707,6 +1752,7 @@ export async function getBoards(options?: {
   drugCompany?: string;
   myUserId?: string;
   includeChild?: boolean;
+  hasChildren?: boolean;
   noticeTypes?: (
     | 'PRODUCT_STATUS'
     | 'MANUFACTURING_SUSPENSION'
@@ -2412,6 +2458,16 @@ export async function deleteExpenseReport(
     method: 'DELETE',
     url: `/v1/expense-reports/${id}`,
     params: options,
+  });
+}
+
+/**
+ * GET /v1/expense-reports/{id}/download
+ */
+export async function downloadExpenseReport(id: number): Promise<void> {
+  await axios.request({
+    method: 'GET',
+    url: `/v1/expense-reports/${id}/download`,
   });
 }
 
@@ -3785,6 +3841,22 @@ export function getDownloadSettlementListExcel(options?: {
 }
 
 /**
+ * GET /v1/settlements/export-zip
+ */
+export async function exportGroupedZip(options?: {
+  startMonth?: number;
+  endMonth?: number;
+  dealerName?: string;
+  drugCompanyName?: string;
+}): Promise<void> {
+  await axios.request({
+    method: 'GET',
+    url: '/v1/settlements/export-zip',
+    params: options,
+  });
+}
+
+/**
  * 정산 알림 전송 (선택된 정산건 관리자에게 이메일)
  * POST /v1/settlements/notify-admin
  */
@@ -3885,7 +3957,7 @@ export async function getPerformanceStats(options?: {
 }
 
 /**
- * 실적통계 - 제약사별 집계
+ * 정산내역 - 제약사별 집계
  * GET /v1/settlements/performance/by-drug-company
  */
 export async function getPerformanceByDrugCompany(options?: {
@@ -4059,6 +4131,18 @@ export async function testEmail(options?: { to?: string; subject?: string; body?
   await axios.request({
     method: 'GET',
     url: '/v1/test/email',
+    params: options,
+  });
+}
+
+/**
+ * 푸시 전송 테스트
+ * GET /v1/test/push
+ */
+export async function testPush(options?: { token?: string }): Promise<void> {
+  await axios.request({
+    method: 'GET',
+    url: '/v1/test/push',
     params: options,
   });
 }

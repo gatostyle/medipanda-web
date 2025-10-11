@@ -41,7 +41,7 @@ export default function MpAdminInquiryList() {
     searchKeyword: '',
     startAt: '',
     endAt: '',
-    includeChild: '' as 'true' | 'false' | '',
+    hasChildren: '' as 'true' | 'false' | '',
     page: '1',
   };
 
@@ -50,7 +50,7 @@ export default function MpAdminInquiryList() {
     searchKeyword,
     startAt: paramStartAt,
     endAt: paramEndAt,
-    includeChild,
+    hasChildren,
     page: paramPage,
   } = useSearchParamsOrDefault(initialSearchParams);
   const startAt = useMemo(() => DateUtils.tryParseDate(paramStartAt) ?? null, [paramStartAt]);
@@ -109,7 +109,7 @@ export default function MpAdminInquiryList() {
         userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
         startAt: startAt ? new DateString(startAt) : undefined,
         endAt: endAt ? new DateString(endAt) : undefined,
-        includeChild: includeChild === '' ? undefined : includeChild === 'true',
+        hasChildren: hasChildren === '' ? undefined : hasChildren === 'true',
         filterDeleted: true,
         page: page - 1,
         size: pageSize,
@@ -133,9 +133,9 @@ export default function MpAdminInquiryList() {
     form.setValue('searchKeyword', searchKeyword);
     form.setValue('startAt', startAt);
     form.setValue('endAt', endAt);
-    form.setValue('includeChild', includeChild);
+    form.setValue('hasChildren', hasChildren);
     fetchContents();
-  }, [searchType, searchKeyword, startAt, endAt, includeChild, page]);
+  }, [searchType, searchKeyword, startAt, endAt, hasChildren, page]);
 
   return (
     <Stack sx={{ gap: 3 }}>
@@ -148,7 +148,7 @@ export default function MpAdminInquiryList() {
               <InputLabel>처리상태</InputLabel>
               <Controller
                 control={form.control}
-                name='includeChild'
+                name='hasChildren'
                 render={({ field }) => (
                   <Select {...field}>
                     <MenuItem value={''}>전체</MenuItem>
@@ -287,7 +287,7 @@ export default function MpAdminInquiryList() {
                     </TableCell>
                     <TableCell>{DateUtils.parseUtcAndFormatKst(item.createdAt, DATEFORMAT_YYYY_MM_DD)}</TableCell>
                     <TableCell>{item.hasChildren ? DateUtils.parseUtcAndFormatKst(item.createdAt, DATEFORMAT_YYYY_MM_DD) : '-'}</TableCell>
-                    <TableCell>{item.hasChildren ? '처리완료' : '처리중'}</TableCell>
+                    <TableCell>{item.hasChildren ? '답변완료' : '답변대기중'}</TableCell>
                   </TableRow>
                 ))
               )}
