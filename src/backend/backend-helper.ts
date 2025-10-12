@@ -22,7 +22,7 @@ export const BoardType = {
 
 export const BoardTypeLabel: Record<keyof typeof BoardType, string> = {
   [BoardType.ANONYMOUS]: '익명게시판',
-  [BoardType.MR_CSO_MATCHING]: 'MR-CSO 매칭',
+  [BoardType.MR_CSO_MATCHING]: '신규처 매칭',
   [BoardType.NOTICE]: '공지사항',
   [BoardType.INQUIRY]: '1:1 문의',
   [BoardType.FAQ]: 'FAQ',
@@ -49,7 +49,7 @@ export const NoticeTypeLabel: Record<keyof typeof NoticeType, string> = {
   [NoticeType.POLICY]: '제약사 정책',
   [NoticeType.GENERAL]: '일반공지',
   [NoticeType.ANONYMOUS_BOARD]: '익명게시판',
-  [NoticeType.MR_CSO_MATCHING]: 'MR-CSO 매칭',
+  [NoticeType.MR_CSO_MATCHING]: '신규처 매칭',
 };
 
 export function isDrugCompanyNoticeType(noticeType: keyof typeof NoticeType): boolean {
