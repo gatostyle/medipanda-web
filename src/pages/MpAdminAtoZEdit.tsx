@@ -1,4 +1,5 @@
 import { useMpModal } from '@/hooks/useMpModal';
+import { TiptapMenuBar } from '@/lib/Tiptap';
 import { Close } from '@mui/icons-material';
 import {
   Box,
@@ -199,6 +200,7 @@ export default function MpAdminAtoZEdit() {
               },
             }}
           />
+          <TiptapMenuBar editor={editor} />
         </Stack>
 
         <Stack>

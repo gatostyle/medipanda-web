@@ -555,7 +555,6 @@ export default function MpAdminProductEdit() {
           <Typography variant='h6'>Detail Info</Typography>
 
           <Stack gap='10px'>
-            <TiptapMenuBar editor={editor} />
             <Box
               component={EditorContent}
               editor={editor}
@@ -567,6 +566,7 @@ export default function MpAdminProductEdit() {
                 },
               }}
             />
+            <TiptapMenuBar editor={editor} />
           </Stack>
         </Card>
 

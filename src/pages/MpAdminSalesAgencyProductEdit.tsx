@@ -1,3 +1,4 @@
+import { TiptapMenuBar } from '@/lib/Tiptap';
 import { setUrlParams } from '@/lib/utils/url';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
 import { MpSalesAgencyProductApplicantsTab } from '@/components/MpSalesAgencyProductApplicantsTab';
@@ -390,17 +391,20 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
           <Typography variant='subtitle2'>
             내용 <span style={{ color: 'red' }}>*</span>
           </Typography>
-          <Box
-            component={EditorContent}
-            editor={editor}
-            sx={{
-              border: `1px solid #CCCCCC`,
-              '& .tiptap': {
-                minHeight: '300px',
-                padding: '10px',
-              },
-            }}
-          />
+          <Stack>
+            <Box
+              component={EditorContent}
+              editor={editor}
+              sx={{
+                border: `1px solid #CCCCCC`,
+                '& .tiptap': {
+                  minHeight: '300px',
+                  padding: '10px',
+                },
+              }}
+            />
+            <TiptapMenuBar editor={editor} />
+          </Stack>
         </Stack>
 
         <Controller control={form.control} name={'videoUrl'} render={({ field }) => <TextField {...field} fullWidth label='영상url' />} />

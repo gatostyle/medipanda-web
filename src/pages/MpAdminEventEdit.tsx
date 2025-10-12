@@ -1,5 +1,6 @@
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { useMpModal } from '@/hooks/useMpModal';
+import { TiptapMenuBar } from '@/lib/Tiptap';
 import { Box, Button, Card, CircularProgress, FormControlLabel, Radio, RadioGroup, Stack, TextField, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { EditorContent } from '@tiptap/react';
@@ -362,6 +363,7 @@ export default function MpAdminEventEdit() {
                 },
               }}
             />
+            <TiptapMenuBar editor={editor} />
           </Stack>
 
           <Controller control={form.control} name={'videoUrl'} render={({ field }) => <TextField {...field} label='영상url' fullWidth />} />

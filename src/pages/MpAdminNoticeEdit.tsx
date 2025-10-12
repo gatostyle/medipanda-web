@@ -1,6 +1,7 @@
 import { MpDrugCompanySelectModal } from '@/components/MpDrugCompanySelectModal';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { useMpModal } from '@/hooks/useMpModal';
+import { TiptapMenuBar } from '@/lib/Tiptap';
 import { Close } from '@mui/icons-material';
 import {
   Box,
@@ -336,6 +337,7 @@ export default function MpAdminNoticeEdit() {
                 },
               }}
             />
+            <TiptapMenuBar editor={editor} />
           </Stack>
 
           <Stack>
