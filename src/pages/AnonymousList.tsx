@@ -72,7 +72,7 @@ export default function AnonymousList() {
     try {
       const response = await getBoards({
         boardType: BoardType.ANONYMOUS,
-        [searchType]: searchKeyword,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         page: page - 1,
         size: pageSize,
         myUserId: filterMine ? session!.userId : undefined,

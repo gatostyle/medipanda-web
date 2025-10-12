@@ -71,7 +71,7 @@ export default function MrCsoMatchingList() {
     try {
       const response = await getBoards({
         boardType: BoardType.MR_CSO_MATCHING,
-        [searchType]: searchKeyword,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         page: page - 1,
         size: pageSize,
         myUserId: filterMine ? session!.userId : undefined,

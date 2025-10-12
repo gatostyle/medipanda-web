@@ -69,7 +69,7 @@ export default function InquiryList() {
     try {
       const response = await getBoards({
         boardType: BoardType.INQUIRY,
-        [searchType]: searchKeyword,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         myUserId: session!.userId,
         filterDeleted: true,
         page: page - 1,

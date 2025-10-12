@@ -64,7 +64,7 @@ export default function FaqList() {
     try {
       const response = await getBoards({
         boardType: BoardType.FAQ,
-        [searchType]: searchKeyword,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         page: page - 1,
         size: pageSize,
       });

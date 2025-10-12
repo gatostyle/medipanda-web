@@ -104,7 +104,7 @@ export default function SettlementList() {
   const fetchContents = async () => {
     try {
       const response = await getSettlements({
-        [searchType]: searchKeyword,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         startMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
         endMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
         page: page - 1,

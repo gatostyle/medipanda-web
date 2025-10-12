@@ -83,7 +83,7 @@ export default function PrescriptionList() {
   const fetchContents = async () => {
     try {
       const response = await searchPrescriptions({
-        [searchType]: searchKeyword,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         page: page - 1,
         size: pageSize,
       });

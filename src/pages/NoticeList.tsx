@@ -64,7 +64,7 @@ export default function NoticeList() {
     try {
       const response = await getBoards({
         boardType: BoardType.NOTICE,
-        [searchType]: searchKeyword,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         noticeTypes: noticeType !== '' ? [noticeType] : undefined,
         page: page - 1,
         size: pageSize,
