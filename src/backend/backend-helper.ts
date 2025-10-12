@@ -338,7 +338,7 @@ export const ProductSortType = {
 export const ProductSortTypeLabel: Record<keyof typeof ProductSortType, string> = {
   [ProductSortType.LATEST]: '최신순',
   [ProductSortType.PRICE_ASC]: '약가 낮은순',
-  [ProductSortType.PRICE_DESC]: '약가',
+  [ProductSortType.PRICE_DESC]: '약가 높은순',
   [ProductSortType.FEE_RATE_ASC]: '기본수수료율 낮은순',
   [ProductSortType.FEE_RATE_DESC]: '기본수수료율 높은순',
 };
