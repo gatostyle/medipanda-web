@@ -6,6 +6,7 @@ import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
 import { setUrlParams } from '@/lib/utils/url';
 import { colors } from '@/themes';
 import { DateUtils, DATEFORMAT_YYYY_MM_DD_HH_MM } from '@/lib/utils/dateFormat';
+import { BoardUtils } from '@/utils/BoardUtils';
 import { Add, Remove, Search } from '@mui/icons-material';
 import {
   Accordion,
@@ -188,6 +189,9 @@ export default function FaqList() {
                 </Typography>
                 <Typography variant='largeTextB' sx={{ color: colors.gray80, width: '629px', marginLeft: '20px' }}>
                   {faq.title}
+                  {BoardUtils.isNewPost(DateUtils.utcToKst(new Date(faq.createdAt))) && (
+                    <img src='/assets/icons/icon-bullet-new.svg' style={{ width: '25px', height: '14px' }} />
+                  )}
                 </Typography>
                 <Typography variant='largeTextR' sx={{ color: colors.gray50, marginLeft: '20px' }}>
                   {DateUtils.parseUtcAndFormatKst(faq.createdAt, DATEFORMAT_YYYY_MM_DD_HH_MM)}

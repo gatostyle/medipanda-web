@@ -5,6 +5,7 @@ import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
 import { setUrlParams } from '@/lib/utils/url';
 import { colors } from '@/themes';
 import { DateUtils, DATEFORMAT_YYYY_MM_DD } from '@/lib/utils/dateFormat';
+import { BoardUtils } from '@/utils/BoardUtils';
 import { Search } from '@mui/icons-material';
 import {
   Box,
@@ -218,6 +219,9 @@ export default function NoticeList() {
                       display: 'flex',
                       alignItems: 'center',
                       gap: '4px',
+
+                      whiteSpace: 'pre-line',
+                      wordBreak: 'keep-all',
                     }}
                   >
                     {fixedNotices.includes(notice) && (
@@ -231,6 +235,9 @@ export default function NoticeList() {
                     )}
                     {notice.title}
                   </Typography>
+                  {BoardUtils.isNewPost(DateUtils.utcToKst(new Date(notice.createdAt))) && (
+                    <img src='/assets/icons/icon-bullet-new.svg' style={{ width: '25px', height: '14px' }} />
+                  )}
                 </Box>
               </TableCell>
               <TableCell align='center'>
