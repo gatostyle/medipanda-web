@@ -272,6 +272,7 @@ export default function MpAdminPrescriptionReceptionList() {
                   <TableCell width={100}>딜러번호</TableCell>
                   <TableCell width={120}>아이디</TableCell>
                   <TableCell width={150}>회사명</TableCell>
+                  <TableCell width={150}>거래처명</TableCell>
                   <TableCell width={100}>딜러명</TableCell>
                   <TableCell width={100}>처방월</TableCell>
                   <TableCell width={100}>정산월</TableCell>
@@ -305,6 +306,7 @@ export default function MpAdminPrescriptionReceptionList() {
                       <TableCell>{item.dealerId}</TableCell>
                       <TableCell>{item.userId}</TableCell>
                       <TableCell>{item.companyName}</TableCell>
+                      <TableCell>{item.institutionName}</TableCell>
                       <TableCell>{item.dealerName}</TableCell>
                       <TableCell>{DateUtils.parseUtcAndFormatKst(item.prescriptionMonth, DATEFORMAT_YYYY_MM)}</TableCell>
                       <TableCell>{DateUtils.parseUtcAndFormatKst(item.settlementMonth, DATEFORMAT_YYYY_MM)}</TableCell>
