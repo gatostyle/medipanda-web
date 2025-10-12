@@ -97,6 +97,7 @@ export interface AlternativeProductDto {
   nhiUnit: string | null;
   note: string | null;
   price: number | null;
+  productId: number;
   productName: string;
   substituent: string | null;
 }
@@ -1078,6 +1079,7 @@ export interface PrescriptionResponse {
   dealerName: string;
   drugCompanyName: string;
   id: number;
+  institutionName: string;
   prescriptionMonth: string;
   settlementMonth: string;
   status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
@@ -3127,6 +3129,7 @@ export async function searchPrescriptions(options?: {
   userId?: string;
   dealerName?: string;
   drugCompanyName?: string;
+  institutionName?: string;
   dealerId?: number;
   startAt?: DateTimeString;
   endAt?: DateTimeString;
@@ -3348,19 +3351,21 @@ export async function getOriginalOcrDiff(prescriptionPartnerId: number): Promise
 }
 
 /**
- * EDI ZIP 파일 업로드 (대량 업로드)
+ * EDI ZIP 파일 업로드 (단일 파라미터 기반)
  * POST /v1/prescriptions/zip
  */
-export async function uploadEdiZip(data: {
+export async function uploadEdiZipV2(data: {
+  dealerId: number;
   file: File;
-  partnerUserId: string;
+  partnerId: number;
   prescriptionMonth: string;
   settlementMonth: string;
 }): Promise<PrescriptionZipUploadResult> {
   const form = new FormData();
+  form.append('dealerId', String(data.dealerId));
+  form.append('partnerId', String(data.partnerId));
   form.append('prescriptionMonth', data.prescriptionMonth);
   form.append('settlementMonth', data.settlementMonth);
-  form.append('partnerUserId', data.partnerUserId);
   form.append('file', data.file, data.file.name.normalize('NFC'));
   const response = await axios.request<PrescriptionZipUploadResult>({
     method: 'POST',
@@ -3844,8 +3849,8 @@ export function getDownloadSettlementListExcel(options?: {
  * GET /v1/settlements/export-zip
  */
 export async function exportGroupedZip(options?: {
-  startMonth?: number;
-  endMonth?: number;
+  startMonth?: DateString;
+  endMonth?: DateString;
   dealerName?: string;
   drugCompanyName?: string;
 }): Promise<void> {

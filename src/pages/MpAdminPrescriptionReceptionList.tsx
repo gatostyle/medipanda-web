@@ -1,6 +1,5 @@
 import { setUrlParams } from '@/lib/utils/url';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
-import { MpEdiUploadModal } from '@/components/MpEdiUploadModal';
 import { useMpModal } from '@/hooks/useMpModal';
 import {
   Button,
@@ -74,8 +73,6 @@ export default function MpAdminPrescriptionReceptionList() {
 
   const { alert, alertError } = useMpModal();
   const { enqueueSnackbar } = useSnackbar();
-
-  const [ediUploadModalOpen, setEdiUploadModalOpen] = useState(false);
 
   const form = useForm({
     defaultValues: {
@@ -158,11 +155,6 @@ export default function MpAdminPrescriptionReceptionList() {
       console.error('Failed to confirm reception:', error);
       await alertError('접수 확인 중 오류가 발생했습니다.');
     }
-  };
-
-  const handleEdiUploadSuccess = async () => {
-    setEdiUploadModalOpen(false);
-    await fetchContents();
   };
 
   return (
@@ -270,11 +262,6 @@ export default function MpAdminPrescriptionReceptionList() {
             <Stack direction='row' spacing={2}>
               <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
             </Stack>
-            <Stack direction='row' spacing={1}>
-              <Button variant='contained' color='success' size='small' onClick={() => setEdiUploadModalOpen(true)}>
-                EDI 등록
-              </Button>
-            </Stack>
           </Stack>
 
           <TableContainer sx={{ overflowX: 'auto' }}>
@@ -375,8 +362,6 @@ export default function MpAdminPrescriptionReceptionList() {
           </Stack>
         </Card>
       </Stack>
-
-      <MpEdiUploadModal open={ediUploadModalOpen} onClose={() => setEdiUploadModalOpen(false)} onSuccess={handleEdiUploadSuccess} />
     </>
   );
 }
