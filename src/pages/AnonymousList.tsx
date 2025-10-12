@@ -76,6 +76,8 @@ export default function AnonymousList() {
         page: page - 1,
         size: pageSize,
         myUserId: filterMine ? session!.userId : undefined,
+        filterDeleted: true,
+        filterBlind: true,
       });
 
       setContents(response.content);
@@ -100,6 +102,8 @@ export default function AnonymousList() {
     const response = await getFixedTopNotices({
       boardType: BoardType.NOTICE,
       noticeTypes: [NoticeType.ANONYMOUS_BOARD],
+      filterBlind: true,
+      filterDeleted: true,
     });
 
     setFixedNotices(response);

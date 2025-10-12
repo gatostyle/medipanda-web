@@ -95,7 +95,7 @@ export default function InquiryEdit() {
   };
 
   const fetchDetail = async (id: number) => {
-    const response = await getBoardDetails(id);
+    const response = await getBoardDetails(id, { filterBlind: true, filterDeleted: true });
 
     form.setValue('title', response.title);
     form.setValue(

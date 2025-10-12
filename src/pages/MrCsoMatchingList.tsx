@@ -75,6 +75,8 @@ export default function MrCsoMatchingList() {
         page: page - 1,
         size: pageSize,
         myUserId: filterMine ? session!.userId : undefined,
+        filterDeleted: true,
+        filterBlind: true,
       });
 
       setContents(response.content);
@@ -99,6 +101,8 @@ export default function MrCsoMatchingList() {
     const response = await getFixedTopNotices({
       boardType: BoardType.NOTICE,
       noticeTypes: [NoticeType.MR_CSO_MATCHING],
+      filterBlind: true,
+      filterDeleted: true,
     });
 
     setFixedNotices(response);

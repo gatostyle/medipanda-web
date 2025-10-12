@@ -71,9 +71,10 @@ export default function InquiryList() {
         boardType: BoardType.INQUIRY,
         [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         myUserId: session!.userId,
-        filterDeleted: true,
         page: page - 1,
         size: pageSize,
+        filterDeleted: true,
+        filterBlind: true,
       });
 
       setContents(withSequence(response).content);

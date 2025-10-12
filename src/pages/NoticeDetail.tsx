@@ -26,7 +26,7 @@ export default function NoticeDetail() {
   }, [noticeId, navigate]);
 
   const fetchDetail = async (id: number) => {
-    const response = await getBoardDetails(id);
+    const response = await getBoardDetails(id, { filterBlind: true, filterDeleted: true });
 
     setDetail(response);
   };

@@ -48,7 +48,7 @@ export default function CommunityEdit({ boardType }: { boardType: keyof typeof B
   }, [isNew, boardType, boardPostId, navigate]);
 
   const fetchDetail = async (id: number) => {
-    const response = await getBoardDetails(id);
+    const response = await getBoardDetails(id, { filterBlind: true, filterDeleted: true });
 
     setDetail(response);
   };

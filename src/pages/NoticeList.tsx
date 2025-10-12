@@ -68,6 +68,8 @@ export default function NoticeList() {
         noticeTypes: noticeType !== '' ? [noticeType] : undefined,
         page: page - 1,
         size: pageSize,
+        filterDeleted: true,
+        filterBlind: true,
       });
 
       setContents(response.content);
@@ -99,6 +101,8 @@ export default function NoticeList() {
         NoticeType.POLICY,
         NoticeType.GENERAL,
       ],
+      filterBlind: true,
+      filterDeleted: true,
     });
 
     setFixedNotices(response);

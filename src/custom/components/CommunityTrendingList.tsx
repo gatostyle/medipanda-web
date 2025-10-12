@@ -15,6 +15,8 @@ export function CommunityTrendingList({ boardType }: { boardType: keyof typeof B
       boardType,
       sortType,
       size: pageSize,
+      filterDeleted: true,
+      filterBlind: true,
     });
 
     setContents(response.content);

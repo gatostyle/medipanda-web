@@ -67,6 +67,8 @@ export default function FaqList() {
         [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         page: page - 1,
         size: pageSize,
+        filterDeleted: true,
+        filterBlind: true,
       });
 
       setContents(response.content);
@@ -105,7 +107,7 @@ export default function FaqList() {
   }, [expandedId, setExpandedDetail]);
 
   const fetchDetail = async (id: number) => {
-    setExpandedDetail(await getBoardDetails(id));
+    setExpandedDetail(await getBoardDetails(id, { filterBlind: true, filterDeleted: true }));
   };
 
   const { editor } = useMedipandaEditor();

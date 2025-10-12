@@ -259,6 +259,8 @@ function RecentBoardTable({ boardType, ...props }: TableProps & { boardType: key
       boardType: boardType,
       page: 0,
       size: 10,
+      filterDeleted: true,
+      filterBlind: true,
     });
 
     setContents(withSequence(response.content));
