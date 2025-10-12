@@ -272,18 +272,7 @@ export default function MrCsoMatchingList() {
                 }),
               }}
             >
-              <Box
-                sx={{
-                  padding: '5px 10px',
-                  border: `1px solid ${colors.red}`,
-                  borderRadius: '10px',
-                  boxSizing: 'border-box',
-                  backgroundColor: colors.white,
-                  color: colors.red,
-                }}
-              >
-                <Typography sx={{ fontSize: '10px', lineHeight: '100%' }}>MY</Typography>
-              </Box>
+              <img src='/assets/icons/icon-bullet-my.svg' style={{ width: '36px', height: '20px' }} />
               <Typography variant='largeTextB' sx={{ marginLeft: '5px', color: colors.gray80 }}>
                 내 글
               </Typography>

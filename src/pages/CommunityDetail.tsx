@@ -462,7 +462,7 @@ function Comment({
             <Typography variant='normalTextB' sx={{ color: colors.gray80 }}>
               {comment.nickname}
             </Typography>
-            <img src='/assets/tags/tag-my.svg' />
+            {comment.userId === session?.userId && <img src='/assets/icons/icon-bullet-my.svg' style={{ width: '25px', height: '14px' }} />}
           </Stack>
           <IconButton
             onClick={event => setPostPopupAnchor(event.currentTarget)}
