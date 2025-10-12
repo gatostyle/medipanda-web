@@ -97,6 +97,7 @@ export interface AlternativeProductDto {
   nhiUnit: string | null;
   note: string | null;
   price: number | null;
+  productId: number;
   productName: string;
   substituent: string | null;
 }
@@ -163,6 +164,11 @@ export interface BlindPostResponse {
 export interface BlindUpdateRequest {
   commentId: number | null;
   postId: number | null;
+}
+
+export interface BlockResponse {
+  blockedAt: string;
+  blockedUserId: string;
 }
 
 export interface BoardDetailsResponse {
@@ -436,8 +442,8 @@ export interface HospitalResponse {
   id: number;
   name: string;
   scheduledOpenDate: string | null;
-  sido: string;
-  sigungu: string;
+  sido: string | null;
+  sigungu: string | null;
   source: string | null;
 }
 
@@ -1689,6 +1695,40 @@ export async function unblindPost(data: BlindUpdateRequest): Promise<void> {
     method: 'PUT',
     url: '/v1/blind-posts/unblind',
     data,
+  });
+}
+
+/**
+ * 내가 차단한 사용자 목록 조회
+ * GET /v1/blocks
+ */
+export async function list(): Promise<BlockResponse[]> {
+  const response = await axios.request<BlockResponse[]>({
+    method: 'GET',
+    url: '/v1/blocks',
+  });
+  return response.data;
+}
+
+/**
+ * 사용자 차단
+ * PUT /v1/blocks/{targetUserId}
+ */
+export async function block(targetUserId: string): Promise<void> {
+  await axios.request({
+    method: 'PUT',
+    url: `/v1/blocks/${targetUserId}`,
+  });
+}
+
+/**
+ * 차단 해제
+ * DELETE /v1/blocks/{targetUserId}
+ */
+export async function unblock(targetUserId: number): Promise<void> {
+  await axios.request({
+    method: 'DELETE',
+    url: `/v1/blocks/${targetUserId}`,
   });
 }
 
@@ -3311,19 +3351,21 @@ export async function getOriginalOcrDiff(prescriptionPartnerId: number): Promise
 }
 
 /**
- * EDI ZIP 파일 업로드 (대량 업로드)
+ * EDI ZIP 파일 업로드 (단일 파라미터 기반)
  * POST /v1/prescriptions/zip
  */
-export async function uploadEdiZip(data: {
+export async function uploadEdiZipV2(data: {
+  dealerId: number;
   file: File;
-  partnerUserId: string;
+  partnerId: number;
   prescriptionMonth: string;
   settlementMonth: string;
 }): Promise<PrescriptionZipUploadResult> {
   const form = new FormData();
+  form.append('dealerId', String(data.dealerId));
+  form.append('partnerId', String(data.partnerId));
   form.append('prescriptionMonth', data.prescriptionMonth);
   form.append('settlementMonth', data.settlementMonth);
-  form.append('partnerUserId', data.partnerUserId);
   form.append('file', data.file, data.file.name.normalize('NFC'));
   const response = await axios.request<PrescriptionZipUploadResult>({
     method: 'POST',
@@ -3804,6 +3846,22 @@ export function getDownloadSettlementListExcel(options?: {
 }
 
 /**
+ * GET /v1/settlements/export-zip
+ */
+export async function exportGroupedZip(options?: {
+  startMonth?: DateString;
+  endMonth?: DateString;
+  dealerName?: string;
+  drugCompanyName?: string;
+}): Promise<void> {
+  await axios.request({
+    method: 'GET',
+    url: '/v1/settlements/export-zip',
+    params: options,
+  });
+}
+
+/**
  * 정산 알림 전송 (선택된 정산건 관리자에게 이메일)
  * POST /v1/settlements/notify-admin
  */
@@ -3904,7 +3962,7 @@ export async function getPerformanceStats(options?: {
 }
 
 /**
- * 실적통계 - 제약사별 집계
+ * 정산내역 - 제약사별 집계
  * GET /v1/settlements/performance/by-drug-company
  */
 export async function getPerformanceByDrugCompany(options?: {

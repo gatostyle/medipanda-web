@@ -1,6 +1,5 @@
 import {
   DateString,
-  getDownloadSettlementListExcel,
   getSettlementPartnerProducts,
   getSettlementPartnerSummary,
   getSettlements,
@@ -134,7 +133,7 @@ export default function SettlementList() {
 
   const handleSettlement = () => {
     if (selectedId === null) {
-      alert('정산신청할 딜러를 선택해주세요.');
+      alert('정산요청할 딜러를 선택해주세요.');
       return;
     }
 
@@ -143,7 +142,7 @@ export default function SettlementList() {
 
   const handleObjection = async () => {
     if (selectedId === null) {
-      alert('이의신청할 딜러를 선택해주세요.');
+      alert('이의제할 딜러를 선택해주세요.');
       return;
     }
 
@@ -151,10 +150,10 @@ export default function SettlementList() {
       await notifyAdminForObjections({
         settlementIds: [selectedId],
       });
-      alert('이의신청이 접수되었습니다.');
+      alert('이의제이 접수되었습니다.');
     } catch (error) {
       console.error('Failed to submit objection:', error);
-      alert('이의신청 중 오류가 발생했습니다.');
+      alert('이의제 중 오류가 발생했습니다.');
     }
   };
 
@@ -258,13 +257,15 @@ export default function SettlementList() {
               size='small'
               color='secondary'
               component={RouterLink}
-              to={getDownloadSettlementListExcel({
-                companyName: searchType === 'companyName' ? searchKeyword : undefined,
-                dealerName: searchType === 'dealerName' ? searchKeyword : undefined,
-                startMonth: new DateString(settlementMonth),
-                endMonth: new DateString(settlementMonth),
-                size: 2 ** 31 - 1,
-              })}
+              to={(() => {
+                const url = new URL('/v1/settlements/export-zip', location.href);
+                const params = new URLSearchParams();
+                params.append(searchType, searchKeyword !== '' ? searchKeyword : '');
+                params.append('startMonth', new DateString(settlementMonth).toString());
+                params.append('endMonth', new DateString(settlementMonth).toString());
+                url.search = params.toString();
+                return url.pathname + url.search;
+              })()}
               target='_blank'
               sx={{
                 marginLeft: 'auto',
@@ -350,7 +351,7 @@ export default function SettlementList() {
               }}
               onClick={handleSettlement}
             >
-              정산신청
+              정산요청
             </MedipandaButton>
             <MedipandaButton
               variant='outlined'
@@ -361,7 +362,7 @@ export default function SettlementList() {
               }}
               onClick={handleObjection}
             >
-              이의신청
+              이의제기
             </MedipandaButton>
           </Stack>
           <Stack
@@ -574,11 +575,11 @@ function SettlementRequestModal({ open, onClose, settlement }: { open?: boolean;
       await notifyAdminForSettlements({
         settlementIds: [settlement.id],
       });
-      alert('정산신청이 접수되었습니다.');
+      alert('정산요청이 접수되었습니다.');
       onClose?.();
     } catch (error) {
       console.error('Failed to submit settlement:', error);
-      alert('정산신청 중 오류가 발생했습니다.');
+      alert('정산요청 중 오류가 발생했습니다.');
     }
   };
 
