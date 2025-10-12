@@ -53,7 +53,7 @@ export default function PrescriptionList() {
   const [totalPages, setTotalPages] = useState(0);
 
   const initialSearchParams = {
-    searchType: 'companyName' as 'companyName' | 'userId' | 'dealerName' | 'drugCompanyName',
+    searchType: 'institutionName' as 'institutionName' | 'userId' | 'dealerName' | 'drugCompanyName',
     searchKeyword: '',
     page: '1',
   };
@@ -119,7 +119,7 @@ export default function PrescriptionList() {
       },
       {
         header: '거래처명',
-        cell: ({ row }) => row.original.companyName,
+        cell: ({ row }) => row.original.institutionName,
       },
       {
         header: '처방월',
@@ -155,7 +155,7 @@ export default function PrescriptionList() {
             name={'searchType'}
             render={({ field }) => (
               <Select {...field}>
-                <MenuItem value='companyName'>거래처명</MenuItem>
+                <MenuItem value='institutionName'>거래처명</MenuItem>
                 <MenuItem value='dealerName'>딜러명</MenuItem>
               </Select>
             )}

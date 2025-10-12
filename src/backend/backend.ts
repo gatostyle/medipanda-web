@@ -1073,6 +1073,7 @@ export interface PrescriptionResponse {
   dealerName: string;
   drugCompanyName: string;
   id: number;
+  institutionName: string;
   prescriptionMonth: string;
   settlementMonth: string;
   status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
@@ -3088,6 +3089,7 @@ export async function searchPrescriptions(options?: {
   userId?: string;
   dealerName?: string;
   drugCompanyName?: string;
+  institutionName?: string;
   dealerId?: number;
   startAt?: DateTimeString;
   endAt?: DateTimeString;
