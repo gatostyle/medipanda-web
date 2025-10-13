@@ -5,7 +5,6 @@ import {
   type PartnerResponse,
   type PrescriptionResponse,
   PrescriptionStatusLabel,
-  PrescriptionTypeLabel,
   searchPrescriptions,
   uploadPartnerEdiFiles,
 } from '@/backend';
@@ -92,10 +91,6 @@ export default function PrescriptionList() {
   const table = useReactTable({
     data: contents,
     columns: [
-      {
-        header: '구분',
-        cell: ({ row }) => PrescriptionTypeLabel[row.original.type],
-      },
       {
         header: '딜러명',
         cell: ({ row }) => row.original.dealerName,
