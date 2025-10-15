@@ -123,15 +123,15 @@ export default function AnonymousList() {
           marginTop: '40px',
         }}
       >
-        <Stack>
+        <Stack sx={{ flexGrow: 1 }}>
           <Table>
             <TableHead>
               <MedipandaTableRow>
-                <MedipandaTableCell sx={{ width: '380px' }}>제목</MedipandaTableCell>
-                <MedipandaTableCell sx={{ width: '80px' }}>작성자</MedipandaTableCell>
-                <MedipandaTableCell sx={{ width: '110px' }}>작성일</MedipandaTableCell>
-                <MedipandaTableCell sx={{ width: '60px' }}>조회수</MedipandaTableCell>
-                <MedipandaTableCell sx={{ width: '60px' }}>좋아요</MedipandaTableCell>
+                <MedipandaTableCell>제목</MedipandaTableCell>
+                <MedipandaTableCell>작성자</MedipandaTableCell>
+                <MedipandaTableCell>작성일</MedipandaTableCell>
+                <MedipandaTableCell>조회수</MedipandaTableCell>
+                <MedipandaTableCell>좋아요</MedipandaTableCell>
               </MedipandaTableRow>
             </TableHead>
             <TableBody>
@@ -144,7 +144,7 @@ export default function AnonymousList() {
                     }),
                   }}
                 >
-                  <MedipandaTableCell>
+                  <MedipandaTableCell sx={{ width: '100%', maxWidth: '0px' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                       {fixedNotices.includes(post) && (
                         <img
@@ -164,6 +164,9 @@ export default function AnonymousList() {
                           '&:hover': {
                             color: colors.vividViolet,
                           },
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
                         }}
                       >
                         <Typography variant='smallTextB'>{post.title}</Typography>
@@ -180,10 +183,16 @@ export default function AnonymousList() {
                       </Typography>
                     </Box>
                   </MedipandaTableCell>
-                  <MedipandaTableCell>{post.hiddenNickname ? '익명' : post.nickname}</MedipandaTableCell>
-                  <MedipandaTableCell>{DateUtils.parseUtcAndFormatKst(post.createdAt, DATEFORMAT_YYYY_MM_DD_HH_MM)}</MedipandaTableCell>
-                  <MedipandaTableCell>{post.viewsCount.toLocaleString()}</MedipandaTableCell>
-                  <MedipandaTableCell>{post.likesCount.toLocaleString()}</MedipandaTableCell>
+                  <MedipandaTableCell
+                    sx={{ minWidth: '120px', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                  >
+                    {post.hiddenNickname ? '익명' : post.nickname}
+                  </MedipandaTableCell>
+                  <MedipandaTableCell sx={{ minWidth: '130px', maxWidth: '130px' }}>
+                    {DateUtils.parseUtcAndFormatKst(post.createdAt, DATEFORMAT_YYYY_MM_DD_HH_MM)}
+                  </MedipandaTableCell>
+                  <MedipandaTableCell sx={{ minWidth: '60px', maxWidth: '60px' }}>{post.viewsCount.toLocaleString()}</MedipandaTableCell>
+                  <MedipandaTableCell sx={{ minWidth: '60px', maxWidth: '60px' }}>{post.likesCount.toLocaleString()}</MedipandaTableCell>
                 </MedipandaTableRow>
               ))}
             </TableBody>
@@ -240,7 +249,7 @@ export default function AnonymousList() {
         <Stack
           gap='10px'
           sx={{
-            width: '400px',
+            flex: '0 0 400px',
           }}
         >
           <Stack direction='row' gap='10px'>

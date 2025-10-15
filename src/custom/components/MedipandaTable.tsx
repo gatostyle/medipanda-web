@@ -15,6 +15,8 @@ export const MedipandaTableRow = styled(TableRow)({
 }) as typeof TableRow;
 
 export const MedipandaTableCell = styled(TableCell)({
+  paddingLeft: '8px',
+  paddingRight: '8px',
   border: 'none',
   textAlign: 'center',
   '.MuiTableHead-root &': {
