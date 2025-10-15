@@ -105,9 +105,7 @@ export default function MpAdminProductDetail() {
                 약가
               </Typography>
               <Typography variant='body1'>
-                {detail.price !== null && detail.price !== undefined
-                  ? `${detail.price.toLocaleString()}원${detail.productCode !== '비급여' ? ' (급여)' : ''}`
-                  : '-'}
+                {detail.price !== null && detail.price !== undefined ? `${detail.price.toLocaleString()}원 (${detail.insurance})` : '-'}
               </Typography>
             </Stack>
             <Stack direction='row'>
