@@ -781,7 +781,7 @@ function ReplaceableProductDialog({ open, onClose, productId }: { open?: boolean
               <td style={{ width: '100px' }}>제약사명:</td>
               <td style={{ width: '320px' }}>{detail.manufacturer}</td>
               <td style={{ width: '100px' }}>약가:</td>
-              <td style={{ width: '320px' }}>{detail.price}</td>
+              <td style={{ width: '320px' }}>{detail.price?.toLocaleString() ?? '-'}</td>
             </tr>
             <tr style={{ height: '39px' }}>
               <td>제품명:</td>
@@ -870,7 +870,9 @@ function ReplaceableProductDialog({ open, onClose, productId }: { open?: boolean
                       <Typography variant='smallPcR'>{product.note ?? '-'}</Typography>
                     </MedipandaTableCell>
                     <MedipandaTableCell align='center'>
-                      <Typography variant='smallPcR'>{product.feeRate ?? '-'}</Typography>
+                      <Typography variant='smallPcR'>
+                        {product.feeRate !== null ? `${PercentUtils.formatDecimal(product.feeRate)}%` : '-'}
+                      </Typography>
                     </MedipandaTableCell>
                     <MedipandaTableCell align='center'>
                       <Typography variant='smallPcR'>{product.note ?? '-'}</Typography>
