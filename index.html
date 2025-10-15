@@ -159,6 +159,17 @@
         ]
       }
     </script>
+    <script>
+      (function () {
+        const userAgent = navigator.userAgent;
+
+        if (/iPhone|iPad|iPod/i.test(userAgent)) {
+          location.href = 'https://apps.apple.com/kr/app/%EB%A9%94%EB%94%94%ED%8C%90%EB%8B%A4/id6746338129';
+        } else if (/Android/i.test(userAgent)) {
+          location.href = 'https://play.google.com/store/apps/details?id=kr.co.medipanda.android';
+        }
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

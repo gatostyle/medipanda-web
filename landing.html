@@ -53,7 +53,7 @@
       </div>
       <img src="/assets/landing/landing-mobile.png" class="w-[365px] lg:w-[unset] lg:h-[646px] h-[358px] lg:grow-0 lg:shrink-0 lg:basis-[750px] overflow-hidden object-contain" />
       <div class="flex justify-center items-center lg:hidden">
-        <button class="w-[260px] h-[60px] mt-[35px] rounded-[10px] bg-[#4D12EE] text-[20px] font-[700] cursor-pointer">앱 다운로드</button>
+        <a id="a-app-download" class="flex justify-center items-center w-[260px] h-[60px] mt-[35px] rounded-[10px] bg-[#4D12EE] text-[20px] font-[700] cursor-pointer">앱 다운로드</a>
       </div>
     </section>
 
@@ -257,6 +257,19 @@
       <img src="/assets/landing/landing-kakaotalk.png" class="w-[300px] cursor-pointer" />
     </section>
   </body>
+  <script>
+    const anchorAppDownload = document.getElementById('a-app-download');
+
+    (function () {
+      const userAgent = navigator.userAgent;
+
+      if (/iPhone|iPad|iPod/i.test(userAgent)) {
+        anchorAppDownload.href = 'https://apps.apple.com/kr/app/%EB%A9%94%EB%94%94%ED%8C%90%EB%8B%A4/id6746338129';
+      } else if (/Android/i.test(userAgent)) {
+        anchorAppDownload.href = 'https://play.google.com/store/apps/details?id=kr.co.medipanda.android';
+      }
+    })()
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <link rel="stylesheet" href="/assets/fonts/pretendard-subset.css" />
