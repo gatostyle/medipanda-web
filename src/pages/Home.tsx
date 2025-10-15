@@ -84,6 +84,16 @@ export default function Home() {
         />
         {session !== null ? (
           <>
+            <LazyImage
+              src={import.meta.env.VITE_LANDING_QR_PATH}
+              style={{
+                position: 'absolute',
+                top: '249px',
+                left: '385px',
+                width: '112px',
+                height: '112px',
+              }}
+            />
             <span
               style={{
                 position: 'absolute',
@@ -129,6 +139,16 @@ export default function Home() {
           </>
         ) : (
           <>
+            <LazyImage
+              src={import.meta.env.VITE_LANDING_QR_PATH}
+              style={{
+                position: 'absolute',
+                top: '268px',
+                left: '389px',
+                width: '100px',
+                height: '100px',
+              }}
+            />
             <Link
               component={RouterLink}
               to='/partner-contract'
