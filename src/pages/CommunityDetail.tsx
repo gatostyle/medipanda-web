@@ -629,7 +629,7 @@ function CommunityReportModal({
 
   return (
     <MedipandaDialog open onClose={onClose} width='400px'>
-      <MedipandaDialogTitle title={'정산요청'} onClose={onClose} />
+      <MedipandaDialogTitle title={'신고하기'} onClose={onClose} />
       <MedipandaDialogContent>
         <Stack>
           <Typography variant='heading4R' sx={{ color: colors.gray80 }}>
