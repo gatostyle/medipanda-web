@@ -92,6 +92,7 @@ export interface AlternativeProductDto {
   composition: string | null;
   feeRate: number | null;
   kdCode: string;
+  insurance: string | null;
   manufacturer: string | null;
   nhiPrice: number | null;
   nhiUnit: string | null;
@@ -1235,6 +1236,7 @@ export interface ProductSummaryResponse {
   composition: string | null;
   feeRate: number | null;
   id: number;
+  insurance: string | null;
   isAcquisition: boolean | null;
   isOutOfStock: boolean | null;
   isPromotion: boolean | null;

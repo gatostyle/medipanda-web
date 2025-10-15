@@ -671,7 +671,7 @@ export default function ProductList() {
                   <Typography variant='smallPcR'>{product.price?.toLocaleString() ?? '-'}</Typography>
                 </MedipandaTableCell>
                 <MedipandaTableCell align='center'>
-                  <Typography variant='smallPcR'>{product.note ?? '-'}</Typography>
+                  <Typography variant='smallPcR'>{product.insurance ?? '-'}</Typography>
                 </MedipandaTableCell>
                 <MedipandaTableCell align='center'>
                   <Typography variant='smallPcR'>
@@ -867,7 +867,7 @@ function ReplaceableProductDialog({ open, onClose, productId }: { open?: boolean
                       <Typography variant='smallPcR'>{product.price?.toLocaleString() ?? '-'}</Typography>
                     </MedipandaTableCell>
                     <MedipandaTableCell align='center'>
-                      <Typography variant='smallPcR'>{product.note ?? '-'}</Typography>
+                      <Typography variant='smallPcR'>{product.insurance ?? '-'}</Typography>
                     </MedipandaTableCell>
                     <MedipandaTableCell align='center'>
                       <Typography variant='smallPcR'>
