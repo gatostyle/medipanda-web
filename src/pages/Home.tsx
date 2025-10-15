@@ -85,7 +85,7 @@ export default function Home() {
         {session !== null ? (
           <>
             <LazyImage
-              src={import.meta.env.VITE_LANDING_QR_PATH}
+              src={import.meta.env.VITE_HOME_QR_PATH}
               style={{
                 position: 'absolute',
                 top: '249px',
