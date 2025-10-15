@@ -10,7 +10,7 @@ export const kmcAuthRequest: KmcAuthRequest = {
 
 export async function requestKmcAuth() {
   const { certNum } = await createAuthRequest(kmcAuthRequest);
-  const certUrl = `https://prod.api.medipanda.co.kr/v1/kmc/auth/launch?certNum=${certNum}`;
+  const certUrl = `/v1/kmc/auth/launch?certNum=${certNum}`;
   const popup = window.open(certUrl, '_blank', 'width=500,height=700');
 
   return new Promise<{ name: string; phone: string; birth: string; gender: 'MALE' | 'FEMALE' }>(resolve => {
