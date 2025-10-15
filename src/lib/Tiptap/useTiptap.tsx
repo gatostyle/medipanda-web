@@ -31,7 +31,11 @@ export function useTiptap(props: UseTiptapOptions): {
       Placeholder.configure({
         placeholder: placeholder.current,
       }),
-      ImageExtension,
+      ImageExtension.configure({
+        HTMLAttributes: {
+          style: 'width: 100%',
+        },
+      }),
       Dropcursor,
       FileHandler.configure({
         allowedMimeTypes: imageMimeTypes.current,
