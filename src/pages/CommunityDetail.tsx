@@ -131,15 +131,17 @@ export default function CommunityDetail({ boardType }: { boardType: keyof typeof
               <Typography variant='headingPc4B' sx={{ color: colors.gray80 }}>
                 {detail.title}
               </Typography>
-              <IconButton
-                size='small'
-                onClick={event => setPostPopupAnchor(event.currentTarget)}
-                sx={{
-                  marginLeft: 'auto',
-                }}
-              >
-                <MoreHoriz />
-              </IconButton>
+              {(detail.userId === session?.userId || detail.userId !== 'super') && (
+                <IconButton
+                  size='small'
+                  onClick={event => setPostPopupAnchor(event.currentTarget)}
+                  sx={{
+                    marginLeft: 'auto',
+                  }}
+                >
+                  <MoreHoriz />
+                </IconButton>
+              )}
             </Stack>
             <Typography variant='normalPcB' sx={{ color: colors.gray80 }}>
               {detail.nickname}
