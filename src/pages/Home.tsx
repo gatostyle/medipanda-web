@@ -74,7 +74,7 @@ export default function Home() {
         }}
       >
         <LazyImage
-          src='/assets/hero.svg'
+          src={session !== null ? '/assets/hero.svg' : '/assets/hero-public.svg'}
           alt='Hero Section'
           style={{
             height: 'auto',
@@ -82,48 +82,66 @@ export default function Home() {
             display: 'block',
           }}
         />
-        <span
-          style={{
-            position: 'absolute',
-            top: '69px',
-            left: '702px',
-            color: colors.white,
-          }}
-        >
-          <Typography variant='headingPc2B'>
-            {monthlyPrescriptionCount !== null ? monthlyPrescriptionCount.toLocaleString() : '-'}
-          </Typography>
-          <Typography variant='heading2R'>건</Typography>
-        </span>
-        <span
-          style={{
-            position: 'absolute',
-            top: '211px',
-            left: '702px',
-            color: colors.white,
-          }}
-        >
-          <Typography
-            variant='heading2B'
-            sx={{
-              fontSize: '50px',
-            }}
-          >
-            {monthlyFeeAmount !== null ? monthlyFeeAmount.toLocaleString() : '-'}
-          </Typography>
-          <Typography variant='heading2R'>백만원</Typography>
-        </span>
-        <span
-          style={{
-            position: 'absolute',
-            top: '353px',
-            left: '702px',
-            color: colors.white,
-          }}
-        >
-          <Typography variant='headingPc2B'>{recentlyOpenedCount !== null ? recentlyOpenedCount.toLocaleString() : '-'}</Typography>
-          <Typography variant='heading2R'>개사</Typography>
-        </span>
+        {session !== null ? (
+          <>
+            <span
+              style={{
+                position: 'absolute',
+                top: '69px',
+                left: '702px',
+                color: colors.white,
+              }}
+            >
+              <Typography variant='headingPc2B'>
+                {monthlyPrescriptionCount !== null ? monthlyPrescriptionCount.toLocaleString() : '-'}
+              </Typography>
+              <Typography variant='heading2R'>건</Typography>
+            </span>
+            <span
+              style={{
+                position: 'absolute',
+                top: '211px',
+                left: '702px',
+                color: colors.white,
+              }}
+            >
+              <Typography
+                variant='heading2B'
+                sx={{
+                  fontSize: '50px',
+                }}
+              >
+                {monthlyFeeAmount !== null ? monthlyFeeAmount.toLocaleString() : '-'}
+              </Typography>
+              <Typography variant='heading2R'>백만원</Typography>
+            </span>
+            <span
+              style={{
+                position: 'absolute',
+                top: '353px',
+                left: '702px',
+                color: colors.white,
+              }}
+            >
+              <Typography variant='headingPc2B'>{recentlyOpenedCount !== null ? recentlyOpenedCount.toLocaleString() : '-'}</Typography>
+              <Typography variant='heading2R'>개사</Typography>
+            </span>
+          </>
+        ) : (
+          <>
+            <Link
+              component={RouterLink}
+              to='/partner-contract'
+              sx={{
+                position: 'absolute',
+                top: '360px',
+                left: '734px',
+                width: '350px',
+                height: '59px',
+              }}
+            />
+          </>
+        )}
       </Box>
 
       <Stack direction='row' alignItems='center' gap='20px' sx={{ marginBottom: 0 }}>
