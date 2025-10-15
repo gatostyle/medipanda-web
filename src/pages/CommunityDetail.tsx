@@ -144,7 +144,7 @@ export default function CommunityDetail({ boardType }: { boardType: keyof typeof
               )}
             </Stack>
             <Typography variant='normalPcB' sx={{ color: colors.gray80 }}>
-              {detail.nickname}
+              {detail.hiddenNickname ? '익명' : detail.nickname}
             </Typography>
             <Typography variant='smallPcR' sx={{ color: colors.gray50 }}>
               {DateUtils.parseUtcAndFormatKst(detail.createdAt, DATEFORMAT_YYYY_MM_DD_HH_MM)}

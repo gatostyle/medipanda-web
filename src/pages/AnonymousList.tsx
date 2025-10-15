@@ -180,7 +180,7 @@ export default function AnonymousList() {
                       </Typography>
                     </Box>
                   </MedipandaTableCell>
-                  <MedipandaTableCell>{post.nickname}</MedipandaTableCell>
+                  <MedipandaTableCell>{post.hiddenNickname ? '익명' : post.nickname}</MedipandaTableCell>
                   <MedipandaTableCell>{DateUtils.parseUtcAndFormatKst(post.createdAt, DATEFORMAT_YYYY_MM_DD_HH_MM)}</MedipandaTableCell>
                   <MedipandaTableCell>{post.viewsCount.toLocaleString()}</MedipandaTableCell>
                   <MedipandaTableCell>{post.likesCount.toLocaleString()}</MedipandaTableCell>
