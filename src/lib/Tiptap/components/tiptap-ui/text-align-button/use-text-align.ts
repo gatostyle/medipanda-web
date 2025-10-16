@@ -178,7 +178,6 @@ export function useTextAlign(config: UseTextAlignConfig) {
 
   const handleTextAlign = React.useCallback(() => {
     if (!editor) return false;
-
     const success = setTextAlign(editor, align);
     if (success) {
       onAligned?.();

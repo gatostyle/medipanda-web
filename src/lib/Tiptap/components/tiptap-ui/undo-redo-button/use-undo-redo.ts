@@ -1,3 +1,4 @@
+import { runCatchingOrNull } from '../../../../utils/runCatching';
 import * as React from 'react';
 import { type Editor } from '@tiptap/react';
 
@@ -58,7 +59,9 @@ export function canExecuteUndoRedoAction(editor: Editor | null, action: UndoRedo
   if (!editor || !editor.isEditable) return false;
   if (isNodeTypeSelected(editor, ['image'])) return false;
 
-  return action === 'undo' ? editor.can().undo() : editor.can().redo();
+  return action === 'undo'
+    ? (runCatchingOrNull(() => editor.can().undo()) ?? false)
+    : (runCatchingOrNull(() => editor.can().redo()) ?? false);
 }
 
 /**

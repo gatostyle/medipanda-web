@@ -1,18 +1,8 @@
 'use client';
 
+import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import * as React from 'react';
-import { EditorContent, EditorContext, useEditor } from '@tiptap/react';
-
-// --- Tiptap Core Extensions ---
-import { StarterKit } from '@tiptap/starter-kit';
-import { Image } from '@tiptap/extension-image';
-import { TaskItem, TaskList } from '@tiptap/extension-list';
-import { TextAlign } from '@tiptap/extension-text-align';
-import { Typography } from '@tiptap/extension-typography';
-import { Highlight } from '@tiptap/extension-highlight';
-import { Subscript } from '@tiptap/extension-subscript';
-import { Superscript } from '@tiptap/extension-superscript';
-import { Selection } from '@tiptap/extensions';
+import { EditorContent, EditorContext } from '@tiptap/react';
 
 // --- UI Primitives ---
 import { Button } from '../../tiptap-ui-primitive/button';
@@ -20,8 +10,6 @@ import { Spacer } from '../../tiptap-ui-primitive/spacer';
 import { Toolbar, ToolbarGroup, ToolbarSeparator } from '../../tiptap-ui-primitive/toolbar';
 
 // --- Tiptap Node ---
-import { ImageUploadNode } from '../../tiptap-node/image-upload-node/image-upload-node-extension';
-import { HorizontalRule } from '../../tiptap-node/horizontal-rule-node/horizontal-rule-node-extension';
 import '../../tiptap-node/blockquote-node/blockquote-node.scss';
 import '../../tiptap-node/code-block-node/code-block-node.scss';
 import '../../tiptap-node/horizontal-rule-node/horizontal-rule-node.scss';
@@ -32,7 +20,6 @@ import '../../tiptap-node/paragraph-node/paragraph-node.scss';
 
 // --- Tiptap UI ---
 import { HeadingDropdownMenu } from '../../tiptap-ui/heading-dropdown-menu';
-import { ImageUploadButton } from '../../tiptap-ui/image-upload-button';
 import { ListDropdownMenu } from '../../tiptap-ui/list-dropdown-menu';
 import { BlockquoteButton } from '../../tiptap-ui/blockquote-button';
 import { CodeBlockButton } from '../../tiptap-ui/code-block-button';
@@ -41,6 +28,8 @@ import { LinkPopover, LinkContent, LinkButton } from '../../tiptap-ui/link-popov
 import { MarkButton } from '../../tiptap-ui/mark-button';
 import { TextAlignButton } from '../../tiptap-ui/text-align-button';
 import { UndoRedoButton } from '../../tiptap-ui/undo-redo-button';
+import { TableDropdownMenu } from '../../tiptap-ui/table-dropdown-menu';
+import { YoutubePopover, YoutubeContent, YoutubeButton } from '../../tiptap-ui/youtube-popover';
 
 // --- Icons ---
 import { ArrowLeftIcon } from '../../tiptap-icons/arrow-left-icon';
@@ -52,24 +41,20 @@ import { useIsMobile } from '../../../hooks/use-mobile';
 import { useWindowSize } from '../../../hooks/use-window-size';
 import { useCursorVisibility } from '../../../hooks/use-cursor-visibility';
 
-// --- Components ---
-import { ThemeToggle } from '../../tiptap-templates/simple/theme-toggle';
-
-// --- Lib ---
-import { handleImageUpload, MAX_FILE_SIZE } from '../../../lib//tiptap-utils';
-
 // --- Styles ---
 import '../../tiptap-templates/simple/simple-editor.scss';
 
 import content from '../../tiptap-templates/simple/data/content.json';
 
-const MainToolbarContent = ({
+export const MainToolbarContent = ({
   onHighlighterClick,
   onLinkClick,
+  onYoutubeClick,
   isMobile,
 }: {
   onHighlighterClick: () => void;
   onLinkClick: () => void;
+  onYoutubeClick: () => void;
   isMobile: boolean;
 }) => {
   return (
@@ -100,14 +85,16 @@ const MainToolbarContent = ({
         <MarkButton type='underline' />
         {!isMobile ? <ColorHighlightPopover /> : <ColorHighlightPopoverButton onClick={onHighlighterClick} />}
         {!isMobile ? <LinkPopover /> : <LinkButton onClick={onLinkClick} />}
+        {!isMobile ? <YoutubePopover /> : <YoutubeButton onClick={onYoutubeClick} />}
+        <TableDropdownMenu portal={isMobile} />
       </ToolbarGroup>
 
-      <ToolbarSeparator />
+      {/*<ToolbarSeparator />*/}
 
-      <ToolbarGroup>
-        <MarkButton type='superscript' />
-        <MarkButton type='subscript' />
-      </ToolbarGroup>
+      {/*<ToolbarGroup>*/}
+      {/*  <MarkButton type='superscript' />*/}
+      {/*  <MarkButton type='subscript' />*/}
+      {/*</ToolbarGroup>*/}
 
       <ToolbarSeparator />
 
@@ -120,22 +107,22 @@ const MainToolbarContent = ({
 
       <ToolbarSeparator />
 
-      <ToolbarGroup>
-        <ImageUploadButton text='Add' />
-      </ToolbarGroup>
+      {/*<ToolbarGroup>*/}
+      {/*  <ImageUploadButton text='Add' />*/}
+      {/*</ToolbarGroup>*/}
 
       <Spacer />
 
-      {isMobile && <ToolbarSeparator />}
+      {/*{isMobile && <ToolbarSeparator />}*/}
 
-      <ToolbarGroup>
-        <ThemeToggle />
-      </ToolbarGroup>
+      {/*<ToolbarGroup>*/}
+      {/*  <ThemeToggle />*/}
+      {/*</ToolbarGroup>*/}
     </>
   );
 };
 
-const MobileToolbarContent = ({ type, onBack }: { type: 'highlighter' | 'link'; onBack: () => void }) => (
+export const MobileToolbarContent = ({ type, onBack }: { type: 'highlighter' | 'link' | 'youtube'; onBack: () => void }) => (
   <>
     <ToolbarGroup>
       <Button data-style='ghost' onClick={onBack}>
@@ -146,17 +133,17 @@ const MobileToolbarContent = ({ type, onBack }: { type: 'highlighter' | 'link'; 
 
     <ToolbarSeparator />
 
-    {type === 'highlighter' ? <ColorHighlightPopoverContent /> : <LinkContent />}
+    {type === 'highlighter' ? <ColorHighlightPopoverContent /> : type === 'link' ? <LinkContent /> : <YoutubeContent />}
   </>
 );
 
 export function SimpleEditor() {
   const isMobile = useIsMobile();
   const { height } = useWindowSize();
-  const [mobileView, setMobileView] = React.useState<'main' | 'highlighter' | 'link'>('main');
+  const [mobileView, setMobileView] = React.useState<'main' | 'highlighter' | 'link' | 'youtube'>('main');
   const toolbarRef = React.useRef<HTMLDivElement>(null);
 
-  const editor = useEditor({
+  const { editor } = useMedipandaEditor({
     immediatelyRender: false,
     shouldRerenderOnTransaction: false,
     editorProps: {
@@ -168,32 +155,6 @@ export function SimpleEditor() {
         class: 'simple-editor',
       },
     },
-    extensions: [
-      StarterKit.configure({
-        horizontalRule: false,
-        link: {
-          openOnClick: false,
-          enableClickSelection: true,
-        },
-      }),
-      HorizontalRule,
-      TextAlign.configure({ types: ['heading', 'paragraph'] }),
-      TaskList,
-      TaskItem.configure({ nested: true }),
-      Highlight.configure({ multicolor: true }),
-      Image,
-      Typography,
-      Superscript,
-      Subscript,
-      Selection,
-      ImageUploadNode.configure({
-        accept: 'image/*',
-        maxSize: MAX_FILE_SIZE,
-        limit: 3,
-        upload: handleImageUpload,
-        onError: error => console.error('Upload failed:', error),
-      }),
-    ],
     content,
   });
 
@@ -209,31 +170,30 @@ export function SimpleEditor() {
   }, [isMobile, mobileView]);
 
   return (
-    <div className='simple-editor-wrapper'>
-      <EditorContext.Provider value={{ editor }}>
-        <Toolbar
-          ref={toolbarRef}
-          style={{
-            ...(isMobile
-              ? {
-                  bottom: `calc(100% - ${height - rect.y}px)`,
-                }
-              : {}),
-          }}
-        >
-          {mobileView === 'main' ? (
-            <MainToolbarContent
-              onHighlighterClick={() => setMobileView('highlighter')}
-              onLinkClick={() => setMobileView('link')}
-              isMobile={isMobile}
-            />
-          ) : (
-            <MobileToolbarContent type={mobileView === 'highlighter' ? 'highlighter' : 'link'} onBack={() => setMobileView('main')} />
-          )}
-        </Toolbar>
+    <EditorContext.Provider value={{ editor }}>
+      <Toolbar
+        ref={toolbarRef}
+        style={{
+          ...(isMobile
+            ? {
+                bottom: `calc(100% - ${height - rect.y}px)`,
+              }
+            : {}),
+        }}
+      >
+        {mobileView === 'main' ? (
+          <MainToolbarContent
+            onHighlighterClick={() => setMobileView('highlighter')}
+            onLinkClick={() => setMobileView('link')}
+            onYoutubeClick={() => setMobileView('youtube')}
+            isMobile={isMobile}
+          />
+        ) : (
+          <MobileToolbarContent type={mobileView === 'highlighter' ? 'highlighter' : 'link'} onBack={() => setMobileView('main')} />
+        )}
+      </Toolbar>
 
-        <EditorContent editor={editor} role='presentation' className='simple-editor-content' />
-      </EditorContext.Provider>
-    </div>
+      <EditorContent editor={editor} role='presentation' className='simple-editor-content' />
+    </EditorContext.Provider>
   );
 }

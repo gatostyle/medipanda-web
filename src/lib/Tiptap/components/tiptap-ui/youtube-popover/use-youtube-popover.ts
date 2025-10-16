@@ -12,15 +12,15 @@ import { LinkIcon } from '../../tiptap-icons/link-icon';
 import { isMarkInSchema, sanitizeUrl } from '../../../lib//tiptap-utils';
 
 /**
- * Configuration for the link popover functionality
+ * Configuration for the youtube popover functionality
  */
-export interface UseLinkPopoverConfig {
+export interface UseYoutubePopoverConfig {
   /**
    * The Tiptap editor instance.
    */
   editor?: Editor | null;
   /**
-   * Whether to hide the link popover when not available.
+   * Whether to hide the youtube popover when not available.
    * @default false
    */
   hideWhenUnavailable?: boolean;
@@ -114,16 +114,9 @@ export function useLinkHandler(props: LinkHandlerProps) {
   const setLink = React.useCallback(() => {
     if (!url || !editor) return;
 
-    const { selection } = editor.state;
-    const isEmpty = selection.empty;
-
     let chain = editor.chain().focus();
 
-    chain = chain.extendMarkRange('link').setLink({ href: url });
-
-    if (isEmpty) {
-      chain = chain.insertContent({ type: 'text', text: url });
-    }
+    chain = chain.setYoutubeVideo({ src: url, width: 720, height: 480 });
 
     chain.run();
 
@@ -131,12 +124,6 @@ export function useLinkHandler(props: LinkHandlerProps) {
 
     onSetLink?.();
   }, [editor, onSetLink, url]);
-
-  const removeLink = React.useCallback(() => {
-    if (!editor) return;
-    editor.chain().focus().extendMarkRange('link').unsetLink().setMeta('preventAutolink', true).run();
-    setUrl('');
-  }, [editor]);
 
   const openLink = React.useCallback(
     (target = '_blank', features = 'noopener,noreferrer') => {
@@ -154,13 +141,12 @@ export function useLinkHandler(props: LinkHandlerProps) {
     url: url || '',
     setUrl,
     setLink,
-    removeLink,
     openLink,
   };
 }
 
 /**
- * Custom hook for link popover state management
+ * Custom hook for youtube popover state management
  */
 export function useLinkState(props: { editor: Editor | null; hideWhenUnavailable: boolean }) {
   const { editor, hideWhenUnavailable = false } = props;
@@ -199,43 +185,9 @@ export function useLinkState(props: { editor: Editor | null; hideWhenUnavailable
 }
 
 /**
- * Main hook that provides link popover functionality for Tiptap editor
- *
- * @example
- * ```tsx
- * // Simple usage
- * function MyLinkButton() {
- *   const { isVisible, canSet, isActive, Icon, label } = useLinkPopover()
- *
- *   if (!isVisible) return null
- *
- *   return <button disabled={!canSet}>Link</button>
- * }
- *
- * // Advanced usage with configuration
- * function MyAdvancedLinkButton() {
- *   const { isVisible, canSet, isActive, Icon, label } = useLinkPopover({
- *     editor: myEditor,
- *     hideWhenUnavailable: true,
- *     onSetLink: () => console.log('Link set!')
- *   })
- *
- *   if (!isVisible) return null
- *
- *   return (
- *     <MyButton
- *       disabled={!canSet}
- *       aria-label={label}
- *       aria-pressed={isActive}
- *     >
- *       <Icon />
- *       {label}
- *     </MyButton>
- *   )
- * }
- * ```
+ * Main hook that provides youtube popover functionality for Tiptap editor
  */
-export function useLinkPopover(config?: UseLinkPopoverConfig) {
+export function useYoutubePopover(config?: UseYoutubePopoverConfig) {
   const { editor: providedEditor, hideWhenUnavailable = false, onSetLink } = config || {};
 
   const { editor } = useTiptapEditor(providedEditor);
@@ -254,7 +206,7 @@ export function useLinkPopover(config?: UseLinkPopoverConfig) {
     isVisible,
     canSet,
     isActive,
-    label: 'Link',
+    label: 'Youtube',
     Icon: LinkIcon,
     ...linkHandler,
   };
