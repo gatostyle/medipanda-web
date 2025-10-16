@@ -39,6 +39,7 @@ export default tseslint.config([
       ],
       '@typescript-eslint/no-non-null-assertion': 'warn',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_+$', varsIgnorePattern: '^_+$' }],
+      'react/prop-types': 'off',
     },
   },
 ]);
