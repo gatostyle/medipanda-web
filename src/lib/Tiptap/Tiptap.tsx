@@ -7,6 +7,7 @@ import {
   FormatListNumbered,
   FormatQuote,
   FormatStrikethrough,
+  FormatUnderlined,
   HorizontalRule,
   Image as ImageIcon,
   KeyboardReturn,
@@ -36,6 +37,8 @@ export function TiptapMenuBar({ editor }: { editor: Editor }) {
         canItalic: (ctx.editor.can().chain() as any).toggleItalic ?? false,
         isStrike: ctx.editor.isActive('strike') ?? false,
         canStrike: (ctx.editor.can().chain() as any).toggleStrike ?? false,
+        isUnderline: ctx.editor.isActive('underline') ?? false,
+        canUnderline: (ctx.editor.can().chain() as any).toggleUnderline ?? false,
         isCode: ctx.editor.isActive('code') ?? false,
         canCode: (ctx.editor.can().chain() as any).toggleCode ?? false,
         isHeading1: ctx.editor.isActive('heading', { level: 1 }) ?? false,
@@ -118,6 +121,15 @@ export function TiptapMenuBar({ editor }: { editor: Editor }) {
             color={editorState.isStrike ? 'primary' : undefined}
           >
             <FormatStrikethrough />
+          </IconButton>
+        )}
+        {editorState.canUnderline() && (
+          <IconButton
+            onClick={() => (editor.chain().focus() as any).toggleUnderline().run()}
+            size='small'
+            color={editorState.isUnderline ? 'primary' : undefined}
+          >
+            <FormatUnderlined />
           </IconButton>
         )}
         {editorState.canCode && (

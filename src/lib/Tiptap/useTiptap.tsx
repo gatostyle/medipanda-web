@@ -1,8 +1,19 @@
+import { Blockquote } from '@tiptap/extension-blockquote';
+import { Bold } from '@tiptap/extension-bold';
+import { Code } from '@tiptap/extension-code';
 import { Document } from '@tiptap/extension-document';
 import { FileHandler } from '@tiptap/extension-file-handler';
+import { HardBreak } from '@tiptap/extension-hard-break';
+import { Heading } from '@tiptap/extension-heading';
+import { HorizontalRule } from '@tiptap/extension-horizontal-rule';
 import { Image as ImageExtension } from '@tiptap/extension-image';
+import { Italic } from '@tiptap/extension-italic';
+import { BulletList, ListItem, OrderedList } from '@tiptap/extension-list';
 import { Paragraph } from '@tiptap/extension-paragraph';
+import { Strike } from '@tiptap/extension-strike';
 import { Text } from '@tiptap/extension-text';
+import { TextStyle, Color } from '@tiptap/extension-text-style';
+import { Underline } from '@tiptap/extension-underline';
 import { Dropcursor, Placeholder } from '@tiptap/extensions';
 import { Editor, useEditor } from '@tiptap/react';
 import { useRef } from 'react';
@@ -28,6 +39,18 @@ export function useTiptap(props: UseTiptapOptions): {
       Document,
       Paragraph,
       Text,
+      TextStyle,
+      Heading,
+      Bold,
+      Italic,
+      Strike,
+      Underline,
+      ListItem,
+      BulletList,
+      OrderedList,
+      Code,
+      Blockquote,
+      Color,
       Placeholder.configure({
         placeholder: placeholder.current,
       }),
@@ -80,6 +103,8 @@ export function useTiptap(props: UseTiptapOptions): {
           }
         },
       }),
+      HorizontalRule,
+      HardBreak,
     ],
     onDelete: props => {
       if (props.type === 'node' && props.node.type.name === 'image') {
