@@ -1,3 +1,7 @@
+@import './lib/Tiptap/styles/variables';
+@import './lib/Tiptap/styles/keyframe-animations';
+@import 'tiptap-extension-resizable-image/styles.css';
+
 .MuiInputLabel-root {
   line-height: 1.2em !important;
 }

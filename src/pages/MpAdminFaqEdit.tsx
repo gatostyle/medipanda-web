@@ -1,6 +1,7 @@
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { useMpModal } from '@/hooks/useMpModal';
-import { TiptapMenuBar } from '@/lib/Tiptap';
+import { MainToolbarContent, MobileToolbarContent } from '@/lib/Tiptap/components/tiptap-templates/simple/simple-editor';
+import { Toolbar } from '@/lib/Tiptap/components/tiptap-ui-primitive/toolbar';
 import { Close } from '@mui/icons-material';
 import {
   Box,
@@ -17,7 +18,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { EditorContent } from '@tiptap/react';
+import { EditorContent, EditorContext } from '@tiptap/react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import {
   type AttachmentResponse,
@@ -31,7 +32,7 @@ import {
 } from '@/backend';
 import { useSession } from '@/hooks/useSession';
 import { useSnackbar } from 'notistack';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
 
@@ -48,6 +49,8 @@ export default function MpAdminFaqEdit() {
   const [loading, setLoading] = useState(false);
 
   const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
+  const toolbarRef = useRef<HTMLDivElement>(null);
+  const [mobileView, setMobileView] = useState<'main' | 'highlighter' | 'link' | 'youtube'>('main');
 
   const form = useForm({
     defaultValues: {
@@ -193,18 +196,32 @@ export default function MpAdminFaqEdit() {
           <Typography variant='body2' color='text.secondary'>
             내용
           </Typography>
-          <Box
-            component={EditorContent}
-            editor={editor}
+          <Stack
             sx={{
-              border: `1px solid #CCCCCC`,
               '& .tiptap': {
                 minHeight: '300px',
                 padding: '10px',
+                border: `1px solid #CCCCCC`,
               },
             }}
-          />
-          <TiptapMenuBar editor={editor} />
+          >
+            <EditorContext.Provider value={{ editor }}>
+              <Toolbar ref={toolbarRef}>
+                {mobileView === 'main' ? (
+                  <MainToolbarContent
+                    onHighlighterClick={() => setMobileView('highlighter')}
+                    onLinkClick={() => setMobileView('link')}
+                    onYoutubeClick={() => setMobileView('youtube')}
+                    isMobile={false}
+                  />
+                ) : (
+                  <MobileToolbarContent type={mobileView === 'highlighter' ? 'highlighter' : 'link'} onBack={() => setMobileView('main')} />
+                )}
+              </Toolbar>
+
+              <EditorContent editor={editor} />
+            </EditorContext.Provider>
+          </Stack>
         </Stack>
 
         <Stack>

@@ -1,9 +1,10 @@
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { useMpModal } from '@/hooks/useMpModal';
-import { TiptapMenuBar } from '@/lib/Tiptap';
+import { MainToolbarContent, MobileToolbarContent } from '@/lib/Tiptap/components/tiptap-templates/simple/simple-editor';
+import { Toolbar } from '@/lib/Tiptap/components/tiptap-ui-primitive/toolbar';
 import { Box, Button, Card, CircularProgress, FormControlLabel, Radio, RadioGroup, Stack, TextField, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { EditorContent } from '@tiptap/react';
+import { EditorContent, EditorContext } from '@tiptap/react';
 import { format } from 'date-fns';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import {
@@ -18,7 +19,7 @@ import {
   updateEventBoard,
 } from '@/backend';
 import { useSnackbar } from 'notistack';
-import { type ChangeEvent, useEffect, useState } from 'react';
+import { type ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
 import { useSession } from '@/hooks/useSession';
@@ -39,6 +40,8 @@ export default function MpAdminEventEdit() {
   const { enqueueSnackbar } = useSnackbar();
 
   const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
+  const toolbarRef = useRef<HTMLDivElement>(null);
+  const [mobileView, setMobileView] = useState<'main' | 'highlighter' | 'link' | 'youtube'>('main');
 
   const form = useForm({
     defaultValues: {
@@ -352,18 +355,35 @@ export default function MpAdminEventEdit() {
             <Typography variant='subtitle2' color='text.secondary'>
               내용 *
             </Typography>
-            <Box
-              component={EditorContent}
-              editor={editor}
+            <Stack
               sx={{
-                border: `1px solid #CCCCCC`,
                 '& .tiptap': {
                   minHeight: '300px',
                   padding: '10px',
+                  border: `1px solid #CCCCCC`,
                 },
               }}
-            />
-            <TiptapMenuBar editor={editor} />
+            >
+              <EditorContext.Provider value={{ editor }}>
+                <Toolbar ref={toolbarRef}>
+                  {mobileView === 'main' ? (
+                    <MainToolbarContent
+                      onHighlighterClick={() => setMobileView('highlighter')}
+                      onLinkClick={() => setMobileView('link')}
+                      onYoutubeClick={() => setMobileView('youtube')}
+                      isMobile={false}
+                    />
+                  ) : (
+                    <MobileToolbarContent
+                      type={mobileView === 'highlighter' ? 'highlighter' : 'link'}
+                      onBack={() => setMobileView('main')}
+                    />
+                  )}
+                </Toolbar>
+
+                <EditorContent editor={editor} />
+              </EditorContext.Provider>
+            </Stack>
           </Stack>
 
           <Controller control={form.control} name={'videoUrl'} render={({ field }) => <TextField {...field} label='영상url' fullWidth />} />

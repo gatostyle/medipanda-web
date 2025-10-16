@@ -99,7 +99,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse }) {
     <Box sx={{ p: 3 }}>
       <Stack sx={{ gap: 3 }}>
         <Stack direction='row' sx={{ gap: 3 }}>
-          <Stack sx={{ flex: '2 0' }}>
+          <Stack sx={{ flex: '2 0', overflow: 'hidden' }}>
             <Stack spacing={3}>
               <Stack sx={{ gap: 1 }}>
                 <Typography variant='subtitle2' color='text.secondary'>

@@ -1,10 +1,12 @@
+import { MainToolbarContent, MobileToolbarContent } from '@/lib/Tiptap/components/tiptap-templates/simple/simple-editor';
+import { Toolbar } from '@/lib/Tiptap/components/tiptap-ui-primitive/toolbar';
 import { normalizePhoneNumber } from '@/lib/utils/form';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { useMpModal } from '@/hooks/useMpModal';
 import { useSession } from '@/hooks/useSession';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Box, Button, Card, CircularProgress, Link, Stack, TextField, Typography } from '@mui/material';
-import { EditorContent } from '@tiptap/react';
+import { EditorContent, EditorContext } from '@tiptap/react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import {
   type BoardDetailsResponse,
@@ -21,7 +23,7 @@ import {
 } from '@/backend';
 import { DATEFORMAT_YYYY_MM_DD_HH_MM, DateUtils } from '@/lib/utils/dateFormat';
 import { useSnackbar } from 'notistack';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
 
@@ -110,6 +112,8 @@ export default function MpAdminInquiryDetail() {
     attachments: responseEditorAttachments,
     setAttachments: setResponseEditorAttachments,
   } = useMedipandaEditor();
+  const toolbarRef = useRef<HTMLDivElement>(null);
+  const [mobileView, setMobileView] = useState<'main' | 'highlighter' | 'link' | 'youtube'>('main');
 
   useEffect(() => {
     if (!isNew) {
@@ -281,12 +285,33 @@ export default function MpAdminInquiryDetail() {
           <Stack
             sx={{
               '.tiptap': {
-                padding: '20px 10px',
-                border: '1px solid #c4c4c4',
+                minHeight: '300px',
+                padding: '10px',
+                border: `1px solid #CCCCCC`,
               },
             }}
           >
-            <EditorContent editor={responseEditor} />
+            <EditorContext.Provider value={{ editor: responseEditor }}>
+              {detail.children.length === 0 && (
+                <Toolbar ref={toolbarRef}>
+                  {mobileView === 'main' ? (
+                    <MainToolbarContent
+                      onHighlighterClick={() => setMobileView('highlighter')}
+                      onLinkClick={() => setMobileView('link')}
+                      onYoutubeClick={() => setMobileView('youtube')}
+                      isMobile={false}
+                    />
+                  ) : (
+                    <MobileToolbarContent
+                      type={mobileView === 'highlighter' ? 'highlighter' : 'link'}
+                      onBack={() => setMobileView('main')}
+                    />
+                  )}
+                </Toolbar>
+              )}
+
+              <EditorContent editor={responseEditor} />
+            </EditorContext.Provider>
           </Stack>
         </Stack>
 
