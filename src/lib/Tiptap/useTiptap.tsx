@@ -9,7 +9,6 @@ import { HardBreak } from '@tiptap/extension-hard-break';
 import { Heading } from '@tiptap/extension-heading';
 import { Highlight } from '@tiptap/extension-highlight';
 import { HorizontalRule } from '@tiptap/extension-horizontal-rule';
-import { Image as ImageExtension } from '@tiptap/extension-image';
 import { Italic } from '@tiptap/extension-italic';
 import { Link } from '@tiptap/extension-link';
 import { BulletList, ListItem, OrderedList, TaskItem, TaskList } from '@tiptap/extension-list';
@@ -75,8 +74,10 @@ export function useTiptap({ placeholder, imageMimeTypes, onImageInsert, onImageD
       Placeholder.configure({
         placeholder: placeholderRef.current,
       }),
-      ImageExtension,
-      ResizableImage,
+      ResizableImage.configure({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        defaultHeight: '' as any,
+      }),
       TableKit.configure({
         table: {
           resizable: true,
