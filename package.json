@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "vite --mode qa",
+    "build:dev": "tsc -b && vite --mode qa build",
+    "build:prod": "tsc -b && vite --mode prod build",
     "lint": "eslint --quiet .",
     "lint:fix": "eslint --quiet --fix .",
     "preview": "vite preview",
