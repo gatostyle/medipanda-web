@@ -1,6 +1,7 @@
 import {
   BannerPosition,
   type BannerResponse,
+  BoardExposureRange,
   type BoardPostResponse,
   BoardType,
   DateString,
@@ -8,6 +9,8 @@ import {
   getBanners,
   getBoards,
   getRecentlyOpenedCount,
+  getSalesAgencyProducts,
+  memberTypeToBoardExposureRange,
   monthlyCount,
   monthlyTotalAmount,
 } from '@/backend';
@@ -24,8 +27,14 @@ import { KeyboardArrowRight } from '@mui/icons-material';
 import { Box, Button, Link, Stack, type TableProps, Typography } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { format } from 'date-fns';
-import { useEffect, useRef, useState } from 'react';
+import { type Key, useEffect, useRef, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+
+interface CarouselItem {
+  id: Key | null | undefined;
+  linkUrl: string;
+  imageUrl: string;
+}
 
 export default function Home() {
   const { session } = useSession();
@@ -34,6 +43,38 @@ export default function Home() {
   const [monthlyPrescriptionCount, setMonthlyPrescriptionCount] = useState<number | null>(null);
   const [monthlyFeeAmount, setMonthlyFeeAmount] = useState<number | null>(null);
   const [recentlyOpenedCount, setRecentlyOpenedCount] = useState<number | null>(null);
+
+  const defaultSalesAgencyProductsCarouselItem: CarouselItem = {
+    id: -1,
+    linkUrl: new URL('/partner-contract', location.href).href,
+    imageUrl: '/assets/banner-fixed.svg',
+  };
+  const [salesAgencyProducts, setSalesAgencyProducts] = useState<CarouselItem[]>([]);
+
+  const fetchSalesAgencyProducts = async () => {
+    if (session === null) {
+      setSalesAgencyProducts([defaultSalesAgencyProductsCarouselItem]);
+      return;
+    }
+
+    const response = await getSalesAgencyProducts({
+      exposureRanges: [BoardExposureRange.ALL, memberTypeToBoardExposureRange(session.partnerContractStatus)],
+      startAt: new DateString(new Date()),
+      endAt: new DateString(new Date()),
+      isExposed: true,
+      size: 2 ** 31 - 1,
+    });
+
+    setSalesAgencyProducts(
+      [defaultSalesAgencyProductsCarouselItem].concat(
+        response.content.map(product => ({
+          id: product.id,
+          linkUrl: new URL(`/sales-agency-products/${product.id}`, location.href).href,
+          imageUrl: product.thumbnailUrl!,
+        })),
+      ),
+    );
+  };
 
   const [banners, setBanners] = useState<BannerResponse[]>([]);
 
@@ -55,10 +96,12 @@ export default function Home() {
   };
 
   useEffect(() => {
+    fetchSalesAgencyProducts();
     fetchBanners();
   }, []);
 
-  const carouselRef = useRef<MedipandaCarouselHandle>(null);
+  const bannerCarouselRef = useRef<MedipandaCarouselHandle>(null);
+  const salesAgencyProductCarouselRef = useRef<MedipandaCarouselHandle>(null);
 
   useEffect(() => {
     fetchHomeBanner();
@@ -174,19 +217,51 @@ export default function Home() {
       </Box>
 
       <Stack direction='row' alignItems='center' gap='20px' sx={{ marginBottom: 0 }}>
-        <Box>
-          <RouterLink to='/partner-contract'>
-            <LazyImage
-              src='/assets/banner-fixed.svg'
-              alt='Banner Fixed'
-              style={{
-                height: 'auto',
-                borderRadius: '12px',
-                cursor: 'pointer',
-                display: 'block',
-              }}
-            />
-          </RouterLink>
+        <Box
+          sx={{
+            position: 'relative',
+          }}
+        >
+          <MedipandaCarousel ref={salesAgencyProductCarouselRef} interval={5000} width={602}>
+            {salesAgencyProducts.map(salesAgencyProduct => (
+              <RouterLink key={salesAgencyProduct.id} to={setSchema(salesAgencyProduct.linkUrl)} target='_blank'>
+                <LazyImage
+                  src={salesAgencyProduct.imageUrl}
+                  style={{
+                    width: '602px',
+                    height: '180px',
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                    display: 'block',
+                  }}
+                />
+              </RouterLink>
+            ))}
+          </MedipandaCarousel>
+          {banners.length > 1 && (
+            <>
+              <img
+                src='/assets/carousel-left.svg'
+                onClick={salesAgencyProductCarouselRef.current?.prev}
+                style={{
+                  position: 'absolute',
+                  top: '70px',
+                  left: '10px',
+                  cursor: 'pointer',
+                }}
+              />
+              <img
+                src='/assets/carousel-right.svg'
+                onClick={salesAgencyProductCarouselRef.current?.next}
+                style={{
+                  position: 'absolute',
+                  top: '70px',
+                  right: '10px',
+                  cursor: 'pointer',
+                }}
+              />
+            </>
+          )}
         </Box>
         {banners.length > 0 && (
           <Box
@@ -194,7 +269,7 @@ export default function Home() {
               position: 'relative',
             }}
           >
-            <MedipandaCarousel ref={carouselRef} interval={5000} width={602}>
+            <MedipandaCarousel ref={bannerCarouselRef} interval={5000} width={602}>
               {banners.map(banner => (
                 <RouterLink key={banner.id} to={setSchema(banner.linkUrl)} target='_blank'>
                   <LazyImage
@@ -214,7 +289,7 @@ export default function Home() {
               <>
                 <img
                   src='/assets/carousel-left.svg'
-                  onClick={carouselRef.current?.prev}
+                  onClick={bannerCarouselRef.current?.prev}
                   style={{
                     position: 'absolute',
                     top: '70px',
@@ -224,7 +299,7 @@ export default function Home() {
                 />
                 <img
                   src='/assets/carousel-right.svg'
-                  onClick={carouselRef.current?.next}
+                  onClick={bannerCarouselRef.current?.next}
                   style={{
                     position: 'absolute',
                     top: '70px',

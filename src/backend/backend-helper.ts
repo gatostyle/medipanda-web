@@ -78,6 +78,18 @@ export const BoardExposureRangeLabel: Record<keyof typeof BoardExposureRange, st
   [BoardExposureRange.CONTRACTED]: '계약',
   [BoardExposureRange.UNCONTRACTED]: '미계약',
 };
+
+export function memberTypeToBoardExposureRange(memberType: keyof typeof MemberType): keyof typeof BoardExposureRange {
+  switch (memberType) {
+    case MemberType.NONE:
+    case MemberType.CSO:
+      return BoardExposureRange.UNCONTRACTED;
+    case MemberType.INDIVIDUAL:
+    case MemberType.ORGANIZATION:
+      return BoardExposureRange.CONTRACTED;
+  }
+}
+
 export const BannerStatus = {
   VISIBLE: 'VISIBLE',
   HIDDEN: 'HIDDEN',
