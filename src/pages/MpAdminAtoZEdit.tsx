@@ -146,9 +146,10 @@ export default function MpAdminAtoZEdit() {
 
       form.reset({
         title: detail.title,
-        isExposed: detail.isExposed,
         attachedFiles: detail.attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT),
         newFiles: [],
+        isExposed: detail.isExposed,
+        exposureRange: detail.exposureRange,
       });
     } catch (error) {
       console.error('Failed to fetch CSO A to Z detail:', error);
