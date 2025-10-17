@@ -91,6 +91,7 @@ export interface AdminUpdateRequest {
 export interface AlternativeProductDto {
   composition: string | null;
   feeRate: number | null;
+  insurance: string | null;
   kdCode: string;
   manufacturer: string | null;
   nhiPrice: number | null;
@@ -113,7 +114,7 @@ export interface BannerCreateRequest {
   displayOrder: number;
   endAt: DateTimeString;
   linkUrl: string;
-  position: string;
+  position: 'ALL' | 'POPUP' | 'PC_MAIN' | 'PC_COMMUNITY' | 'MOBILE_MAIN';
   scope: 'ENTIRE' | 'CONTRACT' | 'NON_CONTRACT';
   startAt: DateTimeString;
   status: 'VISIBLE' | 'HIDDEN';
@@ -129,7 +130,7 @@ export interface BannerResponse {
   imageUrl: string;
   linkUrl: string;
   note: string | null;
-  position: string;
+  position: 'ALL' | 'POPUP' | 'PC_MAIN' | 'PC_COMMUNITY' | 'MOBILE_MAIN';
   scope: 'ENTIRE' | 'CONTRACT' | 'NON_CONTRACT';
   startAt: string;
   status: 'VISIBLE' | 'HIDDEN';
@@ -141,7 +142,7 @@ export interface BannerUpdateRequest {
   displayOrder: number | null;
   endAt: DateTimeString | null;
   linkUrl: string | null;
-  position: string | null;
+  position: ('ALL' | 'POPUP' | 'PC_MAIN' | 'PC_COMMUNITY' | 'MOBILE_MAIN') | null;
   scope: ('ENTIRE' | 'CONTRACT' | 'NON_CONTRACT') | null;
   startAt: DateTimeString | null;
   status: ('VISIBLE' | 'HIDDEN') | null;
@@ -1235,6 +1236,7 @@ export interface ProductSummaryResponse {
   composition: string | null;
   feeRate: number | null;
   id: number;
+  insurance: string | null;
   isAcquisition: boolean | null;
   isOutOfStock: boolean | null;
   isPromotion: boolean | null;
@@ -1601,6 +1603,7 @@ export async function getBanners(options?: {
   page?: number;
   size?: number;
   isExposed?: boolean;
+  bannerPositions?: ('ALL' | 'POPUP' | 'PC_MAIN' | 'PC_COMMUNITY' | 'MOBILE_MAIN')[];
   startAt?: DateTimeString;
   endAt?: DateTimeString;
   bannerTitle?: string;
@@ -1608,7 +1611,10 @@ export async function getBanners(options?: {
   const response = await axios.request<PageBannerResponse>({
     method: 'GET',
     url: '/v1/banners',
-    params: options,
+    params: {
+      ...options,
+      bannerPositions: options?.bannerPositions?.join(','),
+    },
   });
   return response.data;
 }
@@ -2922,12 +2928,14 @@ export async function applyContract(data: {
   cso_certificate: File;
   education_certificate: File;
   request: PartnerContractRequest;
-  subcontract_agreement: File;
+  subcontract_agreement?: File;
 }): Promise<void> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   form.append('business_registration', data.business_registration, data.business_registration.name.normalize('NFC'));
-  form.append('subcontract_agreement', data.subcontract_agreement, data.subcontract_agreement.name.normalize('NFC'));
+  if (data.subcontract_agreement !== undefined) {
+    form.append('subcontract_agreement', data.subcontract_agreement, data.subcontract_agreement.name.normalize('NFC'));
+  }
   form.append('cso_certificate', data.cso_certificate, data.cso_certificate.name.normalize('NFC'));
   form.append('education_certificate', data.education_certificate, data.education_certificate.name.normalize('NFC'));
   await axios.request({

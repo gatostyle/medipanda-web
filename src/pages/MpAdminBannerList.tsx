@@ -25,7 +25,15 @@ import {
 import { DatePicker } from '@mui/x-date-pickers';
 import { format } from 'date-fns';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
-import { type BannerResponse, BannerScopeLabel, BannerStatus, BannerStatusLabel, DateTimeString, getBanners } from '@/backend';
+import {
+  BannerPositionLabel,
+  type BannerResponse,
+  BannerScopeLabel,
+  BannerStatus,
+  BannerStatusLabel,
+  DateTimeString,
+  getBanners,
+} from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
 import { DATEFORMAT_YYYY_MM_DD, DATEFORMAT_YYYY_MM_DD_HH_MM, DateUtils } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
@@ -256,14 +264,7 @@ export default function MpAdminBannerList() {
                 contents.map(item => (
                   <TableRow key={item.id}>
                     <TableCell>{item.sequence}</TableCell>
-                    <TableCell>
-                      {{
-                        POPUP: '팝업배너',
-                        PC_MAIN: 'PC 메인',
-                        PC_COMMUNITY: 'PC 커뮤니티',
-                        MOB_MAIN: 'Mob 메인',
-                      }[item.position] ?? item.position}
-                    </TableCell>
+                    <TableCell>{BannerPositionLabel[item.position] ?? item.position}</TableCell>
                     <TableCell>
                       <Link component={RouterLink} to={`/admin/banners/${item.id}/edit`}>
                         {item.title}

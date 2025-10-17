@@ -313,3 +313,19 @@ export const PriceUnit = {
   USD: 'USD',
   EUR: 'EUR',
 } as const;
+
+export const BannerPosition = {
+  ALL: 'ALL',
+  POPUP: 'POPUP',
+  PC_MAIN: 'PC_MAIN',
+  PC_COMMUNITY: 'PC_COMMUNITY',
+  MOBILE_MAIN: 'MOBILE_MAIN',
+} as const;
+
+export const BannerPositionLabel: Record<keyof typeof BannerPosition, string> = {
+  [BannerPosition.ALL]: '전체',
+  [BannerPosition.POPUP]: '팝업',
+  [BannerPosition.PC_MAIN]: 'PC 메인',
+  [BannerPosition.PC_COMMUNITY]: 'PC 커뮤니티',
+  [BannerPosition.MOBILE_MAIN]: '모바일 메인',
+};

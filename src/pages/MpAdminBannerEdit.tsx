@@ -16,6 +16,8 @@ import {
 import { DatePicker } from '@mui/x-date-pickers';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import {
+  BannerPosition,
+  BannerPositionLabel,
   BannerScope,
   BannerScopeLabel,
   BannerStatus,
@@ -43,7 +45,7 @@ export default function MpAdminBannerEdit() {
 
   const form = useForm({
     defaultValues: {
-      position: 'ALL',
+      position: BannerPosition.ALL as keyof typeof BannerPosition,
       status: BannerStatus.VISIBLE as keyof typeof BannerStatus,
       scope: BannerScope.ENTIRE as keyof typeof BannerScope,
       title: '',
@@ -187,11 +189,11 @@ export default function MpAdminBannerEdit() {
                 name={'position'}
                 render={({ field }) => (
                   <Select {...field} displayEmpty>
-                    <MenuItem value='ALL'>전체</MenuItem>
-                    <MenuItem value='POPUP'>팝업배너</MenuItem>
-                    <MenuItem value='PC_MAIN'>PC 메인</MenuItem>
-                    <MenuItem value='PC_COMMUNITY'>PC 커뮤니티</MenuItem>
-                    <MenuItem value='MOB_MAIN'>모바일 메인</MenuItem>
+                    {Object.keys(BannerPosition).map(bannerPosition => (
+                      <MenuItem key={bannerPosition} value={bannerPosition}>
+                        {BannerPositionLabel[bannerPosition]}
+                      </MenuItem>
+                    ))}
                   </Select>
                 )}
               />
