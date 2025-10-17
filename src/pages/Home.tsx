@@ -1,8 +1,10 @@
 import {
+  BannerPosition,
   type BannerResponse,
   type BoardPostResponse,
   BoardType,
   DateString,
+  DateTimeString,
   getBanners,
   getBoards,
   getRecentlyOpenedCount,
@@ -36,13 +38,20 @@ export default function Home() {
   const [banners, setBanners] = useState<BannerResponse[]>([]);
 
   const fetchBanners = async () => {
-    const response = await getBanners({ isExposed: true });
+    if (session === null) {
+      setBanners([]);
+      return;
+    }
 
-    setBanners(
-      response.content.filter(banner => {
-        return DateUtils.utcToKst(new Date(banner.startAt)) <= new Date() && DateUtils.utcToKst(new Date(banner.endAt)) >= new Date();
-      }),
-    );
+    const response = await getBanners({
+      isExposed: true,
+      bannerPositions: [BannerPosition.ALL, BannerPosition.PC_MAIN],
+      startAt: new DateTimeString(new Date()),
+      endAt: new DateTimeString(new Date()),
+      size: 2 ** 31 - 1,
+    });
+
+    setBanners(response.content);
   };
 
   useEffect(() => {
@@ -179,7 +188,7 @@ export default function Home() {
             />
           </RouterLink>
         </Box>
-        {session && banners.length > 0 && (
+        {banners.length > 0 && (
           <Box
             sx={{
               position: 'relative',

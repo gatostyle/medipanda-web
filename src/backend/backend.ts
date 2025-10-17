@@ -91,8 +91,8 @@ export interface AdminUpdateRequest {
 export interface AlternativeProductDto {
   composition: string | null;
   feeRate: number | null;
-  kdCode: string;
   insurance: string | null;
+  kdCode: string;
   manufacturer: string | null;
   nhiPrice: number | null;
   nhiUnit: string | null;
@@ -114,7 +114,7 @@ export interface BannerCreateRequest {
   displayOrder: number;
   endAt: DateTimeString;
   linkUrl: string;
-  position: string;
+  position: 'ALL' | 'POPUP' | 'PC_MAIN' | 'PC_COMMUNITY' | 'MOBILE_MAIN';
   scope: 'ENTIRE' | 'CONTRACT' | 'NON_CONTRACT';
   startAt: DateTimeString;
   status: 'VISIBLE' | 'HIDDEN';
@@ -130,7 +130,7 @@ export interface BannerResponse {
   imageUrl: string;
   linkUrl: string;
   note: string | null;
-  position: string;
+  position: 'ALL' | 'POPUP' | 'PC_MAIN' | 'PC_COMMUNITY' | 'MOBILE_MAIN';
   scope: 'ENTIRE' | 'CONTRACT' | 'NON_CONTRACT';
   startAt: string;
   status: 'VISIBLE' | 'HIDDEN';
@@ -142,7 +142,7 @@ export interface BannerUpdateRequest {
   displayOrder: number | null;
   endAt: DateTimeString | null;
   linkUrl: string | null;
-  position: string | null;
+  position: ('ALL' | 'POPUP' | 'PC_MAIN' | 'PC_COMMUNITY' | 'MOBILE_MAIN') | null;
   scope: ('ENTIRE' | 'CONTRACT' | 'NON_CONTRACT') | null;
   startAt: DateTimeString | null;
   status: ('VISIBLE' | 'HIDDEN') | null;
@@ -1603,6 +1603,7 @@ export async function getBanners(options?: {
   page?: number;
   size?: number;
   isExposed?: boolean;
+  bannerPositions?: ('ALL' | 'POPUP' | 'PC_MAIN' | 'PC_COMMUNITY' | 'MOBILE_MAIN')[];
   startAt?: DateTimeString;
   endAt?: DateTimeString;
   bannerTitle?: string;
@@ -1610,7 +1611,10 @@ export async function getBanners(options?: {
   const response = await axios.request<PageBannerResponse>({
     method: 'GET',
     url: '/v1/banners',
-    params: options,
+    params: {
+      ...options,
+      bannerPositions: options?.bannerPositions?.join(','),
+    },
   });
   return response.data;
 }
