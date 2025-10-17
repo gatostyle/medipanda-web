@@ -110,7 +110,6 @@ export default function PartnerContract() {
       bankName: '',
       accountNumber: '',
       csoCertificate: null as File | null,
-      subcontractAgreement: null as File | null,
       educationCertificate: null as File | null,
       agreement: false,
     },
@@ -146,11 +145,6 @@ export default function PartnerContract() {
       return;
     }
 
-    if (values.subcontractAgreement === null) {
-      alert('재위탁계약서를 첨부해주세요.');
-      return;
-    }
-
     if (values.educationCertificate === null) {
       alert('판매위수탁 교육이수증을 첨부해주세요.');
       return;
@@ -166,8 +160,7 @@ export default function PartnerContract() {
           accountNumber: values.accountNumber,
         },
         business_registration: values.businessRegistration,
-        subcontract_agreement: values.csoCertificate,
-        cso_certificate: values.subcontractAgreement,
+        cso_certificate: values.csoCertificate,
         education_certificate: values.educationCertificate,
       });
       alert('파트너사 계약 신청이 완료되었습니다.');
@@ -197,7 +190,6 @@ export default function PartnerContract() {
       form.setValue('bankName', detail.bankName);
       form.setValue('accountNumber', detail.accountNumber);
       form.setValue('csoCertificate', null);
-      form.setValue('subcontractAgreement', null);
       form.setValue('educationCertificate', null);
       form.setValue('agreement', false);
     } catch (e) {

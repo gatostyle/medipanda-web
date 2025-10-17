@@ -2924,12 +2924,14 @@ export async function applyContract(data: {
   cso_certificate: File;
   education_certificate: File;
   request: PartnerContractRequest;
-  subcontract_agreement: File;
+  subcontract_agreement?: File;
 }): Promise<void> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   form.append('business_registration', data.business_registration, data.business_registration.name.normalize('NFC'));
-  form.append('subcontract_agreement', data.subcontract_agreement, data.subcontract_agreement.name.normalize('NFC'));
+  if (data.subcontract_agreement !== undefined) {
+    form.append('subcontract_agreement', data.subcontract_agreement, data.subcontract_agreement.name.normalize('NFC'));
+  }
   form.append('cso_certificate', data.cso_certificate, data.cso_certificate.name.normalize('NFC'));
   form.append('education_certificate', data.education_certificate, data.education_certificate.name.normalize('NFC'));
   await axios.request({
