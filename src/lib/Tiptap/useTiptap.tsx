@@ -44,6 +44,12 @@ export function useTiptap({ placeholder, imageMimeTypes, onImageInsert, onImageD
 
   const editor = useEditor({
     ...props,
+    editorProps: {
+      ...props.editorProps,
+      transformPastedHTML(html) {
+        return html.replace(/<img.*?>/g, '');
+      },
+    },
     extensions: [
       Document,
       Paragraph,
