@@ -58,7 +58,7 @@ const PartnerContract = LazyComponent(lazy(() => import('pages/PartnerContract')
 const Terms = LazyComponent(lazy(() => import('pages/Terms')));
 const Privacy = LazyComponent(lazy(() => import('pages/Privacy')));
 
-const Error404 = LazyComponent(lazy(() => import('pages/404')));
+const Error404 = LazyComponent(lazy(() => import('@/pages/Error404')));
 
 const route: RouteObject[] = [
   {
