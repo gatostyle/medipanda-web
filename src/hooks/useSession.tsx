@@ -52,7 +52,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           setSession(null);
         }
       },
-      import.meta.env.VITE_APP_TOKEN_ROTATE_INTERVAL,
+      import.meta.env.VITE_APP_TOKEN_ROTATE_INTERVAL ?? 60 * 1_000,
     );
 
     return member;

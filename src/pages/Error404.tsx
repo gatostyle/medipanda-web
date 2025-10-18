@@ -14,7 +14,7 @@ export default function Error404() {
       <Grid size={{ xs: 12 }}>
         <Stack spacing={2} justifyContent='center' alignItems='center'>
           <Typography>Page Not Found</Typography>
-          <Button component={Link} to={import.meta.env.VITE_BASE_NAME} variant='text'>
+          <Button component={Link} to={import.meta.env.VITE_APP_BASE_NAME} variant='text'>
             Back To Home
           </Button>
         </Stack>
