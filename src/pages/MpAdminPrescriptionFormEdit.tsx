@@ -128,7 +128,7 @@ export default function MpAdminPrescriptionFormEdit() {
           baseFeeRate: PercentUtils.percentStringToDecimal(product.baseFeeRate),
           feeAmount: Number(product.feeAmount.replace(/,/g, '')),
           note: product.note,
-          ocrItem: product.ocrItem,
+          ocrItem: product.ocrItem ?? undefined,
         })),
         deletedPrescriptionPartnerProductIds: deletePartnerProductIds,
       });
