@@ -47,7 +47,7 @@ export default function MpAdminSettlementList() {
   const navigate = useNavigate();
 
   const initialSearchParams = {
-    searchType: '' as 'dealerId' | 'companyName' | '',
+    searchType: 'dealerName' as 'dealerName' | 'dealerId' | 'drugCompanyName' | 'companyName',
     searchKeyword: '',
     settlementMonth: '',
     status: '' as keyof typeof SettlementStatus | '',
@@ -83,11 +83,6 @@ export default function MpAdminSettlementList() {
   });
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
-    if (values.searchType === '' && values.searchKeyword !== '') {
-      await alert('검색유형을 선택하세요.');
-      return;
-    }
-
     if (values.searchType === 'dealerId' && values.searchKeyword !== '' && Number.isNaN(Number(values.searchKeyword))) {
       await alert('딜러번호는 숫자만 입력할 수 있습니다.');
       return;
@@ -114,7 +109,6 @@ export default function MpAdminSettlementList() {
     setLoading(true);
     try {
       const response = await getSettlements({
-        dealerName: undefined,
         dealerId: searchType === 'dealerId' && searchKeyword !== '' ? Number(searchKeyword) : undefined,
         [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         status: status !== '' ? status : undefined,
@@ -184,7 +178,9 @@ export default function MpAdminSettlementList() {
                   name='searchType'
                   render={({ field }) => (
                     <Select {...field}>
+                      <MenuItem value={'dealerName'}>딜러명</MenuItem>
                       <MenuItem value={'dealerId'}>딜러번호</MenuItem>
+                      <MenuItem value={'drugCompanyName'}>제약사명</MenuItem>
                       <MenuItem value={'companyName'}>회사명</MenuItem>
                     </Select>
                   )}
@@ -239,7 +235,6 @@ export default function MpAdminSettlementList() {
                 color='success'
                 size='small'
                 href={getDownloadSettlementListExcel({
-                  dealerName: undefined,
                   dealerId: searchType === 'dealerId' && searchKeyword !== '' ? Number(searchKeyword) : undefined,
                   [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
                   status: status !== '' ? status : undefined,
