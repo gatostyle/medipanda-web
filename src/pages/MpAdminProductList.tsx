@@ -113,11 +113,7 @@ export default function MpAdminProductList() {
     setLoading(true);
     try {
       const response = await getProductSummaries({
-        productName: searchType === 'productName' && searchKeyword !== '' ? searchKeyword : undefined,
-        composition: searchType === 'composition' && searchKeyword !== '' ? searchKeyword : undefined,
-        productCode: searchType === 'productCode' && searchKeyword !== '' ? searchKeyword : undefined,
-        manufacturerName: searchType === 'manufacturerName' && searchKeyword !== '' ? searchKeyword : undefined,
-        note: searchType === 'note' && searchKeyword !== '' ? searchKeyword : undefined,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         isAcquisition: isAcquisition || undefined,
         isPromotion: isPromotion || undefined,
         isOutOfStock: isOutOfStock || undefined,
@@ -282,11 +278,7 @@ export default function MpAdminProductList() {
               color='success'
               size='small'
               href={getDownloadProductSummariesExcel({
-                productName: searchType === 'productName' && searchKeyword !== '' ? searchKeyword : undefined,
-                composition: searchType === 'composition' && searchKeyword !== '' ? searchKeyword : undefined,
-                productCode: searchType === 'productCode' && searchKeyword !== '' ? searchKeyword : undefined,
-                manufacturerName: searchType === 'manufacturerName' && searchKeyword !== '' ? searchKeyword : undefined,
-                note: searchType === 'note' && searchKeyword !== '' ? searchKeyword : undefined,
+                [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
                 isAcquisition: isAcquisition || undefined,
                 isPromotion: isPromotion || undefined,
                 isOutOfStock: isOutOfStock || undefined,

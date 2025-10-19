@@ -104,9 +104,7 @@ export default function MpAdminInquiryList() {
     try {
       const response = await getBoards({
         boardType: BoardType.INQUIRY,
-        name: searchType === 'name' && searchKeyword !== '' ? searchKeyword : undefined,
-        drugCompany: searchType === 'drugCompany' && searchKeyword !== '' ? searchKeyword : undefined,
-        userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         startAt: startAt ? new DateString(startAt) : undefined,
         endAt: endAt ? new DateString(endAt) : undefined,
         hasChildren: hasChildren === '' ? undefined : hasChildren === 'true',

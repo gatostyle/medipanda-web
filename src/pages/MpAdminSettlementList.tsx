@@ -116,7 +116,7 @@ export default function MpAdminSettlementList() {
       const response = await getSettlements({
         dealerName: undefined,
         dealerId: searchType === 'dealerId' && searchKeyword !== '' ? Number(searchKeyword) : undefined,
-        companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         status: status !== '' ? status : undefined,
         startMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
         endMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
@@ -241,7 +241,7 @@ export default function MpAdminSettlementList() {
                 href={getDownloadSettlementListExcel({
                   dealerName: undefined,
                   dealerId: searchType === 'dealerId' && searchKeyword !== '' ? Number(searchKeyword) : undefined,
-                  companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
+                  [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
                   status: status !== '' ? status : undefined,
                   startMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
                   endMonth: settlementMonth ? new DateString(settlementMonth) : undefined,

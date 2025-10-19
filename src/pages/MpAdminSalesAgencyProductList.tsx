@@ -115,8 +115,7 @@ export default function MpAdminSalesAgencyProductList() {
     setLoading(true);
     try {
       const response = await getSalesAgencyProducts({
-        productName: searchType === 'productName' && searchKeyword !== '' ? searchKeyword : undefined,
-        clientName: searchType === 'clientName' && searchKeyword !== '' ? searchKeyword : undefined,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         startAt: startAt ? new DateString(startAt) : undefined,
         endAt: endAt ? new DateString(endAt) : undefined,
         page: page - 1,
@@ -258,8 +257,7 @@ export default function MpAdminSalesAgencyProductList() {
               color='success'
               size='small'
               href={getDownloadSalesAgencyProductsExcel({
-                productName: searchType === 'productName' && searchKeyword !== '' ? searchKeyword : undefined,
-                clientName: searchType === 'clientName' && searchKeyword !== '' ? searchKeyword : undefined,
+                [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
                 startAt: startAt ? new DateString(startAt) : undefined,
                 endAt: endAt ? new DateString(endAt) : undefined,
                 size: 2 ** 31 - 1,

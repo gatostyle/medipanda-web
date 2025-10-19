@@ -118,9 +118,7 @@ export default function MpAdminPrescriptionReceptionList() {
     try {
       const response = await searchPrescriptions({
         status: status !== '' ? status : undefined,
-        companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
-        userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
-        dealerName: searchType === 'dealerName' && searchKeyword !== '' ? searchKeyword : undefined,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         dealerId: searchType === 'dealerId' && searchKeyword !== '' ? Number(searchKeyword) : undefined,
         startAt: startAt ? new DateTimeString(startAt) : undefined,
         endAt: endAt ? new DateTimeString(endAt) : undefined,

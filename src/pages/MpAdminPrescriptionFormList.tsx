@@ -119,10 +119,7 @@ export default function MpAdminPrescriptionFormList() {
     setLoading(true);
     try {
       const response = await getPrescriptionPartnerList({
-        companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
-        institutionName: searchType === 'institutionName' && searchKeyword !== '' ? searchKeyword : undefined,
-        drugCompany: searchType === 'drugCompany' && searchKeyword !== '' ? searchKeyword : undefined,
-        dealerName: searchType === 'dealerName' && searchKeyword !== '' ? searchKeyword : undefined,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         prescriptionMonthStart: prescriptionMonthStart ? new DateTimeString(prescriptionMonthStart) : undefined,
         prescriptionMonthEnd: prescriptionMonthEnd ? new DateTimeString(prescriptionMonthEnd) : undefined,
         status: status !== '' ? status : undefined,

@@ -114,8 +114,7 @@ export default function MpAdminCommunityCommentList() {
     setLoading(true);
     try {
       const response = await getCommentMembers({
-        userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
-        nickname: searchType === 'nickname' && searchKeyword !== '' ? searchKeyword : undefined,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         startAt: startAt ? new DateString(startAt) : undefined,
         endAt: endAt ? new DateString(endAt) : undefined,
         commentType: commentType !== '' ? commentType : undefined,

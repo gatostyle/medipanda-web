@@ -120,10 +120,7 @@ export default function MpAdminCommunityPostList() {
     try {
       const response = await getBoards({
         boardType: boardType !== '' ? boardType : undefined,
-        boardTitle: searchType === 'title' && searchKeyword !== '' ? searchKeyword : undefined,
-        userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
-        name: searchType === 'name' && searchKeyword !== '' ? searchKeyword : undefined,
-        nickname: searchType === 'nickname' && searchKeyword !== '' ? searchKeyword : undefined,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         startAt: startAt ? new DateString(startAt) : undefined,
         endAt: endAt ? new DateString(endAt) : undefined,
         filterDeleted: true,

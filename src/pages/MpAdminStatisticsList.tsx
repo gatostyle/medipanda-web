@@ -97,10 +97,7 @@ export default function MpAdminStatisticsList() {
     setLoading(true);
     try {
       const response = await getPerformanceStats({
-        drugCompany: searchType === 'drugCompany' && searchKeyword !== '' ? searchKeyword : undefined,
-        companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
-        dealerName: searchType === 'dealerName' && searchKeyword !== '' ? searchKeyword : undefined,
-        institutionName: searchType === 'institutionName' && searchKeyword !== '' ? searchKeyword : undefined,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         startMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
         endMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
         page: page - 1,
@@ -203,10 +200,7 @@ export default function MpAdminStatisticsList() {
               color='success'
               size='small'
               href={getDownloadPerformanceExcel({
-                drugCompany: searchType === 'drugCompany' && searchKeyword !== '' ? searchKeyword : undefined,
-                companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
-                dealerName: searchType === 'dealerName' && searchKeyword !== '' ? searchKeyword : undefined,
-                institutionName: searchType === 'institutionName' && searchKeyword !== '' ? searchKeyword : undefined,
+                [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
                 startMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
                 endMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
                 size: 2 ** 31 - 1,

@@ -106,9 +106,7 @@ export default function MpAdminCommunityBlindList() {
     setLoading(true);
     try {
       const response = await getBlindPosts({
-        nickname: searchType === 'nickname' && searchKeyword !== '' ? searchKeyword : undefined,
-        userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
-        memberName: searchType === 'memberName' && searchKeyword !== '' ? searchKeyword : undefined,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         startAt: startAt ? new DateString(startAt) : undefined,
         endAt: endAt ? new DateString(endAt) : undefined,
         postType: postType !== '' ? postType : undefined,

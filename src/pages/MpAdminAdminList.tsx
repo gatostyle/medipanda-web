@@ -86,10 +86,7 @@ export default function MpAdminAdminList() {
     try {
       const response = await getUserMembers({
         roles: [Role.ADMIN, Role.SUPER_ADMIN],
-        name: searchType === 'name' && searchKeyword !== '' ? searchKeyword : undefined,
-        userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
-        email: searchType === 'email' && searchKeyword !== '' ? searchKeyword : undefined,
-        phoneNumber: searchType === 'phoneNumber' && searchKeyword !== '' ? searchKeyword : undefined,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         page: page - 1,
         size: pageSize,
       });

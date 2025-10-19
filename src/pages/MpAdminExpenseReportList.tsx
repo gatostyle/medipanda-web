@@ -113,9 +113,7 @@ export default function MpAdminExpenseReportList() {
     setLoading(true);
     try {
       const response = await getExpenseReportList({
-        companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
-        userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
-        productName: searchType === 'productName' && searchKeyword !== '' ? searchKeyword : undefined,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         reportType: reportType !== '' ? reportType : undefined,
         eventDateFrom: eventDateFrom ? new DateTimeString(eventDateFrom) : undefined,
         eventDateTo: eventDateTo ? new DateTimeString(eventDateTo) : undefined,
@@ -276,9 +274,7 @@ export default function MpAdminExpenseReportList() {
               color='success'
               startIcon={<DocumentDownload size={16} />}
               href={getDownloadExpenseReportListExcel({
-                companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
-                userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
-                productName: searchType === 'productName' && searchKeyword !== '' ? searchKeyword : undefined,
+                [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
                 eventDateFrom: eventDateFrom ? new DateTimeString(eventDateFrom) : undefined,
                 eventDateTo: eventDateTo ? new DateTimeString(eventDateTo) : undefined,
                 status: status || undefined,

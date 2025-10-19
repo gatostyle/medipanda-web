@@ -83,11 +83,7 @@ export default function MpAdminCommunityUserList() {
     setLoading(true);
     try {
       const response = await getBoardMembers({
-        userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
-        name: searchType === 'name' && searchKeyword !== '' ? searchKeyword : undefined,
-        nickname: searchType === 'nickname' && searchKeyword !== '' ? searchKeyword : undefined,
-        phoneNumber: searchType === 'phoneNumber' && searchKeyword !== '' ? searchKeyword : undefined,
-        email: searchType === 'email' && searchKeyword !== '' ? searchKeyword : undefined,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         contractStatus: contractStatus !== '' ? contractStatus : undefined,
         startAt: undefined,
         endAt: undefined,

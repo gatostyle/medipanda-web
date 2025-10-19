@@ -104,10 +104,7 @@ export default function MpAdminAtoZList() {
     try {
       const response = await getBoards({
         boardType: BoardType.CSO_A_TO_Z,
-        boardTitle: searchType === 'title' && searchKeyword !== '' ? searchKeyword : undefined,
-        userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
-        name: searchType === 'name' && searchKeyword !== '' ? searchKeyword : undefined,
-        nickname: searchType === 'nickname' && searchKeyword !== '' ? searchKeyword : undefined,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         startAt: startAt ? new DateString(startAt) : undefined,
         endAt: endAt ? new DateString(endAt) : undefined,
         isExposed: isExposed !== '' ? isExposed === 'true' : undefined,

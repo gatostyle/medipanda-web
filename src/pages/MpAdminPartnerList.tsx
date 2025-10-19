@@ -94,11 +94,7 @@ export default function MpAdminPartnerList() {
 
     try {
       const response = await getPartners({
-        companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
-        institutionName: searchType === 'institutionName' && searchKeyword !== '' ? searchKeyword : undefined,
-        institutionCode: searchType === 'institutionCode' && searchKeyword !== '' ? searchKeyword : undefined,
-        drugCompanyName: searchType === 'drugCompanyName' && searchKeyword !== '' ? searchKeyword : undefined,
-        memberName: searchType === 'memberName' && searchKeyword !== '' ? searchKeyword : undefined,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         memberType: memberType !== '' ? memberType : undefined,
         page: page - 1,
         size: pageSize,

@@ -118,12 +118,9 @@ export default function MpAdminMemberList() {
     setLoading(true);
     try {
       const response = await getUserMembers({
-        name: searchType === 'name' && searchKeyword !== '' ? searchKeyword : undefined,
         memberId: searchType === 'memberId' && searchKeyword !== '' ? Number(searchKeyword) : undefined,
-        userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         phoneNumber: searchType === 'phoneNumber' && searchKeyword !== '' ? searchKeyword.replace(/-/g, '') : undefined,
-        email: searchType === 'email' && searchKeyword !== '' ? searchKeyword : undefined,
-        companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
         startAt: startAt ? new DateString(startAt) : undefined,
         endAt: endAt ? new DateString(endAt) : undefined,
         contractStatus: contractStatus !== '' ? contractStatus : undefined,
@@ -267,12 +264,9 @@ export default function MpAdminMemberList() {
               size='small'
               target='_blank'
               href={getDownloadUserMembersExcel({
-                name: searchType === 'name' && searchKeyword !== '' ? searchKeyword : undefined,
                 memberId: searchType === 'memberId' && searchKeyword !== '' ? Number(searchKeyword) : undefined,
-                userId: searchType === 'userId' && searchKeyword !== '' ? searchKeyword : undefined,
+                [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
                 phoneNumber: searchType === 'phoneNumber' && searchKeyword !== '' ? searchKeyword.replace(/-/g, '') : undefined,
-                email: searchType === 'email' && searchKeyword !== '' ? searchKeyword : undefined,
-                companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
                 startAt: startAt ? new DateString(startAt) : undefined,
                 endAt: endAt ? new DateString(endAt) : undefined,
                 contractStatus: contractStatus !== '' ? contractStatus : undefined,
