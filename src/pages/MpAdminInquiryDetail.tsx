@@ -142,7 +142,7 @@ export default function MpAdminInquiryDetail() {
 
     setLoading(true);
     try {
-      const detail = await getBoardDetails(boardId);
+      const detail = await getBoardDetails(boardId, { filterDeleted: true });
       setDetail(detail);
       const memberDetail = await getMemberDetails(detail.userId);
       setMemberDetail(memberDetail);

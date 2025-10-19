@@ -110,9 +110,9 @@ export default function MpAdminFaqList() {
         filterBlind: undefined,
         boardTitle: searchKeyword !== '' ? searchKeyword : undefined,
         isExposed: isExposed !== '' ? isExposed === 'true' : undefined,
-        filterDeleted: true,
         page: page - 1,
         size: pageSize,
+        filterDeleted: true,
       });
 
       setContents(withSequence(response).content);

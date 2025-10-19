@@ -82,9 +82,9 @@ export default function MpAdminCommunityUserList() {
         contractStatus: contractStatus !== '' ? contractStatus : undefined,
         startAt: undefined,
         endAt: undefined,
-        filterDeleted: true,
         page: page - 1,
         size: pageSize,
+        filterDeleted: true,
       });
 
       setContents(withSequence(response).content);

@@ -141,7 +141,7 @@ export default function MpAdminAtoZEdit() {
   const fetchDetail = async (itemId: number) => {
     setLoading(true);
     try {
-      const detail = await getBoardDetails(itemId);
+      const detail = await getBoardDetails(itemId, { filterDeleted: true });
       setDetail(detail);
 
       form.reset({

@@ -108,9 +108,9 @@ export default function MpAdminInquiryList() {
         startAt: startAt ? new DateString(startAt) : undefined,
         endAt: endAt ? new DateString(endAt) : undefined,
         hasChildren: hasChildren === '' ? undefined : hasChildren === 'true',
-        filterDeleted: true,
         page: page - 1,
         size: pageSize,
+        filterDeleted: true,
       });
 
       const childrenFetched = await Promise.all(

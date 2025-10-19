@@ -51,7 +51,7 @@ export default function MpAdminCommunityPostDetail() {
 
     try {
       setLoading(true);
-      const detail = await getBoardDetails(boardId);
+      const detail = await getBoardDetails(boardId, { filterDeleted: true, filterBlind: true });
       setDetail(detail);
 
       setComments(withSequence(detail.comments));

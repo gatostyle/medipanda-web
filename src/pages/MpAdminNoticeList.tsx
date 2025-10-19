@@ -126,9 +126,9 @@ export default function MpAdminNoticeList() {
         boardTitle: searchKeyword !== '' ? searchKeyword : undefined,
         isExposed: isExposed !== '' ? isExposed === 'true' : undefined,
         drugCompany: drugCompany !== '' ? drugCompany : undefined,
-        filterDeleted: true,
         page: page - 1,
         size: pageSize,
+        filterDeleted: true,
       });
 
       setContents(withSequence(response).content);

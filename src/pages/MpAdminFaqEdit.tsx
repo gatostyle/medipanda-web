@@ -144,7 +144,7 @@ export default function MpAdminFaqEdit() {
 
     setLoading(true);
     try {
-      const detail = await getBoardDetails(boardId);
+      const detail = await getBoardDetails(boardId, { filterDeleted: true });
       setDetail(detail);
 
       form.reset({

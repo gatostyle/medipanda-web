@@ -118,9 +118,9 @@ export default function MpAdminCommunityCommentList() {
         startAt: startAt ? new DateString(startAt) : undefined,
         endAt: endAt ? new DateString(endAt) : undefined,
         commentType: commentType !== '' ? commentType : undefined,
-        filterDeleted: true,
         page: page - 1,
         size: pageSize,
+        filterDeleted: true,
       });
 
       setContents(withSequence(response).content);

@@ -41,7 +41,7 @@ export default function MpAdminCustomerCenterFaqDetail() {
 
     setLoading(true);
     try {
-      const detail = await getBoardDetails(boardId);
+      const detail = await getBoardDetails(boardId, { filterDeleted: true });
       setDetail(detail);
     } catch (error) {
       console.error('Failed to fetch FAQ detail:', error);
