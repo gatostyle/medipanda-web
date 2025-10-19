@@ -116,6 +116,11 @@ export default function MpAdminPrescriptionFormEdit() {
       return;
     }
 
+    if (partnerProducts.some(p => p.quantity === '')) {
+      await alert('수량이 입력되지 않은 항목이 있습니다.');
+      return;
+    }
+
     try {
       await upsertPatchPartnerProducts(prescriptionPartnerId, {
         items: partnerProducts.map(product => ({
