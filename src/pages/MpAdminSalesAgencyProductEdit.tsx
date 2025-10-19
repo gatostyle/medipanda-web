@@ -292,20 +292,26 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
       input.accept = 'image/*';
       input.onchange = async e => {
         const file = (e.target as HTMLInputElement).files?.[0];
-        if (file) {
-          const fileReader = new FileReader();
-          fileReader.onload = async () => {
-            if (!fileReader.result) {
-              await alertError('파일을 읽는 데 실패했습니다.');
-              return;
-            }
-
-            form.setValue('thumbnail', file);
-            form.setValue('thumbnailUrl', fileReader.result as string);
-          };
-
-          fileReader.readAsDataURL(file);
+        if (!file) {
+          return;
         }
+
+        if (file.type.indexOf('image/') !== 0) {
+          await alertError('이미지 파일만 업로드할 수 있습니다.');
+          return;
+        }
+
+        const fileReader = new FileReader();
+        fileReader.onload = async () => {
+          if (!fileReader.result) {
+            await alertError('파일을 읽는 데 실패했습니다.');
+            return;
+          }
+
+          form.setValue('thumbnail', file);
+          form.setValue('thumbnailUrl', fileReader.result as string);
+        };
+        fileReader.readAsDataURL(file);
       };
       input.click();
     } catch (error) {
