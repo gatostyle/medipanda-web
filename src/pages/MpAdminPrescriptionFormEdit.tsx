@@ -41,7 +41,7 @@ import { MpOcrRequestModal } from '@/components/MpOcrRequestModal';
 import { MpPartnerSelectModal } from '@/components/MpPartnerSelectModal';
 import { type Sequenced } from '@/lib/utils/withSequence';
 import { useSnackbar } from 'notistack';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
 import { DATEFORMAT_YYYY_MM, DateUtils } from '@/lib/utils/dateFormat';
@@ -58,6 +58,23 @@ interface CustomPartnerProducts {
   feeAmount: string;
   note: string | null;
   ocrItem: OcrOriginalItem | null;
+}
+
+interface Disposable {
+  dispose: () => void;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function listenerToDisposable(listener: any, target: EventTarget): Disposable {
+  return {
+    dispose: () => target.removeEventListener('message', listener),
+  };
+}
+
+function intervalToDisposable(intervalId: ReturnType<typeof setInterval>): Disposable {
+  return {
+    dispose: () => clearInterval(intervalId),
+  };
 }
 
 export default function MpAdminPrescriptionFormEdit() {
@@ -84,6 +101,9 @@ export default function MpAdminPrescriptionFormEdit() {
   const [sendOcrReport, setSendOcrReport] = useState(false);
   const [ocrReportContent, setOcrReportContent] = useState('');
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
+
+  const [currentPopup, setCurrentPopup] = useState<Window | null>(null);
+  const currentPopupInitialized = useRef(false);
 
   const form = useForm({
     defaultValues: {
@@ -231,7 +251,17 @@ export default function MpAdminPrescriptionFormEdit() {
   };
 
   const handleEdiFileView = async () => {
-    setOcrRequestModalOpen(true);
+    const id = (Math.random() * 1000000).toFixed();
+
+    currentPopupInitialized.current = false;
+    const popup = window.open(new URL(`/edi-scanner.html?id=${id}`, window.location.href).href, '_blank');
+
+    if (popup === null) {
+      await alertError('팝업이 차단되었습니다. 팝업 차단을 해제한 후 다시 시도해주세요.');
+      return;
+    }
+
+    setCurrentPopup(popup);
   };
 
   const handleOcrSubmit = async (response: OcrResponse[]) => {
@@ -337,6 +367,57 @@ export default function MpAdminPrescriptionFormEdit() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (currentPopup === null) {
+      return;
+    }
+
+    const disposables = new Set<Disposable>();
+
+    const globalMessageListener = (event: MessageEvent) => {
+      const currentPopupId = new URLSearchParams(currentPopup.location.search).get('id');
+
+      if (currentPopupId === null || currentPopupId === '') {
+        return;
+      }
+
+      if (event.origin !== window.origin || event.data?.id !== currentPopupId) {
+        return;
+      }
+
+      switch (event.data?.type) {
+        case 'EDI_SCANNER_PONG': {
+          if (!currentPopupInitialized.current) {
+            currentPopupInitialized.current = true;
+            currentPopup.postMessage(
+              {
+                type: 'EDI_SCANNER_FILES',
+                drugCompanyCode: prescriptionPartner!.drugCompanyCode,
+                originalFiles: attachedFiles,
+              },
+              window.origin,
+            );
+          }
+          break;
+        }
+        case 'EDI_SCANNER_OCR_RESULT': {
+          handleOcrSubmit(event.data!.ocrResult);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('message', globalMessageListener);
+    disposables.add(listenerToDisposable(globalMessageListener, window));
+
+    const heartbeatInterval = setInterval(() => {
+      currentPopup.postMessage({ type: 'EDI_SCANNER_PING' });
+    }, 1000);
+    disposables.add(intervalToDisposable(heartbeatInterval));
+
+    return () => disposables.forEach(d => d.dispose());
+  }, [prescriptionPartner, attachedFiles, currentPopup, handleOcrSubmit]);
 
   if (loading) {
     return (

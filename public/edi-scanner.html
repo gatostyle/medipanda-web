@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EDI 스캐너</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f0f0f0;
+      }
+
+      #global-loader {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+
+      #global-loader[hidden] {
+        display: none;
+      }
+
+      html:has(#global-loader:not([hidden])) {
+        overflow: hidden;
+      }
+
+      #global-error {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #ff4d4f;
+        color: white;
+        padding: 15px 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        z-index: 10000;
+      }
+
+      #global-error.hidden {
+        display: none;
+      }
+
+      .spinner {
+        width: 48px;
+        height: 48px;
+        border: 5px solid #fff;
+        border-top: 5px solid transparent;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .container {
+        max-width: 1600px;
+        margin: 0 auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      canvas {
+        border: 2px solid #333;
+        cursor: crosshair;
+        display: block;
+        margin: 20px auto;
+        background: white;
+        max-width: 100%;
+        width: 100%;
+        height: auto;
+      }
+
+      .controls {
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      button {
+        padding: 12px 24px;
+        margin: 5px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        background: linear-gradient(145deg, #007bff, #0056b3);
+        color: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+      }
+
+      button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .scan-btn {
+        background: linear-gradient(145deg, #28a745, #218838);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+      }
+
+      .scan-btn:hover {
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+      }
+
+      .extract-btn {
+        background: linear-gradient(145deg, #ff6b35, #e55a2b);
+        box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+      }
+
+      .extract-btn:hover {
+        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+      }
+
+      .status {
+        text-align: center;
+        font-weight: bold;
+        margin: 15px 0;
+        padding: 15px;
+        border-radius: 10px;
+        font-size: 16px;
+      }
+
+      .status.incomplete {
+        background: linear-gradient(145deg, #fff3cd, #ffeaa7);
+        color: #856404;
+        border: 2px solid #ffc107;
+      }
+
+      .image-upload input {
+        margin: 10px;
+        padding: 8px;
+        border: 2px solid #007bff;
+        border-radius: 5px;
+      }
+
+      .coords {
+        background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+        padding: 20px;
+        border-radius: 10px;
+        margin: 15px 0;
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      #previewContainer {
+        display: none;
+        text-align: center;
+        margin: 20px 0;
+        padding: 25px;
+        background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      #previewImage {
+        max-width: 100%;
+        max-height: 800px;
+        border: 3px solid #007bff;
+        border-radius: 10px;
+        box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+      }
+
+      label {
+        display: block;
+        margin: 10px 0;
+        font-size: 14px;
+        color: #495057;
+      }
+
+      input[type="range"] {
+        width: 100%;
+        margin: 8px 0;
+      }
+
+      select {
+        width: 100%;
+        padding: 8px;
+        border: 2px solid #dee2e6;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+
+      /* 모달 스타일 */
+      .modal {
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+      }
+
+      .modal[hidden] {
+        display: none;
+      }
+
+      html:has(.modal:not([hidden])) {
+        overflow: hidden;
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 0;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 800px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        animation: modalSlideIn 0.3s ease;
+        max-height: 80vh;
+        overflow: hidden;
+      }
+
+      @keyframes modalSlideIn {
+        from {
+          transform: translateY(-50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .modal-header {
+        background: linear-gradient(145deg, #007bff, #0056b3);
+        color: white;
+        padding: 20px;
+        border-radius: 15px 15px 0 0;
+        position: relative;
+      }
+
+      .modal-header h2 {
+        margin: 0;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .close {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        color: white;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background-color 0.3s;
+      }
+
+      .close:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .modal-body {
+        padding: 30px;
+        max-height: 60vh;
+        overflow-y: auto;
+      }
+
+      .loading-spinner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px;
+      }
+
+      .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #007bff;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .error-message {
+        text-align: center;
+        padding: 40px;
+        color: #dc3545;
+        font-size: 16px;
+      }
+
+      .empty-message {
+        text-align: center;
+        padding: 40px;
+        color: #6c757d;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="global-loader">
+      <div class="spinner"></div>
+    </div>
+    <div id="global-error" class="hidden"></div>
+    <div class="container">
+      <h1>EDI 파일 보기</h1>
+      <canvas id="canvas" width="1400" height="1000"></canvas>
+
+      <div class="status incomplete" id="status">
+        4개 점을 클릭해서 문서 모서리를 선택하세요 (0/4)
+      </div>
+
+      <div class="controls">
+        <button id="prevImageBtn">이전 이미지</button>
+        <button id="resetBtn">다시 선택</button>
+        <button id="scanBtn" class="scan-btn" disabled>
+          문서 스캔 실행
+        </button>
+        <button id="undoBtn" disabled>마지막 점 제거</button>
+        <button id="nextImageBtn">다음 이미지</button>
+      </div>
+
+      <div class="coords" id="coordsDisplay">
+        선택된 모서리 점들:<br />
+        좌상단: 선택 안됨<br />
+        우상단: 선택 안됨<br />
+        우하단: 선택 안됨<br />
+        좌하단: 선택 안됨
+      </div>
+
+      <div id="previewContainer">
+        <h3>스캔된 문서 미리보기</h3>
+        <img id="previewImage" />
+      </div>
+
+      <div class="controls">
+        <button id="extractBtn" class="extract-btn" disabled>
+          EDI 추출
+        </button>
+      </div>
+    </div>
+
+    <!-- EDI 결과 모달 -->
+    <div id="ediModal" class="modal" hidden>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>EDI 추출 결과</h2>
+          <span class="close">&times;</span>
+        </div>
+        <div class="modal-body" id="modalBody">
+          <div class="loading-spinner">
+            <div class="spinner"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const popupId = new URLSearchParams(location.search).get('id');
+
+      const globalLoader = document.getElementById('global-loader');
+      const globalError = document.getElementById('global-error');
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      const status = document.getElementById('status');
+      const coordsDisplay = document.getElementById('coordsDisplay');
+      const modal = document.getElementById('ediModal');
+      const modalBody = document.getElementById('modalBody');
+      const closeBtn = document.querySelector('.close');
+      const prevImageBtn = document.getElementById('prevImageBtn');
+      const nextImageBtn = document.getElementById('nextImageBtn');
+
+      let points = [];
+      let draggedPointIndex = -1;
+      let isDragging = false;
+      let backgroundImage = null;
+      let originalFileName = '';
+      let scannedImageData = null;
+      let imageScale = 1; // 캔버스와 원본 이미지 비율
+      let imageOffsetX = 0;
+      let imageOffsetY = 0;
+
+      if (window.opener == null) {
+        alert('잘못된 접근입니다.');
+        window.location.href = '/';
+      }
+
+      const CONNECTION_CLOSE_THRESHOLD = 10000;
+      let hearbeatTimeout = setTimeout(() => notifyConnectionClosed(), CONNECTION_CLOSE_THRESHOLD);
+      let connectionClosed = false;
+      let drugCompanyCode = null;
+      let originalFiles = [];
+      let originalFileIndex = 0;
+      let currentOriginalFile = null;
+      let originalImageData = null;
+
+      function notifyConnectionAlive() {
+        connectionClosed = false;
+        globalError.classList.add('hidden');
+
+        clearTimeout(hearbeatTimeout);
+        hearbeatTimeout = setTimeout(() => notifyConnectionClosed(), CONNECTION_CLOSE_THRESHOLD);
+      }
+
+      function notifyConnectionClosed() {
+        connectionClosed = true;
+        globalError.innerHTML = '연결이 끊어졌습니다. 이 창의 작업은 저장되지 않을 수 있습니다.';
+        globalError.classList.remove('hidden');
+      }
+
+      window.addEventListener('message', function (event) {
+        if (event.origin !== window.opener.origin) {
+          return;
+        }
+
+        switch (event.data?.type) {
+          case 'EDI_SCANNER_PING':
+            window.opener.postMessage({ type: 'EDI_SCANNER_PONG', id: popupId });
+            notifyConnectionAlive();
+            break;
+          case 'EDI_SCANNER_FILES':
+            drugCompanyCode = event.data.drugCompanyCode;
+            originalFiles = event.data.originalFiles;
+
+            originalFileIndex = 0;
+            prevImageBtn.disabled = true;
+            nextImageBtn.disabled = originalFiles.length <= 1;
+            currentOriginalFile = originalFiles[originalFileIndex];
+
+            loadImage();
+            break;
+          default:
+            break;
+        }
+      });
+
+      function loadImage() {
+        const img = new Image();
+        img.crossOrigin = 'Anonymous';
+        img.onload = function () {
+          backgroundImage = img;
+          points = [];
+          scannedImageData = null;
+          document.getElementById('previewContainer').style.display =
+            'none';
+
+          // 캔버스 크기를 이미지에 맞춰 조정
+          const maxCanvasWidth = 1400;
+          const maxCanvasHeight = 1000;
+          let canvasWidth = img.width;
+          let canvasHeight = img.height;
+
+          // 이미지가 최대 크기보다 큰 경우만 축소
+          if (
+            canvasWidth > maxCanvasWidth ||
+            canvasHeight > maxCanvasHeight
+          ) {
+            const widthRatio = maxCanvasWidth / canvasWidth;
+            const heightRatio = maxCanvasHeight / canvasHeight;
+            const scale = Math.min(widthRatio, heightRatio);
+
+            canvasWidth = Math.round(canvasWidth * scale);
+            canvasHeight = Math.round(canvasHeight * scale);
+          }
+
+          // 캔버스 크기 설정
+          canvas.width = canvasWidth;
+          canvas.height = canvasHeight;
+
+          originalImageData = canvas.toDataURL('image/jpeg', 1.0);
+
+          updateDisplay();
+          redraw();
+
+          globalLoader.hidden = true;
+        };
+        img.src = currentOriginalFile.fileUrl;
+      }
+
+      // 모달 닫기 이벤트
+      closeBtn.onclick = function () {
+        modal.hidden = true;
+      };
+
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.hidden = true;
+        }
+      };
+
+      // EDI 추출 함수
+      async function extractEDI() {
+        if (!scannedImageData) {
+          alert('먼저 문서를 스캔하세요.');
+          return;
+        }
+
+        // 모달 표시
+        globalLoader.hidden = false;
+        modal.hidden = false;
+        modalBody.innerHTML = `
+          <div class="loading-spinner">
+            <div style="margin-top: 20px; color: #666;">EDI 데이터를 추출하고 있습니다...</div>
+          </div>
+        `;
+
+        try {
+          // FormData 생성
+          const formData = new FormData();
+          formData.append('drug-company-code', drugCompanyCode);
+          formData.append('cropped-image', await (await fetch(scannedImageData)).blob(), `${currentOriginalFile.originalFileName}_scanned`);
+
+          // 원본 이미지가 있다면 추가
+          if (backgroundImage && currentOriginalFile) {
+            formData.append('original-image', await (await fetch(originalImageData)).blob(), currentOriginalFile.originalFileName);
+            formData.append('width', backgroundImage.width);
+            formData.append('height', backgroundImage.height);
+
+            // 좌표 추가 (시계방향: 좌상단 -> 우상단 -> 우하단 -> 좌하단)
+            // 캔버스 좌표를 원본 이미지 좌표로 변환
+            const originalPoints = points.map((point) => ({
+              x: (point.x - imageOffsetX) * imageScale,
+              y: (point.y - imageOffsetY) * imageScale,
+            }));
+
+            formData.append('x1', originalPoints[0].x);
+            formData.append('y1', originalPoints[0].y);
+            formData.append('x2', originalPoints[1].x);
+            formData.append('y2', originalPoints[1].y);
+            formData.append('x3', originalPoints[2].x);
+            formData.append('y3', originalPoints[2].y);
+            formData.append('x4', originalPoints[3].x);
+            formData.append('y4', originalPoints[3].y);
+          }
+
+          // OCR API 호출
+          const ocrResponse = await fetch('/ocr', {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+              Accept: 'application/json',
+            },
+            body: formData,
+          });
+
+          if (!ocrResponse.ok) {
+            throw new Error(`HTTP error! status: ${ocrResponse.status}`);
+          }
+
+          const ediData = await ocrResponse.json();
+          displayEDIResults(ediData);
+        } catch (error) {
+          console.error('EDI 추출 오류 상세:', error);
+          console.error('Error name:', error.name);
+          console.error('Error message:', error.message);
+
+          let errorMessage = 'EDI 추출 중 오류가 발생했습니다.';
+
+          modalBody.innerHTML = `
+            <div class="error-message">
+              ${errorMessage}<br>
+              <small>상세 오류: ${error.message}</small><br>
+            </div>
+          `;
+        }
+
+        globalLoader.hidden = true;
+      }
+
+      // EDI 결과 표시
+      function displayEDIResults(ediData) {
+        if (!ediData || ediData.length === 0) {
+          modalBody.innerHTML = `
+            <div class="empty-message">
+              추출된 EDI 데이터가 없습니다.<br>
+              <small>문서를 다시 확인하거나 다른 이미지를 시도해보세요.</small>
+            </div>
+          `;
+          return;
+        }
+
+        window.opener.postMessage({ type: 'EDI_SCANNER_OCR_RESULT', id: popupId, ocrResult: ediData });
+        modalBody.innerHTML = `
+          <div class="empty-message">
+            OCR 처리가 완료되었습니다.<br>
+            이전 창에서 결과를 확인하세요.
+          </div>
+        `;
+      }
+
+      // 캔버스 클릭 이벤트 - 4점 선택
+      canvas.addEventListener('click', function (e) {
+        if (points.length >= 4 && draggedPointIndex === -1) return;
+
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+        const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+        // 기존 점 근처를 클릭했는지 확인
+        const clickedPointIndex = getPointAtPosition(x, y);
+
+        if (clickedPointIndex !== -1) {
+          return; // 기존 점을 클릭한 경우
+        }
+
+        if (points.length < 4) {
+          points.push({ x: x, y: y });
+          updateDisplay();
+          redraw();
+
+          // 클릭 효과
+          createClickEffect(x, y);
+        }
+      });
+
+      // 클릭 효과 애니메이션
+      function createClickEffect(x, y) {
+        const colors = [ '#ff4757', '#2ed573', '#3742fa', '#ffa502' ];
+        const color = colors[points.length - 1];
+
+        // 원 확산 애니메이션
+        let radius = 0;
+        const animate = () => {
+          ctx.save();
+          ctx.globalAlpha = 1 - radius / 30;
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.arc(x, y, radius, 0, 2 * Math.PI);
+          ctx.stroke();
+          ctx.restore();
+
+          radius += 2;
+          if (radius < 30) {
+            requestAnimationFrame(animate);
+          } else {
+            redraw(); // 애니메이션 완료 후 정리
+          }
+        };
+        animate();
+      }
+
+      // 마우스 드래그 이벤트들
+      canvas.addEventListener('mousedown', function (e) {
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+        const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+        draggedPointIndex = getPointAtPosition(x, y);
+        if (draggedPointIndex !== -1) {
+          isDragging = true;
+          canvas.style.cursor = 'move';
+        }
+      });
+
+      canvas.addEventListener('mousemove', function (e) {
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+        const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+        if (isDragging && draggedPointIndex !== -1) {
+          points[draggedPointIndex].x = x;
+          points[draggedPointIndex].y = y;
+          updateDisplay();
+          redraw();
+        } else {
+          // 커서 변경
+          const pointIndex = getPointAtPosition(x, y);
+          canvas.style.cursor = pointIndex !== -1 ? 'move' : 'crosshair';
+        }
+      });
+
+      canvas.addEventListener('mouseup', function (e) {
+        isDragging = false;
+        draggedPointIndex = -1;
+        canvas.style.cursor = 'crosshair';
+      });
+
+      // 특정 위치에 점이 있는지 확인 (더 작은 범위)
+      function getPointAtPosition(x, y) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+
+        for (let i = 0; i < points.length; i++) {
+          const distance = Math.sqrt(
+            Math.pow(x - points[i].x, 2) + Math.pow(y - points[i].y, 2),
+          );
+          if (distance <= 10 * Math.max(scaleX, scaleY)) {
+            // 더 작은 클릭 범위
+            return i;
+          }
+        }
+        return -1;
+      }
+
+      // 화면 다시 그리기
+      function redraw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 배경 이미지 그리기
+        if (backgroundImage) {
+          // 캔버스와 이미지 크기가 같은 경우 1:1로 그리기
+          if (
+            canvas.width === backgroundImage.width &&
+            canvas.height === backgroundImage.height
+          ) {
+            // 원본 크기 그대로 그리기
+            ctx.drawImage(backgroundImage, 0, 0);
+            imageScale = 1;
+            imageOffsetX = 0;
+            imageOffsetY = 0;
+          } else {
+            // 축소된 경우 비율 유지하며 중앙 정렬
+            const canvasAspect = canvas.width / canvas.height;
+            const imageAspect = backgroundImage.width / backgroundImage.height;
+
+            let drawWidth, drawHeight;
+
+            if (imageAspect > canvasAspect) {
+              // 이미지가 더 넓음 - 너비 기준으로 맞춤
+              drawWidth = canvas.width;
+              drawHeight = drawWidth / imageAspect;
+              imageOffsetX = 0;
+              imageOffsetY = (canvas.height - drawHeight) / 2;
+            } else {
+              // 이미지가 더 높음 - 높이 기준으로 맞춤
+              drawHeight = canvas.height;
+              drawWidth = drawHeight * imageAspect;
+              imageOffsetX = (canvas.width - drawWidth) / 2;
+              imageOffsetY = 0;
+            }
+
+            // 스케일 비율 계산 (캔버스 표시 크기 대비 원본 크기)
+            imageScale = Math.max(
+              backgroundImage.width / drawWidth,
+              backgroundImage.height / drawHeight,
+            );
+
+            // 고품질 렌더링 설정
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+
+            ctx.drawImage(
+              backgroundImage,
+              imageOffsetX,
+              imageOffsetY,
+              drawWidth,
+              drawHeight,
+            );
+          }
+
+          // 어두운 오버레이
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        } else {
+          // 샘플 이미지의 경우
+          imageScale = 1;
+          imageOffsetX = 0;
+          imageOffsetY = 0;
+        }
+
+        // 4개 점이 모두 선택된 경우 다각형 그리기
+        if (points.length === 4) {
+          drawDocumentArea();
+        }
+
+        // 연결선 그리기 (부분적으로라도)
+        if (points.length > 1) {
+          drawConnectingLines();
+        }
+
+        // 점들 그리기 (더 작게)
+        drawPoints();
+      }
+
+      // 문서 영역 그리기
+      function drawDocumentArea() {
+        // 선택된 영역 하이라이트
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, points[0].y);
+        for (let i = 1; i < points.length; i++) {
+          ctx.lineTo(points[i].x, points[i].y);
+        }
+        ctx.closePath();
+
+        // 선택된 영역을 밝게 표시
+        ctx.fillStyle = 'rgba(0, 123, 255, 0.2)';
+        ctx.fill();
+
+        // 테두리
+        ctx.strokeStyle = '#007bff';
+        ctx.lineWidth = 4;
+        ctx.setLineDash([ 10, 5 ]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // 연결선 그리기
+      function drawConnectingLines() {
+        ctx.strokeStyle = '#ff6b35';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([ 12, 6 ]);
+
+        for (let i = 0; i < points.length - 1; i++) {
+          ctx.beginPath();
+          ctx.moveTo(points[i].x, points[i].y);
+          ctx.lineTo(points[i + 1].x, points[i + 1].y);
+          ctx.stroke();
+        }
+
+        // 마지막 점과 첫 번째 점 연결 (4개 점이 모두 있을 때)
+        if (points.length === 4) {
+          ctx.beginPath();
+          ctx.moveTo(points[3].x, points[3].y);
+          ctx.lineTo(points[0].x, points[0].y);
+          ctx.stroke();
+        }
+
+        ctx.setLineDash([]);
+      }
+
+      // 점들 그리기 (더 작게)
+      function drawPoints() {
+        const labels = [ '좌상단', '우상단', '우하단', '좌하단' ];
+        const colors = [ '#ff4757', '#2ed573', '#3742fa', '#ffa502' ];
+
+        points.forEach((point, index) => {
+          // 외부 원 (더 크게)
+          ctx.beginPath();
+          ctx.arc(point.x, point.y, 12, 0, 2 * Math.PI); // 8 -> 12
+          ctx.fillStyle = colors[index];
+          ctx.fill();
+          ctx.strokeStyle = 'white';
+          ctx.lineWidth = 3;
+          ctx.stroke();
+
+          // 내부 원 (더 크게)
+          ctx.beginPath();
+          ctx.arc(point.x, point.y, 6, 0, 2 * Math.PI); // 4 -> 6
+          ctx.fillStyle = 'white';
+          ctx.fill();
+
+          // 번호 (더 크게)
+          ctx.fillStyle = colors[index];
+          ctx.font = 'bold 14px Arial'; // 10px -> 14px
+          ctx.textAlign = 'center';
+          ctx.fillText((index + 1).toString(), point.x, point.y + 4);
+
+          // 라벨 (더 크고 간단하게)
+          ctx.fillStyle = 'white';
+          ctx.font = '12px Arial'; // 8px -> 12px
+          ctx.strokeStyle = 'black';
+          ctx.lineWidth = 2;
+        });
+
+        ctx.textAlign = 'left';
+      }
+
+      // 화면 정보 업데이트
+      function updateDisplay() {
+        const labels = [ '좌상단', '우상단', '우하단', '좌하단' ];
+        let coordsText = '선택된 모서리 점들:<br>';
+
+        for (let i = 0; i < 4; i++) {
+          if (i < points.length) {
+            coordsText += `${labels[i]}: (${Math.round(
+              points[i].x,
+            )}, ${Math.round(points[i].y)})<br>`;
+          } else {
+            coordsText += `${labels[i]}: 선택 안됨<br>`;
+          }
+        }
+
+        coordsDisplay.innerHTML = coordsText;
+
+        // 상태 업데이트
+        if (points.length === 4) {
+          status.innerHTML =
+            '문서 모서리가 모두 선택되었습니다.<br>스캔 실행 버튼을 클릭하세요.';
+          status.className = 'status complete';
+          document.getElementById('scanBtn').disabled = false;
+        } else {
+          status.innerHTML = `문서의 4개 모서리를 클릭하세요<br>현재: ${points.length}/4 개 선택됨`;
+          status.className = 'status incomplete';
+          document.getElementById('scanBtn').disabled = true;
+          document.getElementById('extractBtn').disabled = true;
+          scannedImageData = null;
+        }
+
+        document.getElementById('undoBtn').disabled = points.length === 0;
+      }
+
+      // 고급 perspective transform (원본 품질 유지)
+      function applyPerspectiveCorrection() {
+        if (points.length !== 4) {
+          alert('4개의 점이 모두 선택되어야 합니다.');
+          return;
+        }
+
+        // 캔버스 좌표를 원본 이미지 좌표로 변환
+        const originalPoints = points.map((point) => ({
+          x: (point.x - imageOffsetX) * imageScale,
+          y: (point.y - imageOffsetY) * imageScale,
+        }));
+
+        // 원본 이미지 크기 기준으로 출력 크기 계산
+        let outputWidth, outputHeight;
+
+        if (backgroundImage) {
+          // 실제 이미지가 있는 경우
+          const resolution = 3000;
+
+          // 선택된 영역의 크기 계산
+          const width1 = Math.sqrt(
+            Math.pow(originalPoints[1].x - originalPoints[0].x, 2) +
+            Math.pow(originalPoints[1].y - originalPoints[0].y, 2),
+          );
+          const width2 = Math.sqrt(
+            Math.pow(originalPoints[2].x - originalPoints[3].x, 2) +
+            Math.pow(originalPoints[2].y - originalPoints[3].y, 2),
+          );
+          const height1 = Math.sqrt(
+            Math.pow(originalPoints[3].x - originalPoints[0].x, 2) +
+            Math.pow(originalPoints[3].y - originalPoints[0].y, 2),
+          );
+          const height2 = Math.sqrt(
+            Math.pow(originalPoints[2].x - originalPoints[1].x, 2) +
+            Math.pow(originalPoints[2].y - originalPoints[1].y, 2),
+          );
+
+          const avgWidth = (width1 + width2) / 2;
+          const avgHeight = (height1 + height2) / 2;
+
+          if (resolution === 'original') {
+            // 원본 크기 유지
+            outputWidth = Math.round(avgWidth);
+            outputHeight = Math.round(avgHeight);
+          } else {
+            // 지정된 해상도로 스케일
+            const targetResolution = parseInt(resolution);
+            const scaleFactor =
+              targetResolution / Math.max(avgWidth, avgHeight);
+            outputWidth = Math.round(avgWidth * scaleFactor);
+            outputHeight = Math.round(avgHeight * scaleFactor);
+          }
+        } else {
+          // 샘플 이미지의 경우
+          outputWidth = 3000;
+          outputHeight = Math.round(outputWidth / 1.414);
+        }
+
+        // 목표 점들 (정사각형)
+        const dstPoints = [
+          { x: 0, y: 0 },
+          { x: outputWidth, y: 0 },
+          { x: outputWidth, y: outputHeight },
+          { x: 0, y: outputHeight },
+        ];
+
+        // 호모그래피 행렬 계산
+        const H = calculateHomographyMatrix(originalPoints, dstPoints);
+
+        // 새 캔버스 생성
+        const resultCanvas = document.createElement('canvas');
+        const resultCtx = resultCanvas.getContext('2d');
+        resultCanvas.width = outputWidth;
+        resultCanvas.height = outputHeight;
+
+        // 원본 이미지 그리기를 위한 임시 캔버스
+        if (backgroundImage) {
+          // 고품질 이미지 샘플링 설정
+          resultCtx.imageSmoothingEnabled = true;
+          resultCtx.imageSmoothingQuality = 'high';
+
+          // 역변환 행렬
+          const invH = invertMatrix3x3(H);
+
+          // 변환된 이미지 그리기
+          resultCtx.save();
+
+          // 각 대상 픽셀에 대해 원본 위치 계산하여 그리기
+          const tempCanvas = document.createElement('canvas');
+          const tempCtx = tempCanvas.getContext('2d');
+          tempCanvas.width = backgroundImage.width;
+          tempCanvas.height = backgroundImage.height;
+          tempCtx.drawImage(backgroundImage, 0, 0);
+
+          // 원본 이미지 데이터 가져오기
+          const sourceImageData = tempCtx.getImageData(
+            0,
+            0,
+            backgroundImage.width,
+            backgroundImage.height,
+          );
+          const resultImageData = resultCtx.createImageData(
+            outputWidth,
+            outputHeight,
+          );
+
+          // 픽셀 단위로 매핑
+          for (let y = 0; y < outputHeight; y++) {
+            for (let x = 0; x < outputWidth; x++) {
+              const srcPoint = applyHomographyTransform(x, y, invH);
+
+              // 바이리니어 보간
+              const color = bilinearInterpolation(
+                sourceImageData,
+                srcPoint.x,
+                srcPoint.y,
+                backgroundImage.width,
+                backgroundImage.height,
+              );
+
+              if (color) {
+                const dstIndex = (y * outputWidth + x) * 4;
+                resultImageData.data[dstIndex] = color.r;
+                resultImageData.data[dstIndex + 1] = color.g;
+                resultImageData.data[dstIndex + 2] = color.b;
+                resultImageData.data[dstIndex + 3] = 255;
+              }
+            }
+          }
+
+          resultCtx.putImageData(resultImageData, 0, 0);
+
+          // 이미지 향상 처리 (선택적)
+          const brightness = 0;
+          const contrast = 1.0;
+
+          if (brightness !== 0 || contrast !== 1.0) {
+            adjustBrightnessContrast(
+              resultCtx,
+              outputWidth,
+              outputHeight,
+              brightness,
+              contrast,
+            );
+          }
+
+          // applySharpeningFilter(resultCtx, outputWidth, outputHeight);
+          // enhanceContrast(resultCtx, outputWidth, outputHeight);
+          applyNoiseReduction(resultCtx, outputWidth, outputHeight);
+
+          resultCtx.restore();
+        } else {
+          // 샘플 이미지의 경우 현재 처리 유지
+          const sourceImageData = ctx.getImageData(
+            0,
+            0,
+            canvas.width,
+            canvas.height,
+          );
+          const resultImageData = resultCtx.createImageData(
+            outputWidth,
+            outputHeight,
+          );
+          const invH = invertMatrix3x3(H);
+
+          for (let y = 0; y < outputHeight; y++) {
+            for (let x = 0; x < outputWidth; x++) {
+              const srcPoint = applyHomographyTransform(x, y, invH);
+              const color = bilinearInterpolation(
+                sourceImageData,
+                srcPoint.x,
+                srcPoint.y,
+                canvas.width,
+                canvas.height,
+              );
+
+              if (color) {
+                const dstIndex = (y * outputWidth + x) * 4;
+                resultImageData.data[dstIndex] = color.r;
+                resultImageData.data[dstIndex + 1] = color.g;
+                resultImageData.data[dstIndex + 2] = color.b;
+                resultImageData.data[dstIndex + 3] = 255;
+              }
+            }
+          }
+
+          resultCtx.putImageData(resultImageData, 0, 0);
+          applyImageEnhancements(resultCtx, outputWidth, outputHeight);
+        }
+
+        // 결과 저장 (고품질)
+        scannedImageData = resultCanvas.toDataURL('image/jpeg', 1.0);
+        document.getElementById('extractBtn').disabled = false;
+
+        // 미리보기 표시
+        showPreview(scannedImageData);
+      }
+
+      // 간단한 바이리니어 보간
+      function bilinearInterpolation(imageData, x, y, width, height) {
+        if (x < 0 || x >= width - 1 || y < 0 || y >= height - 1) {
+          return null;
+        }
+
+        const x1 = Math.floor(x);
+        const y1 = Math.floor(y);
+        const x2 = Math.min(x1 + 1, width - 1);
+        const y2 = Math.min(y1 + 1, height - 1);
+
+        const dx = x - x1;
+        const dy = y - y1;
+
+        // 4개 주변 픽셀 가져오기
+        const getPixel = (px, py) => {
+          const index = (py * width + px) * 4;
+          return {
+            r: imageData.data[index],
+            g: imageData.data[index + 1],
+            b: imageData.data[index + 2],
+          };
+        };
+
+        const p1 = getPixel(x1, y1);
+        const p2 = getPixel(x2, y1);
+        const p3 = getPixel(x1, y2);
+        const p4 = getPixel(x2, y2);
+
+        // 바이리니어 보간
+        const r =
+          p1.r * (1 - dx) * (1 - dy) +
+          p2.r * dx * (1 - dy) +
+          p3.r * (1 - dx) * dy +
+          p4.r * dx * dy;
+
+        const g =
+          p1.g * (1 - dx) * (1 - dy) +
+          p2.g * dx * (1 - dy) +
+          p3.g * (1 - dx) * dy +
+          p4.g * dx * dy;
+
+        const b =
+          p1.b * (1 - dx) * (1 - dy) +
+          p2.b * dx * (1 - dy) +
+          p3.b * (1 - dx) * dy +
+          p4.b * dx * dy;
+
+        return {
+          r: Math.round(r),
+          g: Math.round(g),
+          b: Math.round(b),
+        };
+      }
+
+      // 이미지 향상 처리 적용
+      function applyImageEnhancements(ctx, width, height) {
+        const brightness = parseInt(
+          document.getElementById('brightness').value,
+        );
+        const contrast = parseFloat(document.getElementById('contrast').value);
+
+        // 밝기/대비 조정
+        if (brightness !== 0 || contrast !== 1.0) {
+          adjustBrightnessContrast(ctx, width, height, brightness, contrast);
+        }
+
+        // applySharpeningFilter(ctx, width, height);
+        // enhanceContrast(ctx, width, height);
+        applyNoiseReduction(ctx, width, height);
+      }
+
+      // 밝기/대비 조정
+      function adjustBrightnessContrast(
+        ctx,
+        width,
+        height,
+        brightness,
+        contrast,
+      ) {
+        const imageData = ctx.getImageData(0, 0, width, height);
+        const data = imageData.data;
+
+        for (let i = 0; i < data.length; i += 4) {
+          // RGB 채널에 대비와 밝기 적용
+          data[i] = Math.max(0, Math.min(255, contrast * data[i] + brightness)); // R
+          data[i + 1] = Math.max(
+            0,
+            Math.min(255, contrast * data[i + 1] + brightness),
+          ); // G
+          data[i + 2] = Math.max(
+            0,
+            Math.min(255, contrast * data[i + 2] + brightness),
+          ); // B
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+      }
+
+      // 고급 샤프닝 필터 (언샵 마스크)
+      function applySharpeningFilter(ctx, width, height) {
+        const imageData = ctx.getImageData(0, 0, width, height);
+        const outputData = ctx.createImageData(width, height);
+
+        // 언샵 마스크 커널
+        const kernel = [
+          [ -1, -1, -1 ],
+          [ -1, 9, -1 ],
+          [ -1, -1, -1 ],
+        ];
+
+        for (let y = 1; y < height - 1; y++) {
+          for (let x = 1; x < width - 1; x++) {
+            let r = 0,
+              g = 0,
+              b = 0;
+
+            // 커널 적용
+            for (let ky = -1; ky <= 1; ky++) {
+              for (let kx = -1; kx <= 1; kx++) {
+                const pixelIndex = ((y + ky) * width + (x + kx)) * 4;
+                const weight = kernel[ky + 1][kx + 1];
+
+                r += imageData.data[pixelIndex] * weight;
+                g += imageData.data[pixelIndex + 1] * weight;
+                b += imageData.data[pixelIndex + 2] * weight;
+              }
+            }
+
+            const outputIndex = (y * width + x) * 4;
+            outputData.data[outputIndex] = Math.max(0, Math.min(255, r));
+            outputData.data[outputIndex + 1] = Math.max(0, Math.min(255, g));
+            outputData.data[outputIndex + 2] = Math.max(0, Math.min(255, b));
+            outputData.data[outputIndex + 3] = 255;
+          }
+        }
+
+        // 가장자리 픽셀 복사
+        for (let y = 0; y < height; y++) {
+          for (let x = 0; x < width; x++) {
+            if (x === 0 || x === width - 1 || y === 0 || y === height - 1) {
+              const index = (y * width + x) * 4;
+              outputData.data[index] = imageData.data[index];
+              outputData.data[index + 1] = imageData.data[index + 1];
+              outputData.data[index + 2] = imageData.data[index + 2];
+              outputData.data[index + 3] = 255;
+            }
+          }
+        }
+
+        ctx.putImageData(outputData, 0, 0);
+      }
+
+      // 대비 향상 (히스토그램 스트레칭)
+      function enhanceContrast(ctx, width, height) {
+        const imageData = ctx.getImageData(0, 0, width, height);
+        const data = imageData.data;
+
+        // 최소/최대값 찾기
+        let min = 255,
+          max = 0;
+        for (let i = 0; i < data.length; i += 4) {
+          const gray = (data[i] + data[i + 1] + data[i + 2]) / 3;
+          min = Math.min(min, gray);
+          max = Math.max(max, gray);
+        }
+
+        const range = max - min;
+        if (range === 0) return;
+
+        // 히스토그램 스트레칭 적용
+        for (let i = 0; i < data.length; i += 4) {
+          data[i] = ((data[i] - min) / range) * 255;
+          data[i + 1] = ((data[i + 1] - min) / range) * 255;
+          data[i + 2] = ((data[i + 2] - min) / range) * 255;
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+      }
+
+      // 노이즈 감소 (가우시안 블러 - 더 부드럽게)
+      function applyNoiseReduction(ctx, width, height) {
+        const imageData = ctx.getImageData(0, 0, width, height);
+        const outputData = ctx.createImageData(width, height);
+
+        // 가우시안 커널 (3x3) - 더 부드러운 효과
+        const kernel = [
+          [ 1, 2, 1 ],
+          [ 2, 4, 2 ],
+          [ 1, 2, 1 ],
+        ];
+        const kernelSum = 16;
+
+        for (let y = 1; y < height - 1; y++) {
+          for (let x = 1; x < width - 1; x++) {
+            let r = 0,
+              g = 0,
+              b = 0;
+
+            // 가우시안 필터 적용
+            for (let ky = -1; ky <= 1; ky++) {
+              for (let kx = -1; kx <= 1; kx++) {
+                const pixelIndex = ((y + ky) * width + (x + kx)) * 4;
+                const weight = kernel[ky + 1][kx + 1];
+
+                r += imageData.data[pixelIndex] * weight;
+                g += imageData.data[pixelIndex + 1] * weight;
+                b += imageData.data[pixelIndex + 2] * weight;
+              }
+            }
+
+            const outputIndex = (y * width + x) * 4;
+            outputData.data[outputIndex] = Math.round(r / kernelSum);
+            outputData.data[outputIndex + 1] = Math.round(g / kernelSum);
+            outputData.data[outputIndex + 2] = Math.round(b / kernelSum);
+            outputData.data[outputIndex + 3] = 255;
+          }
+        }
+
+        // 가장자리 픽셀 복사
+        for (let y = 0; y < height; y++) {
+          for (let x = 0; x < width; x++) {
+            if (x === 0 || x === width - 1 || y === 0 || y === height - 1) {
+              const index = (y * width + x) * 4;
+              outputData.data[index] = imageData.data[index];
+              outputData.data[index + 1] = imageData.data[index + 1];
+              outputData.data[index + 2] = imageData.data[index + 2];
+              outputData.data[index + 3] = 255;
+            }
+          }
+        }
+
+        ctx.putImageData(outputData, 0, 0);
+      }
+
+      // 호모그래피 행렬 계산
+      function calculateHomographyMatrix(srcPoints, dstPoints) {
+        const A = [];
+
+        for (let i = 0; i < 4; i++) {
+          const sx = srcPoints[i].x;
+          const sy = srcPoints[i].y;
+          const dx = dstPoints[i].x;
+          const dy = dstPoints[i].y;
+
+          A.push([ sx, sy, 1, 0, 0, 0, -dx * sx, -dx * sy ]);
+          A.push([ 0, 0, 0, sx, sy, 1, -dy * sx, -dy * sy ]);
+        }
+
+        const b = dstPoints.flatMap((p) => [ p.x, p.y ]);
+        const h = solveLinearSystem(A, b);
+
+        return [
+          [ h[0], h[1], h[2] ],
+          [ h[3], h[4], h[5] ],
+          [ h[6], h[7], 1 ],
+        ];
+      }
+
+      // 선형 시스템 해법 (가우스 소거법)
+      function solveLinearSystem(A, b) {
+        const n = A.length;
+        const m = A[0].length;
+
+        for (let i = 0; i < Math.min(n, m); i++) {
+          let maxRow = i;
+          for (let k = i + 1; k < n; k++) {
+            if (Math.abs(A[k][i]) > Math.abs(A[maxRow][i])) {
+              maxRow = k;
+            }
+          }
+
+          [ A[i], A[maxRow] ] = [ A[maxRow], A[i] ];
+          [ b[i], b[maxRow] ] = [ b[maxRow], b[i] ];
+
+          for (let k = i + 1; k < n; k++) {
+            if (Math.abs(A[i][i]) > 1e-10) {
+              const factor = A[k][i] / A[i][i];
+              for (let j = i; j < m; j++) {
+                A[k][j] -= factor * A[i][j];
+              }
+              b[k] -= factor * b[i];
+            }
+          }
+        }
+
+        const x = new Array(m).fill(0);
+        for (let i = Math.min(n, m) - 1; i >= 0; i--) {
+          x[i] = b[i];
+          for (let j = i + 1; j < m; j++) {
+            x[i] -= A[i][j] * x[j];
+          }
+          if (Math.abs(A[i][i]) > 1e-10) {
+            x[i] /= A[i][i];
+          }
+        }
+
+        return x;
+      }
+
+      // 호모그래피 변환 적용
+      function applyHomographyTransform(x, y, H) {
+        const w = H[2][0] * x + H[2][1] * y + H[2][2];
+        if (Math.abs(w) < 1e-10) return { x: 0, y: 0 };
+
+        return {
+          x: (H[0][0] * x + H[0][1] * y + H[0][2]) / w,
+          y: (H[1][0] * x + H[1][1] * y + H[1][2]) / w,
+        };
+      }
+
+      // 3x3 행렬 역행렬 계산
+      function invertMatrix3x3(m) {
+        const det =
+          m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) -
+          m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) +
+          m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
+
+        if (Math.abs(det) < 1e-10) {
+          return [
+            [ 1, 0, 0 ],
+            [ 0, 1, 0 ],
+            [ 0, 0, 1 ],
+          ];
+        }
+
+        const invDet = 1 / det;
+
+        return [
+          [
+            (m[1][1] * m[2][2] - m[1][2] * m[2][1]) * invDet,
+            (m[0][2] * m[2][1] - m[0][1] * m[2][2]) * invDet,
+            (m[0][1] * m[1][2] - m[0][2] * m[1][1]) * invDet,
+          ],
+
+          [
+            (m[1][2] * m[2][0] - m[1][0] * m[2][2]) * invDet,
+            (m[0][0] * m[2][2] - m[0][2] * m[2][0]) * invDet,
+            (m[0][2] * m[1][0] - m[0][0] * m[1][2]) * invDet,
+          ],
+
+          [
+            (m[1][0] * m[2][1] - m[1][1] * m[2][0]) * invDet,
+            (m[0][1] * m[2][0] - m[0][0] * m[2][1]) * invDet,
+            (m[0][0] * m[1][1] - m[0][1] * m[1][0]) * invDet,
+          ],
+        ];
+      }
+
+      // 미리보기 표시
+      function showPreview(imageData) {
+        const previewContainer = document.getElementById('previewContainer');
+        const previewImage = document.getElementById('previewImage');
+
+        previewImage.src = imageData;
+        previewContainer.style.display = 'block';
+
+        previewContainer.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      // 버튼 이벤트들
+      document
+        .getElementById('resetBtn')
+        .addEventListener('click', function () {
+          points = [];
+          scannedImageData = null;
+          document.getElementById('previewContainer').style.display = 'none';
+          updateDisplay();
+          redraw();
+        });
+
+      document.getElementById('undoBtn').addEventListener('click', function () {
+        if (points.length > 0) {
+          points.pop();
+          scannedImageData = null;
+          document.getElementById('previewContainer').style.display = 'none';
+          updateDisplay();
+          redraw();
+        }
+      });
+
+      document.getElementById('scanBtn').addEventListener('click', function () {
+        if (points.length === 4) {
+          globalLoader.hidden = false;
+
+          // UI 업데이트를 위해 약간의 지연
+          setTimeout(() => {
+            applyPerspectiveCorrection();
+            globalLoader.hidden = true;
+            setTimeout(() => {
+              document.documentElement.style.scrollBehavior = 'smooth';
+              document.documentElement.scrollTop = document.body.scrollHeight;
+              setTimeout(() => {
+                document.documentElement.style.scrollBehavior = undefined;
+              }, 500);
+            });
+          }, 100);
+        }
+      });
+
+      document.getElementById('prevImageBtn').addEventListener('click', () => {
+        originalFileIndex--;
+        prevImageBtn.disabled = originalFileIndex <= 0;
+        nextImageBtn.disabled = originalFileIndex >= originalFiles.length - 1;
+        currentOriginalFile = originalFiles[originalFileIndex];
+
+        loadImage();
+      });
+
+      document.getElementById('nextImageBtn').addEventListener('click', () => {
+        originalFileIndex++;
+        prevImageBtn.disabled = originalFileIndex <= 0;
+        nextImageBtn.disabled = originalFileIndex >= originalFiles.length - 1;
+        currentOriginalFile = originalFiles[originalFileIndex];
+
+        loadImage();
+      });
+
+      // EDI 추출 버튼 이벤트
+      document
+        .getElementById('extractBtn')
+        .addEventListener('click', extractEDI);
+
+      // 초기 설정
+      updateDisplay();
+    </script>
+  </body>
+</html>
