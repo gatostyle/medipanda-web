@@ -576,6 +576,12 @@ function ApplicantsTab({ detail }: { detail: SalesAgencyProductDetailsResponse }
     navigate(url);
   };
 
+  const noteForm = useForm({
+    defaultValues: {
+      notes: [] as string[],
+    },
+  });
+
   const handleReset = () => {
     navigate('');
     form.reset();
@@ -598,6 +604,9 @@ function ApplicantsTab({ detail }: { detail: SalesAgencyProductDetailsResponse }
       setTotalPages(response.totalPages);
 
       setNotes(notes.map((_, index) => response.content[index]?.note ?? ''));
+      noteForm.reset({
+        notes: response.content.map(item => item.note ?? ''),
+      });
     } catch (error) {
       console.error('Failed to fetch applicants:', error);
       await alertError('신청자 목록을 불러오는데 실패했습니다.');
@@ -760,7 +769,7 @@ function ApplicantsTab({ detail }: { detail: SalesAgencyProductDetailsResponse }
                   </TableCell>
                 </TableRow>
               ) : (
-                contents.map(item => (
+                contents.map((item, i) => (
                   <TableRow key={item.id}>
                     <TableCell>
                       <Checkbox
@@ -782,15 +791,21 @@ function ApplicantsTab({ detail }: { detail: SalesAgencyProductDetailsResponse }
                     <TableCell>{DateUtils.parseUtcAndFormatKst(item.appliedDate, DATEFORMAT_YYYY_MM_DD)}</TableCell>
                     <TableCell>{item.contractStatus === ContractStatus.CONTRACT ? 'Y' : 'N'}</TableCell>
                     <TableCell>
-                      <TextField
-                        fullWidth
-                        size='small'
-                        placeholder='비고를 입력하세요'
-                        value={item.note}
-                        onChange={e => {
-                          setContents(prev => prev.map(item => (item.userId === item.userId ? { ...item, note: e.target.value } : item)));
-                        }}
-                        onBlur={e => handleNoteUpdate(item.userId, e.target.value)}
+                      <Controller
+                        control={noteForm.control}
+                        name={'notes'}
+                        render={({ field }) => (
+                          <TextField
+                            fullWidth
+                            size='small'
+                            placeholder='비고를 입력하세요'
+                            value={field.value[i]}
+                            onChange={e => {
+                              field.onChange(field.value.map((note, index) => (index === i ? e.target.value : note)));
+                            }}
+                            onBlur={e => handleNoteUpdate(item.userId, e.target.value)}
+                          />
+                        )}
                       />
                     </TableCell>
                   </TableRow>
