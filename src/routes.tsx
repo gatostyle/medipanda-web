@@ -21,7 +21,6 @@ const MpAdminMain = Loadable(lazy(() => import('@/pages/MpAdminMain')));
 const MpAdminMemberList = Loadable(lazy(() => import('@/pages/MpAdminMemberList')));
 const MpAdminMemberEdit = Loadable(lazy(() => import('@/pages/MpAdminMemberEdit')));
 const MpAdminSalesAgencyProductList = Loadable(lazy(() => import('@/pages/MpAdminSalesAgencyProductList')));
-const MpAdminSalesAgencyProductDetail = Loadable(lazy(() => import('@/pages/MpAdminSalesAgencyProductDetail')));
 const MpAdminSalesAgencyProductEdit = Loadable(lazy(() => import('@/pages/MpAdminSalesAgencyProductEdit')));
 const MpAdminPartnerList = Loadable(lazy(() => import('@/pages/MpAdminPartnerList')));
 const MpAdminPartnerEdit = Loadable(lazy(() => import('@/pages/MpAdminPartnerEdit')));
@@ -134,14 +133,6 @@ const adminRoute: RouteObject = {
       element: (
         <MpAdminGuard requiredPermission={AdminPermission.CONTRACT_MANAGEMENT}>
           <MpAdminSalesAgencyProductEdit />
-        </MpAdminGuard>
-      ),
-    },
-    {
-      path: 'sales-agency-products/:salesAgencyProductId',
-      element: (
-        <MpAdminGuard requiredPermission={AdminPermission.CONTRACT_MANAGEMENT}>
-          <MpAdminSalesAgencyProductDetail />
         </MpAdminGuard>
       ),
     },

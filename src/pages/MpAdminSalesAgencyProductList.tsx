@@ -361,7 +361,7 @@ export default function MpAdminSalesAgencyProductList() {
                     </TableCell>
                     <TableCell>{item.clientName}</TableCell>
                     <TableCell>
-                      <Link component={RouterLink} to={`/admin/sales-agency-products/${item.id}`}>
+                      <Link component={RouterLink} to={`/admin/sales-agency-products/${item.id}/edit`}>
                         {item.productName}
                       </Link>
                     </TableCell>
