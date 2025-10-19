@@ -16,11 +16,11 @@ export function normalizeSeperatedString(value: string, separator: string, charC
 }
 
 export function normalizePhoneNumber(value: string, prevValue = ''): string {
-  return normalizeSeperatedString(value, '-', [3, 4, 4], prevValue);
+  return normalizeSeperatedString(value.replace(/[^0-9-]/g, ''), '-', [3, 4, 4], prevValue);
 }
 
 export function normalizeBusinessNumber(value: string, prevValue = ''): string {
-  return normalizeSeperatedString(value, '-', [3, 2, 5], prevValue);
+  return normalizeSeperatedString(value.replace(/[^0-9-]/g, ''), '-', [3, 2, 5], prevValue);
 }
 
 function handleNumberStringChange<K extends string, T extends Record<K, string>>(
