@@ -24,6 +24,7 @@ import { ListDropdownMenu } from '../../tiptap-ui/list-dropdown-menu';
 import { BlockquoteButton } from '../../tiptap-ui/blockquote-button';
 import { CodeBlockButton } from '../../tiptap-ui/code-block-button';
 import { ColorHighlightPopover, ColorHighlightPopoverContent, ColorHighlightPopoverButton } from '../../tiptap-ui/color-highlight-popover';
+import { ImageUploadButton } from '../../tiptap-ui/image-upload-button';
 import { LinkPopover, LinkContent, LinkButton } from '../../tiptap-ui/link-popover';
 import { MarkButton } from '../../tiptap-ui/mark-button';
 import { TextAlignButton } from '../../tiptap-ui/text-align-button';
@@ -107,9 +108,9 @@ export const MainToolbarContent = ({
 
       <ToolbarSeparator />
 
-      {/*<ToolbarGroup>*/}
-      {/*  <ImageUploadButton text='Add' />*/}
-      {/*</ToolbarGroup>*/}
+      <ToolbarGroup>
+        <ImageUploadButton />
+      </ToolbarGroup>
 
       <Spacer />
 

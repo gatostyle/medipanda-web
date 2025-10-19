@@ -1,3 +1,4 @@
+import type { ExtendedUseEditorOptions } from '@/lib/Tiptap';
 import * as React from 'react';
 
 // --- Lib ---
@@ -48,13 +49,44 @@ export const ImageUploadButton = React.forwardRef<HTMLButtonElement, ImageUpload
       onInserted,
     });
 
+    const handleImageUpload = async (file: File) => {
+      if (!editor || !editor.isEditable) return;
+
+      try {
+        const fileSrc = await (editor.options as ExtendedUseEditorOptions).onImageInsert(file);
+
+        editor
+          .chain()
+          .insertContentAt(editor.state.selection.anchor, {
+            type: 'image',
+            attrs: {
+              src: fileSrc,
+            },
+          })
+          .focus()
+          .run();
+      } catch (e) {
+        console.error('Error uploading image:', e);
+        alert('잘못된 이미지 파일입니다.');
+      }
+    };
+
     const handleClick = React.useCallback(
       (event: React.MouseEvent<HTMLButtonElement>) => {
         onClick?.(event);
         if (event.defaultPrevented) return;
-        handleImage();
+
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = (editor?.options as ExtendedUseEditorOptions | undefined)?.imageMimeTypes?.join(',') ?? 'image/*';
+        input.style.display = 'none';
+
+        input.onchange = () => {
+          Array.from(input.files ?? []).forEach(handleImageUpload);
+        };
+        input.click();
       },
-      [handleImage, onClick],
+      [editor, handleImage, onClick, handleImageUpload],
     );
 
     if (!isVisible) {
