@@ -527,7 +527,7 @@ export default function MpAdminPrescriptionFormEdit() {
                 </TableRow>
               ) : partnerProducts.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={10} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={11} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       검색 결과가 없습니다.
                     </Typography>
