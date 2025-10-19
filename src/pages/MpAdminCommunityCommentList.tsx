@@ -121,6 +121,7 @@ export default function MpAdminCommunityCommentList() {
         page: page - 1,
         size: pageSize,
         filterDeleted: true,
+        filterBlind: true,
       });
 
       setContents(withSequence(response).content);

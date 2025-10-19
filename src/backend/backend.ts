@@ -1964,6 +1964,7 @@ export async function getCommentMembers(options?: {
   startAt?: DateString;
   endAt?: DateString;
   commentType?: 'COMMENT' | 'REPLY';
+  filterBlind?: boolean;
   filterDeleted?: boolean;
   page?: number;
   size?: number;
