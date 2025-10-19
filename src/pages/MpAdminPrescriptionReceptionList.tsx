@@ -33,7 +33,7 @@ import {
   searchPrescriptions,
 } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
-import { DATEFORMAT_YYYY_MM, DATEFORMAT_YYYY_MM_DD, DATEFORMAT_YYYY_MM_DD_HH_MM, DateUtils } from '@/lib/utils/dateFormat';
+import { DATEFORMAT_YYYY_MM, DATEFORMAT_YYYY_MM_DD, DATEFORMAT_YYYY_MM_DD_HH_MM_SS, DateUtils } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
@@ -330,7 +330,7 @@ export default function MpAdminPrescriptionReceptionList() {
                           </Button>
                         ) : (
                           <Typography variant='body2'>
-                            {item.checkedAt ? DateUtils.parseUtcAndFormatKst(item.checkedAt, DATEFORMAT_YYYY_MM_DD_HH_MM) : '-'}
+                            {item.checkedAt ? DateUtils.parseUtcAndFormatKst(item.checkedAt, DATEFORMAT_YYYY_MM_DD_HH_MM_SS) : '-'}
                           </Typography>
                         )}
                       </TableCell>
