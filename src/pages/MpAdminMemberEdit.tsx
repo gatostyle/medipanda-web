@@ -225,10 +225,15 @@ export default function MpAdminMemberEdit() {
   const handleCsoUpload = async () => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.pdf';
+    input.accept = 'application/pdf';
     input.onchange = async event => {
       const file = (event.target as HTMLInputElement).files?.[0];
       if (!file) return;
+
+      if (file.type !== 'application/pdf') {
+        await alert('PDF 파일만 업로드할 수 있습니다.');
+        return;
+      }
 
       try {
         await updateMember(userId, {
