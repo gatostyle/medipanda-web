@@ -55,7 +55,7 @@ function MpProductUploadModalInternal({ open, onClose, onSuccess }: MpProductUpl
       <DialogContent sx={{ pb: 3 }}>
         <Box sx={{ mt: 1, textAlign: 'right', mb: 2 }}>
           <Button
-            href={import.meta.env.VITE_APP_URL_FILE_PRODUCT_RATE_TABLE}
+            href='/assets/templates/요율표_양식.xlsx'
             target='_blank'
             variant='contained'
             color='success'

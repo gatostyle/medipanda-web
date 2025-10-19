@@ -55,7 +55,7 @@ function MpHospitalUploadModalInternal({ open, onClose, onSuccess }: MpHospitalU
       <DialogContent sx={{ pb: 3 }}>
         <Box sx={{ mt: 1, textAlign: 'right', mb: 2 }}>
           <Button
-            href={import.meta.env.VITE_APP_URL_FILE_HOSPITAL}
+            href='/assets/templates/개원병원정보_양식.xlsx'
             target='_blank'
             variant='contained'
             color='success'

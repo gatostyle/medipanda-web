@@ -104,7 +104,7 @@ function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUpl
             </Box>
 
             <Button
-              href={import.meta.env.VITE_APP_URL_FILE_BUSINESS_PARTNER}
+              href='/assets/templates/거래선_양식.xlsx'
               target='_blank'
               variant='contained'
               color='success'

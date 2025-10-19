@@ -16,11 +16,11 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         '/v1': {
-          target: env.VITE_BACKEND_URL,
+          target: env.VITE_BACKEND_ENDPOINT,
           changeOrigin: true,
         },
         '/ocr': {
-          target: env.VITE_OCR_URL,
+          target: env.VITE_BACKEND_ENDPOINT,
           changeOrigin: true,
         },
       },

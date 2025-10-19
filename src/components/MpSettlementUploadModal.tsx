@@ -56,7 +56,7 @@ function MpSettlementUploadModalInternal({ open, onClose, onSuccess }: MpSettlem
         <DialogContent sx={{ pb: 3 }}>
           <Stack direction='row' alignItems='center' sx={{ mt: 1, mb: 3 }}>
             <Button
-              href={import.meta.env.VITE_APP_URL_FILE_SETTLEMENT}
+              href='/assets/templates/정산서_양식.xlsx'
               target='_blank'
               variant='contained'
               color='success'
