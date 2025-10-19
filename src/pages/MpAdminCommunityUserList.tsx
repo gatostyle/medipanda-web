@@ -182,6 +182,7 @@ export default function MpAdminCommunityUserList() {
                 <TableCell width={100}>회원번호</TableCell>
                 <TableCell width={120}>아이디</TableCell>
                 <TableCell width={100}>회원명</TableCell>
+                <TableCell width={100}>닉네임</TableCell>
                 <TableCell width={130}>연락처</TableCell>
                 <TableCell width={130}>파트너사 계약여부</TableCell>
                 <TableCell width={100}>작성글 수</TableCell>
@@ -193,7 +194,7 @@ export default function MpAdminCommunityUserList() {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={10} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={11} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       데이터를 로드하는 중입니다.
                     </Typography>
@@ -201,7 +202,7 @@ export default function MpAdminCommunityUserList() {
                 </TableRow>
               ) : contents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={10} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={11} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       검색 결과가 없습니다.
                     </Typography>
@@ -214,6 +215,7 @@ export default function MpAdminCommunityUserList() {
                     <TableCell>{item.id}</TableCell>
                     <TableCell>{item.userId}</TableCell>
                     <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.nickname}</TableCell>
                     <TableCell>{normalizePhoneNumber(item.phoneNumber)}</TableCell>
                     <TableCell>{ContractStatusLabel[item.contractStatus]}</TableCell>
                     <TableCell>{item.postCount}</TableCell>

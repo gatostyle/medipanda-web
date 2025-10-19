@@ -204,6 +204,7 @@ export interface BoardMemberStatsResponse {
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   id: number;
   name: string;
+  nickname: string;
   phoneNumber: string;
   postCount: number;
   totalLikes: number;
