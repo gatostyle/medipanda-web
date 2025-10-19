@@ -32,6 +32,7 @@ import {
   type OcrOriginalItem,
   type OcrResponse,
   type PartnerResponse,
+  type PrescriptionPartnerResponse,
   type ProductSummaryResponse,
   upsertPatchPartnerProducts,
 } from '@/backend';
@@ -75,6 +76,7 @@ export default function MpAdminPrescriptionFormEdit() {
 
   const { alert, alertError } = useMpModal();
 
+  const [prescriptionPartner, setPrescriptionPartner] = useState<PrescriptionPartnerResponse | null>(null);
   const [partnerProducts, setPartnerProducts] = useState<Sequenced<CustomPartnerProducts>[]>([]);
   const [deletePartnerProductIds, setDeletePartnerProductIds] = useState<number[]>([]);
   const [attachedFiles, setAttachedFiles] = useState<AttachmentResponse[]>([]);
@@ -291,6 +293,8 @@ export default function MpAdminPrescriptionFormEdit() {
         getAttachedEdiFiles(prescriptionPartnerId),
       ]);
 
+      setPrescriptionPartner(formDetail);
+
       form.reset({
         drugCompany: formDetail.drugCompany,
         drugCompanyCode: formDetail.drugCompanyCode,
@@ -377,6 +381,7 @@ export default function MpAdminPrescriptionFormEdit() {
                       format={DATEFORMAT_YYYY_MM}
                       views={['year', 'month']}
                       label='처방월'
+                      readOnly={prescriptionPartner!.status === 'COMPLETED'}
                       slotProps={{
                         textField: {
                           size: 'small',
@@ -414,6 +419,7 @@ export default function MpAdminPrescriptionFormEdit() {
                       format={DATEFORMAT_YYYY_MM}
                       views={['year', 'month']}
                       label='정산월'
+                      readOnly={prescriptionPartner!.status === 'COMPLETED'}
                       slotProps={{
                         textField: {
                           size: 'small',
@@ -442,7 +448,7 @@ export default function MpAdminPrescriptionFormEdit() {
                         readOnly: true,
                         endAdornment: (
                           <InputAdornment position='end'>
-                            <IconButton size='small' onClick={handlePartnerSearch}>
+                            <IconButton size='small' onClick={handlePartnerSearch} disabled={prescriptionPartner!.status === 'COMPLETED'}>
                               <SearchNormal1 size={16} />
                             </IconButton>
                           </InputAdornment>
@@ -477,10 +483,23 @@ export default function MpAdminPrescriptionFormEdit() {
         <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
           <Stack direction='row' spacing={2}></Stack>
           <Stack direction='row' spacing={1}>
-            <Button variant='contained' color='error' size='small' disabled={selectedIndexes.length === 0} onClick={handleDelete}>
+            <Button
+              variant='contained'
+              color='error'
+              size='small'
+              disabled={prescriptionPartner!.status === 'COMPLETED' || selectedIndexes.length === 0}
+              onClick={handleDelete}
+            >
               삭제
             </Button>
-            <Button variant='contained' color='success' size='small' onClick={handleAddProduct} startIcon={<Add size={16} />}>
+            <Button
+              variant='contained'
+              color='success'
+              size='small'
+              onClick={handleAddProduct}
+              startIcon={<Add size={16} />}
+              disabled={prescriptionPartner!.status === 'COMPLETED'}
+            >
               내역추가
             </Button>
           </Stack>
@@ -500,6 +519,7 @@ export default function MpAdminPrescriptionFormEdit() {
                         setSelectedIndexes([]);
                       }
                     }}
+                    disabled={prescriptionPartner!.status === 'COMPLETED'}
                   />
                 </TableCell>
                 <TableCell width={60}>No</TableCell>
@@ -544,6 +564,7 @@ export default function MpAdminPrescriptionFormEdit() {
                             setSelectedIndexes(prev => prev.filter(id => id !== index));
                           }
                         }}
+                        disabled={prescriptionPartner!.status === 'COMPLETED'}
                       />
                     </TableCell>
                     <TableCell>{item.sequence}</TableCell>
@@ -564,6 +585,7 @@ export default function MpAdminPrescriptionFormEdit() {
                                   setCurrentProductItemIndex(item.sequence - 1);
                                   setPartnerProductSelectModalOpen(true);
                                 }}
+                                disabled={prescriptionPartner!.status === 'COMPLETED'}
                               >
                                 <SearchNormal1 size={16} />
                               </IconButton>
@@ -578,6 +600,11 @@ export default function MpAdminPrescriptionFormEdit() {
                         fullWidth
                         value={item.unit}
                         onChange={event => handleProductChange(item.sequence - 1, 'unit', event.target.value)}
+                        slotProps={{
+                          input: {
+                            readOnly: prescriptionPartner!.status === 'COMPLETED',
+                          },
+                        }}
                       />
                     </TableCell>
                     <TableCell>
@@ -592,6 +619,11 @@ export default function MpAdminPrescriptionFormEdit() {
                           if (normalized !== null) {
                             handleProductChange(item.sequence - 1, 'quantity', normalized);
                           }
+                        }}
+                        slotProps={{
+                          input: {
+                            readOnly: prescriptionPartner!.status === 'COMPLETED',
+                          },
                         }}
                       />
                     </TableCell>
@@ -611,6 +643,7 @@ export default function MpAdminPrescriptionFormEdit() {
                         }}
                         InputProps={{
                           endAdornment: <Typography variant='body2'>원</Typography>,
+                          readOnly: prescriptionPartner!.status === 'COMPLETED',
                         }}
                       />
                     </TableCell>
@@ -633,6 +666,7 @@ export default function MpAdminPrescriptionFormEdit() {
                         }}
                         InputProps={{
                           endAdornment: <Typography variant='body2'>%</Typography>,
+                          readOnly: prescriptionPartner!.status === 'COMPLETED',
                         }}
                       />
                     </TableCell>
@@ -651,6 +685,7 @@ export default function MpAdminPrescriptionFormEdit() {
                         }}
                         InputProps={{
                           endAdornment: <Typography variant='body2'>원</Typography>,
+                          readOnly: prescriptionPartner!.status === 'COMPLETED',
                         }}
                       />
                     </TableCell>
@@ -661,6 +696,11 @@ export default function MpAdminPrescriptionFormEdit() {
                         name='note'
                         value={item.note}
                         onChange={e => handleProductChange(item.sequence - 1, 'note', e.target.value)}
+                        slotProps={{
+                          input: {
+                            readOnly: prescriptionPartner!.status === 'COMPLETED',
+                          },
+                        }}
                       />
                     </TableCell>
                   </TableRow>
@@ -674,6 +714,7 @@ export default function MpAdminPrescriptionFormEdit() {
           <FormControlLabel
             control={<Checkbox checked={sendOcrReport} onChange={e => setSendOcrReport(e.target.checked)} />}
             label='OCR리포트 보내기'
+            disabled={prescriptionPartner!.status === 'COMPLETED'}
           />
           <TextField
             fullWidth
@@ -687,14 +728,22 @@ export default function MpAdminPrescriptionFormEdit() {
           />
         </Box>
 
-        <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 4 }}>
-          <Button variant='outlined' size='large' component={RouterLink} to='/admin/prescription-forms' sx={{ minWidth: 120 }}>
-            취소
-          </Button>
-          <Button variant='contained' color='success' size='large' onClick={form.handleSubmit(submitHandler)} sx={{ minWidth: 120 }}>
-            저장
-          </Button>
-        </Stack>
+        {prescriptionPartner!.status !== 'COMPLETED' ? (
+          <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 4 }}>
+            <Button variant='outlined' size='large' component={RouterLink} to='/admin/prescription-forms' sx={{ minWidth: 120 }}>
+              취소
+            </Button>
+            <Button variant='contained' color='success' size='large' onClick={form.handleSubmit(submitHandler)} sx={{ minWidth: 120 }}>
+              저장
+            </Button>
+          </Stack>
+        ) : (
+          <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 4 }}>
+            <Button variant='outlined' size='large' component={RouterLink} to='/admin/prescription-forms' sx={{ minWidth: 120 }}>
+              뒤로
+            </Button>
+          </Stack>
+        )}
       </Card>
 
       <MpChangeHistoryModal
