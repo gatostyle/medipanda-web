@@ -82,7 +82,7 @@ export default function MpAdminPartnerEdit() {
         medicalDepartment: detail.medicalDepartment ?? '',
         pharmacyName: detail.pharmacyName ?? '',
         pharmacyAddress: detail.pharmacyAddress ?? '',
-        pharmacyStatus: detail.pharmacyStatus,
+        pharmacyStatus: detail.pharmacyStatus ?? PharmacyStatus.NONE,
         note: detail.note ?? '',
       });
     } catch (error) {
@@ -107,7 +107,7 @@ export default function MpAdminPartnerEdit() {
       medicalDepartment: '',
       pharmacyName: '',
       pharmacyAddress: '',
-      pharmacyStatus: PharmacyStatus.NORMAL as keyof typeof PharmacyStatus | null,
+      pharmacyStatus: PharmacyStatus.NONE as keyof typeof PharmacyStatus,
       note: '',
     },
   });
@@ -132,6 +132,11 @@ export default function MpAdminPartnerEdit() {
 
     if (values.businessNumber === '') {
       await alert('사업자등록번호를 입력하세요.');
+      return;
+    }
+
+    if ((values.pharmacyName !== '' || values.pharmacyAddress !== '') && values.pharmacyStatus === PharmacyStatus.NONE) {
+      await alert('약국 상태를 선택하세요.');
       return;
     }
 
