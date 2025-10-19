@@ -309,10 +309,13 @@ export default function MpAdminPrescriptionFormList() {
               <TableRow>
                 <TableCell width={50}>
                   <Checkbox
-                    checked={selectedIds.length === contents.length && contents.length > 0}
+                    checked={
+                      selectedIds.length === contents.filter(c => c.status === PrescriptionPartnerStatus.PENDING).length &&
+                      contents.filter(c => c.status === PrescriptionPartnerStatus.PENDING).length > 0
+                    }
                     onChange={e => {
                       if (e.target.checked) {
-                        setSelectedIds(contents.map(item => item.id));
+                        setSelectedIds(contents.filter(c => c.status === PrescriptionPartnerStatus.PENDING).map(item => item.id));
                       } else {
                         setSelectedIds([]);
                       }
@@ -363,6 +366,7 @@ export default function MpAdminPrescriptionFormList() {
                             setSelectedIds(prev => prev.filter(id => id !== item.id));
                           }
                         }}
+                        disabled={item.status !== PrescriptionPartnerStatus.PENDING}
                       />
                     </TableCell>
                     <TableCell>{item.sequence}</TableCell>
