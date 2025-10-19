@@ -185,7 +185,6 @@ export default function MpAdminPartnerList() {
                   <Select {...field}>
                     <MenuItem value={'companyName'}>회사명</MenuItem>
                     <MenuItem value={'institutionName'}>거래처명</MenuItem>
-                    <MenuItem value={'institutionCode'}>거래처코드</MenuItem>
                     <MenuItem value={'drugCompanyName'}>제약사명</MenuItem>
                     <MenuItem value={'memberName'}>회원명</MenuItem>
                   </Select>
