@@ -294,8 +294,9 @@ export default function MpAdminExpenseReportList() {
                 <TableCell width={60}>No</TableCell>
                 <TableCell width={100}>아이디</TableCell>
                 <TableCell width={120}>회사명</TableCell>
-                <TableCell width={150}>제품명</TableCell>
                 <TableCell width={150}>유형</TableCell>
+                <TableCell width={150}>제품명</TableCell>
+                <TableCell width={150}>제품코드</TableCell>
                 <TableCell width={100}>시행일시</TableCell>
                 <TableCell width={120}>지원금액</TableCell>
                 <TableCell width={100}>신고상태</TableCell>
@@ -304,7 +305,7 @@ export default function MpAdminExpenseReportList() {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={8} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={10} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       데이터를 로드하는 중입니다.
                     </Typography>
@@ -312,7 +313,7 @@ export default function MpAdminExpenseReportList() {
                 </TableRow>
               ) : contents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={10} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       검색 결과가 없습니다.
                     </Typography>
@@ -324,8 +325,9 @@ export default function MpAdminExpenseReportList() {
                     <TableCell>{item.sequence}</TableCell>
                     <TableCell>{item.userId}</TableCell>
                     <TableCell>{item.companyName}</TableCell>
-                    <TableCell>{item.productName}</TableCell>
                     <TableCell>{ExpenseReportTypeLabel[item.reportType]}</TableCell>
+                    <TableCell>{item.productName}</TableCell>
+                    <TableCell>{item.productCode}</TableCell>
                     <TableCell>{`${item.eventStartAt !== null ? DateUtils.parseUtcAndFormatKst(item.eventStartAt, DATEFORMAT_YYYY_MM_DD) : '-'} ~ ${item.eventEndAt !== null ? DateUtils.parseUtcAndFormatKst(item.eventEndAt, DATEFORMAT_YYYY_MM_DD) : '-'}`}</TableCell>
                     <TableCell>{`${item.supportAmount.toLocaleString()}원`}</TableCell>
                     <TableCell>{ExpenseReportStatusLabel[item.status]}</TableCell>
