@@ -40,8 +40,8 @@ export default function MpAdminSettlementDetail() {
 
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
-  const [totalElements] = useState(2);
-  const [totalPages] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   const { alertError } = useMpModal();
 
@@ -91,6 +91,8 @@ export default function MpAdminSettlementDetail() {
       });
 
       setSettlementSummaries(withSequence(response).content);
+      setTotalElements(response.totalElements);
+      setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch settlement data:', error);
       enqueueSnackbar('정산 데이터를 불러오는데 실패했습니다.', { variant: 'error' });
