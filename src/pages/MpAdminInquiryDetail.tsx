@@ -98,7 +98,7 @@ export default function MpAdminInquiryDetail() {
           newFiles: values.newFiles,
         });
       }
-      enqueueSnackbar('답변이 저장되었습니다.', { variant: 'success' });
+      await alert('답변이 저장되었습니다.');
       navigate('/admin/inquiries');
     } catch (error) {
       console.error('Failed to save response:', error);

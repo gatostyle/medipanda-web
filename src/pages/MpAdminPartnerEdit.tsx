@@ -174,7 +174,7 @@ export default function MpAdminPartnerEdit() {
         });
       }
 
-      enqueueSnackbar('거래선 정보가 저장되었습니다.', { variant: 'success' });
+      await alert('거래선 정보가 저장되었습니다.');
       navigate('/admin/partners');
     } catch (e) {
       if (e instanceof AxiosError && e.response?.status === 409) {

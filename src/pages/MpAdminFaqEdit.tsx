@@ -97,7 +97,7 @@ export default function MpAdminFaqEdit() {
           },
           files: values.newFiles && values.newFiles.length > 0 ? values.newFiles : undefined,
         });
-        enqueueSnackbar('FAQ가 성공적으로 등록되었습니다.', { variant: 'success' });
+        await alert('FAQ가 성공적으로 등록되었습니다.');
         navigate('/admin/faqs');
       } else {
         await updateBoardPost(boardId, {
@@ -114,7 +114,7 @@ export default function MpAdminFaqEdit() {
           },
           newFiles: values.newFiles ? values.newFiles : undefined,
         });
-        enqueueSnackbar('FAQ가 성공적으로 수정되었습니다.', { variant: 'success' });
+        await alert('FAQ가 성공적으로 수정되었습니다.');
         navigate(`/admin/faqs/${boardId}`);
       }
     } catch (error) {

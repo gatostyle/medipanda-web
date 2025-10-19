@@ -96,7 +96,7 @@ export default function MpAdminAtoZEdit() {
           },
           files: values.newFiles,
         });
-        enqueueSnackbar('CSO A to Z가 성공적으로 등록되었습니다.', { variant: 'success' });
+        await alert('CSO A to Z가 성공적으로 등록되었습니다.');
       } else {
         await updateBoardPost(boardId, {
           updateRequest: {
@@ -112,7 +112,7 @@ export default function MpAdminAtoZEdit() {
           },
           newFiles: values.newFiles,
         });
-        enqueueSnackbar('CSO A to Z가 성공적으로 수정되었습니다.', { variant: 'success' });
+        await alert('CSO A to Z가 성공적으로 수정되었습니다.');
       }
       navigate('/admin/atoz');
     } catch (error) {

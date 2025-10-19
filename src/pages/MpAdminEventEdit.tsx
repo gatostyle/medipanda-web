@@ -18,7 +18,6 @@ import {
   PostAttachmentType,
   updateEventBoard,
 } from '@/backend';
-import { useSnackbar } from 'notistack';
 import { type ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
@@ -37,7 +36,6 @@ export default function MpAdminEventEdit() {
   const [thumbnailPreview, setThumbnailPreview] = useState<string>('');
   const { session } = useSession();
   const { alert, alertError } = useMpModal();
-  const { enqueueSnackbar } = useSnackbar();
 
   const { editor, attachments: editorAttachments, setAttachments: setEditorAttachments } = useMedipandaEditor();
   const toolbarRef = useRef<HTMLDivElement>(null);
@@ -117,7 +115,7 @@ export default function MpAdminEventEdit() {
           thumbnail: thumbnailFile!,
           files: values.newFiles,
         });
-        enqueueSnackbar('이벤트가 등록되었습니다.', { variant: 'success' });
+        await alert('이벤트가 등록되었습니다.');
         navigate('/admin/events');
       } else {
         await updateEventBoard(eventId, {
@@ -142,7 +140,7 @@ export default function MpAdminEventEdit() {
           thumbnail: thumbnailFile ?? undefined,
           newFiles: values.newFiles,
         });
-        enqueueSnackbar('이벤트가 수정되었습니다.', { variant: 'success' });
+        await alert('이벤트가 수정되었습니다.');
         navigate(`/admin/events/${eventId}`);
       }
     } catch (error) {

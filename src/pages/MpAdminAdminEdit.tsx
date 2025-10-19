@@ -5,7 +5,6 @@ import { isAxiosError } from 'axios';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { AdminPermission, getMemberDetails, getPermissions, type MemberDetailsResponse, signupByAdmin, updateByAdmin } from '@/backend';
 import { isSuperAdmin, useSession } from '@/hooks/useSession';
-import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
@@ -19,7 +18,6 @@ export default function MpAdminAdminEdit() {
   const { session } = useSession();
   const [, setLoading] = useState(false);
   const { alert, alertError } = useMpModal();
-  const { enqueueSnackbar } = useSnackbar();
   const [detail, setDetail] = useState<MemberDetailsResponse | null>(null);
 
   useEffect(() => {
@@ -98,7 +96,7 @@ export default function MpAdminAdminEdit() {
           phoneNumber: values.phoneNumber.replace(/-/g, ''),
           permissions: [...values.permissions, AdminPermission.PERMISSION_MANAGEMENT],
         });
-        enqueueSnackbar('관리자가 등록되었습니다.', { variant: 'success' });
+        await alert('관리자가 등록되었습니다.');
         navigate('/admin/admins');
       } else {
         await updateByAdmin(userId, {
@@ -109,7 +107,7 @@ export default function MpAdminAdminEdit() {
           phoneNumber: values.phoneNumber.replace(/-/g, ''),
           permissions: [...values.permissions, AdminPermission.PERMISSION_MANAGEMENT],
         });
-        enqueueSnackbar('관리자 권한이 수정되었습니다.', { variant: 'success' });
+        await alert('관리자 권한이 수정되었습니다.');
         navigate('/admin/admins');
       }
     } catch (e) {

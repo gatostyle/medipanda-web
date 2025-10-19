@@ -140,7 +140,7 @@ export default function MpAdminMemberEdit() {
         });
       }
 
-      enqueueSnackbar('회원정보가 수정되었습니다.', { variant: 'success' });
+      await alert('회원정보가 수정되었습니다.');
       navigate('/admin/members');
     } catch (e) {
       switch (true) {
@@ -203,7 +203,7 @@ export default function MpAdminMemberEdit() {
   const handleCsoApprove = async () => {
     try {
       await approveOrRejectCso(userId, { isApproved: true });
-      enqueueSnackbar('CSO 신고증이 승인되었습니다.', { variant: 'success' });
+      await alert('CSO 신고증이 승인되었습니다.');
       await fetchDetail(userId);
     } catch (error) {
       console.error('Failed to approve CSO report:', error);
@@ -214,7 +214,7 @@ export default function MpAdminMemberEdit() {
   const handleCsoReject = async () => {
     try {
       await approveOrRejectCso(userId, { isApproved: false });
-      enqueueSnackbar('CSO 신고증이 반려되었습니다.', { variant: 'success' });
+      await alert('CSO 신고증이 반려되었습니다.');
       await fetchDetail(userId);
     } catch (error) {
       console.error('Failed to reject CSO report:', error);
@@ -252,7 +252,7 @@ export default function MpAdminMemberEdit() {
           file: file,
         });
 
-        enqueueSnackbar('CSO 신고증이 업로드되었습니다.', { variant: 'success' });
+        await alert('CSO 신고증이 업로드되었습니다.');
         await fetchDetail(userId);
       } catch (e) {
         console.error('Failed to upload CSO report:', e);
@@ -265,7 +265,7 @@ export default function MpAdminMemberEdit() {
   const handleContractApprove = async () => {
     try {
       await approveContract(contractDetail!.id);
-      enqueueSnackbar('파트너사 계약이 승인되었습니다.', { variant: 'success' });
+      await alert('파트너사 계약이 승인되었습니다.');
       await fetchDetail(userId);
     } catch (error) {
       console.error('Failed to approve partner contract:', error);
@@ -276,7 +276,7 @@ export default function MpAdminMemberEdit() {
   const handleContractReject = async () => {
     try {
       await rejectContract(contractDetail!.id);
-      enqueueSnackbar('파트너사 계약이 종료되었습니다.', { variant: 'success' });
+      await alert('파트너사 계약이 종료되었습니다.');
       await fetchDetail(userId);
     } catch (error) {
       console.error('Failed to reject partner contract:', error);

@@ -141,7 +141,6 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
   const navigate = useNavigate();
 
   const { alert, alertError } = useMpModal();
-  const { enqueueSnackbar } = useSnackbar();
 
   const form = useForm({
     defaultValues: {
@@ -237,7 +236,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
           thumbnail: values.thumbnail!,
           files: [],
         });
-        enqueueSnackbar('영업대행상품이 등록되었습니다.', { variant: 'success' });
+        await alert('영업대행상품이 등록되었습니다.');
         navigate('/admin/sales-agency-products');
       } else {
         await updateSalesAgencyProductBoard(detail!.productId, {
@@ -264,7 +263,7 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
           },
           thumbnail: values.thumbnail ?? undefined,
         });
-        enqueueSnackbar('영업대행상품이 수정되었습니다.', { variant: 'success' });
+        await alert('영업대행상품이 수정되었습니다.');
         navigate(`/admin/sales-agency-products`);
       }
     } catch (error) {

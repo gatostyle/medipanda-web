@@ -121,7 +121,7 @@ export default function MpAdminNoticeEdit() {
           },
           files: values.newFiles,
         });
-        enqueueSnackbar('공지사항이 성공적으로 등록되었습니다.', { variant: 'success' });
+        await alert('공지사항이 성공적으로 등록되었습니다.');
         navigate('/admin/notices');
       } else {
         await updateBoardPost(boardId, {
@@ -142,7 +142,7 @@ export default function MpAdminNoticeEdit() {
           },
           newFiles: values.newFiles,
         });
-        enqueueSnackbar('공지사항이 성공적으로 수정되었습니다.', { variant: 'success' });
+        await alert('공지사항이 성공적으로 수정되었습니다.');
         navigate(`/admin/notices/${paramBoardId}`);
       }
     } catch (error) {

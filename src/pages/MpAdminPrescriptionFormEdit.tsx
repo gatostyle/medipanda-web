@@ -133,7 +133,7 @@ export default function MpAdminPrescriptionFormEdit() {
         deletedPrescriptionPartnerProductIds: deletePartnerProductIds,
       });
 
-      enqueueSnackbar('거래처별 제품 목록이 저장되었습니다.', { variant: 'success' });
+      await alert('거래처별 제품 목록이 저장되었습니다.');
       navigate('/admin/prescription-forms');
     } catch (e) {
       console.error('Failed to submit form:', e);

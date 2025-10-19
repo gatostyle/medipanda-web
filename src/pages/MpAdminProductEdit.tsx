@@ -36,7 +36,6 @@ import {
   updateProductExtraInfo,
 } from '@/backend';
 import { useSession } from '@/hooks/useSession';
-import { useSnackbar } from 'notistack';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
@@ -47,7 +46,6 @@ export default function MpAdminProductEdit() {
   const isNew = paramProductId === undefined;
   const productId = Number(paramProductId);
 
-  const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
   const { session } = useSession();
   const [detail, setDetail] = useState<ProductDetailsResponse | null>(null);
@@ -142,7 +140,7 @@ export default function MpAdminProductEdit() {
           },
           files: undefined,
         });
-        enqueueSnackbar('제품이 성공적으로 등록되었습니다.', { variant: 'success' });
+        await alert('제품이 성공적으로 등록되었습니다.');
       } else {
         await updateProductExtraInfo(productId, {
           boardPostUpdateRequest: {
@@ -175,7 +173,7 @@ export default function MpAdminProductEdit() {
           },
           newFiles: [],
         });
-        enqueueSnackbar('제품이 성공적으로 수정되었습니다.', { variant: 'success' });
+        await alert('제품이 성공적으로 수정되었습니다.');
       }
       navigate('/admin/products');
     } catch (error) {
