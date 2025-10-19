@@ -227,10 +227,6 @@ export default function MpAdminPrescriptionFormEdit() {
     setOcrRequestModalOpen(true);
   };
 
-  const handleChangeHistory = () => {
-    setChangeHistoryModalOpen(true);
-  };
-
   const handleOcrSubmit = async (response: OcrResponse[]) => {
     if (response.length === 0) {
       await alert('OCR 결과가 없습니다. 거래선에 등록된 제약사가 EDI 내용에 포함되어 있는지 확인하세요.');
@@ -469,9 +465,6 @@ export default function MpAdminPrescriptionFormEdit() {
           <Stack direction='row' spacing={2} sx={{ mt: 3 }}>
             <Button variant='contained' color='success' size='small' onClick={handleEdiFileView}>
               EDI파일보기
-            </Button>
-            <Button variant='outlined' size='small' onClick={handleChangeHistory}>
-              변경내역보기
             </Button>
           </Stack>
         </Box>
