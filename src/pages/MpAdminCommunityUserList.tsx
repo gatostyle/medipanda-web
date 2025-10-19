@@ -34,7 +34,7 @@ export default function MpAdminCommunityUserList() {
   const navigate = useNavigate();
 
   const initialSearchParams = {
-    searchType: '' as 'userId' | 'name' | 'nickname' | 'phoneNumber' | 'email' | '',
+    searchType: 'name' as 'name' | 'memberId' | 'userId' | 'nickname',
     searchKeyword: '',
     contractStatus: '' as keyof typeof ContractStatus | '',
     page: '1',
@@ -49,7 +49,7 @@ export default function MpAdminCommunityUserList() {
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  const { alert, alertError } = useMpModal();
+  const { alertError } = useMpModal();
 
   const form = useForm({
     defaultValues: {
@@ -58,11 +58,6 @@ export default function MpAdminCommunityUserList() {
   });
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
-    if (values.searchType === '' && values.searchKeyword !== '') {
-      await alert('검색유형을 선택하세요.');
-      return;
-    }
-
     const url = setUrlParams(
       {
         ...values,
@@ -145,11 +140,10 @@ export default function MpAdminCommunityUserList() {
                 name={'searchType'}
                 render={({ field }) => (
                   <Select {...field}>
-                    <MenuItem value={'userId'}>아이디</MenuItem>
                     <MenuItem value={'name'}>회원명</MenuItem>
+                    <MenuItem value={'memberId'}>회원번호</MenuItem>
+                    <MenuItem value={'userId'}>아이디</MenuItem>
                     <MenuItem value={'nickname'}>닉네임</MenuItem>
-                    <MenuItem value={'phoneNumber'}>연락처</MenuItem>
-                    <MenuItem value={'email'}>이메일</MenuItem>
                   </Select>
                 )}
               />
