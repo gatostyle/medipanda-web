@@ -299,7 +299,7 @@ export default function MpAdminPartnerList() {
                     </TableCell>
                     <TableCell>{normalizeBusinessNumber(item.businessNumber)}</TableCell>
                     <TableCell>{item.medicalDepartment ?? '-'}</TableCell>
-                    <TableCell>{item.hasPharmacy ? 'Y' : 'N'}</TableCell>
+                    <TableCell>{item.pharmacyStatus === 'NORMAL' ? 'Y' : 'N'}</TableCell>
                   </TableRow>
                 ))
               )}
