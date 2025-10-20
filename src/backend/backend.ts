@@ -459,6 +459,7 @@ export interface Item {
   feeAmount: number | null;
   id: number | null;
   note: string | null;
+  ocrItem: OcrOriginalItem | null;
   productCode: string | null;
   quantity: number | null;
   totalPrice: number | null;
