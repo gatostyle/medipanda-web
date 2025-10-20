@@ -1,4 +1,4 @@
-import { type AttachmentResponse, type BoardDetailsResponse, deleteBoardPost, getBoardDetails } from '@/backend';
+import { type AttachmentResponse, type BoardDetailsResponse, deleteBoardPost, getBoardDetails, PostAttachmentType } from '@/backend';
 import { InquiryStatusChip } from '@/components/InquiryStatusChip';
 import { MedipandaEditorContent } from '@/components/MedipandaTiptapContainer';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
@@ -116,7 +116,7 @@ export default function InquiryDetail() {
         </Typography>
       </Stack>
 
-      {detail.attachments && detail.attachments.length > 0 && (
+      {detail.attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT).length > 0 && (
         <Stack
           sx={{
             padding: '15px 20px',
@@ -124,23 +124,25 @@ export default function InquiryDetail() {
             boxSizing: 'border-box',
           }}
         >
-          {detail.attachments.map(file => (
-            <Link
-              key={file.s3fileId}
-              underline='hover'
-              component={RouterLink}
-              to={file.fileUrl}
-              target='_blank'
-              sx={{
-                color: colors.gray80,
-                '&:hover': {
-                  color: colors.vividViolet,
-                },
-              }}
-            >
-              <Typography variant='largeTextR'>{file.originalFileName}</Typography>
-            </Link>
-          ))}
+          {detail.attachments
+            .filter(a => a.type === PostAttachmentType.ATTACHMENT)
+            .map(file => (
+              <Link
+                key={file.s3fileId}
+                underline='hover'
+                component={RouterLink}
+                to={file.fileUrl}
+                target='_blank'
+                sx={{
+                  color: colors.gray80,
+                  '&:hover': {
+                    color: colors.vividViolet,
+                  },
+                }}
+              >
+                <Typography variant='largeTextR'>{file.originalFileName}</Typography>
+              </Link>
+            ))}
         </Stack>
       )}
 

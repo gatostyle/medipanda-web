@@ -1,4 +1,4 @@
-import { type BoardDetailsResponse, getBoardDetails } from '@/backend';
+import { type BoardDetailsResponse, getBoardDetails, PostAttachmentType } from '@/backend';
 import { MedipandaEditorContent } from '@/components/MedipandaTiptapContainer';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
@@ -83,7 +83,7 @@ export default function NoticeDetail() {
         </Typography>
       </Stack>
 
-      {detail.attachments && detail.attachments.length > 0 && (
+      {detail.attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT).length > 0 && (
         <Stack
           sx={{
             padding: '15px 20px',
@@ -91,23 +91,25 @@ export default function NoticeDetail() {
             boxSizing: 'border-box',
           }}
         >
-          {detail.attachments.map(file => (
-            <Link
-              key={file.s3fileId}
-              underline='hover'
-              component={RouterLink}
-              to={file.fileUrl}
-              target='_blank'
-              sx={{
-                color: colors.gray80,
-                '&:hover': {
-                  color: colors.vividViolet,
-                },
-              }}
-            >
-              <Typography variant='largeTextR'>{file.originalFileName}</Typography>
-            </Link>
-          ))}
+          {detail.attachments
+            .filter(a => a.type === PostAttachmentType.ATTACHMENT)
+            .map(file => (
+              <Link
+                key={file.s3fileId}
+                underline='hover'
+                component={RouterLink}
+                to={file.fileUrl}
+                target='_blank'
+                sx={{
+                  color: colors.gray80,
+                  '&:hover': {
+                    color: colors.vividViolet,
+                  },
+                }}
+              >
+                <Typography variant='largeTextR'>{file.originalFileName}</Typography>
+              </Link>
+            ))}
         </Stack>
       )}
 

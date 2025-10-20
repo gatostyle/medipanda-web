@@ -1,4 +1,4 @@
-import { type BoardDetailsResponse, type BoardPostResponse, BoardType, getBoardDetails, getBoards } from '@/backend';
+import { type BoardDetailsResponse, type BoardPostResponse, BoardType, getBoardDetails, getBoards, PostAttachmentType } from '@/backend';
 import { MedipandaEditorContent } from '@/components/MedipandaTiptapContainer';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
@@ -202,30 +202,32 @@ export default function FaqList() {
             <AccordionDetails sx={{ marginX: '50px', backgroundColor: colors.gray10 }}>
               {expandedId === faq.id && expandedDetail !== null && (
                 <>
-                  {expandedDetail?.attachments && expandedDetail.attachments.length > 0 && (
+                  {expandedDetail.attachments.filter(a => a.type === PostAttachmentType.ATTACHMENT).length > 0 && (
                     <Box sx={{ marginBottom: 2 }}>
-                      {expandedDetail.attachments.map(file => (
-                        <Link
-                          key={file.s3fileId}
-                          underline='hover'
-                          component={RouterLink}
-                          to={file.fileUrl}
-                          target='_blank'
-                          variant='largeTextR'
-                          sx={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 0.5,
-                            color: colors.gray80,
-                            '&:hover': {
-                              color: colors.vividViolet,
-                            },
-                            marginBottom: 1,
-                          }}
-                        >
-                          {file.originalFileName}
-                        </Link>
-                      ))}
+                      {expandedDetail.attachments
+                        .filter(a => a.type === PostAttachmentType.ATTACHMENT)
+                        .map(file => (
+                          <Link
+                            key={file.s3fileId}
+                            underline='hover'
+                            component={RouterLink}
+                            to={file.fileUrl}
+                            target='_blank'
+                            variant='largeTextR'
+                            sx={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 0.5,
+                              color: colors.gray80,
+                              '&:hover': {
+                                color: colors.vividViolet,
+                              },
+                              marginBottom: 1,
+                            }}
+                          >
+                            {file.originalFileName}
+                          </Link>
+                        ))}
                     </Box>
                   )}
                   <MedipandaEditorContent editor={editor} />
