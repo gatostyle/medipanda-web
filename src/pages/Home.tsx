@@ -52,47 +52,47 @@ export default function Home() {
   const [salesAgencyProducts, setSalesAgencyProducts] = useState<CarouselItem[]>([]);
 
   const fetchSalesAgencyProducts = async () => {
-    if (session === null) {
+    try {
+      const response = await getSalesAgencyProducts({
+        exposureRanges: [BoardExposureRange.ALL, memberTypeToBoardExposureRange(session!.partnerContractStatus)],
+        startAt: new DateString(new Date()),
+        endAt: new DateString(new Date()),
+        isExposed: true,
+        size: 2 ** 31 - 1,
+      });
+
+      setSalesAgencyProducts(
+        [defaultSalesAgencyProductsCarouselItem].concat(
+          response.content.map(product => ({
+            id: product.id,
+            linkUrl: new URL(`/sales-agency-products/${product.id}`, location.href).href,
+            imageUrl: product.thumbnailUrl!,
+          })),
+        ),
+      );
+    } catch (e) {
+      console.error('Failed to fetch sales agency products:', e);
       setSalesAgencyProducts([defaultSalesAgencyProductsCarouselItem]);
-      return;
     }
-
-    const response = await getSalesAgencyProducts({
-      exposureRanges: [BoardExposureRange.ALL, memberTypeToBoardExposureRange(session.partnerContractStatus)],
-      startAt: new DateString(new Date()),
-      endAt: new DateString(new Date()),
-      isExposed: true,
-      size: 2 ** 31 - 1,
-    });
-
-    setSalesAgencyProducts(
-      [defaultSalesAgencyProductsCarouselItem].concat(
-        response.content.map(product => ({
-          id: product.id,
-          linkUrl: new URL(`/sales-agency-products/${product.id}`, location.href).href,
-          imageUrl: product.thumbnailUrl!,
-        })),
-      ),
-    );
   };
 
   const [banners, setBanners] = useState<BannerResponse[]>([]);
 
   const fetchBanners = async () => {
-    if (session === null) {
+    try {
+      const response = await getBanners({
+        isExposed: true,
+        bannerPositions: [BannerPosition.ALL, BannerPosition.PC_MAIN],
+        startAt: new DateTimeString(new Date()),
+        endAt: new DateTimeString(new Date()),
+        size: 2 ** 31 - 1,
+      });
+
+      setBanners(response.content);
+    } catch (e) {
+      console.error('Failed to fetch banners:', e);
       setBanners([]);
-      return;
     }
-
-    const response = await getBanners({
-      isExposed: true,
-      bannerPositions: [BannerPosition.ALL, BannerPosition.PC_MAIN],
-      startAt: new DateTimeString(new Date()),
-      endAt: new DateTimeString(new Date()),
-      size: 2 ** 31 - 1,
-    });
-
-    setBanners(response.content);
   };
 
   useEffect(() => {
@@ -105,9 +105,13 @@ export default function Home() {
 
   useEffect(() => {
     fetchHomeBanner();
-  }, []);
+  }, [session]);
 
   const fetchHomeBanner = async () => {
+    if (session === null) {
+      return;
+    }
+
     const { count } = await monthlyCount({ referenceDate: Number(format(new Date(), 'yyyyMMdd')) });
     const { feeAmount } = await monthlyTotalAmount({ referenceDate: Number(format(new Date(), 'yyyyMMdd')) });
     const recentlyOpenedCount = await getRecentlyOpenedCount({ referenceDate: new DateString(new Date()) });
