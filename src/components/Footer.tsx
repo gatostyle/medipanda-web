@@ -80,7 +80,7 @@ export function Footer() {
               <Typography variant='largeTextM' sx={{ margin: '0 8px', color: colors.gray60 }}>
                 |
               </Typography>
-              고객센터 : 오전 9시~오후 5시(토/일/공유일 휴무)
+              고객센터 : 오전 9시~오후 5시(토/일/공휴일 휴무)
               <br />
               통신판매번호 : 제 2025-서울강남-05488 호
               <Typography variant='largeTextM' sx={{ margin: '0 8px', color: colors.gray60 }}>
