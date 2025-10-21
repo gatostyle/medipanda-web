@@ -168,7 +168,9 @@ export default function MrCsoMatchingList() {
                           whiteSpace: 'nowrap',
                         }}
                       >
-                        <Typography variant='smallTextB'>{post.title}</Typography>
+                        <Typography variant='smallPcR' sx={{ fontWeight: 700 }}>
+                          {post.title}
+                        </Typography>
                       </Link>
                       <img
                         src='/assets/icons/icon-image.svg'
