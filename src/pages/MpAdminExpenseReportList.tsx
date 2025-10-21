@@ -6,6 +6,7 @@ import {
   Card,
   FormControl,
   InputLabel,
+  Link,
   MenuItem,
   Pagination,
   PaginationItem,
@@ -300,6 +301,7 @@ export default function MpAdminExpenseReportList() {
                 <TableCell width={100}>시행일시</TableCell>
                 <TableCell width={120}>지원금액</TableCell>
                 <TableCell width={100}>신고상태</TableCell>
+                <TableCell width={100}>첨부파일</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -331,6 +333,11 @@ export default function MpAdminExpenseReportList() {
                     <TableCell>{`${item.eventStartAt !== null ? DateUtils.parseUtcAndFormatKst(item.eventStartAt, DATEFORMAT_YYYY_MM_DD) : '-'} ~ ${item.eventEndAt !== null ? DateUtils.parseUtcAndFormatKst(item.eventEndAt, DATEFORMAT_YYYY_MM_DD) : '-'}`}</TableCell>
                     <TableCell>{`${item.supportAmount.toLocaleString()}원`}</TableCell>
                     <TableCell>{ExpenseReportStatusLabel[item.status]}</TableCell>
+                    <TableCell>
+                      <Link component={RouterLink} to={`/v1/expense-reports/${item.reportId}/files/download`} target='_blank'>
+                        다운로드
+                      </Link>
+                    </TableCell>
                   </TableRow>
                 ))
               )}
