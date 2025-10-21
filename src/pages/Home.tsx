@@ -44,11 +44,6 @@ export default function Home() {
   const [monthlyFeeAmount, setMonthlyFeeAmount] = useState<number | null>(null);
   const [recentlyOpenedCount, setRecentlyOpenedCount] = useState<number | null>(null);
 
-  const defaultSalesAgencyProductsCarouselItem: CarouselItem = {
-    id: -1,
-    linkUrl: new URL('/partner-contract', location.href).href,
-    imageUrl: '/assets/banner-fixed.svg',
-  };
   const [salesAgencyProducts, setSalesAgencyProducts] = useState<CarouselItem[]>([]);
 
   const fetchSalesAgencyProducts = async () => {
@@ -62,17 +57,21 @@ export default function Home() {
       });
 
       setSalesAgencyProducts(
-        [defaultSalesAgencyProductsCarouselItem].concat(
-          response.content.map(product => ({
-            id: product.id,
-            linkUrl: new URL(`/sales-agency-products/${product.id}`, location.href).href,
-            imageUrl: product.thumbnailUrl!,
-          })),
-        ),
+        response.content.map(product => ({
+          id: product.id,
+          linkUrl: new URL(`/sales-agency-products/${product.id}`, location.href).href,
+          imageUrl: product.thumbnailUrl!,
+        })),
       );
     } catch (e) {
       console.error('Failed to fetch sales agency products:', e);
-      setSalesAgencyProducts([defaultSalesAgencyProductsCarouselItem]);
+      setSalesAgencyProducts([
+        {
+          id: -1,
+          linkUrl: new URL('/partner-contract', location.href).href,
+          imageUrl: '/assets/banner-fixed.svg',
+        },
+      ]);
     }
   };
 
