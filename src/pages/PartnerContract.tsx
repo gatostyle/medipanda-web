@@ -236,7 +236,7 @@ export default function PartnerContract() {
               name={'contractType'}
               render={({ field }) => (
                 <PartnerContractFormInput direction='row' gap='10px'>
-                  {contractDetails?.contractType !== PartnerContractType.ORGANIZATION && (
+                  {(contractDetails === null || contractDetails.contractType === PartnerContractType.ORGANIZATION) && (
                     <PartnerContractFormButton
                       fullWidth
                       variant='outlined'
@@ -252,7 +252,7 @@ export default function PartnerContract() {
                       법인
                     </PartnerContractFormButton>
                   )}
-                  {contractDetails?.contractType !== PartnerContractType.INDIVIDUAL && (
+                  {(contractDetails === null || contractDetails.contractType === PartnerContractType.INDIVIDUAL) && (
                     <PartnerContractFormButton
                       fullWidth
                       variant='outlined'
