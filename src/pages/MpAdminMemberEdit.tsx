@@ -300,7 +300,7 @@ export default function MpAdminMemberEdit() {
 
       <Stack sx={{ gap: 3 }}>
         <Stack direction='row' sx={{ gap: 3 }}>
-          <Stack sx={{ flex: '1 0' }}>
+          <Stack sx={{ flex: '1 0', overflow: 'hidden' }}>
             <Card component={Stack} sx={{ p: 3, gap: 3 }}>
               <Typography variant='h6'>기본정보</Typography>
 
@@ -435,7 +435,18 @@ export default function MpAdminMemberEdit() {
                   CSO 신고증
                 </Typography>
                 {detail.csoCertUrl !== null ? (
-                  <Link href={detail.csoCertUrl} download target='_blank' rel='noopener noreferrer' underline='hover'>
+                  <Link
+                    href={detail.csoCertUrl}
+                    download
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    underline='hover'
+                    sx={{
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
                     {MedipandaUrlFileName(detail.csoCertUrl)}
                   </Link>
                 ) : (
@@ -457,7 +468,7 @@ export default function MpAdminMemberEdit() {
             </Card>
           </Stack>
 
-          <Stack sx={{ flex: '1 0', gap: 3 }}>
+          <Stack sx={{ flex: '1 0', gap: 3, overflow: 'hidden' }}>
             {contractDetail !== null && (
               <Card component={Stack} sx={{ p: 3, gap: 3 }}>
                 <Stack direction='row' justifyContent='space-between' alignItems='center'>
@@ -534,7 +545,16 @@ export default function MpAdminMemberEdit() {
                     <Typography variant='subtitle2' color='text.secondary'>
                       {PartnerContractFileTypeLabel[PartnerContractFileType.CSO_CERTIFICATE]}
                     </Typography>
-                    <Link component={RouterLink} to={contractDetail.fileUrls[PartnerContractFileType.CSO_CERTIFICATE]} target='_blank'>
+                    <Link
+                      component={RouterLink}
+                      to={contractDetail.fileUrls[PartnerContractFileType.CSO_CERTIFICATE]}
+                      target='_blank'
+                      sx={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
                       {MedipandaUrlFileName(contractDetail.fileUrls[PartnerContractFileType.CSO_CERTIFICATE])}
                     </Link>
                   </Stack>
@@ -545,7 +565,16 @@ export default function MpAdminMemberEdit() {
                     <Typography variant='subtitle2' color='text.secondary'>
                       {PartnerContractFileTypeLabel[PartnerContractFileType.SALES_EDUCATION_CERT]}
                     </Typography>
-                    <Link component={RouterLink} to={contractDetail.fileUrls[PartnerContractFileType.SALES_EDUCATION_CERT]} target='_blank'>
+                    <Link
+                      component={RouterLink}
+                      to={contractDetail.fileUrls[PartnerContractFileType.SALES_EDUCATION_CERT]}
+                      target='_blank'
+                      sx={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
                       {MedipandaUrlFileName(contractDetail.fileUrls[PartnerContractFileType.SALES_EDUCATION_CERT])}
                     </Link>
                   </Stack>
