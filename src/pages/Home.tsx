@@ -1,6 +1,5 @@
 import {
   BannerPosition,
-  type BannerResponse,
   BoardExposureRange,
   type BoardPostResponse,
   BoardType,
@@ -69,13 +68,13 @@ export default function Home() {
         {
           id: -1,
           linkUrl: new URL('/partner-contract', location.href).href,
-          imageUrl: '/assets/banner-fixed.svg',
+          imageUrl: '/assets/default-carousel-sales-agency.svg',
         },
       ]);
     }
   };
 
-  const [banners, setBanners] = useState<BannerResponse[]>([]);
+  const [banners, setBanners] = useState<CarouselItem[]>([]);
 
   const fetchBanners = async () => {
     try {
@@ -90,7 +89,13 @@ export default function Home() {
       setBanners(response.content);
     } catch (e) {
       console.error('Failed to fetch banners:', e);
-      setBanners([]);
+      setBanners([
+        {
+          id: -1,
+          linkUrl: 'https://blog.naver.com/medipanda/224048806609',
+          imageUrl: '/assets/default-carousel-banner.jpg',
+        },
+      ]);
     }
   };
 
@@ -220,52 +225,54 @@ export default function Home() {
       </Box>
 
       <Stack direction='row' alignItems='center' gap='20px' sx={{ marginBottom: 0 }}>
-        <Box
-          sx={{
-            position: 'relative',
-          }}
-        >
-          <MedipandaCarousel ref={salesAgencyProductCarouselRef} interval={5000} width={602}>
-            {salesAgencyProducts.map(salesAgencyProduct => (
-              <RouterLink key={salesAgencyProduct.id} to={setSchema(salesAgencyProduct.linkUrl)} target='_blank'>
-                <LazyImage
-                  src={salesAgencyProduct.imageUrl}
+        {salesAgencyProducts.length > 0 && (
+          <Box
+            sx={{
+              position: 'relative',
+            }}
+          >
+            <MedipandaCarousel ref={salesAgencyProductCarouselRef} interval={5000} width={602}>
+              {salesAgencyProducts.map(salesAgencyProduct => (
+                <RouterLink key={salesAgencyProduct.id} to={setSchema(salesAgencyProduct.linkUrl)} target='_blank'>
+                  <LazyImage
+                    src={salesAgencyProduct.imageUrl}
+                    style={{
+                      width: '602px',
+                      height: '180px',
+                      borderRadius: '12px',
+                      cursor: 'pointer',
+                      display: 'block',
+                    }}
+                  />
+                </RouterLink>
+              ))}
+            </MedipandaCarousel>
+            {salesAgencyProducts.length > 1 && (
+              <>
+                <img
+                  src='/assets/carousel-left.svg'
+                  onClick={salesAgencyProductCarouselRef.current?.prev}
                   style={{
-                    width: '602px',
-                    height: '180px',
-                    borderRadius: '12px',
+                    position: 'absolute',
+                    top: '70px',
+                    left: '10px',
                     cursor: 'pointer',
-                    display: 'block',
                   }}
                 />
-              </RouterLink>
-            ))}
-          </MedipandaCarousel>
-          {banners.length > 1 && (
-            <>
-              <img
-                src='/assets/carousel-left.svg'
-                onClick={salesAgencyProductCarouselRef.current?.prev}
-                style={{
-                  position: 'absolute',
-                  top: '70px',
-                  left: '10px',
-                  cursor: 'pointer',
-                }}
-              />
-              <img
-                src='/assets/carousel-right.svg'
-                onClick={salesAgencyProductCarouselRef.current?.next}
-                style={{
-                  position: 'absolute',
-                  top: '70px',
-                  right: '10px',
-                  cursor: 'pointer',
-                }}
-              />
-            </>
-          )}
-        </Box>
+                <img
+                  src='/assets/carousel-right.svg'
+                  onClick={salesAgencyProductCarouselRef.current?.next}
+                  style={{
+                    position: 'absolute',
+                    top: '70px',
+                    right: '10px',
+                    cursor: 'pointer',
+                  }}
+                />
+              </>
+            )}
+          </Box>
+        )}
         {banners.length > 0 && (
           <Box
             sx={{
