@@ -30,6 +30,7 @@ export interface MpPartnerUploadModalProps {
 function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUploadModalProps) {
   const { alert, alertError } = useMpModal();
   const { enqueueSnackbar } = useSnackbar();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm({
     defaultValues: {
@@ -67,6 +68,8 @@ function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUpl
       return;
     }
 
+    setIsSubmitting(true);
+
     try {
       await uploadPartnersExcel(form.getValues('member')!.userId, { file: form.getValues('file')! });
       enqueueSnackbar('업로드가 완료되었습니다.', { variant: 'success' });
@@ -74,6 +77,8 @@ function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUpl
     } catch (error) {
       console.error('Failed to upload file:', error);
       await alertError('업로드 중 오류가 발생했습니다.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -147,8 +152,14 @@ function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUpl
           <Button variant='outlined' onClick={onClose} sx={{ minWidth: 100 }}>
             취소
           </Button>
-          <Button variant='contained' color='success' onClick={handleFileUpload} disabled={!formMember || !formFile} sx={{ minWidth: 100 }}>
-            업로드
+          <Button
+            variant='contained'
+            color='success'
+            onClick={handleFileUpload}
+            disabled={!formMember || !formFile || isSubmitting}
+            sx={{ minWidth: 100 }}
+          >
+            {isSubmitting ? '업로드 중...' : '업로드'}
           </Button>
         </DialogActions>
       </Dialog>
