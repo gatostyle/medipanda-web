@@ -496,10 +496,10 @@
           canvas.width = canvasWidth;
           canvas.height = canvasHeight;
 
-          originalImageData = canvas.toDataURL('image/jpeg', 1.0);
-
           updateDisplay();
           redraw();
+
+          originalImageData = canvas.toDataURL('image/jpeg', 1.0);
 
           globalLoader.hidden = true;
         };
