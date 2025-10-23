@@ -165,12 +165,16 @@ export default function MpAdminPrescriptionFormList() {
       return;
     }
 
+    const pendingIds = contents
+      .filter(it => selectedIds.includes(it.id) && it.status === PrescriptionPartnerStatus.PENDING)
+      .map(it => it.id);
+
     deleteDialog.open({
       title: '처방 삭제',
-      message: `선택한 ${selectedIds.length}개의 처방을 삭제하시겠습니까?`,
+      message: `선택한 ${selectedIds.length}개 중 승인대기중인 ${pendingIds.length}개의 처방을 삭제하시겠습니까?`,
       onConfirm: async () => {
         try {
-          await Promise.all(selectedIds.map(id => deletePrescriptionPartner(id)));
+          await Promise.all(pendingIds.map(id => deletePrescriptionPartner(id)));
           enqueueSnackbar('처방이 삭제되었습니다.', { variant: 'success' });
           setSelectedIds([]);
           fetchContents();
@@ -310,12 +314,12 @@ export default function MpAdminPrescriptionFormList() {
                 <TableCell width={50}>
                   <Checkbox
                     checked={
-                      selectedIds.length === contents.filter(c => c.status === PrescriptionPartnerStatus.PENDING).length &&
-                      contents.filter(c => c.status === PrescriptionPartnerStatus.PENDING).length > 0
+                      selectedIds.length === contents.filter(c => c.status !== PrescriptionPartnerStatus.COMPLETED).length &&
+                      contents.filter(c => c.status !== PrescriptionPartnerStatus.COMPLETED).length > 0
                     }
                     onChange={e => {
                       if (e.target.checked) {
-                        setSelectedIds(contents.filter(c => c.status === PrescriptionPartnerStatus.PENDING).map(item => item.id));
+                        setSelectedIds(contents.filter(c => c.status !== PrescriptionPartnerStatus.COMPLETED).map(item => item.id));
                       } else {
                         setSelectedIds([]);
                       }
@@ -366,7 +370,7 @@ export default function MpAdminPrescriptionFormList() {
                             setSelectedIds(prev => prev.filter(id => id !== item.id));
                           }
                         }}
-                        disabled={item.status !== PrescriptionPartnerStatus.PENDING}
+                        disabled={item.status === PrescriptionPartnerStatus.COMPLETED}
                       />
                     </TableCell>
                     <TableCell>{item.sequence}</TableCell>
