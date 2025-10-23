@@ -164,6 +164,7 @@ export default function PartnerContract() {
         education_certificate: values.educationCertificate,
       });
       alert('파트너사 계약 신청이 완료되었습니다.');
+      fetchContractDetails();
     } catch (e) {
       console.error(e);
       alert('파트너사 계약 신청 중 오류가 발생했습니다. 다시 시도해주세요.');
