@@ -406,6 +406,7 @@ export default function MpAdminPartnerEdit() {
         onSelect={handleMemberSelect}
         additionalFilter={{
           contractStatus: ContractStatus.CONTRACT,
+          filterDeleted: true,
         }}
       />
     </Stack>

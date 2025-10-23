@@ -2651,6 +2651,7 @@ export async function getUserMembers(options?: {
   email?: string;
   companyName?: string;
   contractStatus?: 'CONTRACT' | 'NON_CONTRACT';
+  filterDeleted?: boolean;
   startAt?: DateString;
   endAt?: DateString;
   page?: number;
@@ -2773,6 +2774,7 @@ export function getDownloadUserMembersExcel(options?: {
   email?: string;
   companyName?: string;
   contractStatus?: 'CONTRACT' | 'NON_CONTRACT';
+  filterDeleted?: boolean;
   startAt?: DateString;
   endAt?: DateString;
   page?: number;

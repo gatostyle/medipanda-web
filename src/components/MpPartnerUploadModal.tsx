@@ -170,6 +170,7 @@ function MpPartnerUploadModalInternal({ open, onClose, onSuccess }: MpPartnerUpl
         onSelect={handleMemberSelect}
         additionalFilter={{
           contractStatus: ContractStatus.CONTRACT,
+          filterDeleted: true,
         }}
       />
     </>
