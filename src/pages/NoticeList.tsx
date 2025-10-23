@@ -1,6 +1,5 @@
-import { type BoardPostResponse, BoardType, getBoards, getFixedTopNotices, NoticeType, NoticeTypeLabel } from '@/backend';
+import { type BoardPostResponse, BoardType, getBoards, getFixedTopNotices, NoticeType } from '@/backend';
 import { MedipandaPagination } from '@/custom/components/MedipandaPagination';
-import { MedipandaTextLink } from '@/custom/components/MedipandaTextLink';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
 import { setUrlParams } from '@/lib/utils/url';
 import { colors } from '@/themes';
@@ -128,31 +127,6 @@ export default function NoticeList() {
           marginTop: '30px',
         }}
       >
-        <Stack direction='row' alignItems='center' gap='20px'>
-          {(
-            [
-              '',
-              NoticeType.PRODUCT_STATUS,
-              NoticeType.MANUFACTURING_SUSPENSION,
-              NoticeType.NEW_PRODUCT,
-              NoticeType.POLICY,
-              NoticeType.GENERAL,
-            ] as const
-          ).map(noticeTypeItem => (
-            <MedipandaTextLink
-              key={noticeTypeItem}
-              underline='hover'
-              component={RouterLink}
-              to={setUrlParams({ noticeType: noticeTypeItem }, initialSearchParams)}
-              sx={{
-                color: noticeTypeItem === noticeType ? colors.vividViolet : colors.gray50,
-                cursor: 'pointer',
-              }}
-            >
-              {noticeTypeItem === '' ? '전체' : NoticeTypeLabel[noticeTypeItem]}
-            </MedipandaTextLink>
-          ))}
-        </Stack>
         <Controller
           control={form.control}
           name='searchKeyword'
