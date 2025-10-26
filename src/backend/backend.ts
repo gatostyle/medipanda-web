@@ -1851,6 +1851,7 @@ export async function createBoardPost(data: { files?: File[]; request: BoardPost
  */
 export async function getBoardMembers(options?: {
   userId?: string;
+  memberId?: number;
   name?: string;
   nickname?: string;
   phoneNumber?: string;
@@ -2006,8 +2007,9 @@ export async function getCommentMembers(options?: {
   startAt?: DateString;
   endAt?: DateString;
   commentType?: 'COMMENT' | 'REPLY';
-  filterBlind?: boolean;
   filterDeleted?: boolean;
+  filterBlind?: boolean;
+  name?: string;
   page?: number;
   size?: number;
 }): Promise<PageCommentMemberResponse> {
