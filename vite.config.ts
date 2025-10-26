@@ -190,6 +190,42 @@ const injectHtmlSeoPlugin = ({ mode }: { mode: string }) => {
   };
 };
 
+const injectHtmlTagPlugin = ({ mode }: { mode: string }) => {
+  return {
+    name: 'inject-html-tag',
+    transformIndexHtml(html: string) {
+      if (mode !== 'prod') {
+        return html.replace(/%TAG_SCRIPT%/, '');
+      }
+
+      return html.replace(
+        /%TAG_SCRIPT%/,
+        `
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PDGFZ1ZDYR"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-PDGFZ1ZDYR');
+    </script>
+
+    <!-- Naver tag -->
+    <script type="text/javascript" src="//wcs.pstatic.net/wcslog.js"></script>
+    <script type="text/javascript">
+      if(!wcs_add) var wcs_add = {};
+      wcs_add["wa"] = "15288ae0ba3e930";
+      if(window.wcs) {
+        wcs_do();
+      }
+    </script>
+        `,
+      );
+    },
+  };
+};
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
@@ -208,7 +244,7 @@ export default defineConfig(({ mode }) => {
         '@': '/src',
       },
     },
-    plugins: [react(), viteTsconfigPaths(), injectHtmlFaviconPlugin(), injectHtmlSeoPlugin({ mode })],
+    plugins: [react(), viteTsconfigPaths(), injectHtmlFaviconPlugin(), injectHtmlSeoPlugin({ mode }), injectHtmlTagPlugin({ mode })],
     server: {
       proxy: {
         '/v1': {
