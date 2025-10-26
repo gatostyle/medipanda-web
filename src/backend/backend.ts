@@ -937,9 +937,49 @@ export interface PartnerCreateRequest {
   medicalDepartment: string | null;
   note: string | null;
   pharmacyAddress: string | null;
+  pharmacyCreateRequest: PartnerPharmacyCreateRequest | null;
   pharmacyName: string | null;
   pharmacyStatus: 'NORMAL' | 'CLOSED' | 'DELETED' | 'NONE';
   userId: string;
+}
+
+export interface PartnerPharmacyCreateItem {
+  note: string | null;
+  pharmacyAddress: string | null;
+  pharmacyName: string;
+  pharmacyStatus: 'NORMAL' | 'CLOSED' | 'DELETED' | 'NONE';
+  phone: string | null;
+}
+
+export interface PartnerPharmacyCreateRequest {
+  items: PartnerPharmacyCreateItem[];
+}
+
+export interface PartnerPharmacyDeleteRequest {
+  ids: number[];
+}
+
+export interface PartnerPharmacyResponse {
+  id: number;
+  note: string | null;
+  pharmacyAddress: string | null;
+  pharmacyName: string;
+  pharmacyStatus: 'NORMAL' | 'CLOSED' | 'DELETED' | 'NONE';
+  phone: string | null;
+}
+
+export interface PartnerPharmacyUpdateItem {
+  note: string | null;
+  pharmacyAddress: string | null;
+  pharmacyId: number;
+  pharmacyName: string | null;
+  pharmacyStatus: ('NORMAL' | 'CLOSED' | 'DELETED' | 'NONE') | null;
+  phone: string | null;
+}
+
+export interface PartnerPharmacyUpdateRequest {
+  deletedIds: number[] | null;
+  items: PartnerPharmacyUpdateItem[];
 }
 
 export interface PartnerResponse {
@@ -973,6 +1013,7 @@ export interface PartnerUpdateRequest {
   pharmacyAddress: string | null;
   pharmacyName: string | null;
   pharmacyStatus: ('NORMAL' | 'CLOSED' | 'DELETED' | 'NONE') | null;
+  pharmacyUpdateRequest: PartnerPharmacyUpdateRequest | null;
 }
 
 export interface PerformanceStatsByDrugCompany {
@@ -1710,7 +1751,7 @@ export async function unblindPost(data: BlindUpdateRequest): Promise<void> {
  * 내가 차단한 사용자 목록 조회
  * GET /v1/blocks
  */
-export async function list(): Promise<BlockResponse[]> {
+export async function list_1(): Promise<BlockResponse[]> {
   const response = await axios.request<BlockResponse[]>({
     method: 'GET',
     url: '/v1/blocks',
@@ -3129,6 +3170,56 @@ export async function deletePartner(id: number): Promise<void> {
   await axios.request({
     method: 'DELETE',
     url: `/v1/partners/${id}`,
+  });
+}
+
+/**
+ * 문전약국 조회
+ * GET /v1/partners/{partnerId}/pharmacies
+ */
+export async function list(partnerId: number): Promise<PartnerPharmacyResponse[]> {
+  const response = await axios.request<PartnerPharmacyResponse[]>({
+    method: 'GET',
+    url: `/v1/partners/${partnerId}/pharmacies`,
+  });
+  return response.data;
+}
+
+/**
+ * 문전약국 생성
+ * POST /v1/partners/{partnerId}/pharmacies
+ */
+export async function createAll(partnerId: number, data: PartnerPharmacyCreateRequest): Promise<PartnerPharmacyResponse[]> {
+  const response = await axios.request<PartnerPharmacyResponse[]>({
+    method: 'POST',
+    url: `/v1/partners/${partnerId}/pharmacies`,
+    data,
+  });
+  return response.data;
+}
+
+/**
+ * 문전약국 수정
+ * PUT /v1/partners/{partnerId}/pharmacies
+ */
+export async function updateAll(partnerId: number, data: PartnerPharmacyUpdateRequest): Promise<PartnerPharmacyResponse[]> {
+  const response = await axios.request<PartnerPharmacyResponse[]>({
+    method: 'PUT',
+    url: `/v1/partners/${partnerId}/pharmacies`,
+    data,
+  });
+  return response.data;
+}
+
+/**
+ * 문전약국 삭제
+ * DELETE /v1/partners/{partnerId}/pharmacies
+ */
+export async function deleteAll(partnerId: number, data: PartnerPharmacyDeleteRequest): Promise<void> {
+  await axios.request({
+    method: 'DELETE',
+    url: `/v1/partners/${partnerId}/pharmacies`,
+    data,
   });
 }
 

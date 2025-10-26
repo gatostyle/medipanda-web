@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   Card,
+  Checkbox,
   CircularProgress,
   FormControl,
   IconButton,
@@ -25,12 +26,14 @@ import {
 } from '@mui/material';
 import { AxiosError } from 'axios';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
-import { SearchNormal1 } from 'iconsax-reactjs';
+import { Add, SearchNormal1 } from 'iconsax-reactjs';
 import {
   ContractStatus,
+  createAll as createPartnerPharmacies,
   createPartner,
   type DrugCompanyResponse,
   getPartnerDetails,
+  list as listPartnerPharmacies,
   type MemberResponse,
   PharmacyStatus,
   PharmacyStatusLabel,
@@ -54,6 +57,9 @@ export default function MpAdminPartnerEdit() {
 
   const { alert, alertError } = useMpModal();
 
+  const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
+  const [deletedPharmacyIds, setDeletedPharmacyIds] = useState<number[]>([]);
+
   useEffect(() => {
     if (!isNew) {
       fetchDetail(partnerId);
@@ -69,6 +75,7 @@ export default function MpAdminPartnerEdit() {
     setLoading(true);
     try {
       const detail = await getPartnerDetails(partnerId);
+      const pharmacies = await listPartnerPharmacies(partnerId);
 
       form.reset({
         drugCompany: { id: -1, name: detail.drugCompanyName, code: '' },
@@ -80,9 +87,10 @@ export default function MpAdminPartnerEdit() {
         institutionName: detail.institutionName,
         businessNumber: normalizeBusinessNumber(detail.businessNumber),
         medicalDepartment: detail.medicalDepartment ?? '',
-        pharmacyName: detail.pharmacyName ?? '',
-        pharmacyAddress: detail.pharmacyAddress ?? '',
-        pharmacyStatus: detail.pharmacyStatus ?? PharmacyStatus.NONE,
+        pharmacyIds: pharmacies.map(p => p.id),
+        pharmacyNames: pharmacies.map(p => p.pharmacyName),
+        pharmacyAddresses: pharmacies.map(p => p.pharmacyAddress ?? ''),
+        pharmacyStatuses: pharmacies.map(p => p.pharmacyStatus),
         note: detail.note ?? '',
       });
     } catch (error) {
@@ -105,14 +113,16 @@ export default function MpAdminPartnerEdit() {
       institutionName: '',
       businessNumber: '',
       medicalDepartment: '',
-      pharmacyName: '',
-      pharmacyAddress: '',
-      pharmacyStatus: PharmacyStatus.NONE as keyof typeof PharmacyStatus,
+      pharmacyIds: [] as (number | null)[],
+      pharmacyNames: [] as string[],
+      pharmacyAddresses: [] as string[],
+      pharmacyStatuses: [] as (keyof typeof PharmacyStatus)[],
       note: '',
     },
   });
   const formDrugCompany = form.watch('drugCompany');
   const formMemberName = form.watch('memberName');
+  const formPharmacyIds = form.watch('pharmacyIds');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
     if (values.drugCompany === null) {
@@ -135,8 +145,18 @@ export default function MpAdminPartnerEdit() {
       return;
     }
 
-    if ((values.pharmacyName !== '' || values.pharmacyAddress !== '') && values.pharmacyStatus === PharmacyStatus.NONE) {
-      await alert('약국 상태를 선택하세요.');
+    if (values.pharmacyNames.some(v => v === '')) {
+      await alert('약국명이 입력되지 않은 항목이 있습니다.');
+      return;
+    }
+
+    if (values.pharmacyAddresses.some(v => v === '')) {
+      await alert('약국 주소가 입력되지 않은 항목이 있습니다.');
+      return;
+    }
+
+    if (values.pharmacyStatuses.some(v => v === PharmacyStatus.NONE)) {
+      await alert('약국 상태가 선택되지 않은 항목이 있습니다.');
       return;
     }
 
@@ -152,9 +172,18 @@ export default function MpAdminPartnerEdit() {
           institutionName: values.institutionName,
           businessNumber: values.businessNumber.replace(/-/g, ''),
           medicalDepartment: values.medicalDepartment,
-          pharmacyName: values.pharmacyName,
-          pharmacyAddress: values.pharmacyAddress,
-          pharmacyStatus: values.pharmacyStatus!,
+          pharmacyCreateRequest: {
+            items: values.pharmacyIds.map((_, index) => ({
+              pharmacyName: values.pharmacyNames[index],
+              pharmacyAddress: values.pharmacyAddresses[index],
+              pharmacyStatus: values.pharmacyStatuses[index],
+              phone: null,
+              note: null,
+            })),
+          },
+          pharmacyName: null,
+          pharmacyAddress: null,
+          pharmacyStatus: 'NONE',
           note: values.note,
         });
       } else {
@@ -167,10 +196,35 @@ export default function MpAdminPartnerEdit() {
           institutionName: values.institutionName,
           businessNumber: values.businessNumber.replace(/-/g, ''),
           medicalDepartment: values.medicalDepartment,
-          pharmacyName: values.pharmacyName,
-          pharmacyAddress: values.pharmacyAddress,
-          pharmacyStatus: values.pharmacyStatus,
+          pharmacyUpdateRequest: {
+            items: values.pharmacyIds
+              .filter((id): id is number => id !== null)
+              .map((id, index) => ({
+                pharmacyId: id,
+                pharmacyName: values.pharmacyNames[index],
+                pharmacyAddress: values.pharmacyAddresses[index],
+                pharmacyStatus: values.pharmacyStatuses[index],
+                phone: null,
+                note: null,
+              })),
+            deletedIds: deletedPharmacyIds,
+          },
+          pharmacyName: null,
+          pharmacyAddress: null,
+          pharmacyStatus: 'NONE',
           note: values.note,
+        });
+        await createPartnerPharmacies(partnerId, {
+          items: values.pharmacyIds
+            .map((id, index) => ({
+              pharmacyId: id,
+              pharmacyName: values.pharmacyNames[index],
+              pharmacyAddress: values.pharmacyAddresses[index],
+              pharmacyStatus: values.pharmacyStatuses[index],
+              phone: null,
+              note: null,
+            }))
+            .filter(({ pharmacyId }) => pharmacyId === null),
         });
       }
 
@@ -202,6 +256,50 @@ export default function MpAdminPartnerEdit() {
     form.setValue('companyName', member.companyName ?? '');
 
     setMemberSelectModalOpen(false);
+  };
+
+  const handleAddPharmacy = () => {
+    form.setValue('pharmacyIds', [...form.getValues('pharmacyIds'), null]);
+    form.setValue('pharmacyNames', [...form.getValues('pharmacyNames'), '']);
+    form.setValue('pharmacyAddresses', [...form.getValues('pharmacyAddresses'), '']);
+    form.setValue('pharmacyStatuses', [...form.getValues('pharmacyStatuses'), PharmacyStatus.NONE]);
+  };
+
+  const handleDeletePharmacy = () => {
+    if (selectedIndexes.length === 0) {
+      return;
+    }
+
+    const pharmacies = form.getValues(['pharmacyIds', 'pharmacyNames', 'pharmacyAddresses', 'pharmacyStatuses']);
+
+    console.log(pharmacies);
+
+    form.setValue(
+      'pharmacyIds',
+      pharmacies[0].filter((_, index) => !selectedIndexes.includes(index)),
+    );
+
+    form.setValue(
+      'pharmacyNames',
+      pharmacies[1].filter((_, index) => !selectedIndexes.includes(index)),
+    );
+
+    form.setValue(
+      'pharmacyAddresses',
+      pharmacies[2].filter((_, index) => !selectedIndexes.includes(index)),
+    );
+
+    form.setValue(
+      'pharmacyStatuses',
+      pharmacies[3].filter((_, index) => !selectedIndexes.includes(index)),
+    );
+
+    setDeletedPharmacyIds(prev => [
+      ...prev,
+      ...pharmacies[0].filter((id, index): id is number => selectedIndexes.includes(index) && id !== null),
+    ]);
+
+    setSelectedIndexes([]);
   };
 
   if (loading) {
@@ -326,53 +424,135 @@ export default function MpAdminPartnerEdit() {
         </Stack>
 
         <Stack sx={{ gap: 1 }}>
-          <Typography variant='subtitle2' color='text.secondary'>
-            문전약국
-          </Typography>
+          <Stack direction='row'>
+            <Typography variant='subtitle2' color='text.secondary'>
+              문전약국
+            </Typography>
+            <Stack direction='row' sx={{ gap: 1, marginLeft: 'auto' }}>
+              <Button variant='contained' color='error' size='small' disabled={selectedIndexes.length === 0} onClick={handleDeletePharmacy}>
+                삭제
+              </Button>
+              <Button variant='contained' color='success' size='small' onClick={handleAddPharmacy} startIcon={<Add size={16} />}>
+                약국추가
+              </Button>
+            </Stack>
+          </Stack>
           <TableContainer>
             <Table size='small'>
               <TableHead>
                 <TableRow>
+                  <TableCell width={50}>
+                    <Checkbox
+                      checked={selectedIndexes.length === formPharmacyIds.length && formPharmacyIds.length > 0}
+                      onChange={e => {
+                        if (e.target.checked) {
+                          setSelectedIndexes(form.getValues('pharmacyIds').map((_, index) => index));
+                        } else {
+                          setSelectedIndexes([]);
+                        }
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell width={60}>No</TableCell>
                   <TableCell>약국명</TableCell>
                   <TableCell>약국 주소</TableCell>
                   <TableCell width={150}>상태</TableCell>
-                  <TableCell width={120}></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                <TableRow>
-                  <TableCell>
-                    <Controller
-                      control={form.control}
-                      name={'pharmacyName'}
-                      render={({ field }) => <TextField {...field} fullWidth size='small' />}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Controller
-                      control={form.control}
-                      name={'pharmacyAddress'}
-                      render={({ field }) => <TextField {...field} fullWidth size='small' />}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <FormControl fullWidth size='small'>
-                      <Controller
-                        control={form.control}
-                        name={'pharmacyStatus'}
-                        render={({ field }) => (
-                          <Select {...field}>
-                            {[PharmacyStatus.NORMAL, PharmacyStatus.CLOSED].map(pharmacyStatus => (
-                              <MenuItem key={pharmacyStatus} value={pharmacyStatus}>
-                                {PharmacyStatusLabel[pharmacyStatus]}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        )}
-                      />
-                    </FormControl>
-                  </TableCell>
-                </TableRow>
+                {formPharmacyIds.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={5} align='center' sx={{ py: 3 }}>
+                      <Typography variant='body2' color='text.secondary'>
+                        약국이 없습니다.
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  formPharmacyIds.map((id, index) => (
+                    <TableRow key={`${index}-${id}`}>
+                      <TableCell>
+                        <Checkbox
+                          checked={selectedIndexes.includes(index)}
+                          onChange={e => {
+                            if (e.target.checked) {
+                              setSelectedIndexes(prev => [...prev, index]);
+                            } else {
+                              setSelectedIndexes(prev => prev.filter(id => id !== index));
+                            }
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>
+                        <Controller
+                          control={form.control}
+                          name={'pharmacyNames'}
+                          render={({ field }) => (
+                            <TextField
+                              value={field.value[index]}
+                              onChange={event => {
+                                field.onChange(
+                                  field.value.map((v, i) => {
+                                    return i === index ? event.target.value : v;
+                                  }),
+                                );
+                              }}
+                              fullWidth
+                              size='small'
+                            />
+                          )}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Controller
+                          control={form.control}
+                          name={'pharmacyAddresses'}
+                          render={({ field }) => (
+                            <TextField
+                              value={field.value[index]}
+                              onChange={event => {
+                                field.onChange(
+                                  field.value.map((v, i) => {
+                                    return i === index ? event.target.value : v;
+                                  }),
+                                );
+                              }}
+                              fullWidth
+                              size='small'
+                            />
+                          )}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Controller
+                          control={form.control}
+                          name={'pharmacyStatuses'}
+                          render={({ field }) => (
+                            <FormControl fullWidth size='small'>
+                              <Select
+                                value={field.value[index]}
+                                onChange={event => {
+                                  field.onChange(
+                                    field.value.map((v, i) => {
+                                      return i === index ? event.target.value : v;
+                                    }),
+                                  );
+                                }}
+                              >
+                                {[PharmacyStatus.NORMAL, PharmacyStatus.CLOSED].map(pharmacyStatus => (
+                                  <MenuItem key={pharmacyStatus} value={pharmacyStatus}>
+                                    {PharmacyStatusLabel[pharmacyStatus]}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                          )}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </TableContainer>
