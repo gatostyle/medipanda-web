@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import react from '@vitejs/plugin-react';
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig, loadEnv, type Plugin, type ResolvedConfig } from 'vite';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 
 const injectHtmlFaviconPlugin = () => {
@@ -226,6 +227,32 @@ const injectHtmlTagPlugin = ({ mode }: { mode: string }) => {
   };
 };
 
+const generateRobotsTxt = ({ mode }: { mode: string }) => {
+  let config: ResolvedConfig;
+
+  return {
+    name: 'generate-robots-txt',
+    configResolved(c: ResolvedConfig) {
+      config = c;
+    },
+    closeBundle() {
+      if (mode !== 'prod') {
+        return;
+      }
+
+      const outDir = config.build?.outDir || 'dist';
+
+      const content = `
+User-agent: *
+Allow: /
+        `.trim();
+
+      mkdirSync(outDir, { recursive: true });
+      writeFileSync(resolve(outDir, 'robots.txt'), content);
+    },
+  } as Plugin;
+};
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
@@ -244,7 +271,14 @@ export default defineConfig(({ mode }) => {
         '@': '/src',
       },
     },
-    plugins: [react(), viteTsconfigPaths(), injectHtmlFaviconPlugin(), injectHtmlSeoPlugin({ mode }), injectHtmlTagPlugin({ mode })],
+    plugins: [
+      react(),
+      viteTsconfigPaths(),
+      injectHtmlFaviconPlugin(),
+      injectHtmlSeoPlugin({ mode }),
+      injectHtmlTagPlugin({ mode }),
+      generateRobotsTxt({ mode }),
+    ],
     server: {
       proxy: {
         '/v1': {
