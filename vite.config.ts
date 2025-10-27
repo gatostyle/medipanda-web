@@ -245,10 +245,115 @@ const generateRobotsTxt = ({ mode }: { mode: string }) => {
       const content = `
 User-agent: *
 Allow: /
+
+Sitemap: https://medipanda.co.kr/sitemap.xml
         `.trim();
 
       mkdirSync(outDir, { recursive: true });
       writeFileSync(resolve(outDir, 'robots.txt'), content);
+    },
+  } as Plugin;
+};
+
+const generateSitemapXml = ({ mode }: { mode: string }) => {
+  let config: ResolvedConfig;
+
+  return {
+    name: 'generate-sitemap-xml',
+    configResolved(c: ResolvedConfig) {
+      config = c;
+    },
+    closeBundle() {
+      if (mode !== 'prod') {
+        return;
+      }
+
+      const outDir = config.build?.outDir || 'dist';
+
+      const content = `
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://medipanda.co.kr/</loc>
+    <lastmod>2025-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://medipanda.co.kr/login</loc>
+    <lastmod>2025-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://medipanda.co.kr/signup</loc>
+    <lastmod>2025-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://medipanda.co.kr/find-account</loc>
+    <lastmod>2025-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://medipanda.co.kr/find-password</loc>
+    <lastmod>2025-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://medipanda.co.kr/products</loc>
+    <lastmod>2025-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://medipanda.co.kr/prescriptions</loc>
+    <lastmod>2025-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://medipanda.co.kr/dealers</loc>
+    <lastmod>2025-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://medipanda.co.kr/settlement-list</loc>
+    <lastmod>2025-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://medipanda.co.kr/sales-statistic</loc>
+    <lastmod>2025-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://medipanda.co.kr/community/mr-cso-matching</loc>
+    <lastmod>2025-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://medipanda.co.kr/community/anonymous</loc>
+    <lastmod>2025-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://medipanda.co.kr/sales-agency-products</loc>
+    <lastmod>2025-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://medipanda.co.kr/events</loc>
+    <lastmod>2025-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://medipanda.co.kr/customer-service/notice</loc>
+    <lastmod>2025-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://medipanda.co.kr/customer-service/faq</loc>
+    <lastmod>2025-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://medipanda.co.kr/customer-service/inquiry</loc>
+    <lastmod>2025-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://medipanda.co.kr/terms</loc>
+    <lastmod>2025-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://medipanda.co.kr/privacy</loc>
+    <lastmod>2025-10-27</lastmod>
+  </url>
+</urlset>
+        `.trim();
+
+      mkdirSync(outDir, { recursive: true });
+      writeFileSync(resolve(outDir, 'sitemap.xml'), content);
     },
   } as Plugin;
 };
@@ -278,6 +383,7 @@ export default defineConfig(({ mode }) => {
       injectHtmlSeoPlugin({ mode }),
       injectHtmlTagPlugin({ mode }),
       generateRobotsTxt({ mode }),
+      generateSitemapXml({ mode }),
     ],
     server: {
       proxy: {
