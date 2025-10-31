@@ -112,6 +112,9 @@ export default function MpAdminAdminEdit() {
       }
     } catch (e) {
       switch (true) {
+        case isAxiosError(e) && /Bad request: user id already exists./.test(e.response?.data ?? ''):
+          await alert('이미 사용중인 아이디입니다.');
+          break;
         case isAxiosError(e) && /Bad request: phone number \w+ already exists./.test(e.response?.data ?? ''):
           await alert('이미 사용중인 연락처입니다.');
           break;
