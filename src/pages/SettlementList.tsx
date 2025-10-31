@@ -445,7 +445,7 @@ function SettlementDetailForm({ settlement }: { settlement: SettlementResponse |
               },
             }}
           >
-            {row.original.companyName}
+            {row.original.institutionName}
           </Button>
         ),
       },
