@@ -6,7 +6,6 @@ import {
   Card,
   Chip,
   FormControl,
-  InputLabel,
   Link,
   MenuItem,
   Pagination,
@@ -143,12 +142,12 @@ export default function MpAdminBannerList() {
         <MpSearchFilterBar component='form' onSubmit={form.handleSubmit(submitHandler)}>
           <SearchFilterItem minWidth={140}>
             <FormControl fullWidth size='small'>
-              <InputLabel>상태</InputLabel>
               <Controller
                 control={form.control}
                 name={'isExposed'}
                 render={({ field }) => (
-                  <Select {...field} value={String(field.value)} onChange={e => field.onChange(e.target.value === 'true')}>
+                  <Select {...field} value={String(field.value)} onChange={e => field.onChange(e.target.value === 'true')} displayEmpty>
+                    <MenuItem value={''}>전체</MenuItem>
                     <MenuItem value={'true'}>노출</MenuItem>
                     <MenuItem value={'false'}>미노출</MenuItem>
                   </Select>
