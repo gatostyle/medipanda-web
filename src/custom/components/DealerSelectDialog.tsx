@@ -32,7 +32,7 @@ export function DealerSelectDialog({
     columns: [
       {
         header: '딜러명',
-        cell: ({ row }) => row.original.dealerName,
+        cell: ({ row }) => row.original.displayName,
       },
       {
         header: '입력',
