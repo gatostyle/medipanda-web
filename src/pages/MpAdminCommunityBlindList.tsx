@@ -38,7 +38,7 @@ export default function MpAdminCommunityBlindList() {
   const navigate = useNavigate();
 
   const initialSearchParams = {
-    searchType: '' as 'nickname' | 'userId' | 'memberName' | '',
+    searchType: 'nickname' as 'nickname' | 'userId' | 'memberName',
     searchKeyword: '',
     startAt: '',
     endAt: '',
@@ -66,7 +66,7 @@ export default function MpAdminCommunityBlindList() {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   const deleteDialog = useMpDeleteDialog();
-  const { alert, alertError } = useMpModal();
+  const { alertError } = useMpModal();
 
   const form = useForm({
     defaultValues: {
@@ -79,11 +79,6 @@ export default function MpAdminCommunityBlindList() {
   const formEndAt = form.watch('endAt');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
-    if (values.searchType === '' && values.searchKeyword !== '') {
-      await alert('검색유형을 선택하세요.');
-      return;
-    }
-
     const url = setUrlParams(
       {
         ...values,
