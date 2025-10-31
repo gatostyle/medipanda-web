@@ -7,7 +7,6 @@ import {
   Checkbox,
   Chip,
   FormControl,
-  InputLabel,
   Link,
   MenuItem,
   Pagination,
@@ -163,12 +162,12 @@ export default function MpAdminEventList() {
         <MpSearchFilterBar component='form' onSubmit={form.handleSubmit(submitHandler)}>
           <SearchFilterItem minWidth={140}>
             <FormControl fullWidth size='small'>
-              <InputLabel>상태</InputLabel>
               <Controller
                 control={form.control}
                 name={'status'}
                 render={({ field }) => (
-                  <Select {...field}>
+                  <Select {...field} displayEmpty>
+                    <MenuItem value=''>전체</MenuItem>
                     {Object.keys(EventStatus).map(eventStatus => (
                       <MenuItem key={eventStatus} value={eventStatus}>
                         {EventStatusLabel[eventStatus]}
