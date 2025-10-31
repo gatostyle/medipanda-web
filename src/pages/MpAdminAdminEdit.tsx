@@ -46,32 +46,32 @@ export default function MpAdminAdminEdit() {
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
     if (values.name === '') {
-      await alert('관리자 명은 필수입니다');
+      await alert('관리자 명은 필수입니다.');
       return;
     }
 
     if (values.userId === '') {
-      await alert('아이디는 필수입니다');
+      await alert('아이디는 필수입니다.');
       return;
     }
 
     if (isNew && values.password === '') {
-      await alert('패스워드는 필수입니다');
+      await alert('패스워드는 필수입니다.');
       return;
     }
 
     if (isNew && values.password.length < 8) {
-      await alert('패스워드는 최소 8자 이상이어야 합니다');
+      await alert('패스워드는 최소 8자 이상이어야 합니다.');
       return;
     }
 
     if (isNew && values.password !== values.passwordConfirm) {
-      await alert('패스워드가 일치하지 않습니다');
+      await alert('패스워드가 일치하지 않습니다.');
       return;
     }
 
     if (values.email === '') {
-      await alert('이메일은 필수입니다');
+      await alert('이메일은 필수입니다.');
       return;
     }
 
@@ -81,7 +81,7 @@ export default function MpAdminAdminEdit() {
     }
 
     if (values.permissions.length === 0) {
-      await alert('최소 하나 이상의 권한을 선택하세요');
+      await alert('최소 하나 이상의 권한을 선택하세요.');
       return;
     }
 

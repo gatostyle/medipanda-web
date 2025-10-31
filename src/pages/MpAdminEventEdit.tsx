@@ -65,27 +65,27 @@ export default function MpAdminEventEdit() {
       .trim();
 
     if (values.title === '') {
-      await alert('제목을 입력하세요');
+      await alert('제목을 입력하세요.');
       return;
     }
 
     if (editorContent === '') {
-      await alert('내용을 입력하세요');
+      await alert('내용을 입력하세요.');
       return;
     }
 
     if (values.startDate === null) {
-      await alert('시작일을 선택하세요');
+      await alert('시작일을 선택하세요.');
       return;
     }
 
     if (values.endDate === null) {
-      await alert('종료일을 선택하세요');
+      await alert('종료일을 선택하세요.');
       return;
     }
 
     if (thumbnailFile === null && isNew) {
-      await alert('썸네일을 선택하세요');
+      await alert('썸네일을 선택하세요.');
       return;
     }
 

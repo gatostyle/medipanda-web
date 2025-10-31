@@ -170,35 +170,35 @@ function InfoTab({ detail }: { detail: SalesAgencyProductDetailsResponse | null 
       .trim();
 
     if (values.clientName === '') {
-      await alert('위탁사명은 필수입니다');
+      await alert('위탁사명은 필수입니다.');
       return;
     }
     if (values.productName === '') {
-      await alert('상품명은 필수입니다');
+      await alert('상품명은 필수입니다.');
       return;
     }
     if (values.exposureRange === '') {
-      await alert('노출범위는 필수입니다');
+      await alert('노출범위는 필수입니다.');
       return;
     }
     if (values.thumbnailUrl === '') {
-      await alert('썸네일은 필수입니다');
+      await alert('썸네일은 필수입니다.');
       return;
     }
     if (values.contractDate === null) {
-      await alert('계약일은 필수입니다');
+      await alert('계약일은 필수입니다.');
       return;
     }
     if (values.startDate === null) {
-      await alert('게시 시작일은 필수입니다');
+      await alert('게시 시작일은 필수입니다.');
       return;
     }
     if (values.endDate === null) {
-      await alert('게시 종료일은 필수입니다');
+      await alert('게시 종료일은 필수입니다.');
       return;
     }
     if (values.endDate < values.startDate) {
-      await alert('종료일은 시작일 이후여야 합니다');
+      await alert('종료일은 시작일 이후여야 합니다.');
       return;
     }
 

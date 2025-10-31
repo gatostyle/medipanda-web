@@ -60,27 +60,27 @@ export default function MpAdminBannerEdit() {
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
     if (values.title === '') {
-      await alert('배너제목을 입력하세요');
+      await alert('배너제목을 입력하세요.');
       return;
     }
 
     if (!imageFile && isNew) {
-      await alert('배너이미지를 선택하세요');
+      await alert('배너이미지를 선택하세요.');
       return;
     }
 
     if (values.linkUrl === '') {
-      await alert('배너링크를 입력하세요');
+      await alert('배너링크를 입력하세요.');
       return;
     }
 
     if (values.startAt === null) {
-      await alert('시작일을 선택하세요');
+      await alert('시작일을 선택하세요.');
       return;
     }
 
     if (values.endAt === null) {
-      await alert('종료일을 선택하세요');
+      await alert('종료일을 선택하세요.');
       return;
     }
 
@@ -99,7 +99,7 @@ export default function MpAdminBannerEdit() {
           },
           imageFile: imageFile!,
         });
-        await alert('배너가 등록되었습니다');
+        await alert('배너가 등록되었습니다.');
       } else {
         await updateBanner(bannerId, {
           request: {
@@ -114,12 +114,12 @@ export default function MpAdminBannerEdit() {
           },
           imageFile: imageFile ?? undefined,
         });
-        await alert('배너가 수정되었습니다');
+        await alert('배너가 수정되었습니다.');
       }
       navigate('/admin/banners');
     } catch (error) {
       console.error('Failed to save banner:', error);
-      await alertError('배너 저장 중 오류가 발생했습니다');
+      await alertError('배너 저장 중 오류가 발생했습니다.');
     }
   };
 
@@ -155,7 +155,7 @@ export default function MpAdminBannerEdit() {
       }
     } catch (error) {
       console.error('Failed to fetch banner detail:', error);
-      await alertError('배너 정보를 불러오는데 실패했습니다');
+      await alertError('배너 정보를 불러오는데 실패했습니다.');
     } finally {
       setLoading(false);
     }
