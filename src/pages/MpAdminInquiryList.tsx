@@ -158,12 +158,12 @@ export default function MpAdminInquiryList() {
         <MpSearchFilterBar component='form' onSubmit={form.handleSubmit(submitHandler)}>
           <SearchFilterItem minWidth={140}>
             <FormControl fullWidth size='small'>
-              <InputLabel>상태</InputLabel>
               <Controller
                 control={form.control}
                 name='hasChildren'
                 render={({ field }) => (
-                  <Select {...field}>
+                  <Select {...field} displayEmpty>
+                    <MenuItem value={''}>전체</MenuItem>
                     <MenuItem value={'false'}>답변대기중</MenuItem>
                     <MenuItem value={'true'}>답변완료</MenuItem>
                   </Select>
