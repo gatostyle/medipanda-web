@@ -152,6 +152,7 @@ export default function MpAdminCommunityCommentList() {
     const message = count === 1 ? `댓글을 블라인드 처리하시겠습니까?` : `${count}건이 선택되었습니다. 블라인드 처리하시겠습니까?`;
 
     deleteDialog.open({
+      title: '블라인드 처리 확인',
       message,
       onConfirm: async () => {
         try {

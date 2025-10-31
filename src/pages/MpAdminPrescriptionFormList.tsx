@@ -170,7 +170,6 @@ export default function MpAdminPrescriptionFormList() {
       .map(it => it.id);
 
     deleteDialog.open({
-      title: '처방 삭제',
       message: `선택한 ${selectedIds.length}개 중 승인대기중인 ${pendingIds.length}개의 처방을 삭제하시겠습니까?`,
       onConfirm: async () => {
         try {

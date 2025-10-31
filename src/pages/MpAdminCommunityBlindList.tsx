@@ -138,6 +138,7 @@ export default function MpAdminCommunityBlindList() {
       count === 1 ? `선택한 항목의 블라인드를 해제하시겠습니까?` : `${count}건이 선택되었습니다. 블라인드를 해제하시겠습니까?`;
 
     deleteDialog.open({
+      title: '블라인드 해제 확인',
       message,
       onConfirm: async () => {
         try {

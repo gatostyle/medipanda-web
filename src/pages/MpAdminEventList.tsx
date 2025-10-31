@@ -140,7 +140,6 @@ export default function MpAdminEventList() {
     }
 
     deleteDialog.open({
-      title: '이벤트 삭제',
       message: `선택한 ${selectedIds.length}개의 이벤트를 삭제하시겠습니까?`,
       onConfirm: async () => {
         try {
