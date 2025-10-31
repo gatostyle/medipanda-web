@@ -6,6 +6,7 @@ import {
   Card,
   Chip,
   FormControl,
+  InputLabel,
   Link,
   MenuItem,
   Pagination,
@@ -25,6 +26,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { format } from 'date-fns';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import {
+  BannerPosition,
   BannerPositionLabel,
   type BannerResponse,
   BannerScopeLabel,
@@ -49,6 +51,7 @@ export default function MpAdminBannerList() {
     startAt: '',
     endAt: '',
     isExposed: '' as 'true' | 'false' | '',
+    position: '' as keyof typeof BannerPosition | '',
     page: '1',
   };
 
@@ -57,6 +60,7 @@ export default function MpAdminBannerList() {
     startAt: paramStartAt,
     endAt: paramEndAt,
     isExposed,
+    position,
     page: paramPage,
   } = useSearchParamsOrDefault(initialSearchParams);
   const startAt = useMemo(() => DateUtils.tryParseDate(paramStartAt) ?? null, [paramStartAt]);
@@ -108,6 +112,7 @@ export default function MpAdminBannerList() {
         startAt: startAt ? new DateTimeString(startAt) : undefined,
         endAt: endAt ? new DateTimeString(endAt) : undefined,
         isExposed: isExposed !== '' ? isExposed === 'true' : undefined,
+        bannerPositions: position !== '' ? [position] : undefined,
         page: page - 1,
         size: pageSize,
       });
@@ -131,8 +136,9 @@ export default function MpAdminBannerList() {
     form.setValue('startAt', startAt);
     form.setValue('endAt', endAt);
     form.setValue('isExposed', isExposed);
+    form.setValue('position', position);
     fetchContent();
-  }, [searchKeyword, startAt, endAt, isExposed, page]);
+  }, [searchKeyword, startAt, endAt, isExposed, position, page]);
 
   return (
     <Stack sx={{ gap: 3 }}>
@@ -150,6 +156,24 @@ export default function MpAdminBannerList() {
                     <MenuItem value={''}>전체</MenuItem>
                     <MenuItem value={'true'}>노출</MenuItem>
                     <MenuItem value={'false'}>미노출</MenuItem>
+                  </Select>
+                )}
+              />
+            </FormControl>
+          </SearchFilterItem>
+          <SearchFilterItem minWidth={140}>
+            <FormControl fullWidth size='small'>
+              <InputLabel>배너위치</InputLabel>
+              <Controller
+                control={form.control}
+                name={'position'}
+                render={({ field }) => (
+                  <Select {...field}>
+                    {Object.keys(BannerPosition).map(bannerPosition => (
+                      <MenuItem key={bannerPosition} value={bannerPosition}>
+                        {BannerPositionLabel[bannerPosition]}
+                      </MenuItem>
+                    ))}
                   </Select>
                 )}
               />
