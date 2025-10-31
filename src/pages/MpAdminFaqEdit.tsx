@@ -187,14 +187,14 @@ export default function MpAdminFaqEdit() {
       <Card component={Stack} sx={{ padding: 3, gap: 3 }}>
         <Stack>
           <Typography variant='body2' color='text.secondary'>
-            제목
+            제목 *
           </Typography>
           <Controller control={form.control} name={'title'} render={({ field }) => <TextField {...field} fullWidth placeholder='' />} />
         </Stack>
 
         <Stack>
           <Typography variant='body2' color='text.secondary'>
-            내용
+            내용 *
           </Typography>
           <Stack
             sx={{
