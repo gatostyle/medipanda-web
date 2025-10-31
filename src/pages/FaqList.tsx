@@ -68,6 +68,7 @@ export default function FaqList() {
         [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         page: page - 1,
         size: pageSize,
+        isExposed: true,
         filterDeleted: true,
         filterBlind: true,
       });

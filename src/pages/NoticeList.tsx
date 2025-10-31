@@ -68,6 +68,7 @@ export default function NoticeList() {
         noticeTypes: noticeType !== '' ? [noticeType] : undefined,
         page: page - 1,
         size: pageSize,
+        isExposed: true,
         filterDeleted: true,
         filterBlind: true,
       });
