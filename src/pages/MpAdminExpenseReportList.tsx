@@ -47,7 +47,7 @@ export default function MpAdminExpenseReportList() {
   const navigate = useNavigate();
 
   const initialSearchParams = {
-    searchType: '' as 'companyName' | 'userId' | 'productName' | '',
+    searchType: 'companyName' as 'companyName' | 'userId' | 'productName',
     searchKeyword: '',
     eventDateFrom: '',
     eventDateTo: '',
@@ -74,7 +74,7 @@ export default function MpAdminExpenseReportList() {
   const [contents, setContents] = useState<Sequenced<ExpenseReportResponse>[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const { alert, alertError } = useMpModal();
+  const { alertError } = useMpModal();
 
   const form = useForm({
     defaultValues: {
@@ -87,11 +87,6 @@ export default function MpAdminExpenseReportList() {
   const formEventDateTo = form.watch('eventDateTo');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
-    if (values.searchType === '' && values.searchKeyword !== '') {
-      await alert('검색유형을 선택하세요.');
-      return;
-    }
-
     const url = setUrlParams(
       {
         ...values,
