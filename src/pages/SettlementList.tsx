@@ -56,7 +56,7 @@ export default function SettlementList() {
   const [totalPages, setTotalPages] = useState(0);
 
   const initialSearchParams = {
-    searchType: 'companyName' as 'dealerName' | 'dealerId' | 'drugCompanyName' | 'companyName',
+    searchType: 'companyName' as 'dealerName' | 'drugCompanyName' | 'companyName',
     searchKeyword: '',
     settlementMonth: format(new Date(), DATEFORMAT_YYYY_MM),
     page: '1',
@@ -83,11 +83,6 @@ export default function SettlementList() {
   });
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
-    if (values.searchType === 'dealerId' && values.searchKeyword !== '' && Number.isNaN(Number(values.searchKeyword))) {
-      await alert('딜러번호는 숫자만 입력할 수 있습니다.');
-      return;
-    }
-
     const url = setUrlParams(
       {
         ...values,
