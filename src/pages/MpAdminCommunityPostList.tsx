@@ -166,6 +166,7 @@ export default function MpAdminCommunityPostList() {
 
     deleteDialog.open({
       title: '블라인드 처리 확인',
+      confirmText: '블라인드',
       message,
       onConfirm: async () => {
         try {

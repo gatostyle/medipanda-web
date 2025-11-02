@@ -4,6 +4,7 @@ import { createContext, type ReactNode, useContext, useState } from 'react';
 export interface DeleteDialogConfig {
   title?: string;
   message: string;
+  confirmText?: string;
   onConfirm: () => void | Promise<void>;
 }
 
@@ -63,7 +64,8 @@ export function MpDeleteDialogProvider({ children }: MpDeleteDialogProviderProps
             취소
           </Button>
           <Button onClick={handleConfirm} variant='contained' color='error' disabled={loading}>
-            {loading ? '삭제 중...' : '삭제'}
+            {config?.confirmText ?? '삭제'}
+            {loading ? ' 중...' : ''}
           </Button>
         </DialogActions>
       </Dialog>

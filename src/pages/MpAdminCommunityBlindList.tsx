@@ -139,6 +139,7 @@ export default function MpAdminCommunityBlindList() {
 
     deleteDialog.open({
       title: '블라인드 해제 확인',
+      confirmText: '블라인드 해제',
       message,
       onConfirm: async () => {
         try {
