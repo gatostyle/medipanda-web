@@ -202,7 +202,7 @@ export default function MpAdminNoticeList() {
                 control={form.control}
                 name={'isExposed'}
                 render={({ field }) => (
-                  <Select {...field} value={String(field.value)} onChange={e => field.onChange(e.target.value === 'true')} displayEmpty>
+                  <Select {...field} displayEmpty>
                     <MenuItem value={''}>전체</MenuItem>
                     <MenuItem value={'true'}>노출</MenuItem>
                     <MenuItem value={'false'}>미노출</MenuItem>
