@@ -39,7 +39,7 @@ export default function MpAdminAtoZList() {
   const navigate = useNavigate();
 
   const initialSearchParams = {
-    searchType: 'title' as 'title' | 'userId' | 'name' | 'nickname',
+    searchType: 'boardTitle' as const,
     searchKeyword: '',
     startAt: '',
     endAt: '',
