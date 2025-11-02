@@ -38,11 +38,7 @@ export default function DealerList() {
       },
       {
         header: '딜러명',
-        cell: ({ row }) => row.original.dealerName,
-      },
-      {
-        header: '거래제약사',
-        cell: () => '-',
+        cell: ({ row }) => row.original.displayName,
       },
       {
         header: '등록일',

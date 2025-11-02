@@ -1,7 +1,6 @@
 import {
   DateTimeString,
   type DealerResponse,
-  type DrugCompanyResponse,
   type PartnerResponse,
   type PrescriptionResponse,
   PrescriptionStatusLabel,
@@ -9,7 +8,6 @@ import {
   uploadPartnerEdiFiles,
 } from '@/backend';
 import { DealerSelectDialog } from '@/custom/components/DealerSelectDialog';
-import { DrugCompanySelectDialog } from '@/custom/components/DrugCompanySelectDialog';
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaDatePicker } from '@/custom/components/MedipandaDatePicker';
 import { MedipandaFileUploadButton } from '@/custom/components/MedipandaFileUploadButton';
@@ -201,14 +199,12 @@ function EdiIndividualUploadForm() {
 
   const [dealerSelectDialogOpen, setDealerSelectDialogOpen] = useState(false);
   const [partnerSelectDialogOpen, setPartnerSelectDialogOpen] = useState(false);
-  const [drugCompanySearchDialogOpen, setDrugCompanySearchDialogOpen] = useState(false);
 
   const form = useForm({
     defaultValues: {
       dealer: null as DealerResponse | null,
       prescriptionMonth: null as Date | null,
       partner: null as PartnerResponse | null,
-      drugCompanies: [] as DrugCompanyResponse[],
       files: [] as File[],
     },
   });
@@ -229,11 +225,6 @@ function EdiIndividualUploadForm() {
       return;
     }
 
-    if (values.drugCompanies.length === 0) {
-      alert('거래제약사를 선택해 주세요.');
-      return;
-    }
-
     if (values.files.length === 0) {
       alert('EDI 파일을 선택해 주세요.');
       return;
@@ -246,7 +237,7 @@ function EdiIndividualUploadForm() {
           dealerId: values.dealer!.id,
           prescriptionMonth: new DateTimeString(values.prescriptionMonth!),
           partnerId: values.partner!.id,
-          drugCompanyId: values.drugCompanies.map(drugCompany => drugCompany.id)[0],
+          drugCompanyId: values.dealer!.drugCompanyId!,
         },
         files: values.files,
       });
@@ -358,42 +349,6 @@ function EdiIndividualUploadForm() {
       </Stack>
       <Controller
         control={form.control}
-        name={'drugCompanies'}
-        render={({ field }) => (
-          <>
-            {(field.value as (DrugCompanyResponse | null)[]).concat(null).map((drugCompany, index) => (
-              <Stack key={drugCompany?.id ?? ''} direction='row' alignItems='center'>
-                <Typography variant='largeTextM' sx={{ color: colors.gray80, width: '120px' }}>
-                  {index === 0 ? '거래제약사' : ''}
-                </Typography>
-                <Stack direction='row' alignItems='center' gap='10px' sx={{ width: '330px' }}>
-                  <MedipandaOutlinedInput
-                    value={drugCompany !== null ? drugCompany.name : ''}
-                    disabled
-                    sx={{
-                      flexGrow: 1,
-                      height: '50px',
-                      backgroundColor: colors.gray10,
-                    }}
-                  />
-                  {drugCompany === null && (
-                    <MedipandaButton
-                      onClick={() => setDrugCompanySearchDialogOpen(true)}
-                      variant='contained'
-                      size='large'
-                      color='secondary'
-                    >
-                      거래제약사 추가
-                    </MedipandaButton>
-                  )}
-                </Stack>
-              </Stack>
-            ))}
-          </>
-        )}
-      />
-      <Controller
-        control={form.control}
         name={'files'}
         render={({ field }) => (
           <>
@@ -492,21 +447,6 @@ function EdiIndividualUploadForm() {
               field.onChange(partner);
               setPartnerSelectDialogOpen(false);
             }}
-          />
-        )}
-      />
-      <Controller
-        control={form.control}
-        name={'drugCompanies'}
-        render={({ field }) => (
-          <DrugCompanySelectDialog
-            open={drugCompanySearchDialogOpen}
-            onClose={() => setDrugCompanySearchDialogOpen(false)}
-            onSelect={drugCompany => {
-              field.onChange([...field.value, drugCompany]);
-              setDrugCompanySearchDialogOpen(false);
-            }}
-            excludedIds={field.value.map(company => company.id)}
           />
         )}
       />
