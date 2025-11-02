@@ -280,7 +280,7 @@ function EdiIndividualUploadForm() {
             name={'dealer'}
             render={({ field }) => (
               <MedipandaOutlinedInput
-                value={field.value?.dealerName ?? ''}
+                value={field.value?.displayName ?? ''}
                 disabled
                 sx={{
                   height: '50px',
