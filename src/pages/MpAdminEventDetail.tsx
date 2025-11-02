@@ -1,5 +1,6 @@
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import { useMpModal } from '@/hooks/useMpModal';
+import { setSchema } from '@/lib/utils/url';
 import { Box, Button, Card, Chip, CircularProgress, Divider, Stack, Typography } from '@mui/material';
 import { EditorContent } from '@tiptap/react';
 import { BoardExposureRangeLabel, type EventBoardDetailsResponse, getEventBoardDetails, PostAttachmentType } from '@/backend';
@@ -158,7 +159,7 @@ export default function MpAdminEventDetail() {
               <Typography
                 variant='body1'
                 component='a'
-                href={detail.videoUrl}
+                href={setSchema(detail.videoUrl)}
                 target='_blank'
                 rel='noopener noreferrer'
                 sx={{ color: 'primary.main', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
