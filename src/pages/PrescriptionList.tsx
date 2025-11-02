@@ -1,10 +1,10 @@
 import {
   DateTimeString,
   type DealerResponse,
+  getPrescriptionPartnerList,
   type PartnerResponse,
-  type PrescriptionResponse,
+  type PrescriptionPartnerResponse,
   PrescriptionStatusLabel,
-  searchPrescriptions,
   uploadPartnerEdiFiles,
 } from '@/backend';
 import { DealerSelectDialog } from '@/custom/components/DealerSelectDialog';
@@ -31,11 +31,11 @@ import type { RequiredDeep } from 'type-fest';
 export default function PrescriptionList() {
   const navigate = useNavigate();
 
-  const [contents, setContents] = useState<PrescriptionResponse[]>([]);
+  const [contents, setContents] = useState<PrescriptionPartnerResponse[]>([]);
   const [totalPages, setTotalPages] = useState(0);
 
   const initialSearchParams = {
-    searchType: 'institutionName' as 'institutionName' | 'userId' | 'dealerName' | 'drugCompanyName',
+    searchType: 'institutionName' as 'institutionName' | 'dealerName',
     searchKeyword: '',
     page: '1',
   };
@@ -64,7 +64,7 @@ export default function PrescriptionList() {
 
   const fetchContents = async () => {
     try {
-      const response = await searchPrescriptions({
+      const response = await getPrescriptionPartnerList({
         [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
         page: page - 1,
         size: pageSize,
