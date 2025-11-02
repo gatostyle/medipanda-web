@@ -165,6 +165,11 @@ export default function MpAdminAtoZEdit() {
     input.type = 'file';
     input.multiple = true;
     input.onchange = async () => {
+      if (form.getValues('newFiles').length + (input.files ?? []).length > 3) {
+        await alert('첨부파일은 최대 3개까지 업로드할 수 있습니다.');
+        return;
+      }
+
       form.setValue('newFiles', [...form.getValues('newFiles'), ...(Array.from(input.files ?? []) as File[])]);
     };
     input.click();
@@ -226,7 +231,13 @@ export default function MpAdminAtoZEdit() {
             첨부파일
           </Typography>
           <Box>
-            <Button onClick={handleFileUpload} variant='contained' component='label' size='small'>
+            <Button
+              onClick={handleFileUpload}
+              disabled={formAttachedFiles.length + formNewFiles.length >= 3}
+              variant='contained'
+              component='label'
+              size='small'
+            >
               파일첨부
             </Button>
           </Box>
