@@ -70,8 +70,8 @@ export default function MpAdminAdminEdit() {
       return;
     }
 
-    if (values.email === '') {
-      await alert('이메일은 필수입니다.');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
+      await alert('올바른 이메일 형식이 아닙니다.');
       return;
     }
 
