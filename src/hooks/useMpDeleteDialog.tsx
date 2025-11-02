@@ -30,7 +30,6 @@ export function MpDeleteDialogProvider({ children }: MpDeleteDialogProviderProps
     try {
       await config.onConfirm();
       setOpen(false);
-      setConfig(null);
     } catch (error) {
       console.error('Delete operation failed:', error);
     } finally {
@@ -41,7 +40,6 @@ export function MpDeleteDialogProvider({ children }: MpDeleteDialogProviderProps
   const handleCancel = () => {
     if (loading) return;
     setOpen(false);
-    setConfig(null);
   };
 
   return (
