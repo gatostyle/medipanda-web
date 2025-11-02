@@ -2,6 +2,7 @@ import {
   DateString,
   getDownloadSettlementListExcel,
   getSettlements,
+  getSettlementsTotal,
   type SettlementResponse,
   SettlementStatus,
   SettlementStatusLabel,
@@ -70,6 +71,7 @@ export default function MpAdminSettlementList() {
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [totalPrescriptionAmount, setTotalPrescriptionAmount] = useState(0);
 
   const [settlementUploadModalOpen, setSettlementUploadModalOpen] = useState(false);
 
@@ -118,9 +120,18 @@ export default function MpAdminSettlementList() {
         size: pageSize,
       });
 
+      const totalPrescriptionAmount = await getSettlementsTotal({
+        dealerId: searchType === 'dealerId' && searchKeyword !== '' ? Number(searchKeyword) : undefined,
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
+        status: status !== '' ? status : undefined,
+        startMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
+        endMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
+      });
+
       setContents(withSequence(response).content);
       setTotalElements(response.totalElements);
       setTotalPages(response.totalPages);
+      setTotalPrescriptionAmount(totalPrescriptionAmount);
     } catch (error) {
       console.error('Failed to fetch settlement list:', error);
       await alertError('정산내역 목록을 불러오는 중 오류가 발생했습니다.');
@@ -228,6 +239,7 @@ export default function MpAdminSettlementList() {
           <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
             <Stack direction='row' spacing={2}>
               <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
+              <Typography variant='subtitle1'>총 처방금액: {totalPrescriptionAmount.toLocaleString()}원</Typography>
             </Stack>
             <Stack direction='row' spacing={1}>
               <Button

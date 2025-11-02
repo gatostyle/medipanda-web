@@ -4149,6 +4149,7 @@ export async function getPerformanceTotalPrescriptionAmount(options?: {
   companyName?: string;
   dealerName?: string;
   institutionName?: string;
+  institutionCode?: string;
   startMonth?: DateString;
   endMonth?: DateString;
 }): Promise<number> {
