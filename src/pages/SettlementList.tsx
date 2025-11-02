@@ -3,6 +3,7 @@ import {
   getSettlementPartnerProducts,
   getSettlementPartnerSummary,
   getSettlements,
+  getSettlementsTotal,
   notifyAdminForObjections,
   notifyAdminForSettlements,
   SettlementPartnerOrder,
@@ -54,6 +55,7 @@ export default function SettlementList() {
 
   const [contents, setContents] = useState<Sequenced<SettlementResponse>[]>([]);
   const [totalPages, setTotalPages] = useState(0);
+  const [totalPrescriptionAmount, setTotalPrescriptionAmount] = useState(0);
 
   const initialSearchParams = {
     searchType: 'companyName' as 'dealerName' | 'drugCompanyName' | 'companyName',
@@ -105,8 +107,15 @@ export default function SettlementList() {
         size: pageSize,
       });
 
+      const totalPrescriptionAmount = await getSettlementsTotal({
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
+        startMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
+        endMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
+      });
+
       setContents(withSequence(response).content);
       setTotalPages(response.totalPages);
+      setTotalPrescriptionAmount(totalPrescriptionAmount);
     } catch (error) {
       console.error('Failed to fetch settlement list:', error);
       alert('정산내역 목록을 불러오는 중 오류가 발생했습니다.');
@@ -245,7 +254,7 @@ export default function SettlementList() {
             }}
           >
             <Typography variant='mediumTextR' sx={{ color: colors.navy }}>
-              합계금액 : {contents.reduce((acc, v) => acc + v.totalAmount, 0).toLocaleString()}
+              합계금액 : {totalPrescriptionAmount.toLocaleString()}
             </Typography>
             <MedipandaButton
               variant='contained'
