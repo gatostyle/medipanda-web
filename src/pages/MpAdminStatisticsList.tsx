@@ -24,7 +24,14 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { format } from 'date-fns';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { DocumentDownload } from 'iconsax-reactjs';
-import { DateString, getDownloadPerformanceExcel, getPerformanceStats, type PerformanceStatsResponse, SettlementStatus } from '@/backend';
+import {
+  DateString,
+  getDownloadPerformanceExcel,
+  getPerformanceStats,
+  getSettlementsTotal,
+  type PerformanceStatsResponse,
+  SettlementStatus,
+} from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
 import { DATEFORMAT_YYYY_MM, DateUtils } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
@@ -104,10 +111,16 @@ export default function MpAdminStatisticsList() {
         size: pageSize,
       });
 
+      const totalPrescriptionAmount = await getSettlementsTotal({
+        [searchType]: searchKeyword !== '' ? searchKeyword : undefined,
+        startMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
+        endMonth: settlementMonth ? new DateString(settlementMonth) : undefined,
+      });
+
       setContents(withSequence(response).content);
       setTotalElements(response.totalElements);
       setTotalPages(response.totalPages);
-      setTotalPrescriptionAmount(response.content.reduce((sum, item) => sum + item.prescriptionAmount, 0));
+      setTotalPrescriptionAmount(totalPrescriptionAmount);
     } catch (error) {
       console.error('Failed to fetch performance statistics:', error);
       await alertError('실적통계 목록을 불러오는 중 오류가 발생했습니다.');

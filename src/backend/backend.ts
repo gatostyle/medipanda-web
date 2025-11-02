@@ -4162,6 +4162,27 @@ export async function getPerformanceTotalPrescriptionAmount(options?: {
 }
 
 /**
+ * 정산내역 목록 조회 (총 처방금액 합계)
+ * GET /v1/settlements/total-prescription-amount
+ */
+export async function getSettlementsTotal(options?: {
+  dealerName?: string;
+  dealerId?: number;
+  drugCompanyName?: string;
+  companyName?: string;
+  status?: 'REQUEST' | 'OBJECTION';
+  startMonth?: DateString;
+  endMonth?: DateString;
+}): Promise<number> {
+  const response = await axios.request<number>({
+    method: 'GET',
+    url: '/v1/settlements/total-prescription-amount',
+    params: options,
+  });
+  return response.data;
+}
+
+/**
  * 정산 엑셀 업로드
  * POST /v1/settlements/upload
  */
