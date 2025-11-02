@@ -347,7 +347,7 @@ export default function MpAdminEventList() {
                       </Link>
                     </TableCell>
                     <TableCell>{item.viewCount.toLocaleString()}</TableCell>
-                    <TableCell>{DateUtils.parseUtcAndFormatKst(item.createdDate, DATEFORMAT_YYYY_MM_DD)}</TableCell>
+                    <TableCell>{DateUtils.parseUtcAndFormatKst(item.createdDate, DATEFORMAT_YYYY_MM_DD_HH_MM_SS)}</TableCell>
                     <TableCell>
                       <Chip
                         label={item.isExposed ? '노출' : '미노출'}
@@ -356,7 +356,7 @@ export default function MpAdminEventList() {
                         size='small'
                       />
                     </TableCell>
-                    <TableCell>{`${DateUtils.parseUtcAndFormatKst(item.eventStartAt, DATEFORMAT_YYYY_MM_DD_HH_MM_SS)} ~ ${DateUtils.parseUtcAndFormatKst(item.eventEndAt, DATEFORMAT_YYYY_MM_DD_HH_MM_SS)}`}</TableCell>
+                    <TableCell>{`${DateUtils.parseUtcAndFormatKst(item.eventStartAt, DATEFORMAT_YYYY_MM_DD)} ~ ${DateUtils.parseUtcAndFormatKst(item.eventEndAt, DATEFORMAT_YYYY_MM_DD)}`}</TableCell>
                   </TableRow>
                 ))
               )}
