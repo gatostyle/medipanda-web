@@ -91,7 +91,7 @@ export default function PrescriptionList() {
     columns: [
       {
         header: '딜러명',
-        cell: ({ row }) => row.original.dealerName,
+        cell: ({ row }) => `${row.original.dealerName}(${row.original.drugCompany})`,
       },
       {
         header: '거래처명',
