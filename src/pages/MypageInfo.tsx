@@ -6,9 +6,11 @@ import { useSession } from '@/hooks/useSession';
 import { colors, typography } from '@/themes';
 import { requestKmcAuth } from '@/utils/kmc';
 import { isValidPassword } from '@/utils/form';
+import { ArrowDropDown } from '@mui/icons-material';
 import { Box, FormControl, IconButton, InputAdornment, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { AxiosError } from 'axios';
+import { useState } from 'react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Link as RouterLink } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
@@ -38,6 +40,8 @@ export default function MypageInfo() {
   const AVAILABLE_FILE_EXTENSIONS = ['jpg', 'jpeg', 'pdf', 'png'];
 
   const { session, refresh } = useSession();
+
+  const [mailDomainDropdownOpen, setMailDomainDropdownOpen] = useState(false);
 
   const form = useForm({
     defaultValues: {
@@ -179,6 +183,18 @@ export default function MypageInfo() {
         alert('비밀번호 변경 중 오류가 발생했습니다.');
       }
     }
+  };
+
+  const handleDropdownOpen = () => {
+    setMailDomainDropdownOpen(true);
+
+    setTimeout(() => {
+      const handleClose = () => {
+        setMailDomainDropdownOpen(false);
+        document.removeEventListener('click', handleClose);
+      };
+      document.addEventListener('click', handleClose);
+    });
   };
 
   const handleCopyReferralCode = () => {
@@ -360,12 +376,35 @@ export default function MypageInfo() {
                   control={form.control}
                   name={'emailDomain'}
                   render={({ field }) => (
-                    <FormControl sx={{ minWidth: 140 }}>
-                      <Select {...field}>
-                        <MenuItem value='naver.com'>naver.com</MenuItem>
-                        <MenuItem value='gmail.com'>gmail.com</MenuItem>
-                        <MenuItem value='daum.net'>daum.net</MenuItem>
-                        <MenuItem value='hanmail.net'>hanmail.net</MenuItem>
+                    <FormControl sx={{ flex: 1 }}>
+                      <TextField
+                        {...field}
+                        sx={{
+                          zIndex: 1,
+                          backgroundColor: 'white',
+                        }}
+                        slotProps={{
+                          input: {
+                            endAdornment: (
+                              <InputAdornment position='end'>
+                                <IconButton onClick={handleDropdownOpen}>
+                                  <ArrowDropDown />
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          },
+                        }}
+                      />
+                      <Select
+                        {...field}
+                        open={mailDomainDropdownOpen}
+                        sx={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 0 }}
+                      >
+                        {['naver.com', 'gmail.com', 'daum.net', 'hanmail.net'].map(domain => (
+                          <MenuItem key={domain} value={domain}>
+                            {domain}
+                          </MenuItem>
+                        ))}
                       </Select>
                     </FormControl>
                   )}
