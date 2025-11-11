@@ -665,7 +665,7 @@ export default function ProductList() {
                     <Typography variant='largeTextB' sx={{ color: colors.gray70, whiteSpace: 'pre-line' }}>
                       {product.productName}
                     </Typography>
-                    <Typography variant='mediumTextR' sx={{ color: colors.gray50, whiteSpace: 'pre-line' }}>
+                    <Typography variant='smallPcR' sx={{ color: colors.gray70, whiteSpace: 'pre-line' }}>
                       {product.composition}
                     </Typography>
                   </Stack>
@@ -859,8 +859,8 @@ function ReplaceableProductDialog({ open, onClose, productId }: { open?: boolean
                           {product.productName}
                         </Typography>
                         <Typography
-                          variant='mediumTextR'
-                          sx={{ color: colors.gray50, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                          variant='smallPcR'
+                          sx={{ color: colors.gray70, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                         >
                           {product.composition}
                         </Typography>
