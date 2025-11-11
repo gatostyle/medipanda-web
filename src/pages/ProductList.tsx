@@ -60,6 +60,7 @@ export default function ProductList() {
   const navigate = useNavigate();
 
   const [contents, setContents] = useState<ProductSummaryResponse[]>([]);
+  const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
   const initialSearchParams = {
@@ -163,11 +164,13 @@ export default function ProductList() {
       });
 
       setContents(withSequence(response).content);
+      setTotalElements(response.totalElements);
       setTotalPages(response.totalPages);
     } catch (error) {
       console.error('Failed to fetch product list:', error);
       alert('의약품 목록을 불러오는 중 오류가 발생했습니다.');
       setContents([]);
+      setTotalElements(0);
       setTotalPages(0);
     }
   };
@@ -582,7 +585,7 @@ export default function ProductList() {
 
       <Stack direction='row' sx={{ alignItems: 'center', marginTop: '40px' }}>
         <Typography variant='mediumTextR' sx={{ color: colors.navy }}>
-          전체 : {totalPages.toLocaleString()}건
+          전체 : {totalElements.toLocaleString()}건
         </Typography>
         <Stack direction='row' alignItems='center' gap='10px' sx={{ marginLeft: 'auto' }}>
           <Typography variant='mediumTextR' sx={{ color: colors.navy }}>
