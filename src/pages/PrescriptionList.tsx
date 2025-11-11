@@ -196,6 +196,7 @@ export default function PrescriptionList() {
 
 function EdiIndividualUploadForm() {
   const AVAILABLE_FILE_EXTENSIONS = ['png', 'jpg', 'jpeg'];
+  const MAX_PRESCRIPTION_FILES = 30;
 
   const [dealerSelectDialogOpen, setDealerSelectDialogOpen] = useState(false);
   const [partnerSelectDialogOpen, setPartnerSelectDialogOpen] = useState(false);
@@ -368,7 +369,9 @@ function EdiIndividualUploadForm() {
                     }}
                   />
                 ) : (
-                  <MedipandaFileUploadButton onChange={handleFileUpload} sx={{ width: '330px' }} />
+                  field.value.length < MAX_PRESCRIPTION_FILES && (
+                    <MedipandaFileUploadButton onChange={handleFileUpload} sx={{ width: '330px' }} />
+                  )
                 )}
               </Stack>
             ))}
@@ -380,7 +383,8 @@ function EdiIndividualUploadForm() {
         <br />
         1. {AVAILABLE_FILE_EXTENSIONS.join(', ')}파일만 업로드 가능해요.
         <br />
-        2. 파일은 최대 5개까지 가능하니, 5개가 초과할 경우에는 &apos;한번에 업로드&apos; 기능을 이용해주세요.
+        2. 파일은 최대 {MAX_PRESCRIPTION_FILES}개까지 가능하니, {MAX_PRESCRIPTION_FILES}개가 초과할 경우에는 &apos;메디판다 프로그램&apos;을
+        이용해주세요.
         <br />
         3. 파일명의 처방월이 선택한 처방월과 일치하게 해주세요.
       </Typography>
