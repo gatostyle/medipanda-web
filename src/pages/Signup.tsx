@@ -364,7 +364,7 @@ export default function Signup() {
 
           <Stack sx={{ gap: '8px' }}>
             <Typography variant='largeTextM' sx={{ color: colors.gray80 }}>
-              CSO 등록증
+              CSO 신고증
             </Typography>
             <Stack>
               <MedipandaFileUploadButton onChange={handleFileUpload} />

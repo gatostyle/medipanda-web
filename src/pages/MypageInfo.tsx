@@ -440,7 +440,7 @@ export default function MypageInfo() {
             </MypageFormRow>
 
             <MypageFormRow direction='row'>
-              <MypageFormLabel>CSO 등록증</MypageFormLabel>
+              <MypageFormLabel>CSO 신고증</MypageFormLabel>
               <MypageFormInput>
                 {session!.partnerContractStatus !== MemberType.NONE ? (
                   <Stack
