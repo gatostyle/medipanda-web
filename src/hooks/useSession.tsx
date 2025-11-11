@@ -82,7 +82,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const login = async (userId: string, password: string) => {
     const { publicKey } = await getPublicKey();
-    const encryptedPassword = import.meta.env.VITE_APP_ENCRYPT_PASSWORD === 'true' ? password : await encryptRSA(publicKey, password);
+    const encryptedPassword = import.meta.env.VITE_APP_ENCRYPT_PASSWORD === 'true' ? await encryptRSA(publicKey, password) : password;
     const { refreshToken } = await apiLogin({
       userId,
       password: encryptedPassword,
