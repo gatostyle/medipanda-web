@@ -42,7 +42,7 @@ import { MpPartnerSelectModal } from '@/components/MpPartnerSelectModal';
 import { type Sequenced } from '@/lib/utils/withSequence';
 import { useSnackbar } from 'notistack';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
 import { DATEFORMAT_YYYY_MM, DateUtils } from '@/lib/utils/dateFormat';
 
@@ -78,7 +78,6 @@ function intervalToDisposable(intervalId: ReturnType<typeof setInterval>): Dispo
 }
 
 export default function MpAdminPrescriptionFormEdit() {
-  const navigate = useNavigate();
   const { prescriptionPartnerId: paramPrescriptionPartnerId } = useParams();
   const isNew = paramPrescriptionPartnerId === undefined;
   const prescriptionPartnerId = Number(paramPrescriptionPartnerId);
@@ -161,7 +160,7 @@ export default function MpAdminPrescriptionFormEdit() {
       });
 
       await alert('거래처별 제품 목록이 저장되었습니다.');
-      navigate('/admin/prescription-forms');
+      window.history.back();
     } catch (e) {
       console.error('Failed to submit form:', e);
       await alertError('거래처별 제품상세 저장에 실패했습니다.');
@@ -312,7 +311,7 @@ export default function MpAdminPrescriptionFormEdit() {
   const fetchPrescriptionFormData = async (prescriptionPartnerId: number) => {
     if (Number.isNaN(prescriptionPartnerId)) {
       await alertError('잘못된 접근입니다.');
-      return navigate('/admin/prescription-forms');
+      return window.history.back();
     }
 
     try {
@@ -811,7 +810,7 @@ export default function MpAdminPrescriptionFormEdit() {
 
         {prescriptionPartner!.status !== 'COMPLETED' ? (
           <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 4 }}>
-            <Button variant='outlined' size='large' component={RouterLink} to='/admin/prescription-forms' sx={{ minWidth: 120 }}>
+            <Button variant='outlined' size='large' onClick={() => window.history.back()} sx={{ minWidth: 120 }}>
               취소
             </Button>
             <Button variant='contained' color='success' size='large' onClick={form.handleSubmit(submitHandler)} sx={{ minWidth: 120 }}>
@@ -820,7 +819,7 @@ export default function MpAdminPrescriptionFormEdit() {
           </Stack>
         ) : (
           <Stack direction='row' spacing={2} justifyContent='center' sx={{ mt: 4 }}>
-            <Button variant='outlined' size='large' component={RouterLink} to='/admin/prescription-forms' sx={{ minWidth: 120 }}>
+            <Button variant='outlined' size='large' onClick={() => window.history.back()} sx={{ minWidth: 120 }}>
               뒤로
             </Button>
           </Stack>
