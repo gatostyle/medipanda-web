@@ -368,6 +368,7 @@ export default defineConfig(({ mode }) => {
         input: {
           main: resolve(__dirname, 'index.html'),
           landing: resolve(__dirname, 'landing.html'),
+          event1: resolve(__dirname, 'event1.html'),
         },
       },
     },

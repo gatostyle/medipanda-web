@@ -1293,6 +1293,11 @@ export interface ProductSummaryResponse {
   roundedFeeRate: number | null;
 }
 
+export interface PromotionTokenResponse {
+  expiresAt: number;
+  token: string;
+}
+
 export interface PushPreferenceResponse {
   allowCommunity: boolean;
   allowNotice: boolean;
@@ -1531,6 +1536,18 @@ export async function whoAmI(): Promise<MemberDetailsResponse> {
   const response = await axios.request<MemberDetailsResponse>({
     method: 'GET',
     url: '/v1/auth/me',
+  });
+  return response.data;
+}
+
+/**
+ * 프로모션 참여용 암호화 토큰 생성
+ * POST /v1/auth/promotion-token
+ */
+export async function createPromotionToken(): Promise<PromotionTokenResponse> {
+  const response = await axios.request<PromotionTokenResponse>({
+    method: 'POST',
+    url: '/v1/auth/promotion-token',
   });
   return response.data;
 }

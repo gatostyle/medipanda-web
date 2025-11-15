@@ -284,16 +284,6 @@ function buildUrlTemplate(pathStr, pathParams) {
   return '`' + template + '`';
 }
 
-function toReturnType(resp) {
-  if (!resp || !resp.content) return 'void';
-  // pick any content (application/json preferred)
-  const contentKeys = Object.keys(resp.content);
-  if (contentKeys.length === 0) return 'void';
-  const preferred = contentKeys.includes('application/json') ? 'application/json' : contentKeys[0];
-  const media = resp.content[preferred];
-  if (!media || !media.schema) return 'any';
-  return tsType(media.schema);
-}
 function analyzeReturn(resp) {
   // Decide TS return type and whether axios needs responseType: 'blob'
   if (!resp || !resp.content) return { ts: 'void', wantsBlob: false };
@@ -395,7 +385,19 @@ function isArrayParam(p) {
 function emitAppendForProp(formVar, key, accessor, propSchema, asUrlEncoded, isOptional, isNullable) {
   const ps = deref(propSchema);
   const kLit = JSON.stringify(key);
-  const append = asUrlEncoded ? `${formVar}.append(${kLit}, String(VALUE));` : `${formVar}.append(${kLit}, VALUE);`;
+
+  // 🔧 수정: FormData append에 String() 변환 추가
+  const appendValue = (value) => {
+    if (['number', 'integer', 'boolean'].includes(ps.type)) {
+      return `String(${value})`;
+    }
+    return value;
+  };
+
+  const append = asUrlEncoded ?
+    `${formVar}.append(${kLit}, String(VALUE));` :
+    `${formVar}.append(${kLit}, VALUE);`;
+
   // Decide guard per rules
   const guard =
     isOptional && isNullable
@@ -436,10 +438,14 @@ function emitAppendForProp(formVar, key, accessor, propSchema, asUrlEncoded, isO
       addLine(`  ${formVar}.append(${kLit}, ${accessor}, ${accessor}.name.normalize('NFC'));`);
     }
   } else if (['string', 'number', 'integer', 'boolean'].includes(ps.type)) {
+    // 🔧 수정: number/integer/boolean은 String()으로 변환
+    const convertedAccessor = ['number', 'integer', 'boolean'].includes(ps.type) ?
+      `String(${accessor})` : accessor;
+
     if (guard) {
-      addLine(`  if (${guard}) { ${append.replace('VALUE', accessor)} }`);
+      addLine(`  if (${guard}) { ${formVar}.append(${kLit}, ${convertedAccessor}); }`);
     } else {
-      addLine(`  ${append.replace('VALUE', accessor)}`);
+      addLine(`  ${formVar}.append(${kLit}, ${convertedAccessor});`);
     }
   } else if (ps.type === 'object' || ps.properties || ps.additionalProperties) {
     if (guard) {
@@ -461,9 +467,9 @@ function emitAppendForProp(formVar, key, accessor, propSchema, asUrlEncoded, isO
     }
   } else {
     if (guard) {
-      addLine(`  if (${guard}) { ${append.replace('VALUE', `String(${accessor})`)} }`);
+      addLine(`  if (${guard}) { ${formVar}.append(${kLit}, String(${accessor})); }`);
     } else {
-      addLine(`  ${append.replace('VALUE', `String(${accessor})`)}`);
+      addLine(`  ${formVar}.append(${kLit}, String(${accessor}));`);
     }
   }
 }
