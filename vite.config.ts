@@ -43,8 +43,8 @@ const injectHtmlSeoPlugin = ({ mode }: { mode: string }) => {
     <meta name="naver-site-verification" content="16f3e710fa607e34724d368a30f453aff35a0f87" />
 
     <!-- Title / Description -->
-    <title>CSO비즈니스 성공파트너, 메디판다</title>
-    <meta name="description" content="영업대행관리 플랫폼, 흩어져 있는 정보를 모으고 손쉬운 실적 관리 및 분석으로 영업에만 집중할 수 있도록 도와드리는 스마트한 영업파트너" />
+    <title>메디판다, CSO비즈니스 성공파트너</title>
+    <meta name="description" content="메디판다, 영업대행관리 플랫폼, 흩어져 있는 정보를 모으고 손쉬운 실적 관리 및 분석으로 영업에만 집중할 수 있도록 도와드리는 스마트한 영업파트너" />
 
     <!-- Robots -->
     <meta name="robots" content="index, follow" />
