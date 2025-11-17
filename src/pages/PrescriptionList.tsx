@@ -386,7 +386,7 @@ function EdiIndividualUploadForm() {
         2. 파일은 최대 {MAX_PRESCRIPTION_FILES}개까지 가능하니, {MAX_PRESCRIPTION_FILES}개가 초과할 경우에는 &apos;메디판다 프로그램&apos;을
         이용해주세요.
         <br />
-        3. 파일명의 처방월이 선택한 처방월과 일치하게 해주세요.
+        3. 파일의 처방월과 선택한 처방월을 일치하게 해주세요.
       </Typography>
       {Object.keys(form.formState.errors).map(key => {
         return (
