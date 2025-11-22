@@ -112,7 +112,7 @@ export default function EventList() {
                 {event.title}
               </Typography>
               {/*<Typography variant='largeTextM' sx={{ color: colors.gray80 }}>{event.description}</Typography>*/}
-              <Typography variant='smallTextR' sx={{ color: colors.gray50, marginTop: 'auto' }}>
+              <Typography variant='largeTextR' sx={{ color: colors.gray50, marginTop: 'auto' }}>
                 {DateUtils.parseUtcAndFormatKst(event.eventStartAt, DATEFORMAT_YYYY_MM_DD)} ~{' '}
                 {DateUtils.parseUtcAndFormatKst(event.eventEndAt, DATEFORMAT_YYYY_MM_DD)}
               </Typography>

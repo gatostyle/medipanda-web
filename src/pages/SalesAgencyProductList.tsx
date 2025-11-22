@@ -115,7 +115,7 @@ export default function SalesAgencyProductList() {
               <Typography variant='largeTextM' sx={{ color: colors.gray80 }}>
                 {salesAgencyProduct.productName}
               </Typography>
-              <Typography variant='smallTextR' sx={{ color: colors.gray50, marginTop: 'auto' }}>
+              <Typography variant='largeTextR' sx={{ color: colors.gray50, marginTop: 'auto' }}>
                 {DateUtils.parseUtcAndFormatKst(salesAgencyProduct.startAt, DATEFORMAT_YYYY_MM_DD)} ~{' '}
                 {DateUtils.parseUtcAndFormatKst(salesAgencyProduct.endAt, DATEFORMAT_YYYY_MM_DD)}
               </Typography>
