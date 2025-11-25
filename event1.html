@@ -138,8 +138,7 @@
     }
 
     try {
-      const targetUrl = `https://www.winenara.com/shop/main?data=${encryptedUserData}`;
-      window.location.href = targetUrl;
+      window.location.href = `https://www.winenara.com/custom/otherLogin/login_check?data=${encryptedUserData}`;
 
     } catch (error) {
       showError('데이터 처리 중 오류가 발생했습니다.');
