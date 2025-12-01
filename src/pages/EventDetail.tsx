@@ -43,9 +43,7 @@ const launchPromotionPage = async (targetUrl: string) => {
     const promotionUrl = `${targetUrl}?data=${token}`;
 
     // 모바일/데스크톱 구분해서 페이지 열기
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent
-    );
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
     if (isMobile) {
       window.location.href = promotionUrl;
@@ -87,7 +85,6 @@ export default function EventDetail() {
       console.log('프로모션 URL 감지됨:', url);
       await launchPromotionPage(url);
     } else {
-
       window.open(url, '_blank');
     }
   };
