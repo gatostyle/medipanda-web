@@ -22,6 +22,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
+import { format } from 'date-fns';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Add, SearchNormal1 } from 'iconsax-reactjs';
 import {
@@ -29,6 +30,7 @@ import {
   getAttachedEdiFiles,
   getPartnerProducts,
   getPrescriptionPartner,
+  getProductDetailsByCode,
   type OcrOriginalItem,
   type OcrResponse,
   type PartnerResponse,
@@ -124,6 +126,7 @@ export default function MpAdminPrescriptionFormEdit() {
   const formCompanyName = form.watch('companyName');
   const formBusinessNumber = form.watch('businessNumber');
   const formDealerName = form.watch('dealerName');
+  const formPrescriptionMonth = form.watch('prescriptionMonth');
   const formPrescriptionAmount = form.watch('prescriptionAmount');
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async () => {
@@ -273,32 +276,45 @@ export default function MpAdminPrescriptionFormEdit() {
 
     setPartnerProducts([
       ...partnerProducts,
-      ...response.map((ocrItem, index) => {
-        return {
-          sequence: maxSequence + index + 1,
-          id: null,
-          productCode: ocrItem.code,
-          productName: ocrItem.name,
-          unit: ocrItem.unit,
-          quantity: normalizeLocaleNumber(String(ocrItem.volume)),
-          unitPrice: normalizeLocaleNumber(String(ocrItem.price)),
-          totalPrice: normalizeLocaleNumber(String(ocrItem.totalAmount)),
-          baseFeeRate: normalizeLocaleNumber(String(ocrItem.rate * 100)),
-          feeAmount: normalizeLocaleNumber(String(Math.floor(ocrItem.feeAmount))),
-          note: '',
-          ocrItem: {
-            productCode: ocrItem.code,
-            productName: ocrItem.name,
-            unit: ocrItem.unit,
-            quantity: ocrItem.volume,
-            unitPrice: ocrItem.price,
-            totalPrice: ocrItem.totalAmount,
-            baseFeeRate: ocrItem.rate * 100,
-            feeAmount: ocrItem.feeAmount,
+      ...(await Promise.all(
+        response.map(async (ocrItem, index) => {
+          const productDetail = await getProductDetailsByCode(ocrItem.code, { month: format(formPrescriptionMonth!, DATEFORMAT_YYYY_MM) });
+
+          const productCode = ocrItem.code;
+          const productName = productDetail.productName ?? '';
+          const unit = productDetail.priceUnit;
+          const quantity = ocrItem.volume;
+          const unitPrice = productDetail.price ?? 0;
+          const totalPrice = ocrItem.volume * unitPrice;
+          const baseFeeRate = productDetail.roundedFeeRate ?? 0;
+          const feeAmount = totalPrice * baseFeeRate;
+
+          return {
+            sequence: maxSequence + index + 1,
+            id: null,
+            productCode,
+            productName,
+            unit,
+            quantity: normalizeLocaleNumber(String(quantity)),
+            unitPrice: normalizeLocaleNumber(String(unitPrice)),
+            totalPrice: normalizeLocaleNumber(String(totalPrice)),
+            baseFeeRate: normalizeLocaleNumber(String(PercentUtils.percentToDecimal(baseFeeRate))),
+            feeAmount: normalizeLocaleNumber(String(feeAmount)),
             note: '',
-          },
-        };
-      }),
+            ocrItem: {
+              productCode,
+              productName,
+              unit,
+              quantity,
+              unitPrice,
+              totalPrice,
+              baseFeeRate: PercentUtils.percentToDecimal(baseFeeRate),
+              feeAmount,
+              note: '',
+            },
+          };
+        }),
+      )),
     ]);
   };
 

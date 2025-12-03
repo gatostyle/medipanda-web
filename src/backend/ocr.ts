@@ -2,13 +2,7 @@ import axios from '@/utils/axios';
 
 export interface OcrResponse {
   code: string;
-  name: string;
   volume: number;
-  price: number;
-  rate: number;
-  unit: string;
-  totalAmount: number;
-  feeAmount: number;
 }
 
 export async function requestOcr(data: {
