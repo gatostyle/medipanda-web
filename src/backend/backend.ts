@@ -3502,8 +3502,8 @@ export async function uploadEdiZipV2(data: {
   settlementMonth: string;
 }): Promise<PrescriptionZipUploadResult> {
   const form = new FormData();
-  form.append('dealerId', data.dealerId);
-  form.append('partnerId', data.partnerId);
+  form.append('dealerId', String(data.dealerId));
+  form.append('partnerId', String(data.partnerId));
   form.append('prescriptionMonth', data.prescriptionMonth);
   form.append('settlementMonth', data.settlementMonth);
   form.append('file', data.file, data.file.name.normalize('NFC'));
