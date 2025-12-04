@@ -175,7 +175,21 @@ export default function MpAdminPrescriptionFormEdit() {
       setPartnerProducts(prev =>
         prev.map((p, i) => {
           if (index === i) {
-            return { ...p, [field]: value };
+            const updated = { ...p, [field]: value };
+
+            if (field === 'quantity') {
+              const quantity = Number(String(value).replace(/,/g, '')) || 0;
+              const unitPrice = Number(p.unitPrice.replace(/,/g, '')) || 0;
+              const baseFeeRate = PercentUtils.percentStringToDecimal(p.baseFeeRate) || 0;
+
+              const totalPrice = quantity * unitPrice;
+              const feeAmount = Math.floor(totalPrice * baseFeeRate);
+
+              updated.totalPrice = normalizeLocaleNumber(String(totalPrice));
+              updated.feeAmount = normalizeLocaleNumber(String(feeAmount));
+            }
+
+            return updated;
           }
           return p;
         }),
@@ -243,14 +257,23 @@ export default function MpAdminPrescriptionFormEdit() {
       month: formPrescriptionMonth ? format(formPrescriptionMonth, DATEFORMAT_YYYY_MM) : undefined,
     });
 
+    const quantity = Number(currentPartnerProduct.quantity.replace(/,/g, '')) || 0;
+    const unitPrice = productDetail.price ?? 0;
+    const totalPrice = quantity * unitPrice;
+    const baseFeeRate = productDetail.feeRate ?? 0;
+    const feeAmount = Math.floor(totalPrice * baseFeeRate);
+
     setPartnerProducts([
       ...partnerProducts.slice(0, currentProductItemIndex),
       {
         ...currentPartnerProduct,
         productCode: product.productCode,
         productName: productDetail.productName ?? '',
-        unitPrice: normalizeLocaleNumber(String(productDetail.price ?? 0)),
-        baseFeeRate: PercentUtils.formatDecimal(productDetail.feeRate ?? 0),
+        unit: productDetail.unit ?? '',
+        unitPrice: normalizeLocaleNumber(String(unitPrice)),
+        totalPrice: normalizeLocaleNumber(String(totalPrice)),
+        baseFeeRate: PercentUtils.formatDecimal(baseFeeRate),
+        feeAmount: normalizeLocaleNumber(String(feeAmount)),
       },
       ...partnerProducts.slice(currentProductItemIndex + 1),
     ]);
@@ -282,16 +305,18 @@ export default function MpAdminPrescriptionFormEdit() {
       ...partnerProducts,
       ...(await Promise.all(
         response.map(async (ocrItem, index) => {
-          const productDetail = await getProductDetailsByCode(ocrItem.code, { month: format(formPrescriptionMonth!, DATEFORMAT_YYYY_MM) });
+          const productDetail = await getProductDetailsByCode(ocrItem.code, {
+            month: format(formPrescriptionMonth!, DATEFORMAT_YYYY_MM)
+          });
 
           const productCode = ocrItem.code;
           const productName = productDetail.productName ?? '';
-          const unit = productDetail.priceUnit;
+          const unit = productDetail.unit ?? '';
           const quantity = ocrItem.volume;
           const unitPrice = productDetail.price ?? 0;
-          const totalPrice = ocrItem.volume * unitPrice;
-          const baseFeeRate = productDetail.roundedFeeRate ?? 0;
-          const feeAmount = totalPrice * baseFeeRate;
+          const totalPrice = quantity * unitPrice;
+          const baseFeeRate = productDetail.feeRate ?? 0;
+          const feeAmount = Math.floor(totalPrice * baseFeeRate);
 
           return {
             sequence: maxSequence + index + 1,
@@ -302,7 +327,7 @@ export default function MpAdminPrescriptionFormEdit() {
             quantity: normalizeLocaleNumber(String(quantity)),
             unitPrice: normalizeLocaleNumber(String(unitPrice)),
             totalPrice: normalizeLocaleNumber(String(totalPrice)),
-            baseFeeRate: normalizeLocaleNumber(String(PercentUtils.percentToDecimal(baseFeeRate))),
+            baseFeeRate: PercentUtils.formatDecimal(baseFeeRate),
             feeAmount: normalizeLocaleNumber(String(feeAmount)),
             note: '',
             ocrItem: {
@@ -312,7 +337,7 @@ export default function MpAdminPrescriptionFormEdit() {
               quantity,
               unitPrice,
               totalPrice,
-              baseFeeRate: PercentUtils.percentToDecimal(baseFeeRate),
+              baseFeeRate,
               feeAmount,
               note: '',
             },
@@ -625,11 +650,11 @@ export default function MpAdminPrescriptionFormEdit() {
                 <TableCell width={60}>No</TableCell>
                 <TableCell width={120}>보험코드</TableCell>
                 <TableCell width={200}>제품명</TableCell>
-                <TableCell width={150}>단위</TableCell>
+                <TableCell width={80}>단위</TableCell>
                 <TableCell width={100}>수량</TableCell>
                 <TableCell width={100}>약가</TableCell>
                 <TableCell width={120}>총 금액</TableCell>
-                <TableCell width={120}>기본수수료율</TableCell>
+                <TableCell width={100}>기본수수료율</TableCell>
                 <TableCell width={120}>수수료 금액</TableCell>
                 <TableCell width={150}>비고</TableCell>
               </TableRow>
@@ -637,7 +662,7 @@ export default function MpAdminPrescriptionFormEdit() {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={10} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={11} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       데이터를 로드하는 중입니다.
                     </Typography>
@@ -682,7 +707,7 @@ export default function MpAdminPrescriptionFormEdit() {
                               <IconButton
                                 size='small'
                                 onClick={() => {
-                                  setCurrentProductItemIndex(item.sequence - 1);
+                                  setCurrentProductItemIndex(index);
                                   setPartnerProductSelectModalOpen(true);
                                 }}
                                 disabled={prescriptionPartner!.status === 'COMPLETED'}
@@ -695,29 +720,17 @@ export default function MpAdminPrescriptionFormEdit() {
                       />
                     </TableCell>
                     <TableCell>
-                      <TextField
-                        size='small'
-                        fullWidth
-                        value={item.unit}
-                        onChange={event => handleProductChange(item.sequence - 1, 'unit', event.target.value)}
-                        slotProps={{
-                          input: {
-                            readOnly: prescriptionPartner!.status === 'COMPLETED',
-                          },
-                        }}
-                      />
+                      <Typography variant='body2'>{item.unit}</Typography>
                     </TableCell>
                     <TableCell>
                       <TextField
                         size='small'
                         fullWidth
-                        name='quantity'
                         value={item.quantity}
                         onChange={event => {
                           const normalized = normalizeLocaleNumber(event.target.value);
-
                           if (normalized !== null) {
-                            handleProductChange(item.sequence - 1, 'quantity', normalized);
+                            handleProductChange(index, 'quantity', normalized);
                           }
                         }}
                         slotProps={{
@@ -727,81 +740,20 @@ export default function MpAdminPrescriptionFormEdit() {
                         }}
                       />
                     </TableCell>
-                    <TableCell>{item.unitPrice.toLocaleString()}</TableCell>
                     <TableCell>
-                      <TextField
-                        size='small'
-                        fullWidth
-                        name='totalPrice'
-                        value={item.totalPrice}
-                        onChange={event => {
-                          const normalized = normalizeLocaleNumber(event.target.value);
-
-                          if (normalized !== null) {
-                            handleProductChange(item.sequence - 1, 'totalPrice', normalized);
-                          }
-                        }}
-                        InputProps={{
-                          endAdornment: <Typography variant='body2'>원</Typography>,
-                          readOnly: prescriptionPartner!.status === 'COMPLETED',
-                        }}
-                      />
+                      <Typography variant='body2'>{item.unitPrice}원</Typography>
                     </TableCell>
                     <TableCell>
-                      <TextField
-                        size='small'
-                        fullWidth
-                        name='baseFeeRate'
-                        value={item.baseFeeRate}
-                        onChange={event => {
-                          const normalized = normalizeLocaleNumber(event.target.value, {
-                            maximumFractionDigits: 1,
-                            min: 0,
-                            max: 100,
-                          });
-
-                          if (normalized !== null) {
-                            handleProductChange(item.sequence - 1, 'baseFeeRate', normalized);
-                          }
-                        }}
-                        InputProps={{
-                          endAdornment: <Typography variant='body2'>%</Typography>,
-                          readOnly: prescriptionPartner!.status === 'COMPLETED',
-                        }}
-                      />
+                      <Typography variant='body2'>{item.totalPrice}원</Typography>
                     </TableCell>
                     <TableCell>
-                      <TextField
-                        size='small'
-                        fullWidth
-                        name='feeAmount'
-                        value={item.feeAmount}
-                        onChange={event => {
-                          const normalized = normalizeLocaleNumber(event.target.value);
-
-                          if (normalized !== null) {
-                            handleProductChange(item.sequence - 1, 'feeAmount', normalized);
-                          }
-                        }}
-                        InputProps={{
-                          endAdornment: <Typography variant='body2'>원</Typography>,
-                          readOnly: prescriptionPartner!.status === 'COMPLETED',
-                        }}
-                      />
+                      <Typography variant='body2'>{item.baseFeeRate}%</Typography>
                     </TableCell>
                     <TableCell>
-                      <TextField
-                        size='small'
-                        fullWidth
-                        name='note'
-                        value={item.note}
-                        onChange={e => handleProductChange(item.sequence - 1, 'note', e.target.value)}
-                        slotProps={{
-                          input: {
-                            readOnly: prescriptionPartner!.status === 'COMPLETED',
-                          },
-                        }}
-                      />
+                      <Typography variant='body2'>{item.feeAmount}원</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant='body2'>{item.note ?? ''}</Typography>
                     </TableCell>
                   </TableRow>
                 ))
