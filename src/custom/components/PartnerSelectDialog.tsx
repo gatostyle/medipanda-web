@@ -1,14 +1,10 @@
 import { getPartners, type PartnerResponse } from '@/backend';
-import { DATEFORMAT_YYYY_MM } from '@/lib/utils/dateFormat';
-import { setUrlParams } from '@/lib/utils/url';
 import { withSequence } from '@/lib/utils/withSequence';
 import { Search } from '@mui/icons-material';
-import { IconButton, InputAdornment, PaginationItem, Stack, TextField } from '@mui/material';
+import { IconButton, InputAdornment, Stack, TextField } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
-import { Link as RouterLink } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
 import { MedipandaButton } from './MedipandaButton';
 import { MedipandaDialog, MedipandaDialogContent, MedipandaDialogTitle } from './MedipandaDialog';
@@ -58,8 +54,8 @@ export function PartnerSelectDialog({
       setContents(withSequence(response).content);
       setTotalPages(response.totalPages);
     } catch (error) {
-      console.error('Failed to fetch settlement list:', error);
-      alert('정산내역 목록을 불러오는 중 오류가 발생했습니다.');
+      console.error('Failed to fetch partner list:', error);
+      alert('거래처 목록을 불러오는 중 오류가 발생했습니다.');
       setContents([]);
       setTotalPages(0);
     }
@@ -69,13 +65,6 @@ export function PartnerSelectDialog({
     form.setValue('searchKeyword', submitFormValues.searchKeyword);
     fetchContents();
   }, [submitFormValues.searchKeyword, submitFormValues.page]);
-
-  const initialSearchParams = {
-    searchType: 'companyName' as 'dealerName' | 'dealerId' | 'drugCompanyName' | 'companyName',
-    searchKeyword: '',
-    settlementMonth: format(new Date(), DATEFORMAT_YYYY_MM),
-    page: '1',
-  };
 
   useEffect(() => {
     if (open) {
@@ -151,12 +140,12 @@ export function PartnerSelectDialog({
         <Stack alignItems='center'>
           <MedipandaPagination
             count={totalPages}
-            // page={page}
+            page={submitFormValues.page}
             showFirstButton
             showLastButton
-            renderItem={item => (
-              <PaginationItem {...item} component={RouterLink} to={setUrlParams({ page: item.page }, initialSearchParams)} />
-            )}
+            onChange={(_, page) => {
+              setSubmitFormValues(v => ({ ...v, page: page }));
+            }}
             sx={{ marginTop: '40px' }}
           />
         </Stack>
