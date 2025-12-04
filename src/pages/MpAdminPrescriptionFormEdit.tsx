@@ -105,6 +105,7 @@ export default function MpAdminPrescriptionFormEdit() {
 
   const [currentPopup, setCurrentPopup] = useState<Window | null>(null);
   const currentPopupInitialized = useRef(false);
+  const isInitialMount = useRef(true);
 
   const form = useForm({
     defaultValues: {
@@ -306,7 +307,7 @@ export default function MpAdminPrescriptionFormEdit() {
       ...(await Promise.all(
         response.map(async (ocrItem, index) => {
           const productDetail = await getProductDetailsByCode(ocrItem.code, {
-            month: format(formPrescriptionMonth!, DATEFORMAT_YYYY_MM)
+            month: format(formPrescriptionMonth!, DATEFORMAT_YYYY_MM),
           });
 
           const productCode = ocrItem.code;
@@ -352,6 +353,57 @@ export default function MpAdminPrescriptionFormEdit() {
       fetchPrescriptionFormData(prescriptionPartnerId);
     }
   }, [isNew, prescriptionPartnerId]);
+
+  // 처방월 변경 시 제품 정보 현행화
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    const updateProductsForMonth = async () => {
+      if (!formPrescriptionMonth || partnerProducts.length === 0) return;
+
+      const productsWithCode = partnerProducts.filter(p => p.productCode);
+      if (productsWithCode.length === 0) return;
+
+      const month = format(formPrescriptionMonth, DATEFORMAT_YYYY_MM);
+
+      const updatedProducts = await Promise.all(
+        partnerProducts.map(async item => {
+          if (!item.productCode) return item;
+
+          try {
+            const detail = await getProductDetailsByCode(item.productCode, { month });
+
+            const quantity = Number(item.quantity.replace(/,/g, '')) || 0;
+            const unitPrice = detail.price ?? 0;
+            const totalPrice = quantity * unitPrice;
+            const baseFeeRate = detail.feeRate ?? 0;
+            const feeAmount = Math.floor(totalPrice * baseFeeRate);
+
+            return {
+              ...item,
+              // 수량은 유지
+              productName: detail.productName ?? '',
+              unit: detail.unit ?? '',
+              unitPrice: normalizeLocaleNumber(String(unitPrice)),
+              totalPrice: normalizeLocaleNumber(String(totalPrice)),
+              baseFeeRate: PercentUtils.formatDecimal(baseFeeRate),
+              feeAmount: normalizeLocaleNumber(String(feeAmount)),
+            };
+          } catch (e) {
+            console.error(`Failed to fetch product ${item.productCode}:`, e);
+            return item;
+          }
+        }),
+      );
+
+      setPartnerProducts(updatedProducts);
+    };
+
+    updateProductsForMonth();
+  }, [formPrescriptionMonth]);
 
   const fetchPrescriptionFormData = async (prescriptionPartnerId: number) => {
     if (Number.isNaN(prescriptionPartnerId)) {
