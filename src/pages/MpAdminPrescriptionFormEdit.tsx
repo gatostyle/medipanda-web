@@ -236,17 +236,21 @@ export default function MpAdminPrescriptionFormEdit() {
     form.setValue('companyName', partner.companyName);
   };
 
-  const handleProductSelect = (product: ProductSummaryResponse) => {
+  const handleProductSelect = async (product: ProductSummaryResponse) => {
     const currentPartnerProduct = partnerProducts[currentProductItemIndex];
+
+    const productDetail = await getProductDetailsByCode(product.productCode, {
+      month: formPrescriptionMonth ? format(formPrescriptionMonth, DATEFORMAT_YYYY_MM) : undefined
+    });
 
     setPartnerProducts([
       ...partnerProducts.slice(0, currentProductItemIndex),
       {
         ...currentPartnerProduct,
         productCode: product.productCode,
-        productName: product.productName ?? '',
-        unitPrice: normalizeLocaleNumber(String(product.price ?? 0)),
-        baseFeeRate: PercentUtils.formatDecimal(product.feeRate ?? 0),
+        productName: productDetail.productName ?? '',
+        unitPrice: normalizeLocaleNumber(String(productDetail.price ?? 0)),
+        baseFeeRate: PercentUtils.formatDecimal(productDetail.feeRate ?? 0),
       },
       ...partnerProducts.slice(currentProductItemIndex + 1),
     ]);
