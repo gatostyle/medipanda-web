@@ -240,7 +240,7 @@ export default function MpAdminPrescriptionFormEdit() {
     const currentPartnerProduct = partnerProducts[currentProductItemIndex];
 
     const productDetail = await getProductDetailsByCode(product.productCode, {
-      month: formPrescriptionMonth ? format(formPrescriptionMonth, DATEFORMAT_YYYY_MM) : undefined
+      month: formPrescriptionMonth ? format(formPrescriptionMonth, DATEFORMAT_YYYY_MM) : undefined,
     });
 
     setPartnerProducts([
