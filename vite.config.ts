@@ -30,11 +30,68 @@ const injectHtmlFaviconPlugin = () => {
 const injectHtmlSeoPlugin = ({ mode }: { mode: string }) => {
   return {
     name: 'inject-html-seo',
-    transformIndexHtml(html: string) {
+    transformIndexHtml(html: string, ctx: { filename: string }) {
       if (mode !== 'prod') {
         return html.replace(/%SEO_SCRIPT%/, '');
       }
 
+      // landing.html용 SEO
+      if (ctx.filename.includes('landing.html')) {
+        return html.replace(
+          /%SEO_SCRIPT%/,
+          `
+    <!-- 사이트 소유권 인증 -->
+    <meta name="google-site-verification" content="iYcuv7wCso-oWC6-UlR-qaucgT-6ZdAhJ98aH90vCVA" />
+    <meta name="naver-site-verification" content="16f3e710fa607e34724d368a30f453aff35a0f87" />
+
+    <!-- Title / Description -->
+    <title>메디판다, CSO비즈니스 성공파트너</title>
+    <meta name="description" content="정산은 쉽게! 약품 검색은 빠르게! CSO 영업사원을 위한 스마트 앱. 처방 내역 등록, 실적관리, 커뮤니티까지 한번에" />
+
+    <!-- Robots -->
+    <meta name="robots" content="index, follow" />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://medipanda.co.kr/landing.html" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="CSO비즈니스 성공파트너, 메디판다" />
+    <meta property="og:description" content="정산은 쉽게! 약품 검색은 빠르게! CSO 영업사원을 위한 스마트 앱" />
+    <meta property="og:url" content="https://medipanda.co.kr/landing.html" />
+    <meta property="og:image" content="https://medipanda.co.kr/assets/og.png" />
+
+    <!-- 구조화 데이터 -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "메디판다 - CSO비즈니스 성공파트너",
+        "description": "정산은 쉽게! 약품 검색은 빠르게! CSO 영업사원을 위한 스마트 앱",
+        "url": "https://medipanda.co.kr/landing.html",
+        "publisher": {
+          "@type": "Organization",
+          "name": "메디판다",
+          "url": "https://medipanda.co.kr"
+        }
+      }
+    </script>
+          `,
+        );
+      }
+
+      // event1.html - 검색 제외
+      if (ctx.filename.includes('event1.html')) {
+        return html.replace(
+          /%SEO_SCRIPT%/,
+          `
+    <title>메디판다 이벤트</title>
+    <meta name="robots" content="noindex, nofollow" />
+          `,
+        );
+      }
+
+      // index.html (메인) 용 SEO
       return html.replace(
         /%SEO_SCRIPT%/,
         `
@@ -269,85 +326,91 @@ const generateSitemapXml = ({ mode }: { mode: string }) => {
       }
 
       const outDir = config.build?.outDir || 'dist';
+      const today = new Date().toISOString().split('T')[0];
 
       const content = `
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://medipanda.co.kr/landing.html</loc>
+    <lastmod>${today}</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://medipanda.co.kr/</loc>
-    <lastmod>2025-10-27</lastmod>
+    <lastmod>${today}</lastmod>
   </url>
   <url>
     <loc>https://medipanda.co.kr/login</loc>
-    <lastmod>2025-10-27</lastmod>
+    <lastmod>${today}</lastmod>
   </url>
   <url>
     <loc>https://medipanda.co.kr/signup</loc>
-    <lastmod>2025-10-27</lastmod>
+    <lastmod>${today}</lastmod>
   </url>
   <url>
     <loc>https://medipanda.co.kr/find-account</loc>
-    <lastmod>2025-10-27</lastmod>
+    <lastmod>${today}</lastmod>
   </url>
   <url>
     <loc>https://medipanda.co.kr/find-password</loc>
-    <lastmod>2025-10-27</lastmod>
+    <lastmod>${today}</lastmod>
   </url>
   <url>
     <loc>https://medipanda.co.kr/products</loc>
-    <lastmod>2025-10-27</lastmod>
+    <lastmod>${today}</lastmod>
   </url>
   <url>
     <loc>https://medipanda.co.kr/prescriptions</loc>
-    <lastmod>2025-10-27</lastmod>
+    <lastmod>${today}</lastmod>
   </url>
   <url>
     <loc>https://medipanda.co.kr/dealers</loc>
-    <lastmod>2025-10-27</lastmod>
+    <lastmod>${today}</lastmod>
   </url>
   <url>
     <loc>https://medipanda.co.kr/settlement-list</loc>
-    <lastmod>2025-10-27</lastmod>
+    <lastmod>${today}</lastmod>
   </url>
   <url>
     <loc>https://medipanda.co.kr/sales-statistic</loc>
-    <lastmod>2025-10-27</lastmod>
+    <lastmod>${today}</lastmod>
   </url>
   <url>
     <loc>https://medipanda.co.kr/community/mr-cso-matching</loc>
-    <lastmod>2025-10-27</lastmod>
+    <lastmod>${today}</lastmod>
   </url>
   <url>
     <loc>https://medipanda.co.kr/community/anonymous</loc>
-    <lastmod>2025-10-27</lastmod>
+    <lastmod>${today}</lastmod>
   </url>
   <url>
     <loc>https://medipanda.co.kr/sales-agency-products</loc>
-    <lastmod>2025-10-27</lastmod>
+    <lastmod>${today}</lastmod>
   </url>
   <url>
     <loc>https://medipanda.co.kr/events</loc>
-    <lastmod>2025-10-27</lastmod>
+    <lastmod>${today}</lastmod>
   </url>
   <url>
     <loc>https://medipanda.co.kr/customer-service/notice</loc>
-    <lastmod>2025-10-27</lastmod>
+    <lastmod>${today}</lastmod>
   </url>
   <url>
     <loc>https://medipanda.co.kr/customer-service/faq</loc>
-    <lastmod>2025-10-27</lastmod>
+    <lastmod>${today}</lastmod>
   </url>
   <url>
     <loc>https://medipanda.co.kr/customer-service/inquiry</loc>
-    <lastmod>2025-10-27</lastmod>
+    <lastmod>${today}</lastmod>
   </url>
   <url>
     <loc>https://medipanda.co.kr/terms</loc>
-    <lastmod>2025-10-27</lastmod>
+    <lastmod>${today}</lastmod>
   </url>
   <url>
     <loc>https://medipanda.co.kr/privacy</loc>
-    <lastmod>2025-10-27</lastmod>
+    <lastmod>${today}</lastmod>
   </url>
 </urlset>
         `.trim();
