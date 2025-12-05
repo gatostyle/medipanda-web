@@ -6,14 +6,13 @@ import { useSession } from '@/hooks/useSession';
 import { colors, typography } from '@/themes';
 import { requestKmcAuth } from '@/utils/kmc';
 import { isValidPassword } from '@/utils/form';
-import { ArrowDropDown } from '@mui/icons-material';
-import { Box, FormControl, IconButton, InputAdornment, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import { Box, IconButton, InputAdornment, Stack, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { AxiosError } from 'axios';
-import { useState } from 'react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Link as RouterLink } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
+import { isValidEmail } from '@/lib/utils/form';
 
 const MypageFormRow = styled(Stack)({
   alignItems: 'center',
@@ -40,8 +39,6 @@ export default function MypageInfo() {
   const AVAILABLE_FILE_EXTENSIONS = ['jpg', 'jpeg', 'pdf', 'png'];
 
   const { session, refresh } = useSession();
-
-  const [mailDomainDropdownOpen, setMailDomainDropdownOpen] = useState(false);
 
   const form = useForm({
     defaultValues: {
@@ -73,6 +70,13 @@ export default function MypageInfo() {
 
     if (values.emailId === '' || values.emailDomain === '') {
       alert('이메일 정보를 입력해주세요.');
+      return;
+    }
+
+    const fullEmail = `${values.emailId}@${values.emailDomain}`;
+    const emailValidation = isValidEmail(fullEmail);
+    if (emailValidation !== true) {
+      alert(emailValidation);
       return;
     }
 
@@ -113,7 +117,7 @@ export default function MypageInfo() {
           name: values.name,
           birthDate: null,
           phoneNumber: null,
-          email: `${values.emailId}@${values.emailDomain}`,
+          email: fullEmail,
           nickname: null,
           referralCode: null,
           note: null,
@@ -183,18 +187,6 @@ export default function MypageInfo() {
         alert('비밀번호 변경 중 오류가 발생했습니다.');
       }
     }
-  };
-
-  const handleDropdownOpen = () => {
-    setMailDomainDropdownOpen(true);
-
-    setTimeout(() => {
-      const handleClose = () => {
-        setMailDomainDropdownOpen(false);
-        document.removeEventListener('click', handleClose);
-      };
-      document.addEventListener('click', handleClose);
-    });
   };
 
   const handleCopyReferralCode = () => {
@@ -375,39 +367,7 @@ export default function MypageInfo() {
                 <Controller
                   control={form.control}
                   name={'emailDomain'}
-                  render={({ field }) => (
-                    <FormControl sx={{ flex: 1 }}>
-                      <TextField
-                        {...field}
-                        sx={{
-                          zIndex: 1,
-                          backgroundColor: 'white',
-                        }}
-                        slotProps={{
-                          input: {
-                            endAdornment: (
-                              <InputAdornment position='end'>
-                                <IconButton onClick={handleDropdownOpen}>
-                                  <ArrowDropDown />
-                                </IconButton>
-                              </InputAdornment>
-                            ),
-                          },
-                        }}
-                      />
-                      <Select
-                        {...field}
-                        open={mailDomainDropdownOpen}
-                        sx={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 0 }}
-                      >
-                        {['naver.com', 'gmail.com', 'daum.net', 'hanmail.net'].map(domain => (
-                          <MenuItem key={domain} value={domain}>
-                            {domain}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
+                  render={({ field }) => <TextField {...field} placeholder='example.com' sx={{ flex: 1 }} />}
                 />
               </MypageFormInput>
             </MypageFormRow>
