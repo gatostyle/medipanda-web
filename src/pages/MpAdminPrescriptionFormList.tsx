@@ -166,11 +166,15 @@ export default function MpAdminPrescriptionFormList() {
     }
 
     const pendingIds = contents
-      .filter(it => selectedIds.includes(it.id) && it.status === PrescriptionPartnerStatus.PENDING)
+      .filter(
+        it =>
+          selectedIds.includes(it.id) &&
+          (it.status === PrescriptionPartnerStatus.PENDING || it.status === PrescriptionPartnerStatus.IN_PROGRESS),
+      )
       .map(it => it.id);
 
     deleteDialog.open({
-      message: `선택한 ${selectedIds.length}개 중 승인대기중인 ${pendingIds.length}개의 처방을 삭제하시겠습니까?`,
+      message: `선택한 ${selectedIds.length}개 중 삭제 가능한 ${pendingIds.length}개의 처방을 삭제하시겠습니까?`,
       onConfirm: async () => {
         try {
           await Promise.all(pendingIds.map(id => deletePrescriptionPartner(id)));
