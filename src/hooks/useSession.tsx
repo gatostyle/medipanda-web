@@ -25,6 +25,7 @@ const initialState = {
   isLoading: true,
   login: Promise.resolve as (userId: string, password: string) => Promise<void>,
   logout: Promise.resolve as () => Promise<void>,
+  refreshSession: Promise.resolve as () => Promise<void>,
 };
 
 const SessionContext = createContext(initialState);
@@ -76,7 +77,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           clearInterval(window.refreshTokenRotateInterval);
           localStorage.removeItem('refreshToken');
 
-          await logout();
+          setSession(null);
         }
       },
       import.meta.env.VITE_APP_TOKEN_ROTATE_INTERVAL ?? 60 * 1_000,
@@ -131,6 +132,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         isLoading,
         login,
         logout,
+        refreshSession,
       }}
     >
       {children}

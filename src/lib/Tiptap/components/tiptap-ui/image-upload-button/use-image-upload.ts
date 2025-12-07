@@ -1,5 +1,6 @@
 'use client';
 
+import { IS_ADMIN_MODE } from '@/constants';
 import * as React from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { type Editor } from '@tiptap/react';
@@ -40,7 +41,8 @@ export interface UseImageUploadConfig {
  */
 export function canInsertImage(editor: Editor | null): boolean {
   if (!editor || !editor.isEditable) return false;
-  if (!isExtensionAvailable(editor, 'image') || isNodeTypeSelected(editor, ['image'])) return false;
+  if (IS_ADMIN_MODE && (!isExtensionAvailable(editor, 'image') || isNodeTypeSelected(editor, ['image']))) return false;
+  if (!IS_ADMIN_MODE && (!isExtensionAvailable(editor, 'imageUpload') || isNodeTypeSelected(editor, ['image']))) return false;
 
   return editor.can().insertContent({ type: 'imageUpload' });
 }
@@ -80,7 +82,8 @@ export function shouldShowButton(props: { editor: Editor | null; hideWhenUnavail
   const { editor, hideWhenUnavailable } = props;
 
   if (!editor || !editor.isEditable) return false;
-  if (!isExtensionAvailable(editor, 'image')) return false;
+  if (IS_ADMIN_MODE && !isExtensionAvailable(editor, 'image')) return false;
+  if (!IS_ADMIN_MODE && !isExtensionAvailable(editor, 'imageUpload')) return false;
 
   if (hideWhenUnavailable && !editor.isActive('code')) {
     return canInsertImage(editor);

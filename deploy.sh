@@ -3,9 +3,9 @@
 set -e
 
 DEV_SERVER_HOST="43.202.151.248"
-DEV_DEPLOY_HOST="admin.dev.medipanda.co.kr"
+DEV_DEPLOY_DOMAIN="dev.medipanda.co.kr"
 PROD_SERVER_HOST="3.39.216.231"
-PROD_DEPLOY_HOST="admin.medipanda.co.kr"
+PROD_DEPLOY_DOMAIN="medipanda.co.kr"
 
 DEFAULT_LOCAL_DIRECTORY="./dist/"
 DEFAULT_KEYFILE="$HOME/.ssh/medipanda/keys/medipanda.pem"
@@ -27,11 +27,11 @@ while [ "$OPTIND" -le "$#" ]; do
   --env)
     if [ "$2" = "dev" ]; then
       SERVER_HOST="$DEV_SERVER_HOST"
-      DEPLOY_HOST="admin.dev.medipanda.co.kr"
+      DEPLOY_DOMAIN="$DEV_DEPLOY_DOMAIN"
       shift 2
     elif [ "$2" = "prod" ]; then
       SERVER_HOST="$PROD_SERVER_HOST"
-      DEPLOY_HOST="admin.medipanda.co.kr"
+      DEPLOY_DOMAIN="$PROD_DEPLOY_DOMAIN"
       shift 2
     else
       log.e "Unknown environment: $2" >&2
@@ -86,5 +86,5 @@ if [ -n "$DRY_RUN" ]; then
   log.i "Running in dry-run mode. No files will be transferred."
 fi
 
-log.i "Deploying to $SERVER_HOST($DEPLOY_HOST) from $LOCAL_DIRECTORY using key $KEYFILE."
-rsync $([ -n "$DRY_RUN" ] && echo "--dry-run") -azivh --delete -e "ssh -i $KEYFILE -o StrictHostKeyChecking=no" "$LOCAL_DIRECTORY"/ ec2-user@"$SERVER_HOST":"/var/sites/$DEPLOY_HOST/www/"
+log.i "Deploying to $SERVER_HOST($DEPLOY_DOMAIN) from $LOCAL_DIRECTORY using key $KEYFILE."
+rsync $([ -n "$DRY_RUN" ] && echo "--dry-run") -azivh --delete -e "ssh -i $KEYFILE -o StrictHostKeyChecking=no" "$LOCAL_DIRECTORY"/ ec2-user@"$SERVER_HOST":"/var/sites/$DEPLOY_DOMAIN/www/"

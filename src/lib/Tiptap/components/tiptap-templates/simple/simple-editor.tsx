@@ -1,5 +1,6 @@
 'use client';
 
+import { IS_ADMIN_MODE } from '@/constants';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import * as React from 'react';
 import { EditorContent, EditorContext } from '@tiptap/react';
@@ -108,9 +109,11 @@ export const MainToolbarContent = ({
 
       <ToolbarSeparator />
 
-      <ToolbarGroup>
-        <ImageUploadButton />
-      </ToolbarGroup>
+      {IS_ADMIN_MODE && (
+        <ToolbarGroup>
+          <ImageUploadButton />
+        </ToolbarGroup>
+      )}
 
       <Spacer />
 

@@ -85,3 +85,13 @@ export function handleLocaleNumberChange<K extends string, T extends Record<K, s
     setFieldValue(key, normalized);
   };
 }
+
+export function isValidEmail(email: string): true | string {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailRegex.test(email)) {
+    return '이메일 형식이 올바르지 않습니다.';
+  }
+
+  return true;
+}
