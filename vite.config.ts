@@ -31,7 +31,6 @@ export default defineConfig(({ mode }) => {
       injectHtmlFaviconPlugin(),
       injectHtmlSeoPlugin({ mode }),
       injectHtmlTagPlugin({ mode }),
-      generateRobotsTxt({ mode }),
       generateSitemapXml({ mode }),
     ],
     server: {
@@ -326,34 +325,6 @@ function injectHtmlTagPlugin({ mode }: { mode: string }) {
       );
     },
   };
-}
-
-function generateRobotsTxt({ mode }: { mode: string }) {
-  let config: ResolvedConfig;
-
-  return {
-    name: 'generate-robots-txt',
-    configResolved(c: ResolvedConfig) {
-      config = c;
-    },
-    closeBundle() {
-      if (mode !== 'prod') {
-        return;
-      }
-
-      const outDir = config.build?.outDir || 'dist';
-
-      const content = `
-User-agent: *
-Allow: /
-
-Sitemap: https://medipanda.co.kr/sitemap.xml
-        `.trim();
-
-      mkdirSync(outDir, { recursive: true });
-      writeFileSync(resolve(outDir, 'robots.txt'), content);
-    },
-  } as Plugin;
 }
 
 function generateSitemapXml({ mode }: { mode: string }) {
