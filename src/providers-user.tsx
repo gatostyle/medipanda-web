@@ -8,7 +8,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { ko } from 'date-fns/locale';
 import type { ReactNode } from 'react';
 
-export function Providers({ children }: { children?: ReactNode }) {
+export function UserProviders({ children }: { children?: ReactNode }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
       <LoaderProvider>

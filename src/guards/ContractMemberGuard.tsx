@@ -1,5 +1,6 @@
-import { hasContractMemberPermission, useSession } from '@/hooks/useSession';
+import { useSession } from '@/hooks/useSession';
 import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
+import { hasContractMemberPermission } from '@/utils/member-utils';
 import { type ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 

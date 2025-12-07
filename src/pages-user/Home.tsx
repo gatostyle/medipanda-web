@@ -16,12 +16,13 @@ import {
 import { MedipandaButton } from '@/custom/components/MedipandaButton';
 import { MedipandaCarousel, type MedipandaCarouselHandle } from '@/custom/components/MedipandaCarousel';
 import { MedipandaTable } from '@/custom/components/MedipandaTable';
-import { hasCsoMemberPermission, useSession } from '@/hooks/useSession';
+import { useSession } from '@/hooks/useSession';
 import { LazyImage } from '@/lib/components/LazyImage';
 import { setSchema } from '@/lib/utils/url';
 import { colors, typography } from '@/themes';
 import { DateUtils, DATEFORMAT_YYYY_MM_DD } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
+import { hasCsoMemberPermission } from '@/utils/member-utils';
 import { KeyboardArrowRight } from '@mui/icons-material';
 import { Box, Button, Link, Stack, type TableProps, Typography } from '@mui/material';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';

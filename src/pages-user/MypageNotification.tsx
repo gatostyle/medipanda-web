@@ -10,7 +10,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';
 
 export default function MypageNotification() {
-  const { session, refresh } = useSession();
+  const { session, refreshSession } = useSession();
 
   const form = useForm({
     defaultValues: {
@@ -64,7 +64,7 @@ export default function MypageNotification() {
       ]);
 
       alert('수신 정보가 수정되었습니다.');
-      refresh();
+      refreshSession();
     } catch (e) {
       console.error(e);
       alert('수신 정보 수정 중 오류가 발생했습니다.');

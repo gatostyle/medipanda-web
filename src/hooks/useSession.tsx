@@ -3,7 +3,6 @@ import {
   login as apiLogin,
   logout as apiLogout,
   type MemberDetailsResponse,
-  MemberType,
   refreshToken as apiRefreshToken,
   whoAmI,
 } from '@/backend';
@@ -21,7 +20,7 @@ const initialState = {
   isLoading: true,
   login: Promise.resolve as (userId: string, password: string) => Promise<void>,
   logout: Promise.resolve as () => Promise<void>,
-  refresh: Promise.resolve as () => Promise<void>,
+  refreshSession: Promise.resolve as () => Promise<void>,
 };
 
 const SessionContext = createContext(initialState);
@@ -82,10 +81,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    refresh();
+    refreshSession();
   }, []);
 
-  const refresh = async () => {
+  const refreshSession = async () => {
     try {
       setSession(await getSession());
     } catch (error) {
@@ -103,7 +102,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         isLoading,
         login,
         logout,
-        refresh,
+        refreshSession,
       }}
     >
       {children}
@@ -113,12 +112,4 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
 export function useSession() {
   return useContext(SessionContext);
-}
-
-export function hasContractMemberPermission(member: MemberDetailsResponse) {
-  return member.partnerContractStatus === MemberType.INDIVIDUAL || member.partnerContractStatus === MemberType.ORGANIZATION;
-}
-
-export function hasCsoMemberPermission(member: MemberDetailsResponse) {
-  return member.partnerContractStatus === MemberType.CSO || hasContractMemberPermission(member);
 }

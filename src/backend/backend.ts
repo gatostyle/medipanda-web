@@ -992,6 +992,7 @@ export interface PartnerResponse {
   institutionCode: string;
   institutionName: string;
   medicalDepartment: string | null;
+  memberId: number;
   memberName: string;
   memberType: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
   note: string | null;
@@ -1253,6 +1254,7 @@ export interface ProductDetailsResponse {
   productName: string | null;
   roundedChangedFeeRate: number | null;
   roundedFeeRate: number | null;
+  unit: string | null;
 }
 
 export interface ProductExtraInfoRequest {
@@ -1266,11 +1268,26 @@ export interface ProductExtraInfoRequest {
   isPromotion: boolean | null;
   isStopSelling: boolean | null;
   manufacturer: string | null;
+  month: string | null;
   note: string | null;
   price: number | null;
   priceUnit: 'KRW' | 'USD' | 'EUR';
   productCode: string;
   productName: string | null;
+}
+
+export interface ProductExtraInfoUploadRequest {
+  category: string | null;
+  changedFeeRate: string | null;
+  changedMonth: number | null;
+  composition: string | null;
+  feeRate: string | null;
+  manufacturerName: string | null;
+  note: string | null;
+  price: number | null;
+  productCode: string;
+  productName: string | null;
+  status: string | null;
 }
 
 export interface ProductSummaryResponse {
@@ -3279,6 +3296,21 @@ export async function evict(): Promise<void> {
 }
 
 /**
+ * EDI ZIP 파일 다운로드 (여러 처방 일괄)
+ * GET /v1/prescriptions/export-zip
+ */
+export async function exportPrescriptionsZip(options?: { prescriptionIds?: number[] }): Promise<void> {
+  await axios.request({
+    method: 'GET',
+    url: '/v1/prescriptions/export-zip',
+    params: {
+      ...options,
+      prescriptionIds: options?.prescriptionIds?.join(','),
+    },
+  });
+}
+
+/**
  * 요청 날짜가 속한 월의 처방전 수 (submittedDate 기준)
  * GET /v1/prescriptions/monthly-count
  */
@@ -3536,6 +3568,24 @@ export async function getProductSummaries(options?: {
 }
 
 /**
+ * 제품 정보 상세 (제품코드로 조회)
+ * GET /v1/products/code/{productCode}/details
+ */
+export async function getProductDetailsByCode(
+  productCode: string,
+  options?: {
+    month?: string;
+  },
+): Promise<ProductDetailsResponse> {
+  const response = await axios.request<ProductDetailsResponse>({
+    method: 'GET',
+    url: `/v1/products/code/${productCode}/details`,
+    params: options,
+  });
+  return response.data;
+}
+
+/**
  * 제품 정보 목록 Excel 다운로드 (현재 페이지 기준)
  * GET /v1/products/excel-download
  */
@@ -3603,13 +3653,39 @@ export async function createProductExtraInfo(data: {
  * 제품 엑셀 업로드
  * POST /v1/products/product-extra-info/upload
  */
-export async function uploadProductExtraInfo(data: { file: File }): Promise<void> {
+export async function uploadProductExtraInfo(
+  data: {
+    file: File;
+  },
+  options?: {
+    month?: string;
+  },
+): Promise<void> {
   const form = new FormData();
   form.append('file', data.file, data.file.name.normalize('NFC'));
   await axios.request({
     method: 'POST',
     url: '/v1/products/product-extra-info/upload',
+    params: options,
     data: form,
+  });
+}
+
+/**
+ * 제품 JSON 업로드
+ * POST /v1/products/product-extra-info/upload-json
+ */
+export async function uploadProductExtraInfoJson(
+  data: ProductExtraInfoUploadRequest[],
+  options?: {
+    month?: string;
+  },
+): Promise<void> {
+  await axios.request({
+    method: 'POST',
+    url: '/v1/products/product-extra-info/upload-json',
+    params: options,
+    data,
   });
 }
 
@@ -3640,10 +3716,16 @@ export async function softDelete(id: number): Promise<void> {
  * 제품 정보 상세
  * GET /v1/products/{id}/details
  */
-export async function getProductDetails(id: number): Promise<ProductDetailsResponse> {
+export async function getProductDetails(
+  id: number,
+  options?: {
+    month?: string;
+  },
+): Promise<ProductDetailsResponse> {
   const response = await axios.request<ProductDetailsResponse>({
     method: 'GET',
     url: `/v1/products/${id}/details`,
+    params: options,
   });
   return response.data;
 }

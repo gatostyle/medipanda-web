@@ -12,53 +12,53 @@ const GlobalLayout = LazyComponent(lazy(() => import('layouts/GlobalLayout')));
 const TabbedLayout = LazyComponent(lazy(() => import('layouts/TabbedLayout')));
 const SidebarLayout = LazyComponent(lazy(() => import('layouts/SidebarLayout')));
 
-const Login = LazyComponent(lazy(() => import('pages/Login')));
-const Logout = LazyComponent(lazy(() => import('pages/Logout')));
-const Signup = LazyComponent(lazy(() => import('@/pages/Signup')));
-const FindAccount = LazyComponent(lazy(() => import('@/pages/FindAccount')));
-const FindPassword = LazyComponent(lazy(() => import('pages/FindPassword')));
+const Login = LazyComponent(lazy(() => import('@/pages-user/Login')));
+const Logout = LazyComponent(lazy(() => import('@/pages-user/Logout')));
+const Signup = LazyComponent(lazy(() => import('@/pages-user/Signup')));
+const FindAccount = LazyComponent(lazy(() => import('@/pages-user/FindAccount')));
+const FindPassword = LazyComponent(lazy(() => import('@/pages-user/FindPassword')));
 
-const Home = LazyComponent(lazy(() => import('pages/Home')));
+const Home = LazyComponent(lazy(() => import('@/pages-user/Home')));
 
-const ProductList = LazyComponent(lazy(() => import('pages/ProductList')));
+const ProductList = LazyComponent(lazy(() => import('@/pages-user/ProductList')));
 
-const PrescriptionList = LazyComponent(lazy(() => import('pages/PrescriptionList')));
-const DealerList = LazyComponent(lazy(() => import('pages/DealerList')));
+const PrescriptionList = LazyComponent(lazy(() => import('@/pages-user/PrescriptionList')));
+const DealerList = LazyComponent(lazy(() => import('@/pages-user/DealerList')));
 
-const SettlementList = LazyComponent(lazy(() => import('pages/./SettlementList')));
-const SalesStatistic = LazyComponent(lazy(() => import('pages/SalesStatistic')));
+const SettlementList = LazyComponent(lazy(() => import('@/pages-user/./SettlementList')));
+const SalesStatistic = LazyComponent(lazy(() => import('@/pages-user/SalesStatistic')));
 
-const CommunityDetail = LazyComponent(lazy(() => import('pages/CommunityDetail')));
-const CommunityEdit = LazyComponent(lazy(() => import('pages/CommunityEdit')));
+const CommunityDetail = LazyComponent(lazy(() => import('@/pages-user/CommunityDetail')));
+const CommunityEdit = LazyComponent(lazy(() => import('@/pages-user/CommunityEdit')));
 
-const AnonymousList = LazyComponent(lazy(() => import('pages/AnonymousList')));
+const AnonymousList = LazyComponent(lazy(() => import('@/pages-user/AnonymousList')));
 
-const MrCsoMatchingList = LazyComponent(lazy(() => import('pages/MrCsoMatchingList')));
+const MrCsoMatchingList = LazyComponent(lazy(() => import('@/pages-user/MrCsoMatchingList')));
 
-const SalesAgencyProductList = LazyComponent(lazy(() => import('pages/SalesAgencyProductList')));
-const SalesAgencyProductDetail = LazyComponent(lazy(() => import('pages/SalesAgencyProductDetail')));
+const SalesAgencyProductList = LazyComponent(lazy(() => import('@/pages-user/SalesAgencyProductList')));
+const SalesAgencyProductDetail = LazyComponent(lazy(() => import('@/pages-user/SalesAgencyProductDetail')));
 
-const EventList = LazyComponent(lazy(() => import('pages/EventList')));
-const EventDetail = LazyComponent(lazy(() => import('pages/EventDetail')));
+const EventList = LazyComponent(lazy(() => import('@/pages-user/EventList')));
+const EventDetail = LazyComponent(lazy(() => import('@/pages-user/EventDetail')));
 
-const NoticeList = LazyComponent(lazy(() => import('pages/NoticeList')));
-const NoticeDetail = LazyComponent(lazy(() => import('pages/NoticeDetail')));
-const FaqList = LazyComponent(lazy(() => import('pages/FaqList')));
-const InquiryList = LazyComponent(lazy(() => import('pages/InquiryList')));
-const InquiryDetail = LazyComponent(lazy(() => import('pages/InquiryDetail')));
-const InquiryEdit = LazyComponent(lazy(() => import('@/pages/InquiryEdit')));
+const NoticeList = LazyComponent(lazy(() => import('@/pages-user/NoticeList')));
+const NoticeDetail = LazyComponent(lazy(() => import('@/pages-user/NoticeDetail')));
+const FaqList = LazyComponent(lazy(() => import('@/pages-user/FaqList')));
+const InquiryList = LazyComponent(lazy(() => import('@/pages-user/InquiryList')));
+const InquiryDetail = LazyComponent(lazy(() => import('@/pages-user/InquiryDetail')));
+const InquiryEdit = LazyComponent(lazy(() => import('@/pages-user/InquiryEdit')));
 
 const MypageGuard = LazyComponent(lazy(() => import('@/guards/MypageGuard')));
-const MypageInfo = LazyComponent(lazy(() => import('pages/MypageInfo')));
-const MypageNotification = LazyComponent(lazy(() => import('pages/MypageNotification')));
-const MypageWithdraw = LazyComponent(lazy(() => import('pages/MypageWithdraw')));
+const MypageInfo = LazyComponent(lazy(() => import('@/pages-user/MypageInfo')));
+const MypageNotification = LazyComponent(lazy(() => import('@/pages-user/MypageNotification')));
+const MypageWithdraw = LazyComponent(lazy(() => import('@/pages-user/MypageWithdraw')));
 
-const PartnerContract = LazyComponent(lazy(() => import('pages/PartnerContract')));
+const PartnerContract = LazyComponent(lazy(() => import('@/pages-user/PartnerContract')));
 
-const Terms = LazyComponent(lazy(() => import('pages/Terms')));
-const Privacy = LazyComponent(lazy(() => import('pages/Privacy')));
+const Terms = LazyComponent(lazy(() => import('@/pages-user/Terms')));
+const Privacy = LazyComponent(lazy(() => import('@/pages-user/Privacy')));
 
-const Error404 = LazyComponent(lazy(() => import('@/pages/Error404')));
+const Error404 = LazyComponent(lazy(() => import('@/pages-user/Error404')));
 
 const route: RouteObject[] = [
   {
@@ -378,7 +378,7 @@ const route: RouteObject[] = [
   { path: '*', element: <Error404 /> },
 ];
 
-export const router = createBrowserRouter(
+export const userRouter = createBrowserRouter(
   [
     {
       errorElement: <Base64ErrorBoundary />,

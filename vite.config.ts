@@ -5,7 +5,50 @@ import react from '@vitejs/plugin-react';
 import { defineConfig, loadEnv, type Plugin, type ResolvedConfig } from 'vite';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 
-const injectHtmlFaviconPlugin = () => {
+// https://vite.dev/config/
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd());
+
+  return {
+    build: {
+      rollupOptions: {
+        input: {
+          main: resolve(__dirname, 'index.html'),
+          landing: resolve(__dirname, 'landing.html'),
+          event1: resolve(__dirname, 'event1.html'),
+        },
+      },
+    },
+    resolve: {
+      alias: {
+        '@': '/src',
+      },
+    },
+    plugins: [
+      react(),
+      viteTsconfigPaths(),
+      injectHtmlFaviconPlugin(),
+      injectHtmlSeoPlugin({ mode }),
+      injectHtmlTagPlugin({ mode }),
+      generateRobotsTxt({ mode }),
+      generateSitemapXml({ mode }),
+    ],
+    server: {
+      proxy: {
+        '/v1': {
+          target: env.VITE_BACKEND_ENDPOINT,
+          changeOrigin: true,
+        },
+        '/ocr': {
+          target: env.VITE_BACKEND_ENDPOINT,
+          changeOrigin: true,
+        },
+      },
+    },
+  };
+});
+
+function injectHtmlFaviconPlugin() {
   return {
     name: 'inject-html-favicon',
     transformIndexHtml(html: string) {
@@ -25,9 +68,9 @@ const injectHtmlFaviconPlugin = () => {
       );
     },
   };
-};
+}
 
-const injectHtmlSeoPlugin = ({ mode }: { mode: string }) => {
+function injectHtmlSeoPlugin({ mode }: { mode: string }) {
   return {
     name: 'inject-html-seo',
     transformIndexHtml(html: string, ctx: { filename: string }) {
@@ -246,9 +289,9 @@ const injectHtmlSeoPlugin = ({ mode }: { mode: string }) => {
       );
     },
   };
-};
+}
 
-const injectHtmlTagPlugin = ({ mode }: { mode: string }) => {
+function injectHtmlTagPlugin({ mode }: { mode: string }) {
   return {
     name: 'inject-html-tag',
     transformIndexHtml(html: string) {
@@ -282,9 +325,9 @@ const injectHtmlTagPlugin = ({ mode }: { mode: string }) => {
       );
     },
   };
-};
+}
 
-const generateRobotsTxt = ({ mode }: { mode: string }) => {
+function generateRobotsTxt({ mode }: { mode: string }) {
   let config: ResolvedConfig;
 
   return {
@@ -310,9 +353,9 @@ Sitemap: https://medipanda.co.kr/sitemap.xml
       writeFileSync(resolve(outDir, 'robots.txt'), content);
     },
   } as Plugin;
-};
+}
 
-const generateSitemapXml = ({ mode }: { mode: string }) => {
+function generateSitemapXml({ mode }: { mode: string }) {
   let config: ResolvedConfig;
 
   return {
@@ -419,47 +462,4 @@ const generateSitemapXml = ({ mode }: { mode: string }) => {
       writeFileSync(resolve(outDir, 'sitemap.xml'), content);
     },
   } as Plugin;
-};
-
-// https://vite.dev/config/
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd());
-
-  return {
-    build: {
-      rollupOptions: {
-        input: {
-          main: resolve(__dirname, 'index.html'),
-          landing: resolve(__dirname, 'landing.html'),
-          event1: resolve(__dirname, 'event1.html'),
-        },
-      },
-    },
-    resolve: {
-      alias: {
-        '@': '/src',
-      },
-    },
-    plugins: [
-      react(),
-      viteTsconfigPaths(),
-      injectHtmlFaviconPlugin(),
-      injectHtmlSeoPlugin({ mode }),
-      injectHtmlTagPlugin({ mode }),
-      generateRobotsTxt({ mode }),
-      generateSitemapXml({ mode }),
-    ],
-    server: {
-      proxy: {
-        '/v1': {
-          target: env.VITE_BACKEND_ENDPOINT,
-          changeOrigin: true,
-        },
-        '/ocr': {
-          target: env.VITE_BACKEND_ENDPOINT,
-          changeOrigin: true,
-        },
-      },
-    },
-  };
-});
+}
