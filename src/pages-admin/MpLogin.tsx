@@ -1,8 +1,9 @@
+import { NotAdminError } from '@/utils/member-utils';
 import { Box, Button, Card, IconButton, InputAdornment, Stack, TextField } from '@mui/material';
 import { isAxiosError } from 'axios';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Eye, EyeSlash } from 'iconsax-reactjs';
-import { NotAdminError, useSession } from '@/hooks/useSession';
+import { useSession } from '@/hooks/useSession';
 import { useSnackbar } from 'notistack';
 import { type SyntheticEvent, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';

@@ -1,7 +1,7 @@
-import { type Editor } from '@tiptap/react';
-import { type Dispatch, type SetStateAction, useState } from 'react';
 import { type AttachmentResponse, uploadEditorFile } from '@/backend';
 import { useTiptap, type UseTiptapOptions } from '@/lib/Tiptap';
+import { type Editor } from '@tiptap/react';
+import { type Dispatch, type SetStateAction, useState } from 'react';
 
 export function useMedipandaEditor({ ...options }: Omit<UseTiptapOptions, 'imageMimeTypes' | 'onImageInsert' | 'onImageDelete'> = {}): {
   editor: Editor;

@@ -1,10 +1,11 @@
 import { normalizePhoneNumber } from '@/lib/utils/form';
 import { useMpModal } from '@/hooks/useMpModal';
+import { isSuperAdmin } from '@/utils/member-utils';
 import { Box, Button, Card, Checkbox, FormControlLabel, Stack, Switch, TextField, Typography } from '@mui/material';
 import { isAxiosError } from 'axios';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { AdminPermission, getMemberDetails, getPermissions, type MemberDetailsResponse, signupByAdmin, updateByAdmin } from '@/backend';
-import { isSuperAdmin, useSession } from '@/hooks/useSession';
+import { useSession } from '@/hooks/useSession';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
 import type { RequiredDeep } from 'type-fest';

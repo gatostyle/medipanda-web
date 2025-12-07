@@ -3,7 +3,7 @@ import { Base64ErrorBoundary } from '@/lib/components/Base64ErrorBoundary';
 import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
 import { MpAdminGuard, MpGuestGuard } from './guards';
 import { type ElementType, lazy, Suspense } from 'react';
-import { Outlet, Navigate, type RouteObject } from 'react-router-dom';
+import { Outlet, Navigate, type RouteObject, createBrowserRouter } from 'react-router-dom';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any,react/display-name
 const Loadable = (Component: ElementType) => (props: any) => (
@@ -14,54 +14,54 @@ const Loadable = (Component: ElementType) => (props: any) => (
 
 const DashboardLayout = Loadable(lazy(() => import('./layouts/DashboardLayout')));
 
-const MpLogin = Loadable(lazy(() => import('@/pages/MpLogin')));
-const MpLogout = Loadable(lazy(() => import('@/pages/MpLogout')));
+const MpLogin = Loadable(lazy(() => import('@/pages-admin/MpLogin')));
+const MpLogout = Loadable(lazy(() => import('@/pages-admin/MpLogout')));
 
-const MpAdminMain = Loadable(lazy(() => import('@/pages/MpAdminMain')));
-const MpAdminMemberList = Loadable(lazy(() => import('@/pages/MpAdminMemberList')));
-const MpAdminMemberEdit = Loadable(lazy(() => import('@/pages/MpAdminMemberEdit')));
-const MpAdminSalesAgencyProductList = Loadable(lazy(() => import('@/pages/MpAdminSalesAgencyProductList')));
-const MpAdminSalesAgencyProductEdit = Loadable(lazy(() => import('@/pages/MpAdminSalesAgencyProductEdit')));
-const MpAdminPartnerList = Loadable(lazy(() => import('@/pages/MpAdminPartnerList')));
-const MpAdminPartnerEdit = Loadable(lazy(() => import('@/pages/MpAdminPartnerEdit')));
-const MpAdminProductList = Loadable(lazy(() => import('@/pages/MpAdminProductList')));
-const MpAdminProductDetail = Loadable(lazy(() => import('@/pages/MpAdminProductDetail')));
-const MpAdminProductEdit = Loadable(lazy(() => import('@/pages/MpAdminProductEdit')));
-const MpAdminPrescriptionReceptionList = Loadable(lazy(() => import('@/pages/MpAdminPrescriptionReceptionList')));
-const MpAdminPrescriptionFormList = Loadable(lazy(() => import('@/pages/MpAdminPrescriptionFormList')));
-const MpAdminPrescriptionFormEdit = Loadable(lazy(() => import('@/pages/MpAdminPrescriptionFormEdit')));
-const MpAdminSettlementPartnerDetail = Loadable(lazy(() => import('@/pages/MpAdminSettlementPartnerDetail')));
-const MpAdminSettlementList = Loadable(lazy(() => import('@/pages/MpAdminSettlementList')));
-const MpAdminSettlementDetail = Loadable(lazy(() => import('@/pages/MpAdminSettlementDetail')));
-const MpAdminStatisticsList = Loadable(lazy(() => import('@/pages/MpAdminStatisticsList')));
-const MpAdminExpenseReportList = Loadable(lazy(() => import('@/pages/MpAdminExpenseReportList')));
-const MpAdminCommunityPostList = Loadable(lazy(() => import('@/pages/MpAdminCommunityPostList')));
-const MpAdminCommunityCommentList = Loadable(lazy(() => import('@/pages/MpAdminCommunityCommentList')));
-const MpAdminCommunityBlindList = Loadable(lazy(() => import('@/pages/MpAdminCommunityBlindList')));
-const MpAdminHospitalList = Loadable(lazy(() => import('@/pages/MpAdminHospitalList')));
-const MpAdminAtoZList = Loadable(lazy(() => import('@/pages/MpAdminAtoZList')));
-const MpAdminAtoZDetail = Loadable(lazy(() => import('@/pages/MpAdminAtoZDetail')));
-const MpAdminAtoZEdit = Loadable(lazy(() => import('@/pages/MpAdminAtoZEdit')));
-const MpAdminNoticeList = Loadable(lazy(() => import('@/pages/MpAdminNoticeList')));
-const MpAdminNoticeDetail = Loadable(lazy(() => import('@/pages/MpAdminNoticeDetail')));
-const MpAdminNoticeEdit = Loadable(lazy(() => import('@/pages/MpAdminNoticeEdit')));
-const MpAdminFaqList = Loadable(lazy(() => import('@/pages/MpAdminFaqList')));
-const MpAdminFaqDetail = Loadable(lazy(() => import('@/pages/MpAdminFaqDetail')));
-const MpAdminFaqEdit = Loadable(lazy(() => import('@/pages/MpAdminFaqEdit')));
-const MpAdminInquiryList = Loadable(lazy(() => import('@/pages/MpAdminInquiryList')));
-const MpAdminInquiryDetail = Loadable(lazy(() => import('@/pages/MpAdminInquiryDetail')));
-const MpAdminBannerList = Loadable(lazy(() => import('@/pages/MpAdminBannerList')));
-const MpAdminBannerEdit = Loadable(lazy(() => import('@/pages/MpAdminBannerEdit')));
-const MpAdminAdminList = Loadable(lazy(() => import('@/pages/MpAdminAdminList')));
-const MpAdminAdminEdit = Loadable(lazy(() => import('@/pages/MpAdminAdminEdit')));
-const MpAdminEventList = Loadable(lazy(() => import('@/pages/MpAdminEventList')));
-const MpAdminEventDetail = Loadable(lazy(() => import('@/pages/MpAdminEventDetail')));
-const MpAdminEventEdit = Loadable(lazy(() => import('@/pages/MpAdminEventEdit')));
+const MpAdminMain = Loadable(lazy(() => import('@/pages-admin/MpAdminMain')));
+const MpAdminMemberList = Loadable(lazy(() => import('@/pages-admin/MpAdminMemberList')));
+const MpAdminMemberEdit = Loadable(lazy(() => import('@/pages-admin/MpAdminMemberEdit')));
+const MpAdminSalesAgencyProductList = Loadable(lazy(() => import('@/pages-admin/MpAdminSalesAgencyProductList')));
+const MpAdminSalesAgencyProductEdit = Loadable(lazy(() => import('@/pages-admin/MpAdminSalesAgencyProductEdit')));
+const MpAdminPartnerList = Loadable(lazy(() => import('@/pages-admin/MpAdminPartnerList')));
+const MpAdminPartnerEdit = Loadable(lazy(() => import('@/pages-admin/MpAdminPartnerEdit')));
+const MpAdminProductList = Loadable(lazy(() => import('@/pages-admin/MpAdminProductList')));
+const MpAdminProductDetail = Loadable(lazy(() => import('@/pages-admin/MpAdminProductDetail')));
+const MpAdminProductEdit = Loadable(lazy(() => import('@/pages-admin/MpAdminProductEdit')));
+const MpAdminPrescriptionReceptionList = Loadable(lazy(() => import('@/pages-admin/MpAdminPrescriptionReceptionList')));
+const MpAdminPrescriptionFormList = Loadable(lazy(() => import('@/pages-admin/MpAdminPrescriptionFormList')));
+const MpAdminPrescriptionFormEdit = Loadable(lazy(() => import('@/pages-admin/MpAdminPrescriptionFormEdit')));
+const MpAdminSettlementPartnerDetail = Loadable(lazy(() => import('@/pages-admin/MpAdminSettlementPartnerDetail')));
+const MpAdminSettlementList = Loadable(lazy(() => import('@/pages-admin/MpAdminSettlementList')));
+const MpAdminSettlementDetail = Loadable(lazy(() => import('@/pages-admin/MpAdminSettlementDetail')));
+const MpAdminStatisticsList = Loadable(lazy(() => import('@/pages-admin/MpAdminStatisticsList')));
+const MpAdminExpenseReportList = Loadable(lazy(() => import('@/pages-admin/MpAdminExpenseReportList')));
+const MpAdminCommunityPostList = Loadable(lazy(() => import('@/pages-admin/MpAdminCommunityPostList')));
+const MpAdminCommunityCommentList = Loadable(lazy(() => import('@/pages-admin/MpAdminCommunityCommentList')));
+const MpAdminCommunityBlindList = Loadable(lazy(() => import('@/pages-admin/MpAdminCommunityBlindList')));
+const MpAdminHospitalList = Loadable(lazy(() => import('@/pages-admin/MpAdminHospitalList')));
+const MpAdminAtoZList = Loadable(lazy(() => import('@/pages-admin/MpAdminAtoZList')));
+const MpAdminAtoZDetail = Loadable(lazy(() => import('@/pages-admin/MpAdminAtoZDetail')));
+const MpAdminAtoZEdit = Loadable(lazy(() => import('@/pages-admin/MpAdminAtoZEdit')));
+const MpAdminNoticeList = Loadable(lazy(() => import('@/pages-admin/MpAdminNoticeList')));
+const MpAdminNoticeDetail = Loadable(lazy(() => import('@/pages-admin/MpAdminNoticeDetail')));
+const MpAdminNoticeEdit = Loadable(lazy(() => import('@/pages-admin/MpAdminNoticeEdit')));
+const MpAdminFaqList = Loadable(lazy(() => import('@/pages-admin/MpAdminFaqList')));
+const MpAdminFaqDetail = Loadable(lazy(() => import('@/pages-admin/MpAdminFaqDetail')));
+const MpAdminFaqEdit = Loadable(lazy(() => import('@/pages-admin/MpAdminFaqEdit')));
+const MpAdminInquiryList = Loadable(lazy(() => import('@/pages-admin/MpAdminInquiryList')));
+const MpAdminInquiryDetail = Loadable(lazy(() => import('@/pages-admin/MpAdminInquiryDetail')));
+const MpAdminBannerList = Loadable(lazy(() => import('@/pages-admin/MpAdminBannerList')));
+const MpAdminBannerEdit = Loadable(lazy(() => import('@/pages-admin/MpAdminBannerEdit')));
+const MpAdminAdminList = Loadable(lazy(() => import('@/pages-admin/MpAdminAdminList')));
+const MpAdminAdminEdit = Loadable(lazy(() => import('@/pages-admin/MpAdminAdminEdit')));
+const MpAdminEventList = Loadable(lazy(() => import('@/pages-admin/MpAdminEventList')));
+const MpAdminEventDetail = Loadable(lazy(() => import('@/pages-admin/MpAdminEventDetail')));
+const MpAdminEventEdit = Loadable(lazy(() => import('@/pages-admin/MpAdminEventEdit')));
 
-const Error404 = Loadable(lazy(() => import('@/pages/Error404')));
+const Error404 = Loadable(lazy(() => import('@/pages-admin/Error404')));
 
-const MpAdminCommunityUserList = Loadable(lazy(() => import('@/pages/MpAdminCommunityUserList')));
-const MpAdminCommunityPostDetail = Loadable(lazy(() => import('@/pages/MpAdminCommunityPostDetail')));
+const MpAdminCommunityUserList = Loadable(lazy(() => import('@/pages-admin/MpAdminCommunityUserList')));
+const MpAdminCommunityPostDetail = Loadable(lazy(() => import('@/pages-admin/MpAdminCommunityPostDetail')));
 
 const authRoutes: RouteObject[] = [
   {
@@ -507,8 +507,15 @@ const adminRoute: RouteObject = {
   ],
 };
 
-export const routes: RouteObject = {
-  path: '/',
-  children: [...authRoutes, adminRoute, { path: '*', element: <Error404 /> }],
-  errorElement: <Base64ErrorBoundary />,
-};
+export const adminRouter = createBrowserRouter(
+  [
+    {
+      path: '/',
+      children: [...authRoutes, adminRoute, { path: '*', element: <Error404 /> }],
+      errorElement: <Base64ErrorBoundary />,
+    },
+  ],
+  {
+    basename: import.meta.env.VITE_APP_BASE_NAME ?? '/',
+  },
+);

@@ -7,7 +7,7 @@
     "dev": "vite --mode qa",
     "build:dev": "tsc -b && vite --mode qa build",
     "build:prod": "tsc -b && vite --mode prod build",
-    "lint": "eslint .",
+    "lint": "eslint --quiet .",
     "lint:fix": "eslint --quiet --fix .",
     "preview": "vite preview",
     "generate-backend": "curl -sSL https://prod.api.medipanda.co.kr/api-docs >./api-docs.json && node ./generate-backend.cjs ./api-docs.json ./src/backend/backend.ts && eslint --fix ./src/backend/backend.ts; rm -f ./api-docs.json",
