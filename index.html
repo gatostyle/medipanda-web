@@ -3,7 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>메디판다 관리자</title>
+    %FAVICON_SCRIPT%
+    %SEO_SCRIPT%
+    %TAG_SCRIPT%
+    <script>
+      (function () {
+        const userAgent = navigator.userAgent;
+
+        if (/iPhone|iPad|iPod/i.test(userAgent)) {
+          location.href = 'https://apps.apple.com/kr/app/%EB%A9%94%EB%94%94%ED%8C%90%EB%8B%A4/id6746338129';
+        } else if (/Android/i.test(userAgent)) {
+          location.href = 'https://play.google.com/store/apps/details?id=kr.co.medipanda.android';
+        }
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

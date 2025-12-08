@@ -1,10 +1,7 @@
+import { IS_ADMIN_MODE } from '@/constants';
+import { UserApp } from '@/UserApp';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import './index.scss';
-import { App } from './App';
+import { AdminApp } from './AdminApp';
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-);
+createRoot(document.getElementById('root')!).render(<StrictMode>{IS_ADMIN_MODE ? <AdminApp /> : <UserApp />}</StrictMode>);

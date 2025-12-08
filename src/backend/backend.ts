@@ -91,6 +91,7 @@ export interface AdminUpdateRequest {
 export interface AlternativeProductDto {
   composition: string | null;
   feeRate: number | null;
+  insurance: string | null;
   kdCode: string;
   manufacturer: string | null;
   nhiPrice: number | null;
@@ -113,7 +114,7 @@ export interface BannerCreateRequest {
   displayOrder: number;
   endAt: DateTimeString;
   linkUrl: string;
-  position: string;
+  position: 'ALL' | 'POPUP' | 'PC_MAIN' | 'PC_COMMUNITY' | 'MOBILE_MAIN';
   scope: 'ENTIRE' | 'CONTRACT' | 'NON_CONTRACT';
   startAt: DateTimeString;
   status: 'VISIBLE' | 'HIDDEN';
@@ -129,7 +130,7 @@ export interface BannerResponse {
   imageUrl: string;
   linkUrl: string;
   note: string | null;
-  position: string;
+  position: 'ALL' | 'POPUP' | 'PC_MAIN' | 'PC_COMMUNITY' | 'MOBILE_MAIN';
   scope: 'ENTIRE' | 'CONTRACT' | 'NON_CONTRACT';
   startAt: string;
   status: 'VISIBLE' | 'HIDDEN';
@@ -141,7 +142,7 @@ export interface BannerUpdateRequest {
   displayOrder: number | null;
   endAt: DateTimeString | null;
   linkUrl: string | null;
-  position: string | null;
+  position: ('ALL' | 'POPUP' | 'PC_MAIN' | 'PC_COMMUNITY' | 'MOBILE_MAIN') | null;
   scope: ('ENTIRE' | 'CONTRACT' | 'NON_CONTRACT') | null;
   startAt: DateTimeString | null;
   status: ('VISIBLE' | 'HIDDEN') | null;
@@ -203,6 +204,7 @@ export interface BoardMemberStatsResponse {
   contractStatus: 'CONTRACT' | 'NON_CONTRACT';
   id: number;
   name: string;
+  nickname: string;
   phoneNumber: string;
   postCount: number;
   totalLikes: number;
@@ -457,6 +459,7 @@ export interface Item {
   feeAmount: number | null;
   id: number | null;
   note: string | null;
+  ocrItem: OcrOriginalItem | null;
   productCode: string | null;
   quantity: number | null;
   totalPrice: number | null;
@@ -934,9 +937,49 @@ export interface PartnerCreateRequest {
   medicalDepartment: string | null;
   note: string | null;
   pharmacyAddress: string | null;
+  pharmacyCreateRequest: PartnerPharmacyCreateRequest | null;
   pharmacyName: string | null;
   pharmacyStatus: 'NORMAL' | 'CLOSED' | 'DELETED' | 'NONE';
   userId: string;
+}
+
+export interface PartnerPharmacyCreateItem {
+  note: string | null;
+  pharmacyAddress: string | null;
+  pharmacyName: string;
+  pharmacyStatus: 'NORMAL' | 'CLOSED' | 'DELETED' | 'NONE';
+  phone: string | null;
+}
+
+export interface PartnerPharmacyCreateRequest {
+  items: PartnerPharmacyCreateItem[];
+}
+
+export interface PartnerPharmacyDeleteRequest {
+  ids: number[];
+}
+
+export interface PartnerPharmacyResponse {
+  id: number;
+  note: string | null;
+  pharmacyAddress: string | null;
+  pharmacyName: string;
+  pharmacyStatus: 'NORMAL' | 'CLOSED' | 'DELETED' | 'NONE';
+  phone: string | null;
+}
+
+export interface PartnerPharmacyUpdateItem {
+  note: string | null;
+  pharmacyAddress: string | null;
+  pharmacyId: number;
+  pharmacyName: string | null;
+  pharmacyStatus: ('NORMAL' | 'CLOSED' | 'DELETED' | 'NONE') | null;
+  phone: string | null;
+}
+
+export interface PartnerPharmacyUpdateRequest {
+  deletedIds: number[] | null;
+  items: PartnerPharmacyUpdateItem[];
 }
 
 export interface PartnerResponse {
@@ -949,6 +992,7 @@ export interface PartnerResponse {
   institutionCode: string;
   institutionName: string;
   medicalDepartment: string | null;
+  memberId: number;
   memberName: string;
   memberType: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
   note: string | null;
@@ -970,6 +1014,7 @@ export interface PartnerUpdateRequest {
   pharmacyAddress: string | null;
   pharmacyName: string | null;
   pharmacyStatus: ('NORMAL' | 'CLOSED' | 'DELETED' | 'NONE') | null;
+  pharmacyUpdateRequest: PartnerPharmacyUpdateRequest | null;
 }
 
 export interface PerformanceStatsByDrugCompany {
@@ -1209,6 +1254,7 @@ export interface ProductDetailsResponse {
   productName: string | null;
   roundedChangedFeeRate: number | null;
   roundedFeeRate: number | null;
+  unit: string | null;
 }
 
 export interface ProductExtraInfoRequest {
@@ -1222,11 +1268,26 @@ export interface ProductExtraInfoRequest {
   isPromotion: boolean | null;
   isStopSelling: boolean | null;
   manufacturer: string | null;
+  month: string | null;
   note: string | null;
   price: number | null;
   priceUnit: 'KRW' | 'USD' | 'EUR';
   productCode: string;
   productName: string | null;
+}
+
+export interface ProductExtraInfoUploadRequest {
+  category: string | null;
+  changedFeeRate: string | null;
+  changedMonth: number | null;
+  composition: string | null;
+  feeRate: string | null;
+  manufacturerName: string | null;
+  note: string | null;
+  price: number | null;
+  productCode: string;
+  productName: string | null;
+  status: string | null;
 }
 
 export interface ProductSummaryResponse {
@@ -1235,6 +1296,7 @@ export interface ProductSummaryResponse {
   composition: string | null;
   feeRate: number | null;
   id: number;
+  insurance: string | null;
   isAcquisition: boolean | null;
   isOutOfStock: boolean | null;
   isPromotion: boolean | null;
@@ -1246,6 +1308,11 @@ export interface ProductSummaryResponse {
   productName: string | null;
   roundedChangedFeeRate: number | null;
   roundedFeeRate: number | null;
+}
+
+export interface PromotionTokenResponse {
+  expiresAt: number;
+  token: string;
 }
 
 export interface PushPreferenceResponse {
@@ -1491,6 +1558,18 @@ export async function whoAmI(): Promise<MemberDetailsResponse> {
 }
 
 /**
+ * 프로모션 참여용 암호화 토큰 생성
+ * POST /v1/auth/promotion-token
+ */
+export async function createPromotionToken(): Promise<PromotionTokenResponse> {
+  const response = await axios.request<PromotionTokenResponse>({
+    method: 'POST',
+    url: '/v1/auth/promotion-token',
+  });
+  return response.data;
+}
+
+/**
  * 암호화용 공개키
  * GET /v1/auth/public-key
  */
@@ -1601,6 +1680,7 @@ export async function getBanners(options?: {
   page?: number;
   size?: number;
   isExposed?: boolean;
+  bannerPositions?: ('ALL' | 'POPUP' | 'PC_MAIN' | 'PC_COMMUNITY' | 'MOBILE_MAIN')[];
   startAt?: DateTimeString;
   endAt?: DateTimeString;
   bannerTitle?: string;
@@ -1608,7 +1688,10 @@ export async function getBanners(options?: {
   const response = await axios.request<PageBannerResponse>({
     method: 'GET',
     url: '/v1/banners',
-    params: options,
+    params: {
+      ...options,
+      bannerPositions: options?.bannerPositions?.join(','),
+    },
   });
   return response.data;
 }
@@ -1702,7 +1785,7 @@ export async function unblindPost(data: BlindUpdateRequest): Promise<void> {
  * 내가 차단한 사용자 목록 조회
  * GET /v1/blocks
  */
-export async function list(): Promise<BlockResponse[]> {
+export async function list_1(): Promise<BlockResponse[]> {
   const response = await axios.request<BlockResponse[]>({
     method: 'GET',
     url: '/v1/blocks',
@@ -1802,6 +1885,7 @@ export async function createBoardPost(data: { files?: File[]; request: BoardPost
  */
 export async function getBoardMembers(options?: {
   userId?: string;
+  memberId?: number;
   name?: string;
   nickname?: string;
   phoneNumber?: string;
@@ -1958,6 +2042,8 @@ export async function getCommentMembers(options?: {
   endAt?: DateString;
   commentType?: 'COMMENT' | 'REPLY';
   filterDeleted?: boolean;
+  filterBlind?: boolean;
+  name?: string;
   page?: number;
   size?: number;
 }): Promise<PageCommentMemberResponse> {
@@ -2642,6 +2728,7 @@ export async function getUserMembers(options?: {
   email?: string;
   companyName?: string;
   contractStatus?: 'CONTRACT' | 'NON_CONTRACT';
+  filterDeleted?: boolean;
   startAt?: DateString;
   endAt?: DateString;
   page?: number;
@@ -2764,6 +2851,7 @@ export function getDownloadUserMembersExcel(options?: {
   email?: string;
   companyName?: string;
   contractStatus?: 'CONTRACT' | 'NON_CONTRACT';
+  filterDeleted?: boolean;
   startAt?: DateString;
   endAt?: DateString;
   page?: number;
@@ -2922,12 +3010,14 @@ export async function applyContract(data: {
   cso_certificate: File;
   education_certificate: File;
   request: PartnerContractRequest;
-  subcontract_agreement: File;
+  subcontract_agreement?: File;
 }): Promise<void> {
   const form = new FormData();
   form.append('request', new Blob([JSON.stringify(data.request)], { type: 'application/json' }));
   form.append('business_registration', data.business_registration, data.business_registration.name.normalize('NFC'));
-  form.append('subcontract_agreement', data.subcontract_agreement, data.subcontract_agreement.name.normalize('NFC'));
+  if (data.subcontract_agreement !== undefined) {
+    form.append('subcontract_agreement', data.subcontract_agreement, data.subcontract_agreement.name.normalize('NFC'));
+  }
   form.append('cso_certificate', data.cso_certificate, data.cso_certificate.name.normalize('NFC'));
   form.append('education_certificate', data.education_certificate, data.education_certificate.name.normalize('NFC'));
   await axios.request({
@@ -3116,6 +3206,56 @@ export async function deletePartner(id: number): Promise<void> {
   await axios.request({
     method: 'DELETE',
     url: `/v1/partners/${id}`,
+  });
+}
+
+/**
+ * 문전약국 조회
+ * GET /v1/partners/{partnerId}/pharmacies
+ */
+export async function list(partnerId: number): Promise<PartnerPharmacyResponse[]> {
+  const response = await axios.request<PartnerPharmacyResponse[]>({
+    method: 'GET',
+    url: `/v1/partners/${partnerId}/pharmacies`,
+  });
+  return response.data;
+}
+
+/**
+ * 문전약국 생성
+ * POST /v1/partners/{partnerId}/pharmacies
+ */
+export async function createAll(partnerId: number, data: PartnerPharmacyCreateRequest): Promise<PartnerPharmacyResponse[]> {
+  const response = await axios.request<PartnerPharmacyResponse[]>({
+    method: 'POST',
+    url: `/v1/partners/${partnerId}/pharmacies`,
+    data,
+  });
+  return response.data;
+}
+
+/**
+ * 문전약국 수정
+ * PUT /v1/partners/{partnerId}/pharmacies
+ */
+export async function updateAll(partnerId: number, data: PartnerPharmacyUpdateRequest): Promise<PartnerPharmacyResponse[]> {
+  const response = await axios.request<PartnerPharmacyResponse[]>({
+    method: 'PUT',
+    url: `/v1/partners/${partnerId}/pharmacies`,
+    data,
+  });
+  return response.data;
+}
+
+/**
+ * 문전약국 삭제
+ * DELETE /v1/partners/{partnerId}/pharmacies
+ */
+export async function deleteAll(partnerId: number, data: PartnerPharmacyDeleteRequest): Promise<void> {
+  await axios.request({
+    method: 'DELETE',
+    url: `/v1/partners/${partnerId}/pharmacies`,
+    data,
   });
 }
 
@@ -3413,6 +3553,24 @@ export async function getProductSummaries(options?: {
 }
 
 /**
+ * 제품 정보 상세 (제품코드로 조회)
+ * GET /v1/products/code/{productCode}/details
+ */
+export async function getProductDetailsByCode(
+  productCode: string,
+  options?: {
+    month?: string;
+  },
+): Promise<ProductDetailsResponse> {
+  const response = await axios.request<ProductDetailsResponse>({
+    method: 'GET',
+    url: `/v1/products/code/${productCode}/details`,
+    params: options,
+  });
+  return response.data;
+}
+
+/**
  * 제품 정보 목록 Excel 다운로드 (현재 페이지 기준)
  * GET /v1/products/excel-download
  */
@@ -3480,13 +3638,39 @@ export async function createProductExtraInfo(data: {
  * 제품 엑셀 업로드
  * POST /v1/products/product-extra-info/upload
  */
-export async function uploadProductExtraInfo(data: { file: File }): Promise<void> {
+export async function uploadProductExtraInfo(
+  data: {
+    file: File;
+  },
+  options?: {
+    month?: string;
+  },
+): Promise<void> {
   const form = new FormData();
   form.append('file', data.file, data.file.name.normalize('NFC'));
   await axios.request({
     method: 'POST',
     url: '/v1/products/product-extra-info/upload',
+    params: options,
     data: form,
+  });
+}
+
+/**
+ * 제품 JSON 업로드
+ * POST /v1/products/product-extra-info/upload-json
+ */
+export async function uploadProductExtraInfoJson(
+  data: ProductExtraInfoUploadRequest[],
+  options?: {
+    month?: string;
+  },
+): Promise<void> {
+  await axios.request({
+    method: 'POST',
+    url: '/v1/products/product-extra-info/upload-json',
+    params: options,
+    data,
   });
 }
 
@@ -3517,10 +3701,16 @@ export async function softDelete(id: number): Promise<void> {
  * 제품 정보 상세
  * GET /v1/products/{id}/details
  */
-export async function getProductDetails(id: number): Promise<ProductDetailsResponse> {
+export async function getProductDetails(
+  id: number,
+  options?: {
+    month?: string;
+  },
+): Promise<ProductDetailsResponse> {
   const response = await axios.request<ProductDetailsResponse>({
     method: 'GET',
     url: `/v1/products/${id}/details`,
+    params: options,
   });
   return response.data;
 }
@@ -4043,12 +4233,34 @@ export async function getPerformanceTotalPrescriptionAmount(options?: {
   companyName?: string;
   dealerName?: string;
   institutionName?: string;
+  institutionCode?: string;
   startMonth?: DateString;
   endMonth?: DateString;
 }): Promise<number> {
   const response = await axios.request<number>({
     method: 'GET',
     url: '/v1/settlements/performance/total-prescription-amount',
+    params: options,
+  });
+  return response.data;
+}
+
+/**
+ * 정산내역 목록 조회 (총 처방금액 합계)
+ * GET /v1/settlements/total-prescription-amount
+ */
+export async function getSettlementsTotal(options?: {
+  dealerName?: string;
+  dealerId?: number;
+  drugCompanyName?: string;
+  companyName?: string;
+  status?: 'REQUEST' | 'OBJECTION';
+  startMonth?: DateString;
+  endMonth?: DateString;
+}): Promise<number> {
+  const response = await axios.request<number>({
+    method: 'GET',
+    url: '/v1/settlements/total-prescription-amount',
     params: options,
   });
   return response.data;

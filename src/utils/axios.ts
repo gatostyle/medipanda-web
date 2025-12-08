@@ -1,31 +1,32 @@
+import { IS_ADMIN_MODE } from '@/constants';
 import axios from 'axios';
 
-const axiosServices = axios.create({
-  withCredentials: true, // Ensure cookies are sent with requests
+const apiClient = axios.create({
+  timeout: 10000,
 });
 
-// ==============================|| AXIOS - FOR MOCK SERVICES ||============================== //
+if (IS_ADMIN_MODE) {
+  apiClient.interceptors.response.use(
+    response => response,
+    error => {
+      if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+        const currentPath = window.location.pathname;
+        const isAuthPage = currentPath.includes('/login') || currentPath.includes('/logout');
+        const isAuthRequest =
+          error.config?.url?.includes('/v1/auth/login') ||
+          error.config?.url?.includes('/v1/auth/logout') ||
+          error.config?.url?.includes('/v1/auth/token/refresh') ||
+          error.config?.url?.includes('/v1/auth/me');
 
-axiosServices.interceptors.response.use(
-  response => response,
-  error => {
-    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-      const currentPath = window.location.pathname;
-      const isAuthPage = currentPath.includes('/login') || currentPath.includes('/logout');
-      const isAuthRequest =
-        error.config?.url?.includes('/v1/auth/login') ||
-        error.config?.url?.includes('/v1/auth/logout') ||
-        error.config?.url?.includes('/v1/auth/token/refresh') ||
-        error.config?.url?.includes('/v1/auth/me');
-
-      if (!isAuthPage && !isAuthRequest) {
-        const currentUrl = window.location.pathname + window.location.search;
-        window.location.replace(`/logout?authError=true&redirectTo=${encodeURIComponent(currentUrl)}`);
+        if (!isAuthPage && !isAuthRequest) {
+          const currentUrl = window.location.pathname + window.location.search;
+          window.location.replace(`/logout?authError=true&redirectTo=${encodeURIComponent(currentUrl)}`);
+        }
       }
-    }
 
-    return Promise.reject(error);
-  },
-);
+      return Promise.reject(error);
+    },
+  );
+}
 
-export default axiosServices;
+export default apiClient;

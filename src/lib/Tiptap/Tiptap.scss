@@ -108,6 +108,12 @@
   /* Image component style */
   .image-component > img {
     max-width: 100% !important;
+    height: auto;
+  }
+
+  /* Image resize fix */
+  &[contenteditable='false'] .node-image.ProseMirror-selectednode .image-component {
+    outline: none;
   }
 
   /* Table-specific styling */

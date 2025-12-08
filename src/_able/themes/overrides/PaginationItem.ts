@@ -14,7 +14,8 @@ interface PaginationStyleProps extends ExtendedStyleProps {
 
 // ==============================|| PAGINATION ITEM - COLORS ||============================== //
 
-function getColorStyle({ variant, color, theme }: PaginationStyleProps) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getColorStyle({ variant, color, theme }: PaginationStyleProps | any) {
   const colors = getColors(theme, color);
   const { lighter, light, dark, main, contrastText } = colors;
 

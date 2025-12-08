@@ -4,7 +4,7 @@ import { AttachFile as AttachFileIcon, UploadFile } from '@mui/icons-material';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import { useSnackbar } from 'notistack';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import type { RequiredDeep } from 'type-fest';
 
@@ -17,6 +17,7 @@ export interface MpProductUploadModalProps {
 function MpProductUploadModalInternal({ open, onClose, onSuccess }: MpProductUploadModalProps) {
   const { alert, alertError } = useMpModal();
   const { enqueueSnackbar } = useSnackbar();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm({
     defaultValues: {
@@ -31,6 +32,8 @@ function MpProductUploadModalInternal({ open, onClose, onSuccess }: MpProductUpl
       return;
     }
 
+    setIsSubmitting(true);
+
     try {
       await uploadProductExtraInfo({ file: values.file });
       enqueueSnackbar('업로드가 완료되었습니다.', { variant: 'success' });
@@ -38,6 +41,8 @@ function MpProductUploadModalInternal({ open, onClose, onSuccess }: MpProductUpl
     } catch (error) {
       console.error('Failed to upload rate table:', error);
       await alertError('업로드 중 오류가 발생했습니다.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -55,7 +60,7 @@ function MpProductUploadModalInternal({ open, onClose, onSuccess }: MpProductUpl
       <DialogContent sx={{ pb: 3 }}>
         <Box sx={{ mt: 1, textAlign: 'right', mb: 2 }}>
           <Button
-            href={import.meta.env.VITE_APP_URL_FILE_PRODUCT_RATE_TABLE}
+            href='/assets/templates/요율표_양식.xlsx'
             target='_blank'
             variant='contained'
             color='success'
@@ -95,8 +100,14 @@ function MpProductUploadModalInternal({ open, onClose, onSuccess }: MpProductUpl
         <Button variant='outlined' onClick={onClose} sx={{ minWidth: 100 }}>
           취소
         </Button>
-        <Button variant='contained' color='success' onClick={form.handleSubmit(submitHandler)} disabled={!formFile} sx={{ minWidth: 100 }}>
-          업로드
+        <Button
+          variant='contained'
+          color='success'
+          onClick={form.handleSubmit(submitHandler)}
+          disabled={!formFile || isSubmitting}
+          sx={{ minWidth: 100 }}
+        >
+          {isSubmitting ? '업로드 중...' : '업로드'}
         </Button>
       </DialogActions>
     </Dialog>

@@ -1,0 +1,195 @@
+import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
+import { useMpModal } from '@/hooks/useMpModal';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import {
+  Box,
+  Button,
+  Card,
+  CircularProgress,
+  Divider,
+  Link,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Typography,
+} from '@mui/material';
+import { EditorContent } from '@tiptap/react';
+import {
+  type BoardDetailsResponse,
+  BoardExposureRangeLabel,
+  getBoardDetails,
+  isDrugCompanyNoticeType,
+  NoticeTypeLabel,
+  PostAttachmentType,
+} from '@/backend';
+import { useSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
+import { DATEFORMAT_YYYY_MM_DD, DateUtils } from '@/lib/utils/dateFormat';
+
+export default function MpAdminNoticeDetail() {
+  const navigate = useNavigate();
+  const { boardId: paramBoardId } = useParams();
+  const boardId = Number(paramBoardId);
+
+  const { enqueueSnackbar } = useSnackbar();
+  const [detail, setDetail] = useState<BoardDetailsResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const { alertError } = useMpModal();
+
+  const { editor, setAttachments: setEditorAttachments } = useMedipandaEditor();
+
+  useEffect(() => {
+    fetchDetail(boardId);
+  }, [boardId]);
+
+  useEffect(() => {
+    if (detail !== null) {
+      editor.setEditable(false);
+      editor.commands.setContent(detail.content);
+      setEditorAttachments(detail.attachments.filter(a => a.type === PostAttachmentType.EDITOR));
+    }
+  }, [detail, editor]);
+
+  const fetchDetail = async (boardId: number) => {
+    if (Number.isNaN(boardId)) {
+      await alertError('잘못된 접근입니다.');
+      return navigate('/admin/notices');
+    }
+
+    setLoading(true);
+    try {
+      const detail = await getBoardDetails(boardId, { filterDeleted: true });
+      setDetail(detail);
+    } catch (error) {
+      console.error('Failed to fetch notice detail:', error);
+      enqueueSnackbar('데이터를 불러오는데 실패했습니다.', { variant: 'error' });
+      return window.history.back();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box display='flex' justifyContent='center' alignItems='center' minHeight='400px'>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (detail === null) {
+    return null;
+  }
+
+  return (
+    <Stack sx={{ gap: 3 }}>
+      <Typography variant='h4'>공지사항 상세</Typography>
+
+      <Card component={Stack} sx={{ padding: 3, gap: 2 }}>
+        <TableContainer>
+          <Table>
+            <TableBody>
+              <TableRow>
+                <TableCell component='th' scope='row' sx={{ width: 150, fontWeight: 'bold' }}>
+                  공지분류 <span style={{ color: 'red' }}>*</span>
+                </TableCell>
+                <TableCell colSpan={5}>{NoticeTypeLabel[detail.noticeProperties!.noticeType]}</TableCell>
+              </TableRow>
+              {isDrugCompanyNoticeType(detail.noticeProperties!.noticeType) && (
+                <TableRow>
+                  <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
+                    제약사명
+                  </TableCell>
+                  <TableCell colSpan={5}>{detail.noticeProperties?.drugCompany}</TableCell>
+                </TableRow>
+              )}
+              <TableRow>
+                <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
+                  노출상태 <span style={{ color: 'red' }}>*</span>
+                </TableCell>
+                <TableCell colSpan={5}>{detail.isExposed ? '노출' : '미노출'}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
+                  노출범위 <span style={{ color: 'red' }}>*</span>
+                </TableCell>
+                <TableCell colSpan={5}>{BoardExposureRangeLabel[detail.exposureRange]}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
+                  제목 <span style={{ color: 'red' }}>*</span>
+                </TableCell>
+                <TableCell colSpan={5}>{detail.title}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
+                  내용 <span style={{ color: 'red' }}>*</span>
+                </TableCell>
+                <TableCell colSpan={5}>
+                  <Stack
+                    sx={{
+                      '.tiptap': {
+                        padding: '20px 10px',
+                      },
+                    }}
+                  >
+                    <EditorContent editor={editor} placeholder='내용을 입력하세요' />
+                  </Stack>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component='th' scope='row' sx={{ fontWeight: 'bold' }}>
+                  첨부파일
+                </TableCell>
+                <TableCell colSpan={5}>
+                  {detail.attachments
+                    .filter(a => a.type === PostAttachmentType.ATTACHMENT)
+                    .map(file => {
+                      return (
+                        <Box key={file.s3fileId} sx={{ mb: 1 }}>
+                          <Link
+                            href={file.fileUrl}
+                            download
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
+                            underline='hover'
+                          >
+                            <AttachFileIcon fontSize='small' />
+                            {file.originalFileName}
+                          </Link>
+                        </Box>
+                      );
+                    })}
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        <Divider />
+
+        <Typography variant='body2' color='text.secondary'>
+          조회수: {detail.viewsCount.toLocaleString()}
+        </Typography>
+        <Typography variant='body2' color='text.secondary'>
+          작성일: {DateUtils.parseUtcAndFormatKst(detail.createdAt, DATEFORMAT_YYYY_MM_DD)}
+        </Typography>
+
+        <Stack direction='row' sx={{ justifyContent: 'center', gap: 2 }}>
+          <Button variant='outlined' component={RouterLink} to='/admin/notices' sx={{ minWidth: 120 }}>
+            취소
+          </Button>
+          <Button variant='contained' component={RouterLink} to={`/admin/notices/${boardId}/edit`} sx={{ minWidth: 120 }}>
+            수정
+          </Button>
+        </Stack>
+      </Card>
+    </Stack>
+  );
+}

@@ -1,5 +1,6 @@
 'use client';
 
+import { IS_ADMIN_MODE } from '@/constants';
 import { useMedipandaEditor } from '@/hooks/useMedipandaEditor';
 import * as React from 'react';
 import { EditorContent, EditorContext } from '@tiptap/react';
@@ -24,6 +25,7 @@ import { ListDropdownMenu } from '../../tiptap-ui/list-dropdown-menu';
 import { BlockquoteButton } from '../../tiptap-ui/blockquote-button';
 import { CodeBlockButton } from '../../tiptap-ui/code-block-button';
 import { ColorHighlightPopover, ColorHighlightPopoverContent, ColorHighlightPopoverButton } from '../../tiptap-ui/color-highlight-popover';
+import { ImageUploadButton } from '../../tiptap-ui/image-upload-button';
 import { LinkPopover, LinkContent, LinkButton } from '../../tiptap-ui/link-popover';
 import { MarkButton } from '../../tiptap-ui/mark-button';
 import { TextAlignButton } from '../../tiptap-ui/text-align-button';
@@ -107,9 +109,11 @@ export const MainToolbarContent = ({
 
       <ToolbarSeparator />
 
-      {/*<ToolbarGroup>*/}
-      {/*  <ImageUploadButton text='Add' />*/}
-      {/*</ToolbarGroup>*/}
+      {IS_ADMIN_MODE && (
+        <ToolbarGroup>
+          <ImageUploadButton />
+        </ToolbarGroup>
+      )}
 
       <Spacer />
 

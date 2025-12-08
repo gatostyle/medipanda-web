@@ -70,5 +70,6 @@ export default function Typography(fontFamily: string): TypographyVariantsOption
     button: {
       textTransform: 'capitalize',
     },
-  };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any;
 }

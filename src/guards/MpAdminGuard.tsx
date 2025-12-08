@@ -1,6 +1,7 @@
 import { FixedLinearProgress } from '@/lib/components/FixedLinearProgress';
 import { AdminPermission, getPermissions } from '@/backend';
-import { isSuperAdmin, useSession } from '@/hooks/useSession';
+import { useSession } from '@/hooks/useSession';
+import { isSuperAdmin } from '@/utils/member-utils';
 import { type ReactNode, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { saveRedirectTo } from '@/lib/utils/redirectTo';

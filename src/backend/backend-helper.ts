@@ -43,9 +43,9 @@ export const NoticeType = {
 } as const;
 
 export const NoticeTypeLabel: Record<keyof typeof NoticeType, string> = {
-  [NoticeType.PRODUCT_STATUS]: '제약사 - 제품현황',
-  [NoticeType.MANUFACTURING_SUSPENSION]: '제약사 - 정산 및 생산중단',
-  [NoticeType.NEW_PRODUCT]: '제약사 - 신제품 정보',
+  [NoticeType.PRODUCT_STATUS]: '제품현황',
+  [NoticeType.MANUFACTURING_SUSPENSION]: '정산 및 생산중단',
+  [NoticeType.NEW_PRODUCT]: '신제품 정보',
   [NoticeType.POLICY]: '제약사 정책',
   [NoticeType.GENERAL]: '일반공지',
   [NoticeType.ANONYMOUS_BOARD]: '익명게시판',
@@ -78,6 +78,18 @@ export const BoardExposureRangeLabel: Record<keyof typeof BoardExposureRange, st
   [BoardExposureRange.CONTRACTED]: '계약',
   [BoardExposureRange.UNCONTRACTED]: '미계약',
 };
+
+export function memberTypeToBoardExposureRange(memberType: keyof typeof MemberType): keyof typeof BoardExposureRange {
+  switch (memberType) {
+    case MemberType.NONE:
+    case MemberType.CSO:
+      return BoardExposureRange.UNCONTRACTED;
+    case MemberType.INDIVIDUAL:
+    case MemberType.ORGANIZATION:
+      return BoardExposureRange.CONTRACTED;
+  }
+}
+
 export const BannerStatus = {
   VISIBLE: 'VISIBLE',
   HIDDEN: 'HIDDEN',
@@ -124,6 +136,11 @@ export const EventStatus = {
 export const EventStatusLabel: Record<keyof typeof EventStatus, string> = {
   [EventStatus.IN_PROGRESS]: '진행중',
   [EventStatus.FINISHED]: '종료',
+};
+
+export const PrescriptionTypeLabel: Record<string, string> = {
+  INDIVIDUAL: '개별',
+  BUNDLE: '묶음',
 };
 
 export const PrescriptionStatus = {
@@ -313,3 +330,78 @@ export const PriceUnit = {
   USD: 'USD',
   EUR: 'EUR',
 } as const;
+
+export const ReportType = {
+  SPAM: 'SPAM',
+  ILLEGAL_CONTENT: 'ILLEGAL_CONTENT',
+  ABUSE: 'ABUSE',
+  PERSONAL_INFORMATION: 'PERSONAL_INFORMATION',
+  OTHER: 'OTHER',
+} as const;
+
+export const ProductSortType = {
+  LATEST: 'LATEST',
+  PRICE_ASC: 'PRICE_ASC',
+  PRICE_DESC: 'PRICE_DESC',
+  FEE_RATE_ASC: 'FEE_RATE_ASC',
+  FEE_RATE_DESC: 'FEE_RATE_DESC',
+} as const;
+
+export const ProductSortTypeLabel: Record<keyof typeof ProductSortType, string> = {
+  [ProductSortType.LATEST]: '최신순',
+  [ProductSortType.PRICE_ASC]: '약가 낮은순',
+  [ProductSortType.PRICE_DESC]: '약가 높은순',
+  [ProductSortType.FEE_RATE_ASC]: '기본수수료율 낮은순',
+  [ProductSortType.FEE_RATE_DESC]: '기본수수료율 높은순',
+};
+
+export const SettlementPartnerOrder = {
+  INSTITUTION_NAME_ASC: 'INSTITUTION_NAME_ASC',
+  INSTITUTION_NAME_DESC: 'INSTITUTION_NAME_DESC',
+  TOTAL_AMOUNT_ASC: 'TOTAL_AMOUNT_ASC',
+  TOTAL_AMOUNT_DESC: 'TOTAL_AMOUNT_DESC',
+} as const;
+
+export const SettlementPartnerOrderLabel: Record<keyof typeof SettlementPartnerOrder, string> = {
+  [SettlementPartnerOrder.INSTITUTION_NAME_ASC]: '거래처명 오름차순',
+  [SettlementPartnerOrder.INSTITUTION_NAME_DESC]: '거래처명 내림차순',
+  [SettlementPartnerOrder.TOTAL_AMOUNT_ASC]: '정산금액 오름차순',
+  [SettlementPartnerOrder.TOTAL_AMOUNT_DESC]: '정산금액 내림차순',
+};
+
+export const SettlementPartnerProductOrder = {
+  PRESCRIPTION_AMOUNT_ASC: 'PRESCRIPTION_AMOUNT_ASC',
+  PRESCRIPTION_AMOUNT_DESC: 'PRESCRIPTION_AMOUNT_DESC',
+  FEE_AMOUNT_ASC: 'FEE_AMOUNT_ASC',
+  PRODUCT_NAME_ASC: 'PRODUCT_NAME_ASC',
+} as const;
+
+export const SettlementPartnerProductOrderLabel: Record<keyof typeof SettlementPartnerProductOrder, string> = {
+  [SettlementPartnerProductOrder.PRESCRIPTION_AMOUNT_ASC]: '처방금액 높은순',
+  [SettlementPartnerProductOrder.PRESCRIPTION_AMOUNT_DESC]: '처방금액 낮은순',
+  [SettlementPartnerProductOrder.FEE_AMOUNT_ASC]: '수수료금액 높은순',
+  [SettlementPartnerProductOrder.PRODUCT_NAME_ASC]: '제품명순',
+};
+
+export const BoardSortType = {
+  LATEST: 'LATEST',
+  VIEWS: 'VIEWS',
+  LIKES: 'LIKES',
+  COMMENTS: 'COMMENTS',
+} as const;
+
+export const BannerPosition = {
+  ALL: 'ALL',
+  POPUP: 'POPUP',
+  PC_MAIN: 'PC_MAIN',
+  PC_COMMUNITY: 'PC_COMMUNITY',
+  MOBILE_MAIN: 'MOBILE_MAIN',
+} as const;
+
+export const BannerPositionLabel: Record<keyof typeof BannerPosition, string> = {
+  [BannerPosition.ALL]: '전체',
+  [BannerPosition.POPUP]: '팝업',
+  [BannerPosition.PC_MAIN]: 'PC 메인',
+  [BannerPosition.PC_COMMUNITY]: 'PC 커뮤니티',
+  [BannerPosition.MOBILE_MAIN]: '모바일 메인',
+};

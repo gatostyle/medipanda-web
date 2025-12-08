@@ -6,10 +6,11 @@ import {
   type MemberDetailsResponse,
   refreshToken as apiRefreshToken,
   whoAmI,
-  Role,
 } from '@/backend';
+import { IS_ADMIN_MODE } from '@/constants';
 import { encryptRSA } from '@/lib/utils/rsa';
 import { type MenuItem, filterMenuByPermissions, menuItems } from '@/menus';
+import { isAdmin, isSuperAdmin, NotAdminError } from '@/utils/member-utils';
 import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
 
 declare global {
@@ -24,6 +25,7 @@ const initialState = {
   isLoading: true,
   login: Promise.resolve as (userId: string, password: string) => Promise<void>,
   logout: Promise.resolve as () => Promise<void>,
+  refreshSession: Promise.resolve as () => Promise<void>,
 };
 
 const SessionContext = createContext(initialState);
@@ -36,17 +38,19 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const getSession = async () => {
     const member = await whoAmI();
 
-    if (!isAdmin(member)) {
-      await apiLogout();
-      throw new NotAdminError();
-    }
+    if (IS_ADMIN_MODE) {
+      if (!isAdmin(member)) {
+        await apiLogout();
+        throw new NotAdminError();
+      }
 
-    if (!isSuperAdmin(member)) {
-      const permissions = (await getPermissions(member.userId)).permissions;
+      if (!isSuperAdmin(member)) {
+        const permissions = (await getPermissions(member.userId)).permissions;
 
-      setMenus(filterMenuByPermissions(menuItems, permissions));
-    } else {
-      setMenus(menuItems);
+        setMenus(filterMenuByPermissions(menuItems, permissions));
+      } else {
+        setMenus(menuItems);
+      }
     }
 
     clearInterval(window.refreshTokenRotateInterval);
@@ -54,16 +58,18 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       async () => {
         const savedRefreshToken = localStorage.getItem('refreshToken');
 
-        if (savedRefreshToken === null) {
-          clearInterval(window.refreshTokenRotateInterval);
-          await logout();
-          return;
+        if (IS_ADMIN_MODE) {
+          if (savedRefreshToken === null) {
+            clearInterval(window.refreshTokenRotateInterval);
+            await logout();
+            return;
+          }
         }
 
         try {
           const { refreshToken } = await apiRefreshToken({
             userId: member.userId,
-            refreshToken: savedRefreshToken,
+            refreshToken: savedRefreshToken ?? '',
           });
           localStorage.setItem('refreshToken', refreshToken);
         } catch (e) {
@@ -71,10 +77,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           clearInterval(window.refreshTokenRotateInterval);
           localStorage.removeItem('refreshToken');
 
-          await logout();
+          setSession(null);
         }
       },
-      import.meta.env.VITE_APP_TOKEN_ROTATE_INTERVAL,
+      import.meta.env.VITE_APP_TOKEN_ROTATE_INTERVAL ?? 60 * 1_000,
     );
 
     return member;
@@ -82,7 +88,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const login = async (userId: string, password: string) => {
     const { publicKey } = await getPublicKey();
-    const encryptedPassword = import.meta.env.VITE_APP_ENCRYPT_PASSWORD === 'true' ? password : await encryptRSA(publicKey, password);
+    const encryptedPassword = import.meta.env.VITE_APP_ENCRYPT_PASSWORD === 'true' ? await encryptRSA(publicKey, password) : password;
     const { refreshToken } = await apiLogin({
       userId,
       password: encryptedPassword,
@@ -126,6 +132,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         isLoading,
         login,
         logout,
+        refreshSession,
       }}
     >
       {children}
@@ -135,19 +142,4 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
 export function useSession() {
   return useContext(SessionContext);
-}
-
-export function isAdmin(member: MemberDetailsResponse) {
-  return member.role === Role.SUPER_ADMIN || member.role === Role.ADMIN;
-}
-
-export function isSuperAdmin(member: MemberDetailsResponse) {
-  return member.role === Role.SUPER_ADMIN;
-}
-
-export class NotAdminError extends Error {
-  constructor() {
-    super('Access denied. Admins only.');
-    this.name = 'NotAdminError';
-  }
 }
