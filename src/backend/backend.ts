@@ -3296,21 +3296,6 @@ export async function evict(): Promise<void> {
 }
 
 /**
- * EDI ZIP 파일 다운로드 (여러 처방 일괄)
- * GET /v1/prescriptions/export-zip
- */
-export async function exportPrescriptionsZip(options?: { prescriptionIds?: number[] }): Promise<void> {
-  await axios.request({
-    method: 'GET',
-    url: '/v1/prescriptions/export-zip',
-    params: {
-      ...options,
-      prescriptionIds: options?.prescriptionIds?.join(','),
-    },
-  });
-}
-
-/**
  * 요청 날짜가 속한 월의 처방전 수 (submittedDate 기준)
  * GET /v1/prescriptions/monthly-count
  */
