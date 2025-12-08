@@ -283,16 +283,16 @@ export default function MpAdminPrescriptionReceptionList() {
             {selectedIds.length > 0 ? (
               <Button
                 variant='contained'
-                color='primary'
+                color='success'
                 size='small'
                 href={`/v1/prescriptions/export-zip?prescriptionIds=${selectedIds.join(',')}`}
                 target='_blank'
               >
-                엑셀 다운로드
+                EDI 다운로드
               </Button>
             ) : (
-              <Button variant='contained' color='primary' size='small' disabled>
-                엑셀 다운로드
+              <Button variant='contained' color='success' size='small' disabled>
+                EDI 다운로드
               </Button>
             )}
           </Stack>
