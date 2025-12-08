@@ -13,7 +13,9 @@
     "generate-backend": "curl -sSL https://prod.api.medipanda.co.kr/api-docs >./api-docs.json && node ./generate-backend.cjs ./api-docs.json ./src/backend/backend.ts && eslint --fix ./src/backend/backend.ts; rm -f ./api-docs.json",
     "generate-backend:dev": "curl -sSL https://dev.api.medipanda.co.kr/api-docs >./api-docs.json && node ./generate-backend.cjs ./api-docs.json ./src/backend/backend.ts && eslint --fix ./src/backend/backend.ts; rm -f ./api-docs.json",
     "deploy:dev": "./deploy.sh --env dev",
-    "deploy:prod": "./deploy.sh --env prod"
+    "deploy:prod": "./deploy.sh --env prod",
+    "deploy:dev:all": "npm run build:dev && ./deploy.sh --env dev && ./deploy.sh --env dev-admin",
+    "deploy:prod:all": "npm run build:prod && ./deploy.sh --env prod && ./deploy.sh --env prod-admin"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

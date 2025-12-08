@@ -4,8 +4,11 @@ set -e
 
 DEV_SERVER_HOST="43.202.151.248"
 DEV_DEPLOY_DOMAIN="dev.medipanda.co.kr"
+DEV_ADMIN_DEPLOY_DOMAIN="admin.dev.medipanda.co.kr"
+
 PROD_SERVER_HOST="3.39.216.231"
 PROD_DEPLOY_DOMAIN="medipanda.co.kr"
+PROD_ADMIN_DEPLOY_DOMAIN="admin.medipanda.co.kr"
 
 DEFAULT_LOCAL_DIRECTORY="./dist/"
 DEFAULT_KEYFILE="$HOME/.ssh/medipanda/keys/medipanda.pem"
@@ -14,7 +17,7 @@ alias log.e='echo "[ERROR] "'
 alias log.i='echo "[INFO]  "'
 
 usage() {
-  log.e "Usage: $0 [--help] [--dry-run] <--env dev|prod> [--keyfile <KEYFILE>] [LOCAL_DIRECTORY]" >&2
+  log.e "Usage: $0 [--help] [--dry-run] <--env dev|dev-admin|prod|prod-admin> [--keyfile <KEYFILE>] [LOCAL_DIRECTORY]" >&2
   exit 1
 }
 
@@ -25,18 +28,29 @@ while [ "$OPTIND" -le "$#" ]; do
     shift 1
     ;;
   --env)
-    if [ "$2" = "dev" ]; then
-      SERVER_HOST="$DEV_SERVER_HOST"
-      DEPLOY_DOMAIN="$DEV_DEPLOY_DOMAIN"
-      shift 2
-    elif [ "$2" = "prod" ]; then
-      SERVER_HOST="$PROD_SERVER_HOST"
-      DEPLOY_DOMAIN="$PROD_DEPLOY_DOMAIN"
-      shift 2
-    else
-      log.e "Unknown environment: $2" >&2
-      usage
-    fi
+    case "$2" in
+      dev)
+        SERVER_HOST="$DEV_SERVER_HOST"
+        DEPLOY_DOMAIN="$DEV_DEPLOY_DOMAIN"
+        ;;
+      dev-admin)
+        SERVER_HOST="$DEV_SERVER_HOST"
+        DEPLOY_DOMAIN="$DEV_ADMIN_DEPLOY_DOMAIN"
+        ;;
+      prod)
+        SERVER_HOST="$PROD_SERVER_HOST"
+        DEPLOY_DOMAIN="$PROD_DEPLOY_DOMAIN"
+        ;;
+      prod-admin)
+        SERVER_HOST="$PROD_SERVER_HOST"
+        DEPLOY_DOMAIN="$PROD_ADMIN_DEPLOY_DOMAIN"
+        ;;
+      *)
+        log.e "Unknown environment: $2" >&2
+        usage
+        ;;
+    esac
+    shift 2
     ;;
   --keyfile)
     KEYFILE="$2"
@@ -58,7 +72,7 @@ while [ "$OPTIND" -le "$#" ]; do
 done
 
 if [ -z "$SERVER_HOST" ]; then
-  log.e "Missing required argument: --env dev|prod" >&2
+  log.e "Missing required argument: --env dev|dev-admin|prod|prod-admin" >&2
   usage
 fi
 
