@@ -22,11 +22,12 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { format } from 'date-fns';
+import { format, subMonths } from 'date-fns';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Add, SearchNormal1 } from 'iconsax-reactjs';
 import {
   type AttachmentResponse,
+  DateTimeString,
   getAttachedEdiFiles,
   getPartnerProducts,
   getPrescriptionPartner,
@@ -36,6 +37,7 @@ import {
   type PartnerResponse,
   type PrescriptionPartnerResponse,
   type ProductSummaryResponse,
+  updatePartnerEdiFiles,
   upsertPatchPartnerProducts,
 } from '@/backend';
 import { MpChangeHistoryModal } from '@/components/MpChangeHistoryModal';
@@ -99,6 +101,10 @@ export default function MpAdminPrescriptionFormEdit() {
   const [deletePartnerProductIds, setDeletePartnerProductIds] = useState<number[]>([]);
   const [attachedFiles, setAttachedFiles] = useState<AttachmentResponse[]>([]);
 
+  // 거래처 변경 추적용 state
+  const [selectedPartnerId, setSelectedPartnerId] = useState<number | null>(null);
+  const [selectedDealerId, setSelectedDealerId] = useState<number | null>(null);
+
   const [sendOcrReport, setSendOcrReport] = useState(false);
   const [ocrReportContent, setOcrReportContent] = useState('');
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
@@ -128,9 +134,21 @@ export default function MpAdminPrescriptionFormEdit() {
   const formBusinessNumber = form.watch('businessNumber');
   const formDealerName = form.watch('dealerName');
   const formPrescriptionMonth = form.watch('prescriptionMonth');
+  const formSettlementMonth = form.watch('settlementMonth');
   const formPrescriptionAmount = form.watch('prescriptionAmount');
 
-  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async () => {
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async (data) => {
+    // 처방월 >= 정산월 체크
+    if (data.prescriptionMonth && data.settlementMonth) {
+      const prescriptionMonth = format(data.prescriptionMonth, DATEFORMAT_YYYY_MM);
+      const settlementMonth = format(data.settlementMonth, DATEFORMAT_YYYY_MM);
+
+      if (prescriptionMonth >= settlementMonth) {
+        await alert('처방월은 정산월보다 이전이어야 합니다.');
+        return;
+      }
+    }
+
     if (partnerProducts.some(p => p.productName === '')) {
       await alert('제품명이 입력되지 않은 항목이 있습니다.');
       return;
@@ -147,6 +165,28 @@ export default function MpAdminPrescriptionFormEdit() {
     }
 
     try {
+      // 1. 거래처/처방월 변경 사항 저장
+      const hasPartnerChanges =
+        selectedPartnerId !== prescriptionPartner?.partnerId ||
+        selectedDealerId !== prescriptionPartner?.dealerId ||
+        (data.prescriptionMonth &&
+          format(data.prescriptionMonth, DATEFORMAT_YYYY_MM) !==
+          format(DateUtils.utcToKst(new Date(prescriptionPartner!.prescriptionMonth)), DATEFORMAT_YYYY_MM));
+
+      if (hasPartnerChanges) {
+        await updatePartnerEdiFiles({
+          request: {
+            prescriptionPartnerId: prescriptionPartnerId,
+            dealerId: selectedDealerId !== prescriptionPartner?.dealerId ? selectedDealerId : null,
+            partnerId: selectedPartnerId !== prescriptionPartner?.partnerId ? selectedPartnerId : null,
+            prescriptionMonth: data.prescriptionMonth ? new DateTimeString(data.prescriptionMonth) : null,
+            keepFileIds: null,
+            drugCompanyId: null,
+          },
+        });
+      }
+
+      // 2. 제품 목록 저장
       await upsertPatchPartnerProducts(prescriptionPartnerId, {
         items: partnerProducts.map(product => ({
           id: product.id,
@@ -163,11 +203,11 @@ export default function MpAdminPrescriptionFormEdit() {
         deletedPrescriptionPartnerProductIds: deletePartnerProductIds,
       });
 
-      await alert('거래처별 제품 목록이 저장되었습니다.');
+      await alert('변경사항이 저장되었습니다.');
       window.history.back();
     } catch (e) {
       console.error('Failed to submit form:', e);
-      await alertError('거래처별 제품상세 저장에 실패했습니다.');
+      await alertError('변경사항 저장에 실패했습니다.');
     }
   };
 
@@ -249,6 +289,9 @@ export default function MpAdminPrescriptionFormEdit() {
     form.setValue('institutionCode', partner.institutionCode);
     form.setValue('drugCompany', partner.drugCompanyName);
     form.setValue('companyName', partner.companyName);
+
+    // 변경된 거래처 ID 저장
+    setSelectedPartnerId(partner.id);
   };
 
   const handleProductSelect = async (product: ProductSummaryResponse) => {
@@ -421,6 +464,10 @@ export default function MpAdminPrescriptionFormEdit() {
 
       setPrescriptionPartner(formDetail);
 
+      // 초기 거래처/딜러 ID 설정
+      setSelectedPartnerId(formDetail.partnerId);
+      setSelectedDealerId(formDetail.dealerId);
+
       form.reset({
         drugCompany: formDetail.drugCompany,
         drugCompanyCode: formDetail.drugCompanyCode,
@@ -558,7 +605,8 @@ export default function MpAdminPrescriptionFormEdit() {
                       format={DATEFORMAT_YYYY_MM}
                       views={['year', 'month']}
                       label='처방월'
-                      readOnly={prescriptionPartner!.status === 'COMPLETED'}
+                      disabled={prescriptionPartner!.status === 'COMPLETED'}
+                      maxDate={formSettlementMonth ? subMonths(formSettlementMonth, 1) : undefined}
                       slotProps={{
                         textField: {
                           size: 'small',
@@ -596,7 +644,7 @@ export default function MpAdminPrescriptionFormEdit() {
                       format={DATEFORMAT_YYYY_MM}
                       views={['year', 'month']}
                       label='정산월'
-                      readOnly={prescriptionPartner!.status === 'COMPLETED'}
+                      disabled
                       slotProps={{
                         textField: {
                           size: 'small',
