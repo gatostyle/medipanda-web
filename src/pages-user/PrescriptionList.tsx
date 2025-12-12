@@ -275,7 +275,7 @@ export default function PrescriptionList() {
               visibility: detailDialogOpen ? 'hidden' : 'visible',
             }}
           >
-            <EdiIndividualUploadForm />
+            <EdiIndividualUploadForm onSuccess={fetchContents} />
           </Stack>
 
           {/* 상세 오버레이 */}
@@ -416,13 +416,16 @@ function EdiDetailOverlay({ item, onClose, onUpdate }: EdiDetailOverlayProps) {
       return;
     }
 
+    // UTC 보정 (toISOString() 시 timezone 차이로 월이 바뀌는 것 방지)
+    const utcPrescriptionMonth = new Date(Date.UTC(prescriptionMonth.getFullYear(), prescriptionMonth.getMonth(), 1));
+
     try {
       setIsLoading(true);
       await updatePartnerEdiFiles({
         request: {
           prescriptionPartnerId: item.id,
           dealerId: dealer.id,
-          prescriptionMonth: new DateTimeString(prescriptionMonth),
+          prescriptionMonth: new DateTimeString(utcPrescriptionMonth),
           partnerId: partner.id,
           drugCompanyId: dealer.drugCompanyId,
           keepFileIds: keepFileIds,
@@ -847,8 +850,12 @@ function EdiDetailOverlay({ item, onClose, onUpdate }: EdiDetailOverlayProps) {
   );
 }
 
-// 기존 등록 폼 (변경 없음)
-function EdiIndividualUploadForm() {
+// 기존 등록 폼
+interface EdiIndividualUploadFormProps {
+  onSuccess: () => void;
+}
+
+function EdiIndividualUploadForm({ onSuccess }: EdiIndividualUploadFormProps) {
   const AVAILABLE_FILE_EXTENSIONS = ['png', 'jpg', 'jpeg'];
   const MAX_PRESCRIPTION_FILES = 30;
 
@@ -891,12 +898,17 @@ function EdiIndividualUploadForm() {
       return;
     }
 
+    // UTC 보정 (toISOString() 시 timezone 차이로 월이 바뀌는 것 방지)
+    const now = new Date();
+    const utcSettlementMonth = new Date(Date.UTC(now.getFullYear(), now.getMonth(), 1));
+    const utcPrescriptionMonth = new Date(Date.UTC(prescriptionMonth.getFullYear(), prescriptionMonth.getMonth(), 1));
+
     try {
       await uploadPartnerEdiFiles({
         request: {
-          settlementMonth: new DateTimeString(new Date()),
+          settlementMonth: new DateTimeString(utcSettlementMonth),
           dealerId: dealer.id,
-          prescriptionMonth: new DateTimeString(prescriptionMonth),
+          prescriptionMonth: new DateTimeString(utcPrescriptionMonth),
           partnerId: partner.id,
           drugCompanyId: dealer.drugCompanyId,
         },
@@ -904,6 +916,7 @@ function EdiIndividualUploadForm() {
       });
       alert('EDI 파일이 성공적으로 업로드되었습니다.');
       form.reset();
+      onSuccess();
     } catch (error) {
       console.error('Error uploading EDI files:', error);
       alert('EDI 파일 업로드 중 오류가 발생했습니다. 다시 시도해주세요.');
