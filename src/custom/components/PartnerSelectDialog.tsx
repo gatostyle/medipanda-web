@@ -15,10 +15,12 @@ export function PartnerSelectDialog({
   open,
   onClose,
   onSelect,
+  drugCompanyName,
 }: {
   open?: boolean;
   onClose?: () => void;
   onSelect?: (partner: PartnerResponse) => void;
+  drugCompanyName?: string;
 }) {
   const [contents, setContents] = useState<PartnerResponse[]>([]);
   const [totalPages, setTotalPages] = useState(0);
@@ -32,21 +34,23 @@ export function PartnerSelectDialog({
 
   const form = useForm({
     defaultValues: {
-      ...submitFormValues,
+      searchKeyword: '',
     },
   });
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
-    setSubmitFormValues({
-      ...values,
+    setSubmitFormValues(prev => ({
+      ...prev,
+      searchKeyword: values.searchKeyword,
       page: 1,
-    });
+    }));
   };
 
   const fetchContents = async () => {
     try {
       const response = await getPartners({
-        [submitFormValues.searchType]: submitFormValues.searchKeyword,
+        [submitFormValues.searchType]: submitFormValues.searchKeyword || undefined,
+        drugCompanyName: drugCompanyName || undefined,
         page: submitFormValues.page - 1,
         size: pageSize,
       });
@@ -62,14 +66,19 @@ export function PartnerSelectDialog({
   };
 
   useEffect(() => {
-    form.setValue('searchKeyword', submitFormValues.searchKeyword);
-    fetchContents();
-  }, [submitFormValues.searchKeyword, submitFormValues.page]);
+    if (open) {
+      fetchContents();
+    }
+  }, [open, submitFormValues.searchKeyword, submitFormValues.page, drugCompanyName]);
 
   useEffect(() => {
     if (open) {
       form.setValue('searchKeyword', '');
-      form.handleSubmit(submitHandler)();
+      setSubmitFormValues(prev => ({
+        ...prev,
+        searchKeyword: '',
+        page: 1,
+      }));
     }
   }, [open]);
 
@@ -129,7 +138,6 @@ export function PartnerSelectDialog({
                     </InputAdornment>
                   ),
                 }}
-                sx={{}}
               />
             )}
           />

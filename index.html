@@ -1,25 +1,40 @@
-<script>
-  (function () {
-    const userAgent = navigator.userAgent;
-    const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
-    const isAndroid = /Android/i.test(userAgent);
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  %FAVICON_SCRIPT%
+  %SEO_SCRIPT%
+  %TAG_SCRIPT%
+  <script>
+    (function () {
+      const userAgent = navigator.userAgent;
+      const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
+      const isAndroid = /Android/i.test(userAgent);
 
-    if (!isIOS && !isAndroid) return;
+      if (!isIOS && !isAndroid) return;
 
-    const appScheme = 'medipanda://';
-    const appStoreUrl = 'https://apps.apple.com/kr/app/%EB%A9%94%EB%94%94%ED%8C%90%EB%8B%A4/id6746338129';
-    const playStoreUrl = 'https://play.google.com/store/apps/details?id=kr.co.medipanda.android';
+      const appScheme = 'medipanda://';
+      const appStoreUrl = 'https://apps.apple.com/kr/app/%EB%A9%94%EB%94%94%ED%8C%90%EB%8B%A4/id6746338129';
+      const playStoreUrl = 'https://play.google.com/store/apps/details?id=kr.co.medipanda.android';
 
-    location.href = appScheme;
+      location.href = appScheme;
 
-    setTimeout(function () {
-      if (document.hidden || document.webkitHidden) return;
+      setTimeout(function () {
+        if (document.hidden || document.webkitHidden) return;
 
-      if (isIOS) {
-        location.href = appStoreUrl;
-      } else if (isAndroid) {
-        location.href = playStoreUrl;
-      }
-    }, 2000);
-  })();
-</script>
+        if (isIOS) {
+          location.href = appStoreUrl;
+        } else if (isAndroid) {
+          location.href = playStoreUrl;
+        }
+      }, 2000);
+    })();
+  </script>
+</head>
+<body>
+<div id="root"></div>
+<script type="module" src="/src/main.tsx"></script>
+</body>
+<link rel="stylesheet" href="/assets/fonts/pretendard-subset.css" />
+</html>

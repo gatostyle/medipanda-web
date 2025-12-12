@@ -114,7 +114,7 @@ export default function PrescriptionList() {
   };
 
   const handleDetailUpdate = () => {
-    fetchContents(); // 목록 새로고침
+    fetchContents();
     handleDetailClose();
   };
 
@@ -160,7 +160,6 @@ export default function PrescriptionList() {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  // 메디판다 프로그램 다운로드 링크 (별도 제공받을 예정)
   const MEDIPANDA_DOWNLOAD_LINK = 'https://cdn.medipanda.co.kr/app/windows/setup.exe';
 
   return (
@@ -216,7 +215,6 @@ export default function PrescriptionList() {
         <button type='submit' hidden />
       </Stack>
 
-      {/* 다운로드 버튼 영역 - 우측 박스 위에 정렬 */}
       <Stack direction='row' justifyContent='flex-end' alignItems='center' gap='16px' sx={{ marginTop: '40px', width: '100%' }}>
         <Typography variant='smallTextB' sx={{ color: '#000000' }}>
           한번에 업로드를 원하는 회원님들은 우측의 프로그램을 통해 진행부탁드립니다.
@@ -264,7 +262,6 @@ export default function PrescriptionList() {
             position: 'relative',
           }}
         >
-          {/* 기본 등록 폼 */}
           <Stack
             gap='10px'
             sx={{
@@ -278,7 +275,6 @@ export default function PrescriptionList() {
             <EdiIndividualUploadForm onSuccess={fetchContents} />
           </Stack>
 
-          {/* 상세 오버레이 */}
           {detailDialogOpen && <EdiDetailOverlay item={selectedItem} onClose={handleDetailClose} onUpdate={handleDetailUpdate} />}
         </Stack>
       </Stack>
@@ -286,7 +282,6 @@ export default function PrescriptionList() {
   );
 }
 
-// 상세 오버레이 컴포넌트
 interface EdiDetailOverlayProps {
   item: PrescriptionPartnerResponse | null;
   onClose: () => void;
@@ -304,7 +299,6 @@ function EdiDetailOverlay({ item, onClose, onUpdate }: EdiDetailOverlayProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [detailData, setDetailData] = useState<PrescriptionPartnerResponse | null>(null);
 
-  // 접수대기(PENDING) 상태일 때만 수정 가능
   const isEditable = detailData?.status === 'PENDING';
 
   const form = useForm({
@@ -316,6 +310,19 @@ function EdiDetailOverlay({ item, onClose, onUpdate }: EdiDetailOverlayProps) {
     },
   });
 
+  const selectedDealer = form.watch('dealer');
+
+  const handleDealerSelect = (dealer: DealerResponse) => {
+    const currentPartner = form.getValues('partner');
+
+    if (currentPartner && currentPartner.drugCompanyName !== dealer.drugCompanyName) {
+      form.setValue('partner', null);
+    }
+
+    form.setValue('dealer', dealer);
+    setDealerSelectDialogOpen(false);
+  };
+
   const fetchDetailData = useCallback(async () => {
     if (!item) return;
 
@@ -324,7 +331,6 @@ function EdiDetailOverlay({ item, onClose, onUpdate }: EdiDetailOverlayProps) {
       const detail = await getPrescriptionPartner(item.id);
       setDetailData(detail);
 
-      // 폼 데이터 설정
       form.setValue('dealer', {
         id: detail.dealerId,
         displayName: detail.dealerName,
@@ -339,9 +345,9 @@ function EdiDetailOverlay({ item, onClose, onUpdate }: EdiDetailOverlayProps) {
         institutionName: detail.institutionName,
         businessNumber: detail.businessNumber,
         companyName: detail.companyName,
+        drugCompanyName: detail.drugCompany,
       } as PartnerResponse);
 
-      // 기존 파일 목록 설정
       setExistingFiles(detail.ediFiles || []);
       setKeepFileIds(detail.ediFiles?.map(f => f.s3fileId) || []);
       form.setValue('newFiles', []);
@@ -353,7 +359,6 @@ function EdiDetailOverlay({ item, onClose, onUpdate }: EdiDetailOverlayProps) {
     }
   }, [item, form]);
 
-  // 아이템이 변경되면 상세 데이터 가져오기
   useEffect(() => {
     if (item) {
       fetchDetailData();
@@ -416,7 +421,6 @@ function EdiDetailOverlay({ item, onClose, onUpdate }: EdiDetailOverlayProps) {
       return;
     }
 
-    // UTC 보정 (toISOString() 시 timezone 차이로 월이 바뀌는 것 방지)
     const utcPrescriptionMonth = new Date(Date.UTC(prescriptionMonth.getFullYear(), prescriptionMonth.getMonth(), 1));
 
     try {
@@ -503,7 +507,6 @@ function EdiDetailOverlay({ item, onClose, onUpdate }: EdiDetailOverlayProps) {
         flexDirection: 'column',
       }}
     >
-      {/* 닫기 버튼 */}
       <IconButton
         onClick={handleClose}
         sx={{
@@ -536,7 +539,6 @@ function EdiDetailOverlay({ item, onClose, onUpdate }: EdiDetailOverlayProps) {
           </Stack>
         ) : (
           <>
-            {/* 딜러명 */}
             <Stack direction='row' alignItems='center' sx={{ marginTop: '20px' }}>
               <Typography variant='largeTextM' sx={{ color: colors.gray80, width: '120px' }}>
                 딜러명
@@ -565,7 +567,6 @@ function EdiDetailOverlay({ item, onClose, onUpdate }: EdiDetailOverlayProps) {
               </Stack>
             </Stack>
 
-            {/* 정산월 */}
             <Stack direction='row' alignItems='center'>
               <Typography variant='largeTextM' sx={{ color: colors.gray80, width: '120px' }}>
                 정산월
@@ -587,7 +588,6 @@ function EdiDetailOverlay({ item, onClose, onUpdate }: EdiDetailOverlayProps) {
               </Typography>
             </Stack>
 
-            {/* 처방월 */}
             <Stack direction='row' alignItems='center'>
               <Typography variant='largeTextM' sx={{ color: colors.gray80, width: '120px' }}>
                 처방월
@@ -596,7 +596,6 @@ function EdiDetailOverlay({ item, onClose, onUpdate }: EdiDetailOverlayProps) {
                 control={form.control}
                 name={'prescriptionMonth'}
                 render={({ field }) => {
-                  // 정산월 -1 계산
                   const settlementDate = detailData?.settlementMonth ? new Date(detailData.settlementMonth) : new Date();
                   const maxDate = new Date(settlementDate.getFullYear(), settlementDate.getMonth() - 1, 1);
 
@@ -617,7 +616,6 @@ function EdiDetailOverlay({ item, onClose, onUpdate }: EdiDetailOverlayProps) {
               />
             </Stack>
 
-            {/* 거래처명 */}
             <Stack direction='row' alignItems='center'>
               <Typography variant='largeTextM' sx={{ color: colors.gray80, width: '120px' }}>
                 거래처명
@@ -639,14 +637,19 @@ function EdiDetailOverlay({ item, onClose, onUpdate }: EdiDetailOverlayProps) {
                   )}
                 />
                 {isEditable && (
-                  <MedipandaButton onClick={() => setPartnerSelectDialogOpen(true)} variant='contained' size='large' color='secondary'>
+                  <MedipandaButton
+                    onClick={() => setPartnerSelectDialogOpen(true)}
+                    variant='contained'
+                    size='large'
+                    color='secondary'
+                    disabled={!selectedDealer}
+                  >
                     거래처 변경
                   </MedipandaButton>
                 )}
               </Stack>
             </Stack>
 
-            {/* 파일업로드 (새 파일 추가) */}
             {isEditable && canAddMoreFiles && (
               <Stack direction='row' alignItems='center'>
                 <Typography variant='largeTextM' sx={{ color: colors.gray80, width: '120px' }}>
@@ -656,7 +659,6 @@ function EdiDetailOverlay({ item, onClose, onUpdate }: EdiDetailOverlayProps) {
               </Stack>
             )}
 
-            {/* 파일 카운트 표시 */}
             <Stack direction='row' alignItems='center'>
               <Typography variant='largeTextM' sx={{ color: colors.gray80, width: '120px' }}>
                 {!isEditable ? '파일목록' : ''}
@@ -666,7 +668,6 @@ function EdiDetailOverlay({ item, onClose, onUpdate }: EdiDetailOverlayProps) {
               </Typography>
             </Stack>
 
-            {/* 기존 파일 목록 */}
             {remainingExistingFiles.length > 0 && (
               <Stack direction='row' alignItems='flex-start'>
                 <Typography variant='largeTextM' sx={{ color: colors.gray80, width: '120px' }}>
@@ -705,7 +706,6 @@ function EdiDetailOverlay({ item, onClose, onUpdate }: EdiDetailOverlayProps) {
               </Stack>
             )}
 
-            {/* 새로 추가된 파일 목록 */}
             {newFiles.length > 0 && (
               <Stack direction='row' alignItems='flex-start'>
                 <Typography variant='largeTextM' sx={{ color: colors.gray80, width: '120px' }}>
@@ -742,26 +742,23 @@ function EdiDetailOverlay({ item, onClose, onUpdate }: EdiDetailOverlayProps) {
               </Stack>
             )}
 
-            {/* 주의사항 */}
             <Typography variant='smallTextR' sx={{ color: 'red', whiteSpace: 'pre-wrap', marginTop: '10px' }}>
               파일 업로드시 주의사항
               <br />
               1. {AVAILABLE_FILE_EXTENSIONS.join(', ')} 파일만 업로드 가능해요.
               <br />
-              2. 파일은 최대 {MAX_PRESCRIPTION_FILES}개까지 가능하니, {MAX_PRESCRIPTION_FILES}개가 초과할 경우에는 &apos;한번에 업로드&apos;
+              2. 파일은 최대 {MAX_PRESCRIPTION_FILES}개까지 가능하니, {MAX_PRESCRIPTION_FILES}개가 초과할 경우에는 &#39;한번에 업로드&#39;
               기능을 이용해주세요.
               <br />
               3. 파일명의 처방월과 선택한 처방월을 일치하게 해주세요.
             </Typography>
 
-            {/* 에러 메시지 */}
             {Object.entries(form.formState.errors).map(([key, error]) => (
               <Typography key={key} variant='smallTextR' sx={{ color: 'red' }}>
                 {error?.message as string}
               </Typography>
             ))}
 
-            {/* 버튼 영역 */}
             <Stack
               direction='row'
               justifyContent='center'
@@ -812,36 +809,20 @@ function EdiDetailOverlay({ item, onClose, onUpdate }: EdiDetailOverlayProps) {
               )}
             </Stack>
 
-            {/* 딜러 선택 다이얼로그 */}
-            <Controller
-              control={form.control}
-              name={'dealer'}
-              render={({ field }) => (
-                <DealerSelectDialog
-                  open={dealerSelectDialogOpen}
-                  onClose={() => setDealerSelectDialogOpen(false)}
-                  onSelect={dealer => {
-                    field.onChange(dealer);
-                    setDealerSelectDialogOpen(false);
-                  }}
-                />
-              )}
+            <DealerSelectDialog
+              open={dealerSelectDialogOpen}
+              onClose={() => setDealerSelectDialogOpen(false)}
+              onSelect={handleDealerSelect}
             />
 
-            {/* 거래처 선택 다이얼로그 */}
-            <Controller
-              control={form.control}
-              name={'partner'}
-              render={({ field }) => (
-                <PartnerSelectDialog
-                  open={partnerSelectDialogOpen}
-                  onClose={() => setPartnerSelectDialogOpen(false)}
-                  onSelect={partner => {
-                    field.onChange(partner);
-                    setPartnerSelectDialogOpen(false);
-                  }}
-                />
-              )}
+            <PartnerSelectDialog
+              open={partnerSelectDialogOpen}
+              onClose={() => setPartnerSelectDialogOpen(false)}
+              drugCompanyName={selectedDealer?.drugCompanyName ?? undefined}
+              onSelect={partner => {
+                form.setValue('partner', partner);
+                setPartnerSelectDialogOpen(false);
+              }}
             />
           </>
         )}
@@ -850,7 +831,6 @@ function EdiDetailOverlay({ item, onClose, onUpdate }: EdiDetailOverlayProps) {
   );
 }
 
-// 기존 등록 폼
 interface EdiIndividualUploadFormProps {
   onSuccess: () => void;
 }
@@ -870,6 +850,19 @@ function EdiIndividualUploadForm({ onSuccess }: EdiIndividualUploadFormProps) {
       files: [] as File[],
     },
   });
+
+  const selectedDealer = form.watch('dealer');
+
+  const handleDealerSelect = (dealer: DealerResponse) => {
+    const currentPartner = form.getValues('partner');
+
+    if (currentPartner && currentPartner.drugCompanyName !== dealer.drugCompanyName) {
+      form.setValue('partner', null);
+    }
+
+    form.setValue('dealer', dealer);
+    setDealerSelectDialogOpen(false);
+  };
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
     if (values.dealer == null) {
@@ -898,7 +891,6 @@ function EdiIndividualUploadForm({ onSuccess }: EdiIndividualUploadFormProps) {
       return;
     }
 
-    // UTC 보정 (toISOString() 시 timezone 차이로 월이 바뀌는 것 방지)
     const now = new Date();
     const utcSettlementMonth = new Date(Date.UTC(now.getFullYear(), now.getMonth(), 1));
     const utcPrescriptionMonth = new Date(Date.UTC(prescriptionMonth.getFullYear(), prescriptionMonth.getMonth(), 1));
@@ -994,7 +986,6 @@ function EdiIndividualUploadForm({ onSuccess }: EdiIndividualUploadFormProps) {
           control={form.control}
           name={'prescriptionMonth'}
           render={({ field }) => {
-            // 정산월(현재월) -1 계산
             const now = new Date();
             const maxDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
 
@@ -1032,7 +1023,13 @@ function EdiIndividualUploadForm({ onSuccess }: EdiIndividualUploadFormProps) {
               />
             )}
           />
-          <MedipandaButton onClick={() => setPartnerSelectDialogOpen(true)} variant='contained' size='large' color='secondary'>
+          <MedipandaButton
+            onClick={() => setPartnerSelectDialogOpen(true)}
+            variant='contained'
+            size='large'
+            color='secondary'
+            disabled={!selectedDealer}
+          >
             거래처 선택
           </MedipandaButton>
         </Stack>
@@ -1072,7 +1069,7 @@ function EdiIndividualUploadForm({ onSuccess }: EdiIndividualUploadFormProps) {
         <br />
         1. {AVAILABLE_FILE_EXTENSIONS.join(', ')}파일만 업로드 가능해요.
         <br />
-        2. 파일은 최대 {MAX_PRESCRIPTION_FILES}개까지 가능하니, {MAX_PRESCRIPTION_FILES}개가 초과할 경우에는 &apos;메디판다 프로그램&apos;을
+        2. 파일은 최대 {MAX_PRESCRIPTION_FILES}개까지 가능하니, {MAX_PRESCRIPTION_FILES}개가 초과할 경우에는 &#39;메디판다 프로그램&#39;을
         이용해주세요.
         <br />
         3. 파일의 처방월과 선택한 처방월을 일치하게 해주세요.
@@ -1113,33 +1110,17 @@ function EdiIndividualUploadForm({ onSuccess }: EdiIndividualUploadFormProps) {
           등록
         </MedipandaButton>
       </Stack>
-      <Controller
-        control={form.control}
-        name={'dealer'}
-        render={({ field }) => (
-          <DealerSelectDialog
-            open={dealerSelectDialogOpen}
-            onClose={() => setDealerSelectDialogOpen(false)}
-            onSelect={dealer => {
-              field.onChange(dealer);
-              setDealerSelectDialogOpen(false);
-            }}
-          />
-        )}
-      />
-      <Controller
-        control={form.control}
-        name={'partner'}
-        render={({ field }) => (
-          <PartnerSelectDialog
-            open={partnerSelectDialogOpen}
-            onClose={() => setPartnerSelectDialogOpen(false)}
-            onSelect={partner => {
-              field.onChange(partner);
-              setPartnerSelectDialogOpen(false);
-            }}
-          />
-        )}
+
+      <DealerSelectDialog open={dealerSelectDialogOpen} onClose={() => setDealerSelectDialogOpen(false)} onSelect={handleDealerSelect} />
+
+      <PartnerSelectDialog
+        open={partnerSelectDialogOpen}
+        onClose={() => setPartnerSelectDialogOpen(false)}
+        onSelect={partner => {
+          form.setValue('partner', partner);
+          setPartnerSelectDialogOpen(false);
+        }}
+        drugCompanyName={selectedDealer?.drugCompanyName ?? undefined}
       />
     </>
   );
