@@ -137,6 +137,16 @@ export default function MypageInfo() {
   const handlePhoneChange = async () => {
     const authResult = await requestKmcAuth();
 
+    if (authResult.name !== session?.name) {
+      alert('이름이 일치하지 않아 변경을 원하실 경우, 고객센터로 문의주세요.');
+      return;
+    }
+
+    if (authResult.birth !== session?.birthDate) {
+      alert('생년월일이 일치하지 않아 변경을 원하실 경우, 고객센터로 문의주세요.');
+      return;
+    }
+
     form.setValue('name', authResult.name);
     form.setValue('phoneNumber', authResult.phone);
   };
