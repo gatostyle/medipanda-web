@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import react from '@vitejs/plugin-react';
@@ -104,21 +103,28 @@ function injectHtmlSeoPlugin({ mode }: { mode: string }) {
     <meta property="og:url" content="https://medipanda.co.kr/landing.html" />
     <meta property="og:image" content="https://medipanda.co.kr/assets/og.png" />
 
-    <!-- 구조화 데이터 -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "메디판다 - CSO비즈니스 성공파트너",
-        "description": "정산은 쉽게! 약품 검색은 빠르게! CSO 영업사원을 위한 스마트 앱",
-        "url": "https://medipanda.co.kr/landing.html",
-        "publisher": {
-          "@type": "Organization",
-          "name": "메디판다",
-          "url": "https://medipanda.co.kr"
-        }
+<!-- 구조화 데이터 -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "name": "메디판다",
+      "url": "https://medipanda.co.kr"
+    },
+    {
+      "@type": "WebPage",
+      "name": "메디판다 - CSO비즈니스 성공파트너",
+      "description": "정산은 쉽게! 약품 검색은 빠르게! CSO 영업사원을 위한 스마트 앱",
+      "url": "https://medipanda.co.kr/landing.html",
+      "isPartOf": {
+        "@id": "https://medipanda.co.kr"
       }
-    </script>
+    }
+  ]
+}
+</script>
           `,
         );
       }
@@ -147,7 +153,7 @@ function injectHtmlSeoPlugin({ mode }: { mode: string }) {
     <meta name="description" content="메디판다, 영업대행관리 플랫폼, 흩어져 있는 정보를 모으고 손쉬운 실적 관리 및 분석으로 영업에만 집중할 수 있도록 도와드리는 스마트한 영업파트너" />
 
     <!-- Robots -->
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="noindex, follow" />
 
     <!-- Canonical (중복 URL 방지) -->
     <link rel="canonical" href="https://medipanda.co.kr/" />
