@@ -311,7 +311,7 @@ export default function PartnerContract() {
             </PartnerContractFormInput>
           </PartnerContractFormRow>
 
-          <PartnerContractFormRow>
+          <PartnerContractFormRow sx={{ height: 'auto', minHeight: '50px' }}>
             <PartnerContractFormLabel />
             {contractDetails === null ? (
               <Controller
@@ -375,7 +375,7 @@ export default function PartnerContract() {
             </PartnerContractFormInput>
           </PartnerContractFormRow>
 
-          <PartnerContractFormRow>
+          <PartnerContractFormRow sx={{ height: 'auto', minHeight: '50px' }}>
             <PartnerContractFormLabel>CSO 신고증</PartnerContractFormLabel>
             {contractDetails === null ? (
               <Controller
@@ -399,7 +399,7 @@ export default function PartnerContract() {
             )}
           </PartnerContractFormRow>
 
-          <PartnerContractFormRow>
+          <PartnerContractFormRow sx={{ height: 'auto', minHeight: '50px' }}>
             <PartnerContractFormLabel>
               판매위수탁
               <br />
