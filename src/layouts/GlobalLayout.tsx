@@ -257,6 +257,10 @@ function GlobalLayout() {
                   cursor: 'pointer',
                   backgroundColor: colors.vividViolet,
                   color: colors.white,
+                  textDecoration: 'none',
+                  '&:hover': {
+                    textDecoration: 'underline',
+                  },
                 }}
               >
                 마이페이지
@@ -272,6 +276,10 @@ function GlobalLayout() {
                   cursor: 'pointer',
                   backgroundColor: colors.vividViolet,
                   color: colors.white,
+                  textDecoration: 'none',
+                  '&:hover': {
+                    textDecoration: 'underline',
+                  },
                 }}
               >
                 로그아웃

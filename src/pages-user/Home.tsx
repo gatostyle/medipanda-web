@@ -386,17 +386,23 @@ export default function Home() {
 
 function RecentBoardTable({ boardType, ...props }: TableProps & { boardType: keyof typeof BoardType }) {
   const [contents, setContents] = useState<Sequenced<BoardPostResponse>[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchContents = async () => {
-    const response = await getBoards({
-      boardType: boardType,
-      page: 0,
-      size: 10,
-      filterDeleted: true,
-      filterBlind: true,
-    });
+    setIsLoading(true);
+    try {
+      const response = await getBoards({
+        boardType: boardType,
+        page: 0,
+        size: 10,
+        filterDeleted: true,
+        filterBlind: true,
+      });
 
-    setContents(withSequence(response.content));
+      setContents(withSequence(response.content));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -452,6 +458,23 @@ function RecentBoardTable({ boardType, ...props }: TableProps & { boardType: key
     ],
     getCoreRowModel: getCoreRowModel(),
   });
+
+  if (!isLoading && contents.length === 0) {
+    return (
+      <Stack
+        justifyContent='center'
+        alignItems='center'
+        sx={{
+          height: '200px',
+          ...props.sx,
+        }}
+      >
+        <Typography variant='largeTextR' sx={{ color: colors.gray60 }}>
+          게시글이 없습니다.
+        </Typography>
+      </Stack>
+    );
+  }
 
   return <MedipandaTable {...props} table={table} />;
 }
