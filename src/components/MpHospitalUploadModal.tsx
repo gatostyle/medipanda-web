@@ -1,3 +1,5 @@
+
+/*
 import { uploadHospitalExcel } from '@/backend';
 import { useMpModal } from '@/hooks/useMpModal';
 import { AttachFile as AttachFileIcon, UploadFile } from '@mui/icons-material';
@@ -121,3 +123,4 @@ export function MpHospitalUploadModal(props: MpHospitalUploadModalProps) {
 
   return <MpHospitalUploadModalInternal {...props} />;
 }
+*/

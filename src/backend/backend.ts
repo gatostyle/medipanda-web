@@ -231,6 +231,7 @@ export interface BoardPostResponse {
   createdAt: string;
   exposureRange: 'ALL' | 'CONTRACTED' | 'UNCONTRACTED';
   hasChildren: boolean;
+  hasImage: boolean;
   hiddenNickname: boolean;
   id: number;
   isBlind: boolean;
@@ -439,6 +440,13 @@ export interface FileValidationErrorDto {
   message: string;
 }
 
+export interface HospitalBulkUpsertResponse {
+  inserted: number;
+  mapped: number;
+  total: number;
+  unmapped: number;
+}
+
 export interface HospitalResponse {
   address: string;
   id: number;
@@ -447,6 +455,30 @@ export interface HospitalResponse {
   sido: string | null;
   sigungu: string | null;
   source: string | null;
+}
+
+export interface HospitalUpsertRequest {
+  address: string | null;
+  bedCount: number | null;
+  businessStatus: string | null;
+  closeDate: DateString | null;
+  coordX: string | null;
+  coordY: string | null;
+  departmentCodes: string | null;
+  departmentNames: string | null;
+  detailStatus: string | null;
+  doctorCount: number | null;
+  hospitalType: string | null;
+  lastModified: DateTimeString | null;
+  licenseDate: DateString | null;
+  managementNumber: string;
+  name: string;
+  phone: string | null;
+  roadAddress: string | null;
+  roomCount: number | null;
+  sido: string;
+  sigungu: string;
+  zipcode: string | null;
 }
 
 export interface InstitutionInfo {
@@ -1499,6 +1531,8 @@ export interface SortObject {
   sorted: boolean;
   unsorted: boolean;
 }
+
+export interface Unit {}
 
 export interface UpdateNoticeProperties {
   drugCompany: string | null;
@@ -2580,6 +2614,31 @@ export async function getHospitals(options?: {
 }
 
 /**
+ * 병원 전체 삭제
+ * DELETE /v1/hospitals/all
+ */
+export async function deleteAll_1(): Promise<Unit> {
+  const response = await axios.request<Unit>({
+    method: 'DELETE',
+    url: '/v1/hospitals/all',
+  });
+  return response.data;
+}
+
+/**
+ * 병원 bulk upsert
+ * POST /v1/hospitals/bulk-upsert
+ */
+export async function bulkUpsert(data: HospitalUpsertRequest[]): Promise<HospitalBulkUpsertResponse> {
+  const response = await axios.request<HospitalBulkUpsertResponse>({
+    method: 'POST',
+    url: '/v1/hospitals/bulk-upsert',
+    data,
+  });
+  return response.data;
+}
+
+/**
  * 요청 기준일 포함 최근 한 달 사이 오픈한 병원 수
  * GET /v1/hospitals/opened/count
  */
@@ -2612,21 +2671,6 @@ export async function getSigunguBySido(sidoId: number): Promise<RegionCategoryRe
   const response = await axios.request<RegionCategoryResponse[]>({
     method: 'GET',
     url: `/v1/hospitals/regions/sido/${sidoId}/sigungu`,
-  });
-  return response.data;
-}
-
-/**
- * 엑셀 파일 업로드
- * POST /v1/hospitals/upload
- */
-export async function uploadHospitalExcel(data: { file: File }): Promise<string> {
-  const form = new FormData();
-  form.append('file', data.file, data.file.name.normalize('NFC'));
-  const response = await axios.request<string>({
-    method: 'POST',
-    url: '/v1/hospitals/upload',
-    data: form,
   });
   return response.data;
 }
@@ -3292,6 +3336,21 @@ export async function evict(): Promise<void> {
   await axios.request({
     method: 'POST',
     url: '/v1/prescriptions/cache/evict',
+  });
+}
+
+/**
+ * EDI ZIP 파일 다운로드 (여러 처방 일괄)
+ * GET /v1/prescriptions/export-zip
+ */
+export async function exportPrescriptionsZip(options?: { prescriptionIds?: number[] }): Promise<void> {
+  await axios.request({
+    method: 'GET',
+    url: '/v1/prescriptions/export-zip',
+    params: {
+      ...options,
+      prescriptionIds: options?.prescriptionIds?.join(','),
+    },
   });
 }
 

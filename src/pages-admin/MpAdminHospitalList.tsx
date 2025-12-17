@@ -1,6 +1,6 @@
 import { setUrlParams } from '@/lib/utils/url';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
-import { MpHospitalUploadModal } from '@/components/MpHospitalUploadModal';
+//import { MpHospitalUploadModal } from '@/components/MpHospitalUploadModal';
 import { useMpModal } from '@/hooks/useMpModal';
 import {
   Button,
@@ -32,13 +32,13 @@ import {
   getSigunguBySido,
   type HospitalResponse,
   type RegionCategoryResponse,
-  softDeleteHospital,
+  //softDeleteHospital,
 } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
-import { useMpDeleteDialog } from '@/hooks/useMpDeleteDialog';
+//import { useMpDeleteDialog } from '@/hooks/useMpDeleteDialog';
 import { DATEFORMAT_YYYY_MM_DD, DateUtils } from '@/lib/utils/dateFormat';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
-import { useSnackbar } from 'notistack';
+//import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
@@ -80,11 +80,11 @@ export default function MpAdminHospitalList() {
   const [sidoList, setSidoList] = useState<RegionCategoryResponse[]>([]);
   const [sigunguList, setSigunguList] = useState<Record<number, RegionCategoryResponse[]>>({});
 
-  const [hospitalUploadModalOpen, setHospitalUploadModalOpen] = useState(false);
+  //const [hospitalUploadModalOpen setHospitalUploadModalOpen] = useState(false);
 
-  const { alert, alertError } = useMpModal();
-  const { enqueueSnackbar } = useSnackbar();
-  const deleteDialog = useMpDeleteDialog();
+  const { /*alert,*/ alertError } = useMpModal();
+  //const { enqueueSnackbar } = useSnackbar();
+  //const deleteDialog = useMpDeleteDialog();
 
   const form = useForm({
     defaultValues: {
@@ -168,7 +168,7 @@ export default function MpAdminHospitalList() {
   useEffect(() => {
     fetchRegionData();
   }, []);
-
+  /*
   const handleDeleteSelected = async () => {
     if (selectedIds.length === 0) {
       await alert('삭제할 항목을 선택하세요.');
@@ -198,7 +198,7 @@ export default function MpAdminHospitalList() {
     await fetchContents();
     setHospitalUploadModalOpen(false);
   };
-
+*/
   return (
     <Stack sx={{ gap: 3 }}>
       <Typography variant='h4'>개원병원페이지</Typography>
@@ -313,12 +313,15 @@ export default function MpAdminHospitalList() {
             <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
           </Stack>
           <Stack direction='row' spacing={1}>
+            {/*
             <Button variant='contained' color='success' size='small' onClick={() => setHospitalUploadModalOpen(true)}>
               엑셀 업로드
             </Button>
+
             <Button variant='contained' color='error' size='small' onClick={handleDeleteSelected} disabled={selectedIds.length === 0}>
               삭제
             </Button>
+            */}
           </Stack>
         </Stack>
 
@@ -413,12 +416,13 @@ export default function MpAdminHospitalList() {
           />
         </Stack>
       </Card>
-
+      {/*
       <MpHospitalUploadModal
         open={hospitalUploadModalOpen}
         onClose={() => setHospitalUploadModalOpen(false)}
         onSuccess={handleHospitalUploadModalSuccess}
       />
+      */}
     </Stack>
   );
 }
