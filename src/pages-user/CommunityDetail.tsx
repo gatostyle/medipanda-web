@@ -257,11 +257,11 @@ export default function CommunityDetail({ boardType }: { boardType: keyof typeof
 }
 
 function CommentSection({
-  boardPostId,
-  comments,
-  onUpdate,
-  ...props
-}: {
+                          boardPostId,
+                          comments,
+                          onUpdate,
+                          ...props
+                        }: {
   boardPostId: number;
   comments: CommentResponse[];
   onUpdate: () => Promise<void> | void;
@@ -291,6 +291,33 @@ function CommentSection({
 
   return (
     <Stack {...props} gap='20px'>
+      {/* 글 자체에 대한 댓글 입력창 - 맨 위로 이동 */}
+      <Stack component='form' onSubmit={event => handleCommentSubmit(event, null)}>
+        <MedipandaOutlinedInput
+          name='content'
+          placeholder='댓글을 남겨주세요'
+          fullWidth
+          endAdornment={
+            <MedipandaButton
+              type='submit'
+              variant='contained'
+              size='small'
+              color='secondary'
+              sx={{
+                paddingX: '22px',
+                borderRadius: '20px',
+              }}
+            >
+              등록하기
+            </MedipandaButton>
+          }
+          sx={{
+            height: '43px',
+            border: `1px solid ${colors.gray50}`,
+          }}
+        />
+      </Stack>
+
       {comments
         .filter(comment => comment.parentId === null)
         .map(comment => {
@@ -347,31 +374,6 @@ function CommentSection({
             </Stack>
           );
         })}
-      <Stack component='form' onSubmit={event => handleCommentSubmit(event, null)}>
-        <MedipandaOutlinedInput
-          name='content'
-          placeholder='댓글을 남겨주세요'
-          fullWidth
-          endAdornment={
-            <MedipandaButton
-              type='submit'
-              variant='contained'
-              size='small'
-              color='secondary'
-              sx={{
-                paddingX: '22px',
-                borderRadius: '20px',
-              }}
-            >
-              등록하기
-            </MedipandaButton>
-          }
-          sx={{
-            height: '43px',
-            border: `1px solid ${colors.gray50}`,
-          }}
-        />
-      </Stack>
     </Stack>
   );
 }
