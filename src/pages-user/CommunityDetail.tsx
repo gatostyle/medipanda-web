@@ -257,16 +257,17 @@ export default function CommunityDetail({ boardType }: { boardType: keyof typeof
 }
 
 function CommentSection({
-                          boardPostId,
-                          comments,
-                          onUpdate,
-                          ...props
-                        }: {
+  boardPostId,
+  comments,
+  onUpdate,
+  ...props
+}: {
   boardPostId: number;
   comments: CommentResponse[];
   onUpdate: () => Promise<void> | void;
 } & Omit<StackProps, 'onClick'>): ReturnType<typeof Stack> {
   const { session } = useSession();
+  const [replyOpenId, setReplyOpenId] = useState<number | null>(null);
 
   const handleCommentSubmit = async (event: FormEvent<HTMLFormElement>, parentId: number | null) => {
     event.preventDefault();
@@ -283,15 +284,20 @@ function CommentSection({
       });
       await onUpdate();
       inputElement.value = '';
+      setReplyOpenId(null);
     } catch (e) {
       console.error('Error creating comment: ', e);
       alert('댓글 작성 중 오류가 발생했습니다. 다시 시도해주세요.');
     }
   };
 
+  const toggleReply = (commentId: number) => {
+    setReplyOpenId(prev => (prev === commentId ? null : commentId));
+  };
+
   return (
     <Stack {...props} gap='20px'>
-      {/* 글 자체에 대한 댓글 입력창 - 맨 위로 이동 */}
+      {/* 글 자체에 대한 댓글 입력창 */}
       <Stack component='form' onSubmit={event => handleCommentSubmit(event, null)}>
         <MedipandaOutlinedInput
           name='content'
@@ -325,7 +331,7 @@ function CommentSection({
 
           return (
             <Stack key={comment.id} gap='10px'>
-              <Comment comment={comment} replies={replies} onUpdate={onUpdate} />
+              <Comment comment={comment} replies={replies} onUpdate={onUpdate} onReplyClick={() => toggleReply(comment.id)} />
               {replies.map(reply => (
                 <Comment
                   key={reply.id}
@@ -338,39 +344,41 @@ function CommentSection({
                   }}
                 />
               ))}
-              <Stack
-                component='form'
-                onSubmit={event => handleCommentSubmit(event, comment.id)}
-                sx={{
-                  padding: '20px',
-                  backgroundColor: colors.gray10,
-                }}
-              >
-                <MedipandaOutlinedInput
-                  name='content'
-                  placeholder='댓글을 남겨주세요'
-                  fullWidth
-                  endAdornment={
-                    <MedipandaButton
-                      type='submit'
-                      variant='contained'
-                      size='small'
-                      color='secondary'
-                      sx={{
-                        paddingX: '22px',
-                        borderRadius: '20px',
-                      }}
-                    >
-                      등록하기
-                    </MedipandaButton>
-                  }
+              {replyOpenId === comment.id && (
+                <Stack
+                  component='form'
+                  onSubmit={event => handleCommentSubmit(event, comment.id)}
                   sx={{
-                    height: '43px',
-                    backgroundColor: colors.white,
-                    border: `1px solid ${colors.gray50}`,
+                    padding: '20px',
+                    backgroundColor: colors.gray10,
                   }}
-                />
-              </Stack>
+                >
+                  <MedipandaOutlinedInput
+                    name='content'
+                    placeholder='대댓글을 남겨주세요'
+                    fullWidth
+                    endAdornment={
+                      <MedipandaButton
+                        type='submit'
+                        variant='contained'
+                        size='small'
+                        color='secondary'
+                        sx={{
+                          paddingX: '22px',
+                          borderRadius: '20px',
+                        }}
+                      >
+                        등록하기
+                      </MedipandaButton>
+                    }
+                    sx={{
+                      height: '43px',
+                      backgroundColor: colors.white,
+                      border: `1px solid ${colors.gray50}`,
+                    }}
+                  />
+                </Stack>
+              )}
             </Stack>
           );
         })}
@@ -382,11 +390,13 @@ function Comment({
   comment,
   replies,
   onUpdate,
+  onReplyClick,
   ...props
 }: {
   comment: CommentResponse;
   replies: CommentResponse[] | null;
   onUpdate?: () => Promise<void> | void;
+  onReplyClick?: () => void;
 } & Omit<StackProps, 'onClick'>): ReturnType<typeof Stack> {
   const { session } = useSession();
 
@@ -548,7 +558,18 @@ function Comment({
             </Typography>
           </Stack>
           {replies !== null && (
-            <Stack direction='row' alignItems='center' gap='5px'>
+            <Stack
+              direction='row'
+              alignItems='center'
+              gap='5px'
+              onClick={onReplyClick}
+              sx={{
+                cursor: 'pointer',
+                '&:hover': {
+                  opacity: 0.7,
+                },
+              }}
+            >
               <img src='/assets/icons/icon-chat.svg' />
               <Typography variant='smallTextR' sx={{ color: colors.gray60, marginTop: '2px', lineHeight: '16px' }}>
                 대댓글 {replies.length.toLocaleString()}
