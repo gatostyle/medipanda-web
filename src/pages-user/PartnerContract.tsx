@@ -1,6 +1,7 @@
 import {
   applyContract,
   getContractDetails,
+  MemberType,
   type PartnerContractDetailsResponse,
   PartnerContractStatus,
   PartnerContractType,
@@ -140,7 +141,8 @@ export default function PartnerContract() {
       return;
     }
 
-    if (values.csoCertificate === null) {
+    const isCsoApproved = session?.partnerContractStatus !== MemberType.NONE && session?.partnerContractStatus !== undefined;
+    if (!isCsoApproved && values.csoCertificate === null) {
       alert('CSO 신고증을 첨부해주세요.');
       return;
     }
@@ -160,7 +162,7 @@ export default function PartnerContract() {
           accountNumber: values.accountNumber,
         },
         business_registration: values.businessRegistration,
-        cso_certificate: values.csoCertificate,
+        cso_certificate: isCsoApproved ? undefined : values.csoCertificate!,
         education_certificate: values.educationCertificate,
       });
       alert('파트너사 계약 신청이 완료되었습니다.');
@@ -377,7 +379,33 @@ export default function PartnerContract() {
 
           <PartnerContractFormRow sx={{ height: 'auto', minHeight: '50px' }}>
             <PartnerContractFormLabel>CSO 신고증</PartnerContractFormLabel>
-            {contractDetails === null ? (
+            {contractDetails?.status === PartnerContractStatus.APPROVED ? (
+              <PartnerContractFormInput>
+                <Stack
+                  direction='row'
+                  sx={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '50px',
+                    border: `1px solid ${colors.gray40}`,
+                    borderRadius: '5px',
+                    backgroundColor: colors.gray10,
+                  }}
+                >
+                  <Typography variant='largeTextR' sx={{ color: colors.navy }}>
+                    ✓ 승인 완료되었습니다.
+                  </Typography>
+                </Stack>
+              </PartnerContractFormInput>
+            ) : contractDetails !== null ? (
+              <PartnerContractFormInput>
+                <PartnerContractFileLink direction='row'>
+                  <Link component={RouterLink} to={contractDetails.fileUrls.CSO_CERTIFICATE} target='_blank'>
+                    {extractFileName(contractDetails.fileUrls.CSO_CERTIFICATE)}
+                  </Link>
+                </PartnerContractFileLink>
+              </PartnerContractFormInput>
+            ) : (
               <Controller
                 control={form.control}
                 name={'csoCertificate'}
@@ -388,14 +416,6 @@ export default function PartnerContract() {
                   </PartnerContractFormInput>
                 )}
               />
-            ) : (
-              <PartnerContractFormInput>
-                <PartnerContractFileLink direction='row'>
-                  <Link component={RouterLink} to={contractDetails.fileUrls.CSO_CERTIFICATE} target='_blank'>
-                    {extractFileName(contractDetails.fileUrls.CSO_CERTIFICATE)}
-                  </Link>
-                </PartnerContractFileLink>
-              </PartnerContractFormInput>
             )}
           </PartnerContractFormRow>
 

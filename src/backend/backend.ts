@@ -3051,7 +3051,7 @@ export async function changePassword_1(userId: string, data: ChangePasswordForFi
  */
 export async function applyContract(data: {
   business_registration: File;
-  cso_certificate: File;
+  cso_certificate?: File;
   education_certificate: File;
   request: PartnerContractRequest;
   subcontract_agreement?: File;
@@ -3062,7 +3062,9 @@ export async function applyContract(data: {
   if (data.subcontract_agreement !== undefined) {
     form.append('subcontract_agreement', data.subcontract_agreement, data.subcontract_agreement.name.normalize('NFC'));
   }
-  form.append('cso_certificate', data.cso_certificate, data.cso_certificate.name.normalize('NFC'));
+  if (data.cso_certificate !== undefined) {
+    form.append('cso_certificate', data.cso_certificate, data.cso_certificate.name.normalize('NFC'));
+  }
   form.append('education_certificate', data.education_certificate, data.education_certificate.name.normalize('NFC'));
   await axios.request({
     method: 'POST',
