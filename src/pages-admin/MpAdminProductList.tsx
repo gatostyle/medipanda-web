@@ -322,8 +322,8 @@ export default function MpAdminProductList() {
                     <TableCell>
                       {item.changedFeeRate !== null
                         ? PercentUtils.formatDecimal(item.changedFeeRate) +
-                          '%' +
-                          (item.changedMonth !== null ? ` (${item.changedMonth})` : '')
+                        '%' +
+                        (item.changedMonth !== null ? ` (${item.changedMonth})` : '')
                         : '-'}
                     </TableCell>
                     <TableCell>{getStatusDisplay(item)}</TableCell>

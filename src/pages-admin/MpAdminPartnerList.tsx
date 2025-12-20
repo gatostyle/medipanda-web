@@ -3,6 +3,7 @@ import { setUrlParams } from '@/lib/utils/url';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
 import { MpPartnerUploadModal } from '@/components/MpPartnerUploadModal';
 import { useMpModal } from '@/hooks/useMpModal';
+import { DocumentDownload } from 'iconsax-reactjs';
 import {
   Button,
   Card,
@@ -25,7 +26,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
-import { deletePartner, getPartners, MemberType, MemberTypeLabel, type PartnerResponse } from '@/backend';
+import { deletePartner, getPartners, getExportPartnersExcel, MemberType, MemberTypeLabel, type PartnerResponse } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
 import { useMpDeleteDialog } from '@/hooks/useMpDeleteDialog';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
@@ -151,6 +152,17 @@ export default function MpAdminPartnerList() {
     fetchContents();
   };
 
+  const getExcelDownloadUrl = () => {
+    return getExportPartnersExcel({
+      companyName: searchType === 'companyName' && searchKeyword ? searchKeyword : undefined,
+      institutionName: searchType === 'institutionName' && searchKeyword ? searchKeyword : undefined,
+      drugCompanyName: searchType === 'drugCompanyName' && searchKeyword ? searchKeyword : undefined,
+      memberName: searchType === 'memberName' && searchKeyword ? searchKeyword : undefined,
+      institutionCode: searchType === 'institutionCode' && searchKeyword ? searchKeyword : undefined,
+      memberType: memberType || undefined,
+    });
+  };
+
   return (
     <Stack sx={{ gap: 3 }}>
       <Typography variant='h4'>거래선관리</Typography>
@@ -216,6 +228,16 @@ export default function MpAdminPartnerList() {
             <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
           </Stack>
           <Stack direction='row' spacing={1}>
+            <Button
+              variant='contained'
+              color='success'
+              size='small'
+              href={getExcelDownloadUrl()}
+              target='_blank'
+              startIcon={<DocumentDownload size={16} />}
+            >
+              Excel
+            </Button>
             <Button variant='contained' color='success' size='small' onClick={() => setPartnerUploadModalOpen(true)}>
               파일 업로드
             </Button>

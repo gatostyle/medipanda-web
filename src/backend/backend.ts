@@ -3190,6 +3190,27 @@ export async function getDrugCompanies(): Promise<DrugCompanyResponse[]> {
 }
 
 /**
+ * 거래선 목록 엑셀 다운로드
+ * GET /v1/partners/export-excel
+ */
+export function getExportPartnersExcel(options?: {
+  companyName?: string;
+  institutionName?: string;
+  drugCompanyName?: string;
+  memberName?: string;
+  institutionCode?: string;
+  contractType?: 'CONTRACT' | 'NON_CONTRACT';
+  memberType?: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
+}): string {
+  const baseUrl = '/v1/partners/export-excel';
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
+}
+
+/**
  * member.userId로 소유 파트너 ID 목록 조회
  * GET /v1/partners/ids/{userId}
  */
@@ -3469,8 +3490,6 @@ export function getExportPrescriptionPartnersExcel(options?: {
   prescriptionMonthEnd?: DateTimeString;
   settlementMonthStart?: DateTimeString;
   settlementMonthEnd?: DateTimeString;
-  page?: number;
-  size?: number;
 }): string {
   const baseUrl = '/v1/prescriptions/partners/export-excel';
   const paramsInit = Object.entries(options ?? {})
