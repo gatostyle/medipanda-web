@@ -4,7 +4,6 @@ import { useMpModal } from '@/hooks/useMpModal';
 import {
   Button,
   Card,
-  Checkbox,
   Chip,
   FormControl,
   InputLabel,
@@ -71,7 +70,6 @@ export default function MpAdminPrescriptionReceptionList() {
   const [contents, setContents] = useState<Sequenced<PrescriptionResponse>[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   const { alert, alertError } = useMpModal();
   const { enqueueSnackbar } = useSnackbar();
@@ -85,25 +83,6 @@ export default function MpAdminPrescriptionReceptionList() {
   });
   const formStartAt = form.watch('startAt');
   const formEndAt = form.watch('endAt');
-
-  const isAllSelected = contents.length > 0 && selectedIds.length === contents.length;
-  const isIndeterminate = selectedIds.length > 0 && selectedIds.length < contents.length;
-
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedIds(contents.map(item => item.id));
-    } else {
-      setSelectedIds([]);
-    }
-  };
-
-  const handleSelectOne = (id: number, checked: boolean) => {
-    if (checked) {
-      setSelectedIds(prev => [...prev, id]);
-    } else {
-      setSelectedIds(prev => prev.filter(selectedId => selectedId !== id));
-    }
-  };
 
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async values => {
     if (values.searchType === '' && values.searchKeyword !== '') {
@@ -136,7 +115,6 @@ export default function MpAdminPrescriptionReceptionList() {
 
   const fetchContents = async () => {
     setLoading(true);
-    setSelectedIds([]);
     try {
       const response = await searchPrescriptions({
         status: status !== '' ? status : undefined,
@@ -280,30 +258,12 @@ export default function MpAdminPrescriptionReceptionList() {
         <Card sx={{ padding: 3 }}>
           <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
             <Typography variant='subtitle1'>검색결과: {totalElements.toLocaleString()} 건</Typography>
-            {selectedIds.length > 0 ? (
-              <Button
-                variant='contained'
-                color='success'
-                size='small'
-                href={`/v1/prescriptions/export-zip?prescriptionIds=${selectedIds.join(',')}`}
-                target='_blank'
-              >
-                EDI 다운로드
-              </Button>
-            ) : (
-              <Button variant='contained' color='success' size='small' disabled>
-                EDI 다운로드
-              </Button>
-            )}
           </Stack>
 
           <TableContainer sx={{ overflowX: 'auto' }}>
             <Table size='small'>
               <TableHead>
                 <TableRow>
-                  <TableCell padding='checkbox'>
-                    <Checkbox checked={isAllSelected} indeterminate={isIndeterminate} onChange={e => handleSelectAll(e.target.checked)} />
-                  </TableCell>
                   <TableCell width={60}>No</TableCell>
                   <TableCell width={100}>딜러번호</TableCell>
                   <TableCell width={120}>아이디</TableCell>
@@ -321,7 +281,7 @@ export default function MpAdminPrescriptionReceptionList() {
               <TableBody>
                 {loading ? (
                   <TableRow>
-                    <TableCell colSpan={13} align='center' sx={{ py: 3 }}>
+                    <TableCell colSpan={12} align='center' sx={{ py: 3 }}>
                       <Typography variant='body2' color='text.secondary'>
                         데이터를 로드하는 중입니다.
                       </Typography>
@@ -329,7 +289,7 @@ export default function MpAdminPrescriptionReceptionList() {
                   </TableRow>
                 ) : contents.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={13} align='center' sx={{ py: 3 }}>
+                    <TableCell colSpan={12} align='center' sx={{ py: 3 }}>
                       <Typography variant='body2' color='text.secondary'>
                         검색 결과가 없습니다.
                       </Typography>
@@ -337,10 +297,7 @@ export default function MpAdminPrescriptionReceptionList() {
                   </TableRow>
                 ) : (
                   contents.map(item => (
-                    <TableRow key={item.id} selected={selectedIds.includes(item.id)}>
-                      <TableCell padding='checkbox'>
-                        <Checkbox checked={selectedIds.includes(item.id)} onChange={e => handleSelectOne(item.id, e.target.checked)} />
-                      </TableCell>
+                    <TableRow key={item.id}>
                       <TableCell>{item.sequence}</TableCell>
                       <TableCell>{item.dealerId}</TableCell>
                       <TableCell>{item.userId}</TableCell>
