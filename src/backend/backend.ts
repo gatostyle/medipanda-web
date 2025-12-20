@@ -3456,6 +3456,31 @@ export async function getPrescriptionPartnerList(options?: {
 }
 
 /**
+ * 처방 입력 목록 엑셀 다운로드
+ * GET /v1/prescriptions/partners/export-excel
+ */
+export function getExportPrescriptionPartnersExcel(options?: {
+  status?: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+  companyName?: string;
+  institutionName?: string;
+  drugCompany?: string;
+  dealerName?: string;
+  prescriptionMonthStart?: DateTimeString;
+  prescriptionMonthEnd?: DateTimeString;
+  settlementMonthStart?: DateTimeString;
+  settlementMonthEnd?: DateTimeString;
+  page?: number;
+  size?: number;
+}): string {
+  const baseUrl = '/v1/prescriptions/partners/export-excel';
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
+}
+
+/**
  * 처방접수 EDI 파일 다운로드
  * GET /v1/prescriptions/partners/{prescriptionId}/edi-files/download
  */

@@ -2,6 +2,7 @@ import { normalizeBusinessNumber } from '@/lib/utils/form';
 import { setUrlParams } from '@/lib/utils/url';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
 import { useMpModal } from '@/hooks/useMpModal';
+import { DocumentDownload } from 'iconsax-reactjs';
 import {
   Button,
   Card,
@@ -30,6 +31,7 @@ import {
   completePrescriptionPartner,
   DateTimeString,
   deletePrescriptionPartner,
+  getExportPrescriptionPartnersExcel,
   getPrescriptionPartnerList,
   type PrescriptionPartnerResponse,
   PrescriptionPartnerStatus,
@@ -301,7 +303,25 @@ export default function MpAdminPrescriptionFormList() {
             </Typography>
           </Stack>
           <Stack direction='row' spacing={1}>
-            <Button variant='contained' color='success' size='small' onClick={handleApprove} disabled={selectedIds.length === 0}>
+            <Button
+              variant='contained'
+              color='success'
+              size='small'
+              href={getExportPrescriptionPartnersExcel({
+                status: status !== '' ? status : undefined,
+                companyName: searchType === 'companyName' && searchKeyword !== '' ? searchKeyword : undefined,
+                institutionName: searchType === 'institutionName' && searchKeyword !== '' ? searchKeyword : undefined,
+                dealerName: searchType === 'dealerName' && searchKeyword !== '' ? searchKeyword : undefined,
+                drugCompany: searchType === 'drugCompany' && searchKeyword !== '' ? searchKeyword : undefined,
+                prescriptionMonthStart: prescriptionMonthStart ? new DateTimeString(prescriptionMonthStart) : undefined,
+                prescriptionMonthEnd: prescriptionMonthEnd ? new DateTimeString(prescriptionMonthEnd) : undefined,
+              })}
+              target='_blank'
+              startIcon={<DocumentDownload size={16} />}
+            >
+              Excel
+            </Button>
+            <Button variant='contained' color='primary' size='small' onClick={handleApprove} disabled={selectedIds.length === 0}>
               승인
             </Button>
             <Button variant='contained' size='small' color='error' disabled={selectedIds.length === 0} onClick={handleDelete}>
