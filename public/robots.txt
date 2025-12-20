@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /landing.html
+Allow: /assets/
+
+Disallow: /
+Disallow: /admin
+Disallow: /admin.html
+Disallow: /login
+Disallow: /signup
+Disallow: /mypage/
+Disallow: /prescriptions
+Disallow: /dealers
+Disallow: /settlement-list
+Disallow: /sales-statistic
+Disallow: /community/
+
+Sitemap: https://medipanda.co.kr/sitemap.xml
