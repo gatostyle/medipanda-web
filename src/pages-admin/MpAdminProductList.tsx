@@ -1,6 +1,5 @@
 import { setUrlParams } from '@/lib/utils/url';
 import { useSearchParamsOrDefault } from '@/lib/hooks/useSearchParamsOrDefault';
-import { MpProductUploadModal } from '@/components/MpProductUploadModal';
 import { useMpModal } from '@/hooks/useMpModal';
 import { PercentUtils } from '@/utils/PercentUtils';
 import { DocumentDownload } from 'iconsax-reactjs';
@@ -28,9 +27,8 @@ import {
   Typography,
 } from '@mui/material';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
-import { getDownloadProductSummariesExcel, getProductSummaries, type ProductSummaryResponse, softDelete } from '@/backend';
+import { getDownloadProductSummariesExcel, getProductSummaries, type ProductSummaryResponse } from '@/backend';
 import { SearchFilterActions, MpSearchFilterBar, SearchFilterItem } from '@/components/MpSearchFilterBar';
-import { useMpDeleteDialog } from '@/hooks/useMpDeleteDialog';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -70,12 +68,8 @@ export default function MpAdminProductList() {
   const [contents, setContents] = useState<Sequenced<ProductSummaryResponse>[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
-  const [productUploadModalOpen, setProductUploadModalOpen] = useState(false);
   const { alert, alertError } = useMpModal();
-
-  const deleteDialog = useMpDeleteDialog();
 
   const form = useForm({
     defaultValues: {
@@ -153,32 +147,6 @@ export default function MpAdminProductList() {
     if (product.isOutOfStock) statuses.push('품절');
     if (product.isStopSelling) statuses.push('판매중단');
     return statuses.join(', ');
-  };
-
-  const handleDelete = () => {
-    const count = selectedIds.length;
-    const message =
-      count === 1
-        ? `제품 ${contents.find(item => item.id === selectedIds[0])?.productName}을 삭제하시겠습니까?`
-        : `${count}건이 선택되었습니다. 삭제하시겠습니까?`;
-
-    deleteDialog.open({
-      message,
-      onConfirm: async () => {
-        try {
-          await Promise.all(selectedIds.map(id => softDelete(id)));
-          setSelectedIds([]);
-          fetchContents();
-        } catch (error) {
-          console.error('Failed to delete products:', error);
-        }
-      },
-    });
-  };
-
-  const handleProductUploadSuccess = async () => {
-    await fetchContents();
-    setProductUploadModalOpen(false);
   };
 
   return (
@@ -290,15 +258,6 @@ export default function MpAdminProductList() {
             >
               Excel
             </Button>
-            <Button variant='contained' color='success' size='small' onClick={() => setProductUploadModalOpen(true)}>
-              요율표 업로드
-            </Button>
-            <Button variant='contained' color='error' size='small' disabled={selectedIds.length === 0} onClick={handleDelete}>
-              삭제
-            </Button>
-            <Button variant='contained' color='success' size='small' component={RouterLink} to='/admin/products/new'>
-              등록
-            </Button>
           </Stack>
         </Stack>
 
@@ -306,18 +265,6 @@ export default function MpAdminProductList() {
           <Table size='small'>
             <TableHead>
               <TableRow>
-                <TableCell width={50}>
-                  <Checkbox
-                    checked={selectedIds.length === contents.length && contents.length > 0}
-                    onChange={e => {
-                      if (e.target.checked) {
-                        setSelectedIds(contents.map(item => item.id));
-                      } else {
-                        setSelectedIds([]);
-                      }
-                    }}
-                  />
-                </TableCell>
                 <TableCell width={60}>No</TableCell>
                 <TableCell width={150}>제약사</TableCell>
                 <TableCell width={300}>제품명</TableCell>
@@ -333,7 +280,7 @@ export default function MpAdminProductList() {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={11} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={10} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       데이터를 로드하는 중입니다.
                     </Typography>
@@ -341,7 +288,7 @@ export default function MpAdminProductList() {
                 </TableRow>
               ) : contents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={11} align='center' sx={{ py: 3 }}>
+                  <TableCell colSpan={10} align='center' sx={{ py: 3 }}>
                     <Typography variant='body2' color='text.secondary'>
                       검색 결과가 없습니다.
                     </Typography>
@@ -350,18 +297,6 @@ export default function MpAdminProductList() {
               ) : (
                 contents.map(item => (
                   <TableRow key={item.id}>
-                    <TableCell>
-                      <Checkbox
-                        checked={selectedIds.includes(item.id)}
-                        onChange={e => {
-                          if (e.target.checked) {
-                            setSelectedIds(prev => [...prev, item.id]);
-                          } else {
-                            setSelectedIds(prev => prev.filter(id => id !== item.id));
-                          }
-                        }}
-                      />
-                    </TableCell>
                     <TableCell>{item.sequence}</TableCell>
                     <TableCell>{item.manufacturerName ?? '-'}</TableCell>
                     <TableCell>
@@ -420,12 +355,6 @@ export default function MpAdminProductList() {
           />
         </Stack>
       </Card>
-
-      <MpProductUploadModal
-        open={productUploadModalOpen}
-        onClose={() => setProductUploadModalOpen(false)}
-        onSuccess={handleProductUploadSuccess}
-      />
     </Stack>
   );
 }
