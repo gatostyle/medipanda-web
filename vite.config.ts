@@ -355,86 +355,10 @@ function generateSitemapXml({ mode }: { mode: string }) {
   <url>
     <loc>https://medipanda.co.kr/landing.html</loc>
     <lastmod>${today}</lastmod>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://medipanda.co.kr/</loc>
-    <lastmod>${today}</lastmod>
-  </url>
-  <url>
-    <loc>https://medipanda.co.kr/login</loc>
-    <lastmod>${today}</lastmod>
-  </url>
-  <url>
-    <loc>https://medipanda.co.kr/signup</loc>
-    <lastmod>${today}</lastmod>
-  </url>
-  <url>
-    <loc>https://medipanda.co.kr/find-account</loc>
-    <lastmod>${today}</lastmod>
-  </url>
-  <url>
-    <loc>https://medipanda.co.kr/find-password</loc>
-    <lastmod>${today}</lastmod>
-  </url>
-  <url>
-    <loc>https://medipanda.co.kr/products</loc>
-    <lastmod>${today}</lastmod>
-  </url>
-  <url>
-    <loc>https://medipanda.co.kr/prescriptions</loc>
-    <lastmod>${today}</lastmod>
-  </url>
-  <url>
-    <loc>https://medipanda.co.kr/dealers</loc>
-    <lastmod>${today}</lastmod>
-  </url>
-  <url>
-    <loc>https://medipanda.co.kr/settlement-list</loc>
-    <lastmod>${today}</lastmod>
-  </url>
-  <url>
-    <loc>https://medipanda.co.kr/sales-statistic</loc>
-    <lastmod>${today}</lastmod>
-  </url>
-  <url>
-    <loc>https://medipanda.co.kr/community/mr-cso-matching</loc>
-    <lastmod>${today}</lastmod>
-  </url>
-  <url>
-    <loc>https://medipanda.co.kr/community/anonymous</loc>
-    <lastmod>${today}</lastmod>
-  </url>
-  <url>
-    <loc>https://medipanda.co.kr/sales-agency-products</loc>
-    <lastmod>${today}</lastmod>
-  </url>
-  <url>
-    <loc>https://medipanda.co.kr/events</loc>
-    <lastmod>${today}</lastmod>
-  </url>
-  <url>
-    <loc>https://medipanda.co.kr/customer-service/notice</loc>
-    <lastmod>${today}</lastmod>
-  </url>
-  <url>
-    <loc>https://medipanda.co.kr/customer-service/faq</loc>
-    <lastmod>${today}</lastmod>
-  </url>
-  <url>
-    <loc>https://medipanda.co.kr/customer-service/inquiry</loc>
-    <lastmod>${today}</lastmod>
-  </url>
-  <url>
-    <loc>https://medipanda.co.kr/terms</loc>
-    <lastmod>${today}</lastmod>
-  </url>
-  <url>
-    <loc>https://medipanda.co.kr/privacy</loc>
-    <lastmod>${today}</lastmod>
+    <priority>1.0</priority>
   </url>
 </urlset>
-        `.trim();
+      `.trim();
 
       mkdirSync(outDir, { recursive: true });
       writeFileSync(resolve(outDir, 'sitemap.xml'), content);
