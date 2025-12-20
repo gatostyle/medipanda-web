@@ -87,7 +87,7 @@ function injectHtmlSeoPlugin({ mode }: { mode: string }) {
     <meta name="naver-site-verification" content="16f3e710fa607e34724d368a30f453aff35a0f87" />
 
     <!-- Title / Description -->
-    <title>메디판다, CSO비즈니스 성공파트너</title>
+    <title>메디판다 - CSO비즈니스 성공파트너</title>
     <meta name="description" content="정산은 쉽게! 약품 검색은 빠르게! CSO 영업사원을 위한 스마트 앱. 처방 내역 등록, 실적관리, 커뮤니티까지 한번에" />
 
     <!-- Robots -->
@@ -98,34 +98,22 @@ function injectHtmlSeoPlugin({ mode }: { mode: string }) {
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="CSO비즈니스 성공파트너, 메디판다" />
+    <meta property="og:site_name" content="메디판다" />
+    <meta property="og:title" content="메디판다 - CSO비즈니스 성공파트너" />
     <meta property="og:description" content="정산은 쉽게! 약품 검색은 빠르게! CSO 영업사원을 위한 스마트 앱" />
     <meta property="og:url" content="https://medipanda.co.kr/landing.html" />
     <meta property="og:image" content="https://medipanda.co.kr/assets/og.png" />
 
-<!-- 구조화 데이터 -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
+    <!-- 구조화 데이터 -->
+    <script type="application/ld+json">
     {
+      "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "메디판다",
-      "url": "https://medipanda.co.kr"
-    },
-    {
-      "@type": "WebPage",
-      "name": "메디판다 - CSO비즈니스 성공파트너",
-      "description": "정산은 쉽게! 약품 검색은 빠르게! CSO 영업사원을 위한 스마트 앱",
-      "url": "https://medipanda.co.kr/landing.html",
-      "isPartOf": {
-        "@id": "https://medipanda.co.kr"
-      }
+      "url": "https://medipanda.co.kr/"
     }
-  ]
-}
-</script>
-          `,
+    </script>
+    `,
         );
       }
 
