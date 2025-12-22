@@ -141,7 +141,7 @@ export default function PartnerContract() {
       return;
     }
 
-    const isCsoApproved = session?.partnerContractStatus !== MemberType.NONE && session?.partnerContractStatus !== undefined;
+    const isCsoApproved = session?.partnerContractStatus === MemberType.CSO;
     if (!isCsoApproved && values.csoCertificate === null) {
       alert('CSO 신고증을 첨부해주세요.');
       return;
@@ -379,7 +379,7 @@ export default function PartnerContract() {
 
           <PartnerContractFormRow sx={{ height: 'auto', minHeight: '50px' }}>
             <PartnerContractFormLabel>CSO 신고증</PartnerContractFormLabel>
-            {contractDetails?.status === PartnerContractStatus.APPROVED ? (
+            {session?.partnerContractStatus === MemberType.CSO ? (
               <PartnerContractFormInput>
                 <Stack
                   direction='row'
