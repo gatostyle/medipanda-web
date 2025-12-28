@@ -33,6 +33,7 @@ const MpAdminPrescriptionFormEdit = Loadable(lazy(() => import('@/pages-admin/Mp
 const MpAdminSettlementPartnerDetail = Loadable(lazy(() => import('@/pages-admin/MpAdminSettlementPartnerDetail')));
 const MpAdminSettlementList = Loadable(lazy(() => import('@/pages-admin/MpAdminSettlementList')));
 const MpAdminSettlementDetail = Loadable(lazy(() => import('@/pages-admin/MpAdminSettlementDetail')));
+const MpAdminSettlementMemberMonthlyList = Loadable(lazy(() => import('@/pages-admin/MpAdminSettlementMemberMonthlyList')));
 const MpAdminStatisticsList = Loadable(lazy(() => import('@/pages-admin/MpAdminStatisticsList')));
 const MpAdminExpenseReportList = Loadable(lazy(() => import('@/pages-admin/MpAdminExpenseReportList')));
 const MpAdminCommunityPostList = Loadable(lazy(() => import('@/pages-admin/MpAdminCommunityPostList')));
@@ -253,6 +254,14 @@ const adminRoute: RouteObject = {
       element: (
         <MpAdminGuard requiredPermission={AdminPermission.SETTLEMENT_MANAGEMENT}>
           <MpAdminStatisticsList />
+        </MpAdminGuard>
+      ),
+    },
+    {
+      path: 'settlements-member-monthly',
+      element: (
+        <MpAdminGuard requiredPermission={AdminPermission.SETTLEMENT_MANAGEMENT}>
+          <MpAdminSettlementMemberMonthlyList />
         </MpAdminGuard>
       ),
     },

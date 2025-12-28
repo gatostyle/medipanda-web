@@ -893,6 +893,20 @@ export interface PageSalesAgencyProductSummaryResponse {
   totalPages: number;
 }
 
+export interface PageSettlementMemberMonthlyResponse {
+  content: SettlementMemberMonthlyResponse[];
+  empty: boolean;
+  first: boolean;
+  last: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: PageableObject;
+  size: number;
+  sort: SortObject;
+  totalElements: number;
+  totalPages: number;
+}
+
 export interface PageSettlementPartnerResponse {
   content: SettlementPartnerResponse[];
   empty: boolean;
@@ -919,6 +933,12 @@ export interface PageSettlementResponse {
   sort: SortObject;
   totalElements: number;
   totalPages: number;
+}
+
+export interface Pageable {
+  page: number | null;
+  size: number | null;
+  sort: string[] | null;
 }
 
 export interface PageableObject {
@@ -1479,6 +1499,25 @@ export interface SampleProvideReportUpdateRequest {
   productId: number | null;
   provideCount: number | null;
   providedAt: DateTimeString | null;
+}
+
+export interface SettlementMemberMonthlyResponse {
+  baseFeeAmount: number;
+  companyName: string | null;
+  drugCompanyId: number;
+  drugCompanyName: string | null;
+  extraFeeAmount: number | null;
+  id: number;
+  memberId: number;
+  memberName: string | null;
+  note: string | null;
+  prescriptionAmount: number;
+  settlementMonth: number;
+}
+
+export interface SettlementMemberMonthlyUpdateRequest {
+  extraFeeAmount: number | null;
+  note: string | null;
 }
 
 export interface SettlementNotifyRequest {
@@ -4113,6 +4152,54 @@ export async function getSettlements(options?: {
     method: 'GET',
     url: '/v1/settlements',
     params: options,
+  });
+  return response.data;
+}
+
+/**
+ * GET /v1/settlements-member-monthly
+ */
+export async function getList(options?: {
+  drugCompanyName?: string;
+  companyName?: string;
+  startMonth?: number;
+  endMonth?: number;
+  pageable?: Pageable;
+}): Promise<PageSettlementMemberMonthlyResponse> {
+  const response = await axios.request<PageSettlementMemberMonthlyResponse>({
+    method: 'GET',
+    url: '/v1/settlements-member-monthly',
+    params: options,
+  });
+  return response.data;
+}
+
+/**
+ * 회원별 정산 목록 Excel 다운로드
+ * GET /v1/settlements-member-monthly/excel-download
+ */
+export function getDownloadExcel(options?: {
+  drugCompanyName?: string;
+  companyName?: string;
+  startMonth?: number;
+  endMonth?: number;
+}): string {
+  const baseUrl = '/v1/settlements-member-monthly/excel-download';
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
+}
+
+/**
+ * PUT /v1/settlements-member-monthly/{id}
+ */
+export async function update(id: number, data: SettlementMemberMonthlyUpdateRequest): Promise<SettlementMemberMonthlyResponse> {
+  const response = await axios.request<SettlementMemberMonthlyResponse>({
+    method: 'PUT',
+    url: `/v1/settlements-member-monthly/${id}`,
+    data,
   });
   return response.data;
 }
