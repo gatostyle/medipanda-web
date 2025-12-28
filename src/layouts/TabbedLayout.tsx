@@ -12,6 +12,8 @@ interface TabbedLayoutProps {
 function TabbedLayout({ title, tabConfig }: TabbedLayoutProps) {
   const location = useLocation();
 
+  const index = tabConfig.findIndex(({ to }) => location.pathname === to || location.pathname.startsWith(to + '/'));
+
   return (
     <>
       <Typography variant='headingPc3M' sx={{ color: colors.gray80 }}>
@@ -19,7 +21,7 @@ function TabbedLayout({ title, tabConfig }: TabbedLayoutProps) {
       </Typography>
 
       <MedipandaTabs
-        value={tabConfig.findIndex(({ to }) => location.pathname.startsWith(new URL(to, window.location.origin).pathname))}
+        value={index}
         sx={{
           marginTop: '30px',
           marginBottom: '40px',

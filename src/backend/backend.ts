@@ -4157,6 +4157,7 @@ export async function getSettlements(options?: {
 }
 
 /**
+ * 회원별 정산 목록 조회
  * GET /v1/settlements-member-monthly
  */
 export async function getList(options?: {

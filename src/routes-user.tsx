@@ -26,6 +26,7 @@ const PrescriptionList = LazyComponent(lazy(() => import('@/pages-user/Prescript
 const DealerList = LazyComponent(lazy(() => import('@/pages-user/DealerList')));
 
 const SettlementList = LazyComponent(lazy(() => import('@/pages-user/./SettlementList')));
+const SettlementDrugCompany = LazyComponent(lazy(() => import('@/pages-user/SettlementDrugCompany')));
 const SalesStatistic = LazyComponent(lazy(() => import('@/pages-user/SalesStatistic')));
 
 const CommunityDetail = LazyComponent(lazy(() => import('@/pages-user/CommunityDetail')));
@@ -194,7 +195,11 @@ const route: RouteObject[] = [
                 title='정산'
                 tabConfig={[
                   {
-                    label: '정산내역',
+                    label: '제약사별 정산내역',
+                    to: '/settlement-drug-company',
+                  },
+                  {
+                    label: '딜러별 정산내역',
                     to: '/settlement-list',
                   },
                   {
@@ -207,6 +212,10 @@ const route: RouteObject[] = [
           </LoginMemberGuard>
         ),
         children: [
+          {
+            path: 'settlement-drug-company',
+            element: <SettlementDrugCompany />,
+          },
           {
             path: 'settlement-list',
             element: <SettlementList />,
