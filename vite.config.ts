@@ -105,14 +105,25 @@ function injectHtmlSeoPlugin({ mode }: { mode: string }) {
     <meta property="og:image" content="https://medipanda.co.kr/assets/og.png" />
 
     <!-- 구조화 데이터 -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "메디판다",
-      "url": "https://medipanda.co.kr/"
-    }
-    </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "메디판다",
+  "alternateName": "MediPanda",
+  "url": "https://medipanda.co.kr/"
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "메디판다",
+  "url": "https://medipanda.co.kr/",
+  "logo": "https://medipanda.co.kr/assets/og.png"
+}
+</script>
     `,
         );
       }
