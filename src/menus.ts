@@ -97,7 +97,7 @@ export const menuItems: MenuItem[] = [
     permission: AdminPermission.SETTLEMENT_MANAGEMENT,
     children: [
       {
-        label: '회원별 정산',
+        label: '추가수수료 금액',
         path: '/admin/settlements-member-monthly',
         matchingPaths: ['/admin/settlements-member-monthly'],
         permission: AdminPermission.SETTLEMENT_MANAGEMENT,

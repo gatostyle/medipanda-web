@@ -1543,6 +1543,9 @@ export interface SettlementPartnerResponse {
   businessNumber: string;
   companyName: string;
   dealerName: string;
+  extraFeeAmount: number;
+  feeAmount: number;
+  feeTotal: number;
   institutionCode: string;
   institutionName: string;
   settlementPartnerId: number;
@@ -1556,6 +1559,9 @@ export interface SettlementResponse {
   dealerId: number;
   dealerName: string;
   drugCompanyName: string;
+  extraFeeAmount: number;
+  feeAmount: number;
+  feeTotal: number;
   id: number;
   prescriptionAmount: number;
   settlementMonth: string;
