@@ -206,8 +206,8 @@ export default function MpAdminSettlementPartnerDetail() {
                     <TableCell>{item.quantity}</TableCell>
                     <TableCell>{item.unitPrice?.toLocaleString() ?? '-'}</TableCell>
                     <TableCell>{item.prescriptionAmount?.toLocaleString() ?? '-'}</TableCell>
-                    <TableCell>{item.feeRate !== null ? PercentUtils.formatDecimal(item.feeRate) + '%' : '-'}</TableCell>
-                    <TableCell>{item.extraFeeRate !== null ? PercentUtils.formatDecimal(item.extraFeeRate) + '%' : '-'}</TableCell>
+                    <TableCell>{item.feeRate !== null ? item.feeRate + '%' : '-'}</TableCell>
+                    <TableCell>{item.extraFeeRate !== null ? item.extraFeeRate + '%' : '-'}</TableCell>
                     <TableCell>{item.feeAmount?.toLocaleString() ?? '-'}</TableCell>
                     <TableCell>{item.note ?? '-'}</TableCell>
                   </TableRow>

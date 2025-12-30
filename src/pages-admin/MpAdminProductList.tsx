@@ -318,7 +318,7 @@ export default function MpAdminProductList() {
                     </TableCell>
                     <TableCell>{item.productCode}</TableCell>
                     <TableCell>{item.price !== null ? `${item.price.toLocaleString()}` : '-'}</TableCell>
-                    <TableCell>{item.feeRate !== null ? PercentUtils.formatDecimal(item.feeRate) + '%' : '-'}</TableCell>
+                    <TableCell>{item.feeRate !== null ? item.feeRate + '%' : '-'}</TableCell>
                     <TableCell>
                       {item.changedFeeRate !== null
                         ? PercentUtils.formatDecimal(item.changedFeeRate) +
