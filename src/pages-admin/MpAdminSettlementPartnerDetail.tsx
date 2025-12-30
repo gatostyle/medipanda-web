@@ -1,7 +1,6 @@
 import { normalizeBusinessNumber } from '@/lib/utils/form';
 import { useMpModal } from '@/hooks/useMpModal';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
-import { PercentUtils } from '@/utils/PercentUtils';
 import {
   Box,
   Card,

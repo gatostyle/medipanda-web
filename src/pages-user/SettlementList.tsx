@@ -24,7 +24,6 @@ import { setUrlParams } from '@/lib/utils/url';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { colors } from '@/themes';
 import { DateUtils, DATEFORMAT_YYYY년_MM월, DATEFORMAT_YYYY_MM } from '@/lib/utils/dateFormat';
-import { PercentUtils } from '@/utils/PercentUtils';
 import { KeyboardArrowLeft, KeyboardArrowRight, Search } from '@mui/icons-material';
 import {
   Button,
