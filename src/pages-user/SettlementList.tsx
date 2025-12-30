@@ -703,7 +703,7 @@ function SettlementDetailDialog({
               <td>처방금액:</td>
               <td>{settlement.prescriptionAmount.toLocaleString()}</td>
               <td>정산(합계)금액:</td>
-              <td>{settlement.totalAmount.toLocaleString()}</td>
+              <td>{settlement.feeTotal.toLocaleString()}</td>
             </tr>
           </table>
           <Stack direction='row' sx={{ alignItems: 'center' }}>
