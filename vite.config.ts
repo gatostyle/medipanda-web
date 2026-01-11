@@ -151,9 +151,6 @@ function injectHtmlSeoPlugin({ mode }: { mode: string }) {
     <title>메디판다, CSO비즈니스 성공파트너</title>
     <meta name="description" content="메디판다, 영업대행관리 플랫폼, 흩어져 있는 정보를 모으고 손쉬운 실적 관리 및 분석으로 영업에만 집중할 수 있도록 도와드리는 스마트한 영업파트너" />
 
-    <!-- Robots -->
-    <meta name="robots" content="noindex, follow" />
-
     <!-- Canonical (중복 URL 방지) -->
     <link rel="canonical" href="https://medipanda.co.kr/" />
 
