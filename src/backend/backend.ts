@@ -4316,6 +4316,18 @@ export function getDownloadSettlementPartnerSummaryExcel(options?: {
 }
 
 /**
+ * 정산상세내역 단건 조회
+ * GET /v1/settlements/partners/{settlementPartnerId}
+ */
+export async function getSettlementPartner(settlementPartnerId: number): Promise<SettlementPartnerResponse> {
+  const response = await axios.request<SettlementPartnerResponse>({
+    method: 'GET',
+    url: `/v1/settlements/partners/${settlementPartnerId}`,
+  });
+  return response.data;
+}
+
+/**
  * 거래처별 제품 상세 목록 조회
  * GET /v1/settlements/partners/{settlementPartnerId}/products
  */
