@@ -137,7 +137,7 @@ export default function MpAdminPrescriptionFormEdit() {
   const formSettlementMonth = form.watch('settlementMonth');
   const formPrescriptionAmount = form.watch('prescriptionAmount');
 
-  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async (data) => {
+  const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async data => {
     // 처방월 >= 정산월 체크
     if (data.prescriptionMonth && data.settlementMonth) {
       const prescriptionMonth = format(data.prescriptionMonth, DATEFORMAT_YYYY_MM);
@@ -171,7 +171,7 @@ export default function MpAdminPrescriptionFormEdit() {
         selectedDealerId !== prescriptionPartner?.dealerId ||
         (data.prescriptionMonth &&
           format(data.prescriptionMonth, DATEFORMAT_YYYY_MM) !==
-          format(DateUtils.utcToKst(new Date(prescriptionPartner!.prescriptionMonth)), DATEFORMAT_YYYY_MM));
+            format(DateUtils.utcToKst(new Date(prescriptionPartner!.prescriptionMonth)), DATEFORMAT_YYYY_MM));
 
       if (hasPartnerChanges) {
         await updatePartnerEdiFiles({
@@ -345,10 +345,9 @@ export default function MpAdminPrescriptionFormEdit() {
 
     const maxSequence = Math.max(...partnerProducts.map(p => p.sequence), 0);
 
-    setPartnerProducts([
-      ...partnerProducts,
-      ...(await Promise.all(
-        response.map(async (ocrItem, index) => {
+    const results = await Promise.all(
+      response.map(async (ocrItem, index) => {
+        try {
           const productDetail = await getProductDetailsByCode(ocrItem.code, {
             month: format(formPrescriptionMonth!, DATEFORMAT_YYYY_MM),
           });
@@ -386,9 +385,33 @@ export default function MpAdminPrescriptionFormEdit() {
               note: '',
             },
           };
-        }),
-      )),
-    ]);
+        } catch (e) {
+          console.error(`Failed to fetch product ${ocrItem.code}:`, e);
+          return null;
+        }
+      }),
+    );
+
+    const successItems = results.filter((item): item is NonNullable<typeof item> => item !== null);
+
+    if (successItems.length === 0) {
+      await alert('제품 정보를 불러오는데 모두 실패했습니다.');
+      return;
+    }
+
+    if (successItems.length < response.length) {
+      enqueueSnackbar(`${response.length}건 중 ${response.length - successItems.length}건의 제품 정보 조회에 실패했습니다.`, {
+        variant: 'warning',
+      });
+    }
+
+    // sequence 재정렬
+    const resequenced = successItems.map((item, i) => ({
+      ...item,
+      sequence: maxSequence + i + 1,
+    }));
+
+    setPartnerProducts([...partnerProducts, ...resequenced]);
   };
 
   useEffect(() => {
