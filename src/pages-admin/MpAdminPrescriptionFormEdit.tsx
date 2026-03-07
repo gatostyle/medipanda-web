@@ -876,7 +876,17 @@ export default function MpAdminPrescriptionFormEdit() {
                       <Typography variant='body2'>{item.feeAmount}원</Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant='body2'>{item.note ?? ''}</Typography>
+                      <TextField
+                          size='small'
+                          fullWidth
+                          value={item.note ?? ''}
+                          onChange={event => handleProductChange(index, 'note', event.target.value)}
+                          slotProps={{
+                            input: {
+                              readOnly: prescriptionPartner!.status === 'COMPLETED',
+                            },
+                          }}
+                      />
                     </TableCell>
                   </TableRow>
                 ))
