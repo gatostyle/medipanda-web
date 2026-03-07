@@ -231,6 +231,7 @@ export interface BoardPostResponse {
   createdAt: string;
   exposureRange: 'ALL' | 'CONTRACTED' | 'UNCONTRACTED';
   hasChildren: boolean;
+  hasImage: boolean;
   hiddenNickname: boolean;
   id: number;
   isBlind: boolean;
@@ -439,6 +440,13 @@ export interface FileValidationErrorDto {
   message: string;
 }
 
+export interface HospitalBulkUpsertResponse {
+  inserted: number;
+  mapped: number;
+  total: number;
+  unmapped: number;
+}
+
 export interface HospitalResponse {
   address: string;
   id: number;
@@ -447,6 +455,30 @@ export interface HospitalResponse {
   sido: string | null;
   sigungu: string | null;
   source: string | null;
+}
+
+export interface HospitalUpsertRequest {
+  address: string | null;
+  bedCount: number | null;
+  businessStatus: string | null;
+  closeDate: DateString | null;
+  coordX: string | null;
+  coordY: string | null;
+  departmentCodes: string | null;
+  departmentNames: string | null;
+  detailStatus: string | null;
+  doctorCount: number | null;
+  hospitalType: string | null;
+  lastModified: DateTimeString | null;
+  licenseDate: DateString | null;
+  managementNumber: string;
+  name: string;
+  phone: string | null;
+  roadAddress: string | null;
+  roomCount: number | null;
+  sido: string;
+  sigungu: string;
+  zipcode: string | null;
 }
 
 export interface InstitutionInfo {
@@ -861,6 +893,20 @@ export interface PageSalesAgencyProductSummaryResponse {
   totalPages: number;
 }
 
+export interface PageSettlementMemberMonthlyResponse {
+  content: SettlementMemberMonthlyResponse[];
+  empty: boolean;
+  first: boolean;
+  last: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: PageableObject;
+  size: number;
+  sort: SortObject;
+  totalElements: number;
+  totalPages: number;
+}
+
 export interface PageSettlementPartnerResponse {
   content: SettlementPartnerResponse[];
   empty: boolean;
@@ -887,6 +933,12 @@ export interface PageSettlementResponse {
   sort: SortObject;
   totalElements: number;
   totalPages: number;
+}
+
+export interface Pageable {
+  page: number | null;
+  size: number | null;
+  sort: string[] | null;
 }
 
 export interface PageableObject {
@@ -1449,6 +1501,25 @@ export interface SampleProvideReportUpdateRequest {
   providedAt: DateTimeString | null;
 }
 
+export interface SettlementMemberMonthlyResponse {
+  baseFeeAmount: number;
+  companyName: string | null;
+  drugCompanyId: number;
+  drugCompanyName: string | null;
+  extraFeeAmount: number | null;
+  id: number;
+  memberId: number;
+  memberName: string | null;
+  note: string | null;
+  prescriptionAmount: number;
+  settlementMonth: number;
+}
+
+export interface SettlementMemberMonthlyUpdateRequest {
+  extraFeeAmount: number | null;
+  note: string | null;
+}
+
 export interface SettlementNotifyRequest {
   settlementIds: number[];
 }
@@ -1472,6 +1543,9 @@ export interface SettlementPartnerResponse {
   businessNumber: string;
   companyName: string;
   dealerName: string;
+  extraFeeAmount: number;
+  feeAmount: number;
+  feeTotal: number;
   institutionCode: string;
   institutionName: string;
   settlementPartnerId: number;
@@ -1485,6 +1559,9 @@ export interface SettlementResponse {
   dealerId: number;
   dealerName: string;
   drugCompanyName: string;
+  extraFeeAmount: number;
+  feeAmount: number;
+  feeTotal: number;
   id: number;
   prescriptionAmount: number;
   settlementMonth: string;
@@ -1499,6 +1576,8 @@ export interface SortObject {
   sorted: boolean;
   unsorted: boolean;
 }
+
+export interface Unit {}
 
 export interface UpdateNoticeProperties {
   drugCompany: string | null;
@@ -2580,6 +2659,31 @@ export async function getHospitals(options?: {
 }
 
 /**
+ * 병원 전체 삭제
+ * DELETE /v1/hospitals/all
+ */
+export async function deleteAll_1(): Promise<Unit> {
+  const response = await axios.request<Unit>({
+    method: 'DELETE',
+    url: '/v1/hospitals/all',
+  });
+  return response.data;
+}
+
+/**
+ * 병원 bulk upsert
+ * POST /v1/hospitals/bulk-upsert
+ */
+export async function bulkUpsert(data: HospitalUpsertRequest[]): Promise<HospitalBulkUpsertResponse> {
+  const response = await axios.request<HospitalBulkUpsertResponse>({
+    method: 'POST',
+    url: '/v1/hospitals/bulk-upsert',
+    data,
+  });
+  return response.data;
+}
+
+/**
  * 요청 기준일 포함 최근 한 달 사이 오픈한 병원 수
  * GET /v1/hospitals/opened/count
  */
@@ -2612,21 +2716,6 @@ export async function getSigunguBySido(sidoId: number): Promise<RegionCategoryRe
   const response = await axios.request<RegionCategoryResponse[]>({
     method: 'GET',
     url: `/v1/hospitals/regions/sido/${sidoId}/sigungu`,
-  });
-  return response.data;
-}
-
-/**
- * 엑셀 파일 업로드
- * POST /v1/hospitals/upload
- */
-export async function uploadHospitalExcel(data: { file: File }): Promise<string> {
-  const form = new FormData();
-  form.append('file', data.file, data.file.name.normalize('NFC'));
-  const response = await axios.request<string>({
-    method: 'POST',
-    url: '/v1/hospitals/upload',
-    data: form,
   });
   return response.data;
 }
@@ -3007,7 +3096,7 @@ export async function changePassword_1(userId: string, data: ChangePasswordForFi
  */
 export async function applyContract(data: {
   business_registration: File;
-  cso_certificate: File;
+  cso_certificate?: File;
   education_certificate: File;
   request: PartnerContractRequest;
   subcontract_agreement?: File;
@@ -3018,7 +3107,9 @@ export async function applyContract(data: {
   if (data.subcontract_agreement !== undefined) {
     form.append('subcontract_agreement', data.subcontract_agreement, data.subcontract_agreement.name.normalize('NFC'));
   }
-  form.append('cso_certificate', data.cso_certificate, data.cso_certificate.name.normalize('NFC'));
+  if (data.cso_certificate !== undefined) {
+    form.append('cso_certificate', data.cso_certificate, data.cso_certificate.name.normalize('NFC'));
+  }
   form.append('education_certificate', data.education_certificate, data.education_certificate.name.normalize('NFC'));
   await axios.request({
     method: 'POST',
@@ -3141,6 +3232,27 @@ export async function getDrugCompanies(): Promise<DrugCompanyResponse[]> {
     url: '/v1/partners/drug-companies',
   });
   return response.data;
+}
+
+/**
+ * 거래선 목록 엑셀 다운로드
+ * GET /v1/partners/export-excel
+ */
+export function getExportPartnersExcel(options?: {
+  companyName?: string;
+  institutionName?: string;
+  drugCompanyName?: string;
+  memberName?: string;
+  institutionCode?: string;
+  contractType?: 'CONTRACT' | 'NON_CONTRACT';
+  memberType?: 'NONE' | 'CSO' | 'INDIVIDUAL' | 'ORGANIZATION';
+}): string {
+  const baseUrl = '/v1/partners/export-excel';
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
 }
 
 /**
@@ -3296,6 +3408,21 @@ export async function evict(): Promise<void> {
 }
 
 /**
+ * EDI ZIP 파일 다운로드 (여러 처방 일괄)
+ * GET /v1/prescriptions/export-zip
+ */
+export async function exportPrescriptionsZip(options?: { prescriptionIds?: number[] }): Promise<void> {
+  await axios.request({
+    method: 'GET',
+    url: '/v1/prescriptions/export-zip',
+    params: {
+      ...options,
+      prescriptionIds: options?.prescriptionIds?.join(','),
+    },
+  });
+}
+
+/**
  * 요청 날짜가 속한 월의 처방전 수 (submittedDate 기준)
  * GET /v1/prescriptions/monthly-count
  */
@@ -3392,6 +3519,29 @@ export async function getPrescriptionPartnerList(options?: {
     params: options,
   });
   return response.data;
+}
+
+/**
+ * 처방 입력 목록 엑셀 다운로드
+ * GET /v1/prescriptions/partners/export-excel
+ */
+export function getExportPrescriptionPartnersExcel(options?: {
+  status?: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+  companyName?: string;
+  institutionName?: string;
+  drugCompany?: string;
+  dealerName?: string;
+  prescriptionMonthStart?: DateTimeString;
+  prescriptionMonthEnd?: DateTimeString;
+  settlementMonthStart?: DateTimeString;
+  settlementMonthEnd?: DateTimeString;
+}): string {
+  const baseUrl = '/v1/prescriptions/partners/export-excel';
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
 }
 
 /**
@@ -4013,6 +4163,55 @@ export async function getSettlements(options?: {
 }
 
 /**
+ * 회원별 정산 목록 조회
+ * GET /v1/settlements-member-monthly
+ */
+export async function getList(options?: {
+  drugCompanyName?: string;
+  companyName?: string;
+  startMonth?: number;
+  endMonth?: number;
+  pageable?: Pageable;
+}): Promise<PageSettlementMemberMonthlyResponse> {
+  const response = await axios.request<PageSettlementMemberMonthlyResponse>({
+    method: 'GET',
+    url: '/v1/settlements-member-monthly',
+    params: options,
+  });
+  return response.data;
+}
+
+/**
+ * 회원별 정산 목록 Excel 다운로드
+ * GET /v1/settlements-member-monthly/excel-download
+ */
+export function getDownloadExcel(options?: {
+  drugCompanyName?: string;
+  companyName?: string;
+  startMonth?: number;
+  endMonth?: number;
+}): string {
+  const baseUrl = '/v1/settlements-member-monthly/excel-download';
+  const paramsInit = Object.entries(options ?? {})
+    .filter(([_, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => [key, String(value)]);
+  const params = new URLSearchParams(paramsInit);
+  return `${baseUrl}?${params.toString()}`;
+}
+
+/**
+ * PUT /v1/settlements-member-monthly/{id}
+ */
+export async function update(id: number, data: SettlementMemberMonthlyUpdateRequest): Promise<SettlementMemberMonthlyResponse> {
+  const response = await axios.request<SettlementMemberMonthlyResponse>({
+    method: 'PUT',
+    url: `/v1/settlements-member-monthly/${id}`,
+    data,
+  });
+  return response.data;
+}
+
+/**
  * 정산내역 목록 Excel 다운로드 (현재 페이지 기준)
  * GET /v1/settlements/excel-download
  */
@@ -4114,6 +4313,18 @@ export function getDownloadSettlementPartnerSummaryExcel(options?: {
     .map(([key, value]) => [key, String(value)]);
   const params = new URLSearchParams(paramsInit);
   return `${baseUrl}?${params.toString()}`;
+}
+
+/**
+ * 정산상세내역 단건 조회
+ * GET /v1/settlements/partners/{settlementPartnerId}
+ */
+export async function getSettlementPartner(settlementPartnerId: number): Promise<SettlementPartnerResponse> {
+  const response = await axios.request<SettlementPartnerResponse>({
+    method: 'GET',
+    url: `/v1/settlements/partners/${settlementPartnerId}`,
+  });
+  return response.data;
 }
 
 /**

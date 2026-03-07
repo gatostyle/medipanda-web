@@ -97,8 +97,15 @@ export const menuItems: MenuItem[] = [
     permission: AdminPermission.SETTLEMENT_MANAGEMENT,
     children: [
       {
+        label: '추가수수료 금액',
+        path: '/admin/settlements-member-monthly',
+        matchingPaths: ['/admin/settlements-member-monthly'],
+        permission: AdminPermission.SETTLEMENT_MANAGEMENT,
+      },
+      {
         label: '정산내역',
         path: '/admin/settlements',
+        matchingPaths: ['/admin/settlements'],
         permission: AdminPermission.SETTLEMENT_MANAGEMENT,
       },
       {

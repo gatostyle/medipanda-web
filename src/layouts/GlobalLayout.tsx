@@ -22,7 +22,7 @@ const MaxWidthContainer = styled(Stack)({
 const navItems = [
   { path: '/products', label: '제품검색' },
   { path: '/prescriptions', label: '실적관리', secondaryPaths: ['/dealers'] },
-  { path: '/settlement-list', label: '정산', secondaryPaths: ['/sales-statistic'] },
+  { path: '/settlement-drug-company', label: '정산', secondaryPaths: ['/settlement-list', '/sales-statistic'] },
   { path: '/community', label: '커뮤니티' },
   { path: '/sales-agency-products', label: '영업대행상품' },
   { path: '/events', label: '이벤트' },
@@ -257,6 +257,10 @@ function GlobalLayout() {
                   cursor: 'pointer',
                   backgroundColor: colors.vividViolet,
                   color: colors.white,
+                  textDecoration: 'none',
+                  '&:hover': {
+                    textDecoration: 'underline',
+                  },
                 }}
               >
                 마이페이지
@@ -272,6 +276,10 @@ function GlobalLayout() {
                   cursor: 'pointer',
                   backgroundColor: colors.vividViolet,
                   color: colors.white,
+                  textDecoration: 'none',
+                  '&:hover': {
+                    textDecoration: 'underline',
+                  },
                 }}
               >
                 로그아웃

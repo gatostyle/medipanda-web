@@ -24,7 +24,10 @@ import { Outlet, Link as RouterLink, useLocation } from 'react-router-dom';
 
 function matchesPath(menuItem: MenuItem, currentPath: string): boolean {
   if (isLeafMenuItem(menuItem)) {
-    return currentPath.startsWith(menuItem.path);
+    if (menuItem.matchingPaths && menuItem.matchingPaths.length > 0) {
+      return menuItem.matchingPaths.some(path => currentPath.startsWith(path));
+    }
+    return currentPath === menuItem.path || currentPath.startsWith(menuItem.path + '/');
   }
 
   return menuItem.children.some(child => matchesPath(child, currentPath));

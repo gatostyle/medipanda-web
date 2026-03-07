@@ -173,16 +173,27 @@ export default function AnonymousList() {
                           {post.title}
                         </Typography>
                       </Link>
-                      <img
-                        src='/assets/icons/icon-image.svg'
-                        style={{
-                          width: '16px',
-                          height: '16px',
-                        }}
-                      />
+                      {post.hasImage && (
+                        <img
+                          src='/assets/icons/icon-image.svg'
+                          style={{
+                            width: '16px',
+                            height: '16px',
+                          }}
+                        />
+                      )}
                       <Typography variant='smallTextB' sx={{ color: colors.red }}>
                         [{post.commentCount}]
                       </Typography>
+                      {post.userId === session?.userId && (
+                        <img
+                          src='/assets/icons/icon-bullet-my.svg'
+                          style={{
+                            height: '16px',
+                            marginLeft: '15px',
+                          }}
+                        />
+                      )}
                     </Box>
                   </MedipandaTableCell>
                   <MedipandaTableCell

@@ -12,6 +12,7 @@
     "preview": "vite preview",
     "generate-backend": "curl -sSL https://prod.api.medipanda.co.kr/api-docs >./api-docs.json && node ./generate-backend.cjs ./api-docs.json ./src/backend/backend.ts && eslint --fix ./src/backend/backend.ts; rm -f ./api-docs.json",
     "generate-backend:dev": "curl -sSL https://dev.api.medipanda.co.kr/api-docs >./api-docs.json && node ./generate-backend.cjs ./api-docs.json ./src/backend/backend.ts && eslint --fix ./src/backend/backend.ts; rm -f ./api-docs.json",
+    "generate-backend:local": "curl -sSL http://localhost:18080/api-docs >./api-docs.json && node ./generate-backend.cjs ./api-docs.json ./src/backend/backend.ts && eslint --fix ./src/backend/backend.ts; rm -f ./api-docs.json",
     "deploy:dev": "./deploy.sh --env dev",
     "deploy:prod": "./deploy.sh --env prod",
     "deploy:dev:all": "npm run build:dev && ./deploy.sh --env dev && ./deploy.sh --env dev-admin",

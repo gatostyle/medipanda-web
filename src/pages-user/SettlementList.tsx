@@ -24,7 +24,6 @@ import { setUrlParams } from '@/lib/utils/url';
 import { type Sequenced, withSequence } from '@/lib/utils/withSequence';
 import { colors } from '@/themes';
 import { DateUtils, DATEFORMAT_YYYY년_MM월, DATEFORMAT_YYYY_MM } from '@/lib/utils/dateFormat';
-import { PercentUtils } from '@/utils/PercentUtils';
 import { KeyboardArrowLeft, KeyboardArrowRight, Search } from '@mui/icons-material';
 import {
   Button,
@@ -283,8 +282,8 @@ export default function SettlementList() {
               <MedipandaTableRow>
                 <MedipandaTableCell sx={{ width: '120px' }}>제약사명</MedipandaTableCell>
                 <MedipandaTableCell sx={{ width: '60px' }}>딜러명</MedipandaTableCell>
-                <MedipandaTableCell sx={{ width: '90px' }}>공급가액</MedipandaTableCell>
-                <MedipandaTableCell sx={{ width: '80px' }}>세액</MedipandaTableCell>
+                <MedipandaTableCell sx={{ width: '90px' }}>기본수수료</MedipandaTableCell>
+                <MedipandaTableCell sx={{ width: '80px' }}>기타수수료</MedipandaTableCell>
                 <MedipandaTableCell sx={{ width: '90px' }}>합계금액</MedipandaTableCell>
               </MedipandaTableRow>
             </TableHead>
@@ -312,9 +311,9 @@ export default function SettlementList() {
                       {settlement.dealerName}
                     </Button>
                   </MedipandaTableCell>
-                  <MedipandaTableCell>{settlement.supplyAmount.toLocaleString()}</MedipandaTableCell>
-                  <MedipandaTableCell>{settlement.taxAmount.toLocaleString()}</MedipandaTableCell>
-                  <MedipandaTableCell>{settlement.totalAmount.toLocaleString()}</MedipandaTableCell>
+                  <MedipandaTableCell>{settlement.feeAmount.toLocaleString()}</MedipandaTableCell>
+                  <MedipandaTableCell>{settlement.extraFeeAmount.toLocaleString()}</MedipandaTableCell>
+                  <MedipandaTableCell>{settlement.feeTotal.toLocaleString()}</MedipandaTableCell>
                 </MedipandaTableRow>
               ))}
             </TableBody>
@@ -454,16 +453,16 @@ function SettlementDetailForm({ settlement }: { settlement: SettlementResponse |
         ),
       },
       {
-        header: '처방수수료금액',
-        cell: ({ row }) => row.original.supplyAmount.toLocaleString(),
+        header: '기본수수료',
+        cell: ({ row }) => row.original.feeAmount.toLocaleString(),
       },
       {
-        header: '기타수수료금액',
-        cell: ({ row }) => row.original.taxAmount.toLocaleString(),
+        header: '기타수수료',
+        cell: ({ row }) => row.original.extraFeeAmount.toLocaleString(),
       },
       {
         header: '정산금액',
-        cell: ({ row }) => row.original.totalAmount.toLocaleString(),
+        cell: ({ row }) => row.original.feeTotal.toLocaleString(),
       },
     ],
     getCoreRowModel: getCoreRowModel(),
@@ -510,13 +509,13 @@ function SettlementDetailForm({ settlement }: { settlement: SettlementResponse |
         }}
       >
         <Typography variant='mediumTextB' sx={{ color: colors.gray80, width: '160px' }}>
-          공급가액 : {settlement.supplyAmount.toLocaleString()}
+          기본수수료 금액 : {settlement.feeAmount.toLocaleString()}
         </Typography>
         <Typography variant='mediumTextB' sx={{ color: colors.gray80, width: '160px' }}>
-          세액 : {settlement.taxAmount.toLocaleString()}
+          기타수수료 금액 : {settlement.extraFeeAmount.toLocaleString()}
         </Typography>
         <Typography variant='mediumTextB' sx={{ color: colors.gray80, width: '160px' }}>
-          합계금액 : {settlement.totalAmount.toLocaleString()}
+          합계금액 : {settlement.feeTotal.toLocaleString()}
         </Typography>
       </Stack>
       <Stack
@@ -527,9 +526,6 @@ function SettlementDetailForm({ settlement }: { settlement: SettlementResponse |
           marginTop: '10px',
         }}
       >
-        <Typography variant='mediumTextR' sx={{ color: colors.navy }}>
-          합계금액 : {settlement.totalAmount.toLocaleString()}
-        </Typography>
         <Typography variant='mediumTextR' sx={{ color: colors.navy, marginLeft: 'auto' }}>
           정렬기준:
         </Typography>
@@ -706,7 +702,7 @@ function SettlementDetailDialog({
               <td>처방금액:</td>
               <td>{settlement.prescriptionAmount.toLocaleString()}</td>
               <td>정산(합계)금액:</td>
-              <td>{settlement.totalAmount.toLocaleString()}</td>
+              <td>{settlement.feeTotal.toLocaleString()}</td>
             </tr>
           </table>
           <Stack direction='row' sx={{ alignItems: 'center' }}>
@@ -796,7 +792,7 @@ function SettlementDetailDialog({
                       </MedipandaTableCell>
                       <MedipandaTableCell align='center'>
                         <Typography variant='smallPcR'>
-                          {product.feeRate !== null ? `${PercentUtils.formatDecimal(product.feeRate)}%` : '-'}
+                          {product.feeRate !== null ? `${product.feeRate}%` : '-'}
                         </Typography>
                       </MedipandaTableCell>
                       <MedipandaTableCell align='center'>
@@ -804,7 +800,7 @@ function SettlementDetailDialog({
                       </MedipandaTableCell>
                       <MedipandaTableCell align='center'>
                         <Typography variant='smallPcR'>
-                          {product.extraFeeRate !== null ? `${PercentUtils.formatDecimal(product.extraFeeRate)}%` : '-'}
+                          {product.extraFeeRate !== null ? `${product.extraFeeRate}%` : '-'}
                         </Typography>
                       </MedipandaTableCell>
                       <MedipandaTableCell align='center'>
