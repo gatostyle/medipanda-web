@@ -847,20 +847,20 @@ export default function MpAdminPrescriptionFormEdit() {
                     </TableCell>
                     <TableCell>
                       <TextField
-                        size='small'
-                        fullWidth
-                        value={item.quantity}
-                        onChange={event => {
-                          const normalized = normalizeLocaleNumber(event.target.value);
-                          if (normalized !== null) {
-                            handleProductChange(index, 'quantity', normalized);
-                          }
-                        }}
-                        slotProps={{
-                          input: {
-                            readOnly: prescriptionPartner!.status === 'COMPLETED',
-                          },
-                        }}
+                          size='small'
+                          fullWidth
+                          value={item.quantity}
+                          onChange={event => {
+                            const normalized = normalizeLocaleNumber(event.target.value);
+                            if (normalized !== null) {
+                              handleProductChange(index, 'quantity', normalized);
+                            }
+                          }}
+                          slotProps={{
+                            input: {
+                              readOnly: prescriptionPartner!.status === 'COMPLETED',
+                            },
+                          }}
                       />
                     </TableCell>
                     <TableCell>
