@@ -135,8 +135,7 @@ export default function MpAdminPrescriptionFormEdit() {
   const formDealerName = form.watch('dealerName');
   const formPrescriptionMonth = form.watch('prescriptionMonth');
   const formSettlementMonth = form.watch('settlementMonth');
-  const formPrescriptionAmount = form.watch('prescriptionAmount');
-
+  form.watch('prescriptionAmount');
   const submitHandler: SubmitHandler<RequiredDeep<(typeof form)['control']['_defaultValues']>> = async data => {
     // 처방월 >= 정산월 체크
     if (data.prescriptionMonth && data.settlementMonth) {
@@ -716,7 +715,11 @@ export default function MpAdminPrescriptionFormEdit() {
                 <Typography variant='body2' color='text.secondary' sx={{ minWidth: 80 }}>
                   처방금액:
                 </Typography>
-                <Typography variant='body1'>{formPrescriptionAmount}</Typography>
+                <Typography variant='body1'>
+                  {partnerProducts
+                      .reduce((sum, p) => sum + (Number(p.totalPrice.replace(/,/g, '')) || 0), 0)
+                      .toLocaleString()}
+                </Typography>
               </Stack>
             </Stack>
           </Stack>
