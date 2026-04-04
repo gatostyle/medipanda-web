@@ -53,6 +53,7 @@ function MpMemberSelectModalInternal({ open, onClose, onSelect, additionalFilter
         ...(additionalFilter ?? {}),
         name: form.getValues('searchKeyword') !== '' ? form.getValues('searchKeyword') : undefined,
         page: form.getValues('pageIndex'),
+        size: 99999,
       });
       setContents(response.content);
     } catch (error) {
